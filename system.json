@@ -1,0 +1,21 @@
+{
+  "name": "starwarsffg",
+  "title": "Star Wars FFG",
+  "description": "A sytem for playing Star Wars FFG games.",
+  "version": 0.01,
+  "minimumCoreVersion": "0.5.0",
+  "compatibleCoreVersion": "0.5.0",
+  "templateVersion": 2,
+  "author": "Jaxxa",
+  "esmodules": ["module/simple.js"],
+  "styles": ["styles/simple.css"],
+  "packs": [],
+  "languages": [],
+  "gridDistance": 5,
+  "gridUnits": "ft",
+  "primaryTokenAttribute": "health",
+  "secondaryTokenAttribute": "strain",
+  "url": "https://github.com/jaxxa/StarWarsFFG/,
+  "manifest": "https://github.com/jaxxa/StarWarsFFG/,
+  "download": "https://github.com/jaxxa/StarWarsFFG/
+}
