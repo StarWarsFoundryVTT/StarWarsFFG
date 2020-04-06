@@ -3,12 +3,12 @@
   "types": ["character"],
   "character": {
     "biography": "",
-    "health": {
+    "wounds": {
       "value": 10,
       "min": 0,
       "max": 10
     },
-    "power": {
+    "strain": {
       "value": 5,
       "min": 0,
       "max": 5
