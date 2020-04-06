@@ -1,36 +1,23 @@
 /**
  * Extend the basic ItemSheet with some very simple modifications
+ * @extends {ItemSheet}
  */
 export class SimpleItemSheet extends ItemSheet {
-  constructor(...args) {
-    super(...args);
 
-    /**
-     * Keep track of the currently active sheet tab
-     * @type {string}
-     */
-    this._sheetTab = "description";
-  }
-
-  /**
-   * Extend and override the default options used by the Simple Item Sheet
-   * @returns {Object}
-   */
+  /** @override */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
 			classes: ["worldbuilding", "sheet", "item"],
 			template: "systems/worldbuilding/templates/item-sheet.html",
 			width: 520,
 			height: 480,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
 		});
   }
 
   /* -------------------------------------------- */
 
-  /**
-   * Prepare data for rendering the Item sheet
-   * The prepared data object contains both the actor data as well as additional sheet options
-   */
+  /** @override */
   getData() {
     const data = super.getData();
     data.dtypes = ["String", "Number", "Boolean"];
@@ -42,10 +29,7 @@ export class SimpleItemSheet extends ItemSheet {
 
   /* -------------------------------------------- */
 
-  /**
-   * Activate event listeners using the prepared sheet HTML
-   * @param html {HTML}   The prepared HTML object ready to be rendered into the DOM
-   */
+  /** @override */
 	activateListeners(html) {
     super.activateListeners(html);
 
@@ -66,6 +50,11 @@ export class SimpleItemSheet extends ItemSheet {
 
   /* -------------------------------------------- */
 
+  /**
+   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
+   * @param {MouseEvent} event    The originating left click event
+   * @private
+   */
   async _onClickAttributeControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
@@ -93,11 +82,7 @@ export class SimpleItemSheet extends ItemSheet {
 
   /* -------------------------------------------- */
 
-  /**
-   * Implement the _updateObject method as required by the parent class spec
-   * This defines how to update the subject of the form when the form is submitted
-   * @private
-   */
+  /** @override */
   _updateObject(event, formData) {
 
     // Handle the free-form attributes list

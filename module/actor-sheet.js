@@ -1,38 +1,23 @@
 /**
  * Extend the basic ActorSheet with some very simple modifications
+ * @extends {ActorSheet}
  */
 export class SimpleActorSheet extends ActorSheet {
-  constructor(...args) {
-    super(...args);
 
-    /**
-     * Keep track of the currently active sheet tab
-     * @type {string}
-     */
-    this._sheetTab = "description";
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Extend and override the default options used by the 5e Actor Sheet
-   * @returns {Object}
-   */
+  /** @override */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
   	  classes: ["worldbuilding", "sheet", "actor"],
   	  template: "systems/worldbuilding/templates/actor-sheet.html",
       width: 600,
-      height: 600
+      height: 600,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
     });
   }
 
   /* -------------------------------------------- */
 
-  /**
-   * Prepare data for rendering the Actor sheet
-   * The prepared data object contains both the actor data as well as additional sheet options
-   */
+  /** @override */
   getData() {
     const data = super.getData();
     data.dtypes = ["String", "Number", "Boolean"];
@@ -44,10 +29,7 @@ export class SimpleActorSheet extends ActorSheet {
 
   /* -------------------------------------------- */
 
-  /**
-   * Activate event listeners using the prepared sheet HTML
-   * @param html {HTML}   The prepared HTML object ready to be rendered into the DOM
-   */
+  /** @override */
 	activateListeners(html) {
     super.activateListeners(html);
 
@@ -82,6 +64,11 @@ export class SimpleActorSheet extends ActorSheet {
 
   /* -------------------------------------------- */
 
+  /**
+   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
+   * @param {MouseEvent} event    The originating left click event
+   * @private
+   */
   async _onClickAttributeControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
@@ -109,11 +96,7 @@ export class SimpleActorSheet extends ActorSheet {
 
   /* -------------------------------------------- */
 
-  /**
-   * Implement the _updateObject method as required by the parent class spec
-   * This defines how to update the subject of the form when the form is submitted
-   * @private
-   */
+  /** @override */
   _updateObject(event, formData) {
 
     // Handle the free-form attributes list
