@@ -20,6 +20,7 @@
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="characteristics">Characteristics</a>
         <a class="item" data-tab="description">Description</a>
         <a class="item" data-tab="items">Items</a>
         <a class="item" data-tab="attributes">Attributes</a>
@@ -28,6 +29,59 @@
     {{!-- Sheet Body --}}
     <section class="sheet-body">
 
+        {{!-- Characteristics Tab --}}
+        <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
+			<li class="attribute">
+				<h4>Brawn:</h4>
+				<input 	name="data.characteristics.Brawn.value"
+						type="text"
+						value="{{data.characteristics.Brawn.value}}"
+						data-dtype="Number"
+						placeholder="10"/>
+            </li>
+			<li class="attribute">
+				<h4>Agility:</h4>
+				<input 	name="data.characteristics.Agility.value"
+						type="text"
+						value="{{data.characteristics.Agility.value}}"
+						data-dtype="Number"
+						placeholder="10"/>
+            </li>
+			<li class="attribute">
+				<h4>Intellect:</h4>
+				<input 	name="data.characteristics.Intellect.value"
+						type="text"
+						value="{{data.characteristics.Intellect.value}}"
+						data-dtype="Number"
+						placeholder="10"/>
+            </li>
+			<li class="attribute">
+				<h4>Cunning:</h4>
+				<input 	name="data.characteristics.Cunning.value"
+						type="text"
+						value="{{data.characteristics.Cunning.value}}"
+						data-dtype="Number"
+						placeholder="10"/>
+            </li>
+			<li class="attribute">
+				<h4>Willpower:</h4>
+				<input 	name="data.characteristics.Willpower.value"
+						type="text"
+						value="{{data.characteristics.Willpower.value}}"
+						data-dtype="Number"
+						placeholder="10"/>
+            </li>
+			<li class="attribute">
+				<h4>Presence:</h4>
+				<input 	name="data.characteristics.Presence.value"
+						type="text"
+						value="{{data.characteristics.Presence.value}}"
+						data-dtype="Number"
+						placeholder="10"/>
+            </li>
+        </div>
+
+		
         {{!-- Biography Tab --}}
         <div class="tab biography active" data-group="primary" data-tab="description">
             {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}

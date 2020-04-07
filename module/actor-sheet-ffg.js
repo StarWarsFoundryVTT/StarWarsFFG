@@ -8,10 +8,10 @@ export class ActorSheetFFG extends ActorSheet {
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
   	  classes: ["worldbuilding", "sheet", "actor"],
-  	  template: "systems/worldbuilding/templates/actor-sheet.html",
+  	  template: "systems/starwarsffg/templates/ffg-actor-sheet.html",
       width: 600,
       height: 600,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics"}]
     });
   }
 
