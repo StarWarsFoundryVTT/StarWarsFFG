@@ -2,18 +2,18 @@
 
     {{!-- Sheet Header --}}
     <header class="sheet-header">
-        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100"/>
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
         <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name"/></h1>
+            <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
             <div class="resource">
-                <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number"/>
+                <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number" />
                 <span> / </span>
-                <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number"/>
+                <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number" />
             </div>
             <div class="resource">
-                <input type="text" name="data.strain.value" value="{{data.strain.value}}" data-dtype="Number"/>
+                <input type="text" name="data.strain.value" value="{{data.strain.value}}" data-dtype="Number" />
                 <span> / </span>
-                <input type="text" name="data.strain.max" value="{{data.strain.max}}" data-dtype="Number"/>
+                <input type="text" name="data.strain.max" value="{{data.strain.max}}" data-dtype="Number" />
             </div>
         </div>
     </header>
@@ -31,57 +31,21 @@
 
         {{!-- Characteristics Tab --}}
         <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
-			<li class="attribute">
-				<h4>Brawn:</h4>
-				<input 	name="data.characteristics.Brawn.value"
-						type="text"
-						value="{{data.characteristics.Brawn.value}}"
-						data-dtype="Number"
-						placeholder="10"/>
-            </li>
-			<li class="attribute">
-				<h4>Agility:</h4>
-				<input 	name="data.characteristics.Agility.value"
-						type="text"
-						value="{{data.characteristics.Agility.value}}"
-						data-dtype="Number"
-						placeholder="10"/>
-            </li>
-			<li class="attribute">
-				<h4>Intellect:</h4>
-				<input 	name="data.characteristics.Intellect.value"
-						type="text"
-						value="{{data.characteristics.Intellect.value}}"
-						data-dtype="Number"
-						placeholder="10"/>
-            </li>
-			<li class="attribute">
-				<h4>Cunning:</h4>
-				<input 	name="data.characteristics.Cunning.value"
-						type="text"
-						value="{{data.characteristics.Cunning.value}}"
-						data-dtype="Number"
-						placeholder="10"/>
-            </li>
-			<li class="attribute">
-				<h4>Willpower:</h4>
-				<input 	name="data.characteristics.Willpower.value"
-						type="text"
-						value="{{data.characteristics.Willpower.value}}"
-						data-dtype="Number"
-						placeholder="10"/>
-            </li>
-			<li class="attribute">
-				<h4>Presence:</h4>
-				<input 	name="data.characteristics.Presence.value"
-						type="text"
-						value="{{data.characteristics.Presence.value}}"
-						data-dtype="Number"
-						placeholder="10"/>
-            </li>
+
+            {{!-- Characteristics Scores --}}
+
+            <ul class="flexrow">
+                {{#each data.characteristics as |characteristic id|}}
+                <li data-ability="{{id}}">
+
+                    <label>{{characteristic.label}}</label>
+                    <input type="text" value="{{characteristic.value}}" data-dtype="Number" placeholder="1" />
+                </li>
+                {{/each}}
+            </ul>
+
         </div>
 
-		
         {{!-- Biography Tab --}}
         <div class="tab biography active" data-group="primary" data-tab="description">
             {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
@@ -90,16 +54,16 @@
         {{!-- Owned Items Tab --}}
         <div class="tab items" data-group="primary" data-tab="items">
             <ol class="items-list">
-            {{#each actor.items as |item id|}}
+                {{#each actor.items as |item id|}}
                 <li class="item flexrow" data-item-id="{{item._id}}">
-                    <img src="{{item.img}}" title="{{item.name}}" width="24" height="24"/>
+                    <img src="{{item.img}}" title="{{item.name}}" width="24" height="24" />
                     <h4 class="item-name">{{item.name}}</h4>
                     <div class="item-controls">
                         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
                         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>
                 </li>
-            {{/each}}
+                {{/each}}
             </ol>
         </div>
 
@@ -114,15 +78,18 @@
             </header>
 
             <ol class="attributes-list">
-            {{#each data.attributes as |attr key|}}
+                {{#each data.attributes as |attr key|}}
                 <li class="attribute flexrow" data-attribute="{{key}}">
-                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}"/>
+                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" />
                     {{#if attr.isCheckbox}}
-                    <label class="attribute-value checkbox"><input type="checkbox" name="data.attributes.{{key}}.value" {{checked attr.value}}/></label>
+                    <label class="attribute-value checkbox"><input type="checkbox" name="data.attributes.{{key}}.value"
+                            {{checked attr.value}} /></label>
                     {{else}}
-                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}"/>
+                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value"
+                        value="{{attr.value}}" data-dtype="{{attr.dtype}}" />
                     {{/if}}
-                    <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/>
+                    <input class="attribute-label" type="text" name="data.attributes.{{key}}.label"
+                        value="{{attr.label}}" />
                     <select class="attribute-dtype" name="data.attributes.{{key}}.dtype">
                         {{#select attr.dtype}}
                         {{#each ../dtypes as |t|}}
@@ -132,9 +99,8 @@
                     </select>
                     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
                 </li>
-            {{/each}}
+                {{/each}}
             </ol>
         </div>
     </section>
 </form>
-
