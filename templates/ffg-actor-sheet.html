@@ -39,7 +39,8 @@
                 <li data-ability="{{id}}">
 
                     <label>{{characteristic.label}}</label>
-                    <input type="text" value="{{characteristic.value}}" data-dtype="Number" placeholder="1" />
+                    <input name="data.characteristics.{{id}}.value" type="text" value="{{characteristic.value}}"
+                        data-dtype="Number" placeholder="1" />
                 </li>
                 {{/each}}
             </ul>
@@ -50,7 +51,8 @@
                 <li data-ability="{{id}}">
 
                     <label>{{id}}</label>
-                    <input type="text" value="{{skill.value}}" data-dtype="Number" placeholder="1" />
+                    <input name="data.skills.{{id}}.value" type="text" value="{{skill.value}}"
+                        data-dtype="Number" placeholder="1" />
                 </li>
                 {{/each}}
             </ul>
