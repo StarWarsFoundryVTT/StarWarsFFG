@@ -44,6 +44,17 @@
                 {{/each}}
             </ul>
 
+
+            <ul class="flexrow">
+                {{#each data.skills as |skill id|}}
+                <li data-ability="{{id}}">
+
+                    <label>{{id}}</label>
+                    <input type="text" value="{{skill.value}}" data-dtype="Number" placeholder="1" />
+                </li>
+                {{/each}}
+            </ul>
+
         </div>
 
         {{!-- Biography Tab --}}
