@@ -1,5 +1,18 @@
-<form class="{{cssClass}}" autocomplete="off">
 
+
+<form class="{{cssClass}}" autocomplete="off">
+    <style>
+
+        div.AutoScrollStyle {
+        /* background-color: lightblue; */
+        width: 300px;
+        height: 300px;
+        overflow: scroll;
+        }
+    
+    </style>
+
+    
     {{!-- Sheet Header --}}
     <header class="sheet-header">
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
@@ -45,18 +58,29 @@
                 {{/each}}
             </ul>
 
+            <div class="AutoScrollStyle">
+                <table>
+                    <tr>
+                        <td><b>Name</b></td>
+                        <td><b>Rank</b></td>
+                        <td><b>Roll</b></td>
+                    </tr>
+                    {{#each data.skills as |skill id|}}
+                    <tr data-ability="{{id}}">
 
-            <ul class="flexrow">
-                {{#each data.skills as |skill id|}}
-                <li data-ability="{{id}}">
+                        <td>{{id}}</td>
+                        <td>
+                            <input name="data.skills.{{id}}.value" type="text" value="{{skill.value}}"
+                                data-dtype="Number" placeholder="1" />
+                        </td>
+                        <td>
+                            {{skill.value}}
+                        </td>
+                    </tr>
+                    {{/each}}
 
-                    <label>{{id}}</label>
-                    <input name="data.skills.{{id}}.value" type="text" value="{{skill.value}}"
-                        data-dtype="Number" placeholder="1" />
-                </li>
-                {{/each}}
-            </ul>
-
+                </table>
+            </div>
         </div>
 
         {{!-- Biography Tab --}}
