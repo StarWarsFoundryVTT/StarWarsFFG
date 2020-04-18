@@ -146,13 +146,7 @@ export class ActorSheetFFG extends ActorSheet {
       // TODO: Properly handle upgrading skills
     }
 
-    let content;
-    try {
-      content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {});
-    } catch (err) {
-      console.error(err);
-      return
-    }
+    const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {});
 
     new Dialog({
       title: "Finalize your roll",
