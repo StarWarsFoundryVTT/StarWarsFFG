@@ -59,8 +59,8 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     // Roll Skill
-    html.find(".roll-button").click((event) => {
-      this._rollSkill(event);
+    html.find(".roll-button").click(async (event) => {
+      await this._rollSkill(event);
     });
 
     // Add or Remove Attribute
@@ -129,7 +129,7 @@ export class ActorSheetFFG extends ActorSheet {
     return this.object.update(formData);
   }
 
-  _rollSkill(event) {
+  async _rollSkill(event) {
     const data = this.getData();
     const row = event.target.parentElement.parentElement;
     const skillName = row.dataset["ability"];
@@ -142,36 +142,22 @@ export class ActorSheetFFG extends ActorSheet {
     if (ranks <= characteristic.value) {
       proficiency = ranks;
       ability = characteristic.value - ranks;
+    } else {
+      // TODO: Properly handle upgrading skills
     }
-    // TODO: Properly handle upgrading skills
+
+    let content;
+    try {
+      content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {});
+    } catch (err) {
+      console.error(err);
+      return
+    }
+
     new Dialog({
       title: "Finalize your roll",
       // We set the default difficulty to average here.
-      content: `
-Enter extra dice<br>
-<table>
-  <tr>
-    <td>Difficulty</td>
-    <td><input type="number" id="difficulty-dice" name="difficulty" min="0" value="2"></td>
-  </tr>
-  <tr>
-    <td>Challenge</td>
-    <td><input type="number" id="challenge-dice" name="challenge" min="0" value="0"></td>
-  </tr>
-  <tr>
-    <td>Boost</td>
-    <td><input type="number" id="boost-dice" name="boost" min="0" value="0"></td>
-  </tr>
-  <tr>
-    <td>Setback</td>
-    <td><input type="number" id="setback-dice" name="setback" min="0" value="0"></td>
-  </tr>
-  <tr>
-    <td>Force</td>
-    <td><input type="number" id="force-dice" name="force" min="0" value="0"></td>
-  </tr>
-</table>
-`,
+      content,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
