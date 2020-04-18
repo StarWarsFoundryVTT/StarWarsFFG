@@ -2,31 +2,118 @@
 
 <form class="{{cssClass}}" autocomplete="off">
     <style>
-
-        div.AutoScrollStyle {
-        /* background-color: lightblue; */
-        width: 300px;
-        height: 300px;
-        overflow: scroll;
+        header {
+            height: 10em;
         }
-    
+
+        .editable {
+            max-height: 100%;
+        }
+
+        .sheet-body {
+            overflow: scroll;
+        }
+
+        .characteristics-list {
+            list-style: none;
+        }
+
+         .characteristics-list input {
+            border-radius: 100%;
+            width: 2em;
+            height: 2em;
+            text-align: center;;
+            display: block;;
+            font-size: 18pt;;
+        }
+
+        .characteristics-list label {
+            display: block;
+            width: 3em;
+            text-align: center;
+        }
+
+        .split-box {
+            border: 2px solid black;
+            border-radius: 15px;
+            width: max-content;
+        }
+
+        .split-box .divider {
+            width: 1px;
+            background: darkgray;
+        }
+
+        .split-box > .content {
+            display: flex;
+        }
+
+        .split-box h1 {
+            font-size: 120%;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .split-box input {
+            border: 0;
+            text-align: center;
+            background: transparent;
+        }
+
+        .split-box label {
+            display: block;
+            font-size: 90%;
+            color: #222;
+            text-align: center;
+        }
+
+        .roll-button {
+            height: 1.5em;
+            width: 1.5em;
+            border: 0;
+        }
     </style>
 
-    
+
     {{!-- Sheet Header --}}
     <header class="sheet-header">
+        <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
             <div class="resource">
-                <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number" />
-                <span> / </span>
-                <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number" />
+                <div class="split-box">
+                    <h1>Wounds</h1>
+                    <div class="content">
+                        <div class="left">
+                            <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number" />
+                            <label>Threshold</label>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="right">
+                            <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number" />
+                            <label>Current</label>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="resource">
-                <input type="text" name="data.strain.value" value="{{data.strain.value}}" data-dtype="Number" />
-                <span> / </span>
-                <input type="text" name="data.strain.max" value="{{data.strain.max}}" data-dtype="Number" />
+                <div class="resource">
+                    <div class="split-box">
+                        <h1>Strain</h1>
+                        <div class="content">
+                            <div class="left">
+                                <input type="text" name="data.strain.max" value="{{data.strain.max}}" data-dtype="Number" />
+                                <label>Threshold</label>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="right">
+                                <input type="text" name="data.strain.value" value="{{data.strain.value}}" data-dtype="Number" />
+                                <label>Current</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -41,30 +128,32 @@
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
-
         {{!-- Characteristics Tab --}}
         <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
 
             {{!-- Characteristics Scores --}}
 
-            <ul class="flexrow">
+            <ul class="flexrow characteristics-list">
                 {{#each data.characteristics as |characteristic id|}}
                 <li data-ability="{{id}}">
-
-                    <label>{{characteristic.label}}</label>
                     <input name="data.characteristics.{{id}}.value" type="text" value="{{characteristic.value}}"
-                        data-dtype="Number" placeholder="1" />
+                           min="1" max="6" maxlength="1"
+                           data-dtype="Number" placeholder="1" />
+                    <label>{{characteristic.label}}</label>
                 </li>
                 {{/each}}
             </ul>
 
             <div class="AutoScrollStyle">
                 <table>
+                    <thead>
                     <tr>
-                        <td><b>Name</b></td>
-                        <td><b>Rank</b></td>
-                        <td><b>Roll</b></td>
+                        <td>Name</td>
+                        <td>Rank</td>
+                        <td>Roll</td>
                     </tr>
+                    </thead>
+                    <tbody>
                     {{#each data.skills as |skill id|}}
                     <tr data-ability="{{id}}">
 
@@ -74,11 +163,12 @@
                                 data-dtype="Number" placeholder="1" />
                         </td>
                         <td>
-                            {{skill.value}}
+<!--                            {{skill.value}}-->
+                            <img class="roll-button" src="icons/dice/d20black.svg">
                         </td>
                     </tr>
                     {{/each}}
-
+                    </tbody>
                 </table>
             </div>
         </div>
@@ -140,4 +230,90 @@
             </ol>
         </div>
     </section>
+    <script>
+        function rollSkill(event) {
+            const row = event.target.parentElement.parentElement;
+            const skillName = row.dataset["ability"];
+            const actorId = document.getElementById("actor-id").dataset["actor"];
+            const actor = game.actors.get(actorId);
+            const skill = actor.data.data.skills[skillName];
+            const characteristic = actor.data.data.characteristics[skill.characteristic];
+            const ranks = skill.value;
+            let proficiency = 0;
+            let ability = 0;
+
+            if (ranks <= characteristic.value) {
+                proficiency = ranks;
+                ability = characteristic.value - ranks;
+            }
+            // TODO: Properly handle upgrading skills
+            new Dialog({
+                title: "Test Dialog",
+                // We set the default difficulty to average here.
+                content: `
+Enter extra dice<br>
+<table>
+  <tr>
+    <td>Difficulty</td>
+    <td><input type="number" id="difficulty-dice" name="difficulty" min="0" value="2"></td>
+  </tr>
+  <tr>
+    <td>Challenge</td>
+    <td><input type="number" id="challenge-dice" name="challenge" min="0" value="0"></td>
+  </tr>
+  <tr>
+    <td>Boost</td>
+    <td><input type="number" id="boost-dice" name="boost" min="0" value="0"></td>
+  </tr>
+  <tr>
+    <td>Setback</td>
+    <td><input type="number" id="setback-dice" name="setback" min="0" value="0"></td>
+  </tr>
+  <tr>
+    <td>Force</td>
+    <td><input type="number" id="force-dice" name="force" min="0" value="0"></td>
+  </tr>
+</table>
+`,
+                buttons: {
+                    one: {
+                        icon: '<i class="fas fa-check"></i>',
+                        label: "Roll",
+                        callback: () => {
+                            const boost = document.getElementById("boost-dice").value;
+                            const setback = document.getElementById("setback-dice").value;
+                            const difficulty = document.getElementById("difficulty-dice").value;
+                            const challenge = document.getElementById("challenge-dice").value;
+                            const force = document.getElementById("force-dice").value;
+
+                            const diceExpr = [
+                                "a".repeat(ability),
+                                "p".repeat(proficiency),
+                                "b".repeat(boost),
+                                "s".repeat(setback),
+                                "d".repeat(difficulty),
+                                "c".repeat(challenge),
+                                "f".repeat(force)
+                            ].join("");
+
+                            ChatMessage.create({
+                                user: game.user._id,
+                                speaker: actor,
+                                content: `/sw ${diceExpr}`
+                            });
+                        }
+                    },
+                    two: {
+                        icon: '<i class="fas fa-times"></i>',
+                        label: "Cancel",
+                        callback: () => console.log("Chose Two")
+                    }
+                },
+            }).render(true)
+        }
+
+        document.querySelectorAll(".roll-button").forEach(elem => {
+            elem.addEventListener("click", rollSkill);
+        })
+    </script>
 </form>
