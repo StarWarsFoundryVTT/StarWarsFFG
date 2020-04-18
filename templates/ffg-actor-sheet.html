@@ -1,80 +1,6 @@
 
 
 <form class="{{cssClass}}" autocomplete="off">
-    <style>
-        header {
-            height: 10em;
-        }
-
-        .editable {
-            max-height: 100%;
-        }
-
-        .sheet-body {
-            overflow: scroll;
-        }
-
-        .characteristics-list {
-            list-style: none;
-        }
-
-         .characteristics-list input {
-            border-radius: 100%;
-            width: 2em;
-            height: 2em;
-            text-align: center;;
-            display: block;;
-            font-size: 18pt;;
-        }
-
-        .characteristics-list label {
-            display: block;
-            width: 3em;
-            text-align: center;
-        }
-
-        .split-box {
-            border: 2px solid black;
-            border-radius: 15px;
-            width: max-content;
-        }
-
-        .split-box .divider {
-            width: 1px;
-            background: darkgray;
-        }
-
-        .split-box > .content {
-            display: flex;
-        }
-
-        .split-box h1 {
-            font-size: 120%;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        .split-box input {
-            border: 0;
-            text-align: center;
-            background: transparent;
-        }
-
-        .split-box label {
-            display: block;
-            font-size: 90%;
-            color: #222;
-            text-align: center;
-        }
-
-        .roll-button {
-            height: 1.5em;
-            width: 1.5em;
-            border: 0;
-        }
-    </style>
-
-
     {{!-- Sheet Header --}}
     <header class="sheet-header">
         <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
@@ -230,9 +156,4 @@
             </ol>
         </div>
     </section>
-    <script>
-        document.querySelectorAll(".roll-button").forEach(elem => {
-            elem.addEventListener("click", rollSkill);
-        })
-    </script>
 </form>
