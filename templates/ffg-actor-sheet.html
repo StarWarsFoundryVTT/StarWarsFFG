@@ -1,10 +1,10 @@
-
-
 <form class="{{cssClass}}" autocomplete="off">
     {{!-- Sheet Header --}}
     <header class="sheet-header">
         <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+
+        {{!-- Wounds Box --}}
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
             <div class="resource">
@@ -23,6 +23,8 @@
                     </div>
                 </div>
             </div>
+
+            {{!-- Strain Box --}}
             <div class="resource">
                 <div class="resource">
                     <div class="split-box">
@@ -89,7 +91,6 @@
                                 data-dtype="Number" placeholder="1" />
                         </td>
                         <td>
-<!--                            {{skill.value}}-->
                             <img class="roll-button" src="icons/dice/d20black.svg">
                         </td>
                     </tr>

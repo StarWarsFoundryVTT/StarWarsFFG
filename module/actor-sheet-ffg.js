@@ -59,7 +59,9 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     // Roll Skill
-    html.find(".roll-button").click(this._rollSkill);
+    html.find(".roll-button").click((event) => {
+      this._rollSkill(event);
+    });
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
@@ -128,12 +130,11 @@ export class ActorSheetFFG extends ActorSheet {
   }
 
   _rollSkill(event) {
+    const data = this.getData();
     const row = event.target.parentElement.parentElement;
     const skillName = row.dataset["ability"];
-    const actorId = document.getElementById("actor-id").dataset["actor"];
-    const actor = game.actors.get(actorId);
-    const skill = actor.data.data.skills[skillName];
-    const characteristic = actor.data.data.characteristics[skill.characteristic];
+    const skill = data.data.skills[skillName];
+    const characteristic = data.data.characteristics[skill.characteristic];
     const ranks = skill.value;
     let proficiency = 0;
     let ability = 0;
@@ -194,7 +195,7 @@ Enter extra dice<br>
 
             ChatMessage.create({
               user: game.user._id,
-              speaker: actor,
+              speaker: data,
               content: `/sw ${diceExpr}`
             });
           }
@@ -202,7 +203,6 @@ Enter extra dice<br>
         two: {
           icon: '<i class="fas fa-times"></i>',
           label: "Cancel",
-          callback: () => console.log("Chose Two")
         }
       },
     }).render(true)
