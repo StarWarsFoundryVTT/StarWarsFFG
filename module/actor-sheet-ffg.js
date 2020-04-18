@@ -58,6 +58,9 @@ export class ActorSheetFFG extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    // Roll Skill
+    html.find(".roll-button").click(this._rollSkill);
+
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
   }
@@ -108,7 +111,7 @@ export class ActorSheetFFG extends ActorSheet {
       obj[k] = v;
       return obj;
     }, {});
-    
+
     // Remove attributes which are no longer used
     for ( let k of Object.keys(this.object.data.data.attributes) ) {
       if ( !attributes.hasOwnProperty(k) ) attributes[`-=${k}`] = null;
@@ -119,8 +122,89 @@ export class ActorSheetFFG extends ActorSheet {
       obj[e[0]] = e[1];
       return obj;
     }, {_id: this.object._id, "data.attributes": attributes});
-    
+
     // Update the Actor
     return this.object.update(formData);
+  }
+
+  _rollSkill(event) {
+    const row = event.target.parentElement.parentElement;
+    const skillName = row.dataset["ability"];
+    const actorId = document.getElementById("actor-id").dataset["actor"];
+    const actor = game.actors.get(actorId);
+    const skill = actor.data.data.skills[skillName];
+    const characteristic = actor.data.data.characteristics[skill.characteristic];
+    const ranks = skill.value;
+    let proficiency = 0;
+    let ability = 0;
+
+    if (ranks <= characteristic.value) {
+      proficiency = ranks;
+      ability = characteristic.value - ranks;
+    }
+    // TODO: Properly handle upgrading skills
+    new Dialog({
+      title: "Finalize your roll",
+      // We set the default difficulty to average here.
+      content: `
+Enter extra dice<br>
+<table>
+  <tr>
+    <td>Difficulty</td>
+    <td><input type="number" id="difficulty-dice" name="difficulty" min="0" value="2"></td>
+  </tr>
+  <tr>
+    <td>Challenge</td>
+    <td><input type="number" id="challenge-dice" name="challenge" min="0" value="0"></td>
+  </tr>
+  <tr>
+    <td>Boost</td>
+    <td><input type="number" id="boost-dice" name="boost" min="0" value="0"></td>
+  </tr>
+  <tr>
+    <td>Setback</td>
+    <td><input type="number" id="setback-dice" name="setback" min="0" value="0"></td>
+  </tr>
+  <tr>
+    <td>Force</td>
+    <td><input type="number" id="force-dice" name="force" min="0" value="0"></td>
+  </tr>
+</table>
+`,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "Roll",
+          callback: () => {
+            const boost = document.getElementById("boost-dice").value;
+            const setback = document.getElementById("setback-dice").value;
+            const difficulty = document.getElementById("difficulty-dice").value;
+            const challenge = document.getElementById("challenge-dice").value;
+            const force = document.getElementById("force-dice").value;
+
+            const diceExpr = [
+              "a".repeat(ability),
+              "p".repeat(proficiency),
+              "b".repeat(boost),
+              "s".repeat(setback),
+              "d".repeat(difficulty),
+              "c".repeat(challenge),
+              "f".repeat(force)
+            ].join("");
+
+            ChatMessage.create({
+              user: game.user._id,
+              speaker: actor,
+              content: `/sw ${diceExpr}`
+            });
+          }
+        },
+        two: {
+          icon: '<i class="fas fa-times"></i>',
+          label: "Cancel",
+          callback: () => console.log("Chose Two")
+        }
+      },
+    }).render(true)
   }
 }
