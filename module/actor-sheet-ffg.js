@@ -60,7 +60,13 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Roll Skill
     html.find(".roll-button").click(async (event) => {
-      await this._rollSkill(event);
+      let upgradeType = null;
+      if (event.ctrlKey && !event.shiftKey) {
+        upgradeType = "ability"
+      } else if (!event.ctrlKey && event.shiftKey) {
+        upgradeType = "difficulty";
+      }
+      await this._rollSkill(event, upgradeType);
     });
 
     // Add or Remove Attribute
@@ -129,7 +135,7 @@ export class ActorSheetFFG extends ActorSheet {
     return this.object.update(formData);
   }
 
-  async _rollSkill(event) {
+  async _rollSkill(event, upgradeType) {
     const data = this.getData();
     const row = event.target.parentElement.parentElement;
     const skillName = row.dataset["ability"];
@@ -141,6 +147,17 @@ export class ActorSheetFFG extends ActorSheet {
       difficulty: 2 // Default to average difficulty
     });
     dicePool.upgrade(skill.value);
+
+    if (upgradeType === "ability") {
+      dicePool.upgrade();
+    }  else if (upgradeType === "difficulty") {
+      dicePool.upgradeDifficulty()
+    }
+
+    await this._completeRoll(dicePool, `Rolling ${skillName}`);
+  }
+
+  async _completeRoll(dicePool, description) {
     const id = randomID();
 
     const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
@@ -149,7 +166,7 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     new Dialog({
-      title: "Finalize your roll",
+      title: description || "Finalize your roll",
       content,
       buttons: {
         one: {
