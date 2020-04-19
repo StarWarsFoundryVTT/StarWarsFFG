@@ -1,23 +1,66 @@
-Enter extra dice<br>
-<table>
-  <tr>
-    <td>Difficulty</td>
-    <td><input type="number" id="difficulty-dice" name="difficulty" min="0" value="2"></td>
-  </tr>
-  <tr>
-    <td>Challenge</td>
-    <td><input type="number" id="challenge-dice" name="challenge" min="0" value="0"></td>
-  </tr>
-  <tr>
-    <td>Boost</td>
-    <td><input type="number" id="boost-dice" name="boost" min="0" value="0"></td>
-  </tr>
-  <tr>
-    <td>Setback</td>
-    <td><input type="number" id="setback-dice" name="setback" min="0" value="0"></td>
-  </tr>
-  <tr>
-    <td>Force</td>
-    <td><input type="number" id="force-dice" name="force" min="0" value="0"></td>
-  </tr>
-</table>
+<div id="{{id}}">
+  <div class="dice-pool"></div>
+  <table>
+    <tr>
+      <td>Ability</td>
+      <td><input type="number" name="ability" min="0"></td>
+    </tr>
+    <tr>
+      <td>Proficiency</td>
+      <td><input type="number" name="proficiency" min="0"></td>
+    </tr>
+    <tr>
+      <td>Difficulty</td>
+      <td><input type="number" name="difficulty" min="0"></td>
+    </tr>
+    <tr>
+      <td>Challenge</td>
+      <td><input type="number"name="challenge" min="0"></td>
+    </tr>
+    <tr>
+      <td>Boost</td>
+      <td><input type="number"name="boost" min="0"></td>
+    </tr>
+    <tr>
+      <td>Setback</td>
+      <td><input type="number" name="setback" min="0""></td>
+    </tr>
+    <tr>
+      <td>Force</td>
+      <td><input type="number" name="force" min="0"></td>
+    </tr>
+  </table>
+</div>
+
+
+<script>
+  function setupInput(scope, pool, type) {
+      const input = scope.querySelector(`[name="${type}"`);
+      input.value = pool[type];
+
+      input.addEventListener("change", (event) => {
+          pool[type] = parseInt(event.target.value);
+          updatePreview(scope, pool);
+      });
+  }
+
+  function updatePreview(scope, pool) {
+      const poolDiv = scope.querySelector(".dice-pool");
+      poolDiv.innerHTML = "";
+      pool.renderPreview(poolDiv);
+  }
+
+  (function() {
+      const scope = document.getElementById("{{{id}}}");
+      const pool = new DicePoolFFG({{{json dicePool}}});
+
+      updatePreview(scope, pool);
+      setupInput(scope, pool, "ability");
+      setupInput(scope, pool, "proficiency");
+      setupInput(scope, pool, "difficulty");
+      setupInput(scope, pool, "challenge");
+      setupInput(scope, pool, "boost");
+      setupInput(scope, pool, "setback");
+      setupInput(scope, pool, "force");
+  })();
+</script>

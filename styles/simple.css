@@ -161,7 +161,11 @@ sheet work. There is likely a better way to do this.
     height: 2em;
     text-align: center;;
     display: block;;
-    font-size: 18pt;;
+    font-size: 18pt;
+}
+
+.worldbuilding.sheet .characteristics-list input:invalid {
+    border: 2px solid red;
 }
 
 .worldbuilding.sheet .characteristics-list label {
@@ -213,4 +217,10 @@ boxes at the top of the standard FFG character sheets.
     height: 1.5em;
     width: 1.5em;
     border: 0;
+}
+
+.dice-pool img {
+    border: 0;
+    width: 2em;
+    height: 2em;
 }

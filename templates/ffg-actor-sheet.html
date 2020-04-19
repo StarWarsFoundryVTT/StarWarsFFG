@@ -64,8 +64,9 @@
             <ul class="flexrow characteristics-list">
                 {{#each data.characteristics as |characteristic id|}}
                 <li data-ability="{{id}}">
-                    <input name="data.characteristics.{{id}}.value" type="text" value="{{characteristic.value}}"
-                           min="1" max="6" maxlength="1"
+                    {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
+                    <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}"
+                           maxlength="1" type="text" pattern="[1-7]"
                            data-dtype="Number" placeholder="1" />
                     <label>{{characteristic.label}}</label>
                 </li>

@@ -135,48 +135,34 @@ export class ActorSheetFFG extends ActorSheet {
     const skillName = row.dataset["ability"];
     const skill = data.data.skills[skillName];
     const characteristic = data.data.characteristics[skill.characteristic];
-    const ranks = skill.value;
-    let proficiency = 0;
-    let ability = 0;
 
-    if (ranks <= characteristic.value) {
-      proficiency = ranks;
-      ability = characteristic.value - ranks;
-    } else {
-      // TODO: Properly handle upgrading skills
-    }
+    const dicePool = new DicePoolFFG({
+      ability: characteristic.value,
+      difficulty: 2 // Default to average difficulty
+    });
+    dicePool.upgrade(skill.value);
+    const id = randomID();
 
-    const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {});
+    const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
+      dicePool,
+      id,
+    });
 
     new Dialog({
       title: "Finalize your roll",
-      // We set the default difficulty to average here.
       content,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
           label: "Roll",
           callback: () => {
-            const boost = document.getElementById("boost-dice").value;
-            const setback = document.getElementById("setback-dice").value;
-            const difficulty = document.getElementById("difficulty-dice").value;
-            const challenge = document.getElementById("challenge-dice").value;
-            const force = document.getElementById("force-dice").value;
-
-            const diceExpr = [
-              "a".repeat(ability),
-              "p".repeat(proficiency),
-              "b".repeat(boost),
-              "s".repeat(setback),
-              "d".repeat(difficulty),
-              "c".repeat(challenge),
-              "f".repeat(force)
-            ].join("");
+            const container = document.getElementById(id);
+            const finalPool = DicePoolFFG.fromContainer(container);
 
             ChatMessage.create({
               user: game.user._id,
               speaker: data,
-              content: `/sw ${diceExpr}`
+              content: `/sw ${finalPool.renderDiceExpression()}`
             });
           }
         },
