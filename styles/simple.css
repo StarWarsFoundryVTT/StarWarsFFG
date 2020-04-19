@@ -67,7 +67,7 @@
 
 /* Content Tabs */
 .worldbuilding.sheet .sheet-body {
-    height: calc(100% - 160px);
+    height: calc(100% - 14em);
     overflow: auto;
 }
 .worldbuilding.sheet .sheet-body .tab {
@@ -161,7 +161,11 @@ sheet work. There is likely a better way to do this.
     height: 2em;
     text-align: center;;
     display: block;;
-    font-size: 18pt;;
+    font-size: 18pt;
+}
+
+.worldbuilding.sheet .characteristics-list input:invalid {
+    border: 2px solid red;
 }
 
 .worldbuilding.sheet .characteristics-list label {
@@ -209,8 +213,8 @@ boxes at the top of the standard FFG character sheets.
     text-align: center;
 }
 
-.roll-button {
-    height: 1.5em;
-    width: 1.5em;
+.dice-pool img {
     border: 0;
+    width: 2em;
+    height: 2em;
 }
