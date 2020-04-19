@@ -67,7 +67,7 @@
 
 /* Content Tabs */
 .worldbuilding.sheet .sheet-body {
-    height: calc(100% - 160px);
+    height: calc(100% - 14em);
     overflow: auto;
 }
 .worldbuilding.sheet .sheet-body .tab {
@@ -211,12 +211,6 @@ boxes at the top of the standard FFG character sheets.
     font-size: 90%;
     color: #222;
     text-align: center;
-}
-
-.roll-button {
-    height: 1.5em;
-    width: 1.5em;
-    border: 0;
 }
 
 .dice-pool img {

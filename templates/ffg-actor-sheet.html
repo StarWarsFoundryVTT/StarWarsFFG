@@ -73,32 +73,32 @@
                 {{/each}}
             </ul>
 
-            <div class="AutoScrollStyle">
-                <table>
-                    <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Rank</td>
-                        <td>Roll</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {{#each data.skills as |skill id|}}
-                    <tr data-ability="{{id}}">
+            <table>
+                <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Rank</td>
+                    <td>Roll</td>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each data.skills as |skill id|}}
+                <tr data-ability="{{id}}" class="skill">
 
-                        <td>{{id}}</td>
-                        <td>
-                            <input name="data.skills.{{id}}.value" type="text" value="{{skill.value}}"
-                                data-dtype="Number" placeholder="1" />
-                        </td>
-                        <td>
-                            <img class="roll-button" src="icons/dice/d20black.svg">
-                        </td>
-                    </tr>
-                    {{/each}}
-                    </tbody>
-                </table>
-            </div>
+                    <td>{{id}}</td>
+                    <td>
+                        <input name="data.skills.{{id}}.value" value="{{skill.value}}"
+                               type="number" min="0" max="5"
+                               data-dtype="Number" placeholder="1" />
+                    </td>
+                    <td>
+<!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                      <div class="roll-button dice-pool"></div>
+                    </td>
+                </tr>
+                {{/each}}
+                </tbody>
+            </table>
         </div>
 
         {{!-- Biography Tab --}}

@@ -3,6 +3,7 @@
  * @extends {ActorSheet}
  */
 export class ActorSheetFFG extends ActorSheet {
+  pools = new Map();
 
   /** @override */
 	static get defaultOptions() {
@@ -58,8 +59,13 @@ export class ActorSheetFFG extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    // Setup dice pool image
+    html.find(".skill").each((_, elem) => {
+      this._addSkillDicePool(elem)
+    });
+
     // Roll Skill
-    html.find(".roll-button").click(async (event) => {
+    html.find(".roll-button").children().on("click", async (event) => {
       let upgradeType = null;
       if (event.ctrlKey && !event.shiftKey) {
         upgradeType = "ability"
@@ -138,7 +144,7 @@ export class ActorSheetFFG extends ActorSheet {
   async _rollSkill(event, upgradeType) {
     const data = this.getData();
     const row = event.target.parentElement.parentElement;
-    const skillName = row.dataset["ability"];
+    const skillName = row.parentElement.dataset["ability"];
     const skill = data.data.skills[skillName];
     const characteristic = data.data.characteristics[skill.characteristic];
 
@@ -189,5 +195,21 @@ export class ActorSheetFFG extends ActorSheet {
         }
       },
     }).render(true)
+  }
+
+  _addSkillDicePool(elem) {
+    const data = this.getData();
+    console.log(elem);
+    const skillName = elem.dataset["ability"];
+    const skill = data.data.skills[skillName];
+    const characteristic = data.data.characteristics[skill.characteristic];
+
+    const dicePool = new DicePoolFFG({
+      ability: characteristic.value,
+    });
+    dicePool.upgrade(skill.value);
+
+    const rollButton = elem.querySelector(".roll-button");
+    dicePool.renderPreview(rollButton)
   }
 }
