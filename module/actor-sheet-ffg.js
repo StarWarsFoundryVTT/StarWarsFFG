@@ -178,7 +178,7 @@ export class ActorSheetFFG extends ActorSheet {
 
             ChatMessage.create({
               user: game.user._id,
-              speaker: data,
+              speaker: this.getData(),
               content: `/sw ${finalPool.renderDiceExpression()}`
             });
           }
