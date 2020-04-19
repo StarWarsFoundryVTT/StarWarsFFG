@@ -63,6 +63,10 @@ export class DicePoolFFG {
         }
     }
 
+    /**
+     * Transform the dice pool into a rollable expression
+     * @returns {string} a dice expression that can be used to roll the dice pool
+     */
     renderDiceExpression() {
         return [
             "a".repeat(this.ability),
@@ -75,6 +79,11 @@ export class DicePoolFFG {
         ].join("");
     }
 
+    /**
+     * Create a preview of the dice pool using images
+     * @param container {HTMLElement} where to place the preview. A container will be generated if this is undefined
+     * @returns {HTMLElement}
+     */
     renderPreview(container) {
         if (container === undefined) {
             container = document.createElement("div");
@@ -100,6 +109,11 @@ export class DicePoolFFG {
         }
     }
 
+    /**
+     * Search the passed container for inputs that contain dice pool information
+     * @param container the container where the inputs are located
+     * @returns {DicePoolFFG}
+     */
     static fromContainer(container) {
         return new DicePoolFFG({
             ability: container.querySelector('[name="ability"]').value,
