@@ -1,32 +1,47 @@
-
-
 <form class="{{cssClass}}" autocomplete="off">
-    <style>
-
-        div.AutoScrollStyle {
-        /* background-color: lightblue; */
-        width: 300px;
-        height: 300px;
-        overflow: scroll;
-        }
-    
-    </style>
-
-    
     {{!-- Sheet Header --}}
     <header class="sheet-header">
+        <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+
+        {{!-- Wounds Box --}}
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
             <div class="resource">
-                <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number" />
-                <span> / </span>
-                <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number" />
+                <div class="split-box">
+                    <h1>Wounds</h1>
+                    <div class="content">
+                        <div class="left">
+                            <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number" />
+                            <label>Threshold</label>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="right">
+                            <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number" />
+                            <label>Current</label>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            {{!-- Strain Box --}}
             <div class="resource">
-                <input type="text" name="data.strain.value" value="{{data.strain.value}}" data-dtype="Number" />
-                <span> / </span>
-                <input type="text" name="data.strain.max" value="{{data.strain.max}}" data-dtype="Number" />
+                <div class="resource">
+                    <div class="split-box">
+                        <h1>Strain</h1>
+                        <div class="content">
+                            <div class="left">
+                                <input type="text" name="data.strain.max" value="{{data.strain.max}}" data-dtype="Number" />
+                                <label>Threshold</label>
+                            </div>
+                            <div class="divider"></div>
+                            <div class="right">
+                                <input type="text" name="data.strain.value" value="{{data.strain.value}}" data-dtype="Number" />
+                                <label>Current</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </header>
@@ -41,46 +56,49 @@
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
-
         {{!-- Characteristics Tab --}}
         <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
 
             {{!-- Characteristics Scores --}}
 
-            <ul class="flexrow">
+            <ul class="flexrow characteristics-list">
                 {{#each data.characteristics as |characteristic id|}}
                 <li data-ability="{{id}}">
-
+                    {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
+                    <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}"
+                           maxlength="1" type="text" pattern="[1-7]"
+                           data-dtype="Number" placeholder="1" />
                     <label>{{characteristic.label}}</label>
-                    <input name="data.characteristics.{{id}}.value" type="text" value="{{characteristic.value}}"
-                        data-dtype="Number" placeholder="1" />
                 </li>
                 {{/each}}
             </ul>
 
-            <div class="AutoScrollStyle">
-                <table>
-                    <tr>
-                        <td><b>Name</b></td>
-                        <td><b>Rank</b></td>
-                        <td><b>Roll</b></td>
-                    </tr>
-                    {{#each data.skills as |skill id|}}
-                    <tr data-ability="{{id}}">
+            <table>
+                <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Rank</td>
+                    <td>Roll</td>
+                </tr>
+                </thead>
+                <tbody>
+                {{#each data.skills as |skill id|}}
+                <tr data-ability="{{id}}" class="skill">
 
-                        <td>{{id}}</td>
-                        <td>
-                            <input name="data.skills.{{id}}.value" type="text" value="{{skill.value}}"
-                                data-dtype="Number" placeholder="1" />
-                        </td>
-                        <td>
-                            {{skill.value}}
-                        </td>
-                    </tr>
-                    {{/each}}
-
-                </table>
-            </div>
+                    <td>{{id}}</td>
+                    <td>
+                        <input name="data.skills.{{id}}.value" value="{{skill.value}}"
+                               type="number" min="0" max="5"
+                               data-dtype="Number" placeholder="0" />
+                    </td>
+                    <td>
+<!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                      <div class="roll-button dice-pool"></div>
+                    </td>
+                </tr>
+                {{/each}}
+                </tbody>
+            </table>
         </div>
 
         {{!-- Biography Tab --}}

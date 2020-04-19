@@ -3,6 +3,7 @@
  * @extends {ActorSheet}
  */
 export class ActorSheetFFG extends ActorSheet {
+  pools = new Map();
 
   /** @override */
 	static get defaultOptions() {
@@ -58,6 +59,22 @@ export class ActorSheetFFG extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    // Setup dice pool image
+    html.find(".skill").each((_, elem) => {
+      this._addSkillDicePool(elem)
+    });
+
+    // Roll Skill
+    html.find(".roll-button").children().on("click", async (event) => {
+      let upgradeType = null;
+      if (event.ctrlKey && !event.shiftKey) {
+        upgradeType = "ability"
+      } else if (!event.ctrlKey && event.shiftKey) {
+        upgradeType = "difficulty";
+      }
+      await this._rollSkill(event, upgradeType);
+    });
+
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
   }
@@ -108,7 +125,7 @@ export class ActorSheetFFG extends ActorSheet {
       obj[k] = v;
       return obj;
     }, {});
-    
+
     // Remove attributes which are no longer used
     for ( let k of Object.keys(this.object.data.data.attributes) ) {
       if ( !attributes.hasOwnProperty(k) ) attributes[`-=${k}`] = null;
@@ -119,8 +136,80 @@ export class ActorSheetFFG extends ActorSheet {
       obj[e[0]] = e[1];
       return obj;
     }, {_id: this.object._id, "data.attributes": attributes});
-    
+
     // Update the Actor
     return this.object.update(formData);
+  }
+
+  async _rollSkill(event, upgradeType) {
+    const data = this.getData();
+    const row = event.target.parentElement.parentElement;
+    const skillName = row.parentElement.dataset["ability"];
+    const skill = data.data.skills[skillName];
+    const characteristic = data.data.characteristics[skill.characteristic];
+
+    const dicePool = new DicePoolFFG({
+      ability: characteristic.value,
+      difficulty: 2 // Default to average difficulty
+    });
+    dicePool.upgrade(skill.value);
+
+    if (upgradeType === "ability") {
+      dicePool.upgrade();
+    }  else if (upgradeType === "difficulty") {
+      dicePool.upgradeDifficulty()
+    }
+
+    await this._completeRoll(dicePool, `Rolling ${skillName}`);
+  }
+
+  async _completeRoll(dicePool, description) {
+    const id = randomID();
+
+    const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
+      dicePool,
+      id,
+    });
+
+    new Dialog({
+      title: description || "Finalize your roll",
+      content,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "Roll",
+          callback: () => {
+            const container = document.getElementById(id);
+            const finalPool = DicePoolFFG.fromContainer(container);
+
+            ChatMessage.create({
+              user: game.user._id,
+              speaker: this.getData(),
+              content: `/sw ${finalPool.renderDiceExpression()}`
+            });
+          }
+        },
+        two: {
+          icon: '<i class="fas fa-times"></i>',
+          label: "Cancel",
+        }
+      },
+    }).render(true)
+  }
+
+  _addSkillDicePool(elem) {
+    const data = this.getData();
+    console.log(elem);
+    const skillName = elem.dataset["ability"];
+    const skill = data.data.skills[skillName];
+    const characteristic = data.data.characteristics[skill.characteristic];
+
+    const dicePool = new DicePoolFFG({
+      ability: characteristic.value,
+    });
+    dicePool.upgrade(skill.value);
+
+    const rollButton = elem.querySelector(".roll-button");
+    dicePool.renderPreview(rollButton)
   }
 }
