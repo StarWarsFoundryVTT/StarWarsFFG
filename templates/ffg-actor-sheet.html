@@ -12,12 +12,14 @@
                     <h1>Wounds</h1>
                     <div class="content">
                         <div class="left">
-                            <input type="text" name="data.wounds.max" value="{{data.wounds.max}}" data-dtype="Number" />
+                            <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}"
+                                data-dtype="Number" />
                             <label>Threshold</label>
                         </div>
                         <div class="divider"></div>
                         <div class="right">
-                            <input type="text" name="data.wounds.value" value="{{data.wounds.value}}" data-dtype="Number" />
+                            <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}"
+                                data-dtype="Number" />
                             <label>Current</label>
                         </div>
                     </div>
@@ -31,12 +33,14 @@
                         <h1>Strain</h1>
                         <div class="content">
                             <div class="left">
-                                <input type="text" name="data.strain.max" value="{{data.strain.max}}" data-dtype="Number" />
+                                <input type="text" name="data.strain.max" value="{{data.strain.max}}"
+                                    data-dtype="Number" />
                                 <label>Threshold</label>
                             </div>
                             <div class="divider"></div>
                             <div class="right">
-                                <input type="text" name="data.strain.value" value="{{data.strain.value}}" data-dtype="Number" />
+                                <input type="text" name="data.strain.value" value="{{data.strain.value}}"
+                                    data-dtype="Number" />
                                 <label>Current</label>
                             </div>
                         </div>
@@ -65,9 +69,8 @@
                 {{#each data.characteristics as |characteristic id|}}
                 <li data-ability="{{id}}">
                     {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
-                    <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}"
-                           maxlength="1" type="text" pattern="[1-7]"
-                           data-dtype="Number" placeholder="1" />
+                    <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1"
+                        type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
                     <label>{{characteristic.label}}</label>
                 </li>
                 {{/each}}
@@ -75,28 +78,27 @@
 
             <table>
                 <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Rank</td>
-                    <td>Roll</td>
-                </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>Rank</td>
+                        <td>Roll</td>
+                    </tr>
                 </thead>
                 <tbody>
-                {{#each data.skills as |skill id|}}
-                <tr data-ability="{{id}}" class="skill">
+                    {{#each data.skills as |skill id|}}
+                    <tr data-ability="{{id}}" class="skill">
 
-                    <td>{{id}}</td>
-                    <td>
-                        <input name="data.skills.{{id}}.value" value="{{skill.value}}"
-                               type="number" min="0" max="5"
-                               data-dtype="Number" placeholder="0" />
-                    </td>
-                    <td>
-<!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
-                      <div class="roll-button dice-pool"></div>
-                    </td>
-                </tr>
-                {{/each}}
+                        <td>{{id}}</td>
+                        <td>
+                            <input name="data.skills.{{id}}.value" value="{{skill.value}}" type="number" min="0" max="5"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                        <td>
+                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                            <div class="roll-button dice-pool"></div>
+                        </td>
+                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </div>
