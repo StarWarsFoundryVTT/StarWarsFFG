@@ -56,6 +56,7 @@
         <a class="item" data-tab="description">Description</a>
         <a class="item" data-tab="items">Items</a>
         <a class="item" data-tab="attributes">Attributes</a>
+        <a class="item" data-tab="stats">Stats</a>
     </nav>
 
     {{!-- Sheet Body --}}
@@ -159,5 +160,71 @@
                 {{/each}}
             </ol>
         </div>
+
+
+        <div class="tab stats" data-group="primary" data-tab="stats">
+
+            <table>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Value</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Soak</td>
+                        <td>
+                            <input name="data.stats.soak.value" value="{{data.stats.soak.value}}" type="number" min="0"
+                                max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Defence - Ranged</td>
+                        <td>
+                            <input name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" type="number" min="0"
+                                max="5" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Defence - Melee</td>
+                        <td>
+                            <input name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" type="number" min="0"
+                                max="5" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Encumbrance - Value</td>
+                        <td>
+                            <input name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" type="number" min="0"
+                                max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Encumbrance - Max</td>
+                        <td>
+                            <input name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}" type="number" min="0"
+                                max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ForcePool - Value</td>
+                        <td>
+                            <input name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}" type="number" min="0"
+                                max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ForcePool - Max</td>
+                        <td>
+                            <input name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}" type="number" min="0"
+                                max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
     </section>
 </form>
