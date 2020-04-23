@@ -205,9 +205,9 @@ export class ActorSheetFFG extends ActorSheet {
     const characteristic = data.data.characteristics[skill.characteristic];
 
     const dicePool = new DicePoolFFG({
-      ability: characteristic.value,
+      ability: Math.max(characteristic.value, skill.value),
     });
-    dicePool.upgrade(skill.value);
+    dicePool.upgrade(Math.min(characteristic.value, skill.value));
 
     const rollButton = elem.querySelector(".roll-button");
     dicePool.renderPreview(rollButton)
