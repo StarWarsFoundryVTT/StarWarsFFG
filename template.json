@@ -60,6 +60,30 @@
 				}
 			},
 			"skills": {
+				"Brawl": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Gunnery": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Lightsaber": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Melee": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Ranged: Light": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Ranged: Heavy": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
 				"Astrogation": {
 					"rank": 0,
 					"characteristic": "Intellect"
@@ -147,30 +171,6 @@
 				"Vigilance": {
 					"rank": 0,
 					"characteristic": "Willpower"
-				},
-				"Brawl": {
-					"rank": 0,
-					"characteristic": "Brawn"
-				},
-				"Gunnery": {
-					"rank": 0,
-					"characteristic": "Agility"
-				},
-				"Lightsaber": {
-					"rank": 0,
-					"characteristic": "Brawn"
-				},
-				"Melee": {
-					"rank": 0,
-					"characteristic": "Brawn"
-				},
-				"Ranged: Light": {
-					"rank": 0,
-					"characteristic": "Agility"
-				},
-				"Ranged: Heavy": {
-					"rank": 0,
-					"characteristic": "Agility"
 				},
 				"Knowledge: Core Worlds": {
 					"rank": 0,
