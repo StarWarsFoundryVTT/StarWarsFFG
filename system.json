@@ -1,13 +1,13 @@
 {
   "name": "starwarsffg",
   "title": "Star Wars FFG",
-  "description": "A sytem for playing Star Wars FFG games.",
-  "version": 0.01,
-  "minimumCoreVersion": "0.5.2",
-  "compatibleCoreVersion": "0.5.3",
+  "description": "A system for playing Star Wars FFG games.",
+  "version": 0.00,
+  "minimumCoreVersion": "0.5.5",
+  "compatibleCoreVersion": "0.5.5",
   "templateVersion": 2,
   "author": "Jaxxa",
-  "esmodules": ["module/simple.js"],
+  "esmodules": ["module/dice-pool-ffg.js", "module/simple.js"],
   "styles": ["styles/simple.css"],
   "packs": [],
   "languages": [],
@@ -16,6 +16,6 @@
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/jaxxa/StarWarsFFG/",
-  "manifest": "https://github.com/jaxxa/StarWarsFFG/master/system.json",
+  "manifest": "https://github.com/jaxxa/StarWarsFFG/blob/master/system.json",
   "download":  "https://github.com/jaxxa/StarWarsFFG/master/archive/master/worldbuilding-master.zip"
 }

@@ -22,7 +22,7 @@
 
 .worldbuilding.sheet .header-fields {
     flex: 1;
-    height: 100px;
+    height: 10em;
 }
 
 .worldbuilding.sheet .charname {
@@ -67,7 +67,8 @@
 
 /* Content Tabs */
 .worldbuilding.sheet .sheet-body {
-    height: calc(100% - 160px);
+    height: calc(100% - 14em);
+    overflow: auto;
 }
 .worldbuilding.sheet .sheet-body .tab {
     height: 100%;
@@ -77,6 +78,13 @@
     height: 100%;
 }
 
+/*
+This seems to be necessary to make scrolling inside the actor
+sheet work. There is likely a better way to do this.
+*/
+.editable {
+    max-height: 100%;
+}
 
 /* Items */
 .worldbuilding.sheet .items-list {
@@ -103,7 +111,7 @@
 }
 
 /* Attributes */
-.worldbuilding.sheet .attributes-header { 
+.worldbuilding.sheet .attributes-header {
     padding: 5px;
     margin: 5px 0;
     background: rgba(0, 0, 0, 0.05);
@@ -112,10 +120,10 @@
     text-align: center;
     font-weight: bold;
 }
-.worldbuilding.sheet .attribute-label { 
+.worldbuilding.sheet .attribute-label {
     flex: 1.5;
 }
-.worldbuilding.sheet .attribute-control { 
+.worldbuilding.sheet .attribute-control {
     flex: 0 0 20px;
 }
 
@@ -141,4 +149,72 @@
 
 .worldbuilding.sheet .attributes-list li a.attribute-control {
     border: none;
+}
+
+.worldbuilding.sheet .characteristics-list {
+    list-style: none;
+}
+
+.worldbuilding.sheet .characteristics-list input {
+    border-radius: 100%;
+    width: 2em;
+    height: 2em;
+    text-align: center;;
+    display: block;;
+    font-size: 18pt;
+}
+
+.worldbuilding.sheet .characteristics-list input:invalid {
+    border: 2px solid red;
+}
+
+.worldbuilding.sheet .characteristics-list label {
+    display: block;
+    width: 3em;
+    text-align: center;
+}
+
+/*
+A split-box is a box that is divided in half.
+This is designed to mimic the threshold, wound and other
+boxes at the top of the standard FFG character sheets.
+ */
+.split-box {
+    border: 2px solid black;
+    border-radius: 15px;
+    width: max-content;
+}
+
+.split-box .divider {
+    width: 1px;
+    background: darkgray;
+}
+
+.split-box > .content {
+    display: flex;
+}
+
+.split-box h1 {
+    font-size: 120%;
+    font-weight: bold;
+    text-align: center;
+}
+
+.split-box input {
+    border: 0;
+    text-align: center;
+    background: transparent;
+}
+
+.split-box label {
+    display: block;
+    font-size: 90%;
+    color: #222;
+    text-align: center;
+}
+
+.dice-pool img {
+    border: 0;
+    width: 2em;
+    height: 2em;
 }

@@ -1,28 +1,217 @@
 {
-"Actor": {
-  "types": ["character"],
-  "character": {
-    "biography": "",
-    "wounds": {
-      "value": 10,
-      "min": 0,
-      "max": 10
-    },
-    "strain": {
-      "value": 5,
-      "min": 0,
-      "max": 5
-    },
-    "attributes": {}
-  }
-},
-"Item": {
-  "types": ["item"],
-  "item": {
-    "description": "",
-    "quantity": 1,
-    "weight": 0,
-    "attributes": {}
-  }
-}
+	"Actor": {
+		"types": [
+			"character"
+		],
+		"character": {
+			"biography": "",
+			"stats": {
+				"wounds": {
+					"value": 0,
+					"min": 0,
+					"max": 10
+				},
+				"strain": {
+					"value": 0,
+					"min": 0,
+					"max": 10
+				},
+				"soak": {
+					"value": 2
+				},
+				"defence": {
+					"ranged": 0,
+					"melee": 0
+				},
+				"encumbrance": {
+					"value": 0,
+					"max": 0
+				},
+				"forcePool": {
+					"value": 0,
+					"max": 0
+				}
+			},
+			"attributes": {},
+			"characteristics": {
+				"Brawn": {
+					"value": 2,
+					"label": "Brawn"
+				},
+				"Agility": {
+					"value": 2,
+					"label": "Agility"
+				},
+				"Intellect": {
+					"value": 2,
+					"label": "Intellect"
+				},
+				"Cunning": {
+					"value": 2,
+					"label": "Cunning"
+				},
+				"Willpower": {
+					"value": 2,
+					"label": "Willpower"
+				},
+				"Presence": {
+					"value": 2,
+					"label": "Presence"
+				}
+			},
+			"skills": {
+				"Brawl": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Gunnery": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Lightsaber": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Melee": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Ranged: Light": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Ranged: Heavy": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Astrogation": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Athletics ": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Charm": {
+					"rank": 0,
+					"characteristic": "Presence"
+				},
+				"Coercion": {
+					"rank": 0,
+					"characteristic": "Willpower"
+				},
+				"Computers": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Cool": {
+					"rank": 0,
+					"characteristic": "Presence"
+				},
+				"Coordination": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Deception": {
+					"rank": 0,
+					"characteristic": "Cunning"
+				},
+				"Discipline": {
+					"rank": 0,
+					"characteristic": "Willpower"
+				},
+				"Leadership": {
+					"rank": 0,
+					"characteristic": "Presence"
+				},
+				"Mechanics": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Medicine": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Negotiation": {
+					"rank": 0,
+					"characteristic": "Presence"
+				},
+				"Perception": {
+					"rank": 0,
+					"characteristic": "Cunning"
+				},
+				"Piloting: Planetary": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Piloting: Space": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Resilience": {
+					"rank": 0,
+					"characteristic": "Brawn"
+				},
+				"Skulduggery": {
+					"rank": 0,
+					"characteristic": "Cunning"
+				},
+				"Stealth": {
+					"rank": 0,
+					"characteristic": "Agility"
+				},
+				"Streetwise": {
+					"rank": 0,
+					"characteristic": "Cunning"
+				},
+				"Survival": {
+					"rank": 0,
+					"characteristic": "Cunning"
+				},
+				"Vigilance": {
+					"rank": 0,
+					"characteristic": "Willpower"
+				},
+				"Knowledge: Core Worlds": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Knowledge: Education": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Knowledge: Lore": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Knowledge: Outer Rim": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Knowledge: Underworld": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Knowledge: Warfare": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				},
+				"Knowledge: Xenology": {
+					"rank": 0,
+					"characteristic": "Intellect"
+				}
+			}
+		}
+	},
+	"Item": {
+		"types": [
+			"item"
+		],
+		"item": {
+			"description": "",
+			"quantity": 1,
+			"weight": 0,
+			"attributes": {}
+		}
+	}
 }

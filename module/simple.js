@@ -6,7 +6,9 @@
 
 // Import Modules
 import { SimpleItemSheet } from "./item-sheet.js";
-import { SimpleActorSheet } from "./actor-sheet.js";
+import { SimpleActorSheet } from "./actor-sheet-simple.js";
+import { ActorSheetFFG } from "./actor-sheet-ffg.js";
+import { DicePoolFFG } from "./dice-pool-ffg.js"
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -26,7 +28,14 @@ Hooks.once("init", async function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("dnd5e", SimpleActorSheet, { makeDefault: true });
+  Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true });
+  Actors.registerSheet("dnd5e", SimpleActorSheet, { makeDefault: false });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("dnd5e", SimpleItemSheet, {makeDefault: true});
+
+  // Add utilities to the global scope, this can be useful for macro makers
+  window.DicePoolFFG = DicePoolFFG;
+
+  // Register Handlebars utilities
+  Handlebars.registerHelper("json", JSON.stringify);
 });
