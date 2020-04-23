@@ -17,5 +17,5 @@
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/jaxxa/StarWarsFFG/",
   "manifest": "https://github.com/jaxxa/StarWarsFFG/blob/master/system.json",
-  "download":  "https://github.com/jaxxa/StarWarsFFG/master/archive/master/worldbuilding-master.zip"
+  "download":  "https://github.com/jaxxa/StarWarsFFG/releases/download/0.00/starwarsffg-release-000.zip"
 }
