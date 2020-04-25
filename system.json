@@ -2,10 +2,10 @@
   "name": "starwarsffg",
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
-  "version": 0.00,
+  "version": 0.01,
   "minimumCoreVersion": "0.5.5",
   "compatibleCoreVersion": "0.5.5",
-  "templateVersion": 2,
+  "templateVersion": 1,
   "author": "Jaxxa",
   "esmodules": ["module/dice-pool-ffg.js", "module/simple.js"],
   "styles": ["styles/simple.css"],
@@ -17,5 +17,6 @@
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/jaxxa/StarWarsFFG/",
   "manifest": "https://raw.githubusercontent.com/jaxxa/StarWarsFFG/0.00/system.json",
-  "download":  "https://github.com/jaxxa/StarWarsFFG/releases/download/0.00/starwarsffg-release-000.zip"
+  "download":  "https://github.com/jaxxa/StarWarsFFG/releases/download/0.00/starwarsffg-release-000.zip",
+  "license": "LICENSE.txt"
 }
