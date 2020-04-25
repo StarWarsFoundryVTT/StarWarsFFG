@@ -16,7 +16,7 @@
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/jaxxa/StarWarsFFG/",
-  "manifest": "https://raw.githubusercontent.com/jaxxa/StarWarsFFG/0.00/system.json",
-  "download":  "https://github.com/jaxxa/StarWarsFFG/releases/download/0.00/starwarsffg-release-000.zip",
+  "manifest": "https://raw.githubusercontent.com/jaxxa/StarWarsFFG/master/system.json",
+  "download":  "https://github.com/jaxxa/StarWarsFFG/releases/download/0.01/starwarsffg-0.01.zip",
   "license": "LICENSE.txt"
 }
