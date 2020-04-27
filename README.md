@@ -24,7 +24,7 @@ Currently the system has a basic Character sheet, tracking wounds, strain, chara
 
 # Plan
 
-The next thing that I will probably be working on is the Item System.
-
+My plans for this system are available at:
+https://trello.com/b/4dI4wtGP/fvtt-starwars-ffg
 
 Any feedback would be appreciated.
