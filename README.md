@@ -18,12 +18,5 @@ https://raw.githubusercontent.com/jaxxa/StarWarsFFG/master/system.json
 5. Click Install, after a few seconds the system should be installed.
 
 
-# Progress
-
-Currently the system has a basic Character sheet, tracking wounds, strain, characteristics, skills and Dice rolling (powered by Special Dice Roller)
-
-# Plan
-
-My plans for this system are available on [Trello](https://trello.com/b/4dI4wtGP/fvtt-starwars-ffg)
 
 Any feedback would be appreciated.
