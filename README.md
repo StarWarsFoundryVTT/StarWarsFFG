@@ -17,6 +17,9 @@ This is most easily available from the in-game Module browser. After installing 
 https://raw.githubusercontent.com/jaxxa/StarWarsFFG/master/system.json
 5. Click Install, after a few seconds the system should be installed.
 
+# Future Plans
 
+My future plans for this system are available on [Trello](https://trello.com/b/4dI4wtGP/fvtt-starwars-ffg)
+Here you can see what I intend to work on next.
 
 Any feedback would be appreciated.
