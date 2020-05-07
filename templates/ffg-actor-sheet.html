@@ -89,8 +89,10 @@
                 <tbody>
                     {{#each data.skills as |skill id|}}
                     <tr data-ability="{{id}}" class="skill">
-
-                        <td>{{id}}</td>
+                        <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
+                          ({{abrev}})
+                          {{/with}}
+                        </td>
                         <td>
                             <input name="data.skills.{{id}}.value" value="{{skill.value}}" type="number" min="0" max="5"
                                 data-dtype="Number" placeholder="0" />

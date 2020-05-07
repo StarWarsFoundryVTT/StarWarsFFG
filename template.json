@@ -36,27 +36,33 @@
 			"characteristics": {
 				"Brawn": {
 					"value": 2,
-					"label": "Brawn"
+					"label": "Brawn",
+					"abrev": "Br"
 				},
 				"Agility": {
 					"value": 2,
-					"label": "Agility"
+					"label": "Agility",
+					"abrev": "Ag"
 				},
 				"Intellect": {
 					"value": 2,
-					"label": "Intellect"
+					"label": "Intellect",
+					"abrev": "Int"
 				},
 				"Cunning": {
 					"value": 2,
-					"label": "Cunning"
+					"label": "Cunning",
+					"abrev": "Cun"
 				},
 				"Willpower": {
 					"value": 2,
-					"label": "Willpower"
+					"label": "Willpower",
+					"abrev": "Will"
 				},
 				"Presence": {
 					"value": 2,
-					"label": "Presence"
+					"label": "Presence",
+					"abrev": "Pr"
 				}
 			},
 			"skills": {
@@ -205,13 +211,19 @@
 	},
 	"Item": {
 		"types": [
-			"item"
+			"item",
+			"weapon"
 		],
 		"item": {
 			"description": "",
 			"quantity": 1,
 			"weight": 0,
 			"attributes": {}
+		},
+		"weapon": {
+			"templates": ["item"],
+			"damage": 0,
+			"damagetype": "Piercing"
 		}
 	}
 }

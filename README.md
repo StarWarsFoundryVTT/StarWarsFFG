@@ -6,7 +6,7 @@ This is an implementation of the [Fantasy Flight Games Star Wars](https://www.fa
 
 # Requirements
 
-This Requires the "Special Dice Roller" Module to Roll the dice and calculate the results. 
+This Requires the "Special Dice Roller" Module to Roll the dice and calculate the results.
 This is most easily available from the in-game Module browser. After installing it you will need to activate it on your world.
 [foundry-vtt-community](https://foundry-vtt-community.github.io/wiki/Community-Modules/#special-dice-roller) or [GitHub](https://github.com/BernhardPosselt/foundryvtt-special-dice-roller)
 
@@ -19,9 +19,10 @@ This is most easily available from the in-game Module browser. After installing 
 https://raw.githubusercontent.com/jaxxa/StarWarsFFG/master/system.json
 5. Click Install, after a few seconds the system should be installed.
 
-# Future Plans
+# Changelog
 
-My future plans for this system are available on [Trello](https://trello.com/b/4dI4wtGP/fvtt-starwars-ffg)
-Here you can see what I intend to work on next.
-
-Any feedback would be appreciated.
+* 06/05/2020 - Esrin - Removed old SimpleWorldBuilding dependencies and fixed breakages where necessary.
+* 06/05/2020 - Esrin - Renamed core files from Simple World Building to swffg naming scheme for consistency.
+* 06/05/2020 - Esrin - Updated to TabsV2 class in actor-sheet-ffg.js to avoid deprecation of Tabs class in future FoundryVTT versions.
+* 06/05/2020 - Esrin - Added abbreviations (abrev) to characteristics, refactored skill display on ffg-actor-sheet.html to allow for linked characteristic abbreviations in display.
+* 06/05/2020 - Esrin - Added "Rolling <skillname>" into the chat message for FFG dice rolls to show which skill the person was rolling on.
