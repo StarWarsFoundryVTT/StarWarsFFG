@@ -7,7 +7,7 @@
   "compatibleCoreVersion": "0.5.5",
   "templateVersion": 1,
   "author": "Jaxxa and Esrin",
-  "esmodules": ["module/dice-pool-ffg.js", "module/swffg-config.js"],
+  "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-config.js"],
   "styles": ["styles/swffg.css"],
   "packs": [],
   "languages": [],

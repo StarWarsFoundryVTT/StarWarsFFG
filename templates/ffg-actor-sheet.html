@@ -1,63 +1,127 @@
 <form class="{{cssClass}}" autocomplete="off">
+
     {{!-- Sheet Header --}}
     <header class="sheet-header">
-        <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
-        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
 
-        {{!-- Wounds Box --}}
-        <div class="header-fields">
-            <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
-            <div class="resource">
-                <div class="split-box">
-                    <h1>Wounds</h1>
-                    <div class="content">
-                        <div class="left">
-                            <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}"
-                                data-dtype="Number" />
-                            <label>Threshold</label>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="right">
-                            <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}"
-                                data-dtype="Number" />
-                            <label>Current</label>
-                        </div>
-                    </div>
+      <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
+      <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+
+      <div class="header-fields">
+
+          {{!-- Character Name and Player --}}
+          <div class="charname"><label>Character name:</label><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /><label>Species:</label><input name="data.species" type="text" value="{{data.species}}" placeholder="Species" /></div>
+          <div class="charname"><label>Career:</label><input name="data.career" type="text" value="{{data.career}}" placeholder="Career" /><label>Specialisation:</label><input name="data.specialisation" type="text" value="{{data.specialisation}}" placholder="Specialisation" /></div>
+      </div>
+    </header>
+
+
+    {{!-- Wounds and Strain Container --}}
+    <div class="container">
+    {{!-- Wounds Box --}}
+    <div class="resource">
+        <div class="split-box">
+            <h1>Wounds</h1>
+            <div class="content">
+                <div class="left">
+                    <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}"
+                        data-dtype="Number" />
+                    <label>Threshold</label>
                 </div>
-            </div>
-
-            {{!-- Strain Box --}}
-            <div class="resource">
-                <div class="resource">
-                    <div class="split-box">
-                        <h1>Strain</h1>
-                        <div class="content">
-                            <div class="left">
-                                <input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}"
-                                    data-dtype="Number" />
-                                <label>Threshold</label>
-                            </div>
-                            <div class="divider"></div>
-                            <div class="right">
-                                <input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}"
-                                    data-dtype="Number" />
-                                <label>Current</label>
-                            </div>
-                        </div>
-                    </div>
+                <div class="divider"></div>
+                <div class="right">
+                    <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}"
+                        data-dtype="Number" />
+                    <label>Current</label>
                 </div>
             </div>
         </div>
-    </header>
-    <label>Soak: {{data.stats.soak.value}}, Ranged Defence: {{data.stats.defence.ranged}}, Melee Defence: {{data.stats.defence.melee}}, Force Pool Commited {{data.stats.forcePool.value}}, Force Pool Available: {{data.stats.forcePool.max}}</label>
+    </div>
+
+    {{!-- Strain Box --}}
+    <div class="resource">
+        <div class="split-box">
+            <h1>Strain</h1>
+            <div class="content">
+                <div class="left">
+                    <input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}"
+                        data-dtype="Number" />
+                    <label>Threshold</label>
+                </div>
+                <div class="divider"></div>
+                <div class="right">
+                    <input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}"
+                        data-dtype="Number" />
+                    <label>Current</label>
+                </div>
+            </div>
+        </div>
+      </div>
+  </div>
+
+  {{!-- Soak, Defence and Force container --}}
+  <div class="container">
+    {{!-- Soak Box --}}
+    <div class="resource">
+        <div class="split-box">
+            <h1>Soak</h1>
+            <div class="content">
+                <div class="right">
+                    <input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}"
+                        data-dtype="Number" />
+                    <label></label>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      {{!-- Defence Box --}}
+      <div class="resource">
+          <div class="split-box">
+              <h1>Defence</h1>
+              <div class="content">
+                  <div class="left">
+                      <input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}"
+                          data-dtype="Number" />
+                      <label>Ranged</label>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="right">
+                      <input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}"
+                          data-dtype="Number" />
+                      <label>Melee</label>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      {{!-- Force Box --}}
+      <div class="resource">
+          <div class="split-box">
+              <h1>Force Pool</h1>
+              <div class="content">
+                  <div class="left">
+                      <input type="text" name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}"
+                          data-dtype="Number" />
+                      <label>Committed</label>
+                  </div>
+                  <div class="divider"></div>
+                  <div class="right">
+                      <input type="text" name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}"
+                          data-dtype="Number" />
+                      <label>Available</label>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="characteristics">Characteristics</a>
-        <a class="item" data-tab="description">Description</a>
+        <a class="item" data-tab="description">Biography</a>
         <a class="item" data-tab="items">Items</a>
         <a class="item" data-tab="attributes">Attributes</a>
-        <a class="item" data-tab="stats">Stats</a>
     </nav>
 
     {{!-- Sheet Body --}}
@@ -162,71 +226,6 @@
                 </li>
                 {{/each}}
             </ol>
-        </div>
-
-
-        <div class="tab stats" data-group="primary" data-tab="stats">
-
-            <table>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Value</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Soak</td>
-                        <td>
-                            <input name="data.stats.soak.value" value="{{data.stats.soak.value}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Defence - Ranged</td>
-                        <td>
-                            <input name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" type="number" min="0"
-                                max="5" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Defence - Melee</td>
-                        <td>
-                            <input name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" type="number" min="0"
-                                max="5" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Encumbrance - Value</td>
-                        <td>
-                            <input name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Encumbrance - Max</td>
-                        <td>
-                            <input name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>ForcePool - Value</td>
-                        <td>
-                            <input name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>ForcePool - Max</td>
-                        <td>
-                            <input name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
         </div>
 
     </section>

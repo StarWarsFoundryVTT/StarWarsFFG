@@ -11,7 +11,7 @@ export class ActorSheetFFG extends ActorSheet {
   	  classes: ["worldbuilding", "sheet", "actor"],
   	  template: "systems/starwarsffg/templates/ffg-actor-sheet.html",
       width: 600,
-      height: 600,
+      height: 840,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics"}]
     });
   }

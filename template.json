@@ -5,6 +5,9 @@
 		],
 		"character": {
 			"biography": "",
+			"species": "",
+			"career": "",
+			"specialisation": "",
 			"stats": {
 				"wounds": {
 					"value": 0,
