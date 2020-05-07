@@ -4,43 +4,43 @@
         <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
         <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
 
-        {{!-- Wounds Box --}}
+        {{!-- Hull Trauma Box --}}
         <div class="header-fields">
             <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></h1>
             <div class="resource">
                 <div class="split-box">
-                    <h1>Wounds</h1>
+                    <h1>Hull Trauma</h1>
                     <div class="content">
                         <div class="left">
-                            <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}"
+                            <input type="text" name="data.stats.hullTrauma.max" value="{{data.stats.hullTrauma.max}}"
                                 data-dtype="Number" />
                             <label>Threshold</label>
                         </div>
                         <div class="divider"></div>
                         <div class="right">
-                            <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}"
-                                data-dtype="Number" />
+                            <input type="text" name="data.stats.hullTrauma.value"
+                                value="{{data.stats.hullTrauma.value}}" data-dtype="Number" />
                             <label>Current</label>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{!-- Strain Box --}}
+            {{!-- System Strain Box --}}
             <div class="resource">
                 <div class="resource">
                     <div class="split-box">
-                        <h1>Strain</h1>
+                        <h1>System Strain</h1>
                         <div class="content">
                             <div class="left">
-                                <input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}"
-                                    data-dtype="Number" />
+                                <input type="text" name="data.stats.systemStrain.max"
+                                    value="{{data.stats.systemStrain.max}}" data-dtype="Number" />
                                 <label>Threshold</label>
                             </div>
                             <div class="divider"></div>
                             <div class="right">
-                                <input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}"
-                                    data-dtype="Number" />
+                                <input type="text" name="data.stats.systemStrain.value"
+                                    value="{{data.stats.systemStrain.value}}" data-dtype="Number" />
                                 <label>Current</label>
                             </div>
                         </div>
@@ -49,11 +49,9 @@
             </div>
         </div>
     </header>
-    <label>Soak: {{data.stats.soak.value}}, Ranged Defence: {{data.stats.defence.ranged}}, Melee Defence: {{data.stats.defence.melee}}, Force Pool Commited {{data.stats.forcePool.value}}, Force Pool Available: {{data.stats.forcePool.max}}</label>
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="characteristics">Characteristics</a>
         <a class="item" data-tab="description">Description</a>
         <a class="item" data-tab="items">Items</a>
         <a class="item" data-tab="attributes">Attributes</a>
@@ -62,50 +60,7 @@
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
-        {{!-- Characteristics Tab --}}
-        <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
 
-            {{!-- Characteristics Scores --}}
-
-            <ul class="flexrow characteristics-list">
-                {{#each data.characteristics as |characteristic id|}}
-                <li data-ability="{{id}}">
-                    {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
-                    <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1"
-                        type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
-                    <label>{{characteristic.label}}</label>
-                </li>
-                {{/each}}
-            </ul>
-
-            <table>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Rank</td>
-                        <td>Roll</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each data.skills as |skill id|}}
-                    <tr data-ability="{{id}}" class="skill">
-                        <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
-                          ({{abrev}})
-                          {{/with}}
-                        </td>
-                        <td>
-                            <input name="data.skills.{{id}}.value" value="{{skill.value}}" type="number" min="0" max="5"
-                                data-dtype="Number" placeholder="0" />
-                        </td>
-                        <td>
-                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
-                            <div class="roll-button dice-pool"></div>
-                        </td>
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
 
         {{!-- Biography Tab --}}
         <div class="tab biography active" data-group="primary" data-tab="description">
@@ -176,54 +131,105 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Soak</td>
+                        <td>Silhouette</td>
                         <td>
-                            <input name="data.stats.soak.value" value="{{data.stats.soak.value}}" type="number" min="0"
+                            <input name="data.stats.silhouette.value" value="{{data.stats.silhouette.value}}"
+                                type="number" min="0" max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Speed</td>
+                        <td>
+                            <input name="data.stats.speed.value" value="{{data.stats.speed.value}}" type="number"
+                                min="0" max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Max Speed</td>
+                        <td>
+                            <input name="data.stats.speed.max" value="{{data.stats.speed.max}}" type="number" min="0"
                                 max="10" data-dtype="Number" placeholder="0" />
                         </td>
                     </tr>
                     <tr>
-                        <td>Defence - Ranged</td>
+                        <td>Handling</td>
                         <td>
-                            <input name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" type="number" min="0"
-                                max="5" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Defence - Melee</td>
-                        <td>
-                            <input name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" type="number" min="0"
-                                max="5" data-dtype="Number" placeholder="0" />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Encumbrance - Value</td>
-                        <td>
-                            <input name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" type="number" min="0"
+                            <input name="data.stats.handling" value="{{data.stats.handling}}" type="number" min="0"
                                 max="10" data-dtype="Number" placeholder="0" />
                         </td>
                     </tr>
                     <tr>
-                        <td>Encumbrance - Max</td>
+                        <td>Shields - Fore</td>
                         <td>
-                            <input name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
+                            <input name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" type="number"
+                                min="0" max="10" data-dtype="Number" placeholder="0" />
                         </td>
                     </tr>
                     <tr>
-                        <td>ForcePool - Value</td>
+                        <td>Shields - port</td>
                         <td>
-                            <input name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
+                            <input name="data.stats.shields.port" value="{{data.stats.shields.port}}" type="number"
+                                min="0" max="10" data-dtype="Number" placeholder="0" />
                         </td>
                     </tr>
                     <tr>
-                        <td>ForcePool - Max</td>
+                        <td>Shields - starboard</td>
                         <td>
-                            <input name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}" type="number" min="0"
-                                max="10" data-dtype="Number" placeholder="0" />
+                            <input name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}"
+                                type="number" min="0" max="10" data-dtype="Number" placeholder="0" />
                         </td>
                     </tr>
+                    <tr>
+                        <td>Shields - aft</td>
+                        <td>
+                            <input name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" type="number"
+                                min="0" max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>armour</td>
+                        <td>
+                            <input name="data.stats.armour" value="{{data.stats.armour}}" type="number" min="0" max="10"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>encumbrance</td>
+                        <td>
+                            <input name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}"
+                                type="number" min="0" max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>encumbrance Max</td>
+                        <td>
+                            <input name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}"
+                                type="number" min="0" max="10" data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>cost</td>
+                        <td>
+                            <input name="data.stats.cost" value="{{data.stats.cost}}" type="number" min="0" max="10"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>rarity</td>
+                        <td>
+                            <input name="data.stats.rarity" value="{{data.stats.rarity}}" type="number" min="0" max="10"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>customizationHardPoints</td>
+                        <td>
+                            <input name="data.stats.customizationHardPoints"
+                                value="{{data.stats.customizationHardPoints}}" type="number" min="0" max="10"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
 

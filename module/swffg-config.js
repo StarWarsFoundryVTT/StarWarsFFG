@@ -6,8 +6,8 @@
 
 // Import Modules
 import { SimpleItemSheet } from "./item-sheet.js";
-import { SimpleActorSheet } from "./actor-sheet-simple.js";
 import { ActorSheetFFG } from "./actor-sheet-ffg.js";
+import { ActorSheetFFGVehicle } from "./ffg-actor-sheet-vehicle.js";
 import { DicePoolFFG } from "./dice-pool-ffg.js"
 
 /* -------------------------------------------- */
@@ -28,10 +28,10 @@ Hooks.once("init", async function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true });
-  Actors.registerSheet("dnd5e", SimpleActorSheet, { makeDefault: false });
+  Actors.registerSheet("swffg", ActorSheetFFG, { makeDefault: true });
+  Actors.registerSheet("swffg", ActorSheetFFGVehicle, { makeDefault: false });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("dnd5e", SimpleItemSheet, {makeDefault: true});
+  Items.registerSheet("swffg", SimpleItemSheet, {makeDefault: true});
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;

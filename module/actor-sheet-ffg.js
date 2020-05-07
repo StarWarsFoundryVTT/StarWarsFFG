@@ -37,7 +37,7 @@ export class ActorSheetFFG extends ActorSheet {
     // Activate tabs
     let tabs = html.find('.tabs');
     let initial = this._sheetTab;
-    new Tabs(tabs, {
+    new TabsV2(tabs, {
       initial: initial,
       callback: clicked => this._sheetTab = clicked.data("tab")
     });
@@ -160,10 +160,10 @@ export class ActorSheetFFG extends ActorSheet {
       dicePool.upgradeDifficulty()
     }
 
-    await this._completeRoll(dicePool, `Rolling ${skillName}`);
+    await this._completeRoll(dicePool, `Rolling ${skillName}`, skillName);
   }
 
-  async _completeRoll(dicePool, description) {
+  async _completeRoll(dicePool, description, skillName) {
     const id = randomID();
 
     const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
@@ -185,6 +185,7 @@ export class ActorSheetFFG extends ActorSheet {
             ChatMessage.create({
               user: game.user._id,
               speaker: this.getData(),
+              flavor: `Rolling ${skillName}...`,
               content: `/sw ${finalPool.renderDiceExpression()}`
             });
           }

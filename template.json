@@ -1,7 +1,8 @@
 {
 	"Actor": {
 		"types": [
-			"character"
+			"character",
+			"vehicle"
 		],
 		"character": {
 			"biography": "",
@@ -36,27 +37,33 @@
 			"characteristics": {
 				"Brawn": {
 					"value": 2,
-					"label": "Brawn"
+					"label": "Brawn",
+					"abrev": "Br"
 				},
 				"Agility": {
 					"value": 2,
-					"label": "Agility"
+					"label": "Agility",
+					"abrev": "Ag"
 				},
 				"Intellect": {
 					"value": 2,
-					"label": "Intellect"
+					"label": "Intellect",
+					"abrev": "Int"
 				},
 				"Cunning": {
 					"value": 2,
-					"label": "Cunning"
+					"label": "Cunning",
+					"abrev": "Cun"
 				},
 				"Willpower": {
 					"value": 2,
-					"label": "Willpower"
+					"label": "Willpower",
+					"abrev": "Will"
 				},
 				"Presence": {
 					"value": 2,
-					"label": "Presence"
+					"label": "Presence",
+					"abrev": "Pr"
 				}
 			},
 			"skills": {
@@ -201,11 +208,51 @@
 					"characteristic": "Intellect"
 				}
 			}
+		},
+		"vehicle": {
+			"biography": "",
+			"attributes": {},
+			"stats": {
+				"description": "",
+				"silhouette": 1,
+				"speed": 0,
+				"maxSpeed": 0,
+				"handling": 0,
+				"hullTrauma": {
+					"value": 0,
+					"min": 0,
+					"max": 10
+				},
+				"systemStrain": {
+					"value": 0,
+					"min": 0,
+					"max": 10
+				},
+				"shields": {
+					"fore": 0,
+					"port": 0,
+					"starboard": 0,
+					"aft": 0
+				},
+				"armour": 0,
+				"sensorRange":"Short",
+				"crew":"",
+				"passengerCapacity":0,
+				"encumbrance": {
+					"value": 0,
+					"min": 0,
+					"max": 10
+				},
+				"cost":50,
+				"rarity":5,
+				"customizationHardPoints":2,
+				"weapons":{}
+			}
 		}
 	},
 	"Item": {
 		"types": [
-			"item"
+			"item",
 		],
 		"item": {
 			"description": "",
