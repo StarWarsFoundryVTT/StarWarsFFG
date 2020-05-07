@@ -16,11 +16,12 @@ This is most easily available from the in-game Module browser. After installing 
 2. Go to the "Game Systems" Tab
 3. Click the "Install System" button
 4. Copy the Following link into the "Manifest URL" section:
-https://raw.githubusercontent.com/jaxxa/StarWarsFFG/master/system.json
+https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json
 5. Click Install, after a few seconds the system should be installed.
 
 # Changelog
 
+* 07/05/2020 - Esrin - Minor tweaks to the character sheet styling. Begun restructuring the underlying data structure in template.json to introduce best practices, avoid unnecessary duplication and prepare for the addition of new actor and item types.
 * 07/05/2020 - Esrin - First pass at character sheet styling. Next step, talents, items and derived modifiers.
 * 06/05/2020 - Esrin - Added "Rolling <skillname>" into the chat message for FFG dice rolls to show which skill the person was rolling on.
 * 06/05/2020 - Esrin - Added abbreviations (abrev) to characteristics, refactored skill display on ffg-actor-sheet.html to allow for linked characteristic abbreviations in display.

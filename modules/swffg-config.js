@@ -14,7 +14,7 @@ import { DicePoolFFG } from "./dice-pool-ffg.js"
 /* -------------------------------------------- */
 
 Hooks.once("init", async function() {
-  console.log(`Initializing Simple Worldbuilding System`);
+  console.log(`Initializing SWFFG System`);
 
 	/**
 	 * Set an initiative formula for the system

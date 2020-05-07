@@ -5,9 +5,7 @@
 div .container {
     width: 100%;
     height: auto;
-    margin: 15px 0 15px 0;
-    padding: 15px 0 15px 0;
-    text-align: left;
+    margin-bottom: 10px;
 }
 
 .worldbuilding.sheet .window-content {
@@ -23,7 +21,6 @@ div .container {
     flex-wrap: wrap;
     justify-content: flex-start;
     flex: 0 0 100px;
-    margin-bottom: 10px;
 }
 
 .worldbuilding.sheet .profile-img {
@@ -38,21 +35,23 @@ div .container {
 }
 
 .worldbuilding.sheet .charname {
-    padding: 5px;
-    margin: 0;
     border-bottom: 0;
+    display: inline-grid;
+    padding: 5px;
 }
+
 .worldbuilding.sheet .charname input {
     width: auto;
-    margin: 0px 5px;
+    margin: 5px 5px 10px 5px;
 }
 
 .worldbuilding.sheet .resource {
     height: 40px;
-    padding: 5px 0 5px 10px;
+    padding: 5px;
     margin: 0;
-    display: inline-block;
+    display: inline-table;
 }
+
 .worldbuilding.sheet .resource input {
     width: 100px;
     height: 28px;
@@ -210,6 +209,8 @@ boxes at the top of the standard FFG character sheets.
     color: #fff;
     border-radius: 15px 15px 5px 5px;
     background: #435a76;
+    padding: 0;
+    margin: 0;
 }
 
 .split-box input {
@@ -243,6 +244,26 @@ boxes at the top of the standard FFG character sheets.
     font-weight: bold;
     background: #90cbdd;
     border-radius: 0px 5px 15px 0px;
+    text-align: center;
+}
+
+.split-box .single label {
+    display: block;
+    font-size: 90%;
+    color: #000;
+    font-weight: bold;
+    background: #90cbdd;
+    border-radius: 5px 5px 15px 15px;
+    text-align: center;
+}
+
+.split-box .single-clear label {
+    display: block;
+    font-size: 90%;
+    color: #90cbdd;
+    font-weight: bold;
+    background: #90cbdd;
+    border-radius: 5px 5px 15px 15px;
     text-align: center;
 }
 

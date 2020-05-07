@@ -9,8 +9,8 @@
       <div class="header-fields">
 
           {{!-- Character Name and Player --}}
-          <div class="charname"><label>Character name:</label><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /><label>Species:</label><input name="data.species" type="text" value="{{data.species}}" placeholder="Species" /></div>
-          <div class="charname"><label>Career:</label><input name="data.career" type="text" value="{{data.career}}" placeholder="Career" /><label>Specialisation:</label><input name="data.specialisation" type="text" value="{{data.specialisation}}" placholder="Specialisation" /></div>
+          <div class="charname"><label>Character name:</label><input name="name" type="text" value="{{actor.name}}" placeholder="Name" /><label>Species:</label><input name="data.species.value" type="text" value="{{data.species.value}}" placeholder="Species" /></div>
+          <div class="charname"><label>Career:</label><input name="data.career.value" type="text" value="{{data.career.value}}" placeholder="Career" /><label>Specialisation:</label><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" placeholder="Specialisation" /></div>
       </div>
     </header>
 
@@ -65,10 +65,10 @@
         <div class="split-box">
             <h1>Soak</h1>
             <div class="content">
-                <div class="right">
+                <div class="single-clear">
                     <input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}"
                         data-dtype="Number" />
-                    <label></label>
+                    <label>-</label>
                 </div>
             </div>
         </div>
