@@ -17,6 +17,6 @@
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/Esrin/StarWarsFFG/tree/esrin-dev",
   "manifest": "https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json",
-  "download":  "https://github.com/Esrin/StarWarsFFG/releases/download/esrin-dev_0.01/esrin-dev_0.01.zip",
+  "download":  "https://github.com/Esrin/StarWarsFFG/releases/download/esrin-dev_0.02/esrin-dev_0.02.zip",
   "license": "LICENSE.txt"
 }

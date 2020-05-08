@@ -1,14 +1,11 @@
 {
 	"Actor": {
 		"types": [
-			"character"
+			"character", "minion"
 		],
 		"templates": {
 			"biography": {
-				"biography": {
-					"value": "",
-					"type": "String"
-				}
+				"biography": ""
 			},
 			"species": {
 				"species": {
@@ -95,184 +92,341 @@
 				"skills": {
 					"Brawl": {
 						"rank": 0,
-						"characteristic": "Brawn"
+						"characteristic": "Brawn",
+						"groupskill": false
 					},
 					"Gunnery": {
 						"rank": 0,
-						"characteristic": "Agility"
+						"characteristic": "Agility",
+						"groupskill": false
 					},
 					"Lightsaber": {
 						"rank": 0,
-						"characteristic": "Brawn"
+						"characteristic": "Brawn",
+						"groupskill": false
 					},
 					"Melee": {
 						"rank": 0,
-						"characteristic": "Brawn"
+						"characteristic": "Brawn",
+						"groupskill": false
 					},
 					"Ranged: Light": {
 						"rank": 0,
-						"characteristic": "Agility"
+						"characteristic": "Agility",
+						"groupskill": false
 					},
 					"Ranged: Heavy": {
 						"rank": 0,
-						"characteristic": "Agility"
+						"characteristic": "Agility",
+						"groupskill": false
 					},
 					"Astrogation": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Athletics ": {
 						"rank": 0,
-						"characteristic": "Brawn"
+						"characteristic": "Brawn",
+						"groupskill": false
 					},
 					"Charm": {
 						"rank": 0,
-						"characteristic": "Presence"
+						"characteristic": "Presence",
+						"groupskill": false
 					},
 					"Coercion": {
 						"rank": 0,
-						"characteristic": "Willpower"
+						"characteristic": "Willpower",
+						"groupskill": false
 					},
 					"Computers": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Cool": {
 						"rank": 0,
-						"characteristic": "Presence"
+						"characteristic": "Presence",
+						"groupskill": false
 					},
 					"Coordination": {
 						"rank": 0,
-						"characteristic": "Agility"
+						"characteristic": "Agility",
+						"groupskill": false
 					},
 					"Deception": {
 						"rank": 0,
-						"characteristic": "Cunning"
+						"characteristic": "Cunning",
+						"groupskill": false
 					},
 					"Discipline": {
 						"rank": 0,
-						"characteristic": "Willpower"
+						"characteristic": "Willpower",
+						"groupskill": false
 					},
 					"Leadership": {
 						"rank": 0,
-						"characteristic": "Presence"
+						"characteristic": "Presence",
+						"groupskill": false
 					},
 					"Mechanics": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Medicine": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Negotiation": {
 						"rank": 0,
-						"characteristic": "Presence"
+						"characteristic": "Presence",
+						"groupskill": false
 					},
 					"Perception": {
 						"rank": 0,
-						"characteristic": "Cunning"
+						"characteristic": "Cunning",
+						"groupskill": false
 					},
 					"Piloting: Planetary": {
 						"rank": 0,
-						"characteristic": "Agility"
+						"characteristic": "Agility",
+						"groupskill": false
 					},
 					"Piloting: Space": {
 						"rank": 0,
-						"characteristic": "Agility"
+						"characteristic": "Agility",
+						"groupskill": false
 					},
 					"Resilience": {
 						"rank": 0,
-						"characteristic": "Brawn"
+						"characteristic": "Brawn",
+						"groupskill": false
 					},
 					"Skulduggery": {
 						"rank": 0,
-						"characteristic": "Cunning"
+						"characteristic": "Cunning",
+						"groupskill": false
 					},
 					"Stealth": {
 						"rank": 0,
-						"characteristic": "Agility"
+						"characteristic": "Agility",
+						"groupskill": false
 					},
 					"Streetwise": {
 						"rank": 0,
-						"characteristic": "Cunning"
+						"characteristic": "Cunning",
+						"groupskill": false
 					},
 					"Survival": {
 						"rank": 0,
-						"characteristic": "Cunning"
+						"characteristic": "Cunning",
+						"groupskill": false
 					},
 					"Vigilance": {
 						"rank": 0,
-						"characteristic": "Willpower"
+						"characteristic": "Willpower",
+						"groupskill": false
 					},
 					"Knowledge: Core Worlds": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Knowledge: Education": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Knowledge: Lore": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Knowledge: Outer Rim": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Knowledge: Underworld": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Knowledge: Warfare": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					},
 					"Knowledge: Xenology": {
 						"rank": 0,
-						"characteristic": "Intellect"
+						"characteristic": "Intellect",
+						"groupskill": false
 					}
 				}
+			},
+			"attributes": {
+				"attributes": {}
 			}
 		},
 		"character": {
-			"templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills"],
-			"attributes": {}
+			"templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes"],
+			"encumbrance": {
+				"value": 0,
+				"type": "Number",
+				"label": "Encumbrance",
+				"abrev": "Encum"
+			},
+			"obligation": {
+				"value": 0,
+				"type": "Number",
+				"label": "Obligation"
+			},
+			"duty": {
+				"value": 0,
+				"type": "Number",
+				"label": "Duty"
+			},
+			"morality": {
+				"value": 0,
+				"type": "Number",
+				"label": "Morality"
+			},
+			"conflict": {
+				"value": 0,
+				"type": "Number",
+				"label": "Conflict"
+			},
+			"experience": {
+				"total": 0,
+				"available": 0
+			}
+		},
+		"minion": {
+			"templates": ["biography", "stats", "characteristics", "skills", "attributes"],
+			"quantity": {
+				"value": 1,
+				"type": "Number",
+				"label": "Quantity",
+				"abrev": "Qty"
+			},
+			"unit_wounds": {
+				"value": 0,
+				"type": "Number",
+				"label": "Unit Wounds"
+			}
 		}
 	},
 	"Item": {
 		"types": [
-			"item"
+			"gear", "weapon", "armour", "talent"
 		],
 		"templates": {
-			"description": {
-				"description": {
-					"value": "",
-					"type": "String"
-				}
-			},
-			"quantity": {
+			"basic": {
+				"description": "",
 				"quantity": {
 					"value": 0,
-					"type": "Number"
+					"type": "Number",
+					"label": "Quantity",
+					"abrev": "Qty"
+				},
+				"encumbrance": {
+					"value": 0,
+					"type": "Number",
+					"label": "Encumbrance",
+					"abrev": "Encum"
+				},
+				"price": {
+					"value": 0,
+					"type": "Number",
+					"label": "Price"
+				},
+				"rarity": {
+					"value": 0,
+					"type": "Number",
+					"label": "Rarity"
+				},
+				"attributes": {}
+			},
+			"hardpoints": {
+				"hardpoints": {
+					"value": 0,
+					"type": "Number",
+					"label": "Hard Points",
+					"abrev": "HP"
 				}
 			},
-			"weight": {
-				"weight": {
-					"value": 0,
-					"type": "Number"
-				}
-			},
-			"cost": {
-				"cost": {
-					"value": 0,
-					"type": "Number"
+			"equippable": {
+				"equippable": {
+					"value": true,
+					"type": "Boolean",
+					"equipped": false
 				}
 			}
 		},
-		"item": {
-			"templates": ["description", "quantity", "weight", "cost"],
+		"gear": {
+			"templates": ["basic"]
+		},
+		"weapon": {
+			"templates": ["basic", "hardpoints", "equippable"],
+			"skill": {
+				"value": "",
+				"type": "String",
+				"label": "Skill"
+			},
+			"damage": {
+				"value": 0,
+				"type": "Number",
+				"label": "Damage",
+				"abrev": "Dam"
+			},
+			"crit": {
+				"value": 0,
+				"type": "Number",
+				"label": "Critical Rating",
+				"abrev": "Crit"
+			},
+			"range": {
+				"value": "",
+				"type": "String",
+				"label": "Range"
+			},
+			"special": {
+				"value": "",
+				"type": "String",
+				"label": "Special"
+			}
+		},
+		"armour": {
+			"templates": ["basic", "hardpoints", "equippable"],
+			"defence": {
+				"value": 0,
+				"type": "Number",
+				"label": "Defence",
+				"abrev": "Def"
+			},
+			"soak": {
+				"value": 0,
+				"type": "Number",
+				"label": "Soak"
+			}
+		},
+		"talent": {
+			"templates": [],
+			"description": "",
+			"activation": {
+				"value": "",
+				"type": "String",
+				"label": "Activation"
+			},
+			"ranks": {
+				"ranked": false,
+				"current": 0,
+				"max": 0
+			},
+			"trees": [],
 			"attributes": {}
 		}
 	}

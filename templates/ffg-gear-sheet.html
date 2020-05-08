@@ -2,39 +2,51 @@
     <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
         <div class="header-fields">
+          <div class="container">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-            <div class="resource">
-            	<label>Quantity</label>
-                <input type="text" name="data.quantity" value="{{data.quantity}}" data-dtype="Number"/>
+          </div>
+          <div class="container">
+            <div class="resource small">
+            	<label>Quantity: </label>
+                <input style="text-align:center;" type="number" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number"/>
             </div>
-            <div class="resource">
-            	<label>Weight</label>
-                <input type="text" name="data.weight" value="{{data.weight}}" data-dtype="Number"/>
+            <div class="resource small">
+            	<label>Encumbrance: </label>
+                <input style="text-align:center;" type="number" name="data.encumbrance.value" value="{{data.encumbrance.value}}" data-dtype="Number"/>
             </div>
+            <div class="resource small">
+              <label>Rarity: </label>
+                <input style="text-align:center;" type="number" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number"/>
+            </div>
+            <div class="resource small">
+              <label>Price: </label>
+                <input style="text-align:center;" type="number" name="data.price.value" value="{{data.price.value}}" data-dtype="Number"/>
+            </div>
+          </div>
         </div>
     </header>
 
     {{!-- Sheet Tab Navigation --}}
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="description">Description</a>
-        <a class="item" data-tab="attributes">Attributes</a>
+        <a class="item" data-tab="attributes">Modifiers</a>
     </nav>
 
     {{!-- Sheet Body --}}
-    <section class="sheet-body">
+    <section class="sheet-body small">
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
             {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
         </div>
 
-        {{!-- Attributes Tab --}}
+        {{!-- Modifiers Tab --}}
         <div class="tab attributes" data-group="primary" data-tab="attributes">
             <header class="attributes-header flexrow">
-                <span class="attribute-key">Attribute Key</span>
+                <span class="attribute-key">Modifier</span>
                 <span class="attribute-value">Value</span>
-                <span class="attribute-label">Label</span>
-                <span class="attribute-dtype">Data Type</span>
+                <!-- <span class="attribute-label">Label</span> -->
+                <!-- <span class="attribute-dtype">Data Type</span> -->
                 <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
             </header>
 
@@ -47,14 +59,14 @@
                     {{else}}
                     <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}"/>
                     {{/if}}
-                    <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/>
-                    <select class="attribute-dtype" name="data.attributes.{{key}}.dtype">
+                    <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+                    <!-- <select class="attribute-dtype" name="data.attributes.{{key}}.dtype">
                         {{#select attr.dtype}}
                         {{#each ../dtypes as |t|}}
                         <option value="{{t}}">{{t}}</option>
                         {{/each}}
                         {{/select}}
-                    </select>
+                    </select> -->
                     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
                 </li>
             {{/each}}

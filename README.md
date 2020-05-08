@@ -21,6 +21,14 @@ https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json
 
 # Changelog
 
+* 08/05/2020 - Esrin - Extended Actor class to allow for calculated Minion stat values (wounds from unit wounds * quantity, and skills from group skills * quantity-1)
+* 08/05/2020 - Esrin - Added data structure for minions
+* 08/05/2020 - Esrin - Built character sheet for minions
+* 08/05/2020 - Esrin - Updated main character sheet to correctly display all three main item types, and talents.
+* 08/05/2020 - Esrin - Added data structure for talents
+* 08/05/2020 - Esrin - Updated main character sheet to show XP on all pages, and obligation types on Biography page.
+* 08/05/2020 - Esrin - Built very basic item sheets for the three main item types.
+* 08/05/2020 - Esrin - Added data structures for the three main item types, gear, weapons, armour.
 * 07/05/2020 - Esrin - Minor tweaks to the character sheet styling. Begun restructuring the underlying data structure in template.json to introduce best practices, avoid unnecessary duplication and prepare for the addition of new actor and item types.
 * 07/05/2020 - Esrin - First pass at character sheet styling. Next step, talents, items and derived modifiers.
 * 06/05/2020 - Esrin - Added "Rolling <skillname>" into the chat message for FFG dice rolls to show which skill the person was rolling on.

@@ -200,15 +200,14 @@ export class ActorSheetFFG extends ActorSheet {
 
   _addSkillDicePool(elem) {
     const data = this.getData();
-    console.log(elem);
     const skillName = elem.dataset["ability"];
     const skill = data.data.skills[skillName];
     const characteristic = data.data.characteristics[skill.characteristic];
 
     const dicePool = new DicePoolFFG({
-      ability: Math.max(characteristic.value, skill.value),
+      ability: Math.max(characteristic.value, skill.rank),
     });
-    dicePool.upgrade(Math.min(characteristic.value, skill.value));
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
     const rollButton = elem.querySelector(".roll-button");
     dicePool.renderPreview(rollButton)
