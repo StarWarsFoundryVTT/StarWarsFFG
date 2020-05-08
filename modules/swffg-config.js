@@ -5,9 +5,14 @@
  */
 
 // Import Modules
-import { SimpleItemSheet } from "./item-sheet.js";
-import { ActorSheetFFG } from "./actor-sheet-ffg.js";
-import { DicePoolFFG } from "./dice-pool-ffg.js"
+import { ActorFFG } from "./actors/actor-ffg.js";
+import { GearSheetFFG } from "./sheets/gear-sheet-ffg.js";
+import { WeaponSheetFFG } from "./sheets/weapon-sheet-ffg.js";
+import { ArmourSheetFFG } from "./sheets/armour-sheet-ffg.js";
+import { TalentSheetFFG } from "./sheets/talent-sheet-ffg.js";
+import { ActorSheetFFG } from "./sheets/actor-sheet-ffg.js";
+import { MinionSheetFFG } from "./sheets/minion-sheet-ffg.js";
+import { DicePoolFFG } from "./dice-pool-ffg.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -15,6 +20,17 @@ import { DicePoolFFG } from "./dice-pool-ffg.js"
 
 Hooks.once("init", async function() {
   console.log(`Initializing SWFFG System`);
+
+  // Place our classes in their own namespace for later reference.
+   game.ffg = {
+     ActorFFG
+   };
+
+
+  // Define custom Entity classes. This will override the default Actor
+  // to instead use our extended version.
+  CONFIG.Actor.entityClass = ActorFFG;
+
 
 	/**
 	 * Set an initiative formula for the system
@@ -27,13 +43,62 @@ Hooks.once("init", async function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true });
+  Actors.registerSheet("ffg", ActorSheetFFG, {
+    types: ["character"],
+    makeDefault: true
+  });
+  Actors.registerSheet("ffg", MinionSheetFFG, {
+    types: ["minion"],
+    makeDefault: true
+  });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("ffg", SimpleItemSheet, {makeDefault: true});
+  Items.registerSheet("ffg", GearSheetFFG, {
+    types: ["gear"],
+    makeDefault: true
+  });
+  Items.registerSheet("ffg", WeaponSheetFFG, {
+    types: ["weapon"],
+    makeDefault: true
+  });
+  Items.registerSheet("ffg", ArmourSheetFFG, {
+    types: ["armour"],
+    makeDefault: true
+  });
+  Items.registerSheet("ffg", TalentSheetFFG, {
+    types: ["talent"],
+    makeDefault: true
+  });
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
 
   // Register Handlebars utilities
   Handlebars.registerHelper("json", JSON.stringify);
+
+  // Allows {if X = Y} type syntax in html using handlebars
+  Handlebars.registerHelper('iff', function (a, operator, b, opts) {
+    var bool = false;
+    switch (operator) {
+      case '==':
+        bool = a == b;
+        break;
+      case '>':
+        bool = a > b;
+        break;
+      case '<':
+        bool = a < b;
+        break;
+      case '!=':
+        bool = a != b;
+        break;
+      default:
+        throw "Unknown operator " + operator;
+    }
+
+    if (bool) {
+      return opts.fn(this);
+    } else {
+      return opts.inverse(this);
+    }
+  });
 });

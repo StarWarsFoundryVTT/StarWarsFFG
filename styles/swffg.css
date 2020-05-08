@@ -8,6 +8,14 @@ div .container {
     margin-bottom: 10px;
 }
 
+div .container.attributes {
+    margin-top: 5px
+}
+
+div .container.talents {
+    margin-top: 5px
+}
+
 .worldbuilding.sheet .window-content {
     padding: 5px;
     overflow-y: hidden;
@@ -40,6 +48,12 @@ div .container {
     padding: 5px;
 }
 
+.worldbuilding.sheet .charname.minion {
+    border-bottom: 0;
+    display: inline;
+    padding: 5px;
+}
+
 .worldbuilding.sheet .charname input {
     width: auto;
     margin: 5px 5px 10px 5px;
@@ -53,8 +67,27 @@ div .container {
 }
 
 .worldbuilding.sheet .resource input {
-    width: 100px;
-    height: 28px;
+    width: 82px;
+    height: 22px;
+}
+
+.worldbuilding.sheet .xp-box {
+    position: absolute;
+    padding: 0;
+    right: 10px;
+    height: 40px;
+    margin: 0;
+    display: inline-table;
+}
+
+.worldbuilding.sheet .xp-box input {
+    width: 68px;
+    height: 22px;
+}
+
+.worldbuilding.sheet .resource.small input {
+    width: 40px;
+    height: 22px;
 }
 
 /* Navigation Tabs */
@@ -76,15 +109,38 @@ div .container {
 
 /* Content Tabs */
 .worldbuilding.sheet .sheet-body {
+    height: calc(100% - 22.7em);
+    overflow: auto;
+}
+
+.worldbuilding.sheet .sheet-body.minion {
+    height: calc(100% - 11.5em);
+    overflow: auto;
+}
+
+.worldbuilding.sheet .sheet-body.small {
     height: calc(100% - 14em);
     overflow: auto;
 }
+
 .worldbuilding.sheet .sheet-body .tab {
     height: 100%;
 }
 .worldbuilding.sheet .sheet-body .editor {
     width: 100%;
     height: 100%;
+}
+
+/* Topper */
+.worldbuilding.sheet .sheet-topper {
+    background: #435a76;
+    overflow: auto;
+    text-align:center;
+    border-radius: 15px;
+}
+.worldbuilding.sheet .sheet-topper * > input {
+    background: #f2f2f2;
+    border-radius: 0 0 15px 15px;
 }
 
 /*
@@ -150,6 +206,8 @@ sheet work. There is likely a better way to do this.
     border: none;
     border-radius: 0;
     border-bottom: 1px solid #AAA;
+    text-align: center;
+    overflow: auto;
 }
 
 .worldbuilding.sheet .attribute-value.checkbox {
@@ -159,6 +217,39 @@ sheet work. There is likely a better way to do this.
 .worldbuilding.sheet .attributes-list li a.attribute-control {
     border: none;
 }
+
+/* Talents */
+.worldbuilding.sheet .talents-header {
+    padding: 5px;
+    margin: 5px 0;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid #AAA;
+    border-radius: 2px;
+    text-align: center;
+    font-weight: bold;
+}
+.worldbuilding.sheet .talents-label {
+    flex: 1.5;
+}
+
+.worldbuilding.sheet .talents-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.worldbuilding.sheet .talents-list li > * {
+    margin: 0 3px;
+    height: 28px;
+    line-height: 24px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #AAA;
+    text-align: center;
+    overflow: auto;
+}
+
 
 .worldbuilding.sheet .characteristics-list {
     list-style: none;
