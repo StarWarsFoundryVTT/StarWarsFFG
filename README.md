@@ -20,7 +20,15 @@ https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json
 5. Click Install, after a few seconds the system should be installed.
 
 # Changelog
-
+* 09/05/2020 - Esrin - Rollable table for Critical Injuries
+* 09/05/2020 - Esrin - Cleaned up items to just use one JS class and get dynamic template by type.
+* 09/05/2020 - Esrin - Built item sheet for ship weapons and ship attachments
+* 09/05/2020 - Esrin - Built character sheet for vehicles
+* 09/05/2020 - Esrin - Added data structure for ship weapons and ship attachments
+* 09/05/2020 - Esrin - Added data structure for vehicles (using Jaxxa's work as a template)
+* 09/05/2020 - Esrin - Added currency to characters
+* 09/05/2020 - Esrin - Derived encumbrance from item values.
+* 09/05/2020 - Esrin - Derived soak value from brawn, equipped armour, and modifiers on weapons, gear and talents as a test case for automation.
 * 08/05/2020 - Esrin - Extended Actor class to allow for calculated Minion stat values (wounds from unit wounds * quantity, and skills from group skills * quantity-1)
 * 08/05/2020 - Esrin - Added data structure for minions
 * 08/05/2020 - Esrin - Built character sheet for minions

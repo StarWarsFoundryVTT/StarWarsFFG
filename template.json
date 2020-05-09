@@ -1,7 +1,7 @@
 {
 	"Actor": {
 		"types": [
-			"character", "minion"
+			"character", "minion", "vehicle"
 		],
 		"templates": {
 			"biography": {
@@ -51,6 +51,11 @@
 					"forcePool": {
 						"value": 0,
 						"max": 0
+					},
+					"credits": {
+						"value": 0,
+						"type": "Number",
+						"label": "Credits"
 					}
 				}
 			},
@@ -317,11 +322,86 @@
 				"type": "Number",
 				"label": "Unit Wounds"
 			}
+		},
+		"vehicle": {
+			"templates": ["biography", "attributes"],
+			"stats": {
+				"silhouette": {
+					"value": 1,
+					"type": "Number",
+					"label": "Silhouette"
+				},
+				"speed": {
+					"value": 0,
+					"max": 0,
+					"type": "Number",
+					"label": "Speed"
+				},
+				"handling": {
+					"value": 0,
+					"type": "Number",
+					"label": "Handling"
+				},
+				"hullTrauma": {
+					"value": 0,
+					"min": 0,
+					"max": 10,
+					"label": "Hull Trauma"
+				},
+				"systemStrain": {
+					"value": 0,
+					"min": 0,
+					"max": 10,
+					"label": "System Strain"
+				},
+				"shields": {
+					"fore": 0,
+					"port": 0,
+					"starboard": 0,
+					"aft": 0,
+					"label": "Shields"
+				},
+				"armour": {
+					"value": 0,
+					"type": "Number",
+					"label": "Armour"
+				},
+				"sensorRange":{
+					"value": "Short",
+					"type": "String"
+				},
+				"crew":{},
+				"passengerCapacity":{
+					"value": 0,
+					"type": "Number",
+					"label": "Passenger Capacity"
+				},
+				"encumbrance": {
+					"value": 0,
+					"min": 0,
+					"max": 10
+				},
+				"cost":{
+					"value": 0,
+					"type": "Number",
+					"label": "Cost"
+				},
+				"rarity":{
+					"value": 0,
+					"type": "Number",
+					"label": "Rarity"
+				},
+				"customizationHardPoints": {
+					"value": 0,
+					"type": "Number",
+					"label": "Hard Points"
+				}
+			}
 		}
 	},
 	"Item": {
 		"types": [
-			"gear", "weapon", "armour", "talent"
+			"gear", "weapon", "armour", "talent", "shipweapon", "shipattachment"
 		],
 		"templates": {
 			"basic": {
@@ -428,6 +508,41 @@
 			},
 			"trees": [],
 			"attributes": {}
-		}
+		},
+		"shipweapon": {
+			"templates": ["basic", "hardpoints", "equippable"],
+			"label": "Ship Weapon",
+			"firingarc": {
+				"value": "",
+				"type": "String",
+				"label": "Skill"
+			},
+			"damage": {
+				"value": 0,
+				"type": "Number",
+				"label": "Damage",
+				"abrev": "Dam"
+			},
+			"crit": {
+				"value": 0,
+				"type": "Number",
+				"label": "Critical Rating",
+				"abrev": "Crit"
+			},
+			"range": {
+				"value": "",
+				"type": "String",
+				"label": "Range"
+			},
+			"special": {
+				"value": "",
+				"type": "String",
+				"label": "Special"
+			}
+		},
+		"shipattachment": {
+			"templates": ["basic", "hardpoints", "equippable"],
+			"label": "Ship Attachment"
+			}
 	}
 }

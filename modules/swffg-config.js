@@ -6,13 +6,12 @@
 
 // Import Modules
 import { ActorFFG } from "./actors/actor-ffg.js";
-import { GearSheetFFG } from "./sheets/gear-sheet-ffg.js";
-import { WeaponSheetFFG } from "./sheets/weapon-sheet-ffg.js";
-import { ArmourSheetFFG } from "./sheets/armour-sheet-ffg.js";
-import { TalentSheetFFG } from "./sheets/talent-sheet-ffg.js";
-import { ActorSheetFFG } from "./sheets/actor-sheet-ffg.js";
-import { MinionSheetFFG } from "./sheets/minion-sheet-ffg.js";
+import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
+import { CharacterSheetFFG } from "./actors/character-sheet-ffg.js";
+import { MinionSheetFFG } from "./actors/minion-sheet-ffg.js";
+import { VehicleSheetFFG } from "./actors/vehicle-sheet-ffg.js";
 import { DicePoolFFG } from "./dice-pool-ffg.js";
+import { CombatFFG } from "./combat-ffg.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -23,27 +22,65 @@ Hooks.once("init", async function() {
 
   // Place our classes in their own namespace for later reference.
    game.ffg = {
-     ActorFFG
+     ActorFFG,
+     CombatFFG
    };
 
 
   // Define custom Entity classes. This will override the default Actor
   // to instead use our extended version.
   CONFIG.Actor.entityClass = ActorFFG;
+  CONFIG.Combat.entityClass = CombatFFG;
+  console.log(CombatFFG);
 
+  // TURN ON OR OFF HOOK DEBUGGING
+  CONFIG.debug.hooks = false;
 
 	/**
 	 * Set an initiative formula for the system
 	 * @type {String}
 	 */
-	CONFIG.Combat.initiative = {
-	  formula: "1d20",
-    decimals: 2
-  };
+   // Register initiative rule
+   game.settings.register("starwarsffg", "initiativeRule", {
+     name: "Initiative Type",
+     hint: "Choose between Vigilance or Cool for Initiative rolls.",
+     scope: "world",
+     config: true,
+     default: "v",
+     type: String,
+     choices: {
+       "v": "Use Vigilance",
+       "c": "Use Cool",
+     },
+     onChange: rule => _setffgInitiative(rule)
+   });
+   _setffgInitiative(game.settings.get("starwarsffg", "initiativeRule"));
+
+
+   function _setffgInitiative(initMethod)
+   {
+     let formula;
+     switch (initMethod)
+     {
+       case "v":
+       formula = "@_rollSkillManual(@skills.Vigilance.rank, @characteristics.Willpower.value, 0)";
+       break;
+
+       case "c":
+       formula = "@_rollSkillManual(@skills.Cool.rank, @characteristics.Presence.value, 0)";
+       break;
+     }
+
+     CONFIG.Combat.initiative = {
+       // formula: formula,
+       formula: "1d20",
+       decimals: 0
+     }
+   }
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFG, {
+  Actors.registerSheet("ffg", CharacterSheetFFG, {
     types: ["character"],
     makeDefault: true
   });
@@ -51,23 +88,12 @@ Hooks.once("init", async function() {
     types: ["minion"],
     makeDefault: true
   });
+  Actors.registerSheet("ffg", VehicleSheetFFG, {
+    types: ["vehicle"],
+    makeDefault: true
+  });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("ffg", GearSheetFFG, {
-    types: ["gear"],
-    makeDefault: true
-  });
-  Items.registerSheet("ffg", WeaponSheetFFG, {
-    types: ["weapon"],
-    makeDefault: true
-  });
-  Items.registerSheet("ffg", ArmourSheetFFG, {
-    types: ["armour"],
-    makeDefault: true
-  });
-  Items.registerSheet("ffg", TalentSheetFFG, {
-    types: ["talent"],
-    makeDefault: true
-  });
+  Items.registerSheet("ffg", ItemSheetFFG, {makeDefault: true});
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;

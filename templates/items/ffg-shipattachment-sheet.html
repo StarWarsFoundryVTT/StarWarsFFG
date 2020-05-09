@@ -1,26 +1,30 @@
 <form class="{{cssClass}}" autocomplete="off">
-    <header class="sheet-header talents">
+    <header class="sheet-header">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
         <div class="header-fields">
           <div class="container">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
           </div>
           <div class="container">
-            <div class="resource">
-            	<label>Activation: </label>
-                <input style="text-align:center;" type="text" name="data.activation.value" value="{{data.activation.value}}" data-dtype="String"/>
+            <div class="resource small">
+            	<label>Quantity: </label>
+                <input style="text-align:center;" type="number" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number"/>
             </div>
             <div class="resource small">
-            	<label>Ranked:
-                <input class="ranked-toggle" style="text-align:center;" type="checkbox" name="data.ranks.ranked" data-dtype="Boolean" {{checked data.ranks.ranked}} /></label>
+            	<label>Encumbrance: </label>
+                <input style="text-align:center;" type="number" name="data.encumbrance.value" value="{{data.encumbrance.value}}" data-dtype="Number"/>
             </div>
             <div class="resource small">
-            	<label>Rank: </label>
-              {{#if data.ranks.ranked}}
-                <input style="text-align:center;" type="number" name="data.ranks.current" value="{{data.ranks.current}}" data-dtype="Number" />
-              {{else}}
-                <input style="text-align:center;" type="text" value="N/A" disabled />
-              {{/if}}
+              <label>Rarity: </label>
+                <input style="text-align:center;" type="number" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number"/>
+            </div>
+            <div class="resource small">
+              <label>Price: </label>
+                <input style="text-align:center;" type="number" name="data.price.value" value="{{data.price.value}}" data-dtype="Number"/>
+            </div>
+            <div class="resource small">
+              <label>Hard Points Required: </label>
+                <input style="text-align:center;" type="number" name="data.hardpoints.value" value="{{data.hardpoints.value}}" data-dtype="Number"/>
             </div>
           </div>
         </div>

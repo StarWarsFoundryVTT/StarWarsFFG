@@ -17,6 +17,7 @@ export class ActorFFG extends Actor {
     // Make separate methods for each Actor type (character, minion, etc.) to keep
     // things organized.
     if (actorData.type === 'minion') this._prepareMinionData(actorData);
+    if (actorData.type === 'character') this._prepareCharacterData(actorData);
   }
 
   /**
@@ -44,6 +45,52 @@ export class ActorFFG extends Actor {
         }
       }
     }
+  }
+
+  /**
+   * Prepare Character type specific data
+   */
+  _prepareCharacterData(actorData) {
+    const data = actorData.data;
+    const items = actorData.items;
+    var soak = 0;
+    var armoursoak = 0;
+    var othersoak = 0;
+    var encum = 0;
+
+    // Calculate soak based on Brawn value, and any Soak modifiers in weapons, armour, gear and talents.
+    // Start with Brawn. Also calculate total encumbrance from items.
+    soak = data.characteristics.Brawn.value;
+
+    // Loop through all items
+    for (let [key, item] of Object.entries(items)) {
+      // Calculate encumbrance.
+      if(item.type != "talent") {
+        encum += item.data.encumbrance.value;
+      }
+      // For armour type, get all Soak values and add to armoursoak.
+      if(item.type == "armour") {
+        armoursoak += item.data.soak.value;
+      }
+      else {
+        // For all other types loop through attributes and add any Soak modifiers to othersoak.
+        for(let [k, mod] of Object.entries(item.data.attributes)) {
+          if(k == "Soak") {
+            othersoak += mod.value;
+          }
+        }
+      }
+    }
+
+    // Set Encumbrance value on character.
+    data.stats.encumbrance.value = encum;
+
+    // Add together all of our soak results.
+    soak += armoursoak + othersoak;
+    // Finally set Soak value on character.
+    data.stats.soak.value = soak;
+
+
   }
 
 }

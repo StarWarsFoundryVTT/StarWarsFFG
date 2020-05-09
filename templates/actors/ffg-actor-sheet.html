@@ -80,8 +80,8 @@
               <h1>Encum</h1>
               <div class="content">
                   <div class="single-clear">
-                      <input type="text" name="data.encumbrance.value" value="{{data.encumbrance.value}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}"
+                          data-dtype="Number" disabled />
                       <label>-</label>
                   </div>
               </div>
@@ -98,7 +98,7 @@
             <div class="content">
                 <div class="single-clear">
                     <input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}"
-                        data-dtype="Number" />
+                        data-dtype="Number" disabled />
                     <label>-</label>
                 </div>
             </div>
@@ -191,7 +191,7 @@
                           {{/with}}
                         </td>
                         <td>
-                            <input name="data.skills.{{id}}.value" value="{{skill.value}}" type="number" min="0" max="5"
+                            <input name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="number" min="0" max="5"
                                 data-dtype="Number" placeholder="0" />
                         </td>
                         <td>
@@ -206,6 +206,11 @@
 
         {{!-- Owned Items Tab --}}
         <div class="tab items" data-group="primary" data-tab="items">
+
+          {{!-- Credits Box --}}
+          <div class="resource">
+            <label>Credits: <input name="data.stats.credits.value" value="{{data.stats.credits.value}}" type="number" data-dtype="Number" placeholder="0" />
+          </div>
 
           {{!-- Weapons List --}}
           <div class="container attributes">
@@ -398,8 +403,8 @@
           </div>
         </div>
 
-        <!-- {{!-- Modifiers Tab --}}
-        <div class="tab attributes" data-group="primary" data-tab="attributes">
+        {{!-- Modifiers Tab --}}
+        <div class="tab attributes" data-group="primary" data-tab="attributes" style="visibility: hidden;">
             <header class="attributes-header flexrow">
                 <span class="attribute-key">Modifier</span>
                 <span class="attribute-value">Value</span>
@@ -432,7 +437,7 @@
                 </li>
                 {{/each}}
             </ol>
-        </div> -->
+        </div>
 
     </section>
 </form>

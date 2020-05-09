@@ -2,17 +2,17 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class MinionSheetFFG extends ActorSheet {
+export class VehicleSheetFFG extends ActorSheet {
   pools = new Map();
 
   /** @override */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
-  	  classes: ["worldbuilding", "sheet", "minion"],
-  	  template: "systems/starwarsffg/templates/ffg-minion-sheet.html",
-      width: 700,
-      height: 620,
-      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics"}]
+  	  classes: ["worldbuilding", "sheet", "actor"],
+  	  template: "systems/starwarsffg/templates/actors/ffg-vehicle-sheet.html",
+      width: 710,
+      height: 650,
+      tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "items"}]
     });
   }
 
@@ -141,6 +141,22 @@ export class MinionSheetFFG extends ActorSheet {
     return this.object.update(formData);
   }
 
+  async _rollSkillManual(skill, ability, difficulty) {
+    const dicePool = new DicePoolFFG({
+      ability: characteristic.value,
+      difficulty: difficulty
+    });
+    dicePool.upgrade(skill.rank);
+
+    if (upgradeType === "ability") {
+      dicePool.upgrade();
+    }  else if (upgradeType === "difficulty") {
+      dicePool.upgradeDifficulty()
+    }
+
+    await this._completeRollManual(dicePool, skillName);
+  }
+
   async _rollSkill(event, upgradeType) {
     const data = this.getData();
     const row = event.target.parentElement.parentElement;
@@ -152,7 +168,7 @@ export class MinionSheetFFG extends ActorSheet {
       ability: characteristic.value,
       difficulty: 2 // Default to average difficulty
     });
-    dicePool.upgrade(skill.value);
+    dicePool.upgrade(skill.rank);
 
     if (upgradeType === "ability") {
       dicePool.upgrade();
@@ -198,6 +214,15 @@ export class MinionSheetFFG extends ActorSheet {
     }).render(true)
   }
 
+  async _completeRollManual(dicePool, skillName) {
+        ChatMessage.create({
+        user: game.user._id,
+        speaker: this.getData(),
+        flavor: `Rolling ${skillName}...`,
+        content: `/sw ${dicePool.renderDiceExpression()}`
+      });
+  }
+
   _addSkillDicePool(elem) {
     const data = this.getData();
     const skillName = elem.dataset["ability"];
@@ -210,6 +235,6 @@ export class MinionSheetFFG extends ActorSheet {
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
     const rollButton = elem.querySelector(".roll-button");
-    dicePool.renderPreview(rollButton);
+    dicePool.renderPreview(rollButton)
   }
 }

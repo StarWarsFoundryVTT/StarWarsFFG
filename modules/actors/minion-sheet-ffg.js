@@ -2,16 +2,16 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class ActorSheetFFG extends ActorSheet {
+export class MinionSheetFFG extends ActorSheet {
   pools = new Map();
 
   /** @override */
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
   	  classes: ["worldbuilding", "sheet", "actor"],
-  	  template: "systems/starwarsffg/templates/ffg-actor-sheet.html",
-      width: 600,
-      height: 840,
+  	  template: "systems/starwarsffg/templates/actors/ffg-minion-sheet.html",
+      width: 700,
+      height: 620,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics"}]
     });
   }
@@ -210,6 +210,6 @@ export class ActorSheetFFG extends ActorSheet {
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
     const rollButton = elem.querySelector(".roll-button");
-    dicePool.renderPreview(rollButton)
+    dicePool.renderPreview(rollButton);
   }
 }
