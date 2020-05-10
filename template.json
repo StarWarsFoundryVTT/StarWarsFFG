@@ -98,186 +98,264 @@
 					"Brawl": {
 						"rank": 0,
 						"characteristic": "Brawn",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Combat"
 					},
 					"Gunnery": {
 						"rank": 0,
 						"characteristic": "Agility",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Combat"
 					},
 					"Lightsaber": {
 						"rank": 0,
 						"characteristic": "Brawn",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Combat"
 					},
 					"Melee": {
 						"rank": 0,
 						"characteristic": "Brawn",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Combat"
 					},
 					"Ranged: Light": {
 						"rank": 0,
 						"characteristic": "Agility",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Combat"
 					},
 					"Ranged: Heavy": {
 						"rank": 0,
 						"characteristic": "Agility",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Combat"
 					},
 					"Astrogation": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Athletics ": {
 						"rank": 0,
 						"characteristic": "Brawn",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Charm": {
 						"rank": 0,
 						"characteristic": "Presence",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Coercion": {
 						"rank": 0,
 						"characteristic": "Willpower",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Computers": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Cool": {
 						"rank": 0,
 						"characteristic": "Presence",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Coordination": {
 						"rank": 0,
 						"characteristic": "Agility",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Deception": {
 						"rank": 0,
 						"characteristic": "Cunning",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Discipline": {
 						"rank": 0,
 						"characteristic": "Willpower",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Leadership": {
 						"rank": 0,
 						"characteristic": "Presence",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Mechanics": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Medicine": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Negotiation": {
 						"rank": 0,
 						"characteristic": "Presence",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Perception": {
 						"rank": 0,
 						"characteristic": "Cunning",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Piloting: Planetary": {
 						"rank": 0,
 						"characteristic": "Agility",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Piloting: Space": {
 						"rank": 0,
 						"characteristic": "Agility",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Resilience": {
 						"rank": 0,
 						"characteristic": "Brawn",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Skulduggery": {
 						"rank": 0,
 						"characteristic": "Cunning",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Stealth": {
 						"rank": 0,
 						"characteristic": "Agility",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Streetwise": {
 						"rank": 0,
 						"characteristic": "Cunning",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Survival": {
 						"rank": 0,
 						"characteristic": "Cunning",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Vigilance": {
 						"rank": 0,
 						"characteristic": "Willpower",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "General"
 					},
 					"Knowledge: Core Worlds": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Knowledge"
 					},
 					"Knowledge: Education": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Knowledge"
 					},
 					"Knowledge: Lore": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Knowledge"
 					},
 					"Knowledge: Outer Rim": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Knowledge"
 					},
 					"Knowledge: Underworld": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Knowledge"
 					},
 					"Knowledge: Warfare": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Knowledge"
 					},
 					"Knowledge: Xenology": {
 						"rank": 0,
 						"characteristic": "Intellect",
-						"groupskill": false
+						"groupskill": false,
+						"careerskill": false,
+						"type": "Knowledge"
 					}
 				}
 			},
 			"attributes": {
 				"attributes": {}
+			},
+			"modifiers": {
+				"modifiers": {
+					"Characteristic": {},
+					"Skill Rank": {},
+					"Skill Boost": {},
+					"Stat": {}
+				}
 			}
 		},
 		"character": {
-			"templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes"],
+			"templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes", "modifiers"],
 			"encumbrance": {
 				"value": 0,
 				"type": "Number",
@@ -310,7 +388,7 @@
 			}
 		},
 		"minion": {
-			"templates": ["biography", "stats", "characteristics", "skills", "attributes"],
+			"templates": ["biography", "stats", "characteristics", "skills", "attributes", "modifiers"],
 			"quantity": {
 				"value": 1,
 				"type": "Number",
@@ -428,7 +506,8 @@
 					"type": "Number",
 					"label": "Rarity"
 				},
-				"attributes": {}
+				"attributes": {},
+				"mod_types": ["Characteristic", "Skill Rank", "Skill Boost", "Stat"]
 			},
 			"hardpoints": {
 				"hardpoints": {

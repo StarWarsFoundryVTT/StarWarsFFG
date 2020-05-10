@@ -3,6 +3,18 @@
  * @extends {ActorSheet}
  */
 export class MinionSheetFFG extends ActorSheet {
+  constructor(...args) {
+    super(...args);
+
+    /**
+     * Track the set of filters which are applied
+     * @type {Set}
+     */
+    this._filters = {
+      skills: new Set()
+    };
+  }
+
   pools = new Map();
 
   /** @override */
@@ -21,10 +33,11 @@ export class MinionSheetFFG extends ActorSheet {
   /** @override */
   getData() {
     const data = super.getData();
-    data.dtypes = ["String", "Number", "Boolean"];
-    for ( let attr of Object.values(data.data.attributes) ) {
-      attr.isCheckbox = attr.dtype === "Boolean";
-    }
+		data.dtypes = ["String", "Number", "Boolean"];
+		for ( let attr of Object.values(data.data.attributes) ) {
+			attr.isCheckbox = attr.dtype === "Boolean";
+		}
+		data.FFG = CONFIG.FFG;
     return data;
   }
 
@@ -59,9 +72,30 @@ export class MinionSheetFFG extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
-    // Setup dice pool image
+    // Set skill filter element.
+    html.find(".skillfilter").each((_, elem) => {
+      const filters = this._filters.skills;
+      if (!filters.filter) { filters.filter = "all"; }
+    });
+
+    // Update radio button checked status for skill filter controls.
+    html.find(".filter-control").each((_, elem) => {
+      if(elem.id == this._filters.skills.filter) { elem.checked = true; }
+      else { elem.checked = false; }
+    });
+
+    // Setup dice pool image and hide filtered skills
     html.find(".skill").each((_, elem) => {
       this._addSkillDicePool(elem)
+      const filters = this._filters.skills;
+      if (filters.filter != "all") {
+        if (elem.dataset["skilltype"] != filters.filter) {
+          elem.style.display = "none";
+        }
+        else {
+          elem.style.display = "";
+        }
+      }
     });
 
     // Roll Skill
@@ -77,38 +111,58 @@ export class MinionSheetFFG extends ActorSheet {
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
+
+    // Update Filter value.
+    html.find(".skillfilter").on("click", ".filter-control", this._onClickFilterControl.bind(this));
+
   }
 
   /* -------------------------------------------- */
+
 
   /**
    * Listen for click events on an attribute control to modify the composition of attributes in the sheet
    * @param {MouseEvent} event    The originating left click event
    * @private
    */
-  async _onClickAttributeControl(event) {
+   async _onClickAttributeControl(event) {
+     event.preventDefault();
+     const a = event.currentTarget;
+     const action = a.dataset.action;
+     const attrs = this.object.data.data.attributes;
+     const form = this.form;
+
+     // Add new attribute
+     if ( action === "create" ) {
+       const nk = Object.keys(attrs).length + 1;
+       let newKey = document.createElement("div");
+       newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}"/>`;
+       newKey = newKey.children[0];
+       form.appendChild(newKey);
+       await this._onSubmit(event);
+     }
+
+     // Remove existing attribute
+     else if ( action === "delete" ) {
+       const li = a.closest(".attribute");
+       li.parentElement.removeChild(li);
+       await this._onSubmit(event);
+     }
+   }
+
+  /**
+   * Listen for click events on a filter control to modify the selected filter option.
+   * @param {MouseEvent} event    The originating left click event
+   * @private
+   */
+  async _onClickFilterControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
-    const action = a.dataset.action;
-    const attrs = this.object.data.data.attributes;
-    const form = this.form;
-
-    // Add new attribute
-    if ( action === "create" ) {
-      const nk = Object.keys(attrs).length + 1;
-      let newKey = document.createElement("div");
-      newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}"/>`;
-      newKey = newKey.children[0];
-      form.appendChild(newKey);
-      await this._onSubmit(event);
-    }
-
-    // Remove existing attribute
-    else if ( action === "delete" ) {
-      const li = a.closest(".attribute");
-      li.parentElement.removeChild(li);
-      await this._onSubmit(event);
-    }
+    const filters = this._filters.skills;
+    var filter = a.id;
+    $(a).prop("checked", true);
+    filters.filter = filter;
+    await this._onSubmit(event);
   }
 
   /* -------------------------------------------- */
@@ -141,6 +195,22 @@ export class MinionSheetFFG extends ActorSheet {
     return this.object.update(formData);
   }
 
+  async _rollSkillManual(skill, ability, difficulty) {
+    const dicePool = new DicePoolFFG({
+      ability: characteristic.value,
+      difficulty: difficulty
+    });
+    dicePool.upgrade(skill.rank);
+
+    if (upgradeType === "ability") {
+      dicePool.upgrade();
+    }  else if (upgradeType === "difficulty") {
+      dicePool.upgradeDifficulty()
+    }
+
+    await this._completeRollManual(dicePool, skillName);
+  }
+
   async _rollSkill(event, upgradeType) {
     const data = this.getData();
     const row = event.target.parentElement.parentElement;
@@ -152,7 +222,7 @@ export class MinionSheetFFG extends ActorSheet {
       ability: characteristic.value,
       difficulty: 2 // Default to average difficulty
     });
-    dicePool.upgrade(skill.value);
+    dicePool.upgrade(skill.rank);
 
     if (upgradeType === "ability") {
       dicePool.upgrade();
@@ -198,6 +268,15 @@ export class MinionSheetFFG extends ActorSheet {
     }).render(true)
   }
 
+  async _completeRollManual(dicePool, skillName) {
+        ChatMessage.create({
+        user: game.user._id,
+        speaker: this.getData(),
+        flavor: `Rolling ${skillName}...`,
+        content: `/sw ${dicePool.renderDiceExpression()}`
+      });
+  }
+
   _addSkillDicePool(elem) {
     const data = this.getData();
     const skillName = elem.dataset["ability"];
@@ -210,6 +289,6 @@ export class MinionSheetFFG extends ActorSheet {
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
     const rollButton = elem.querySelector(".roll-button");
-    dicePool.renderPreview(rollButton);
+    dicePool.renderPreview(rollButton)
   }
 }

@@ -1,130 +1,111 @@
-/**
- * A simple and flexible system for world-building using an arbitrary collection of character and item attributes
- * Author: Atropos
- * Software License: GNU GPLv3
- */
+export const FFG = {};
 
-// Import Modules
-import { ActorFFG } from "./actors/actor-ffg.js";
-import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
-import { CharacterSheetFFG } from "./actors/character-sheet-ffg.js";
-import { MinionSheetFFG } from "./actors/minion-sheet-ffg.js";
-import { VehicleSheetFFG } from "./actors/vehicle-sheet-ffg.js";
-import { DicePoolFFG } from "./dice-pool-ffg.js";
-import { CombatFFG } from "./combat-ffg.js";
+FFG.characteristics = {
+  "Brawn": "Brawn",
+  "Agility": "Agility",
+  "Intellect": "Intellect",
+  "Cunning": "Cunning",
+  "Willpower": "Willpower",
+  "Presence": "Presence"
+};
 
-/* -------------------------------------------- */
-/*  Foundry VTT Initialization                  */
-/* -------------------------------------------- */
+FFG.character_stats = {
+  "wounds": "Wounds",
+  "strain": "Strain",
+  "soak": "Soak",
+  "defence": "Defence",
+  "encumbrance": "Encumbrance",
+  "forcePool": "Force Pool",
+  "credits": "Credits"
+};
 
-Hooks.once("init", async function() {
-  console.log(`Initializing SWFFG System`);
+FFG.skills = {
+  "Brawl": "Brawl",
+  "Gunnery": "Gunnery",
+  "Lightsaber": "Lightsaber",
+  "Melee": "Melee",
+  "Ranged: Light": "Ranged: Light",
+  "Ranged: Heavy": "Ranged: Heavy",
+  "Astrogation": "Astrogation",
+  "Athletics ": "Athletics",
+  "Charm": "Charm",
+  "Coercion": "Coercion",
+  "Computers": "Computers",
+  "Cool": "Cool",
+  "Coordination": "Coordination",
+  "Deception": "Deception",
+  "Discipline": "Discipline",
+  "Leadership": "Leadership",
+  "Mechanics": "Mechanics",
+  "Medicine": "Medicine",
+  "Negotiation": "Negotiation",
+  "Perception": "Perception",
+  "Piloting: Planetary": "Piloting: Planetary",
+  "Piloting: Space": "Piloting: Space",
+  "Resilience": "Resilience",
+  "Skulduggery": "Skulduggery",
+  "Stealth": "Stealth",
+  "Streetwise": "Streetwise",
+  "Survival": "Survival",
+  "Vigilance": "Vigilance",
+  "Knowledge: Core Worlds": "Knowledge: Core Worlds",
+  "Knowledge: Education": "Knowledge: Education",
+  "Knowledge: Lore": "Knowledge: Lore",
+  "Knowledge: Outer Rim": "Knowledge: Outer Rim",
+  "Knowledge: Underworld": "Knowledge: Underworld",
+  "Knowledge: Warfare": "Knowledge: Warfare",
+  "Knowledge: Xenology": "Knowledge: Xenology"
+};
 
-  // Place our classes in their own namespace for later reference.
-   game.ffg = {
-     ActorFFG,
-     CombatFFG
-   };
+FFG.ranges = {
+  "Engaged": "Engaged",
+  "Short": "Short",
+  "Medium": "Medium",
+  "Long": "Long",
+  "Extreme": "Extreme"
+};
 
+FFG.vehicle_ranges = {
+  "Close": "Close",
+  "Short": "Short",
+  "Medium": "Medium",
+  "Long": "Long",
+  "Extreme": "Extreme"
+};
 
-  // Define custom Entity classes. This will override the default Actor
-  // to instead use our extended version.
-  CONFIG.Actor.entityClass = ActorFFG;
-  CONFIG.Combat.entityClass = CombatFFG;
-  console.log(CombatFFG);
+FFG.fire_arcs = {
+  "Forward": "Forward",
+  "Aft": "Aft",
+  "Port": "Port",
+  "Starboard": "Starboard",
+  "All": "All"
+};
 
-  // TURN ON OR OFF HOOK DEBUGGING
-  CONFIG.debug.hooks = false;
+FFG.combat_skills = {
+  "Brawl": "Brawl",
+  "Gunnery": "Gunnery",
+  "Lightsaber": "Lightsaber",
+  "Melee": "Melee",
+  "Ranged: Light": "Ranged: Light",
+  "Ranged: Heavy": "Ranged: Heavy"
+};
 
-	/**
-	 * Set an initiative formula for the system
-	 * @type {String}
-	 */
-   // Register initiative rule
-   game.settings.register("starwarsffg", "initiativeRule", {
-     name: "Initiative Type",
-     hint: "Choose between Vigilance or Cool for Initiative rolls.",
-     scope: "world",
-     config: true,
-     default: "v",
-     type: String,
-     choices: {
-       "v": "Use Vigilance",
-       "c": "Use Cool",
-     },
-     onChange: rule => _setffgInitiative(rule)
-   });
-   _setffgInitiative(game.settings.get("starwarsffg", "initiativeRule"));
+FFG.activations = {
+  "Passive": "Passive",
+  "Active (Incidental)": "Active (Incidental)",
+  "Active (Incidental, Out of Turn)": "Active (Incidental, Out of Turn)",
+  "Active (Action)": "Active (Action)",
+  "Active (Maneuver)": "Active (Maneuver)"
+};
 
+FFG.species = {
 
-   function _setffgInitiative(initMethod)
-   {
-     let formula;
-     switch (initMethod)
-     {
-       case "v":
-       formula = "@_rollSkillManual(@skills.Vigilance.rank, @characteristics.Willpower.value, 0)";
-       break;
+};
 
-       case "c":
-       formula = "@_rollSkillManual(@skills.Cool.rank, @characteristics.Presence.value, 0)";
-       break;
-     }
+FFG.careers = {
 
-     CONFIG.Combat.initiative = {
-       // formula: formula,
-       formula: "1d20",
-       decimals: 0
-     }
-   }
+};
 
-  // Register sheet application classes
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", CharacterSheetFFG, {
-    types: ["character"],
-    makeDefault: true
-  });
-  Actors.registerSheet("ffg", MinionSheetFFG, {
-    types: ["minion"],
-    makeDefault: true
-  });
-  Actors.registerSheet("ffg", VehicleSheetFFG, {
-    types: ["vehicle"],
-    makeDefault: true
-  });
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("ffg", ItemSheetFFG, {makeDefault: true});
+FFG.specialisations = {
 
-  // Add utilities to the global scope, this can be useful for macro makers
-  window.DicePoolFFG = DicePoolFFG;
-
-  // Register Handlebars utilities
-  Handlebars.registerHelper("json", JSON.stringify);
-
-  // Allows {if X = Y} type syntax in html using handlebars
-  Handlebars.registerHelper('iff', function (a, operator, b, opts) {
-    var bool = false;
-    switch (operator) {
-      case '==':
-        bool = a == b;
-        break;
-      case '>':
-        bool = a > b;
-        break;
-      case '<':
-        bool = a < b;
-        break;
-      case '!=':
-        bool = a != b;
-        break;
-      default:
-        throw "Unknown operator " + operator;
-    }
-
-    if (bool) {
-      return opts.fn(this);
-    } else {
-      return opts.inverse(this);
-    }
-  });
-});
+};

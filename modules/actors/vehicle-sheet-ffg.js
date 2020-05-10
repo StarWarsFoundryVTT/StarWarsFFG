@@ -25,6 +25,7 @@ export class VehicleSheetFFG extends ActorSheet {
     for ( let attr of Object.values(data.data.attributes) ) {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
+		data.FFG = CONFIG.FFG;
     return data;
   }
 

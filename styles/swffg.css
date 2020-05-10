@@ -2,6 +2,17 @@
   background: #f2f2f2;
 }
 
+table thead th {
+    padding: 0.25em 0;
+    text-align: left;
+}
+.skillfilter {
+  display: flex;
+}
+.skillfilter div {
+  display: flex;
+}
+
 div .container {
     width: 100%;
     height: auto;
@@ -72,7 +83,7 @@ div .container.talents {
 }
 
 .worldbuilding.sheet .xp-box {
-    position: absolute;
+  position: absolute;
     padding: 0;
     right: 10px;
     height: 40px;
