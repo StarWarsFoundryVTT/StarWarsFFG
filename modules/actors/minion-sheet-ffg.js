@@ -136,8 +136,7 @@ export class MinionSheetFFG extends ActorSheet {
      if ( action === "create" ) {
        const nk = Object.keys(attrs).length + 1;
        let newKey = document.createElement("div");
-       newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}"/>`;
-       newKey = newKey.children[0];
+       newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
        form.appendChild(newKey);
        await this._onSubmit(event);
      }

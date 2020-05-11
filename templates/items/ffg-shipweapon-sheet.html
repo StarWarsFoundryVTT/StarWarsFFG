@@ -38,7 +38,7 @@
                 <label>Firing Arc: </label>
                 <select style="text-align:center;" name="data.firingarc.value">
                     {{#select data.firingarc.value}}
-                    {{#each ../this.FFG.fire_arcs as |t|}}
+                    {{#each this.FFG.fire_arcs as |t|}}
                     <option value="{{t}}">{{t}}</option>
                     {{/each}}
                     {{/select}}
@@ -48,7 +48,7 @@
                 <label>Range: </label>
                 <select style="text-align:center;" name="data.range.value">
                     {{#select data.range.value}}
-                    {{#each ../this.FFG.vehicle_ranges as |t|}}
+                    {{#each this.FFG.vehicle_ranges as |t|}}
                     <option value="{{t}}">{{t}}</option>
                     {{/each}}
                     {{/select}}

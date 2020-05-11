@@ -60,25 +60,24 @@ export class ActorFFG extends Actor {
 
     // Calculate soak based on Brawn value, and any Soak modifiers in weapons, armour, gear and talents.
     // Start with Brawn. Also calculate total encumbrance from items.
-    soak = data.characteristics.Brawn.value;
+    soak = +data.characteristics.Brawn.value;
 
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
-      // Calculate encumbrance.
-      if(item.type != "talent") {
-        encum += item.data.encumbrance.value;
-      }
       // For armour type, get all Soak values and add to armoursoak.
       if(item.type == "armour") {
-        armoursoak += item.data.soak.value;
+        armoursoak += +item.data.soak.value;
       }
-      else {
-        // For all other types loop through attributes and add any Soak modifiers to othersoak.
-        for(let [k, mod] of Object.entries(item.data.attributes)) {
-          if(k == "Soak") {
-            othersoak += mod.value;
-          }
+      // Loop through all item attributes and add any modifiers to our collection.
+      for(let [k, mod] of Object.entries(item.data.attributes)) {
+        if(mod.mod == "Soak") {
+          othersoak += +mod.value;
         }
+      }
+
+      // Calculate encumbrance.
+      if(item.type != "talent") {
+        encum += +item.data.encumbrance.value;
       }
     }
 
@@ -86,7 +85,9 @@ export class ActorFFG extends Actor {
     data.stats.encumbrance.value = encum;
 
     // Add together all of our soak results.
-    soak += armoursoak + othersoak;
+    soak += +armoursoak;
+    soak += +othersoak;
+
     // Finally set Soak value on character.
     data.stats.soak.value = soak;
 

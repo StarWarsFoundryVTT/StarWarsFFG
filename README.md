@@ -20,6 +20,13 @@ https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json
 5. Click Install, after a few seconds the system should be installed.
 
 # Changelog
+* 11/05/2020 - Esrin - Fixed bug on vehicle sheet that was preventing data entry to some fields.
+* 11/05/2020 - Esrin - Reworked the modifier tabs to be more foolproof and user friendly. Only Soak modifiers are calculated automatically at present. Automatic calculation of other stat / characteristic / skill modifiers is not a priority right now so putting on the backburner.
+* 11/05/2020 - Esrin - Improved vehicle sheet design to have Defence in fore, aft, port, starboard cross pattern.
+* 11/05/2020 - Esrin - Added Range, Skill, Firing Arc and Activation dropdowns to item and talent sheets where appropriate.
+* 11/05/2020 - Esrin - Added skills filter to character and minion sheets, allowing filtering by General, Combat and Knowledge.
+* 11/05/2020 - Esrin - Added career skills checkbox to character sheet.
+* 11/05/2020 - Esrin - Fixed Handling on vehicle sheet. Now displays a + for positive values.
 * 09/05/2020 - Esrin - Rollable table for Critical Injuries
 * 09/05/2020 - Esrin - Cleaned up items to just use one JS class and get dynamic template by type.
 * 09/05/2020 - Esrin - Built item sheet for ship weapons and ship attachments

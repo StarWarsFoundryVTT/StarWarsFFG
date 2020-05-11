@@ -13,6 +13,46 @@ table thead th {
   display: flex;
 }
 
+.defence-box {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background: url(../images/shipdefence.png);
+  background-size: 100px;
+  background-position: center;
+  background-position-y: 80px;
+  background-repeat: no-repeat;
+  text-align: center;
+}
+
+.defence-box * > .defence-fore {
+  position: absolute;
+  top: 40px;
+  left: 85px;
+  display: grid;
+}
+
+.defence-box * > .defence-aft {
+  position: absolute;
+  bottom: 0;
+  left: 85px;
+  display: grid;
+}
+
+.defence-box * > .defence-port {
+  position: absolute;
+  left: 36px;
+  top: 107px;
+  display: grid;
+}
+
+.defence-box * > .defence-starboard {
+  position: absolute;
+  right: 4px;
+  top: 107px;
+  display: grid;
+}
+
 div .container {
     width: 100%;
     height: auto;

@@ -38,7 +38,7 @@
                 <label>Skill: </label>
                 <select style="text-align:center;" name="data.skill.value">
                     {{#select data.skill.value}}
-                    {{#each ../this.FFG.combat_skills as |t|}}
+                    {{#each this.FFG.combat_skills as |t|}}
                     <option value="{{t}}">{{t}}</option>
                     {{/each}}
                     {{/select}}
@@ -48,7 +48,7 @@
                 <label>Range: </label>
                 <select style="text-align:center;" name="data.range.value">
                     {{#select data.range.value}}
-                    {{#each ../this.FFG.ranges as |t|}}
+                    {{#each this.FFG.ranges as |t|}}
                     <option value="{{t}}">{{t}}</option>
                     {{/each}}
                     {{/select}}

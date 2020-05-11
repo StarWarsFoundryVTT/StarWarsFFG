@@ -10,7 +10,7 @@
             	<label>Activation: </label>
               <select style="text-align:center;" name="data.activation.value">
                   {{#select data.activation.value}}
-                  {{#each ../this.FFG.activations as |t|}}
+                  {{#each this.FFG.activations as |t|}}
                   <option value="{{t}}">{{t}}</option>
                   {{/each}}
                   {{/select}}

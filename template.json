@@ -531,7 +531,7 @@
 		"weapon": {
 			"templates": ["basic", "hardpoints", "equippable"],
 			"skill": {
-				"value": "",
+				"value": "Ranged: Light",
 				"type": "String",
 				"label": "Skill"
 			},
@@ -548,7 +548,7 @@
 				"abrev": "Crit"
 			},
 			"range": {
-				"value": "",
+				"value": "Short",
 				"type": "String",
 				"label": "Range"
 			},
@@ -573,10 +573,10 @@
 			}
 		},
 		"talent": {
-			"templates": [],
+			"templates": ["basic"],
 			"description": "",
 			"activation": {
-				"value": "",
+				"value": "Passive",
 				"type": "String",
 				"label": "Activation"
 			},
@@ -592,7 +592,7 @@
 			"templates": ["basic", "hardpoints", "equippable"],
 			"label": "Ship Weapon",
 			"firingarc": {
-				"value": "",
+				"value": "Fore",
 				"type": "String",
 				"label": "Skill"
 			},
@@ -609,7 +609,7 @@
 				"abrev": "Crit"
 			},
 			"range": {
-				"value": "",
+				"value": "Short",
 				"type": "String",
 				"label": "Range"
 			},

@@ -12,33 +12,29 @@
     </header>
 
     {{!-- Defence Grid --}}
-    <div class="container" style="position: absolute; text-align: right; right: 30px; top: 60px;">
+    <div style="position: absolute; text-align: right; right: 30px; top: 60px;">
       {{!-- Fore and Aft Box --}}
       <div class="resource">
-          <div class="split-box">
+          <div class="defence-box">
               <h1>Defence</h1>
               <div class="content">
-                  <div class="left">
-                      <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}"
-                          data-dtype="Number" />
+                  <div class="defence-fore">
                       <label>Fore</label>
+                      <input style="width:30px;" type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}"
+                          data-dtype="Number" />
                   </div>
-                  <div class="divider"></div>
-                  <div class="right">
-                      <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}"
+                  <div class="defence-aft">
+                      <input style="width:30px;" type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}"
                           data-dtype="Number" />
                       <label>Aft</label>
                   </div>
-              </div>
-              <div class="content">
-                  <div class="left">
-                      <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}"
+                  <div class="defence-port">
+                      <input style="width:30px;" type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}"
                           data-dtype="Number" />
                       <label>Port</label>
                   </div>
-                  <div class="divider"></div>
-                  <div class="right">
-                      <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}"
+                  <div class="defence-starboard">
+                      <input style="width:30px;" type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}"
                           data-dtype="Number" />
                       <label>Starboard</label>
                   </div>
@@ -56,8 +52,7 @@
             <h1>Silhouette</h1>
             <div class="content">
                 <div class="single-clear">
-                    <input type="text" name="data.stats.silhouette.value" value="{{data.stats.silhouette.value}}"
-                        data-dtype="Number" />
+                    <input type="text" name="data.stats.silhouette.value" value="{{data.stats.silhouette.value}}" data-dtype="Number" />
                     <label>-</label>
                 </div>
             </div>
@@ -70,14 +65,12 @@
               <h1>Speed</h1>
               <div class="content">
                   <div class="left">
-                      <input type="text" name="data.stats.speed.max" value="{{data.stats.speed.max}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.speed.max" value="{{data.stats.speed.max}}" data-dtype="Number" />
                       <label>Max</label>
                   </div>
                   <div class="divider"></div>
                   <div class="right">
-                      <input type="text" name="data.stats.speed.value" value="{{data.stats.speed.value}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.speed.value" value="{{data.stats.speed.value}}" data-dtype="Number" />
                       <label>Current</label>
                   </div>
               </div>
@@ -90,8 +83,7 @@
               <h1>Handling</h1>
               <div class="content">
                   <div class="single-clear">
-                      <input type="text" name="data.stats.handling.value" value="{{#iff data.stats.handling.value '>' 0}}+{{/iff}}{{data.stats.handling.value}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.handling.value" value="{{#iff data.stats.handling.value '>' 0}}+{{/iff}}{{data.stats.handling.value}}" data-dtype="Number" />
                       <label>-</label>
                       {{log data.stats.handling.value}}
                   </div>
@@ -108,8 +100,7 @@
             <h1>Armour</h1>
             <div class="content">
                 <div class="single-clear">
-                    <input type="text" name="data.stats.armour.value" value="{{data.stats.armour.value}}"
-                        data-dtype="Number" />
+                    <input type="text" name="data.stats.armour.value" value="{{data.stats.armour.value}}" data-dtype="Number" />
                     <label>-</label>
                 </div>
             </div>
@@ -122,14 +113,12 @@
               <h1>Hull Trauma</h1>
               <div class="content">
                   <div class="left">
-                      <input type="text" name="data.stats.hullTrauma.max" value="{{data.stats.hullTrauma.max}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.hullTrauma.max" value="{{data.stats.hullTrauma.max}}" data-dtype="Number" />
                       <label>Threshold</label>
                   </div>
                   <div class="divider"></div>
                   <div class="right">
-                      <input type="text" name="data.stats.hullTrauma.value" value="{{data.stats.hullTrauma.value}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.hullTrauma.value" value="{{data.stats.hullTrauma.value}}" data-dtype="Number" />
                       <label>Current</label>
                   </div>
               </div>
@@ -142,14 +131,12 @@
               <h1>System Strain</h1>
               <div class="content">
                   <div class="left">
-                      <input type="text" name="data.stats.systemStrain.max" value="{{data.stats.systemStrain.max}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.systemStrain.max" value="{{data.stats.systemStrain.max}}" data-dtype="Number" />
                       <label>Threshold</label>
                   </div>
                   <div class="divider"></div>
                   <div class="right">
-                      <input type="text" name="data.stats.systemStrain.value" value="{{data.stats.systemStrain.value}}"
-                          data-dtype="Number" />
+                      <input type="text" name="data.stats.systemStrain.value" value="{{data.stats.systemStrain.value}}" data-dtype="Number" />
                       <label>Current</label>
                   </div>
               </div>
