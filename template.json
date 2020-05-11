@@ -64,32 +64,38 @@
 					"Brawn": {
 						"value": 2,
 						"label": "Brawn",
-						"abrev": "Br"
+						"abrev": "Br",
+						"max": 7
 					},
 					"Agility": {
 						"value": 2,
 						"label": "Agility",
-						"abrev": "Ag"
+						"abrev": "Ag",
+						"max": 7
 					},
 					"Intellect": {
 						"value": 2,
 						"label": "Intellect",
-						"abrev": "Int"
+						"abrev": "Int",
+						"max": 7
 					},
 					"Cunning": {
 						"value": 2,
 						"label": "Cunning",
-						"abrev": "Cun"
+						"abrev": "Cun",
+						"max": 7
 					},
 					"Willpower": {
 						"value": 2,
 						"label": "Willpower",
-						"abrev": "Will"
+						"abrev": "Will",
+						"max": 7
 					},
 					"Presence": {
 						"value": 2,
 						"label": "Presence",
-						"abrev": "Pr"
+						"abrev": "Pr",
+						"max": 7
 					}
 				}
 			},
@@ -100,245 +106,280 @@
 						"characteristic": "Brawn",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Combat"
+						"type": "Combat",
+						"max": 6
 					},
 					"Gunnery": {
 						"rank": 0,
 						"characteristic": "Agility",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Combat"
+						"type": "Combat",
+						"max": 6
 					},
 					"Lightsaber": {
 						"rank": 0,
 						"characteristic": "Brawn",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Combat"
+						"type": "Combat",
+						"max": 6
 					},
 					"Melee": {
 						"rank": 0,
 						"characteristic": "Brawn",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Combat"
+						"type": "Combat",
+						"max": 6
 					},
 					"Ranged: Light": {
 						"rank": 0,
 						"characteristic": "Agility",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Combat"
+						"type": "Combat",
+						"max": 6
 					},
 					"Ranged: Heavy": {
 						"rank": 0,
 						"characteristic": "Agility",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Combat"
+						"type": "Combat",
+						"max": 6
 					},
 					"Astrogation": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Athletics ": {
 						"rank": 0,
 						"characteristic": "Brawn",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Charm": {
 						"rank": 0,
 						"characteristic": "Presence",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Coercion": {
 						"rank": 0,
 						"characteristic": "Willpower",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Computers": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Cool": {
 						"rank": 0,
 						"characteristic": "Presence",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Coordination": {
 						"rank": 0,
 						"characteristic": "Agility",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Deception": {
 						"rank": 0,
 						"characteristic": "Cunning",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Discipline": {
 						"rank": 0,
 						"characteristic": "Willpower",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Leadership": {
 						"rank": 0,
 						"characteristic": "Presence",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Mechanics": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Medicine": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Negotiation": {
 						"rank": 0,
 						"characteristic": "Presence",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Perception": {
 						"rank": 0,
 						"characteristic": "Cunning",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Piloting: Planetary": {
 						"rank": 0,
 						"characteristic": "Agility",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Piloting: Space": {
 						"rank": 0,
 						"characteristic": "Agility",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Resilience": {
 						"rank": 0,
 						"characteristic": "Brawn",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Skulduggery": {
 						"rank": 0,
 						"characteristic": "Cunning",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Stealth": {
 						"rank": 0,
 						"characteristic": "Agility",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Streetwise": {
 						"rank": 0,
 						"characteristic": "Cunning",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Survival": {
 						"rank": 0,
 						"characteristic": "Cunning",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Vigilance": {
 						"rank": 0,
 						"characteristic": "Willpower",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "General"
+						"type": "General",
+						"max": 6
 					},
 					"Knowledge: Core Worlds": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Knowledge"
+						"type": "Knowledge",
+						"max": 6
 					},
 					"Knowledge: Education": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Knowledge"
+						"type": "Knowledge",
+						"max": 6
 					},
 					"Knowledge: Lore": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Knowledge"
+						"type": "Knowledge",
+						"max": 6
 					},
 					"Knowledge: Outer Rim": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Knowledge"
+						"type": "Knowledge",
+						"max": 6
 					},
 					"Knowledge: Underworld": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Knowledge"
+						"type": "Knowledge",
+						"max": 6
 					},
 					"Knowledge: Warfare": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Knowledge"
+						"type": "Knowledge",
+						"max": 6
 					},
 					"Knowledge: Xenology": {
 						"rank": 0,
 						"characteristic": "Intellect",
 						"groupskill": false,
 						"careerskill": false,
-						"type": "Knowledge"
+						"type": "Knowledge",
+						"max": 6
 					}
 				}
 			},
@@ -349,7 +390,6 @@
 				"modifiers": {
 					"Characteristic": {},
 					"Skill Rank": {},
-					"Skill Boost": {},
 					"Stat": {}
 				}
 			}
@@ -484,8 +524,9 @@
 		"templates": {
 			"basic": {
 				"description": "",
+				"safe_desc": "",
 				"quantity": {
-					"value": 0,
+					"value": 1,
 					"type": "Number",
 					"label": "Quantity",
 					"abrev": "Qty"
@@ -506,8 +547,7 @@
 					"type": "Number",
 					"label": "Rarity"
 				},
-				"attributes": {},
-				"mod_types": ["Characteristic", "Skill Rank", "Skill Boost", "Stat"]
+				"attributes": {}
 			},
 			"hardpoints": {
 				"hardpoints": {
@@ -622,6 +662,42 @@
 		"shipattachment": {
 			"templates": ["basic", "hardpoints", "equippable"],
 			"label": "Ship Attachment"
+		},
+		"species": {
+			"description": "",
+			"careerskills": [],
+			"characteristics": {
+				"Brawn": {
+					"value": 2,
+					"label": "Brawn",
+					"abrev": "Br"
+				},
+				"Agility": {
+					"value": 2,
+					"label": "Agility",
+					"abrev": "Ag"
+				},
+				"Intellect": {
+					"value": 2,
+					"label": "Intellect",
+					"abrev": "Int"
+				},
+				"Cunning": {
+					"value": 2,
+					"label": "Cunning",
+					"abrev": "Cun"
+				},
+				"Willpower": {
+					"value": 2,
+					"label": "Willpower",
+					"abrev": "Will"
+				},
+				"Presence": {
+					"value": 2,
+					"label": "Presence",
+					"abrev": "Pr"
+				}
 			}
+		}
 	}
 }

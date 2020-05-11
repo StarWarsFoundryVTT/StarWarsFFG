@@ -2,6 +2,26 @@
   background: #f2f2f2;
 }
 
+.tooltip {
+  top:30px;
+  background-color:rgb(25, 24, 19, 0.8);
+  color:white;
+  border-radius:5px;
+  opacity:0;
+  position:absolute;
+  -webkit-transition: opacity 0.5s;
+  -moz-transition:  opacity 0.5s;
+  -ms-transition: opacity 0.5s;
+  -o-transition:  opacity 0.5s;
+  transition:  opacity 0.5s;
+  z-index: -500;
+}
+
+.hover:hover .tooltip {
+    opacity:1;
+    z-index: 500;
+}
+
 table thead th {
     padding: 0.25em 0;
     text-align: left;
@@ -11,6 +31,11 @@ table thead th {
 }
 .skillfilter div {
   display: flex;
+}
+
+.skill-rank {
+  width: 30px;
+  text-align: center;
 }
 
 .defence-box {
@@ -156,6 +181,16 @@ div .container.talents {
 .worldbuilding.sheet .tabs .item.active {
     text-decoration: underline;
     text-shadow: none;
+}
+
+.worldbuilding.sheet .attributes-list .attribute.item {
+  position: relative;
+}
+
+.worldbuilding.sheet .attributes-list .attribute.item:hover {
+  background: rgb(25, 24, 19, 0.12);
+  margin: +2px;
+  text-decoration: underline;
 }
 
 /* Content Tabs */

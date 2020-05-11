@@ -207,7 +207,7 @@
                           <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
                         </td>
                         <td>
-                            <input name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="number" min="0" max="5"
+                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
                                 data-dtype="Number" placeholder="0" />
                         </td>
                         <td>
@@ -245,12 +245,13 @@
                 {{#each actor.items as |item id|}}
                   {{#iff item.type '==' 'weapon'}}
                   <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name">{{item.name}}</h4>
+                      {{ log item }}
+                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.data.description}}</div></h4>
                       <label>{{item.data.skill.value}}</label>
                       <label>{{item.data.damage.value}}</label>
                       <label>{{item.data.range.value}}</label>
                       <label>{{item.data.crit.value}}</label>
-                      <label>{{item.data.special.value}}</label>
+                      <label class="hover">{{item.data.special.value}}<div class="tooltip">{{item.data.special.value}}</div></label>
                       <label>{{item.data.encumbrance.value}}</label>
                       <div class="item-controls">
                           <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
@@ -435,7 +436,7 @@
                     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display:none;"/>
                     <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
                         {{#select attr.modtype}}
-                        {{#each ../this.data.mod_types as |t|}}
+                        {{#each ../this.FFG.mod_types as |t|}}
                         <option value="{{t}}">{{t}}</option>
                         {{/each}}
                         {{/select}}

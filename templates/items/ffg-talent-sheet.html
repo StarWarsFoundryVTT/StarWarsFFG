@@ -62,7 +62,7 @@
                     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display:none;"/>
                     <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
                         {{#select attr.modtype}}
-                        {{#each ../this.data.mod_types as |t|}}
+                        {{#each ../this.FFG.mod_types as |t|}}
                         <option value="{{t}}">{{t}}</option>
                         {{/each}}
                         {{/select}}

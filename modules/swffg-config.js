@@ -98,6 +98,8 @@ FFG.activations = {
   "Active (Maneuver)": "Active (Maneuver)"
 };
 
+FFG.mod_types = ["Characteristic", "Skill Rank", "Skill Boost", "Stat"];
+
 FFG.species = {
 
 };
