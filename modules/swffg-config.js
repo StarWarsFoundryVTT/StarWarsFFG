@@ -90,6 +90,15 @@ FFG.combat_skills = {
   "Ranged: Heavy": "Ranged: Heavy"
 };
 
+FFG.combat_skills.abrev = {
+  "Brawl": "B",
+  "Gunnery": "G",
+  "Lightsaber": "LS",
+  "Melee": "M",
+  "Ranged: Light": "RL",
+  "Ranged: Heavy": "RH"
+}
+
 FFG.activations = {
   "Passive": "Passive",
   "Active (Incidental)": "Active (Incidental)",

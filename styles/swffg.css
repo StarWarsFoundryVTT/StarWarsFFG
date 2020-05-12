@@ -17,6 +17,11 @@
   z-index: -500;
 }
 
+.item:hover .hover {
+  text-decoration: underline;
+  text-decoration-style: double;
+}
+
 .hover:hover .tooltip {
     opacity:1;
     z-index: 500;
@@ -187,10 +192,18 @@ div .container.talents {
   position: relative;
 }
 
+.worldbuilding.sheet .attributes-list .attribute.item label {
+  overflow: hidden;
+}
+
 .worldbuilding.sheet .attributes-list .attribute.item:hover {
   background: rgb(25, 24, 19, 0.12);
   margin: +2px;
-  text-decoration: underline;
+}
+
+.worldbuilding.sheet .talents-list .talents.item:hover {
+  background: rgb(25, 24, 19, 0.12);
+  margin: +2px;
 }
 
 /* Content Tabs */
@@ -260,6 +273,7 @@ sheet work. There is likely a better way to do this.
 }
 .worldbuilding.sheet .items-list .item-controls {
     flex: 0 0 36px;
+    z-index: 500;
 }
 
 /* Attributes */

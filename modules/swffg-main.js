@@ -7,12 +7,10 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
+import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
-import { CharacterSheetFFG } from "./actors/character-sheet-ffg.js";
-import { MinionSheetFFG } from "./actors/minion-sheet-ffg.js";
-import { VehicleSheetFFG } from "./actors/vehicle-sheet-ffg.js";
+import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
 import { DicePoolFFG } from "./dice-pool-ffg.js";
-import { CombatFFG } from "./combat-ffg.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -24,14 +22,14 @@ Hooks.once("init", async function() {
   // Place our classes in their own namespace for later reference.
    game.ffg = {
      ActorFFG,
-     CombatFFG
+     ItemFFG
    };
 
 
   // Define custom Entity classes. This will override the default Actor
   // to instead use our extended version.
   CONFIG.Actor.entityClass = ActorFFG;
-  CONFIG.Combat.entityClass = CombatFFG;
+  CONFIG.Item.entityClass = ItemFFG;
 
   // TURN ON OR OFF HOOK DEBUGGING
   CONFIG.debug.hooks = false;
@@ -83,18 +81,7 @@ Hooks.once("init", async function() {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", CharacterSheetFFG, {
-    types: ["character"],
-    makeDefault: true
-  });
-  Actors.registerSheet("ffg", MinionSheetFFG, {
-    types: ["minion"],
-    makeDefault: true
-  });
-  Actors.registerSheet("ffg", VehicleSheetFFG, {
-    types: ["vehicle"],
-    makeDefault: true
-  });
+  Actors.registerSheet("ffg", ActorSheetFFG, {makeDefault: true});
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("ffg", ItemSheetFFG, {makeDefault: true});
 

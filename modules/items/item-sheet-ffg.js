@@ -8,7 +8,7 @@ export class ItemSheetFFG extends ItemSheet {
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
 			classes: ["worldbuilding", "sheet", "item"],
-			width: 580,
+			width: 640,
 			height: 480,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
 		});
@@ -33,7 +33,7 @@ export class ItemSheetFFG extends ItemSheet {
 		data.FFG = CONFIG.FFG;
     return data;
   }
-	
+
   /* -------------------------------------------- */
 
   /** @override */
