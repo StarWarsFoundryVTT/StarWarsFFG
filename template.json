@@ -524,7 +524,6 @@
 		"templates": {
 			"basic": {
 				"description": "",
-				"safe_desc": "",
 				"quantity": {
 					"value": 1,
 					"type": "Number",

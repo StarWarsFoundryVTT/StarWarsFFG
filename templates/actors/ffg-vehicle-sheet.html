@@ -168,21 +168,21 @@
               <span>Range</span>
               <span>Crit</span>
               <span>Special</span>
-              <span>Edit</span>
+              <span style="visibility:hidden; display:contents;">Del</span>
             </header>
             <ol class="attributes-list">
                 {{#each actor.items as |item id|}}
                   {{#iff item.type '==' 'shipweapon'}}
                   <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name">{{item.name}}</h4>
+                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
                       <label>{{item.data.firingarc.value}}</label>
                       <label>{{item.data.damage.value}}</label>
                       <label>{{item.data.range.value}}</label>
                       <label>{{item.data.crit.value}}</label>
-                      <label>{{item.data.special.value}}</label>
+                      <label class="hover">{{item.data.special.value}}<div class="tooltip">{{item.data.special.value}}</div></label>
                       <div class="item-controls">
                           <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                       </div>
                   </li>
                   {{/iff}}
@@ -196,17 +196,17 @@
             <header class="attributes-header flexrow">
               <span>Name</span>
               <span>Hardpoints Required</span>
-              <span>Edit</span>
+              <span style="visibility:hidden; display:contents;">Del</span>
             </header>
             <ol class="attributes-list">
                 {{#each actor.items as |item id|}}
                   {{#iff item.type '==' 'shipattachment'}}
                   <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name">{{item.name}}</h4>
+                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
                       <label>{{item.data.hardpoints.value}}</label>
                       <div class="item-controls">
                           <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                       </div>
                   </li>
                   {{/iff}}
@@ -223,7 +223,7 @@
               <span>Rarity</span>
               <span>Quantity</span>
               <span>Encum</span>
-              <span>Edit</span>
+              <span style="visibility:hidden; display:contents;">Del</span>
             </header>
             <ol class="attributes-list">
                 {{#each actor.items as |item id|}}
@@ -231,14 +231,14 @@
                     {{#iff item.type '!=' 'shipattachment'}}
                       {{#iff item.type '!=' 'talent'}}
                         <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                            <h4 class="item-name">{{item.name}}</h4>
+                            <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
                             <label>{{item.data.price.value}}</label>
                             <label>{{item.data.rarity.value}}</label>
                             <label>{{item.data.quantity.value}}</label>
                             <label>{{item.data.encumbrance.value}}</label>
                             <div class="item-controls">
                                 <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                             </div>
                         </li>
                       {{/iff}}

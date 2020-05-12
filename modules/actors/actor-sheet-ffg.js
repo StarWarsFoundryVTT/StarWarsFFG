@@ -2,7 +2,7 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-export class CharacterSheetFFG extends ActorSheet {
+export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
     super(...args);
     /**
@@ -21,10 +21,16 @@ export class CharacterSheetFFG extends ActorSheet {
 	  return mergeObject(super.defaultOptions, {
   	  classes: ["worldbuilding", "sheet", "actor"],
   	  template: "systems/starwarsffg/templates/actors/ffg-character-sheet.html",
-      width: 600,
-      height: 840,
+      width: 710,
+      height: 650,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics"}]
     });
+  }
+
+  /** @override */
+  get template() {
+    const path = "systems/starwarsffg/templates/actors";
+    return `${path}/ffg-${this.actor.data.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -37,6 +43,21 @@ export class CharacterSheetFFG extends ActorSheet {
 			attr.isCheckbox = attr.dtype === "Boolean";
 		}
 		data.FFG = CONFIG.FFG;
+    console.log(this);
+    switch(this.actor.data.type) {
+      case 'character':
+        this.position.width = 600;
+        this.position.height = 840;
+        break;
+      case 'minion':
+        this.position.width = 700;
+        this.position.height = 620;
+        break;
+      case 'vehicle':
+        this.position.width = 710;
+        this.position.height= 650;
+      default:
+    }
     return data;
   }
 
@@ -57,11 +78,28 @@ export class CharacterSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    // Update Inventory Item
-    html.find('.item-edit').click(ev => {
-      const li = $(ev.currentTarget).parents(".item");
-      const item = this.actor.getOwnedItem(li.data("itemId"));
-      item.sheet.render(true);
+    // // Update Inventory Item
+    // html.find('.item-edit').click(ev => {
+    //   const li = $(ev.currentTarget).parents(".item");
+    //   const item = this.actor.getOwnedItem(li.data("itemId"));
+    //   item.sheet.render(true);
+    // });
+
+    // Update Inventory Item - By clicking entire line
+    html.find('.attribute.item').click(ev => {
+      if (!$(ev.target).hasClass("fa-trash")) {
+        const li = $(ev.currentTarget);
+        const item = this.actor.getOwnedItem(li.data("itemId"));
+        item.sheet.render(true);
+      }
+    });
+    // Update Talent - By clicking entire line
+    html.find('.talents.item').click(ev => {
+      if (!$(ev.target).hasClass("fa-trash")) {
+        const li = $(ev.currentTarget);
+        const item = this.actor.getOwnedItem(li.data("itemId"));
+        item.sheet.render(true);
+      }
     });
 
     // Delete Inventory Item
