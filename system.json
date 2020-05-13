@@ -2,7 +2,7 @@
   "name": "starwarsffg",
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
-  "version": 0.042,
+  "version": 0.043,
   "minimumCoreVersion": "0.5.5",
   "compatibleCoreVersion": "0.5.6",
   "templateVersion": 1,
@@ -25,6 +25,6 @@
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/Esrin/StarWarsFFG/tree/esrin-dev",
   "manifest": "https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json",
-  "download":  "https://github.com/Esrin/StarWarsFFG/releases/download/esrin-dev_0.042_/esrin-dev_0.042.zip",
+  "download":  "https://github.com/Esrin/StarWarsFFG/releases/download/esrin-dev_0.043/esrin-dev_0.043.zip",
   "license": "LICENSE.txt"
 }

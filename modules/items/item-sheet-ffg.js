@@ -8,8 +8,8 @@ export class ItemSheetFFG extends ItemSheet {
 	static get defaultOptions() {
 	  return mergeObject(super.defaultOptions, {
 			classes: ["worldbuilding", "sheet", "item"],
-			width: 640,
-			height: 480,
+			width: 784,
+			height: 484,
       tabs: [{navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description"}]
 		});
   }

@@ -43,7 +43,6 @@ export class ActorSheetFFG extends ActorSheet {
 			attr.isCheckbox = attr.dtype === "Boolean";
 		}
 		data.FFG = CONFIG.FFG;
-    console.log(this);
     switch(this.actor.data.type) {
       case 'character':
         this.position.width = 600;

@@ -1,5 +1,6 @@
 .window-app .window-content {
   background: #f2f2f2;
+  font-size: 9pt;
 }
 
 .tooltip {
@@ -86,7 +87,8 @@ table thead th {
 div .container {
     width: 100%;
     height: auto;
-    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 div .container.attributes {
@@ -114,7 +116,8 @@ div .container.talents {
 
 .worldbuilding.sheet .profile-img {
     flex: 0 0 100px;
-    height: 100px;
+    height: 110px;
+    width: auto;
     margin-right: 10px;
 }
 
@@ -125,14 +128,12 @@ div .container.talents {
 
 .worldbuilding.sheet .charname {
     border-bottom: 0;
-    display: inline-grid;
-    padding: 5px;
+    display: flex;
 }
 
 .worldbuilding.sheet .charname.minion {
     border-bottom: 0;
-    display: inline;
-    padding: 5px;
+    display: flex;
 }
 
 .worldbuilding.sheet .charname input {
@@ -142,7 +143,8 @@ div .container.talents {
 
 .worldbuilding.sheet .resource {
     height: 40px;
-    padding: 5px;
+    padding-bottom: 4px;
+    padding-left: 2px;
     margin: 0;
     display: inline-table;
 }
@@ -153,17 +155,19 @@ div .container.talents {
 }
 
 .worldbuilding.sheet .xp-box {
-  position: absolute;
+    position: absolute;
     padding: 0;
-    right: 10px;
-    height: 40px;
+    left: 5px;
+    height: auto;
     margin: 0;
-    display: inline-table;
+    bottom: 6px;
+    font-size: smaller;
+    display: flex;
 }
 
 .worldbuilding.sheet .xp-box input {
-    width: 68px;
-    height: 22px;
+    width: 61px;
+    height: 14px;
 }
 
 .worldbuilding.sheet .resource.small input {
@@ -208,17 +212,23 @@ div .container.talents {
 
 /* Content Tabs */
 .worldbuilding.sheet .sheet-body {
-    height: calc(100% - 22.7em);
+    height: calc(100% - 22em);
     overflow: auto;
+    border: 1px solid #868686;
 }
 
 .worldbuilding.sheet .sheet-body.minion {
-    height: calc(100% - 11.5em);
+    height: calc(100% - 12.5em);
+    overflow: auto;
+}
+
+.worldbuilding.sheet .sheet-body.vehicle {
+    height: calc(100% - 22.5em);
     overflow: auto;
 }
 
 .worldbuilding.sheet .sheet-body.small {
-    height: calc(100% - 14em);
+    height: calc(100% - 16em);
     overflow: auto;
 }
 
@@ -399,7 +409,7 @@ boxes at the top of the standard FFG character sheets.
     font-size: 100%;
     text-align: center;
     color: #fff;
-    border-radius: 15px 15px 5px 5px;
+    border-radius: 50px 50px 0px 0px;
     background: #435a76;
     padding: 0;
     margin: 0;
@@ -425,7 +435,7 @@ boxes at the top of the standard FFG character sheets.
     color: #fff;
     font-weight: bold;
     background: #652825;
-    border-radius: 5px 0px 0px 15px;
+    border-radius: 0px 0px 0px 50px;
     text-align: center;
 }
 
@@ -435,7 +445,7 @@ boxes at the top of the standard FFG character sheets.
     color: #000;
     font-weight: bold;
     background: #90cbdd;
-    border-radius: 0px 5px 15px 0px;
+    border-radius: 0px 0px 50px 0px;
     text-align: center;
 }
 
@@ -445,7 +455,7 @@ boxes at the top of the standard FFG character sheets.
     color: #000;
     font-weight: bold;
     background: #90cbdd;
-    border-radius: 5px 5px 15px 15px;
+    border-radius: 0px 0px 50px 50px;
     text-align: center;
 }
 
@@ -455,7 +465,7 @@ boxes at the top of the standard FFG character sheets.
     color: #90cbdd;
     font-weight: bold;
     background: #90cbdd;
-    border-radius: 5px 5px 15px 15px;
+    border-radius: 0px 0px 50px 50px;
     text-align: center;
 }
 
