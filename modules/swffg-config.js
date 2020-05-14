@@ -57,6 +57,16 @@ FFG.skills = {
   "Knowledge: Xenology": "Knowledge: Xenology"
 };
 
+FFG.skills.knowledgestripped = {
+  "Knowledge: Core Worlds": "Core Worlds",
+  "Knowledge: Education": "Education",
+  "Knowledge: Lore": "Lore",
+  "Knowledge: Outer Rim": "Outer Rim",
+  "Knowledge: Underworld": "Underworld",
+  "Knowledge: Warfare": "Warfare",
+  "Knowledge: Xenology": "Xenology"
+}
+
 FFG.ranges = {
   "Engaged": "Engaged",
   "Short": "Short",

@@ -99,35 +99,38 @@
 
     {{!-- Sheet Body --}}
     <section class="sheet-body minion">
-        {{!-- Characteristics Tab --}}
-        <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
+      {{!-- Characteristics Tab --}}
+      <div class="tab characteristics active" style="overflow: hidden;" data-group="primary" data-tab="characteristics">
 
-            {{!-- Characteristics Scores --}}
+          {{!-- Characteristics Scores --}}
 
-            <ul class="flexrow characteristics-list">
-                {{#each data.characteristics as |characteristic id|}}
-                <li data-ability="{{id}}">
-                    {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
-                    <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1"
-                        type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
-                    <label>{{characteristic.label}}</label>
-                </li>
-                {{/each}}
-            </ul>
-            <fieldset class="skillfilter" id="skillfilter">
-              <div>
-                <label style="display:flex;">Filter skills:</label>
-                <input class="filter-control" type="radio" id="all" name="skillfilter" />
-                <label for="all">All</label>
-                <input class="filter-control" type="radio" id="Combat" name="skillfilter" />
-                <label for="combat">Combat</label><br>
-                <input class="filter-control" type="radio" id="General" name="skillfilter" />
-                <label for="general">General</label><br>
-                <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" />
-                <label for="knowledge">Knowledge</label>
-              </div>
-            </fieldset>
+          <ul class="flexrow characteristics-list">
+              {{#each data.characteristics as |characteristic id|}}
+              <li data-ability="{{id}}">
+                  {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
+                  <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1"
+                      type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
+                  <label>{{characteristic.label}}</label>
+              </li>
+              {{/each}}
+          </ul>
+          <fieldset class="skillfilter" id="skillfilter" style="display: none;">
+            <div>
+              <label style="display:flex;">Filter skills:</label>
+              <input class="filter-control" type="radio" id="all" name="skillfilter" />
+              <label for="all">All</label>
+              <input class="filter-control" type="radio" id="Combat" name="skillfilter" />
+              <label for="combat">Combat</label><br>
+              <input class="filter-control" type="radio" id="General" name="skillfilter" />
+              <label for="general">General</label><br>
+              <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" />
+              <label for="knowledge">Knowledge</label>
+            </div>
+          </fieldset>
+          <div class="tableWithHeader">
+            <div style="flex:1;margin: 2px;">
             <table>
+              <h1>General</h1>
                 <thead>
                     <tr>
                         <td>Name</td>
@@ -138,6 +141,7 @@
                 </thead>
                 <tbody>
                     {{#each data.skills as |skill id|}}
+                    {{#iff skill.type '==' 'General'}}
                     <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
                         <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
                           ({{abrev}})
@@ -147,15 +151,90 @@
                           <input class="groupskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
                         </td>
                         <td>
-                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" />
+                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
+                                data-dtype="Number" placeholder="0" />
                         </td>
                         <td>
+                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
                             <div class="roll-button dice-pool"></div>
                         </td>
                     </tr>
+                    {{/iff}}
                     {{/each}}
                 </tbody>
             </table>
+            </div>
+            <div style="flex:1;margin: 2px;">
+            <table>
+              <h1>Combat</h1>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Group Skill</td>
+                        <td>Rank</td>
+                        <td>Roll</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.skills as |skill id|}}
+                    {{#iff skill.type '==' 'Combat'}}
+                    <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                        <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
+                          ({{abrev}})
+                          {{/with}}
+                        </td>
+                        <td>
+                          <input class="groupskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
+                        </td>
+                        <td>
+                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                        <td>
+                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                            <div class="roll-button dice-pool"></div>
+                        </td>
+                    </tr>
+                    {{/iff}}
+                    {{/each}}
+                </tbody>
+            </table>
+            <table>
+              <h1>Knowledge</h1>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Group Skill</td>
+                        <td>Rank</td>
+                        <td>Roll</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.skills as |skill id|}}
+                    {{#iff skill.type '==' 'Knowledge'}}
+                    <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                        <td>{{lookup ../this.FFG.skills.knowledgestripped [id]~}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
+                          ({{abrev}})
+                          {{/with}}
+                        </td>
+                        <td>
+                          <input class="groupskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
+                        </td>
+                        <td>
+                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                        <td>
+                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                            <div class="roll-button dice-pool"></div>
+                        </td>
+                    </tr>
+                    {{/iff}}
+                    {{/each}}
+                </tbody>
+            </table>
+            </div>
+          </div>
         </div>
 
         {{!-- Owned Items Tab --}}

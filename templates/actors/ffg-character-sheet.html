@@ -2,80 +2,6 @@
 
     {{!-- Sheet Header --}}
     <header class="sheet-header">
-      {{!-- Footer info --}}
-      <div class="xp-box">
-          {{!-- XP Box --}}
-          <div class="split-box">
-              <h1>XP</h1>
-              <div class="content">
-                  <div class="left">
-                      <input type="text" name="data.experience.available" value="{{data.experience.available}}"
-                          data-dtype="Number" />
-                      <label>Available</label>
-                  </div>
-                  <div class="divider"></div>
-                  <div class="right">
-                      <input type="text" name="data.experience.total" value="{{data.experience.total}}"
-                          data-dtype="Number" />
-                      <label>Total</label>
-                  </div>
-              </div>
-          </div>
-
-          {{!-- Credits Box --}}
-          <div class="split-box" style="margin-left: 10px">
-            <div class="content">
-              <div class="single-clear">
-                <h1>Credits</h1><input name="data.stats.credits.value" value="{{data.stats.credits.value}}" type="text" data-dtype="Number" placeholder="0" />
-              </div>
-            </div>
-          </div>
-
-          {{!-- Obligation Box --}}
-          <div class="split-box" style="margin-left: 50px">
-            <h1 style="background: #44432f; border-bottom: 2px solid black;">Obligation</h1>
-            <div class="content">
-              <div class="single-clear">
-                  <input type="text" name="data.obligation.value" value="{{data.obligation.value}}"
-                      data-dtype="Number" />
-                </div>
-            </div>
-          </div>
-
-          {{!-- Duty Box --}}
-          <div class="split-box" style="margin-left: 10px">
-            <h1 style="background: #652825; border-bottom: 2px solid black;">Duty</h1>
-            <div class="content">
-              <div class="single-clear">
-                <input type="text" name="data.duty.value" value="{{data.duty.value}}"
-                    data-dtype="Number" />
-              </div>
-            </div>
-          </div>
-
-          {{!-- Morality Box --}}
-          <div class="split-box" style="margin-left: 10px">
-            <h1 style="background: #000; border-bottom: 2px solid black;">Morality</h1>
-            <div class="content">
-              <div class="single-clear">
-                <input type="text" name="data.morality.value" value="{{data.morality.value}}"
-                    data-dtype="Number" />
-              </div>
-            </div>
-          </div>
-
-          {{!-- Conflict Box --}}
-          <div class="split-box" style="margin-left: 10px">
-            <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Conflict</h1>
-            <div class="content">
-              <div class="single-clear">
-                  <input type="text" name="data.conflict.value" value="{{data.conflict.value}}"
-                      data-dtype="Number" />
-              </div>
-            </div>
-          </div>
-
-        </div>
 
       <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
 
@@ -217,35 +143,38 @@
 
     {{!-- Sheet Body --}}
     <section class="sheet-body">
-        {{!-- Characteristics Tab --}}
-        <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
+      {{!-- Characteristics Tab --}}
+      <div class="tab characteristics active" style="overflow: hidden;" data-group="primary" data-tab="characteristics">
 
-            {{!-- Characteristics Scores --}}
+          {{!-- Characteristics Scores --}}
 
-            <ul class="flexrow characteristics-list">
-                {{#each data.characteristics as |characteristic id|}}
-                <li data-ability="{{id}}">
-                    {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
-                    <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1"
-                        type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
-                    <label>{{characteristic.label}}</label>
-                </li>
-                {{/each}}
-            </ul>
-            <fieldset class="skillfilter" id="skillfilter">
-              <div>
-                <label style="display:flex;">Filter skills:</label>
-                <input class="filter-control" type="radio" id="all" name="skillfilter" />
-                <label for="all">All</label>
-                <input class="filter-control" type="radio" id="Combat" name="skillfilter" />
-                <label for="combat">Combat</label><br>
-                <input class="filter-control" type="radio" id="General" name="skillfilter" />
-                <label for="general">General</label><br>
-                <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" />
-                <label for="knowledge">Knowledge</label>
-              </div>
-            </fieldset>
+          <ul class="flexrow characteristics-list">
+              {{#each data.characteristics as |characteristic id|}}
+              <li data-ability="{{id}}">
+                  {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
+                  <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1"
+                      type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
+                  <label>{{characteristic.label}}</label>
+              </li>
+              {{/each}}
+          </ul>
+          <fieldset class="skillfilter" id="skillfilter" style="display: none;">
+            <div>
+              <label style="display:flex;">Filter skills:</label>
+              <input class="filter-control" type="radio" id="all" name="skillfilter" />
+              <label for="all">All</label>
+              <input class="filter-control" type="radio" id="Combat" name="skillfilter" />
+              <label for="combat">Combat</label><br>
+              <input class="filter-control" type="radio" id="General" name="skillfilter" />
+              <label for="general">General</label><br>
+              <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" />
+              <label for="knowledge">Knowledge</label>
+            </div>
+          </fieldset>
+          <div class="tableWithHeader">
+            <div style="flex:1;margin: 2px;">
             <table>
+              <h1>General</h1>
                 <thead>
                     <tr>
                         <td>Name</td>
@@ -256,6 +185,7 @@
                 </thead>
                 <tbody>
                     {{#each data.skills as |skill id|}}
+                    {{#iff skill.type '==' 'General'}}
                     <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
                         <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
                           ({{abrev}})
@@ -273,9 +203,82 @@
                             <div class="roll-button dice-pool"></div>
                         </td>
                     </tr>
+                    {{/iff}}
                     {{/each}}
                 </tbody>
             </table>
+            </div>
+            <div style="flex:1;margin: 2px;">
+            <table>
+              <h1>Combat</h1>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Career Skill</td>
+                        <td>Rank</td>
+                        <td>Roll</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.skills as |skill id|}}
+                    {{#iff skill.type '==' 'Combat'}}
+                    <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                        <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
+                          ({{abrev}})
+                          {{/with}}
+                        </td>
+                        <td>
+                          <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                        </td>
+                        <td>
+                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                        <td>
+                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                            <div class="roll-button dice-pool"></div>
+                        </td>
+                    </tr>
+                    {{/iff}}
+                    {{/each}}
+                </tbody>
+            </table>
+            <table>
+              <h1>Knowledge</h1>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Career Skill</td>
+                        <td>Rank</td>
+                        <td>Roll</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each data.skills as |skill id|}}
+                    {{#iff skill.type '==' 'Knowledge'}}
+                    <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                        <td>{{lookup ../this.FFG.skills.knowledgestripped [id]~}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
+                          ({{abrev}})
+                          {{/with}}
+                        </td>
+                        <td>
+                          <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                        </td>
+                        <td>
+                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
+                                data-dtype="Number" placeholder="0" />
+                        </td>
+                        <td>
+                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                            <div class="roll-button dice-pool"></div>
+                        </td>
+                    </tr>
+                    {{/iff}}
+                    {{/each}}
+                </tbody>
+            </table>
+            </div>
+          </div>
         </div>
 
         {{!-- Owned Items Tab --}}
@@ -413,8 +416,82 @@
 
 
         {{!-- Biography Tab --}}
-        <div class="tab biography active" name="biography" data-group="primary" data-tab="description" data-dtype="String">
+        <div class="tab biography active" data-group="primary" data-tab="description" style="height:91%;border-bottom: 1px solid #858585;">
           {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
+          {{!-- Footer info --}}
+          <div class="xp-box">
+              {{!-- XP Box --}}
+              <div class="split-box">
+                  <h1>XP</h1>
+                  <div class="content">
+                      <div class="left">
+                          <input type="text" name="data.experience.available" value="{{data.experience.available}}"
+                              data-dtype="Number" />
+                          <label>Available</label>
+                      </div>
+                      <div class="divider"></div>
+                      <div class="right">
+                          <input type="text" name="data.experience.total" value="{{data.experience.total}}"
+                              data-dtype="Number" />
+                          <label>Total</label>
+                      </div>
+                  </div>
+              </div>
+
+              {{!-- Credits Box --}}
+              <div class="split-box" style="margin-left: 10px">
+                <div class="content">
+                  <div class="single-clear">
+                    <h1>Credits</h1><input name="data.stats.credits.value" value="{{data.stats.credits.value}}" type="text" data-dtype="Number" placeholder="0" />
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Obligation Box --}}
+              <div class="split-box" style="margin-left: 50px">
+                <h1 style="background: #44432f; border-bottom: 2px solid black;">Obligation</h1>
+                <div class="content">
+                  <div class="single-clear">
+                      <input type="text" name="data.obligation.value" value="{{data.obligation.value}}"
+                          data-dtype="Number" />
+                    </div>
+                </div>
+              </div>
+
+              {{!-- Duty Box --}}
+              <div class="split-box" style="margin-left: 10px">
+                <h1 style="background: #652825; border-bottom: 2px solid black;">Duty</h1>
+                <div class="content">
+                  <div class="single-clear">
+                    <input type="text" name="data.duty.value" value="{{data.duty.value}}"
+                        data-dtype="Number" />
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Morality Box --}}
+              <div class="split-box" style="margin-left: 10px">
+                <h1 style="background: #000; border-bottom: 2px solid black;">Morality</h1>
+                <div class="content">
+                  <div class="single-clear">
+                    <input type="text" name="data.morality.value" value="{{data.morality.value}}"
+                        data-dtype="Number" />
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Conflict Box --}}
+              <div class="split-box" style="margin-left: 10px">
+                <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Conflict</h1>
+                <div class="content">
+                  <div class="single-clear">
+                      <input type="text" name="data.conflict.value" value="{{data.conflict.value}}"
+                          data-dtype="Number" />
+                  </div>
+                </div>
+              </div>
+
+            </div>
         </div>
 
         {{!-- Modifiers Tab --}}
@@ -462,7 +539,7 @@
                         {{/iff}}
                         {{/select}}
                     </select>
-                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0"/>
+                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" placeholder="0"/>
                     <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
                     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
                 </li>
