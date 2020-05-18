@@ -1,5 +1,6 @@
 .window-app .window-content {
-  background: #f2f2f2;
+  /* background: #f2f2f2; */
+  background: rgba(255, 255, 255, 0.7);
   font-size: 9pt;
 }
 
@@ -113,6 +114,11 @@ div .container.talents {
     overflow-y: hidden;
 }
 
+.worldbuilding.sheet.actor {
+  min-width: 575px;
+  min-height: 489px;
+}
+
 /* Sheet Header */
 .worldbuilding.sheet .sheet-header {
     overflow: hidden;
@@ -173,7 +179,6 @@ div .container.talents {
     height: auto;
     margin: 0;
     bottom: 10px;
-    font-size: smaller;
     display: flex;
 }
 
