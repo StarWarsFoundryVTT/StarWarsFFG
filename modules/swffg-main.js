@@ -7,6 +7,7 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
+import { CombatFFG } from "./combat-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
@@ -22,14 +23,68 @@ Hooks.once("init", async function() {
   // Place our classes in their own namespace for later reference.
    game.ffg = {
      ActorFFG,
-     ItemFFG
+     ItemFFG,
+     CombatFFG
    };
 
+   game.ffg.StarWars = game.specialDiceRoller.starWars.parsers[0];
 
   // Define custom Entity classes. This will override the default Actor
   // to instead use our extended version.
   CONFIG.Actor.entityClass = ActorFFG;
   CONFIG.Item.entityClass = ItemFFG;
+  CONFIG.Combat.entityClass = CombatFFG;
+
+
+  // A very hacky temporary workaround to override how initiative functions and provide the results of a FFG roll to the initiative tracker.
+  /** @override */
+  Combat.prototype._getInitiativeRoll = function(combatant, formula) {
+    const cData = combatant.actor.data.data;
+    const origFormula = formula;
+
+    if (combatant.actor.data.type === "vehicle") { return new Roll("0"); }
+
+    if (formula === "Vigilance") {
+      formula = _getInitiativeFormula(cData.skills.Vigilance.rank, cData.characteristics.Willpower.value, 0);
+    }
+    else if (formula === "Cool") {
+      formula = _getInitiativeFormula(cData.skills.Cool.rank, cData.characteristics.Presence.value, 0);
+    }
+
+    const rollData = combatant.actor ? combatant.actor.getRollData() : {};
+    const letters = formula.split('');
+    const rolls = [];
+    const getSuc = new RegExp('Successes: ([0-9]+)', 'g');
+    const getAdv = new RegExp('Advantages: ([0-9]+)', 'g');
+
+    for (const letter of letters) {
+      rolls.push(game.ffg.StarWars.letterToRolls(letter, 1));
+    }
+
+    let newformula = combineAll(rolls, game.ffg.StarWars.rollValuesMonoid);
+
+    let rolling = game.specialDiceRoller.starWars.roll(newformula);
+
+    let results = game.specialDiceRoller.starWars.formatRolls(rolling);
+
+    let success = 0;
+    let advantage = 0;
+
+    success = getSuc.exec(results);
+    if (success) { success = success[1]; }
+    advantage = getAdv.exec(results);
+    if (advantage) { advantage = advantage[1]; }
+
+    let total = +success+(advantage*0.01);
+
+    console.log(`Total is: ${total}`);
+
+    let roll = new Roll(origFormula, rollData).roll();
+    roll._result = total;
+    roll._total = total;
+
+    return roll;
+  }
 
   // TURN ON OR OFF HOOK DEBUGGING
   CONFIG.debug.hooks = false;
@@ -64,19 +119,32 @@ Hooks.once("init", async function() {
      switch (initMethod)
      {
        case "v":
-       formula = "@_rollSkillManual(@skills.Vigilance.rank, @characteristics.Willpower.value, 0)";
+       formula = "Vigilance";
        break;
 
        case "c":
-       formula = "@_rollSkillManual(@skills.Cool.rank, @characteristics.Presence.value, 0)";
+       formula = "Cool";
        break;
      }
 
      CONFIG.Combat.initiative = {
-       // formula: formula,
-       formula: "1d20",
+       formula: formula,
        decimals: 2
      }
+   }
+
+   function combineAll(values, monoid) {
+       return values
+           .reduce((prev, curr) => monoid.combine(prev, curr), monoid.identity);
+   }
+
+   function _getInitiativeFormula(skill, ability, difficulty) {
+     const dicePool = new DicePoolFFG({
+       ability: ability,
+       difficulty: difficulty
+     });
+     dicePool.upgrade(skill);
+     return dicePool.renderDiceExpression();
    }
 
   // Register sheet application classes

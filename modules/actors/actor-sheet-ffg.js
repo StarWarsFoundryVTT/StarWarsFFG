@@ -232,17 +232,10 @@ export class ActorSheetFFG extends ActorSheet {
 
   async _rollSkillManual(skill, ability, difficulty) {
     const dicePool = new DicePoolFFG({
-      ability: characteristic.value,
+      ability: ability,
       difficulty: difficulty
     });
-    dicePool.upgrade(skill.rank);
-
-    if (upgradeType === "ability") {
-      dicePool.upgrade();
-    }  else if (upgradeType === "difficulty") {
-      dicePool.upgradeDifficulty()
-    }
-
+    dicePool.upgrade(skill);
     await this._completeRollManual(dicePool, skillName);
   }
 
@@ -291,6 +284,7 @@ export class ActorSheetFFG extends ActorSheet {
               user: game.user._id,
               speaker: this.getData(),
               flavor: `Rolling ${skillName}...`,
+              sound: CONFIG.sounds.dice,
               content: `/sw ${finalPool.renderDiceExpression()}`
             });
           }
@@ -308,6 +302,7 @@ export class ActorSheetFFG extends ActorSheet {
         user: game.user._id,
         speaker: this.getData(),
         flavor: `Rolling ${skillName}...`,
+        sound: CONFIG.sounds.dice,
         content: `/sw ${dicePool.renderDiceExpression()}`
       });
   }
