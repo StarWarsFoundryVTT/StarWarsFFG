@@ -1,9 +1,9 @@
-const ABILITY_ICON = "modules/special-dice-roller/public/images/sw/green.png";
 const PROFICIENCY_ICON = "modules/special-dice-roller/public/images/sw/yellow.png";
+const ABILITY_ICON = "modules/special-dice-roller/public/images/sw/green.png";
+const CHALLENGE_ICON = "modules/special-dice-roller/public/images/sw/red.png";
+const DIFFICULTY_ICON = "modules/special-dice-roller/public/images/sw/purple.png";
 const BOOST_ICON = "modules/special-dice-roller/public/images/sw/blue.png";
 const SETBACK_ICON = "modules/special-dice-roller/public/images/sw/black.png";
-const DIFFICULTY_ICON = "modules/special-dice-roller/public/images/sw/purple.png";
-const CHALLENGE_ICON = "modules/special-dice-roller/public/images/sw/red.png";
 const FORCE_ICON = "modules/special-dice-roller/public/images/sw/whiteHex.png";
 
 /**
@@ -17,12 +17,12 @@ export class DicePoolFFG {
         if (typeof(obj) === "string") {
             obj = JSON.parse(obj);
         }
-        this.ability = obj.ability || 0;
         this.proficiency = obj.proficiency || 0;
+        this.ability = obj.ability || 0;
+        this.challenge = obj.challenge || 0;
+        this.difficulty = obj.difficulty || 0;
         this.boost = obj.boost || 0;
         this.setback = obj.setback || 0;
-        this.difficulty = obj.difficulty || 0;
-        this.challenge = obj.challenge || 0;
         this.force = obj.force || 0;
     }
 
@@ -69,12 +69,12 @@ export class DicePoolFFG {
      */
     renderDiceExpression() {
         return [
-            "a".repeat(this.ability),
             "p".repeat(this.proficiency),
+            "a".repeat(this.ability),
+            "c".repeat(this.challenge),
+            "d".repeat(this.difficulty),
             "b".repeat(this.boost),
             "s".repeat(this.setback),
-            "d".repeat(this.difficulty),
-            "c".repeat(this.challenge),
             "f".repeat(this.force)
         ].join("");
     }
@@ -89,12 +89,12 @@ export class DicePoolFFG {
             container = document.createElement("div");
             container.classList.add("dice-pool");
         }
-        this._addIcons(container, ABILITY_ICON, this.ability);
         this._addIcons(container, PROFICIENCY_ICON, this.proficiency);
+        this._addIcons(container, ABILITY_ICON, this.ability);
+        this._addIcons(container, CHALLENGE_ICON, this.challenge);
+        this._addIcons(container, DIFFICULTY_ICON, this.difficulty);
         this._addIcons(container, BOOST_ICON, this.boost);
         this._addIcons(container, SETBACK_ICON, this.setback);
-        this._addIcons(container, DIFFICULTY_ICON, this.difficulty);
-        this._addIcons(container, CHALLENGE_ICON, this.challenge);
         this._addIcons(container, FORCE_ICON, this.force);
         return container;
     }
@@ -116,10 +116,10 @@ export class DicePoolFFG {
      */
     static fromContainer(container) {
         return new DicePoolFFG({
-            ability: container.querySelector('[name="ability"]').value,
             proficiency: container.querySelector('[name="proficiency"]').value,
-            difficulty: container.querySelector('[name="difficulty"]').value,
+            ability: container.querySelector('[name="ability"]').value,
             challenge: container.querySelector('[name="challenge"]').value,
+            difficulty: container.querySelector('[name="difficulty"]').value,
             boost: container.querySelector('[name="boost"]').value,
             setback: container.querySelector('[name="setback"]').value,
             force: container.querySelector('[name="force"]').value,

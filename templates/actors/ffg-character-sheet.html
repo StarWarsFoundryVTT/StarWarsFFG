@@ -1,551 +1,500 @@
 <form class="{{cssClass}} grid" autocomplete="off">
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <div id="actor-id" data-actor="{{actor._id}}" style="display: none;"></div>
 
-    {{!-- Sheet Header --}}
-    <header class="sheet-header">
+    <div class="header-fields">
+      {{!-- Character Details Container --}}
+      <div class="charname">
+        <label>Name: <input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></label>
+        <label>Species:<input name="data.species.value" type="text" value="{{data.species.value}}" placeholder="Species" /></label>
+        <label>Career:<input name="data.career.value" type="text" value="{{data.career.value}}" placeholder="Career" /></label>
+        <label>Specialisation:<input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" placeholder="Specialisation" /></label>
+      </div>
 
-      <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
-
-      <div class="header-fields">
-
-        {{!-- Character Details Container --}}
-        <div class="charname"><label>Name:
-          <input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></label>
-          <label>Species:<input name="data.species.value" type="text" value="{{data.species.value}}" placeholder="Species" /></label>
-          <label>Career:<input name="data.career.value" type="text" value="{{data.career.value}}" placeholder="Career" /></label>
-          <label>Specialisation:<input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" placeholder="Specialisation" /></label>
-        </div>
-
-        {{!-- Primary Stats Container --}}
-        <div class="container" style="flex-wrap: nowrap;">
-          <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
-          <div class="container">
+      {{!-- Primary Stats Container --}}
+      <div class="container" style="flex-wrap: nowrap;">
+        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+        <div class="container">
           {{!-- Wounds Box --}}
           <div class="resource">
-              <div class="split-box">
-                  <h1>Wounds</h1>
-                  <div class="content">
-                      <div class="left">
-                          <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}"
-                              data-dtype="Number" />
-                          <label>Threshold</label>
-                      </div>
-                      <div class="divider"></div>
-                      <div class="right">
-                          <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}"
-                              data-dtype="Number" />
-                          <label>Current</label>
-                      </div>
-                  </div>
+            <div class="split-box">
+              <h1>Wounds</h1>
+              <div class="content">
+                <div class="left">
+                  <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number" />
+                  <label>Threshold</label>
+                </div>
+                <div class="divider"></div>
+                <div class="right">
+                  <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number" />
+                  <label>Current</label>
+                </div>
               </div>
+            </div>
           </div>
 
           {{!-- Strain Box --}}
           <div class="resource">
-              <div class="split-box">
-                  <h1>Strain</h1>
-                  <div class="content">
-                      <div class="left">
-                          <input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}"
-                              data-dtype="Number" />
-                          <label>Threshold</label>
-                      </div>
-                      <div class="divider"></div>
-                      <div class="right">
-                          <input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}"
-                              data-dtype="Number" />
-                          <label>Current</label>
-                      </div>
-                  </div>
-              </div>
-            </div>
-
-            {{!-- Soak Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1>Soak</h1>
-                    <div class="content">
-                        <div class="single-clear">
-                            <input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}"
-                                data-dtype="Number" disabled />
-                            <label>-</label>
-                        </div>
-                    </div>
+            <div class="split-box">
+              <h1>Strain</h1>
+              <div class="content">
+                <div class="left">
+                  <input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number" />
+                  <label>Threshold</label>
                 </div>
-              </div>
-
-            {{!-- Defence Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1>Defence</h1>
-                    <div class="content">
-                        <div class="left">
-                            <input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}"
-                                data-dtype="Number" />
-                            <label>Ranged</label>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="right">
-                            <input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}"
-                                data-dtype="Number" />
-                            <label>Melee</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{!-- Force Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1>Force Pool</h1>
-                    <div class="content">
-                        <div class="left">
-                            <input type="text" name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}"
-                                data-dtype="Number" />
-                            <label>Committed</label>
-                        </div>
-                        <div class="divider"></div>
-                        <div class="right">
-                            <input type="text" name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}"
-                                data-dtype="Number" />
-                            <label>Available</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{!-- Encumbrance Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1>Encum</h1>
-                    <div class="content">
-                        <div class="single-clear">
-                            <input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}"
-                                data-dtype="Number" disabled />
-                            <label>-</label>
-                        </div>
-                    </div>
+                <div class="divider"></div>
+                <div class="right">
+                  <input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number" />
+                  <label>Current</label>
                 </div>
               </div>
             </div>
           </div>
+
+          {{!-- Soak Box --}}
+          <div class="resource">
+            <div class="split-box">
+              <h1>Soak</h1>
+              <div class="content">
+                <div class="single-clear">
+                  <input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" disabled />
+                  <label>-</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Defence Box --}}
+          <div class="resource">
+            <div class="split-box">
+              <h1>Defence</h1>
+              <div class="content">
+                <div class="left">
+                  <input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number" />
+                  <label>Ranged</label>
+                </div>
+                <div class="divider"></div>
+                <div class="right">
+                  <input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number" />
+                  <label>Melee</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Force Box --}}
+          <div class="resource">
+            <div class="split-box">
+              <h1>Force Pool</h1>
+              <div class="content">
+                <div class="left">
+                  <input type="text" name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}" data-dtype="Number" />
+                  <label>Committed</label>
+                </div>
+                <div class="divider"></div>
+                <div class="right">
+                  <input type="text" name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}" data-dtype="Number" />
+                  <label>Available</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Encumbrance Box --}}
+          <div class="resource">
+            <div class="split-box">
+              <h1>Encum</h1>
+              <div class="content">
+                <div class="single-clear">
+                  <input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" data-dtype="Number" disabled />
+                  <label>-</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="characteristics">Characteristics</a>
+    <a class="item" data-tab="items">Gear & Equipment</a>
+    <a class="item" data-tab="talents">Talents</a>
+    <a class="item" data-tab="description">Biography</a>
+    <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{!-- Characteristics Tab --}}
+    <div class="tab characteristics active" style="overflow: hidden;" data-group="primary" data-tab="characteristics">
+      {{!-- Characteristics Scores --}}
+
+      <ul class="flexrow characteristics-list">
+        {{#each data.characteristics as |characteristic id|}}
+        <li data-ability="{{id}}">
+          {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
+          <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1" type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
+          <label>{{characteristic.label}}</label>
+        </li>
+        {{/each}}
+      </ul>
+      <fieldset class="skillfilter" id="skillfilter" style="display: none;">
+        <div>
+          <label style="display: flex;">Filter skills:</label>
+          <input class="filter-control" type="radio" id="all" name="skillfilter" />
+          <label for="all">All</label>
+          <input class="filter-control" type="radio" id="Combat" name="skillfilter" />
+          <label for="combat">Combat</label><br />
+          <input class="filter-control" type="radio" id="General" name="skillfilter" />
+          <label for="general">General</label><br />
+          <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" />
+          <label for="knowledge">Knowledge</label>
+        </div>
+      </fieldset>
+      <div class="tableWithHeader">
+        <div style="flex: 1; margin: 2px;">
+          <table>
+            <h1>General</h1>
+            <thead>
+              <tr>
+                <td>Name</td>
+                <td>Career Skill</td>
+                <td>Rank</td>
+                <td>Roll</td>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'General'}}
+              <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>
+                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                </td>
+                <td>
+                  <input style="width: 30px; text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" />
+                </td>
+                <td>
+                  <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                  <div class="roll-button dice-pool"></div>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div style="flex: 1; margin: 2px;">
+          <table>
+            <h1>Combat</h1>
+            <thead>
+              <tr>
+                <td>Name</td>
+                <td>Career Skill</td>
+                <td>Rank</td>
+                <td>Roll</td>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
+              <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>
+                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                </td>
+                <td>
+                  <input style="width: 30px; text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" />
+                </td>
+                <td>
+                  <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                  <div class="roll-button dice-pool"></div>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+          <table>
+            <h1>Knowledge</h1>
+            <thead>
+              <tr>
+                <td>Name</td>
+                <td>Career Skill</td>
+                <td>Rank</td>
+                <td>Roll</td>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Knowledge'}}
+              <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                <td>{{lookup ../this.FFG.skills.knowledgestripped [id]~}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>
+                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                </td>
+                <td>
+                  <input style="width: 30px; text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" />
+                </td>
+                <td>
+                  <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                  <div class="roll-button dice-pool"></div>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Owned Items Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+      {{!-- Weapons List --}}
+      <div class="attributes">
+        <h1><label>Weapons</label></h1>
+        <header class="attributes-header flexrow">
+          <span>Name</span>
+          <span>Skill</span>
+          <span>Damage</span>
+          <span>Range</span>
+          <span>Crit</span>
+          <span>Special</span>
+          <span>Encum</span>
+          <span style="visibility: hidden; display: contents;">Del</span>
+        </header>
+        <ol class="attributes-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
+          <li class="attribute flexrow item" data-item-id="{{item._id}}">
+            <h4 class="item-name hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </h4>
+            <label class="hover"
+              >{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}
+              <div class="tooltip">{{item.data.skill.value}}</div></label
+            >
+            <label>{{item.data.damage.value}}</label>
+            <label>{{item.data.range.value}}</label>
+            <label>{{item.data.crit.value}}</label>
+            <label class="hover"
+              >{{item.data.special.value}}
+              <div class="tooltip">{{item.data.special.value}}</div></label
+            >
+            <label>{{item.data.encumbrance.value}}</label>
+            <div class="item-controls" style="display: contents;">
+              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+          </li>
+          {{/iff}} {{/each}}
+        </ol>
       </div>
 
-    </header>
-
-    {{!-- Sheet Tab Navigation --}}
-    <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="characteristics">Characteristics</a>
-        <a class="item" data-tab="items">Gear & Equipment</a>
-        <a class="item" data-tab="talents">Talents</a>
-        <a class="item" data-tab="description">Biography</a>
-        <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
-    </nav>
-
-    {{!-- Sheet Body --}}
-    <section class="sheet-body">
-      {{!-- Characteristics Tab --}}
-      <div class="tab characteristics active" style="overflow: hidden;" data-group="primary" data-tab="characteristics">
-
-          {{!-- Characteristics Scores --}}
-
-          <ul class="flexrow characteristics-list">
-              {{#each data.characteristics as |characteristic id|}}
-              <li data-ability="{{id}}">
-                  {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
-                  <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1"
-                      type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
-                  <label>{{characteristic.label}}</label>
-              </li>
-              {{/each}}
-          </ul>
-          <fieldset class="skillfilter" id="skillfilter" style="display: none;">
-            <div>
-              <label style="display:flex;">Filter skills:</label>
-              <input class="filter-control" type="radio" id="all" name="skillfilter" />
-              <label for="all">All</label>
-              <input class="filter-control" type="radio" id="Combat" name="skillfilter" />
-              <label for="combat">Combat</label><br>
-              <input class="filter-control" type="radio" id="General" name="skillfilter" />
-              <label for="general">General</label><br>
-              <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" />
-              <label for="knowledge">Knowledge</label>
+      {{!-- Armour List --}}
+      <div class="attributes">
+        <h1><label>Armour</label></h1>
+        <header class="attributes-header flexrow">
+          <span>Name</span>
+          <span>Defence</span>
+          <span>Soak</span>
+          <span>HP</span>
+          <span>Encum</span>
+          <span style="visibility: hidden; display: contents;">Del</span>
+        </header>
+        <ol class="attributes-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
+          <li class="attribute flexrow item" data-item-id="{{item._id}}">
+            <h4 class="item-name hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </h4>
+            <label>{{item.data.defence.value}}</label>
+            <label>{{item.data.soak.value}}</label>
+            <label>{{item.data.hardpoints.value}}</label>
+            <label>{{item.data.encumbrance.value}}</label>
+            <div class="item-controls" style="display: contents;">
+              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
             </div>
-          </fieldset>
-          <div class="tableWithHeader">
-            <div style="flex:1;margin: 2px;">
-            <table>
-              <h1>General</h1>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Career Skill</td>
-                        <td>Rank</td>
-                        <td>Roll</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each data.skills as |skill id|}}
-                    {{#iff skill.type '==' 'General'}}
-                    <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                        <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
-                          ({{abrev}})
-                          {{/with}}
-                        </td>
-                        <td>
-                          <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
-                        </td>
-                        <td>
-                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
-                                data-dtype="Number" placeholder="0" />
-                        </td>
-                        <td>
-                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
-                            <div class="roll-button dice-pool"></div>
-                        </td>
-                    </tr>
-                    {{/iff}}
-                    {{/each}}
-                </tbody>
-            </table>
+          </li>
+          {{/iff}} {{/each}}
+        </ol>
+      </div>
+
+      {{!-- Gear List --}}
+      <div class="attributes">
+        <h1><label>Gear</label></h1>
+        <header class="attributes-header flexrow">
+          <span>Name</span>
+          <span>Price</span>
+          <span>Rarity</span>
+          <span>Quantity</span>
+          <span>Encum</span>
+          <span style="visibility: hidden; display: contents;">Del</span>
+        </header>
+        <ol class="attributes-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'gear'}}
+          <li class="attribute flexrow item" data-item-id="{{item._id}}">
+            <h4 class="item-name hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </h4>
+            <label>{{item.data.price.value}}</label>
+            <label>{{item.data.rarity.value}}</label>
+            <label>{{item.data.quantity.value}}</label>
+            <label>{{item.data.encumbrance.value}}</label>
+            <div class="item-controls" style="display: contents;">
+              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
             </div>
-            <div style="flex:1;margin: 2px;">
-            <table>
-              <h1>Combat</h1>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Career Skill</td>
-                        <td>Rank</td>
-                        <td>Roll</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each data.skills as |skill id|}}
-                    {{#iff skill.type '==' 'Combat'}}
-                    <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                        <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
-                          ({{abrev}})
-                          {{/with}}
-                        </td>
-                        <td>
-                          <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
-                        </td>
-                        <td>
-                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
-                                data-dtype="Number" placeholder="0" />
-                        </td>
-                        <td>
-                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
-                            <div class="roll-button dice-pool"></div>
-                        </td>
-                    </tr>
-                    {{/iff}}
-                    {{/each}}
-                </tbody>
-            </table>
-            <table>
-              <h1>Knowledge</h1>
-                <thead>
-                    <tr>
-                        <td>Name</td>
-                        <td>Career Skill</td>
-                        <td>Rank</td>
-                        <td>Roll</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each data.skills as |skill id|}}
-                    {{#iff skill.type '==' 'Knowledge'}}
-                    <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                        <td>{{lookup ../this.FFG.skills.knowledgestripped [id]~}} {{#with (lookup ../this.data.characteristics [characteristic])~}}
-                          ({{abrev}})
-                          {{/with}}
-                        </td>
-                        <td>
-                          <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
-                        </td>
-                        <td>
-                            <input style="width: 30px;text-align: center;" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6"
-                                data-dtype="Number" placeholder="0" />
-                        </td>
-                        <td>
-                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
-                            <div class="roll-button dice-pool"></div>
-                        </td>
-                    </tr>
-                    {{/iff}}
-                    {{/each}}
-                </tbody>
-            </table>
+          </li>
+          {{/iff}} {{/each}}
+        </ol>
+      </div>
+    </div>
+
+    {{!-- Talents Tab --}}
+    <div class="tab talents" data-group="primary" data-tab="talents">
+      {{!-- Talents List --}}
+      <div class="talents">
+        <h1><label>Talents</label></h1>
+        <header class="talents-header flexrow">
+          <span>Name</span>
+          <span>Activation</span>
+          <span>Rank</span>
+          <span style="visibility: hidden; display: contents;">Del</span>
+        </header>
+        <ol class="talents-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'talent'}}
+          <li class="talents flexrow item" data-item-id="{{item._id}}">
+            <h4 class="item-name hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </h4>
+            <label>{{item.data.activation.value}}</label>
+            {{#if item.data.ranks.ranked}}
+            <label>{{item.data.ranks.current}}</label>
+            {{else}}
+            <label>N/A</label>
+            {{/if}}
+            <div class="item-controls" style="display: contents;">
+              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </div>
+          </li>
+          {{/iff}} {{/each}}
+        </ol>
+      </div>
+    </div>
+
+    {{!-- Biography Tab --}}
+    <div class="tab biography active" data-group="primary" data-tab="description" style="height: 90%; border-bottom: 1px solid #858585;">
+      {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+      <div class="xp-box">
+        {{!-- XP Box --}}
+        <div class="split-box">
+          <h1>XP</h1>
+          <div class="content">
+            <div class="left">
+              <input type="text" name="data.experience.available" value="{{data.experience.available}}" data-dtype="Number" />
+              <label>Available</label>
+            </div>
+            <div class="divider"></div>
+            <div class="right">
+              <input type="text" name="data.experience.total" value="{{data.experience.total}}" data-dtype="Number" />
+              <label>Total</label>
             </div>
           </div>
         </div>
 
-        {{!-- Owned Items Tab --}}
-        <div class="tab items" data-group="primary" data-tab="items">
-
-          {{!-- Weapons List --}}
-          <div class="attributes">
-            <h1><label>Weapons</label></h1>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Skill</span>
-              <span>Damage</span>
-              <span>Range</span>
-              <span>Crit</span>
-              <span>Special</span>
-              <span>Encum</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'weapon'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label class="hover">{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}<div class="tooltip">{{item.data.skill.value}}</div></label>
-                      <label>{{item.data.damage.value}}</label>
-                      <label>{{item.data.range.value}}</label>
-                      <label>{{item.data.crit.value}}</label>
-                      <label class="hover">{{item.data.special.value}}<div class="tooltip">{{item.data.special.value}}</div></label>
-                      <label>{{item.data.encumbrance.value}}</label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
-          {{!-- Armour List --}}
-          <div class="attributes">
-            <h1><label>Armour</label></h1>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Defence</span>
-              <span>Soak</span>
-              <span>HP</span>
-              <span>Encum</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'armour'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label>{{item.data.defence.value}}</label>
-                      <label>{{item.data.soak.value}}</label>
-                      <label>{{item.data.hardpoints.value}}</label>
-                      <label>{{item.data.encumbrance.value}}</label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
-          {{!-- Gear List --}}
-          <div class="attributes">
-            <h1><label>Gear</label></h1>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Price</span>
-              <span>Rarity</span>
-              <span>Quantity</span>
-              <span>Encum</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'gear'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label>{{item.data.price.value}}</label>
-                      <label>{{item.data.rarity.value}}</label>
-                      <label>{{item.data.quantity.value}}</label>
-                      <label>{{item.data.encumbrance.value}}</label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
-        </div>
-
-        {{!-- Talents Tab --}}
-        <div class="tab talents" data-group="primary" data-tab="talents">
-
-          {{!-- Talents List --}}
-          <div class="talents">
-            <h1><label>Talents</label></h1>
-            <header class="talents-header flexrow">
-              <span>Name</span>
-              <span>Activation</span>
-              <span>Rank</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="talents-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'talent'}}
-                  <li class="talents flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label>{{item.data.activation.value}}</label>
-                      {{#if item.data.ranks.ranked}}
-                      <label>{{item.data.ranks.current}}</label>
-                      {{else}}
-                      <label>N/A</label>
-                      {{/if}}
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-        </div>
-
-
-        {{!-- Biography Tab --}}
-        <div class="tab biography active" data-group="primary" data-tab="description" style="height:90%;border-bottom: 1px solid #858585;">
-          {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
-          {{!-- Footer info --}}
-          <div class="xp-box">
-              {{!-- XP Box --}}
-              <div class="split-box">
-                  <h1>XP</h1>
-                  <div class="content">
-                      <div class="left">
-                          <input type="text" name="data.experience.available" value="{{data.experience.available}}"
-                              data-dtype="Number" />
-                          <label>Available</label>
-                      </div>
-                      <div class="divider"></div>
-                      <div class="right">
-                          <input type="text" name="data.experience.total" value="{{data.experience.total}}"
-                              data-dtype="Number" />
-                          <label>Total</label>
-                      </div>
-                  </div>
-              </div>
-
-              {{!-- Credits Box --}}
-              <div class="split-box" style="margin-left: 10px">
-                <div class="content">
-                  <div class="single-clear">
-                    <h1>Credits</h1><input name="data.stats.credits.value" value="{{data.stats.credits.value}}" type="text" data-dtype="Number" placeholder="0" />
-                  </div>
-                </div>
-              </div>
-
-              {{!-- Obligation Box --}}
-              <div class="split-box" style="margin-left: 50px">
-                <h1 style="background: #44432f; border-bottom: 2px solid black;">Obligation</h1>
-                <div class="content">
-                  <div class="single-clear">
-                      <input type="text" name="data.obligation.value" value="{{data.obligation.value}}"
-                          data-dtype="Number" />
-                    </div>
-                </div>
-              </div>
-
-              {{!-- Duty Box --}}
-              <div class="split-box" style="margin-left: 10px">
-                <h1 style="background: #652825; border-bottom: 2px solid black;">Duty</h1>
-                <div class="content">
-                  <div class="single-clear">
-                    <input type="text" name="data.duty.value" value="{{data.duty.value}}"
-                        data-dtype="Number" />
-                  </div>
-                </div>
-              </div>
-
-              {{!-- Morality Box --}}
-              <div class="split-box" style="margin-left: 10px">
-                <h1 style="background: #000; border-bottom: 2px solid black;">Morality</h1>
-                <div class="content">
-                  <div class="single-clear">
-                    <input type="text" name="data.morality.value" value="{{data.morality.value}}"
-                        data-dtype="Number" />
-                  </div>
-                </div>
-              </div>
-
-              {{!-- Conflict Box --}}
-              <div class="split-box" style="margin-left: 10px">
-                <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Conflict</h1>
-                <div class="content">
-                  <div class="single-clear">
-                      <input type="text" name="data.conflict.value" value="{{data.conflict.value}}"
-                          data-dtype="Number" />
-                  </div>
-                </div>
-              </div>
-
+        {{!-- Credits Box --}}
+        <div class="split-box" style="margin-left: 10px;">
+          <div class="content">
+            <div class="single-clear">
+              <h1>Credits</h1>
+              <input name="data.stats.credits.value" value="{{data.stats.credits.value}}" type="text" data-dtype="Number" placeholder="0" />
             </div>
+          </div>
         </div>
 
-        {{!-- Modifiers Tab --}}
-        <div class="tab attributes" data-group="primary" data-tab="attributes">
-            <header class="attributes-header flexrow">
-              <!-- <span class="attribute-key">ID</span> -->
-                <span class="attribute-modtype">Mod Type</span>
-                <span class="attribute-mod">Modifier</span>
-                <span class="attribute-value">Value</span>
-                <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
-            </header>
-
-            <ol class="attributes-list">
-            {{#each data.attributes as |attr key|}}
-                <li class="attribute flexrow" data-attribute="{{key}}">
-                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display:none;"/>
-                    <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-                        {{#select attr.modtype}}
-                        {{#each ../this.FFG.mod_types as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
-                    <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-                        {{#select attr.mod}}
-                        {{#iff attr.modtype '==' 'Stat' }}
-                        {{#each ../this.FFG.character_stats as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Skill Rank' }}
-                        {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Skill Boost' }}
-                        {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Characteristic' }}
-                        {{#each ../this.FFG.characteristics as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{/select}}
-                    </select>
-                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" placeholder="0"/>
-                    <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
-                    <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-                </li>
-            {{/each}}
-            </ol>
+        {{!-- Obligation Box --}}
+        <div class="split-box" style="margin-left: 50px;">
+          <h1 style="background: #44432f; border-bottom: 2px solid black;">Obligation</h1>
+          <div class="content">
+            <div class="single-clear">
+              <input type="text" name="data.obligation.value" value="{{data.obligation.value}}" data-dtype="Number" />
+            </div>
+          </div>
         </div>
 
-    </section>
+        {{!-- Duty Box --}}
+        <div class="split-box" style="margin-left: 10px;">
+          <h1 style="background: #652825; border-bottom: 2px solid black;">Duty</h1>
+          <div class="content">
+            <div class="single-clear">
+              <input type="text" name="data.duty.value" value="{{data.duty.value}}" data-dtype="Number" />
+            </div>
+          </div>
+        </div>
+
+        {{!-- Morality Box --}}
+        <div class="split-box" style="margin-left: 10px;">
+          <h1 style="background: #000; border-bottom: 2px solid black;">Morality</h1>
+          <div class="content">
+            <div class="single-clear">
+              <input type="text" name="data.morality.value" value="{{data.morality.value}}" data-dtype="Number" />
+            </div>
+          </div>
+        </div>
+
+        {{!-- Conflict Box --}}
+        <div class="split-box" style="margin-left: 10px;">
+          <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Conflict</h1>
+          <div class="content">
+            <div class="single-clear">
+              <input type="text" name="data.conflict.value" value="{{data.conflict.value}}" data-dtype="Number" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <header class="attributes-header flexrow">
+        <!-- <span class="attribute-key">ID</span> -->
+        <span class="attribute-modtype">Mod Type</span>
+        <span class="attribute-mod">Modifier</span>
+        <span class="attribute-value">Value</span>
+        <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
+      </header>
+
+      <ol class="attributes-list">
+        {{#each data.attributes as |attr key|}}
+        <li class="attribute flexrow" data-attribute="{{key}}">
+          <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
+          <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
+            {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/select}}
+          </select>
+          <select class="attribute-mod" name="data.attributes.{{key}}.mod">
+            {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{/select}}
+          </select>
+          <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" placeholder="0" />
+          <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+          <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+        </li>
+        {{/each}}
+      </ol>
+    </div>
+  </section>
 </form>

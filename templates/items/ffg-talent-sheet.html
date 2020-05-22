@@ -23,7 +23,7 @@
             <div class="resource small">
             	<label>Rank: </label>
               {{#if data.ranks.ranked}}
-                <input style="text-align:center;" type="number" name="data.ranks.current" value="{{data.ranks.current}}" data-dtype="Number" />
+                <input style="text-align:center;" type="number" name="data.ranks.current" value="{{data.ranks.current}}" min="0" data-dtype="Number" />
               {{else}}
                 <input style="text-align:center;" type="text" value="N/A" disabled />
               {{/if}}

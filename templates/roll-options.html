@@ -2,20 +2,20 @@
   <div class="dice-pool"></div>
   <table>
     <tr>
-      <td>Ability</td>
-      <td><input type="number" name="ability" min="0"></td>
-    </tr>
-    <tr>
       <td>Proficiency</td>
       <td><input type="number" name="proficiency" min="0"></td>
     </tr>
     <tr>
-      <td>Difficulty</td>
-      <td><input type="number" name="difficulty" min="0"></td>
+      <td>Ability</td>
+      <td><input type="number" name="ability" min="0"></td>
     </tr>
     <tr>
       <td>Challenge</td>
       <td><input type="number"name="challenge" min="0"></td>
+    </tr>
+    <tr>
+      <td>Difficulty</td>
+      <td><input type="number" name="difficulty" min="0"></td>
     </tr>
     <tr>
       <td>Boost</td>
@@ -55,10 +55,10 @@
       const pool = new DicePoolFFG({{{json dicePool}}});
 
       updatePreview(scope, pool);
-      setupInput(scope, pool, "ability");
       setupInput(scope, pool, "proficiency");
-      setupInput(scope, pool, "difficulty");
+      setupInput(scope, pool, "ability");
       setupInput(scope, pool, "challenge");
+      setupInput(scope, pool, "difficulty");
       setupInput(scope, pool, "boost");
       setupInput(scope, pool, "setback");
       setupInput(scope, pool, "force");

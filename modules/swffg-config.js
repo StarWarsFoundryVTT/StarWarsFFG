@@ -6,7 +6,7 @@ FFG.characteristics = {
   "Intellect": "Intellect",
   "Cunning": "Cunning",
   "Willpower": "Willpower",
-  "Presence": "Presence"
+  "Presence": "Presence",
 };
 
 FFG.character_stats = {
@@ -16,7 +16,7 @@ FFG.character_stats = {
   "defence": "Defence",
   "encumbrance": "Encumbrance",
   "forcePool": "Force Pool",
-  "credits": "Credits"
+  "credits": "Credits",
 };
 
 FFG.skills = {
@@ -54,7 +54,7 @@ FFG.skills = {
   "Knowledge: Outer Rim": "Knowledge: Outer Rim",
   "Knowledge: Underworld": "Knowledge: Underworld",
   "Knowledge: Warfare": "Knowledge: Warfare",
-  "Knowledge: Xenology": "Knowledge: Xenology"
+  "Knowledge: Xenology": "Knowledge: Xenology",
 };
 
 FFG.skills.knowledgestripped = {
@@ -64,15 +64,15 @@ FFG.skills.knowledgestripped = {
   "Knowledge: Outer Rim": "Outer Rim",
   "Knowledge: Underworld": "Underworld",
   "Knowledge: Warfare": "Warfare",
-  "Knowledge: Xenology": "Xenology"
-}
+  "Knowledge: Xenology": "Xenology",
+};
 
 FFG.ranges = {
   "Engaged": "Engaged",
   "Short": "Short",
   "Medium": "Medium",
   "Long": "Long",
-  "Extreme": "Extreme"
+  "Extreme": "Extreme",
 };
 
 FFG.vehicle_ranges = {
@@ -80,7 +80,7 @@ FFG.vehicle_ranges = {
   "Short": "Short",
   "Medium": "Medium",
   "Long": "Long",
-  "Extreme": "Extreme"
+  "Extreme": "Extreme",
 };
 
 FFG.fire_arcs = {
@@ -88,7 +88,7 @@ FFG.fire_arcs = {
   "Aft": "Aft",
   "Port": "Port",
   "Starboard": "Starboard",
-  "All": "All"
+  "All": "All",
 };
 
 FFG.combat_skills = {
@@ -97,7 +97,7 @@ FFG.combat_skills = {
   "Lightsaber": "Lightsaber",
   "Melee": "Melee",
   "Ranged: Light": "Ranged: Light",
-  "Ranged: Heavy": "Ranged: Heavy"
+  "Ranged: Heavy": "Ranged: Heavy",
 };
 
 FFG.combat_skills.abrev = {
@@ -106,27 +106,21 @@ FFG.combat_skills.abrev = {
   "Lightsaber": "LS",
   "Melee": "M",
   "Ranged: Light": "RL",
-  "Ranged: Heavy": "RH"
-}
+  "Ranged: Heavy": "RH",
+};
 
 FFG.activations = {
   "Passive": "Passive",
   "Active (Incidental)": "Active (Incidental)",
   "Active (Incidental, Out of Turn)": "Active (Incidental, Out of Turn)",
   "Active (Action)": "Active (Action)",
-  "Active (Maneuver)": "Active (Maneuver)"
+  "Active (Maneuver)": "Active (Maneuver)",
 };
 
 FFG.mod_types = ["Characteristic", "Skill Rank", "Skill Boost", "Stat"];
 
-FFG.species = {
+FFG.species = {};
 
-};
+FFG.careers = {};
 
-FFG.careers = {
-
-};
-
-FFG.specialisations = {
-
-};
+FFG.specialisations = {};

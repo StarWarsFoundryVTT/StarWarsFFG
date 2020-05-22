@@ -180,8 +180,8 @@
                       <label>{{item.data.range.value}}</label>
                       <label>{{item.data.crit.value}}</label>
                       <label class="hover">{{item.data.special.value}}<div class="tooltip">{{item.data.special.value}}</div></label>
-                      <div class="item-controls">
-                          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                      <div class="item-controls" style="display: contents;">
+                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
                           <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                       </div>
                   </li>
@@ -204,8 +204,8 @@
                   <li class="attribute flexrow item" data-item-id="{{item._id}}">
                       <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
                       <label>{{item.data.hardpoints.value}}</label>
-                      <div class="item-controls">
-                          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+                      <div class="item-controls" style="display: contents;">
+                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
                           <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                       </div>
                   </li>
@@ -223,7 +223,7 @@
               <span>Rarity</span>
               <span>Quantity</span>
               <span>Encum</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
+              <span style="visibility: hidden; display: contents;">Del</span>
             </header>
             <ol class="attributes-list">
                 {{#each actor.items as |item id|}}
@@ -236,9 +236,9 @@
                             <label>{{item.data.rarity.value}}</label>
                             <label>{{item.data.quantity.value}}</label>
                             <label>{{item.data.encumbrance.value}}</label>
-                            <div class="item-controls">
-                                <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                            <div class="item-controls" style="display: contents;">
+                                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                                <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                             </div>
                         </li>
                       {{/iff}}
@@ -251,7 +251,7 @@
         </div>
 
         {{!-- Biography Tab --}}
-        <div class="tab biography active" style="height:81%" data-group="primary" data-tab="description">
+        <div class="tab biography active" style="height:82%" data-group="primary" data-tab="description">
           {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
           {{!-- Obligations Section --}}
           <div class="container sheet-topper" style="margin: 0;">
