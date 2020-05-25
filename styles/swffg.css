@@ -29,7 +29,6 @@
 
 .item:hover .hover {
   text-decoration: underline;
-  text-decoration-style: double;
 }
 
 .hover:hover .tooltip {
@@ -113,18 +112,18 @@ div .container.talents {
   margin-top: 5px;
 }
 
-.worldbuilding.sheet .window-content {
+.starwarsffg.sheet .window-content {
   padding: 5px;
   overflow-y: hidden;
 }
 
-.worldbuilding.sheet.actor {
+.starwarsffg.sheet.actor {
   min-width: 575px;
   min-height: 489px;
 }
 
 /* Sheet Header */
-.worldbuilding.sheet .sheet-header {
+.starwarsffg.sheet .sheet-header {
   overflow: hidden;
   display: flex;
   flex-direction: row;
@@ -133,7 +132,7 @@ div .container.talents {
   flex: 0 0 100px;
 }
 
-.worldbuilding.sheet .profile-img {
+.starwarsffg.sheet .profile-img {
   flex: 0 0 100px;
   height: 124px;
   width: auto;
@@ -143,27 +142,27 @@ div .container.talents {
   border-radius: 15px;
 }
 
-.worldbuilding.sheet .header-fields {
+.starwarsffg.sheet .header-fields {
   flex: 1;
   height: auto;
 }
 
-.worldbuilding.sheet .charname {
+.starwarsffg.sheet .charname {
   border-bottom: 0;
   display: flex;
 }
 
-.worldbuilding.sheet .charname.minion {
+.starwarsffg.sheet .charname.minion {
   border-bottom: 0;
   display: flex;
 }
 
-.worldbuilding.sheet .charname input {
+.starwarsffg.sheet .charname input {
   width: auto;
   margin: 5px 5px 10px 5px;
 }
 
-.worldbuilding.sheet .resource {
+.starwarsffg.sheet .resource {
   height: 40px;
   padding-bottom: 4px;
   padding-left: 2px;
@@ -171,12 +170,12 @@ div .container.talents {
   display: inline-table;
 }
 
-.worldbuilding.sheet .resource input {
+.starwarsffg.sheet .resource input {
   width: 82px;
   height: 22px;
 }
 
-.worldbuilding.sheet .xp-box {
+.starwarsffg.sheet .xp-box {
   position: absolute;
   padding: 0;
   left: 25px;
@@ -186,91 +185,73 @@ div .container.talents {
   display: flex;
 }
 
-.worldbuilding.sheet .xp-box input {
+.starwarsffg.sheet .xp-box input {
   width: 61px;
   height: 14px;
 }
 
-.worldbuilding.sheet .resource.small input {
+.starwarsffg.sheet .resource.small input {
   width: 40px;
   height: 22px;
 }
 
 /* Navigation Tabs */
-.worldbuilding.sheet .tabs {
+.starwarsffg.sheet .tabs {
   flex: 0 0 40px;
   border-top: 1px solid #aaa;
   border-bottom: 1px solid #aaa;
   margin-top: 3px;
 }
 
-.worldbuilding.sheet .tabs .item {
+.starwarsffg.sheet .tabs .item {
   line-height: 40px;
   font-weight: bold;
 }
 
-.worldbuilding.sheet .tabs .item.active {
+.starwarsffg.sheet .tabs .item.active {
   text-decoration: underline;
   text-shadow: none;
 }
 
-.worldbuilding.sheet .attributes-list .attribute.item {
-  position: relative;
-}
-
-.worldbuilding.sheet .attributes-list .attribute.item label {
-  overflow: hidden;
-}
-
-.worldbuilding.sheet .attributes-list .attribute.item:hover {
-  background: rgb(25, 24, 19, 0.12);
-  margin: +2px;
-}
-
-.worldbuilding.sheet .talents-list .talents.item:hover {
-  background: rgb(25, 24, 19, 0.12);
-  margin: +2px;
-}
-
 /* Content Tabs */
-.worldbuilding.sheet .sheet-body {
+.starwarsffg.sheet .sheet-body {
   height: calc(100% - 19em);
   overflow: auto;
   border: 1px solid #868686;
 }
 
-.worldbuilding.sheet .sheet-body.minion {
+.starwarsffg.sheet .sheet-body.minion {
   height: calc(100% - 14em);
   overflow: auto;
 }
 
-.worldbuilding.sheet .sheet-body.vehicle {
+.starwarsffg.sheet .sheet-body.vehicle {
   height: calc(100% - 25em);
   overflow: auto;
 }
 
-.worldbuilding.sheet .sheet-body.small {
+.starwarsffg.sheet .sheet-body.small {
   height: calc(100% - 16em);
   overflow: auto;
 }
 
-.worldbuilding.sheet .sheet-body .tab {
+.starwarsffg.sheet .sheet-body .tab {
   height: 100%;
 }
-.worldbuilding.sheet .sheet-body .editor {
+.starwarsffg.sheet .sheet-body .editor {
   width: 100%;
   height: 100%;
 }
 
 /* Topper */
-.worldbuilding.sheet .sheet-topper {
+.starwarsffg.sheet .sheet-topper {
   background: #435a76;
   overflow: auto;
   text-align: center;
   border-radius: 15px;
   justify-content: center;
 }
-.worldbuilding.sheet .sheet-topper * > input {
+.starwarsffg.sheet .sheet-topper * > input {
   background: #f2f2f2;
   border-radius: 0 0 15px 15px;
   width: auto;
@@ -285,58 +266,70 @@ sheet work. There is likely a better way to do this.
 }
 
 /* Items */
-.worldbuilding.sheet .items-list {
-  list-style: none;
-  margin: 7px 0;
-  padding: 0;
+.starwarsffg.sheet .items {
+  margin: 0;
+  border: 0;
+}
+
+.starwarsffg.sheet .items-header {
+  border: 1px solid #aaa;
+  border-radius: 2px;
+}
+.starwarsffg.sheet .items-list {
   overflow-y: auto;
 }
-.worldbuilding.sheet .items-list .item {
+.starwarsffg.sheet .items-list .item {
   height: 30px;
   line-height: 24px;
   padding: 3px 0;
   border-bottom: 1px solid #bbb;
 }
-.worldbuilding.sheet .items-list .item img {
+.starwarsffg.sheet .items-list .item img {
   flex: 0 0 24px;
   margin-right: 5px;
 }
-.worldbuilding.sheet .items-list .item-name {
+.starwarsffg.sheet .items-list .item-name {
   margin: 0;
 }
-.worldbuilding.sheet .items-list .item-controls {
-  flex: 0 0 36px;
+.starwarsffg.sheet .items-list .item-controls {
   z-index: 500;
+  width: 20px;
+  text-align: end;
+}
+
+.starwarsffg.sheet .items-list .item:hover {
+  background: rgb(25, 24, 19, 0.12);
+  margin: +2px;
 }
 
 /* Attributes */
-.worldbuilding.sheet .attributes {
-  margin: 0 5px 0 5px;
+.starwarsffg.sheet .attributes {
+  margin: 0;
+  border: 0;
 }
 
-.worldbuilding.sheet .attributes-header {
+.starwarsffg.sheet .attributes-header {
   padding: 5px;
   margin: 0 0 5px 0;
   background: rgba(0, 0, 0, 0.05);
   border: 1px solid #aaa;
   border-radius: 2px;
-  text-align: center;
   font-weight: bold;
 }
-.worldbuilding.sheet .attribute-label {
+.starwarsffg.sheet .attribute-label {
   flex: 1.5;
 }
-.worldbuilding.sheet .attribute-control {
+.starwarsffg.sheet .attribute-control {
   flex: 0 0 20px;
 }
 
-.worldbuilding.sheet .attributes-list {
+.starwarsffg.sheet .attributes-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.worldbuilding.sheet .attributes-list li > * {
+.starwarsffg.sheet .attributes-list tr > * {
   margin: 0 3px;
   height: 28px;
   line-height: 24px;
@@ -344,24 +337,32 @@ sheet work. There is likely a better way to do this.
   border: none;
   border-radius: 0;
   border-bottom: 1px solid #aaa;
-  text-align: center;
   overflow: auto;
 }
 
-.worldbuilding.sheet .attribute-value.checkbox {
+.starwarsffg.sheet .attribute-value.checkbox {
   text-align: center;
 }
 
-.worldbuilding.sheet .attributes-list li a.attribute-control {
+.starwarsffg.sheet .attributes-list tr a.attribute-control {
   border: none;
 }
 
+.starwarsffg.sheet .attributes-list .attribute.item {
+  position: relative;
+}
+
+.starwarsffg.sheet .attributes-list .attribute.item:hover {
+  background: rgb(25, 24, 19, 0.12);
+  margin: +2px;
+}
+
 /* Talents */
-.worldbuilding.sheet .talents {
+.starwarsffg.sheet .talents {
   margin: 0 5px 0 5px;
 }
 
-.worldbuilding.sheet .talents-header {
+.starwarsffg.sheet .talents-header {
   padding: 5px;
   margin: 5px 0;
   background: rgba(0, 0, 0, 0.05);
@@ -370,17 +371,17 @@ sheet work. There is likely a better way to do this.
   text-align: center;
   font-weight: bold;
 }
-.worldbuilding.sheet .talents-label {
+.starwarsffg.sheet .talents-label {
   flex: 1.5;
 }
 
-.worldbuilding.sheet .talents-list {
+.starwarsffg.sheet .talents-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-.worldbuilding.sheet .talents-list li > * {
+.starwarsffg.sheet .talents-list li > * {
   margin: 0 3px;
   height: 28px;
   line-height: 24px;
@@ -392,12 +393,21 @@ sheet work. There is likely a better way to do this.
   overflow: auto;
 }
 
-.worldbuilding.sheet .characteristics-list {
+.starwarsffg.sheet .talents-list .talents.item {
+  position: relative;
+}
+
+.starwarsffg.sheet .talents-list .talents.item:hover {
+  background: rgb(25, 24, 19, 0.12);
+  margin: +2px;
+}
+
+.starwarsffg.sheet .characteristics-list {
   list-style: none;
   box-shadow: 0px 1px 1px 0px #999;
 }
 
-.worldbuilding.sheet .characteristics-list input {
+.starwarsffg.sheet .characteristics-list input {
   border-radius: 100%;
   width: 2em;
   height: 2em;
@@ -406,11 +416,11 @@ sheet work. There is likely a better way to do this.
   font-size: 18pt;
 }
 
-.worldbuilding.sheet .characteristics-list input:invalid {
+.starwarsffg.sheet .characteristics-list input:invalid {
   border: 2px solid red;
 }
 
-.worldbuilding.sheet .characteristics-list label {
+.starwarsffg.sheet .characteristics-list label {
   display: block;
   width: 3em;
   text-align: center;
@@ -449,7 +459,7 @@ boxes at the top of the standard FFG character sheets.
 .split-box input {
   border: 0;
   text-align: center;
-  background: transparent;
+  background: #ffffff78;
 }
 
 .split-box label {

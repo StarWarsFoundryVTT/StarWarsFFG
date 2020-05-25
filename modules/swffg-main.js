@@ -12,6 +12,8 @@ import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
 import { DicePoolFFG } from "./dice-pool-ffg.js";
+import { GroupManagerLayer } from "./groupmanager-ffg.js";
+import { GroupManager } from "./groupmanager-ffg.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -188,20 +190,32 @@ Hooks.once("init", async function () {
   });
 });
 
-// /* -------------------------------------------- */
-// /*  Set up control buttons                      */
-// /* -------------------------------------------- */
+/* -------------------------------------------- */
+/*  Set up control buttons                      */
+/* -------------------------------------------- */
 
-// Hooks.on("getSceneControlButtons", (controls) => {
-//   if (game.user.isGM) {
-//     controls.push({
-//       name: "groupmanager",
-//       title: "Group Manager",
-//       icon: "fas fa-users",
-//       onClick: () => {
-//         new GroupManager().render(true);
-//       },
-//       button: true,
-//     });
-//   }
-// });
+Hooks.on("getSceneControlButtons", (controls) => {
+  if (game.user.isGM) {
+    controls.push({
+      name: "groupmanager",
+      title: "Group Manager",
+      icon: "fas fa-users",
+      layer: "GroupManagerLayer",
+      tools: [
+        {
+          name: "groupsheet",
+          title: "Open Group Sheet",
+          icon: "fas fa-users",
+          onClick: () => {
+            new GroupManager().render(true);
+          },
+          button: true,
+        },
+      ],
+    });
+  }
+});
+
+Hooks.once("canvasInit", (canvas) => {
+  canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), 8);
+});

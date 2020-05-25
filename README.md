@@ -19,8 +19,31 @@ This is most easily available from the in-game Module browser. After installing 
    https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json
 5. Click Install, after a few seconds the system should be installed.
 
+# To-do
+
+NEEDED FOR RELEASE V1:
+
+- Group Management sheet for GM use (currently in progress).
+- Create equipable item functionality and rework inventory to suit. Continue to improve inventory display in the process.
+- Add talents to minion sheet.
+- Add Forcepower item type (based on talent).
+- Redo the dice selection popup to be more functional and provide upgrade ability and upgrade difficulty buttons.
+- Rebuild dice functionality to use Foundry Dice instead of chat content, remove requirement for Special-Dice-Roller.
+- Localisation hooks
+- Look into drag-and-drop item behaviours for things like transferring items between characters, or into a vehicle cargo hold.
+- SASS refactor
+
+NICE TO HAVE:
+
+- Create JS data models for species, careers and specialisations and use those in prepareData to define career skills and starting characteristics.
+- Attempt to fix display of wound and strain bars so that they suit FFG system.
+- Genesys cross-compatibility (dice, sheets)
+- Rework Special Qualities and Critical Injuries to be item type, add view to item sheets and character sheets.
+- Character creator
+
 # Changelog
 
+- 25/05/2020 - Esrin - Character sheet tweaks. Continued improvements to the inventory display in advance of equipable item support.
 - 22/05/2020 - Esrin - Minor bug fixes and tweaks, compatibility check with FVTT 0.6.0 stable release.
 - 18/05/2020 - alfarobl - Tweak to dice display orders to match the chat order, kindly provided by alfarobl.
 - 18/05/2020 - Esrin - A very hacky method has been introduced to allow the built in FoundryVTT combat tracker to roll initiative using FFG dice results. The resulting number is made up of successes and advantages. For example 1 success and 2 advantage would result in 1.02 for the initiative tracker. Warning, there might be bugs with this solution! Initiative can be switched between Vigilance and Cool via the System Settings section of the world configuration.
