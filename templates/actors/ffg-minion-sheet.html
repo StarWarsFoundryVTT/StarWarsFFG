@@ -93,6 +93,7 @@
     <nav class="sheet-tabs tabs" data-group="primary">
         <a class="item" data-tab="characteristics">Characteristics</a>
         <a class="item" data-tab="items">Gear & Equipment</a>
+        <a class="item" data-tab="talents">Talents</a>
         <a class="item" data-tab="description">Description</a>
         <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
     </nav>
@@ -191,7 +192,6 @@
                                 data-dtype="Number" placeholder="0" />
                         </td>
                         <td>
-                            <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
                             <div class="roll-button dice-pool"></div>
                         </td>
                     </tr>
@@ -239,106 +239,133 @@
 
         {{!-- Owned Items Tab --}}
         <div class="tab items" data-group="primary" data-tab="items">
-
-          {{!-- Credits Box --}}
-          <div class="resource">
-            <label>Credits: <input name="data.stats.credits.value" value="{{data.stats.credits.value}}" type="number" data-dtype="Number" placeholder="0" />
-          </div>
-
           {{!-- Weapons List --}}
-          <div class="attributes">
-            <h3><label>Weapons</label></h3>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Skill</span>
-              <span>Damage</span>
-              <span>Range</span>
-              <span>Crit</span>
-              <span>Special</span>
-              <span>Encum</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'weapon'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label class="hover">{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}<div class="tooltip">{{item.data.skill.value}}</div></label>
-                      <label>{{item.data.damage.value}}</label>
-                      <label>{{item.data.range.value}}</label>
-                      <label>{{item.data.crit.value}}</label>
-                      <label class="hover">{{item.data.special.value}}<div class="tooltip">{{item.data.special.value}}</div></label>
-                      <label>{{item.data.encumbrance.value}}</label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
+          <table class="items">
+            <h1><label>Weapons</label></h1>
+            <thead>
+              <tr class="items-header">
+                <td>Name</td>
+                <td>Skill</td>
+                <td>Damage</td>
+                <td>Range</td>
+                <td>Crit</td>
+                <td>Special</td>
+                <td>Encum</td>
+                <td style="visibility: hidden; display: contents;">Del</td>
+              </tr>
+            </thead>
+            <tbody class="items-list">
+              {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
+              <tr class="item" data-item-id="{{item._id}}">
+                <td class="item-name">{{item.name}}</td>
+                <td style="width: 30px;">{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}</td>
+                <td style="width: 50px;">{{item.data.damage.value}}</td>
+                <td style="width: 56px;">{{item.data.range.value}}</td>
+                <td style="width: 30px;">{{item.data.crit.value}}</td>
+                <td>{{item.data.special.value}}</td>
+                <td style="width: 40px;">{{item.data.encumbrance.value}}</td>
+                <td class="item-controls">
+                  <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                  <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+    
           {{!-- Armour List --}}
-          <div class="attributes">
-            <h3><label>Armour</label></h3>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Defence</span>
-              <span>Soak</span>
-              <span>HP</span>
-              <span>Encum</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'armour'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label>{{item.data.defence.value}}</label>
-                      <label>{{item.data.soak.value}}</label>
-                      <label>{{item.data.hardpoints.value}}</label>
-                      <label>{{item.data.encumbrance.value}}</label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
+          <table class="items">
+            <h1><label>Armour</label></h1>
+            <thead>
+              <tr class="items-header">
+                <td>Name</td>
+                <td>Defence</td>
+                <td>Soak</td>
+                <td>HP</td>
+                <td>Encum</td>
+                <td style="visibility: hidden; display: contents;">Del</td>
+              </tr>
+            </thead>
+            <tbody class="items-list">
+              {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
+              <tr class="item" data-item-id="{{item._id}}">
+                <td style="width: 70px;" class="item-name">{{item.name}}</td>
+                <td style="width: 40px;">{{item.data.defence.value}}</td>
+                <td style="width: 30px;">{{item.data.soak.value}}</td>
+                <td style="width: 30px;">{{item.data.hardpoints.value}}</td>
+                <td style="width: 30px;">{{item.data.encumbrance.value}}</td>
+                <td class="item-controls">
+                  <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                  <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+    
           {{!-- Gear List --}}
-          <div class="attributes">
-            <h3><label>Gear</label></h3>
-            <header class="attributes-header flexrow">
+          <table class="items">
+            <h1><label>Gear</label></h1>
+            <thead>
+              <tr class="items-header">
+                <td>Name</td>
+                <td>Price</td>
+                <td>Rarity</td>
+                <td>Qty</td>
+                <td>Encum</td>
+                <td style="visibility: hidden; display: contents;">Del</td>
+              </tr>
+            </thead>
+            <tbody class="items-list">
+              {{#each actor.items as |item id|}} {{#iff item.type '==' 'gear'}}
+              <tr class="item" data-item-id="{{item._id}}">
+                <td style="width: 70px;" class="item-name">{{item.name}}</td>
+                <td style="width: 40px;">{{item.data.price.value}}</td>
+                <td style="width: 30px;">{{item.data.rarity.value}}</td>
+                <td style="width: 30px;">{{item.data.quantity.value}}</td>
+                <td style="width: 30px;">{{item.data.encumbrance.value}}</td>
+                <td class="item-controls">
+                  <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                  <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+        </div>
+    
+        {{!-- Talents Tab --}}
+        <div class="tab talents" data-group="primary" data-tab="talents">
+          {{!-- Talents List --}}
+          <div class="talents">
+            <h1><label>Talents</label></h1>
+            <header class="talents-header flexrow">
               <span>Name</span>
-              <span>Price</span>
-              <span>Rarity</span>
-              <span>Quantity</span>
-              <span>Encum</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
+              <span>Activation</span>
+              <span>Rank</span>
+              <span style="visibility: hidden; display: contents;">Del</span>
             </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'gear'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label>{{item.data.price.value}}</label>
-                      <label>{{item.data.rarity.value}}</label>
-                      <label>{{item.data.quantity.value}}</label>
-                      <label>{{item.data.encumbrance.value}}</label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
+            <ol class="talents-list">
+              {{#each actor.items as |item id|}} {{#iff item.type '==' 'talent'}}
+              <li class="talents flexrow item" data-item-id="{{item._id}}">
+                <h4 class="item-name hover">
+                  {{item.name}}
+                  <div class="tooltip">{{item.safe_desc}}</div>
+                </h4>
+                <label>{{item.data.activation.value}}</label>
+                {{#if item.data.ranks.ranked}}
+                <label>{{item.data.ranks.current}}</label>
+                {{else}}
+                <label>N/A</label>
+                {{/if}}
+                <div class="item-controls" style="display: contents;">
+                  <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                  <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </div>
+              </li>
+              {{/iff}} {{/each}}
             </ol>
           </div>
-
         </div>
 
         {{!-- Biography Tab --}}

@@ -25,7 +25,6 @@ NEEDED FOR RELEASE V1:
 
 - Group Management sheet for GM use (currently in progress).
 - Create equipable item functionality and rework inventory to suit. Continue to improve inventory display in the process.
-- Add talents to minion sheet.
 - Add Forcepower item type (based on talent).
 - Redo the dice selection popup to be more functional and provide upgrade ability and upgrade difficulty buttons.
 - Rebuild dice functionality to use Foundry Dice instead of chat content, remove requirement for Special-Dice-Roller.
@@ -43,6 +42,7 @@ NICE TO HAVE:
 
 # Changelog
 
+- 28/05/2020 - Esrin - Brought the Minion sheet inventory in line with the latest Character sheet changes. Added talents to Minion sheet. Fixed a minor bug with group skill calculations (thanks Alex | HDScurox for the bug report).
 - 25/05/2020 - Esrin - Character sheet tweaks. Continued improvements to the inventory display in advance of equipable item support.
 - 22/05/2020 - Esrin - Minor bug fixes and tweaks, compatibility check with FVTT 0.6.0 stable release.
 - 18/05/2020 - alfarobl - Tweak to dice display orders to match the chat order, kindly provided by alfarobl.
