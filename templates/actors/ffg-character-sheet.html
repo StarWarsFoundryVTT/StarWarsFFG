@@ -6,10 +6,10 @@
     <div class="header-fields">
       {{!-- Character Details Container --}}
       <div class="charname">
-        <label>Name: <input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></label>
-        <label>Species:<input name="data.species.value" type="text" value="{{data.species.value}}" placeholder="Species" /></label>
-        <label>Career:<input name="data.career.value" type="text" value="{{data.career.value}}" placeholder="Career" /></label>
-        <label>Specialisation:<input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" placeholder="Specialisation" /></label>
+        <label>{{localize "SWFFG.Name"}}:<input name="name" type="text" value="{{actor.name}}" /></label>
+        <label>{{localize "SWFFG.Species"}}:<input name="data.species.value" type="text" value="{{data.species.value}}" /></label>
+        <label>{{localize "SWFFG.Career"}}:<input name="data.career.value" type="text" value="{{data.career.value}}" /></label>
+        <label>{{localize "SWFFG.Specializations"}}:<input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" /></label>
       </div>
 
       {{!-- Primary Stats Container --}}
@@ -19,16 +19,16 @@
           {{!-- Wounds Box --}}
           <div class="resource">
             <div class="split-box">
-              <h1>Wounds</h1>
+              <h1>{{localize "SWFFG.Wounds"}}</h1>
               <div class="content">
                 <div class="left">
                   <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number" />
-                  <label>Threshold</label>
+                  <label>{{localize "SWFFG.Threshold"}}</label>
                 </div>
                 <div class="divider"></div>
                 <div class="right">
                   <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number" />
-                  <label>Current</label>
+                  <label>{{localize "SWFFG.Current"}}</label>
                 </div>
               </div>
             </div>
@@ -37,16 +37,16 @@
           {{!-- Strain Box --}}
           <div class="resource">
             <div class="split-box">
-              <h1>Strain</h1>
+              <h1>{{localize "SWFFG.Strain"}}</h1>
               <div class="content">
                 <div class="left">
                   <input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number" />
-                  <label>Threshold</label>
+                  <label>{{localize "SWFFG.Threshold"}}</label>
                 </div>
                 <div class="divider"></div>
                 <div class="right">
                   <input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number" />
-                  <label>Current</label>
+                  <label>{{localize "SWFFG.Current"}}</label>
                 </div>
               </div>
             </div>
@@ -55,7 +55,7 @@
           {{!-- Soak Box --}}
           <div class="resource">
             <div class="split-box">
-              <h1>Soak</h1>
+              <h1>{{localize "SWFFG.Soak"}}</h1>
               <div class="content">
                 <div class="single-clear">
                   <input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" disabled />
@@ -68,16 +68,16 @@
           {{!-- Defence Box --}}
           <div class="resource">
             <div class="split-box">
-              <h1>Defence</h1>
+              <h1>{{localize "SWFFG.Defense"}}</h1>
               <div class="content">
                 <div class="left">
                   <input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number" />
-                  <label>Ranged</label>
+                  <label>{{localize "SWFFG.DefenseRanged"}}</label>
                 </div>
                 <div class="divider"></div>
                 <div class="right">
                   <input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number" />
-                  <label>Melee</label>
+                  <label>{{localize "SWFFG.DefenseMelee"}}</label>
                 </div>
               </div>
             </div>
@@ -86,16 +86,16 @@
           {{!-- Force Box --}}
           <div class="resource">
             <div class="split-box">
-              <h1>Force Pool</h1>
+              <h1>{{localize "SWFFG.ForcePool"}}</h1>
               <div class="content">
                 <div class="left">
                   <input type="text" name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}" data-dtype="Number" />
-                  <label>Committed</label>
+                  <label>{{localize "SWFFG.ForcePoolCommitted"}}</label>
                 </div>
                 <div class="divider"></div>
                 <div class="right">
                   <input type="text" name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}" data-dtype="Number" />
-                  <label>Available</label>
+                  <label>{{localize "SWFFG.ForcePoolAvailable"}}</label>
                 </div>
               </div>
             </div>
@@ -104,7 +104,7 @@
           {{!-- Encumbrance Box --}}
           <div class="resource">
             <div class="split-box">
-              <h1>Encum</h1>
+              <h1>{{localize "SWFFG.Encumbrance"}}</h1>
               <div class="content">
                 <div class="single-clear">
                   <input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" data-dtype="Number" disabled />
@@ -120,10 +120,10 @@
 
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item" data-tab="characteristics">Characteristics</a>
-    <a class="item" data-tab="items">Gear & Equipment</a>
-    <a class="item" data-tab="talents">Talents</a>
-    <a class="item" data-tab="description">Biography</a>
+    <a class="item" data-tab="characteristics">{{localize "SWFFG.TabCharacteristics"}}</a>
+    <a class="item" data-tab="items">{{localize "SWFFG.TabGear"}}</a>
+    <a class="item" data-tab="talents">{{localize "SWFFG.TabTalents"}}</a>
+    <a class="item" data-tab="description">{{localize "SWFFG.TabBiography"}}</a>
     <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
   </nav>
 
@@ -158,16 +158,16 @@
       <div class="tableWithHeader">
         <div style="flex: 1; margin: 2px; position: relative;">
           <table>
-            <h1>General</h1>
+            <h1>{{localize "SWFFG.SkillsGeneral"}}</h1>
             <thead>
               <tr>
-                <td>Name</td>
+                <td>{{localize "SWFFG.SkillsName"}}</td>
                 <td style="position: relative;" class="hover">
-                  CS
-                  <div class="tooltip">Career Skill</div>
+                  {{localize "SWFFG.SkillsCS"}}
+                  <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
                 </td>
-                <td>Rank</td>
-                <td>Roll</td>
+                <td>{{localize "SWFFG.SkillsRank"}}</td>
+                <td>{{localize "SWFFG.SkillsRoll"}}</td>
               </tr>
             </thead>
             <tbody>
@@ -191,16 +191,16 @@
         </div>
         <div style="flex: 1; margin: 2px; position: relative;">
           <table>
-            <h1>Combat</h1>
+            <h1>{{localize "SWFFG.SkillsCombat"}}</h1>
             <thead>
               <tr>
-                <td>Name</td>
+                <td>{{localize "SWFFG.SkillsName"}}</td>
                 <td style="position: relative;" class="hover">
-                  CS
-                  <div class="tooltip">Career Skill</div>
+                  {{localize "SWFFG.SkillsCS"}}
+                  <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
                 </td>
-                <td>Rank</td>
-                <td>Roll</td>
+                <td>{{localize "SWFFG.SkillsRank"}}</td>
+                <td>{{localize "SWFFG.SkillsRoll"}}</td>
               </tr>
             </thead>
             <tbody>
@@ -222,16 +222,16 @@
             </tbody>
           </table>
           <table>
-            <h1>Knowledge</h1>
+            <h1>{{localize "SWFFG.SkillsKnowledge"}}</h1>
             <thead>
               <tr>
-                <td>Name</td>
+                <td>{{localize "SWFFG.SkillsName"}}</td>
                 <td style="position: relative;" class="hover">
-                  CS
-                  <div class="tooltip">Career Skill</div>
+                  {{localize "SWFFG.SkillsCS"}}
+                  <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
                 </td>
-                <td>Rank</td>
-                <td>Roll</td>
+                <td>{{localize "SWFFG.SkillsRank"}}</td>
+                <td>{{localize "SWFFG.SkillsRoll"}}</td>
               </tr>
             </thead>
             <tbody>
@@ -260,16 +260,16 @@
     <div class="tab items" data-group="primary" data-tab="items">
       {{!-- Weapons List --}}
       <table class="items">
-        <h1><label>Weapons</label></h1>
+        <h1><label>{{localize "SWFFG.ItemsWeapons"}}</label></h1>
         <thead>
           <tr class="items-header">
-            <td>Name</td>
-            <td>Skill</td>
-            <td>Damage</td>
-            <td>Range</td>
-            <td>Crit</td>
-            <td>Special</td>
-            <td>Encum</td>
+            <td>{{localize "SWFFG.ItemsName"}}</td>
+            <td>{{localize "SWFFG.ItemsSkill"}}</td>
+            <td>{{localize "SWFFG.ItemsDamage"}}</td>
+            <td>{{localize "SWFFG.ItemsRange"}}</td>
+            <td>{{localize "SWFFG.ItemsCrit"}}</td>
+            <td>{{localize "SWFFG.ItemsSpecial"}}</td>
+            <td>{{localize "SWFFG.ItemsEncum"}}</td>
             <td style="visibility: hidden; display: contents;">Del</td>
           </tr>
         </thead>
@@ -294,14 +294,14 @@
 
       {{!-- Armour List --}}
       <table class="items">
-        <h1><label>Armour</label></h1>
+        <h1><label>{{localize "SWFFG.ItemsArmor"}}</label></h1>
         <thead>
           <tr class="items-header">
-            <td>Name</td>
-            <td>Defence</td>
-            <td>Soak</td>
-            <td>HP</td>
-            <td>Encum</td>
+            <td>{{localize "SWFFG.ItemsName"}}</td>
+            <td>{{localize "SWFFG.ItemsDefense"}}</td>
+            <td>{{localize "SWFFG.ItemsSoak"}}</td>
+            <td>{{localize "SWFFG.ItemsHP"}}</td>
+            <td>{{localize "SWFFG.ItemsEncum"}}</td>
             <td style="visibility: hidden; display: contents;">Del</td>
           </tr>
         </thead>
@@ -324,14 +324,14 @@
 
       {{!-- Gear List --}}
       <table class="items">
-        <h1><label>Gear</label></h1>
+        <h1><label>{{localize "SWFFG.ItemsGear"}}</label></h1>
         <thead>
           <tr class="items-header">
-            <td>Name</td>
-            <td>Price</td>
-            <td>Rarity</td>
-            <td>Qty</td>
-            <td>Encum</td>
+            <td>{{localize "SWFFG.ItemsName"}}</td>
+            <td>{{localize "SWFFG.ItemsPrice"}}</td>
+            <td>{{localize "SWFFG.ItemsRarity"}}</td>
+            <td>{{localize "SWFFG.ItemsQty"}}</td>
+            <td>{{localize "SWFFG.ItemsEncum"}}</td>
             <td style="visibility: hidden; display: contents;">Del</td>
           </tr>
         </thead>
@@ -357,11 +357,11 @@
     <div class="tab talents" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <div class="talents">
-        <h1><label>Talents</label></h1>
+        <h1><label>{{localize "SWFFG.Talents"}}</label></h1>
         <header class="talents-header flexrow">
-          <span>Name</span>
-          <span>Activation</span>
-          <span>Rank</span>
+          <span>{{localize "SWFFG.TalentsName"}}</span>
+          <span>{{localize "SWFFG.TalentsActivation"}}</span>
+          <span>{{localize "SWFFG.TalentsRank"}}</span>
           <span style="visibility: hidden; display: contents;">Del</span>
         </header>
         <ol class="talents-list">
@@ -393,16 +393,16 @@
       <div class="xp-box">
         {{!-- XP Box --}}
         <div class="split-box">
-          <h1>XP</h1>
+          <h1>{{localize "SWFFG.DescriptionXP"}}</h1>
           <div class="content">
             <div class="left">
               <input type="text" name="data.experience.available" value="{{data.experience.available}}" data-dtype="Number" />
-              <label>Available</label>
+              <label>{{localize "SWFFG.DescriptionXPAvailable"}}</label>
             </div>
             <div class="divider"></div>
             <div class="right">
               <input type="text" name="data.experience.total" value="{{data.experience.total}}" data-dtype="Number" />
-              <label>Total</label>
+              <label>{{localize "SWFFG.DescriptionXPTotal"}}</label>
             </div>
           </div>
         </div>
@@ -411,7 +411,7 @@
         <div class="split-box" style="margin-left: 10px;">
           <div class="content">
             <div class="single-clear">
-              <h1>Credits</h1>
+              <h1>{{localize "SWFFG.DescriptionCredits"}}</h1>
               <input name="data.stats.credits.value" value="{{data.stats.credits.value}}" type="text" data-dtype="Number" placeholder="0" />
             </div>
           </div>
@@ -419,7 +419,7 @@
 
         {{!-- Obligation Box --}}
         <div class="split-box" style="margin-left: 50px;">
-          <h1 style="background: #44432f; border-bottom: 2px solid black;">Obligation</h1>
+          <h1 style="background: #44432f; border-bottom: 2px solid black;">{{localize "SWFFG.DescriptionObligation"}}</h1>
           <div class="content">
             <div class="single-clear">
               <input type="text" name="data.obligation.value" value="{{data.obligation.value}}" data-dtype="Number" />
@@ -429,7 +429,7 @@
 
         {{!-- Duty Box --}}
         <div class="split-box" style="margin-left: 10px;">
-          <h1 style="background: #652825; border-bottom: 2px solid black;">Duty</h1>
+          <h1 style="background: #652825; border-bottom: 2px solid black;">{{localize "SWFFG.DescriptionDuty"}}</h1>
           <div class="content">
             <div class="single-clear">
               <input type="text" name="data.duty.value" value="{{data.duty.value}}" data-dtype="Number" />
@@ -439,7 +439,7 @@
 
         {{!-- Morality Box --}}
         <div class="split-box" style="margin-left: 10px;">
-          <h1 style="background: #000; border-bottom: 2px solid black;">Morality</h1>
+          <h1 style="background: #000; border-bottom: 2px solid black;">{{localize "SWFFG.DescriptionMorality"}}</h1>
           <div class="content">
             <div class="single-clear">
               <input type="text" name="data.morality.value" value="{{data.morality.value}}" data-dtype="Number" />
@@ -449,7 +449,7 @@
 
         {{!-- Conflict Box --}}
         <div class="split-box" style="margin-left: 10px;">
-          <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Conflict</h1>
+          <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">{{localize "SWFFG.DescriptionConflict"}}</h1>
           <div class="content">
             <div class="single-clear">
               <input type="text" name="data.conflict.value" value="{{data.conflict.value}}" data-dtype="Number" />

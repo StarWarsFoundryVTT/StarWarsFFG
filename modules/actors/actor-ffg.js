@@ -62,6 +62,13 @@ export class ActorFFG extends Actor {
     // Start with Brawn. Also calculate total encumbrance from items.
     soak = +data.characteristics.Brawn.value;
 
+    for (let characteristic of Object.keys(data.characteristics)) {
+      const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
+      const localizedField = game.i18n.localize(strId);
+
+      data.characteristics[characteristic].label = localizedField;
+    }
+
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
       // For armour type, get all Soak values and add to armoursoak.
@@ -90,5 +97,14 @@ export class ActorFFG extends Actor {
 
     // Finally set Soak value on character.
     data.stats.soak.value = soak;
+  }
+
+  /**
+   * Capitalize string
+   * @param  {String} s   String value to capitalize
+   */
+  _capitalize(s) {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
   }
 }
