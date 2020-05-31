@@ -1,0 +1,17 @@
+{
+  "name": "starwarsffg",
+  "version": "1.0.0",
+  "description": "( PLEASE NOTE: This is a custom fork based on [Jaxxa's implementation](https://github.com/jaxxa/StarWarsFFG/tree/master). )",
+  "main": "index.js",
+  "scripts": {
+    "compile": "gulp css"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-sass": "^4.1.0",
+    "gulp-sourcemaps": "^2.6.5"
+  }
+}
