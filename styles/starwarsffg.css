@@ -1,16 +1,16 @@
 @font-face {
-  font-family: 'Roboto';
-  src: url("fonts/Roboto-Regular.ttf") format("truetype");
+  font-family: "Roboto";
+  src: url("../fonts/Roboto-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'StarJedi';
-  src: url("fonts/StarJedi-Regular.ttf") format("truetype");
+  font-family: "StarJedi";
+  src: url("../fonts/StarJedi-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Signika';
-  src: url("fonts/Signika-Regular.ttf") format("truetype");
+  font-family: "Signika";
+  src: url("../fonts/Signika-Regular.ttf") format("truetype");
 }
 
 /* Global styles */
@@ -23,7 +23,8 @@
   font-size: 9pt;
 }
 
-.rollable:hover, .rollable:focus {
+.rollable:hover,
+.rollable:focus {
   color: #000;
   text-shadow: 0 0 10px red;
   cursor: pointer;
