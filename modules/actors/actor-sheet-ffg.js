@@ -66,6 +66,7 @@ export class ActorSheetFFG extends ActorSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
+    // TODO: This is not needed in Foundry 0.6.0    
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
@@ -82,7 +83,9 @@ export class ActorSheetFFG extends ActorSheet {
       if (!$(ev.target).hasClass("fa-trash")) {
         const li = $(ev.currentTarget);
         const item = this.actor.getOwnedItem(li.data("itemId"));
-        item.sheet.render(true);
+        if(item?.sheet) {
+          item.sheet.render(true);
+        }
       }
     });
     // Update Talent - By clicking entire line
