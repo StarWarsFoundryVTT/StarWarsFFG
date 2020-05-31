@@ -1,89 +1,141 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}} character" autocomplete="off">
   {{!-- Sheet Header --}}
   <header class="sheet-header">
     <div id="actor-id" data-actor="{{actor._id}}" style="display: none;"></div>
 
     <div class="header-fields">
       {{!-- Character Details Container --}}
-      <div class="charname">
-        <label>{{localize "SWFFG.Name"}}:<input name="name" type="text" value="{{actor.name}}" /></label>
-        <label>{{localize "SWFFG.Species"}}:<input name="data.species.value" type="text" value="{{data.species.value}}" /></label>
-        <label>{{localize "SWFFG.Career"}}:<input name="data.career.value" type="text" value="{{data.career.value}}" /></label>
-        <label>{{localize "SWFFG.Specializations"}}:<input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" /></label>
-      </div>
-
-      {{!-- Primary Stats Container --}}
       <div class="container" style="flex-wrap: nowrap;">
-        <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+        <div class="profile-block">
+          <div class="block-background">
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+          </div>
+        </div>
         <div class="container">
-          {{!-- Wounds Box --}}
-          <div class="resource">
-            <div class="split-box">
-              <h1>{{localize "SWFFG.Wounds"}}</h1>
-              <div class="content">
-                <div class="left">
-                  <input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number" />
-                  <label>{{localize "SWFFG.Threshold"}}</label>
+          <div class="header-name">
+              <div class="block-background">
+                <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}"/></h1>
+              </div>
+          </div>
+          <div class="block-background header-name header-description-block">
+            
+              <div class="table">
+                <div class="row">
+                  <div>{{localize "SWFFG.Species"}}:</div>
+                  <div class="row-input"><input name="data.species.value" type="text" value="{{data.species.value}}" /></div>
                 </div>
-                <div class="divider"></div>
-                <div class="right">
-                  <input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number" />
-                  <label>{{localize "SWFFG.Current"}}</label>
+                <div class="row">
+                  <div>{{localize "SWFFG.Career"}}:</div>
+                  <div class="row-input"><input name="data.career.value" type="text" value="{{data.career.value}}" /></div>
+                </div>
+                <div class="row">
+                  <div>{{localize "SWFFG.Specializations"}}: </div>
+                  <div class="row-input"><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" /></div>
+                </div>
+              </div>
+            
+          </div>
+        </div>
+      </div>
+        
+      {{!-- Primary Stats Container --}}
+      
+      <div class="container" style="flex-wrap: nowrap;">
+        
+        <div class="container flex-group-center">
+          {{!-- Wounds Box --}}
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Wounds"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number"/></div>
+                  <div class="block-value"><input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number"/></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
                 </div>
               </div>
             </div>
           </div>
 
           {{!-- Strain Box --}}
-          <div class="resource">
-            <div class="split-box">
-              <h1>{{localize "SWFFG.Strain"}}</h1>
-              <div class="content">
-                <div class="left">
-                  <input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number" />
-                  <label>{{localize "SWFFG.Threshold"}}</label>
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Strain"}}
                 </div>
-                <div class="divider"></div>
-                <div class="right">
-                  <input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number" />
-                  <label>{{localize "SWFFG.Current"}}</label>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number"/></div>
+                  <div class="block-value"><input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number"/></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
                 </div>
               </div>
             </div>
           </div>
 
           {{!-- Soak Box --}}
-          <div class="resource">
-            <div class="split-box">
-              <h1>{{localize "SWFFG.Soak"}}</h1>
-              <div class="content">
-                <div class="single-clear">
-                  <input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" disabled />
-                  <label>-</label>
+          <div class="resource single">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Soak"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" disabled /></div>
                 </div>
               </div>
+              <div class="block-background-shadow">
+                
+              </div>
             </div>
+
+
+
+            
           </div>
 
           {{!-- Defence Box --}}
-          <div class="resource">
-            <div class="split-box">
-              <h1>{{localize "SWFFG.Defense"}}</h1>
-              <div class="content">
-                <div class="left">
-                  <input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number" />
-                  <label>{{localize "SWFFG.DefenseRanged"}}</label>
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Defense"}}
                 </div>
-                <div class="divider"></div>
-                <div class="right">
-                  <input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number" />
-                  <label>{{localize "SWFFG.DefenseMelee"}}</label>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number"/></div>
+                  <div class="block-value"><input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number"/></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.DefenseRanged"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.DefenseMelee"}}</div>
                 </div>
               </div>
             </div>
+
+            
           </div>
 
-          {{!-- Force Box --}}
+          <!-- {{!-- Force Box --}}
           <div class="resource">
             <div class="split-box">
               <h1>{{localize "SWFFG.ForcePool"}}</h1>
@@ -99,10 +151,10 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
 
           {{!-- Encumbrance Box --}}
-          <div class="resource">
+          <!-- <div class="resource">
             <div class="split-box">
               <h1>{{localize "SWFFG.Encumbrance"}}</h1>
               <div class="content">
@@ -112,7 +164,7 @@
                 </div>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

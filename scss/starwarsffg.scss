@@ -10,5 +10,8 @@
 @import 'global/flex';
 
 .starwarsffg {
-  
+  @import 'components/forms';
+  @import 'components/resource';
+  @import 'components/tabs';
+  @import 'components/_header';
 }
