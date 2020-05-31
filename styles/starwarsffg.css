@@ -153,6 +153,16 @@
   text-transform: uppercase;
 }
 
+.starwarsffg .character .tabs {
+  height: 15px;
+  margin-bottom: 10px;
+  border: 0;
+}
+
+.starwarsffg .character .tabs .item {
+  line-height: 15px;
+}
+
 .starwarsffg .tabs {
   height: 40px;
   border-top: 1px solid #AAA;
@@ -160,13 +170,26 @@
 }
 
 .starwarsffg .tabs .item {
-  line-height: 40px;
+  line-height: 15px;
   font-weight: bold;
+  background-color: #51624d;
+  padding: 3px;
+  margin: 0 5px;
+  --notchSize: 10px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .tabs .item:hover {
+  text-shadow: 0 0 8px white;
 }
 
 .starwarsffg .tabs .item.active {
   text-decoration: underline;
   text-shadow: none;
+  background-color: #490c0b;
+  color: white;
+  font-weight: normal;
 }
 
 .starwarsffg .header-fields .block-background-shadow {
@@ -176,6 +199,7 @@
 .starwarsffg .header-fields .container.flex-group-center {
   border: 0;
   margin-bottom: 5px;
+  padding: 0 5px 5px 5px;
 }
 
 .starwarsffg .header-fields h1 {
