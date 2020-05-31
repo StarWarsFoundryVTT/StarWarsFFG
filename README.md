@@ -26,6 +26,7 @@ NEEDED FOR RELEASE V1:
 - Group Management sheet for GM use (currently in progress).
 - Create equipable item functionality and rework inventory to suit. Continue to improve inventory display in the process.
 - Add Forcepower item type (based on talent).
+- Add Maximum Altitude and Crew Capacity to vehicle sheet.
 - Redo the dice selection popup to be more functional and provide upgrade ability and upgrade difficulty buttons.
 - Rebuild dice functionality to use Foundry Dice instead of chat content, remove requirement for Special-Dice-Roller.
 - Localisation hooks
@@ -42,6 +43,9 @@ NICE TO HAVE:
 
 # Changelog
 
+- 31/05/2020 - CStadther - Minor bugfix on .item click listener to prevent console errors when .item class components with no related item sheet are clicked, such as tabs.
+- 31/05/2020 - CStadther - Added localization for character sheet.
+- 29/05/2020 - Esrin - Minor bugfix to vehicle sheet, various fields will now accept string values to allow for from-to values as requested by Alex | HDScurox.
 - 28/05/2020 - Esrin - Brought the Minion sheet inventory in line with the latest Character sheet changes. Added talents to Minion sheet. Fixed a minor bug with group skill calculations (thanks Alex | HDScurox for the bug report).
 - 25/05/2020 - Esrin - Character sheet tweaks. Continued improvements to the inventory display in advance of equipable item support.
 - 22/05/2020 - Esrin - Minor bug fixes and tweaks, compatibility check with FVTT 0.6.0 stable release.
