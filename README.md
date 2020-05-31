@@ -41,6 +41,8 @@ NICE TO HAVE:
 
 # Changelog
 
+- 31/05/2020 - Esrin - Work in progress on the group management GM tool. Destiny Pool now working (will reset on page refresh). Player Character list under construction.
+- 31/05/2020 - Esrin - Bugfix to localisation hook for Gear Quantity on Character Sheet (thanks Alex | HDScurox for the bug report).
 - 31/05/2020 - CStadther - Added SASS configuration using Gulp.
 - 31/05/2020 - CStadther - Minor bugfix on .item click listener to prevent console errors when .item class components with no related item sheet are clicked, such as tabs.
 - 31/05/2020 - CStadther - Added localization for character sheet.

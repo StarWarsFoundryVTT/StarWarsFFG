@@ -30,6 +30,10 @@ Hooks.once("init", async function () {
   };
 
   game.ffg.StarWars = game.specialDiceRoller.starWars.parsers[0];
+  game.ffg.DestinyPool = {
+    "Light": 0,
+    "Dark": 0,
+  };
 
   // Define custom Entity classes. This will override the default Actor
   // to instead use our extended version.
