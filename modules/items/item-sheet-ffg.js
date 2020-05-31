@@ -38,6 +38,7 @@ export class ItemSheetFFG extends ItemSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
+    // TODO: This is not needed in Foundry 0.6.0    
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
