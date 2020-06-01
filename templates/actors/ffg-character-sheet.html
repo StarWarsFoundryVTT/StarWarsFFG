@@ -97,17 +97,12 @@
                   {{localize "SWFFG.Soak"}}
                 </div>
                 <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" disabled /></div>
+                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" /></div>
                 </div>
               </div>
               <div class="block-background-shadow">
-                
               </div>
             </div>
-
-
-
-            
           </div>
 
           {{!-- Defence Box --}}
@@ -308,34 +303,73 @@
 
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
+      <div class="container flex-group-center item-values"> 
+        
+        {{!-- Encumbrance Box --}}
+        <div class="resource split">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.Encumbrance"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value"><input type="text" name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}" data-dtype="Number"/></div>
+                <div class="block-value"><input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" data-dtype="Number"/></div>
+              </div>
+            </div>
+            <div class="block-background-shadow">
+              <div class="shadow-left">
+                <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
+              </div>
+              <div class="shadow-right">
+                <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Credits Box --}}
+        <div class="resource double">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.Credits"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.stats.credits.value" value="{{data.stats.credits.value}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow">
+            </div>
+          </div>
+        </div>
+      </div>
+
       {{!-- Weapons List --}}
       <table class="items">
-        <h1><label>{{localize "SWFFG.ItemsWeapons"}}</label></h1>
         <thead>
-          <tr class="items-header">
-            <td>{{localize "SWFFG.ItemsName"}}</td>
-            <td>{{localize "SWFFG.ItemsSkill"}}</td>
-            <td>{{localize "SWFFG.ItemsDamage"}}</td>
-            <td>{{localize "SWFFG.ItemsRange"}}</td>
-            <td>{{localize "SWFFG.ItemsCrit"}}</td>
-            <td>{{localize "SWFFG.ItemsSpecial"}}</td>
-            <td>{{localize "SWFFG.ItemsEncum"}}</td>
-            <td style="visibility: hidden; display: contents;">Del</td>
-          </tr>
+          <th>{{localize "SWFFG.ItemsWeapons"}}</th>
+          <th>{{localize "SWFFG.ItemsSkill"}}</th>
+          <th>{{localize "SWFFG.ItemsDamage"}}</th>
+          <th>{{localize "SWFFG.ItemsRange"}}</th>
+          <th>{{localize "SWFFG.ItemsCrit"}}</th>
+          <th>{{localize "SWFFG.ItemsEncum"}}</th>
+          <th>{{localize "SWFFG.ItemsSpecial"}}</th>
+          <th></th>
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
           <tr class="item" data-item-id="{{item._id}}">
             <td class="item-name">{{item.name}}</td>
-            <td style="width: 30px;">{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}</td>
-            <td style="width: 50px;">{{item.data.damage.value}}</td>
-            <td style="width: 56px;">{{item.data.range.value}}</td>
-            <td style="width: 30px;">{{item.data.crit.value}}</td>
+            <td>{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}</td>
+            <td>{{item.data.damage.value}}</td>
+            <td>{{item.data.range.value}}</td>
+            <td>{{item.data.crit.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
             <td>{{item.data.special.value}}</td>
-            <td style="width: 40px;">{{item.data.encumbrance.value}}</td>
             <td class="item-controls">
               <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
             </td>
           </tr>
           {{/iff}} {{/each}}
@@ -344,28 +378,27 @@
 
       {{!-- Armour List --}}
       <table class="items">
-        <h1><label>{{localize "SWFFG.ItemsArmor"}}</label></h1>
         <thead>
           <tr class="items-header">
-            <td>{{localize "SWFFG.ItemsName"}}</td>
-            <td>{{localize "SWFFG.ItemsDefense"}}</td>
-            <td>{{localize "SWFFG.ItemsSoak"}}</td>
-            <td>{{localize "SWFFG.ItemsHP"}}</td>
-            <td>{{localize "SWFFG.ItemsEncum"}}</td>
-            <td style="visibility: hidden; display: contents;">Del</td>
+            <th>{{localize "SWFFG.ItemsArmor"}}</th>
+            <th>{{localize "SWFFG.ItemsDefense"}}</th>
+            <th>{{localize "SWFFG.ItemsSoak"}}</th>
+            <th>{{localize "SWFFG.ItemsHP"}}</th>
+            <th>{{localize "SWFFG.ItemsEncum"}}</th>
+            <th></th>
           </tr>
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
           <tr class="item" data-item-id="{{item._id}}">
-            <td style="width: 70px;" class="item-name">{{item.name}}</td>
-            <td style="width: 40px;">{{item.data.defence.value}}</td>
-            <td style="width: 30px;">{{item.data.soak.value}}</td>
-            <td style="width: 30px;">{{item.data.hardpoints.value}}</td>
-            <td style="width: 30px;">{{item.data.encumbrance.value}}</td>
+            <td class="item-name">{{item.name}}</td>
+            <td>{{item.data.defence.value}}</td>
+            <td>{{item.data.soak.value}}</td>
+            <td>{{item.data.hardpoints.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
             <td class="item-controls">
               <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
             </td>
           </tr>
           {{/iff}} {{/each}}
@@ -374,28 +407,27 @@
 
       {{!-- Gear List --}}
       <table class="items">
-        <h1><label>{{localize "SWFFG.ItemsGear"}}</label></h1>
         <thead>
           <tr class="items-header">
-            <td>{{localize "SWFFG.ItemsName"}}</td>
-            <td>{{localize "SWFFG.ItemsPrice"}}</td>
-            <td>{{localize "SWFFG.ItemsRarity"}}</td>
-            <td>{{localize "SWFFG.ItemsQty"}}</td>
-            <td>{{localize "SWFFG.ItemsEncum"}}</td>
-            <td style="visibility: hidden; display: contents;">Del</td>
+            <th>{{localize "SWFFG.ItemsGear"}}</th>
+            <th>{{localize "SWFFG.ItemsPrice"}}</th>
+            <th>{{localize "SWFFG.ItemsRarity"}}</th>
+            <th>{{localize "SWFFG.ItemsQuantity"}}</th>
+            <th>{{localize "SWFFG.ItemsEncum"}}</th>
+            <th></th>
           </tr>
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'gear'}}
           <tr class="item" data-item-id="{{item._id}}">
-            <td style="width: 70px;" class="item-name">{{item.name}}</td>
-            <td style="width: 40px;">{{item.data.price.value}}</td>
-            <td style="width: 30px;">{{item.data.rarity.value}}</td>
-            <td style="width: 30px;">{{item.data.quantity.value}}</td>
-            <td style="width: 30px;">{{item.data.encumbrance.value}}</td>
+            <td class="item-name">{{item.name}}</td>
+            <td>{{item.data.price.value}}</td>
+            <td>{{item.data.rarity.value}}</td>
+            <td>{{item.data.quantity.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
             <td class="item-controls">
               <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
             </td>
           </tr>
           {{/iff}} {{/each}}

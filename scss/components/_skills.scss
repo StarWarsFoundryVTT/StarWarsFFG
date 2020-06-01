@@ -11,15 +11,24 @@
     }
 
     td {
-      .dice-pool {
-        cursor: pointer;
-
-        img {
-          width: 1em;
-          height: 1em;
-          border: 0;
-        }
-      }
+      padding: 0 0 0 3px;
     }
   }
 }
+
+table {
+  &.items {
+
+    .items-list {
+      td {
+        &.item-controls {
+          text-align: right;
+          width: auto;
+          z-index: auto;
+        }
+      }
+    }
+    
+  }
+}
+
