@@ -386,37 +386,11 @@
 
 .starwarsffg .sheet-body .characteristics .characteristic-item {
   border: 0;
-}
-
-.starwarsffg .sheet-body .characteristics .grid {
-  margin-top: 0;
-}
-
-.starwarsffg .sheet-body .characteristic {
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  border: 5px double black;
-  margin: auto;
   position: relative;
 }
 
-.starwarsffg .sheet-body .characteristic .characteristic-value input {
-  height: 65px;
-  border: 0;
-  font-size: 40px;
-  text-align: center;
-}
-
-.starwarsffg .sheet-body .characteristic .characteristic-value input:focus {
-  box-shadow: 0 0 5px #7da9c2;
-  background-color: #7da9c2;
-  border-radius: 50%;
-}
-
-.starwarsffg .sheet-body .characteristic .characteristic-label {
-  position: absolute;
-  bottom: -20px;
+.starwarsffg .sheet-body .characteristics .characteristic-item .characteristic-label {
+  margin-top: 5px;
   width: 100%;
   text-align: center;
   background-color: #490c0b;
@@ -426,4 +400,30 @@
   --notchSize: 5px;
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .sheet-body .characteristics .grid {
+  margin-top: 0;
+}
+
+.starwarsffg .sheet-body .characteristic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 5px double black;
+  margin: auto;
+  position: relative;
+}
+
+.starwarsffg .sheet-body .characteristic .characteristic-value input {
+  height: 40px;
+  border: 0;
+  font-size: 30px;
+  text-align: center;
+}
+
+.starwarsffg .sheet-body .characteristic .characteristic-value input:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+  border-radius: 50%;
 }
