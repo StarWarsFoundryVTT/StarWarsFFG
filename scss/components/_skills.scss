@@ -1,0 +1,25 @@
+.tableWithHeader {
+  table {
+    th {
+      text-align: left;
+      padding: 3px;
+      border-bottom: 1px solid rgba(0, 0, 0, .25);
+      background-color: rgb(73, 12, 11);
+      color: white;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    td {
+      .dice-pool {
+        cursor: pointer;
+
+        img {
+          width: 1em;
+          height: 1em;
+          border: 0;
+        }
+      }
+    }
+  }
+}

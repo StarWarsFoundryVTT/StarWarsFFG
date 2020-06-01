@@ -217,17 +217,14 @@
       <div class="tableWithHeader">
         <div style="flex: 1; margin: 2px; position: relative;">
           <table>
-            <h1>{{localize "SWFFG.SkillsGeneral"}}</h1>
             <thead>
-              <tr>
-                <td>{{localize "SWFFG.SkillsName"}}</td>
-                <td style="position: relative;" class="hover">
-                  {{localize "SWFFG.SkillsCS"}}
-                  <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-                </td>
-                <td>{{localize "SWFFG.SkillsRank"}}</td>
-                <td>{{localize "SWFFG.SkillsRoll"}}</td>
-              </tr>
+              <th>{{localize "SWFFG.SkillsGeneral"}}</th>
+              <th style="position: relative;" class="hover">
+                {{localize "SWFFG.SkillsCS"}}
+                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+              </th>
+              <th>{{localize "SWFFG.SkillsRank"}}</th>
+              <th>{{localize "SWFFG.SkillsRoll"}}</th>
             </thead>
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'General'}}
@@ -250,17 +247,14 @@
         </div>
         <div style="flex: 1; margin: 2px; position: relative;">
           <table>
-            <h1>{{localize "SWFFG.SkillsCombat"}}</h1>
             <thead>
-              <tr>
-                <td>{{localize "SWFFG.SkillsName"}}</td>
-                <td style="position: relative;" class="hover">
-                  {{localize "SWFFG.SkillsCS"}}
-                  <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-                </td>
-                <td>{{localize "SWFFG.SkillsRank"}}</td>
-                <td>{{localize "SWFFG.SkillsRoll"}}</td>
-              </tr>
+              <th>{{localize "SWFFG.SkillsCombat"}}</th>
+              <th style="position: relative;" class="hover">
+                {{localize "SWFFG.SkillsCS"}}
+                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+              </th>
+              <th>{{localize "SWFFG.SkillsRank"}}</th>
+              <th>{{localize "SWFFG.SkillsRoll"}}</th>
             </thead>
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
@@ -281,17 +275,14 @@
             </tbody>
           </table>
           <table>
-            <h1>{{localize "SWFFG.SkillsKnowledge"}}</h1>
             <thead>
-              <tr>
-                <td>{{localize "SWFFG.SkillsName"}}</td>
-                <td style="position: relative;" class="hover">
-                  {{localize "SWFFG.SkillsCS"}}
-                  <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-                </td>
-                <td>{{localize "SWFFG.SkillsRank"}}</td>
-                <td>{{localize "SWFFG.SkillsRoll"}}</td>
-              </tr>
+              <th>{{localize "SWFFG.SkillsKnowledge"}}</th>
+              <th style="position: relative;" class="hover">
+                {{localize "SWFFG.SkillsCS"}}
+                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+              </th>
+              <th>{{localize "SWFFG.SkillsRank"}}</th>
+              <th>{{localize "SWFFG.SkillsRoll"}}</th>
             </thead>
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Knowledge'}}

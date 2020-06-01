@@ -397,7 +397,7 @@
   color: white;
   text-transform: uppercase;
   font-size: 10px;
-  --notchSize: 5px;
+  --notchSize: 7px;
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 }
@@ -426,4 +426,24 @@
   box-shadow: 0 0 5px #7da9c2;
   background-color: #7da9c2;
   border-radius: 50%;
+}
+
+.starwarsffg .tableWithHeader table th {
+  text-align: left;
+  padding: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  background-color: #490c0b;
+  color: white;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.starwarsffg .tableWithHeader table td .dice-pool {
+  cursor: pointer;
+}
+
+.starwarsffg .tableWithHeader table td .dice-pool img {
+  width: 1em;
+  height: 1em;
+  border: 0;
 }
