@@ -442,6 +442,12 @@
   padding: 0 0 0 3px;
 }
 
+.starwarsffg .tableWithHeader table td .dice-pool img {
+  width: 1em;
+  height: 1em;
+  border: 0;
+}
+
 .starwarsffg table.items .items-list td.item-controls {
   text-align: right;
   width: auto;

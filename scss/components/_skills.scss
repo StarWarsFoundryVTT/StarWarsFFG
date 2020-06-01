@@ -12,6 +12,14 @@
 
     td {
       padding: 0 0 0 3px;
+
+      .dice-pool {
+        img {
+          width: 1em;
+          height: 1em;
+          border: 0;
+        }
+      }
     }
   }
 }
