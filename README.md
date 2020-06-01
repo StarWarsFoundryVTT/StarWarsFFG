@@ -29,9 +29,7 @@ NEEDED FOR RELEASE V1:
 - Add Maximum Altitude and Crew Capacity to vehicle sheet.
 - Redo the dice selection popup to be more functional and provide upgrade ability and upgrade difficulty buttons.
 - Rebuild dice functionality to use Foundry Dice instead of chat content, remove requirement for Special-Dice-Roller.
-- Localisation hooks
 - Look into drag-and-drop item behaviours for things like transferring items between characters, or into a vehicle cargo hold.
-- SASS refactor
 
 NICE TO HAVE:
 
@@ -43,6 +41,9 @@ NICE TO HAVE:
 
 # Changelog
 
+- 31/05/2020 - Esrin - Work in progress on the group management GM tool. Destiny Pool now working (will reset on page refresh). Player Character list under construction.
+- 31/05/2020 - Esrin - Bugfix to localisation hook for Gear Quantity on Character Sheet (thanks Alex | HDScurox for the bug report).
+- 31/05/2020 - CStadther - Added SASS configuration using Gulp.
 - 31/05/2020 - CStadther - Minor bugfix on .item click listener to prevent console errors when .item class components with no related item sheet are clicked, such as tabs.
 - 31/05/2020 - CStadther - Added localization for character sheet.
 - 29/05/2020 - Esrin - Minor bugfix to vehicle sheet, various fields will now accept string values to allow for from-to values as requested by Alex | HDScurox.

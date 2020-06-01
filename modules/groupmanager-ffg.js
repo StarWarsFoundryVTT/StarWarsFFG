@@ -30,7 +30,7 @@ export class GroupManagerLayer extends TokenLayer {
 export class GroupManager extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["form", "groupmanager", "sidebar-popout"],
+      classes: ["starwarsffg", "form", "group-manager"],
       closeOnSubmit: false,
       submitOnChange: true,
       submitOnClose: true,
@@ -51,8 +51,41 @@ export class GroupManager extends FormApplication {
    * @return {Object}   The data provided to the template when rendering the form
    */
   getData() {
-    // Return data to the template
-    return {};
+    return { g: game };
+  }
+
+  /* -------------------------------------------- */
+
+  /** @override */
+  activateListeners(html) {
+    super.activateListeners(html);
+
+    // Everything below here is only needed if the sheet is editable
+    if (!this.options.editable) return;
+
+    // Flip destiny pool DARK to LIGHT
+    html.find(".destiny-flip-dtl").click((ev) => {
+      let LightPool = this.form.elements["g.ffg.DestinyPool.Light"].value;
+      let DarkPool = this.form.elements["g.ffg.DestinyPool.Dark"].value;
+      if (DarkPool > 0) {
+        LightPool++;
+        DarkPool--;
+        this.form.elements["g.ffg.DestinyPool.Light"].value = LightPool;
+        this.form.elements["g.ffg.DestinyPool.Dark"].value = DarkPool;
+      }
+    });
+
+    // Flip destiny pool LIGHT to DARK
+    html.find(".destiny-flip-ltd").click((ev) => {
+      let LightPool = this.form.elements["g.ffg.DestinyPool.Light"].value;
+      let DarkPool = this.form.elements["g.ffg.DestinyPool.Dark"].value;
+      if (LightPool > 0) {
+        LightPool--;
+        DarkPool++;
+        this.form.elements["g.ffg.DestinyPool.Light"].value = LightPool;
+        this.form.elements["g.ffg.DestinyPool.Dark"].value = DarkPool;
+      }
+    });
   }
 
   /**
@@ -62,6 +95,9 @@ export class GroupManager extends FormApplication {
    * @private
    */
   _updateObject(event, formData) {
+    const formDPool = expandObject(formData).g.ffg.DestinyPool || {};
+    game.ffg.DestinyPool.Light = formDPool.Light;
+    game.ffg.DestinyPool.Dark = formDPool.Dark;
     return formData;
   }
 }

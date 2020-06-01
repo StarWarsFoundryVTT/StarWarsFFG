@@ -1,15 +1,15 @@
 @font-face {
-  font-family: 'Roboto';
+  font-family: "Roboto";
   src: url("../fonts/Roboto-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'StarJedi';
+  font-family: "StarJedi";
   src: url("../fonts/StarJedi-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'Signika';
+  font-family: "Signika";
   src: url("../fonts/Signika-Regular.ttf") format("truetype");
 }
 
