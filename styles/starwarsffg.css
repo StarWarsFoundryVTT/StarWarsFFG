@@ -458,6 +458,10 @@
   font-weight: normal;
 }
 
+.starwarsffg .items table td {
+  padding: 3px;
+}
+
 .starwarsffg .items .attribute {
   position: relative;
   padding: 0;
@@ -565,4 +569,30 @@
 .starwarsffg .items .item-values {
   margin-bottom: 5px;
   border: 0;
+}
+
+.starwarsffg table.talent-list {
+  border: 0;
+}
+
+.starwarsffg table.talent-list th {
+  text-align: left;
+  padding: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  background-color: #490c0b;
+  color: white;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.starwarsffg table.talent-list td {
+  height: 30px;
+  line-height: 24px;
+  padding: 3px;
+}
+
+.starwarsffg table.talent-list td .item-controls {
+  text-align: right;
+  width: auto;
+  z-index: auto;
 }

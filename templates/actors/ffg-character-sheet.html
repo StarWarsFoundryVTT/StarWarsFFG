@@ -438,35 +438,40 @@
     {{!-- Talents Tab --}}
     <div class="tab talents" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
-      <div class="talents">
-        <h1><label>{{localize "SWFFG.Talents"}}</label></h1>
-        <header class="talents-header flexrow">
-          <span>{{localize "SWFFG.TalentsName"}}</span>
-          <span>{{localize "SWFFG.TalentsActivation"}}</span>
-          <span>{{localize "SWFFG.TalentsRank"}}</span>
-          <span style="visibility: hidden; display: contents;">Del</span>
-        </header>
-        <ol class="talents-list">
+      <table class="talent-list">
+        <thead>
+          <tr>
+            <th>{{localize "SWFFG.Talents"}}</th>
+            <th>{{localize "SWFFG.TalentsActivation"}}</th>
+            <th>{{localize "SWFFG.TalentsRank"}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'talent'}}
-          <li class="talents flexrow item" data-item-id="{{item._id}}">
-            <h4 class="item-name hover">
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="item-name hover">
               {{item.name}}
               <div class="tooltip">{{item.safe_desc}}</div>
-            </h4>
-            <label>{{item.data.activation.value}}</label>
-            {{#if item.data.ranks.ranked}}
-            <label>{{item.data.ranks.current}}</label>
-            {{else}}
-            <label>N/A</label>
-            {{/if}}
-            <div class="item-controls" style="display: contents;">
-              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-              <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-            </div>
-          </li>
+            </td>
+            <td>{{item.data.activation.value}}</td>
+            <td>
+              {{#if item.data.ranks.ranked}}
+                {{item.data.ranks.current}}
+              {{else}}
+                N/A
+              {{/if}}
+            </td>
+            <td>
+              <div class="item-controls">
+                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
           {{/iff}} {{/each}}
-        </ol>
-      </div>
+        </tbody>
+      </table>
     </div>
 
     {{!-- Biography Tab --}}
