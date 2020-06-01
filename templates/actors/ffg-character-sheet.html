@@ -186,15 +186,21 @@
     <div class="tab characteristics active" style="overflow: hidden;" data-group="primary" data-tab="characteristics">
       {{!-- Characteristics Scores --}}
 
-      <ul class="flexrow characteristics-list">
+      <div class="grid grid-6col">
         {{#each data.characteristics as |characteristic id|}}
-        <li data-ability="{{id}}">
-          {{!-- If we set the type to text, we don't have to deal with hiding the number controls --}}
-          <input name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" maxlength="1" type="text" pattern="[1-7]" data-dtype="Number" placeholder="1" />
-          <label>{{characteristic.label}}</label>
-        </li>
+        <div class="characteristic-item flex-group-center" data-ability="{{id}}">
+          <div class="characteristic">
+            <div class="characteristic-value">
+              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[1-7]" />
+            </div>
+            <div class="characteristic-label">
+              {{characteristic.label}}
+            </div>
+          </div>
+        </div>
         {{/each}}
-      </ul>
+      </div>
+
       <fieldset class="skillfilter" id="skillfilter" style="display: none;">
         <div>
           <label style="display: flex;">Filter skills:</label>

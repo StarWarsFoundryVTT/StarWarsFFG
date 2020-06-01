@@ -11,7 +11,9 @@
 
 .starwarsffg {
   @import 'components/forms';
+  @import 'components/sheet';
   @import 'components/resource';
   @import 'components/tabs';
-  @import 'components/_header';
+  @import 'components/header';
+  @import 'components/characteristics';
 }
