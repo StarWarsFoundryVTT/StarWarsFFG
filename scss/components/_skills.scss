@@ -1,4 +1,11 @@
 .tableWithHeader {
+  
+  .tableWithHeader-container {
+    flex: 1; 
+    margin: 2px; 
+    position: relative;
+  }
+
   table {
     th {
       text-align: left;
@@ -20,6 +27,16 @@
           border: 0;
         }
       }
+    }
+
+    .careerskill-toggle {
+      margin: 0;
+      padding: 0;
+    }
+
+    .careerskill-rank {
+      width: 30px; 
+      text-align: center;
     }
   }
 }

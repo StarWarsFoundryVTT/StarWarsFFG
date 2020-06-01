@@ -148,6 +148,10 @@
   min-width: 575px;
 }
 
+.starwarsffg .position-relative {
+  position: relative;
+}
+
 .starwarsffg.sheet .sheet-body {
   border: 0;
 }
@@ -384,6 +388,14 @@
   width: 45px;
 }
 
+.starwarsffg .sheet-body div.tab.characteristics {
+  overflow: hidden;
+}
+
+.starwarsffg .sheet-body .characteristics fieldset.skillfilter {
+  display: none;
+}
+
 .starwarsffg .sheet-body .characteristics .characteristic-item {
   border: 0;
   position: relative;
@@ -428,6 +440,12 @@
   border-radius: 50%;
 }
 
+.starwarsffg .tableWithHeader .tableWithHeader-container {
+  flex: 1;
+  margin: 2px;
+  position: relative;
+}
+
 .starwarsffg .tableWithHeader table th {
   text-align: left;
   padding: 3px;
@@ -446,6 +464,16 @@
   width: 1em;
   height: 1em;
   border: 0;
+}
+
+.starwarsffg .tableWithHeader table .careerskill-toggle {
+  margin: 0;
+  padding: 0;
+}
+
+.starwarsffg .tableWithHeader table .careerskill-rank {
+  width: 30px;
+  text-align: center;
 }
 
 .starwarsffg table.items .items-list td.item-controls {
@@ -601,4 +629,121 @@
   text-align: right;
   width: auto;
   z-index: auto;
+}
+
+.starwarsffg .biography .attribute {
+  position: relative;
+  padding: 0;
+  z-index: 1;
+  border: 0;
+}
+
+.starwarsffg .biography .attribute .block-background-shadow {
+  top: 36px;
+}
+
+.starwarsffg .biography .attribute .block-background {
+  padding: 5px 5px;
+}
+
+.starwarsffg .biography .attribute .block-title {
+  line-height: initial;
+  background-color: #490c0b;
+  color: white;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin: auto;
+  --notchSize: 8px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .biography .attribute .block-attribute .block-value {
+  display: inline-block;
+}
+
+.starwarsffg .biography .attribute .block-value.block-single input {
+  width: 100%;
+  padding: 6px;
+}
+
+.starwarsffg .biography .attribute .block-value input {
+  border: 0;
+  font-size: 14px;
+}
+
+.starwarsffg .biography .attribute .block-value input:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+}
+
+.starwarsffg .biography .attribute .shadow-text {
+  position: absolute;
+  top: 5px;
+  font-size: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg .biography .attribute .shadow-left {
+  background-color: #490c0b;
+  width: 50%;
+  height: 100%;
+  float: left;
+  position: relative;
+  padding-top: 25px;
+}
+
+.starwarsffg .biography .attribute .shadow-left .shadow-text {
+  color: white;
+  text-transform: uppercase;
+}
+
+.starwarsffg .biography .attribute .shadow-right {
+  background-color: #7da9c2;
+  width: 50%;
+  height: 100%;
+  float: right;
+  position: relative;
+  padding-top: 25px;
+}
+
+.starwarsffg .biography .attribute .shadow-right .shadow-text {
+  color: black;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.starwarsffg .biography .resource {
+  line-height: 30px;
+  width: 110px;
+}
+
+.starwarsffg .biography .resource.split {
+  width: 130px;
+}
+
+.starwarsffg .biography .resource.single {
+  width: 110px;
+}
+
+.starwarsffg .biography .resource.double {
+  width: 130px;
+}
+
+.starwarsffg .biography .resource input {
+  width: 45px;
+}
+
+.starwarsffg .biography .biography-values {
+  margin-bottom: 5px;
+  border: 0;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  padding: 0;
+}
+
+.starwarsffg .biography .biography-editor {
+  height: 475px;
 }

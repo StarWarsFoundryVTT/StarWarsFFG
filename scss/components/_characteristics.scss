@@ -1,5 +1,14 @@
 .sheet-body {
+
+  div.tab.characteristics {
+    overflow: hidden;
+  }
+
   .characteristics {
+    fieldset.skillfilter {
+      display: none;
+    }
+
     .characteristic-item {
       border:0;
       position: relative;
