@@ -1,5 +1,3 @@
-( PLEASE NOTE: This is a custom fork based on [Jaxxa's implementation](https://github.com/jaxxa/StarWarsFFG/tree/master). )
-
 # StarWarsFFG
 
 This is an implementation of the [Fantasy Flight Games Star Wars](https://www.fantasyflightgames.com/en/starwarsrpg/) roleplaying system by in [Foundry Virtual Tabletop](https://foundryvtt.com/).
@@ -16,7 +14,7 @@ This is most easily available from the in-game Module browser. After installing 
 2. Go to the "Game Systems" Tab
 3. Click the "Install System" button
 4. Copy the Following link into the "Manifest URL" section:
-   https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json
+   https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/master/system.json
 5. Click Install, after a few seconds the system should be installed.
 
 # To-do
