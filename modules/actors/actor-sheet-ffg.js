@@ -50,7 +50,7 @@ export class ActorSheetFFG extends ActorSheet {
         this.position.height = 840;
         break;
       case "minion":
-        this.position.width = 700;
+        this.position.width = 575;
         this.position.height = 620;
         break;
       case "vehicle":
