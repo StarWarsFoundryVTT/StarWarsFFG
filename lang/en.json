@@ -61,5 +61,15 @@
   "SWFFG.DescriptionObligation": "Obligation",
   "SWFFG.DescriptionDuty": "Duty",
   "SWFFG.DescriptionMorality": "Morality",
-  "SWFFG.DescriptionConflict": "Conflict"
+  "SWFFG.DescriptionConflict": "Conflict",
+  "SWFFG.ItemWeaponDamage": "Dmg",
+  "SWFFG.ItemWeaponCritical": "Crit",
+  "SWFFG.ItemWeaponEncumbrance": "Encum",
+  "SWFFG.ItemWeaponHardPoints": "HP",
+  "SWFFG.ItemWeaponRarity": "Rarity",
+  "SWFFG.ItemWeaponSkill": "Skill",
+  "SWFFG.ItemWeaponRange": "Range",
+  "SWFFG.ItemWeaponPrice": "Price",
+  "SWFFG.ItemWeaponQuantity": "Qty",
+  "SWFFG.ItemWeaponSpecial": "Special"
 }
