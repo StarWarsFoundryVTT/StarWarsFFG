@@ -31,8 +31,8 @@
   "gridUnits": "ft",
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
-  "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/tree/esrin-dev",
-  "manifest": "https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/esrin-dev/system.json",
-  "download": "https://github.com/Esrin/StarWarsFFG/releases/download/esrin-dev_0.06/esrin-dev_0.060.zip",
+  "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG",
+  "manifest": "https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/master/system.json",
+  "download": "https://github.com/Esrin/StarWarsFFG/releases/download/v0.06/starwarsffg_0.060.zip",
   "license": "LICENSE.txt"
 }
