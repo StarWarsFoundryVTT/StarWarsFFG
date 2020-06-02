@@ -1,16 +1,16 @@
-.item-sheet-weapon {
+.item-sheet-armor {
 
   .header-fields {
-    height: 435px;
+    height: 340px;
   }
 
   .charname {
     width: 100%;
     
     input {
-      color: rgb(19, 65, 3);
+      color: rgb(85, 49, 19);
       border: 0;
-      
+
       &:focus {
         box-shadow: 0 0 5px rgb(125, 169, 194);
         background-color: rgb(125, 169, 194);
@@ -29,7 +29,7 @@
       margin-top: 5px;
       width: 100%;
       text-align: center;
-      background-color: rgb(19, 65, 3);
+      background-color: rgb(85, 49, 19);
       color:white;
       text-transform: uppercase;
       font-size : 10px;
@@ -52,7 +52,7 @@
       width: 50px;
       height: 50px;
       border-radius: 10px;
-      border: 5px double rgb(18, 71, 1);
+      border: 5px double rgb(85, 49, 19);
       margin: auto;
       position: relative;
   
@@ -84,7 +84,7 @@
   }
 
   .block-background {
-    background-color: rgb(191,254,191);
+    background-color: rgb(233, 192, 158);
   }
 
   .attribute {
@@ -103,7 +103,7 @@
 
     .block-title {
       line-height: initial;
-      background-color: rgb(19, 65, 3);
+      background-color: rgb(85, 49, 19);
       color: white;
       font-size: 13px;
       text-transform: uppercase;

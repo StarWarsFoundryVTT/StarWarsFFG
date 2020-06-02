@@ -71,5 +71,6 @@
   "SWFFG.ItemWeaponRange": "Range",
   "SWFFG.ItemWeaponPrice": "Price",
   "SWFFG.ItemWeaponQuantity": "Qty",
-  "SWFFG.ItemWeaponSpecial": "Special"
+  "SWFFG.ItemWeaponSpecial": "Special",
+  "SWFFG.ItemArmorDefense": "Def"
 }
