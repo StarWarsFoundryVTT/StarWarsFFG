@@ -4,7 +4,8 @@
   "description": "( PLEASE NOTE: This is a custom fork based on [Jaxxa's implementation](https://github.com/jaxxa/StarWarsFFG/tree/master). )",
   "main": "index.js",
   "scripts": {
-    "compile": "gulp css"
+    "compile": "gulp css",
+    "watch" : "gulp"
   },
   "author": "",
   "license": "MIT",

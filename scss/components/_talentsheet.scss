@@ -1,0 +1,244 @@
+.item-sheet-talent {
+  .header-fields {
+    height: 260px;
+  }
+
+  .charname {
+    width: 100%;
+    
+    input {
+      color: rgb(130, 21, 23);
+      border: 0;
+
+      &:focus {
+        box-shadow: 0 0 5px rgb(125, 169, 194);
+        background-color: rgb(125, 169, 194);
+      }
+    }
+
+  }
+
+  .characteristic-item {
+    border:0;
+    position: relative;
+    padding:0;
+    margin: 0 5px;
+
+    .characteristic-label {
+      margin-top: 5px;
+      width: 100%;
+      text-align: center;
+      background-color: rgb(130, 21, 23);
+      color:white;
+      text-transform: uppercase;
+      font-size : 10px;
+      --notchSize: 7px;
+      
+      clip-path: 
+        polygon(
+          0% var(--notchSize), 
+          var(--notchSize) 0%, 
+          calc(100% - var(--notchSize)) 0%, 
+          100% var(--notchSize), 
+          100% calc(100% - var(--notchSize)), 
+          calc(100% - var(--notchSize)) 100%, 
+          var(--notchSize) 100%, 
+          0% calc(100% - var(--notchSize))
+        );
+    }
+
+    .characteristic {
+      width: 50px;
+      height: 50px;
+      border-radius: 10px;
+      border: 5px double rgb(130, 21, 23);
+      margin: auto;
+      position: relative;
+  
+      .characteristic-value {
+        input {
+          height: 40px;
+          border: 0;
+          font-size: 30px;
+          text-align: center;
+        }
+        input:focus { 
+          box-shadow: 0 0 5px rgb(125, 169, 194);
+          background-color: rgb(125, 169, 194);
+          border-radius: 5px;
+        }
+      }
+  
+      
+    }
+  }
+
+  .item-name {
+    margin:0;
+    padding-bottom:0 !important;
+    
+    .charname {
+      input {
+        width: 100%;
+      }
+    }
+  }
+
+  .grid {
+    margin-top: 0;
+  }
+
+  .block-background {
+    background-color: rgb(242, 235, 222);
+  }
+
+  .attribute {
+    position: relative;
+    padding: 0;
+    z-index: 1;
+    border:0;
+    
+    .block-background-shadow {
+      top: 36px;
+    }
+
+    .block-background {
+      padding: 5px 5px;
+    }
+
+    .block-title {
+      line-height: initial;
+      background-color: rgb(130, 21, 23);
+      color: white;
+      font-size: 13px;
+      text-transform: uppercase;
+      margin:auto;
+      
+      --notchSize: 8px;
+      clip-path: 
+        polygon(
+          0% var(--notchSize), 
+          var(--notchSize) 0%, 
+          calc(100% - var(--notchSize)) 0%, 
+          100% var(--notchSize), 
+          100% calc(100% - var(--notchSize)), 
+          calc(100% - var(--notchSize)) 100%, 
+          var(--notchSize) 100%, 
+          0% calc(100% - var(--notchSize))
+      );
+    }
+
+    .block-attribute {
+
+      select {
+        &:focus {
+          box-shadow: 0 0 5px rgb(125, 169, 194);
+          background-color: rgb(125, 169, 194);
+        }
+      }
+
+      .block-value {
+        display: inline-block;
+      }
+    }
+
+    .block-value {
+
+      textarea {
+        resize:none;
+        font-family: 'Roboto';
+        border : 0;
+
+        &:focus {
+          box-shadow: 0 0 5px rgb(125, 169, 194);
+          background-color: rgb(125, 169, 194);
+          outline: none;
+        }
+      }
+
+      &.block-single {
+        input {
+          width: 100%;
+          padding: 6px;
+        }
+      }
+
+      input {
+        border:0;
+        font-size:14px;
+
+        &:focus {
+          box-shadow: 0 0 5px rgb(125, 169, 194);
+          background-color: rgb(125, 169, 194);
+        }
+      }
+    }
+
+    .shadow-text {
+      position: absolute;
+      top: 5px;
+      font-size: 9px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .shadow-left {
+      background-color: rgb(73, 12, 11);
+      width: 50%;
+      height: 100%;
+      float:left;
+      position: relative;
+      padding-top: 25px;
+
+      .shadow-text {
+        color: white;
+        text-transform: uppercase;
+      }
+    }
+
+    .shadow-right {
+      background-color: rgb(125, 169, 194);
+      width: 50%;
+      height: 100%;
+      float:right;
+      position: relative;
+      padding-top: 25px;
+
+      .shadow-text {
+        color: black;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  .resource {
+    line-height: 30px;
+    width: 110px;
+    
+    &.split {
+      width: 130px;
+    }
+    &.single {
+      width: 65px;
+    }
+    &.double {
+      width: 235px;
+    }
+
+    input {
+      width: 65px;
+      height: 17px;
+    }
+  }
+
+  .tabs {
+    height : 20px;
+    border: 0;
+
+    .item {
+      line-height: 15px;
+    }
+  }
+  
+}

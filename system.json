@@ -2,11 +2,11 @@
   "name": "starwarsffg",
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
-  "version": 0.055,
+  "version": 0.06,
   "minimumCoreVersion": "0.5.6",
   "compatibleCoreVersion": "0.6.1",
   "templateVersion": 1,
-  "author": "Esrin",
+  "author": "Esrin and Jaxxa",
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
   "styles": ["styles/swffg.css", "styles/starwarsffg.css"],
   "packs": [
@@ -31,8 +31,8 @@
   "gridUnits": "ft",
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
-  "url": "https://github.com/Esrin/StarWarsFFG/tree/esrin-dev",
-  "manifest": "https://raw.githubusercontent.com/Esrin/StarWarsFFG/esrin-dev/system.json",
-  "download": "https://github.com/Esrin/StarWarsFFG/releases/download/esrin-dev_0.05/esrin-dev_0.055.zip",
+  "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/tree/esrin-dev",
+  "manifest": "https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/esrin-dev/system.json",
+  "download": "https://github.com/Esrin/StarWarsFFG/releases/download/esrin-dev_0.06/esrin-dev_0.060.zip",
   "license": "LICENSE.txt"
 }

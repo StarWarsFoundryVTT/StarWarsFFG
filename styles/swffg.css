@@ -139,7 +139,7 @@ div .container.talents {
   justify-content: flex-start;
   flex: 0 0 100px;
 }
-
+/* 
 .starwarsffg.sheet .profile-img {
   flex: 0 0 100px;
   height: 124px;
@@ -148,7 +148,7 @@ div .container.talents {
   margin-right: 10px;
   margin-left: 10px;
   border-radius: 15px;
-}
+} */
 
 .starwarsffg.sheet .header-fields {
   flex: 1;
@@ -234,7 +234,7 @@ div .container.talents {
 }
 
 .starwarsffg.sheet .sheet-body.vehicle {
-  height: calc(100% - 25em);
+  height: calc(100% - 17em);
   overflow: auto;
 }
 
