@@ -39,9 +39,11 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.width = 385;
         this.position.height = 575;
         break;
+      case "talent": 
+        this.position.width = 405;
+        this.position.height = 475;
+        break;
       default:
-        this.position.width = 385;
-        this.position.height = 650;
     }
 
     data.FFG = CONFIG.FFG;

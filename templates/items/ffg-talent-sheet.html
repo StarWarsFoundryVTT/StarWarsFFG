@@ -1,32 +1,60 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}} item-sheet-talent" autocomplete="off">
     <header class="sheet-header talents">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
         <div class="header-fields">
-          <div class="container">
+          <div class="container flex-group-center">
+            <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+          </div>
+          <div class="container flex-group-center item-name">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
           </div>
-          <div class="container">
-            <div class="resource">
-            	<label>Activation: </label>
-              <select style="text-align:center;" name="data.activation.value">
-                  {{#select data.activation.value}}
-                  {{#each this.FFG.activations as |t|}}
-                  <option value="{{t}}">{{t}}</option>
-                  {{/each}}
-                  {{/select}}
-              </select>
+
+          <div class="container flex-group-center">
+            <div class="resource single">
+              <div class="attribute flex-group-center">
+                <div class="block-background">
+                  <div class="block-title">
+                    {{localize "SWFFG.TalentsActivation"}}
+                  </div>
+                  <div class="block-attribute">
+                    <select style="text-align:center;" name="data.activation.value">
+                      {{#select data.activation.value}}
+                      {{#each this.FFG.activations as |t|}}
+                      <option value="{{t}}">{{t}}</option>
+                      {{/each}}
+                      {{/select}}
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="resource small">
-            	<label>Ranked:
-                <input class="ranked-toggle" style="text-align:center;" type="checkbox" name="data.ranks.ranked" data-dtype="Boolean" {{checked data.ranks.ranked}} /></label>
+          
+            <div class="resource single">
+              <div class="attribute flex-group-center">
+                <div class="block-background">
+                  <div class="block-title">
+                    {{localize "SWFFG.ItemTalentRanked"}}
+                  </div>
+                  <div class="block-attribute">
+                    <input class="ranked-toggle" style="text-align:center;" type="checkbox" name="data.ranks.ranked" data-dtype="Boolean" {{checked data.ranks.ranked}} />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="resource small">
-            	<label>Rank: </label>
-              {{#if data.ranks.ranked}}
-                <input style="text-align:center;" type="number" name="data.ranks.current" value="{{data.ranks.current}}" min="0" data-dtype="Number" />
-              {{else}}
-                <input style="text-align:center;" type="text" value="N/A" disabled />
-              {{/if}}
+            <div class="resource single">
+              <div class="attribute flex-group-center">
+                <div class="block-background">
+                  <div class="block-title">
+                    {{localize "SWFFG.TalentsRank"}}
+                  </div>
+                  <div class="block-attribute">
+                    {{#if data.ranks.ranked}}
+                    <div class="block-value block-single"><input type="text" name="data.price.value" value="{{data.price.value}}" data-dtype="Number" /></div>
+                    {{else}}
+                    <div class="block-value block-single"><input type="text" value="N/A" disabled /></div>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

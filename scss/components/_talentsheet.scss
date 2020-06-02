@@ -1,14 +1,13 @@
-.item-sheet-armor {
-
+.item-sheet-talent {
   .header-fields {
-    height: 340px;
+    height: 260px;
   }
 
   .charname {
     width: 100%;
     
     input {
-      color: rgb(85, 49, 19);
+      color: rgb(130, 21, 23);
       border: 0;
 
       &:focus {
@@ -29,7 +28,7 @@
       margin-top: 5px;
       width: 100%;
       text-align: center;
-      background-color: rgb(85, 49, 19);
+      background-color: rgb(130, 21, 23);
       color:white;
       text-transform: uppercase;
       font-size : 10px;
@@ -52,7 +51,7 @@
       width: 50px;
       height: 50px;
       border-radius: 10px;
-      border: 5px double rgb(85, 49, 19);
+      border: 5px double rgb(130, 21, 23);
       margin: auto;
       position: relative;
   
@@ -77,6 +76,12 @@
   .item-name {
     margin:0;
     padding-bottom:0 !important;
+    
+    .charname {
+      input {
+        width: 100%;
+      }
+    }
   }
 
   .grid {
@@ -84,7 +89,7 @@
   }
 
   .block-background {
-    background-color: rgb(233, 192, 158);
+    background-color: rgb(242, 235, 222);
   }
 
   .attribute {
@@ -103,7 +108,7 @@
 
     .block-title {
       line-height: initial;
-      background-color: rgb(85, 49, 19);
+      background-color: rgb(130, 21, 23);
       color: white;
       font-size: 13px;
       text-transform: uppercase;
@@ -215,14 +220,15 @@
       width: 130px;
     }
     &.single {
-      width: 100px;
+      width: 65px;
     }
     &.double {
       width: 235px;
     }
 
     input {
-      width: 45px;
+      width: 65px;
+      height: 17px;
     }
   }
 
