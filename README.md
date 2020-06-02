@@ -41,6 +41,8 @@ NICE TO HAVE:
 
 # Changelog
 
+- 02/06/2020 - Esrin - Minor bugfix to character sheet, soak value set to disabled for auto-calculation, encumbrance max and current values swapped to correct fields and current set to disabled for auto-calculation.
+- 02/06/2020 - CStadther - Major sheet restyling
 - 31/05/2020 - Esrin - Work in progress on the group management GM tool. Destiny Pool now working (will reset on page refresh). Player Character list under construction.
 - 31/05/2020 - Esrin - Bugfix to localisation hook for Gear Quantity on Character Sheet (thanks Alex | HDScurox for the bug report).
 - 31/05/2020 - CStadther - Added SASS configuration using Gulp.

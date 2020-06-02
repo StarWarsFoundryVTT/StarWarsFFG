@@ -13,35 +13,32 @@
         </div>
         <div class="container">
           <div class="header-name">
-              <div class="block-background">
-                <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String"/></h1>
-              </div>
+            <div class="block-background">
+              <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String" /></h1>
+            </div>
           </div>
           <div class="block-background header-name header-description-block">
-            
-              <div class="table">
-                <div class="row">
-                  <div>{{localize "SWFFG.Species"}}:</div>
-                  <div class="row-input"><input name="data.species.value" type="text" value="{{data.species.value}}" data-dtype="String"/></div>
-                </div>
-                <div class="row">
-                  <div>{{localize "SWFFG.Career"}}:</div>
-                  <div class="row-input"><input name="data.career.value" type="text" value="{{data.career.value}}" data-dtype="String"/></div>
-                </div>
-                <div class="row">
-                  <div>{{localize "SWFFG.Specializations"}}: </div>
-                  <div class="row-input"><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" data-dtype="String"/></div>
-                </div>
+            <div class="table">
+              <div class="row">
+                <div>{{localize "SWFFG.Species"}}:</div>
+                <div class="row-input"><input name="data.species.value" type="text" value="{{data.species.value}}" data-dtype="String" /></div>
               </div>
-            
+              <div class="row">
+                <div>{{localize "SWFFG.Career"}}:</div>
+                <div class="row-input"><input name="data.career.value" type="text" value="{{data.career.value}}" data-dtype="String" /></div>
+              </div>
+              <div class="row">
+                <div>{{localize "SWFFG.Specializations"}}:</div>
+                <div class="row-input"><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" data-dtype="String" /></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-        
+
       {{!-- Primary Stats Container --}}
-      
+
       <div class="container" style="flex-wrap: nowrap;">
-        
         <div class="container flex-group-center">
           {{!-- Wounds Box --}}
           <div class="resource split">
@@ -51,8 +48,8 @@
                   {{localize "SWFFG.Wounds"}}
                 </div>
                 <div class="block-attribute">
-                  <div class="block-value"><input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number"/></div>
-                  <div class="block-value"><input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number"/></div>
+                  <div class="block-value"><input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number" /></div>
                 </div>
               </div>
               <div class="block-background-shadow">
@@ -74,8 +71,8 @@
                   {{localize "SWFFG.Strain"}}
                 </div>
                 <div class="block-attribute">
-                  <div class="block-value"><input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number"/></div>
-                  <div class="block-value"><input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number"/></div>
+                  <div class="block-value"><input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number" /></div>
                 </div>
               </div>
               <div class="block-background-shadow">
@@ -97,11 +94,10 @@
                   {{localize "SWFFG.Soak"}}
                 </div>
                 <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" /></div>
+                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" disabled /></div>
                 </div>
               </div>
-              <div class="block-background-shadow">
-              </div>
+              <div class="block-background-shadow"></div>
             </div>
           </div>
 
@@ -113,8 +109,8 @@
                   {{localize "SWFFG.Defense"}}
                 </div>
                 <div class="block-attribute">
-                  <div class="block-value"><input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number"/></div>
-                  <div class="block-value"><input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number"/></div>
+                  <div class="block-value"><input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number" /></div>
                 </div>
               </div>
               <div class="block-background-shadow">
@@ -126,8 +122,6 @@
                 </div>
               </div>
             </div>
-
-            
           </div>
 
           <!-- {{!-- Force Box --}}
@@ -186,15 +180,15 @@
       <fieldset class="skillfilter" id="skillfilter">
         <div>
           <label>Filter skills:</label>
-          <input class="filter-control" type="radio" id="all" name="skillfilter" data-dtype="String"/>
-          <label for="all">All</label>        </div>
-          <input class="filter-control" type="radio" id="Combat" name="skillfilter" data-dtype="String"/>
-          <label for="combat">Combat</label><br />
-          <input class="filter-control" type="radio" id="General" name="skillfilter" data-dtype="String"/>
-          <label for="general">General</label><br />
-          <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" data-dtype="String"/>
-          <label for="knowledge">Knowledge</label>
-
+          <input class="filter-control" type="radio" id="all" name="skillfilter" data-dtype="String" />
+          <label for="all">All</label>
+        </div>
+        <input class="filter-control" type="radio" id="Combat" name="skillfilter" data-dtype="String" />
+        <label for="combat">Combat</label><br />
+        <input class="filter-control" type="radio" id="General" name="skillfilter" data-dtype="String" />
+        <label for="general">General</label><br />
+        <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" data-dtype="String" />
+        <label for="knowledge">Knowledge</label>
       </fieldset>
       <div class="tableWithHeader">
         <div class="tableWithHeader-container">
@@ -290,8 +284,7 @@
 
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
-      <div class="container flex-group-center item-values"> 
-        
+      <div class="container flex-group-center item-values">
         {{!-- Encumbrance Box --}}
         <div class="resource split">
           <div class="attribute flex-group-center">
@@ -300,8 +293,8 @@
                 {{localize "SWFFG.Encumbrance"}}
               </div>
               <div class="block-attribute">
-                <div class="block-value"><input type="text" name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}" data-dtype="Number"/></div>
-                <div class="block-value"><input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" data-dtype="Number"/></div>
+                <div class="block-value"><input type="text" name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.value}}" data-dtype="Number" disabled /></div>
+                <div class="block-value"><input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.max}}" data-dtype="Number" /></div>
               </div>
             </div>
             <div class="block-background-shadow">
@@ -326,8 +319,7 @@
                 <div class="block-value block-single"><input type="text" name="data.stats.credits.value" value="{{data.stats.credits.value}}" data-dtype="Number" /></div>
               </div>
             </div>
-            <div class="block-background-shadow">
-            </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
       </div>
@@ -443,11 +435,7 @@
             </td>
             <td>{{item.data.activation.value}}</td>
             <td>
-              {{#if item.data.ranks.ranked}}
-                {{item.data.ranks.current}}
-              {{else}}
-                N/A
-              {{/if}}
+              {{#if item.data.ranks.ranked}} {{item.data.ranks.current}} {{else}} N/A {{/if}}
             </td>
             <td>
               <div class="item-controls">
@@ -467,8 +455,7 @@
         {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
       </div>
 
-      <div class="container flex-group-center biography-values"> 
-        
+      <div class="container flex-group-center biography-values">
         {{!-- Experience Box --}}
         <div class="resource split">
           <div class="attribute flex-group-center">
@@ -477,8 +464,8 @@
                 {{localize "SWFFG.DescriptionXP"}}
               </div>
               <div class="block-attribute">
-                <div class="block-value"><input type="text" name="data.experience.available" value="{{data.experience.available}}" data-dtype="Number"/></div>
-                <div class="block-value"><input type="text" name="data.experience.total" value="{{data.experience.total}}" data-dtype="Number"/></div>
+                <div class="block-value"><input type="text" name="data.experience.available" value="{{data.experience.available}}" data-dtype="Number" /></div>
+                <div class="block-value"><input type="text" name="data.experience.total" value="{{data.experience.total}}" data-dtype="Number" /></div>
               </div>
             </div>
             <div class="block-background-shadow">
@@ -503,8 +490,7 @@
                 <div class="block-value block-single"><input type="text" name="data.obligation.value" value="{{data.obligation.value}}" data-dtype="Number" /></div>
               </div>
             </div>
-            <div class="block-background-shadow">
-            </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
 
@@ -519,8 +505,7 @@
                 <div class="block-value block-single"><input type="text" name="data.duty.value" value="{{data.duty.value}}" data-dtype="Number" /></div>
               </div>
             </div>
-            <div class="block-background-shadow">
-            </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
 
@@ -535,8 +520,7 @@
                 <div class="block-value block-single"><input type="text" name="data.morality.value" value="{{data.morality.value}}" data-dtype="Number" /></div>
               </div>
             </div>
-            <div class="block-background-shadow">
-            </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
 
@@ -551,12 +535,10 @@
                 <div class="block-value block-single"><input type="text" name="data.conflict.value" value="{{data.conflict.value}}" data-dtype="Number" /></div>
               </div>
             </div>
-            <div class="block-background-shadow">
-            </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
       </div>
-
     </div>
 
     {{!-- Modifiers Tab --}}
@@ -572,7 +554,7 @@
       <ol class="attributes-list">
         {{#each data.attributes as |attr key|}}
         <li class="attribute flexrow" data-attribute="{{key}}">
-          <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" data-dtype="String"/>
+          <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" data-dtype="String" />
           <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
             {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
             <option value="{{t}}">{{t}}</option>
