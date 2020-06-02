@@ -73,5 +73,8 @@
   "SWFFG.ItemWeaponQuantity": "Qty",
   "SWFFG.ItemWeaponSpecial": "Special",
   "SWFFG.ItemArmorDefense": "Def",
-  "SWFFG.ItemTalentRanked": "Ranked?"
+  "SWFFG.ItemTalentRanked": "Ranked?",
+  "SWFFG.MinionName": "Minion Name",
+  "SWFFG.MinionQuantity": "Quantity",
+  "SWFFG.MinionUnitWounds": "Unit Wounds"
 }
