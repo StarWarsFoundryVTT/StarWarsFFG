@@ -10,5 +10,18 @@
 @import 'global/flex';
 
 .starwarsffg {
-  
+  @import 'components/forms';
+  @import 'components/sheet';
+  @import 'components/resource';
+  @import 'components/tabs';
+  @import 'components/header';
+  @import 'components/characteristics';
+  @import 'components/skills';
+  @import 'components/items';
+  @import 'components/talents';
+  @import 'components/biography';
+  @import 'components/itemweaponsheet';
+  @import 'components/itemarmorsheet';
+  @import 'components/itemgearsheet';
+  @import 'components/talentsheet';
 }
