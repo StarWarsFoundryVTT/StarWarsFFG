@@ -1,0 +1,132 @@
+<form class="{{cssClass}}" autocomplete="off">
+    <header class="sheet-header">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <div class="header-fields">
+            <div class="container">
+              <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+            </div>
+            <div class="container">
+              <div class="resource small">
+              	<label>Quantity: </label>
+                  <input style="text-align:center;" type="number" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number"/>
+              </div>
+              <div class="resource small">
+              	<label>Encumbrance: </label>
+                  <input style="text-align:center;" type="number" name="data.encumbrance.value" value="{{data.encumbrance.value}}" data-dtype="Number"/>
+              </div>
+              <div class="resource small">
+                <label>Rarity: </label>
+                  <input style="text-align:center;" type="number" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number"/>
+              </div>
+              <div class="resource small">
+                <label>Price: </label>
+                  <input style="text-align:center;" type="number" name="data.price.value" value="{{data.price.value}}" data-dtype="Number"/>
+              </div>
+              <div class="resource small">
+                <label>Hard Points: </label>
+                  <input style="text-align:center;" type="number" name="data.hardpoints.value" value="{{data.hardpoints.value}}" data-dtype="Number"/>
+              </div>
+              <div class="resource small">
+                <label>Damage: </label>
+                  <input style="text-align:center;" type="number" name="data.damage.value" value="{{data.damage.value}}" data-dtype="Number"/>
+              </div>
+              <div class="resource small">
+                <label>Critical Rating: </label>
+                  <input style="text-align:center;" type="number" name="data.crit.value" value="{{data.crit.value}}" data-dtype="Number"/>
+              </div>
+              <div class="resource">
+                <label>Firing Arc: </label>
+                <select style="text-align:center;" name="data.firingarc.value">
+                    {{#select data.firingarc.value}}
+                    {{#each this.FFG.fire_arcs as |t|}}
+                    <option value="{{t}}">{{t}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+              </div>
+              <div class="resource">
+                <label>Range: </label>
+                <select style="text-align:center;" name="data.range.value">
+                    {{#select data.range.value}}
+                    {{#each this.FFG.vehicle_ranges as |t|}}
+                    <option value="{{t}}">{{t}}</option>
+                    {{/each}}
+                    {{/select}}
+                </select>
+              </div>
+              <div class="resource">
+                <label>Special: </label>
+                  <input style="text-align:center;" type="text" name="data.special.value" value="{{data.special.value}}" data-dtype="String"/>
+              </div>
+            </div>
+        </div>
+    </header>
+
+    {{!-- Sheet Tab Navigation --}}
+    <nav class="sheet-tabs tabs" data-group="primary">
+        <a class="item" data-tab="description">Description</a>
+        <a class="item" data-tab="attributes">Modifiers</a>
+    </nav>
+
+    {{!-- Sheet Body --}}
+    <section class="sheet-body small">
+
+        {{!-- Description Tab --}}
+        <div class="tab" data-group="primary" data-tab="description">
+            {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+        </div>
+
+        {{!-- Modifiers Tab --}}
+        <div class="tab attributes" data-group="primary" data-tab="attributes">
+            <header class="attributes-header flexrow">
+              <!-- <span class="attribute-key">ID</span> -->
+                <span class="attribute-modtype">Mod Type</span>
+                <span class="attribute-mod">Modifier</span>
+                <span class="attribute-value">Value</span>
+                <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
+            </header>
+
+            <ol class="attributes-list">
+            {{#each data.attributes as |attr key|}}
+                <li class="attribute flexrow" data-attribute="{{key}}">
+                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display:none;"/>
+                    <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
+                        {{#select attr.modtype}}
+                        {{#each ../this.FFG.mod_types as |t|}}
+                        <option value="{{t}}">{{t}}</option>
+                        {{/each}}
+                        {{/select}}
+                    </select>
+                    <select class="attribute-mod" name="data.attributes.{{key}}.mod">
+                        {{#select attr.mod}}
+                        {{#iff attr.modtype '==' 'Stat' }}
+                        {{#each ../this.FFG.character_stats as |t|}}
+                        <option value="{{t}}">{{t}}</option>
+                        {{/each}}
+                        {{/iff}}
+                        {{#iff attr.modtype '==' 'Skill Rank' }}
+                        {{#each ../this.FFG.skills as |t|}}
+                        <option value="{{t}}">{{t}}</option>
+                        {{/each}}
+                        {{/iff}}
+                        {{#iff attr.modtype '==' 'Skill Boost' }}
+                        {{#each ../this.FFG.skills as |t|}}
+                        <option value="{{t}}">{{t}}</option>
+                        {{/each}}
+                        {{/iff}}
+                        {{#iff attr.modtype '==' 'Characteristic' }}
+                        {{#each ../this.FFG.characteristics as |t|}}
+                        <option value="{{t}}">{{t}}</option>
+                        {{/each}}
+                        {{/iff}}
+                        {{/select}}
+                    </select>
+                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0"/>
+                    <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+                    <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+                </li>
+            {{/each}}
+            </ol>
+        </div>
+    </section>
+</form>

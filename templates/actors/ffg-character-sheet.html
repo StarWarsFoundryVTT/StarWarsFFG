@@ -1,0 +1,582 @@
+<form class="{{cssClass}} character" autocomplete="off">
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <div id="actor-id" data-actor="{{actor._id}}" style="display: none;"></div>
+
+    <div class="header-fields">
+      {{!-- Character Details Container --}}
+      <div class="container" style="flex-wrap: nowrap;">
+        <div class="profile-block">
+          <div class="block-background">
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+          </div>
+        </div>
+        <div class="container">
+          <div class="header-name">
+            <div class="block-background">
+              <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String" /></h1>
+            </div>
+          </div>
+          <div class="block-background header-name header-description-block">
+            <div class="table">
+              <div class="row">
+                <div>{{localize "SWFFG.Species"}}:</div>
+                <div class="row-input"><input name="data.species.value" type="text" value="{{data.species.value}}" data-dtype="String" /></div>
+              </div>
+              <div class="row">
+                <div>{{localize "SWFFG.Career"}}:</div>
+                <div class="row-input"><input name="data.career.value" type="text" value="{{data.career.value}}" data-dtype="String" /></div>
+              </div>
+              <div class="row">
+                <div>{{localize "SWFFG.Specializations"}}:</div>
+                <div class="row-input"><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" data-dtype="String" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- Primary Stats Container --}}
+
+      <div class="container" style="flex-wrap: nowrap;">
+        <div class="container flex-group-center">
+          {{!-- Wounds Box --}}
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Wounds"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number" /></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Strain Box --}}
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Strain"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number" /></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Soak Box --}}
+          <div class="resource single">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Soak"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" disabled /></div>
+                </div>
+              </div>
+              <div class="block-background-shadow"></div>
+            </div>
+          </div>
+
+          {{!-- Defence Box --}}
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.Defense"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number" /></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.DefenseRanged"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.DefenseMelee"}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- {{!-- Force Box --}}
+          <div class="resource">
+            <div class="split-box">
+              <h1>{{localize "SWFFG.ForcePool"}}</h1>
+              <div class="content">
+                <div class="left">
+                  <input type="text" name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}" data-dtype="Number" />
+                  <label>{{localize "SWFFG.ForcePoolCommitted"}}</label>
+                </div>
+                <div class="divider"></div>
+                <div class="right">
+                  <input type="text" name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}" data-dtype="Number" />
+                  <label>{{localize "SWFFG.ForcePoolAvailable"}}</label>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="characteristics">{{localize "SWFFG.TabCharacteristics"}}</a>
+    <a class="item" data-tab="items">{{localize "SWFFG.TabGear"}}</a>
+    <a class="item" data-tab="talents">{{localize "SWFFG.TabTalents"}}</a>
+    <a class="item" data-tab="description">{{localize "SWFFG.TabBiography"}}</a>
+    <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
+    <!-- <a class="item" data-tab="description">{{localize "SWFFG.TabForcePowers"}}</a> -->
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{!-- Characteristics Tab --}}
+    <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
+      {{!-- Characteristics Scores --}}
+
+      <div class="grid grid-6col">
+        {{#each data.characteristics as |characteristic id|}}
+        <div class="characteristic-item flex-group-center" data-ability="{{id}}">
+          <div class="characteristic">
+            <div class="characteristic-value">
+              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[1-7]" />
+            </div>
+          </div>
+          <div class="characteristic-label">
+            {{characteristic.label}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+
+      <fieldset class="skillfilter" id="skillfilter">
+        <div>
+          <label>Filter skills:</label>
+          <input class="filter-control" type="radio" id="all" name="skillfilter" data-dtype="String" />
+          <label for="all">All</label>
+        </div>
+        <input class="filter-control" type="radio" id="Combat" name="skillfilter" data-dtype="String" />
+        <label for="combat">Combat</label><br />
+        <input class="filter-control" type="radio" id="General" name="skillfilter" data-dtype="String" />
+        <label for="general">General</label><br />
+        <input class="filter-control" type="radio" id="Knowledge" name="skillfilter" data-dtype="String" />
+        <label for="knowledge">Knowledge</label>
+      </fieldset>
+      <div class="tableWithHeader">
+        <div class="tableWithHeader-container">
+          <table>
+            <thead>
+              <th>{{localize "SWFFG.SkillsGeneral"}}</th>
+              <th class="hover position-relative">
+                {{localize "SWFFG.SkillsCS"}}
+                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+              </th>
+              <th>{{localize "SWFFG.SkillsRank"}}</th>
+              <th>{{localize "SWFFG.SkillsRoll"}}</th>
+            </thead>
+            <tbody>
+              {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'General'}}
+              <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>
+                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                </td>
+                <td>
+                  <input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" />
+                </td>
+                <td>
+                  <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                  <div class="roll-button dice-pool"></div>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+        </div>
+        <div class="tableWithHeader-container">
+          <table>
+            <thead>
+              <th>{{localize "SWFFG.SkillsCombat"}}</th>
+              <th class="hover position-relative">
+                {{localize "SWFFG.SkillsCS"}}
+                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+              </th>
+              <th>{{localize "SWFFG.SkillsRank"}}</th>
+              <th>{{localize "SWFFG.SkillsRoll"}}</th>
+            </thead>
+            <tbody>
+              {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
+              <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>
+                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                </td>
+                <td>
+                  <input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" />
+                </td>
+                <td>
+                  <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                  <div class="roll-button dice-pool"></div>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+          <table>
+            <thead>
+              <th>{{localize "SWFFG.SkillsKnowledge"}}</th>
+              <th class="hover position-relative">
+                {{localize "SWFFG.SkillsCS"}}
+                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+              </th>
+              <th>{{localize "SWFFG.SkillsRank"}}</th>
+              <th>{{localize "SWFFG.SkillsRoll"}}</th>
+            </thead>
+            <tbody>
+              {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Knowledge'}}
+              <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
+                <td>{{lookup ../this.FFG.skills.knowledgestripped [id]~}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>
+                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
+                </td>
+                <td>
+                  <input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" />
+                </td>
+                <td>
+                  <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->
+                  <div class="roll-button dice-pool"></div>
+                </td>
+              </tr>
+              {{/iff}} {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Owned Items Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+      <div class="container flex-group-center item-values">
+        {{!-- Encumbrance Box --}}
+        <div class="resource split">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.Encumbrance"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value"><input type="text" name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.value}}" data-dtype="Number" disabled /></div>
+                <div class="block-value"><input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.max}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow">
+              <div class="shadow-left">
+                <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
+              </div>
+              <div class="shadow-right">
+                <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Credits Box --}}
+        <div class="resource double">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.DescriptionCredits"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.stats.credits.value" value="{{data.stats.credits.value}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow"></div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- Weapons List --}}
+      <table class="items">
+        <thead>
+          <th>{{localize "SWFFG.ItemsWeapons"}}</th>
+          <th>{{localize "SWFFG.ItemsSkill"}}</th>
+          <th>{{localize "SWFFG.ItemsDamage"}}</th>
+          <th>{{localize "SWFFG.ItemsRange"}}</th>
+          <th>{{localize "SWFFG.ItemsCrit"}}</th>
+          <th>{{localize "SWFFG.ItemsEncum"}}</th>
+          <th>{{localize "SWFFG.ItemsSpecial"}}</th>
+          <th></th>
+        </thead>
+        <tbody class="items-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="item-name">{{item.name}}</td>
+            <td>{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}</td>
+            <td>{{item.data.damage.value}}</td>
+            <td>{{item.data.range.value}}</td>
+            <td>{{item.data.crit.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
+            <td>{{item.data.special.value}}</td>
+            <td class="item-controls">
+              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
+        </tbody>
+      </table>
+
+      {{!-- Armour List --}}
+      <table class="items">
+        <thead>
+          <tr class="items-header">
+            <th>{{localize "SWFFG.ItemsArmor"}}</th>
+            <th>{{localize "SWFFG.ItemsDefense"}}</th>
+            <th>{{localize "SWFFG.ItemsSoak"}}</th>
+            <th>{{localize "SWFFG.ItemsHP"}}</th>
+            <th>{{localize "SWFFG.ItemsEncum"}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="items-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="item-name">{{item.name}}</td>
+            <td>{{item.data.defence.value}}</td>
+            <td>{{item.data.soak.value}}</td>
+            <td>{{item.data.hardpoints.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
+            <td class="item-controls">
+              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
+        </tbody>
+      </table>
+
+      {{!-- Gear List --}}
+      <table class="items">
+        <thead>
+          <tr class="items-header">
+            <th>{{localize "SWFFG.ItemsGear"}}</th>
+            <th>{{localize "SWFFG.ItemsPrice"}}</th>
+            <th>{{localize "SWFFG.ItemsRarity"}}</th>
+            <th>{{localize "SWFFG.ItemsQuantity"}}</th>
+            <th>{{localize "SWFFG.ItemsEncum"}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="items-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'gear'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="item-name">{{item.name}}</td>
+            <td>{{item.data.price.value}}</td>
+            <td>{{item.data.rarity.value}}</td>
+            <td>{{item.data.quantity.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
+            <td class="item-controls">
+              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- Talents Tab --}}
+    <div class="tab talents" data-group="primary" data-tab="talents">
+      {{!-- Talents List --}}
+      <table class="talent-list">
+        <thead>
+          <tr>
+            <th>{{localize "SWFFG.Talents"}}</th>
+            <th>{{localize "SWFFG.TalentsActivation"}}</th>
+            <th>{{localize "SWFFG.TalentsRank"}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'talent'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="item-name hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </td>
+            <td>{{item.data.activation.value}}</td>
+            <td>
+              {{#if item.data.ranks.ranked}} {{item.data.ranks.current}} {{else}} N/A {{/if}}
+            </td>
+            <td>
+              <div class="item-controls">
+                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- Biography Tab --}}
+    <div class="tab biography active" data-group="primary" data-tab="description">
+      <div class="biography-editor">
+        {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+      </div>
+
+      <div class="container flex-group-center biography-values">
+        {{!-- Experience Box --}}
+        <div class="resource split">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.DescriptionXP"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value"><input type="text" name="data.experience.available" value="{{data.experience.available}}" data-dtype="Number" /></div>
+                <div class="block-value"><input type="text" name="data.experience.total" value="{{data.experience.total}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow">
+              <div class="shadow-left">
+                <div class="shadow-text">{{localize "SWFFG.DescriptionXPAvailable"}}</div>
+              </div>
+              <div class="shadow-right">
+                <div class="shadow-text">{{localize "SWFFG.DescriptionXPTotal"}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Obligation Box --}}
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.DescriptionObligation"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.obligation.value" value="{{data.obligation.value}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow"></div>
+          </div>
+        </div>
+
+        {{!-- Duty Box --}}
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.DescriptionDuty"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.duty.value" value="{{data.duty.value}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow"></div>
+          </div>
+        </div>
+
+        {{!-- Morality Box --}}
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.DescriptionMorality"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.morality.value" value="{{data.morality.value}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow"></div>
+          </div>
+        </div>
+
+        {{!-- Duty Box --}}
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.DescriptionConflict"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.conflict.value" value="{{data.conflict.value}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <header class="attributes-header flexrow">
+        <!-- <span class="attribute-key">ID</span> -->
+        <span class="attribute-modtype">Mod Type</span>
+        <span class="attribute-mod">Modifier</span>
+        <span class="attribute-value">Value</span>
+        <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
+      </header>
+
+      <ol class="attributes-list">
+        {{#each data.attributes as |attr key|}}
+        <li class="attribute flexrow" data-attribute="{{key}}">
+          <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" data-dtype="String" />
+          <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
+            {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/select}}
+          </select>
+          <select class="attribute-mod" name="data.attributes.{{key}}.mod">
+            {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{/select}}
+          </select>
+          <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" placeholder="0" />
+          <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+          <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+        </li>
+        {{/each}}
+      </ol>
+    </div>
+  </section>
+</form>

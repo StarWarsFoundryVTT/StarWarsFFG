@@ -1,0 +1,80 @@
+// .tabs {
+//   .item {
+//     background: rgba(0, 0, 0, 0.125);
+//     border: 1px solid;
+//     border-radius: 4px;
+//     margin: 0 10px 0;
+//     padding: 8px 4px;
+
+//     &:hover,
+//     &:focus {
+//       background: rgba(0, 0, 0, 0.125);
+//     }
+
+//     &.active {
+//       background: transparent;
+//     }
+//   }
+// }
+
+.character {
+  .tabs {
+    height: 15px;
+    margin-bottom: 10px;
+    border: 0;
+    .item {
+      line-height: 15px;
+    }
+  }
+}
+
+.minion {
+  .tabs {
+    height: 15px;
+    margin-bottom: 10px;
+    border: 0;
+    .item {
+      line-height: 15px;
+    }
+  }
+}
+
+.vehicle {
+  .tabs {
+    height: 15px;
+    margin-bottom: 10px;
+    border: 0;
+    .item {
+      line-height: 15px;
+    }
+  }
+}
+
+.tabs {
+  height: 40px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+
+  .item {
+    line-height: 15px;
+    font-weight: bold;
+    background-color: rgb(81, 98, 77);
+    padding: 3px;
+    margin: 0 5px;
+    --notchSize: 10px;
+
+    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+
+    &:hover {
+      text-shadow: 0 0 8px white;
+    }
+  }
+
+  .item.active {
+    text-decoration: underline;
+    text-shadow: none;
+    background-color: rgb(73, 12, 11);
+    color: white;
+    font-weight: normal;
+  }
+}

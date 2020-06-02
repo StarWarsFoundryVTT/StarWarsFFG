@@ -2,30 +2,37 @@
   <div class="dice-pool"></div>
   <table>
     <tr>
-      <td>Ability</td>
-      <td><input type="number" name="ability" min="0"></td>
-    </tr>
-    <tr>
+	  <td><img src="modules/special-dice-roller/public/images/sw/yellow.png" width="20" height="20"></td>
       <td>Proficiency</td>
       <td><input type="number" name="proficiency" min="0"></td>
     </tr>
     <tr>
-      <td>Difficulty</td>
-      <td><input type="number" name="difficulty" min="0"></td>
+	  <td><img src="modules/special-dice-roller/public/images/sw/green.png" width="20" height="20"></td>
+      <td>Ability</td>
+      <td><input type="number" name="ability" min="0"></td>
     </tr>
     <tr>
+	  <td><img src="modules/special-dice-roller/public/images/sw/red.png" width="20" height="20"></td>
       <td>Challenge</td>
       <td><input type="number"name="challenge" min="0"></td>
     </tr>
     <tr>
+	  <td><img src="modules/special-dice-roller/public/images/sw/purple.png" width="20" height="20"></td>
+      <td>Difficulty</td>
+      <td><input type="number" name="difficulty" min="0"></td>
+    </tr>
+    <tr>
+	  <td><img src="modules/special-dice-roller/public/images/sw/blue.png" width="20" height="20"></td>
       <td>Boost</td>
       <td><input type="number"name="boost" min="0"></td>
     </tr>
     <tr>
+	  <td><img src="modules/special-dice-roller/public/images/sw/black.png" width="20" height="20"></td>
       <td>Setback</td>
-      <td><input type="number" name="setback" min="0""></td>
+      <td><input type="number" name="setback" min="0"></td>
     </tr>
     <tr>
+	  <td><img src="modules/special-dice-roller/public/images/sw/whiteHex.png" width="20" height="20"></td>
       <td>Force</td>
       <td><input type="number" name="force" min="0"></td>
     </tr>
@@ -55,10 +62,10 @@
       const pool = new DicePoolFFG({{{json dicePool}}});
 
       updatePreview(scope, pool);
-      setupInput(scope, pool, "ability");
       setupInput(scope, pool, "proficiency");
-      setupInput(scope, pool, "difficulty");
+      setupInput(scope, pool, "ability");
       setupInput(scope, pool, "challenge");
+      setupInput(scope, pool, "difficulty");
       setupInput(scope, pool, "boost");
       setupInput(scope, pool, "setback");
       setupInput(scope, pool, "force");
