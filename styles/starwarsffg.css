@@ -171,30 +171,10 @@
   line-height: 15px;
 }
 
-.starwarsffg .minion .tabs {
-  height: 15px;
-  margin-bottom: 10px;
-  border: 0;
-}
-
-.starwarsffg .minion .tabs .item {
-  line-height: 15px;
-}
-
-.starwarsffg .vehicle .tabs {
-  height: 15px;
-  margin-bottom: 10px;
-  border: 0;
-}
-
-.starwarsffg .vehicle .tabs .item {
-  line-height: 15px;
-}
-
 .starwarsffg .tabs {
   height: 40px;
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
+  border-top: 1px solid #AAA;
+  border-bottom: 1px solid #AAA;
 }
 
 .starwarsffg .tabs .item {
