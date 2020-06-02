@@ -35,6 +35,7 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 650;
         break;
       case "armour":
+      case "gear":
         this.position.width = 385;
         this.position.height = 575;
         break;
