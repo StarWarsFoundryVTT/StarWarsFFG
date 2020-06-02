@@ -234,7 +234,7 @@ div .container.talents {
 }
 
 .starwarsffg.sheet .sheet-body.vehicle {
-  height: calc(100% - 25em);
+  height: calc(100% - 17em);
   overflow: auto;
 }
 

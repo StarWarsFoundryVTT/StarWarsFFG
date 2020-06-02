@@ -1,4 +1,4 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}} vehicle" autocomplete="off">
 
     {{!-- Sheet Header --}}
     <header class="sheet-header">
@@ -12,7 +12,7 @@
     </header>
 
     {{!-- Defence Grid --}}
-    <div style="position: absolute; text-align: right; right: 30px; top: 60px;">
+    <div style="position: absolute; text-align: right; right: 30px; top: 30px;">
       {{!-- Fore and Aft Box --}}
       <div class="resource">
           <div class="defence-box">
@@ -251,7 +251,7 @@
         </div>
 
         {{!-- Biography Tab --}}
-        <div class="tab biography active" style="height:82%" data-group="primary" data-tab="description">
+        <div class="tab active" style="height:82%" data-group="primary" data-tab="description">
           {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
           {{!-- Obligations Section --}}
           <div class="container sheet-topper" style="margin: 0;">

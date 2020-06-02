@@ -1,11 +1,11 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}} minion" autocomplete="off">
 
   {{!-- Sheet Header --}}
   <header class="sheet-header">
     <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
     <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
 
-    <div class="header-fields">
+    <div>
       {{!-- Character Name and Player --}}
       <div class="charname minion"><label>Minion name:<input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></label>
       <div class="resource small">

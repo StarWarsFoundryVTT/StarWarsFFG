@@ -41,6 +41,7 @@ NICE TO HAVE:
 
 # Changelog
 
+- 02/06/2020 - Esrin - Temporary display fixes to Minion and Vehicle sheets awaiting CStadther's eventual restyle.
 - 02/06/2020 - Esrin - Minor bugfix to character sheet, soak value set to disabled for auto-calculation, encumbrance max and current values swapped to correct fields and current set to disabled for auto-calculation.
 - 02/06/2020 - CStadther - Major sheet restyling
 - 02/06/2020 - Jaxxa - Added Icons in the Dice roller, visually indicating the dice types.
