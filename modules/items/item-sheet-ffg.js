@@ -28,6 +28,24 @@ export class ItemSheetFFG extends ItemSheet {
     for (let attr of Object.values(data.data.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
+
+    switch (this.object.data.type) {
+      case "weapon":
+        this.position.width = 385;
+        this.position.height = 650;
+        break;
+      case "armour":
+      case "gear":
+        this.position.width = 385;
+        this.position.height = 575;
+        break;
+      case "talent": 
+        this.position.width = 405;
+        this.position.height = 475;
+        break;
+      default:
+    }
+
     data.FFG = CONFIG.FFG;
     return data;
   }

@@ -1,41 +1,96 @@
-<form class="{{cssClass}}" autocomplete="off">
+<form class="{{cssClass}} item-sheet-armor" autocomplete="off">
     <header class="sheet-header">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-        <div class="header-fields">
-          <div class="container">
+      <div class="header-fields">
+        <div class="container flex-group-center">
+          <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        </div>
+        <div class="container flex-group-center">
+          <div class="container flex-group-center item-name">
             <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
           </div>
-          <div class="container">
-            <div class="resource small">
-            	<label>Quantity: </label>
-                <input style="text-align:center;" type="number" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number"/>
+          <div class="container flex-group-center">
+            <div class="grid grid-5col">
+              <div class="characteristic-item flex-group-center">
+                <div class="characteristic">
+                  <div class="characteristic-value">
+                    <input type="text" name="data.defence.value" value="{{data.defence.value}}" data-dtype="Number" />
+                  </div>
+                </div>
+                <div class="characteristic-label">
+                  {{localize "SWFFG.ItemArmorDefense"}}
+                </div>
+              </div>
+              <div class="characteristic-item flex-group-center">
+                <div class="characteristic">
+                  <div class="characteristic-value">
+                    <input type="text" name="data.soak.value" value="{{data.soak.value}}" data-dtype="Number" />
+                  </div>
+                </div>
+                <div class="characteristic-label">
+                  {{localize "SWFFG.ItemsSoak"}}
+                </div>
+              </div>
+              <div class="characteristic-item flex-group-center">
+                <div class="characteristic">
+                  <div class="characteristic-value">
+                    <input type="text" name="data.encumbrance.value" value="{{data.encumbrance.value}}" data-dtype="Number" />
+                  </div>
+                </div>
+                <div class="characteristic-label">
+                  {{localize "SWFFG.ItemWeaponEncumbrance"}}
+                </div>
+              </div>
+              <div class="characteristic-item flex-group-center">
+                <div class="characteristic">
+                  <div class="characteristic-value">
+                    <input type="text" name="data.hardpoints.value" value="{{data.hardpoints.value}}" data-dtype="Number" />
+                  </div>
+                </div>
+                <div class="characteristic-label">
+                  {{localize "SWFFG.ItemWeaponHardPoints"}}
+                </div>
+              </div>
+              <div class="characteristic-item flex-group-center">
+                <div class="characteristic">
+                  <div class="characteristic-value">
+                    <input type="text" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number" />
+                  </div>
+                </div>
+                <div class="characteristic-label">
+                  {{localize "SWFFG.ItemWeaponRarity"}}
+                </div>
+              </div>
             </div>
-            <div class="resource small">
-            	<label>Encumbrance: </label>
-                <input style="text-align:center;" type="number" name="data.encumbrance.value" value="{{data.encumbrance.value}}" data-dtype="Number"/>
-            </div>
-            <div class="resource small">
-              <label>Rarity: </label>
-                <input style="text-align:center;" type="number" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number"/>
-            </div>
-            <div class="resource small">
-              <label>Price: </label>
-                <input style="text-align:center;" type="number" name="data.price.value" value="{{data.price.value}}" data-dtype="Number"/>
-            </div>
-            <div class="resource small">
-              <label>Hard Points: </label>
-                <input style="text-align:center;" type="number" name="data.hardpoints.value" value="{{data.hardpoints.value}}" data-dtype="Number"/>
-            </div>
-            <div class="resource small">
-              <label>Defence: </label>
-                <input style="text-align:center;" type="number" name="data.defence.value" value="{{data.defence.value}}" data-dtype="Number"/>
-            </div>
-            <div class="resource small">
-              <label>Soak: </label>
-                <input style="text-align:center;" type="number" name="data.soak.value" value="{{data.soak.value}}" data-dtype="Number"/>
+
+            <div class="container flex-group-center weapon-values">
+              <div class="resource single">
+                <div class="attribute flex-group-center">
+                  <div class="block-background">
+                    <div class="block-title">
+                      {{localize "SWFFG.ItemWeaponPrice"}}
+                    </div>
+                    <div class="block-attribute">
+                      <div class="block-value block-single"><input type="text" name="data.price.value" value="{{data.price.value}}" data-dtype="Number" /></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="resource single">
+                <div class="attribute flex-group-center">
+                  <div class="block-background">
+                    <div class="block-title">
+                      {{localize "SWFFG.ItemWeaponQuantity"}}
+                    </div>
+                    <div class="block-attribute">
+                      <div class="block-value block-single"><input type="text" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number" /></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
     </header>
 
     {{!-- Sheet Tab Navigation --}}
