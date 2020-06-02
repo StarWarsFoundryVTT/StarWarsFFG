@@ -26,6 +26,16 @@
       "name": "English",
       "path": "lang/en.json"
     }
+    {
+      "lang": "fr",
+      "name": "Français (French)",
+      "path": "lang/fr.json"
+    }
+    {
+      "lang": "de",
+      "name": "Deutsch (German )",
+      "path": "lang/de.json"
+    }
   ],
   "gridDistance": 5,
   "gridUnits": "ft",

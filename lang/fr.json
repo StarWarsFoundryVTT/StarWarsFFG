@@ -74,4 +74,7 @@
   "SWFFG.ItemWeaponSpecial": "Spécial",
   "SWFFG.ItemArmorDefense": "Def",
   "SWFFG.ItemTalentRanked": "Rang?"
+  "SWFFG.MinionName": "Nom du Minion",
+  "SWFFG.MinionQuantity": "Quantité",
+  "SWFFG.MinionUnitWounds": "Blessures de l'unité"
 }
