@@ -472,11 +472,11 @@
   width: 45px;
 }
 
-.starwarsffg .item-sheet-talent .header-fields h1, .starwarsffg .item-sheet-gear .header-fields h1, .starwarsffg .item-sheet-weapon .header-fields h1, .starwarsffg .item-sheet-armor .header-fields h1 {
+.starwarsffg .item-sheet-talent .header-fields h1, .starwarsffg .item-sheet-gear .header-fields h1, .starwarsffg .item-sheet-weapon .header-fields h1, .starwarsffg .item-sheet-armor .header-fields h1, .starwarsffg .item-sheet-vehicle-weapon .header-fields h1, .starwarsffg .item-sheet-vehicle-attachment .header-fields h1 {
   font-size: 1rem;
 }
 
-.starwarsffg .item-sheet-talent .header-fields .profile-img, .starwarsffg .item-sheet-gear .header-fields .profile-img, .starwarsffg .item-sheet-weapon .header-fields .profile-img, .starwarsffg .item-sheet-armor .header-fields .profile-img {
+.starwarsffg .item-sheet-talent .header-fields .profile-img, .starwarsffg .item-sheet-gear .header-fields .profile-img, .starwarsffg .item-sheet-weapon .header-fields .profile-img, .starwarsffg .item-sheet-armor .header-fields .profile-img, .starwarsffg .item-sheet-vehicle-weapon .header-fields .profile-img, .starwarsffg .item-sheet-vehicle-attachment .header-fields .profile-img {
   position: absolute;
   left: 0.5rem;
   top: 2.5rem;
@@ -485,7 +485,7 @@
   clip-path: none;
 }
 
-.starwarsffg .item-sheet-talent .header-fields .item-name, .starwarsffg .item-sheet-gear .header-fields .item-name, .starwarsffg .item-sheet-weapon .header-fields .item-name, .starwarsffg .item-sheet-armor .header-fields .item-name {
+.starwarsffg .item-sheet-talent .header-fields .item-name, .starwarsffg .item-sheet-gear .header-fields .item-name, .starwarsffg .item-sheet-weapon .header-fields .item-name, .starwarsffg .item-sheet-armor .header-fields .item-name, .starwarsffg .item-sheet-vehicle-weapon .header-fields .item-name, .starwarsffg .item-sheet-vehicle-attachment .header-fields .item-name {
   padding: 0;
   text-align: left;
 }
@@ -657,6 +657,7 @@
 
 .starwarsffg table.talent-list {
   border: 0;
+  margin: 0;
 }
 
 .starwarsffg table.talent-list th {
@@ -1542,7 +1543,7 @@
 }
 
 .starwarsffg .vehicle .resource.single {
-  width: 100px;
+  width: 115px;
 }
 
 .starwarsffg .vehicle .resource.single.characteristic {
@@ -1571,6 +1572,10 @@
 
 .starwarsffg .vehicle .resource input {
   width: 45px;
+}
+
+.starwarsffg .vehicle .biography-values {
+  border: 0;
 }
 
 .starwarsffg .vehicle table.items {
