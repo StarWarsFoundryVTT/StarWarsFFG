@@ -1737,3 +1737,381 @@
 .starwarsffg .minion table.items {
   margin: 0.5em 0;
 }
+
+.starwarsffg .vehicle .sheet-body.vehicle {
+  height: calc(100% - 450px);
+}
+
+.starwarsffg .vehicle .header-fields .container.flex-group-center {
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.starwarsffg .vehicle .header-fields .grid {
+  margin: 5px;
+}
+
+.starwarsffg .vehicle .header-fields .grid.grid-4col {
+  margin: 10px;
+}
+
+.starwarsffg .vehicle .header-fields .block-background {
+  position: relative;
+}
+
+.starwarsffg .vehicle .header-fields .flex-group-right {
+  border: 0;
+  padding: 0 5px;
+}
+
+.starwarsffg .vehicle .header-fields .profile-block {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 200px;
+}
+
+.starwarsffg .vehicle .header-fields .profile-block .profile-img {
+  height: 190px;
+  max-width: 200px;
+}
+
+.starwarsffg .vehicle .header-fields .charname input {
+  width: 100%;
+  margin: 5px;
+  border: 0;
+}
+
+.starwarsffg .vehicle .header-fields .charname input:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+  border-radius: 5px;
+}
+
+.starwarsffg .vehicle .defense-group {
+  width: 100%;
+}
+
+.starwarsffg .vehicle .defense-group .defense-decoration {
+  position: absolute;
+  width: 175px;
+  height: 175px;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: conic-gradient(#c7794b 0% 25%, #dbc48e 25% 50%, #c7794b 50% 75%, #dbc48e 75% 100%);
+}
+
+.starwarsffg .vehicle .defense-group .defense-decoration img {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  border: 0;
+}
+
+.starwarsffg .vehicle .defense-block {
+  height: 200px;
+  width: 100%;
+  position: relative;
+}
+
+.starwarsffg .vehicle .defense-block .defense-block-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  text-transform: uppercase;
+  background-color: #21192e;
+  color: white;
+  width: 90px;
+  text-align: center;
+  --notchSize: 9px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .vehicle .defense-block .defense-value {
+  border-radius: 10px;
+  border: 5px double #1f1c39;
+  margin: auto;
+  position: absolute;
+  background-color: white;
+}
+
+.starwarsffg .vehicle .defense-block .defense-value .defense-value-label {
+  position: absolute;
+  text-transform: uppercase;
+  background-color: #490c0b;
+  width: 100%;
+  text-align: center;
+  color: white;
+  font-size: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  --notchSize: 7px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.fore {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.fore .defense-value-label {
+  bottom: -20px;
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.aft {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.aft .defense-value-label {
+  top: -20px;
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.port {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.port .defense-value-label {
+  left: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.starboard {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.starwarsffg .vehicle .defense-block .defense-value.starboard .defense-value-label {
+  left: -50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.starwarsffg .vehicle .defense-block .defense-value input {
+  height: 40px;
+  width: 40px;
+  border: 0;
+  font-size: 30px;
+  text-align: center;
+}
+
+.starwarsffg .vehicle .defense-block .defense-value input:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+  border-radius: 5px;
+}
+
+.starwarsffg .vehicle .characteristic-item {
+  border: 0;
+  position: relative;
+  padding: 0;
+  margin: 0 5px;
+}
+
+.starwarsffg .vehicle .characteristic-item .characteristic-label {
+  margin-top: 5px;
+  width: 100%;
+  text-align: center;
+  background-color: #226cc5;
+  color: white;
+  text-transform: uppercase;
+  font-size: 10px;
+  --notchSize: 7px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .vehicle .characteristic-item .characteristic {
+  width: 80px;
+  height: 50px;
+  border-radius: 10px;
+  border: 5px double #1f1c39;
+  margin: auto;
+  position: relative;
+}
+
+.starwarsffg .vehicle .characteristic-item .characteristic .characteristic-value input {
+  height: 40px;
+  border: 0;
+  font-size: 30px;
+  text-align: center;
+}
+
+.starwarsffg .vehicle .characteristic-item .characteristic .characteristic-value input:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+  border-radius: 5px;
+}
+
+.starwarsffg .vehicle .attribute {
+  position: relative;
+  padding: 0;
+  z-index: 1;
+  border: 0;
+}
+
+.starwarsffg .vehicle .attribute .block-background-shadow {
+  top: 36px;
+}
+
+.starwarsffg .vehicle .attribute .block-border {
+  background-color: black;
+  --notchSize: 12px;
+  padding: 4px 4px;
+}
+
+.starwarsffg .vehicle .attribute .block-background {
+  padding: 5px 5px;
+}
+
+.starwarsffg .vehicle .attribute .block-title {
+  line-height: initial;
+  background-color: #21192e;
+  color: white;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin: auto;
+  --notchSize: 8px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .vehicle .attribute .block-attribute select:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+}
+
+.starwarsffg .vehicle .attribute .block-attribute .block-value {
+  display: inline-block;
+}
+
+.starwarsffg .vehicle .attribute .block-value textarea {
+  resize: none;
+  font-family: 'Roboto';
+  border: 0;
+}
+
+.starwarsffg .vehicle .attribute .block-value textarea:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+  outline: none;
+}
+
+.starwarsffg .vehicle .attribute .block-value.block-characteristic input {
+  height: 45px;
+  font-size: 30px;
+}
+
+.starwarsffg .vehicle .attribute .block-value.block-single input {
+  width: 100%;
+  padding: 6px;
+}
+
+.starwarsffg .vehicle .attribute .block-value input {
+  border: 0;
+  font-size: 14px;
+}
+
+.starwarsffg .vehicle .attribute .block-value input:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+}
+
+.starwarsffg .vehicle .attribute .shadow-text {
+  position: absolute;
+  top: 5px;
+  font-size: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg .vehicle .attribute .shadow-left {
+  background-color: #490c0b;
+  width: 50%;
+  height: 100%;
+  float: left;
+  position: relative;
+  padding-top: 25px;
+}
+
+.starwarsffg .vehicle .attribute .shadow-left .shadow-text {
+  color: white;
+  text-transform: uppercase;
+}
+
+.starwarsffg .vehicle .attribute .shadow-right {
+  background-color: #7da9c2;
+  width: 50%;
+  height: 100%;
+  float: right;
+  position: relative;
+  padding-top: 25px;
+}
+
+.starwarsffg .vehicle .attribute .shadow-right .shadow-text {
+  color: black;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.starwarsffg .vehicle .resource {
+  line-height: 30px;
+  width: 110px;
+}
+
+.starwarsffg .vehicle .resource.split {
+  width: 130px;
+}
+
+.starwarsffg .vehicle .resource.single {
+  width: 100px;
+}
+
+.starwarsffg .vehicle .resource.single.characteristic {
+  width: 65px;
+  position: relative;
+}
+
+.starwarsffg .vehicle .resource.single.characteristic .block-title-bottom {
+  position: absolute;
+  top: 70px;
+  width: 100%;
+  line-height: initial;
+  background-color: #226cc5;
+  color: white;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin: auto;
+  --notchSize: 8px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .vehicle .resource.double {
+  width: 235px;
+}
+
+.starwarsffg .vehicle .resource input {
+  width: 45px;
+}
+
+.starwarsffg .vehicle table.items {
+  margin: 0.5em 0;
+}
+
+.starwarsffg .vehicle table.items .items-list td.item-controls {
+  text-align: right;
+  width: auto;
+  z-index: auto;
+}
