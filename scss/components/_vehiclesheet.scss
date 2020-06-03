@@ -1,4 +1,10 @@
 .vehicle {
+  .sheet-body {
+    &.vehicle {
+      height: calc(100% - 32rem);
+    }
+  }
+
   .header-fields {
     .container {
       &.flex-group-center {
@@ -258,8 +264,14 @@
       width: 45px;
     }
   }
-
+  .tab{
+    &.active {
+		height: 30%;
+	}
+  }
   .biography-values {
+    position: absolute;
+    bottom: 0;
     border: 0;
   }
 
