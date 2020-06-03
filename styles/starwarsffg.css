@@ -2080,7 +2080,7 @@
 }
 
 .starwarsffg .vehicle .resource.single {
-  width: 100px;
+  width: 115px;
 }
 
 .starwarsffg .vehicle .resource.single.characteristic {
@@ -2109,6 +2109,10 @@
 
 .starwarsffg .vehicle .resource input {
   width: 45px;
+}
+
+.starwarsffg .vehicle .biography-values {
+  border: 0;
 }
 
 .starwarsffg .vehicle table.items {
