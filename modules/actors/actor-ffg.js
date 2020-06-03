@@ -19,10 +19,23 @@ export class ActorFFG extends Actor {
     if (actorData.type === "character") this._prepareCharacterData(actorData);
   }
 
+  _prepareSharedData(actorData) {
+    const data = actorData.data;
+
+    for (let characteristic of Object.keys(data.characteristics)) {
+      const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
+      const localizedField = game.i18n.localize(strId);
+
+      data.characteristics[characteristic].label = localizedField;
+    }
+  }
+
   /**
    * Prepare Minion type specific data
    */
   _prepareMinionData(actorData) {
+    this._prepareSharedData(actorData);
+
     const data = actorData.data;
 
     // Set Wounds threshold to unit_wounds * quantity to account for minion group health.
@@ -51,6 +64,8 @@ export class ActorFFG extends Actor {
    * Prepare Character type specific data
    */
   _prepareCharacterData(actorData) {
+    this._prepareSharedData(actorData);
+
     const data = actorData.data;
     const items = actorData.items;
     var soak = 0;
@@ -62,13 +77,7 @@ export class ActorFFG extends Actor {
     // Start with Brawn. Also calculate total encumbrance from items.
     soak = +data.characteristics.Brawn.value;
 
-    for (let characteristic of Object.keys(data.characteristics)) {
-      const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
-      const localizedField = game.i18n.localize(strId);
-
-      data.characteristics[characteristic].label = localizedField;
-    }
-
+    
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
       // For armour type, get all Soak values and add to armoursoak.
