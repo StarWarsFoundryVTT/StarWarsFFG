@@ -15,7 +15,7 @@
 .tableWithHeader {
   overflow-y: auto;
   margin: -1px;
-  height: calc(100% - 9em);
+  height: calc(100% - 7em);
   display: flex;
   margin-top: -5px;
 }
@@ -134,7 +134,7 @@ div .container.talents {
 }
 
 .starwarsffg.sheet.actor {
-  min-width: 575px;
+  min-width: 588px;
   min-height: 489px;
 }
 
