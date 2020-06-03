@@ -50,8 +50,6 @@ export class ItemSheetFFG extends ItemSheet {
 
     data.FFG = CONFIG.FFG;
 
-    console.log(CONFIG.FFG);
-
     return data;
   }
 
