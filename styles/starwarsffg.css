@@ -2124,6 +2124,14 @@
   z-index: auto;
 }
 
+.starwarsffg .vehicle table tr.item {
+  position: relative;
+}
+
+.starwarsffg .vehicle table tr.item td {
+  position: relative;
+}
+
 .starwarsffg .item-sheet-vehicle-weapon .header-fields {
   height: 435px;
 }
