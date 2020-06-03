@@ -98,6 +98,7 @@
   "SWFFG.VehicleDefenseFore": "Fore",
   "SWFFG.VehicleDefenseAft": "Aft",
   "SWFFG.VehicleDefensePort": "Port",
-  "SWFFG.VehicleDefenseStarboard": "stbd"
+  "SWFFG.VehicleDefenseStarboard": "stbd",
+  "SWFFG.VehicleAttachmentHardPointRequired": "HP Req"
 }
 

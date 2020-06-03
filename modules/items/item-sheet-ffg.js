@@ -31,11 +31,13 @@ export class ItemSheetFFG extends ItemSheet {
 
     switch (this.object.data.type) {
       case "weapon":
+      case "shipweapon":
         this.position.width = 385;
         this.position.height = 650;
         break;
       case "armour":
       case "gear":
+      case "shipattachment":
         this.position.width = 385;
         this.position.height = 575;
         break;
