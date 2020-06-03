@@ -452,5 +452,15 @@
         }
       }
     }
+
+    tr {
+      &.item {
+        position: relative;
+
+        td {
+          position: relative;
+        }
+      }
+    }
   }
 }
