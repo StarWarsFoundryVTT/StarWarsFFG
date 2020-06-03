@@ -39,6 +39,7 @@ NICE TO HAVE:
 
 # Changelog
 
+- 02/06/2020 - CStadther - Restyled vehicle weapon and attachment sheets.
 - 02/06/2020 - Esrin - Bugfix to minion sheet groupskill display.
 - 02/06/2020 - Esrin - Sheet styling tweaks.
 - 02/06/2020 - Esrin - Bug fixes to minion sheet.
