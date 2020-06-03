@@ -7,17 +7,15 @@
       {{!-- Character Details Container --}}
       <div class="container" style="flex-wrap: nowrap;">
         <div class="profile-block">
-          <div class="block-background">
+          <div>
             <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
           </div>
         </div>
         <div class="container">
-          <div class="header-name">
-            <div class="block-background">
-              <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String" /></h1>
+          <div class="header-name header-description-block">
+            <div>
+              <h2><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String" /></h2>
             </div>
-          </div>
-          <div class="block-background header-name header-description-block">
             <div class="table">
               <div class="row">
                 <div>{{localize "SWFFG.Species"}}:</div>

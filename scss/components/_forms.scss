@@ -3,22 +3,12 @@
 }
 
 .block-background {
-  background-color: rgb(196, 219, 233);
+  background-color: #ddd;
   padding: 5px;
-  
+
   --notchSize: 9px;
-  
-  clip-path: 
-    polygon(
-      0% var(--notchSize), 
-      var(--notchSize) 0%, 
-      calc(100% - var(--notchSize)) 0%, 
-      100% var(--notchSize), 
-      100% calc(100% - var(--notchSize)), 
-      calc(100% - var(--notchSize)) 100%, 
-      var(--notchSize) 100%, 
-      0% calc(100% - var(--notchSize))
-  );
+
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 }
 
 .block-background-shadow {
@@ -31,18 +21,8 @@
   z-index: -1;
 
   --notchSize: 9px;
-  
-  clip-path: 
-    polygon(
-      0% var(--notchSize), 
-      var(--notchSize) 0%, 
-      calc(100% - var(--notchSize)) 0%, 
-      100% var(--notchSize), 
-      100% calc(100% - var(--notchSize)), 
-      calc(100% - var(--notchSize)) 100%, 
-      var(--notchSize) 100%, 
-      0% calc(100% - var(--notchSize))
-  );
+
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 }
 
 .character {
