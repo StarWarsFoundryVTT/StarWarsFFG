@@ -22,11 +22,22 @@ export class ActorFFG extends Actor {
   _prepareSharedData(actorData) {
     const data = actorData.data;
 
+    // localize characteristic names
     for (let characteristic of Object.keys(data.characteristics)) {
       const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
       const localizedField = game.i18n.localize(strId);
 
       data.characteristics[characteristic].label = localizedField;
+    }
+
+    //localize skill names
+    for (let skill of Object.keys(data.skills)) {
+      const cleanedSkillName = skill.replace(/[\W_]+/g,"");
+
+      const strId = `SWFFG.SkillsName${cleanedSkillName}`;
+      const localizedField = game.i18n.localize(strId);
+
+      data.skills[skill].label = localizedField;
     }
   }
 
