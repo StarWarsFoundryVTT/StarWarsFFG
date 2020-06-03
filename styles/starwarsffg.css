@@ -1641,7 +1641,7 @@
 
 .starwarsffg .minion .attribute .block-value textarea {
   resize: none;
-  font-family: 'Roboto';
+  font-family: "Roboto";
   border: 0;
 }
 
@@ -1732,10 +1732,6 @@
 
 .starwarsffg .minion .tabs .item {
   line-height: 13px;
-}
-
-.starwarsffg .minion .sheet-body .tab {
-  height: auto;
 }
 
 .starwarsffg .minion table.items {

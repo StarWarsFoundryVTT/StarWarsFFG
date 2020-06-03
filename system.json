@@ -2,7 +2,7 @@
   "name": "starwarsffg",
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
-  "version": 0.06,
+  "version": 0.061,
   "minimumCoreVersion": "0.5.6",
   "compatibleCoreVersion": "0.6.1",
   "templateVersion": 1,
@@ -30,6 +30,11 @@
       "lang": "de",
       "name": "Deutsch (German)",
       "path": "lang/de.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français (French)",
+      "path": "lang/fr.json"
     }
   ],
   "gridDistance": 5,
@@ -38,6 +43,6 @@
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG",
   "manifest": "https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/master/system.json",
-  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v0.06/starwarsffg_0.060.zip",
+  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v0.06/starwarsffg_0.061.zip",
   "license": "LICENSE.txt"
 }
