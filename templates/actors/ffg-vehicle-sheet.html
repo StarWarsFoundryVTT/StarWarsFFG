@@ -250,52 +250,70 @@
     {{!-- Biography Tab --}}
     <div class="tab active" style="height: 77%;" data-group="primary" data-tab="description">
       {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Obligations Section --}}
-      <div class="container sheet-topper" style="margin: 0;">
+      <div class="container flex-group-center biography-values">
         {{!-- Hard Points Box --}}
-        <div class="resource">
-          <div class="split-box">
-            <h1>Hard Points</h1>
-            <div class="content">
-              <div class="single-clear">
-                <input type="text" name="data.obligation.value" value="{{data.obligation.value}}" data-dtype="Number" />
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.VehicleHardPoints"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.stats.customizationHardPoints.value" value="{{data.stats.customizationHardPoints.value}}" data-dtype="Number" /></div>
               </div>
             </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
 
         {{!-- Encumbrance Capacity Box --}}
-        <div class="resource">
-          <div class="split-box">
-            <h1 style="background: #652825; border-bottom: 2px solid black;">Encumbrance Capacity</h1>
-            <div class="content">
-              <div class="single-clear">
-                <input type="text" name="data.duty.value" value="{{data.duty.value}}" data-dtype="String" />
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.VehicleEncumbranceCapacity"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}" data-dtype="Number" /></div>
               </div>
             </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
 
         {{!-- Sensor Range Box --}}
-        <div class="resource">
-          <div class="split-box">
-            <h1 style="background: #000; border-bottom: 2px solid black;">Sensor Range</h1>
-            <div class="content">
-              <div class="single-clear">
-                <input type="text" name="data.morality.value" value="{{data.morality.value}}" data-dtype="String" />
+
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.VehicleSensorRange"}}
+              </div>
+              <div class="block-attribute">
+                <select style="text-align: center;" name="data.stats.sensorRange.value">
+                  {{#select data.stats.sensorRange.value}} {{#each this.FFG.ranges as |t|}}
+                  <option value="{{t}}">{{t}}</option>
+                  {{/each}} {{/select}}
+                </select>
               </div>
             </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
+        
 
         {{!-- Passenger Capacity Box --}}
-        <div class="resource">
-          <div class="split-box">
-            <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Passenger Capacity</h1>
-            <div class="content">
-              <div class="single-clear">
-                <input type="text" name="data.conflict.value" value="{{data.conflict.value}}" data-dtype="String" />
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.VehiclePassengerCapacity"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-single"><input type="text" name="data.stats.passengerCapacity.value" value="{{data.stats.passengerCapacity.value}}" data-dtype="Number" /></div>
               </div>
             </div>
+            <div class="block-background-shadow"></div>
           </div>
         </div>
       </div>

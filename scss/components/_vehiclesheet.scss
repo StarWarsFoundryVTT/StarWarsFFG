@@ -394,7 +394,7 @@
       width: 130px;
     }
     &.single {
-      width: 100px;
+      width: 115px;
 
       &.characteristic {
         width: 65px;
@@ -433,6 +433,10 @@
     input {
       width: 45px;
     }
+  }
+
+  .biography-values {
+    border: 0;
   }
 
   table {
