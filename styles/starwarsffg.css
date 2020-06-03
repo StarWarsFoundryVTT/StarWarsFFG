@@ -191,6 +191,10 @@
   line-height: 15px;
 }
 
+.starwarsffg .vehicle .sheet-body .tab {
+  height: auto;
+}
+
 .starwarsffg .tabs {
   height: 40px;
   border-top: 1px solid #aaa;
