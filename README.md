@@ -17,6 +17,10 @@ This is most easily available from the in-game Module browser. After installing 
    https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/master/system.json
 5. Click Install, after a few seconds the system should be installed.
 
+# Contributing
+
+Please see [CONTRIBUTING.md](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/dev/CONTRIBUTING.md).
+
 # To-do
 
 NEEDED FOR RELEASE V1:
