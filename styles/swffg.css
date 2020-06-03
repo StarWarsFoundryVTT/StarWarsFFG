@@ -15,7 +15,15 @@
 .tableWithHeader {
   overflow-y: auto;
   margin: -1px;
-  height: calc(100% - 6em);
+  height: calc(100% - 9em);
+  display: flex;
+  margin-top: -5px;
+}
+
+.minion.tableWithHeader {
+  overflow-y: auto;
+  margin: -1px;
+  height: calc(100% - 13em);
   display: flex;
   margin-top: -5px;
 }
