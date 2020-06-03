@@ -33,14 +33,16 @@ NICE TO HAVE:
 
 - Create JS data models for species, careers and specialisations and use those in prepareData to define career skills and starting characteristics.
 - Attempt to fix display of wound and strain bars so that they suit FFG system.
-- Genesys cross-compatibility (dice, sheets)
+- Genesys cross-compatibility (dice, sheets).
 - Rework Special Qualities and Critical Injuries to be item type, add view to item sheets and character sheets.
-- Character creator
+- Character creator.
 
 # Changelog
 
-- 02/06/2020 - CStadther - Restyled vehicle weapon and attachment sheets.
-- 02/06/2020 - Esrin - Bugfix to minion sheet groupskill display.
+- 03/06/2020 - HDScurox - Updated German language file.
+- 03/06/2020 - Esrin - Implemented scroll position saving when actor sheet elements are updated. No more popping back to the top of the skills list every time you make a change!
+- 03/06/2020 - CStadther - Restyled vehicle weapon and attachment sheets.
+- 03/06/2020 - Esrin - Bugfix to minion sheet groupskill display.
 - 02/06/2020 - Esrin - Sheet styling tweaks.
 - 02/06/2020 - Esrin - Bug fixes to minion sheet.
 - 02/06/2020 - CStadther - Continued restyling vehicle sheet.

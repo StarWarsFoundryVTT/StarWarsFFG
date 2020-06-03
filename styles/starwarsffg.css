@@ -631,6 +631,7 @@
 
 .starwarsffg table.talent-list {
   border: 0;
+  margin: 0;
 }
 
 .starwarsffg table.talent-list th {
