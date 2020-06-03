@@ -1314,7 +1314,7 @@
 }
 
 .starwarsffg .vehicle .sheet-body.vehicle {
-  height: calc(100% - 450px);
+  height: calc(100% - 32rem);
 }
 
 .starwarsffg .vehicle .header-fields .container.flex-group-center {
@@ -1574,7 +1574,13 @@
   width: 45px;
 }
 
+.starwarsffg .vehicle .tab.active {
+  height: 30%;
+}
+
 .starwarsffg .vehicle .biography-values {
+  position: absolute;
+  bottom: 0;
   border: 0;
 }
 

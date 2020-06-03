@@ -2,7 +2,7 @@
 
   .sheet-body {
     &.vehicle {
-      height: calc(100% - 450px);
+      height: calc(100% - 32rem);
     }
   }
 
@@ -305,8 +305,14 @@
       width: 45px;
     }
   }
-
+  .tab{
+    &.active {
+		height: 30%;
+	}
+  }
   .biography-values {
+    position: absolute;
+    bottom: 0;
     border: 0;
   }
 
