@@ -1,9 +1,5 @@
 .item-sheet-gear {
 
-  .header-fields {
-    height: 340px;
-  }
-
   .charname {
     width: 100%;
     
@@ -49,19 +45,22 @@
     }
 
     .characteristic {
-      width: 50px;
-      height: 50px;
-      border-radius: 10px;
-      border: 5px double rgb(44, 3, 68);
-      margin: auto;
       position: relative;
-  
+      width: 55px;
+      height: 55px;
+      margin: auto;
+      border-radius: 10px;
+	  background: rgba(255,255,255,0.75);
+      border: 2px solid rgba(0,0,0,0.5);
       .characteristic-value {
+        height: 100%;
         input {
-          height: 40px;
+          height: 100%;
           border: 0;
-          font-size: 30px;
+          font-size: 2rem;
           text-align: center;
+		  border-radius: 50%;
+		  margin: 1px 0 0;
         }
         input:focus { 
           box-shadow: 0 0 5px rgb(125, 169, 194);
@@ -88,122 +87,8 @@
   }
 
   .attribute {
-    position: relative;
-    padding: 0;
-    z-index: 1;
-    border:0;
-    
-    .block-background-shadow {
-      top: 36px;
-    }
-
-    .block-background {
-      padding: 5px 5px;
-    }
-
     .block-title {
-      line-height: initial;
       background-color: rgb(44, 3, 68);
-      color: white;
-      font-size: 13px;
-      text-transform: uppercase;
-      margin:auto;
-      
-      --notchSize: 8px;
-      clip-path: 
-        polygon(
-          0% var(--notchSize), 
-          var(--notchSize) 0%, 
-          calc(100% - var(--notchSize)) 0%, 
-          100% var(--notchSize), 
-          100% calc(100% - var(--notchSize)), 
-          calc(100% - var(--notchSize)) 100%, 
-          var(--notchSize) 100%, 
-          0% calc(100% - var(--notchSize))
-      );
-    }
-
-    .block-attribute {
-
-      select {
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-        }
-      }
-
-      .block-value {
-        display: inline-block;
-      }
-    }
-
-    .block-value {
-
-      textarea {
-        resize:none;
-        font-family: 'Roboto';
-        border : 0;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-          outline: none;
-        }
-      }
-
-      &.block-single {
-        input {
-          width: 100%;
-          padding: 6px;
-        }
-      }
-
-      input {
-        border:0;
-        font-size:14px;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-        }
-      }
-    }
-
-    .shadow-text {
-      position: absolute;
-      top: 5px;
-      font-size: 9px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .shadow-left {
-      background-color: rgb(73, 12, 11);
-      width: 50%;
-      height: 100%;
-      float:left;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: white;
-        text-transform: uppercase;
-      }
-    }
-
-    .shadow-right {
-      background-color: rgb(125, 169, 194);
-      width: 50%;
-      height: 100%;
-      float:right;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: black;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
     }
   }
 
@@ -234,5 +119,4 @@
       line-height: 15px;
     }
   }
-  
 }

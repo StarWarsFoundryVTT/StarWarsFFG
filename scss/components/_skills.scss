@@ -7,15 +7,19 @@
 
   .tableWithHeader-container {
     flex: 1;
-    margin: 2px;
+    margin: 0 5px 0 0;
     position: relative;
   }
 
   table {
+    margin: 0 0 5px;
+	padding: 0;
+	border-color: rgba(0,0,0,0.25);
+	
     th {
       text-align: left;
-      padding: 3px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+      padding: 3px 5px;
+      border-bottom: 1px solid rgba(0, 0, 0, .25);
       background-color: rgb(73, 12, 11);
       color: white;
       font-size: 12px;
@@ -23,8 +27,8 @@
     }
 
     td {
-      padding: 0 0 0 3px;
-
+      padding: 2px 5px;
+	  
       .dice-pool {
         img {
           width: 1em;
@@ -33,6 +37,11 @@
         }
       }
     }
+	
+	tr {
+      background: rgba(255,255,255,0.5);
+      border-bottom: 1px solid rgba(0,0,0,0.25);
+	}
 
     .careerskill-toggle {
       margin: 0;
