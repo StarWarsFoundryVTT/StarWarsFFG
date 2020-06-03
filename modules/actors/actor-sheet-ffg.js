@@ -43,19 +43,19 @@ export class ActorSheetFFG extends ActorSheet {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
     data.FFG = CONFIG.FFG;
-    
+
     switch (this.actor.data.type) {
       case "character":
         this.position.width = 610;
         this.position.height = 840;
         break;
       case "minion":
-        this.position.width = 700;
+        this.position.width = 575;
         this.position.height = 620;
         break;
       case "vehicle":
-        this.position.width = 710;
-        this.position.height = 650;
+        this.position.width = 575;
+        this.position.height = 824;
       default:
     }
     return data;
@@ -67,7 +67,7 @@ export class ActorSheetFFG extends ActorSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
-    // TODO: This is not needed in Foundry 0.6.0    
+    // TODO: This is not needed in Foundry 0.6.0
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
@@ -84,7 +84,7 @@ export class ActorSheetFFG extends ActorSheet {
       if (!$(ev.target).hasClass("fa-trash")) {
         const li = $(ev.currentTarget);
         const item = this.actor.getOwnedItem(li.data("itemId"));
-        if(item?.sheet) {
+        if (item?.sheet) {
           item.sheet.render(true);
         }
       }

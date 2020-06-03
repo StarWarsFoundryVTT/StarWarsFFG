@@ -1,367 +1,342 @@
 <form class="{{cssClass}} vehicle" autocomplete="off">
-
-    {{!-- Sheet Header --}}
-    <header class="sheet-header">
-      <div id="actor-id" data-actor="{{actor._id}}" style="display: none"></div>
-      <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
-
-      <div class="header-fields">
-          {{!-- Ship Name --}}
-          <div class="charname"><label>Ship name:<input name="name" type="text" value="{{actor.name}}" placeholder="Name" /></label>
-      </div>
-    </header>
-
-    {{!-- Defence Grid --}}
-    <div style="position: absolute; text-align: right; right: 30px; top: 30px;">
-      {{!-- Fore and Aft Box --}}
-      <div class="resource">
-          <div class="defence-box">
-              <h1>Defence</h1>
-              <div class="content">
-                  <div class="defence-fore">
-                      <label>Fore</label>
-                      <input style="width:30px;" type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}"
-                          data-dtype="Number" />
-                  </div>
-                  <div class="defence-aft">
-                      <input style="width:30px;" type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}"
-                          data-dtype="Number" />
-                      <label>Aft</label>
-                  </div>
-                  <div class="defence-port">
-                      <input style="width:30px;" type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}"
-                          data-dtype="Number" />
-                      <label>Port</label>
-                  </div>
-                  <div class="defence-starboard">
-                      <input style="width:30px;" type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}"
-                          data-dtype="Number" />
-                      <label>Starboard</label>
-                  </div>
-              </div>
+  {{!-- Sheet Header --}}
+  <header class="sheet-header">
+    <div id="actor-id" data-actor="{{actor._id}}" style="display: none;"></div>
+    <div class="header-fields">
+      <div class="grid grid-2col">
+        <div class="block-background">
+          <div class="profile-block">
+            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
           </div>
+        </div>
+        <div class="container flex-group-right">
+          <div class="block-background defense-group">
+            <div class="defense-decoration">
+              <img src="systems/starwarsffg/images/shipdefence.png" />
+            </div>
+            <div class="defense-block">
+              <div class="defense-block-title">{{localize "SWFFG.Defense"}}</div>
+              <div class="defense-value fore">
+                <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseFore"}}</div>
+              </div>
+              <div class="defense-value aft">
+                <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseAft"}}</div>
+              </div>
+              <div class="defense-value port">
+                <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefensePort"}}</div>
+              </div>
+              <div class="defense-value starboard">
+                <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseStarboard"}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container">
+        <div class="container flex-group-center item-name">
+          <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.VehicleName'}}" /></h1>
+        </div>
+      </div>
+      <div class="container flex-group-center">
+        <div class="grid grid-3col">
+          <div class="characteristic-item flex-group-center">
+            <div class="characteristic">
+              <div class="characteristic-value">
+                <input type="text" name="data.stats.silhouette.value" value="{{data.stats.silhouette.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-10]" />
+              </div>
+            </div>
+            <div class="characteristic-label">
+              {{localize "SWFFG.VehicleSilhouette"}}
+            </div>
+          </div>
+          <div class="characteristic-item flex-group-center">
+            <div class="characteristic">
+              <div class="characteristic-value">
+                <input type="text" name="data.stats.speed.max" value="{{data.stats.speed.max}}" data-dtype="Number" />
+              </div>
+            </div>
+            <div class="characteristic-label">
+              {{localize "SWFFG.VehicleSpeed"}}
+            </div>
+          </div>
+          <div class="characteristic-item flex-group-center">
+            <div class="characteristic">
+              <div class="characteristic-value">
+                <input type="text" name="data.stats.handling.value" value="{{data.stats.handling.value}}" data-dtype="Number" />
+              </div>
+            </div>
+            <div class="characteristic-label">
+              {{localize "SWFFG.VehicleHandling"}}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container flex-group-center">
+        <div class="grid grid-4col">
+          <div class="resource single">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.ItemsArmor"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value block-single"><input type="text" name="data.stats.armour.value" value="{{data.stats.armour.value}}" data-dtype="Number" /></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="resource single">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.VehicleCurrentSpeed"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value block-single"><input type="text" name="data.stats.speed.value" value="{{data.stats.speed.value}}" data-dtype="Number" /></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.VehicleHullTrama"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.hullTrauma.max" value="{{data.stats.hullTrauma.max}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.hullTrauma.value" value="{{data.stats.hullTrauma.value}}" data-dtype="Number" /></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="resource split">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-title">
+                  {{localize "SWFFG.VehicleHullStrain"}}
+                </div>
+                <div class="block-attribute">
+                  <div class="block-value"><input type="text" name="data.stats.systemStrain.max" value="{{data.stats.systemStrain.max}}" data-dtype="Number" /></div>
+                  <div class="block-value"><input type="text" name="data.stats.systemStrain.value" value="{{data.stats.systemStrain.value}}" data-dtype="Number" /></div>
+                </div>
+              </div>
+              <div class="block-background-shadow">
+                <div class="shadow-left">
+                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
+                </div>
+                <div class="shadow-right">
+                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="items">{{localize "SWFFG.VehicleTabCargo"}}</a>
+    <a class="item" data-tab="description">{{localize "SWFFG.VehicleTabDescription"}}</a>
+    <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body vehicle">
+    {{!-- Owned Items Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+      {{!-- Ship Weapons List --}}
+      <table class="items">
+        <thead>
+          <th>{{localize "SWFFG.VehicleTabShipWeapons"}}</th>
+          <th>{{localize "SWFFG.VehicleTabFiringArc"}}</th>
+          <th>{{localize "SWFFG.VehicleTabDamage"}}</th>
+          <th>{{localize "SWFFG.VehicleTabRange"}}</th>
+          <th>{{localize "SWFFG.VehicleTabCritical"}}</th>
+          <th>{{localize "SWFFG.VehicleTabSpecial"}}</th>
+          <th></th>
+        </thead>
+        <tbody class="items-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipweapon'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </td>
+            <td>{{item.data.firingarc.value}}</td>
+            <td>{{item.data.damage.value}}</td>
+            <td>{{item.data.range.value}}</td>
+            <td>{{item.data.crit.value}}</td>
+            <td class="hover">
+              {{item.data.special.value}}
+              <div class="tooltip">{{item.data.special.value}}</div>
+            </td>
+            <td class="item-controls">
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
+        </tbody>
+      </table>
+
+      {{!-- Ship Attachments List --}}
+      <table class="items">
+        <thead>
+          <th>{{localize "SWFFG.VehicleTabShipAttachments"}}</th>
+          <th>{{localize "SWFFG.VehicleTabHardPoints"}}</th>
+          <th></th>
+        </thead>
+        <tbody class="items-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipattachment'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </td>
+            <td>{{item.data.hardpoints.value}}</td>
+            <td class="item-controls">
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
+        </tbody>
+      </table>
+
+      {{!-- Cargo Hold --}}
+      <table class="items">
+        <thead>
+          <th>{{localize "SWFFG.VehicleTabShipCargoHold"}}</th>
+          <th>{{localize "SWFFG.ItemsPrice"}}</th>
+          <th>{{localize "SWFFG.ItemsRarity"}}</th>
+          <th>{{localize "SWFFG.ItemsQuantity"}}</th>
+          <th>{{localize "SWFFG.ItemsEncum"}}</th>
+          <th></th>
+        </thead>
+        <tbody class="items-list">
+          {{#each actor.items as |item id|}} {{#iff item.type '!=' 'shipweapon'}} {{#iff item.type '!=' 'shipattachment'}} {{#iff item.type '!=' 'talent'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </td>
+            <td>{{item.data.price.value}}</td>
+            <td>{{item.data.rarity.value}}</td>
+            <td>{{item.data.quantity.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
+            <td class="item-controls">
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/iff}} {{/iff}} {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- Biography Tab --}}
+    <div class="tab active" style="height: 77%;" data-group="primary" data-tab="description">
+      {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Obligations Section --}}
+      <div class="container sheet-topper" style="margin: 0;">
+        {{!-- Hard Points Box --}}
+        <div class="resource">
+          <div class="split-box">
+            <h1>Hard Points</h1>
+            <div class="content">
+              <div class="single-clear">
+                <input type="text" name="data.obligation.value" value="{{data.obligation.value}}" data-dtype="Number" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Encumbrance Capacity Box --}}
+        <div class="resource">
+          <div class="split-box">
+            <h1 style="background: #652825; border-bottom: 2px solid black;">Encumbrance Capacity</h1>
+            <div class="content">
+              <div class="single-clear">
+                <input type="text" name="data.duty.value" value="{{data.duty.value}}" data-dtype="String" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Sensor Range Box --}}
+        <div class="resource">
+          <div class="split-box">
+            <h1 style="background: #000; border-bottom: 2px solid black;">Sensor Range</h1>
+            <div class="content">
+              <div class="single-clear">
+                <input type="text" name="data.morality.value" value="{{data.morality.value}}" data-dtype="String" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {{!-- Passenger Capacity Box --}}
+        <div class="resource">
+          <div class="split-box">
+            <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Passenger Capacity</h1>
+            <div class="content">
+              <div class="single-clear">
+                <input type="text" name="data.conflict.value" value="{{data.conflict.value}}" data-dtype="String" />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    {{!-- Silhouette, Speed and Handling Container --}}
-    <div class="container">
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <header class="attributes-header flexrow">
+        <!-- <span class="attribute-key">ID</span> -->
+        <span class="attribute-modtype">Mod Type</span>
+        <span class="attribute-mod">Modifier</span>
+        <span class="attribute-value">Value</span>
+        <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
+      </header>
 
-    {{!-- Silhouette Box --}}
-    <div class="resource">
-        <div class="split-box">
-            <h1>Silhouette</h1>
-            <div class="content">
-                <div class="single-clear">
-                    <input type="text" name="data.stats.silhouette.value" value="{{data.stats.silhouette.value}}" data-dtype="Number" />
-                    <label>-</label>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      {{!-- Speed Box --}}
-      <div class="resource">
-          <div class="split-box">
-              <h1>Speed</h1>
-              <div class="content">
-                  <div class="left">
-                      <input type="text" name="data.stats.speed.max" value="{{data.stats.speed.max}}" data-dtype="Number" />
-                      <label>Max</label>
-                  </div>
-                  <div class="divider"></div>
-                  <div class="right">
-                      <input type="text" name="data.stats.speed.value" value="{{data.stats.speed.value}}" data-dtype="Number" />
-                      <label>Current</label>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      {{!-- Handling Box --}}
-      <div class="resource">
-          <div class="split-box">
-              <h1>Handling</h1>
-              <div class="content">
-                  <div class="single-clear">
-                      <input type="text" name="data.stats.handling.value" value="{{#iff data.stats.handling.value '>' 0}}+{{/iff}}{{data.stats.handling.value}}" data-dtype="Number" />
-                      <label>-</label>
-                      {{log data.stats.handling.value}}
-                  </div>
-              </div>
-          </div>
-        </div>
-  </div>
-
-  {{!-- Armour, Hull Trauma and System Strain container --}}
-  <div class="container">
-    {{!-- Armour Box --}}
-    <div class="resource">
-        <div class="split-box">
-            <h1>Armour</h1>
-            <div class="content">
-                <div class="single-clear">
-                    <input type="text" name="data.stats.armour.value" value="{{data.stats.armour.value}}" data-dtype="Number" />
-                    <label>-</label>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      {{!-- Hull Trauma Box --}}
-      <div class="resource">
-          <div class="split-box">
-              <h1>Hull Trauma</h1>
-              <div class="content">
-                  <div class="left">
-                      <input type="text" name="data.stats.hullTrauma.max" value="{{data.stats.hullTrauma.max}}" data-dtype="Number" />
-                      <label>Threshold</label>
-                  </div>
-                  <div class="divider"></div>
-                  <div class="right">
-                      <input type="text" name="data.stats.hullTrauma.value" value="{{data.stats.hullTrauma.value}}" data-dtype="Number" />
-                      <label>Current</label>
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      {{!-- System Strain Box --}}
-      <div class="resource">
-          <div class="split-box">
-              <h1>System Strain</h1>
-              <div class="content">
-                  <div class="left">
-                      <input type="text" name="data.stats.systemStrain.max" value="{{data.stats.systemStrain.max}}" data-dtype="Number" />
-                      <label>Threshold</label>
-                  </div>
-                  <div class="divider"></div>
-                  <div class="right">
-                      <input type="text" name="data.stats.systemStrain.value" value="{{data.stats.systemStrain.value}}" data-dtype="Number" />
-                      <label>Current</label>
-                  </div>
-              </div>
-          </div>
-      </div>
+      <ol class="attributes-list">
+        {{#each data.attributes as |attr key|}}
+        <li class="attribute flexrow" data-attribute="{{key}}">
+          <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
+          <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
+            {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/select}}
+          </select>
+          <select class="attribute-mod" name="data.attributes.{{key}}.mod">
+            {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{/select}}
+          </select>
+          <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
+          <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+          <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+        </li>
+        {{/each}}
+      </ol>
     </div>
-
-
-    {{!-- Sheet Tab Navigation --}}
-    <nav class="sheet-tabs tabs" data-group="primary">
-        <a class="item" data-tab="items">Cargo & Equipment</a>
-        <a class="item" data-tab="description">Biography</a>
-        <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
-    </nav>
-
-    {{!-- Sheet Body --}}
-    <section class="sheet-body vehicle">
-
-        {{!-- Owned Items Tab --}}
-        <div class="tab items" data-group="primary" data-tab="items">
-
-          {{!-- Ship Weapons List --}}
-          <div class="attributes">
-            <h1><label>Ship Weapons</label></h1>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Firing Arc</span>
-              <span>Damage</span>
-              <span>Range</span>
-              <span>Crit</span>
-              <span>Special</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'shipweapon'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label>{{item.data.firingarc.value}}</label>
-                      <label>{{item.data.damage.value}}</label>
-                      <label>{{item.data.range.value}}</label>
-                      <label>{{item.data.crit.value}}</label>
-                      <label class="hover">{{item.data.special.value}}<div class="tooltip">{{item.data.special.value}}</div></label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
-          {{!-- Ship Attachments List --}}
-          <div class="attributes">
-            <h1><label>Ship Attachments</label></h1>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Hardpoints Required</span>
-              <span style="visibility:hidden; display:contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '==' 'shipattachment'}}
-                  <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                      <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                      <label>{{item.data.hardpoints.value}}</label>
-                      <div class="item-controls" style="display: contents;">
-                          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                          <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                      </div>
-                  </li>
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
-          {{!-- Cargo Hold --}}
-          <div class="attributes">
-            <h1><label>Cargo Hold</label></h1>
-            <header class="attributes-header flexrow">
-              <span>Name</span>
-              <span>Price</span>
-              <span>Rarity</span>
-              <span>Quantity</span>
-              <span>Encum</span>
-              <span style="visibility: hidden; display: contents;">Del</span>
-            </header>
-            <ol class="attributes-list">
-                {{#each actor.items as |item id|}}
-                  {{#iff item.type '!=' 'shipweapon'}}
-                    {{#iff item.type '!=' 'shipattachment'}}
-                      {{#iff item.type '!=' 'talent'}}
-                        <li class="attribute flexrow item" data-item-id="{{item._id}}">
-                            <h4 class="item-name hover">{{item.name}}<div class="tooltip">{{item.safe_desc}}</div></h4>
-                            <label>{{item.data.price.value}}</label>
-                            <label>{{item.data.rarity.value}}</label>
-                            <label>{{item.data.quantity.value}}</label>
-                            <label>{{item.data.encumbrance.value}}</label>
-                            <div class="item-controls" style="display: contents;">
-                                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                                <a style="padding: 0px 15px 0 0;" class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                            </div>
-                        </li>
-                      {{/iff}}
-                    {{/iff}}
-                  {{/iff}}
-                {{/each}}
-            </ol>
-          </div>
-
-        </div>
-
-        {{!-- Biography Tab --}}
-        <div class="tab active" style="height:82%" data-group="primary" data-tab="description">
-          {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
-          {{!-- Obligations Section --}}
-          <div class="container sheet-topper" style="margin: 0;">
-
-            {{!-- Hard Points Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1>Hard Points</h1>
-                    <div class="content">
-                        <div class="single-clear">
-                            <input type="text" name="data.obligation.value" value="{{data.obligation.value}}"
-                                data-dtype="Number" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{!-- Encumbrance Capacity Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1 style="background: #652825; border-bottom: 2px solid black;">Encumbrance Capacity</h1>
-                    <div class="content">
-                        <div class="single-clear">
-                            <input type="text" name="data.duty.value" value="{{data.duty.value}}"
-                                data-dtype="String" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{!-- Sensor Range Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1 style="background: #000; border-bottom: 2px solid black;">Sensor Range</h1>
-                    <div class="content">
-                        <div class="single-clear">
-                            <input type="text" name="data.morality.value" value="{{data.morality.value}}"
-                                data-dtype="String" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{!-- Passenger Capacity Box --}}
-            <div class="resource">
-                <div class="split-box">
-                    <h1 style="background: #fff; border-bottom: 2px solid black; color: black;">Passenger Capacity</h1>
-                    <div class="content">
-                        <div class="single-clear">
-                            <input type="text" name="data.conflict.value" value="{{data.conflict.value}}"
-                                data-dtype="String" />
-                        </div>
-                    </div>
-                </div>
-              </div>
-          </div>
-        </div>
-
-        {{!-- Modifiers Tab --}}
-        <div class="tab attributes" data-group="primary" data-tab="attributes">
-            <header class="attributes-header flexrow">
-              <!-- <span class="attribute-key">ID</span> -->
-                <span class="attribute-modtype">Mod Type</span>
-                <span class="attribute-mod">Modifier</span>
-                <span class="attribute-value">Value</span>
-                <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
-            </header>
-
-            <ol class="attributes-list">
-            {{#each data.attributes as |attr key|}}
-                <li class="attribute flexrow" data-attribute="{{key}}">
-                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display:none;"/>
-                    <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-                        {{#select attr.modtype}}
-                        {{#each ../this.FFG.mod_types as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
-                    <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-                        {{#select attr.mod}}
-                        {{#iff attr.modtype '==' 'Stat' }}
-                        {{#each ../this.FFG.character_stats as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Skill Rank' }}
-                        {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Skill Boost' }}
-                        {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Characteristic' }}
-                        {{#each ../this.FFG.characteristics as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{/select}}
-                    </select>
-                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0"/>
-                    <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
-                    <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-                </li>
-            {{/each}}
-            </ol>
-        </div>
-
-    </section>
+  </section>
 </form>
