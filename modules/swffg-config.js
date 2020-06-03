@@ -83,6 +83,15 @@ FFG.vehicle_ranges = {
   "Extreme": "Extreme",
 };
 
+FFG.sensor_ranges = {
+  "None": "None",
+  "Close": "Close",
+  "Short": "Short",
+  "Medium": "Medium",
+  "Long": "Long",
+  "Extreme": "Extreme",
+};
+
 FFG.fire_arcs = {
   "Forward": "Forward",
   "Aft": "Aft",

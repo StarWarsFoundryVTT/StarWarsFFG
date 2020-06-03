@@ -291,7 +291,7 @@
               </div>
               <div class="block-attribute">
                 <select style="text-align: center;" name="data.stats.sensorRange.value">
-                  {{#select data.stats.sensorRange.value}} {{#each this.FFG.ranges as |t|}}
+                  {{#select data.stats.sensorRange.value}} {{#each this.FFG.sensor_ranges as |t|}}
                   <option value="{{t}}">{{t}}</option>
                   {{/each}} {{/select}}
                 </select>
@@ -300,7 +300,6 @@
             <div class="block-background-shadow"></div>
           </div>
         </div>
-        
 
         {{!-- Passenger Capacity Box --}}
         <div class="resource single">

@@ -22,6 +22,7 @@ This is most easily available from the in-game Module browser. After installing 
 NEEDED FOR RELEASE V1:
 
 - Group Management sheet for GM use (currently in progress).
+- Localise all values from `swffg-config.js`.
 - Create equipable item functionality and rework inventory to suit. Continue to improve inventory display in the process.
 - Add Forcepower item type (based on talent).
 - Add Maximum Altitude and Crew Capacity to vehicle sheet.
@@ -39,6 +40,10 @@ NICE TO HAVE:
 
 # Changelog
 
+- 03/06/2020 - Esrin - Tweaked sensor range dropdown values.
+- 03/06/2020 - CStadther - Fixed positioning issue with tool tips on vehicle sheet.
+- 03/06/2020 - CStadther - Restyled bottom of vehicle biography section.
+- 03/06/2020 - CStadther - Added localisation for skill names.
 - 03/06/2020 - HDScurox - Updated German language file.
 - 03/06/2020 - Esrin - Implemented scroll position saving when actor sheet elements are updated. No more popping back to the top of the skills list every time you make a change!
 - 03/06/2020 - CStadther - Restyled vehicle weapon and attachment sheets.
