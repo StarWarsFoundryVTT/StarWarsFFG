@@ -73,7 +73,7 @@
                     <select style="text-align: center;" name="data.skill.value">
                       {{#select data.skill.value}}
                         {{#each this.FFG.combat_skills as |t|}}
-                      <option value="{{t}}">{{t}}</option>
+                      <option value="{{t.value}}">{{localize t.label}}</option>
                         {{/each}}
                       {{/select}}
                     </select>

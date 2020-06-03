@@ -144,7 +144,7 @@ FFG.fire_arcs = {
   "Forward": {
     value : "Forward",
     label : "SWFFG:VehicleFiringArcForward"
-  }
+  },
   "Aft": {
     value : "Aft",
     label : "SWFFG:VehicleFiringArcAft"
@@ -164,21 +164,39 @@ FFG.fire_arcs = {
 };
 
 FFG.combat_skills = {
-  "Brawl": "Brawl",
-  "Gunnery": "Gunnery",
-  "Lightsaber": "Lightsaber",
-  "Melee": "Melee",
-  "Ranged: Light": "Ranged: Light",
-  "Ranged: Heavy": "Ranged: Heavy",
+  "Brawl": {
+    value : "Brawl",
+    label : "SWFFG.SkillsNameBrawl"
+  },
+  "Gunnery": {
+    value : "Gunnery",
+    label : "SWFFG.SkillsNameGunnery"
+  },
+  "Lightsaber": {
+    value : "Lightsaber",
+    label : "SWFFG.SkillsNameLightsaber"
+  },
+  "Melee": {
+    value : "Melee",
+    label : "SWFFG.SkillsNameMelee"
+  },
+  "Ranged: Light": {
+    value : "Ranged: Light",
+    label : "SWFFG.SkillsNameRangedLight"
+  },
+  "Ranged: Heavy":{
+    value : "Ranged: Heavy",
+    label : "SWFFG.SkillsNameRangedHeavy"
+  }
 };
 
-FFG.combat_skills.abrev = {
-  "Brawl": "B",
-  "Gunnery": "G",
-  "Lightsaber": "LS",
-  "Melee": "M",
-  "Ranged: Light": "RL",
-  "Ranged: Heavy": "RH",
+FFG.combat_skills_abrev = {
+  "Brawl": "SWFFG.SkillsNameBrawl",
+  "Gunnery": "SWFFG.SkillsNameGunnery",
+  "Lightsaber": "SWFFG.SkillsNameLightsaber",
+  "Melee": "SWFFG.SkillsNameMelee",
+  "Ranged: Light": "SWFFG.SkillsNameRangedLightAbbreviation",
+  "Ranged: Heavy": "SWFFG.SkillsNameRangedHeavyAbbreviation"
 };
 
 FFG.activations = {
