@@ -254,10 +254,10 @@ export class ActorSheetFFG extends ActorSheet {
     const characteristic = data.data.characteristics[skill.characteristic];
 
     const dicePool = new DicePoolFFG({
-      ability: characteristic.value,
+      ability: Math.max(characteristic.value, skill.rank),
       difficulty: 2, // Default to average difficulty
     });
-    dicePool.upgrade(skill.rank);
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
     if (upgradeType === "ability") {
       dicePool.upgrade();
@@ -265,7 +265,7 @@ export class ActorSheetFFG extends ActorSheet {
       dicePool.upgradeDifficulty();
     }
 
-    await this._completeRoll(dicePool, `Rolling ${skillName}`, skillName);
+    await this._completeRoll(dicePool, `Rolling ${skill.label}`, skill.label);
   }
 
   async _completeRoll(dicePool, description, skillName) {
