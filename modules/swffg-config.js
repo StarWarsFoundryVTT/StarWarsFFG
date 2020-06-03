@@ -191,10 +191,10 @@ FFG.combat_skills = {
 };
 
 FFG.combat_skills_abrev = {
-  "Brawl": "SWFFG.SkillsNameBrawl",
-  "Gunnery": "SWFFG.SkillsNameGunnery",
-  "Lightsaber": "SWFFG.SkillsNameLightsaber",
-  "Melee": "SWFFG.SkillsNameMelee",
+  "Brawl": "SWFFG.SkillsNameBrawlAbbreviation",
+  "Gunnery": "SWFFG.SkillsNameGunneryAbbreviation",
+  "Lightsaber": "SWFFG.SkillsNameLightsaberAbbreviation",
+  "Melee": "SWFFG.SkillsNameMeleeAbbreviation",
   "Ranged: Light": "SWFFG.SkillsNameRangedLightAbbreviation",
   "Ranged: Heavy": "SWFFG.SkillsNameRangedHeavyAbbreviation"
 };
