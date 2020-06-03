@@ -68,36 +68,99 @@ FFG.skills.knowledgestripped = {
 };
 
 FFG.ranges = {
-  "Engaged": "Engaged",
-  "Short": "Short",
-  "Medium": "Medium",
-  "Long": "Long",
-  "Extreme": "Extreme",
+  "Engaged":  {
+    value : "Engaged",
+    label : "SWFFG:WeaponRangeEngaged"
+  },
+  "Short": {
+    value : "Short",
+    label : "SWFFG:WeaponRangeShort"
+  },
+  "Medium": {
+    value : "Medium",
+    label : "SWFFG:WeaponRangeMedium"
+  },
+  "Long": {
+    value : "Long",
+    label : "SWFFG:WeaponRangeLong"
+  },
+  "Extreme": {
+    value : "Extreme",
+    label : "SWFFG:WeaponRangeExtreme"
+  }
 };
 
 FFG.vehicle_ranges = {
-  "Close": "Close",
-  "Short": "Short",
-  "Medium": "Medium",
-  "Long": "Long",
-  "Extreme": "Extreme",
+  "Close":  {
+    value : "Close",
+    label : "SWFFG:VehicleRangeClose"
+  },
+  "Short": {
+    value : "Short",
+    label : "SWFFG:VehicleRangeShort"
+  },
+  "Medium": {
+    value : "Medium",
+    label : "SWFFG:VehicleRangeMedium"
+  },
+  "Long": {
+    value : "Long",
+    label : "SWFFG:VehicleRangeLong"
+  },
+  "Extreme": {
+    value : "Extreme",
+    label : "SWFFG:VehicleRangeExtreme"
+  }
 };
 
 FFG.sensor_ranges = {
-  "None": "None",
-  "Close": "Close",
-  "Short": "Short",
-  "Medium": "Medium",
-  "Long": "Long",
-  "Extreme": "Extreme",
-};
+  "None":  {
+    value : "None",
+    label : "SWFFG:VehicleRangeNone"
+  },
+  "Close":  {
+    value : "Close",
+    label : "SWFFG:VehicleRangeClose"
+  },
+  "Short": {
+    value : "Short",
+    label : "SWFFG:VehicleRangeShort"
+  },
+  "Medium": {
+    value : "Medium",
+    label : "SWFFG:VehicleRangeMedium"
+  },
+  "Long": {
+    value : "Long",
+    label : "SWFFG:VehicleRangeLong"
+  },
+  "Extreme": {
+    value : "Extreme",
+    label : "SWFFG:VehicleRangeExtreme"
+  }
+}
 
 FFG.fire_arcs = {
-  "Forward": "Forward",
-  "Aft": "Aft",
-  "Port": "Port",
-  "Starboard": "Starboard",
-  "All": "All",
+  "Forward": {
+    value : "Forward",
+    label : "SWFFG:VehicleFiringArcForward"
+  }
+  "Aft": {
+    value : "Aft",
+    label : "SWFFG:VehicleFiringArcAft"
+  },
+  "Port": {
+    value : "Port",
+    label : "SWFFG:VehicleFiringArcPort"
+  },
+  "Starboard": {
+    value : "Starboard",
+    label : "SWFFG:VehicleFiringArcStarboard"
+  },
+  "All": {
+    value : "All",
+    label : "SWFFG:VehicleFiringArcAll"
+  }
 };
 
 FFG.combat_skills = {

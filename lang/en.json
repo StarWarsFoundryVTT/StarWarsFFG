@@ -141,4 +141,22 @@
   "SWFFG.SkillsNameStreetwise": "Streetwise",
   "SWFFG.SkillsNameSurvival": "Survival",
   "SWFFG.SkillsNameVigilance": "Vigilance"
+  "SWFFG.VehicleDefenseStarboard": "stbd",
+  "SWFFG.VehicleAttachmentHardPointRequired": "HP Req",
+  "SWFFG:WeaponRangeEngaged" : "Engaged",
+  "SWFFG:WeaponRangeShort" : "Short",
+  "SWFFG:WeaponRangeMedium" : "Medium",
+  "SWFFG:WeaponRangeLong" : "Long",
+  "SWFFG:WeaponRangeExtreme" : "Extreme",
+  "SWFFG:VehicleRangeNone" : "None",
+  "SWFFG:VehicleRangeClose" : "Close",
+  "SWFFG:VehicleRangeShort" : "Short",
+  "SWFFG:VehicleRangeMedium" : "Medium",
+  "SWFFG:VehicleRangeLong" : "Long",
+  "SWFFG:VehicleRangeExtreme" : "Extreme",
+  "SWFFG:VehicleFiringArcForward" : "Forward",
+  "SWFFG:VehicleFiringArcAft" : "Aft",
+  "SWFFG:VehicleFiringArcPort" : "Port",
+  "SWFFG:VehicleFiringArcStarboard" : "Starboard",
+  "SWFFG:VehicleFiringArcAll" : "All"
 }

@@ -73,7 +73,7 @@
                     <select style="text-align:center;" name="data.firingarc.value">
                       {{#select data.firingarc.value}}
                         {{#each this.FFG.fire_arcs as |t|}}
-                        <option value="{{t}}">{{t}}</option>
+                        <option value="{{t.value}}">{{localize t.label}}</option>
                         {{/each}}
                       {{/select}}
                     </select>
@@ -89,8 +89,8 @@
                   </div>
                   <div class="block-attribute">
                     <select style="text-align: center;" name="data.range.value">
-                      {{#select data.range.value}} {{#each this.FFG.ranges as |t|}}
-                      <option value="{{t}}">{{t}}</option>
+                      {{#select data.range.value}} {{#each this.FFG.vehicle_ranges as |t|}}
+                      <option value="{{t.value}}">{{localize t.label}}</option>
                       {{/each}} {{/select}}
                     </select>
                   </div>
