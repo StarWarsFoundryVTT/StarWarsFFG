@@ -124,7 +124,7 @@
 }
 
 .starwarsffg .block-background {
-  background-color: #c4dbe9;
+  background-color: #ddd;
   padding: 5px;
   --notchSize: 9px;
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
@@ -204,7 +204,7 @@
 .starwarsffg .tabs .item {
   line-height: 15px;
   font-weight: bold;
-  background-color: #51624d;
+  background-color: #aaa;
   padding: 3px;
   margin: 0 5px;
   --notchSize: 10px;
@@ -303,8 +303,8 @@
 .starwarsffg .header-fields .profile-block {
   margin-right: 5px;
   margin-left: 5px;
-  height: 140px;
-  max-width: 140px;
+  height: 130px;
+  max-width: 130px;
 }
 
 .starwarsffg .header-fields .profile-img {
@@ -1624,7 +1624,7 @@
 
 .starwarsffg .minion .attribute .block-title {
   line-height: initial;
-  background-color: #821517;
+  background-color: #490c0b;
   color: white;
   font-size: 13px;
   text-transform: uppercase;

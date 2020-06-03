@@ -11,7 +11,7 @@
 
   h1 {
     margin: 0;
-    width:100%;
+    width: 100%;
   }
 
   .header-name {
@@ -23,15 +23,13 @@
       margin: 0;
       width: 100%;
       border: 0;
-      background-color: rgba(0,0,0,0);
-      
+      background-color: rgba(0, 0, 0, 0);
+
       &:focus {
         box-shadow: 0 0 5px rgb(125, 169, 194);
         background-color: rgb(125, 169, 194);
       }
     }
-
-
   }
 
   .header-description-block {
@@ -42,19 +40,9 @@
   .header-description {
     background-color: rgb(196, 219, 233);
     --notchSize: 10px;
-    padding:3px;
-  
-    clip-path: 
-      polygon(
-        0% var(--notchSize), 
-        var(--notchSize) 0%, 
-        calc(100% - var(--notchSize)) 0%, 
-        100% var(--notchSize), 
-        100% calc(100% - var(--notchSize)), 
-        calc(100% - var(--notchSize)) 100%, 
-        var(--notchSize) 100%, 
-        0% calc(100% - var(--notchSize))
-      );
+    padding: 3px;
+
+    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   }
 
   .table {
@@ -64,7 +52,7 @@
 
   .row {
     display: table-row;
-    width:100%;
+    width: 100%;
 
     div {
       display: table-cell;
@@ -90,8 +78,8 @@
   .profile-block {
     margin-right: 5px;
     margin-left: 5px;
-    height: 140px;
-    max-width: 140px;
+    height: 130px;
+    max-width: 130px;
   }
 
   .profile-img {
@@ -107,8 +95,8 @@
     position: relative;
     padding: 0;
     z-index: 1;
-    border:0;
-    
+    border: 0;
+
     .block-background {
       padding: 5px 5px;
     }
@@ -119,31 +107,19 @@
       color: white;
       font-size: 13px;
       text-transform: uppercase;
-      margin:auto;
+      margin: auto;
       // width: 160px;
       --notchSize: 8px;
-      clip-path: 
-        polygon(
-          0% var(--notchSize), 
-          var(--notchSize) 0%, 
-          calc(100% - var(--notchSize)) 0%, 
-          100% var(--notchSize), 
-          100% calc(100% - var(--notchSize)), 
-          calc(100% - var(--notchSize)) 100%, 
-          var(--notchSize) 100%, 
-          0% calc(100% - var(--notchSize))
-      );
+      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
     }
 
     .block-attribute {
-
       .block-value {
         display: inline-block;
       }
     }
 
     .block-value {
-
       &.block-single {
         input {
           width: 100%;
@@ -152,8 +128,8 @@
       }
 
       input {
-        border:0;
-        font-size:14px;
+        border: 0;
+        font-size: 14px;
 
         &:focus {
           box-shadow: 0 0 5px rgb(125, 169, 194);
@@ -174,7 +150,7 @@
       background-color: rgb(73, 12, 11);
       width: 50%;
       height: 100%;
-      float:left;
+      float: left;
       position: relative;
       padding-top: 25px;
 
@@ -188,7 +164,7 @@
       background-color: rgb(125, 169, 194);
       width: 50%;
       height: 100%;
-      float:right;
+      float: right;
       position: relative;
       padding-top: 25px;
 
@@ -203,7 +179,7 @@
   .resource {
     line-height: 30px;
     width: 110px;
-    
+
     &.split {
       width: 130px;
     }
