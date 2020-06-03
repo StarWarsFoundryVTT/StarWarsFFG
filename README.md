@@ -39,6 +39,8 @@ NICE TO HAVE:
 
 # Changelog
 
+- 02/06/2020 - Esrin - Bug fixes to minion sheet.
+- 02/06/2020 - CStadther - Continued restyling vehicle sheet.
 - 02/06/2020 - ForjaSalvaje - Spanish language translation.
 - 02/06/2020 - Esrin - Some styling tweaks and fixes to the minion sheet skills display as suggested by Mandaar.
 - 02/06/2020 - Mandaar - French language translation.
