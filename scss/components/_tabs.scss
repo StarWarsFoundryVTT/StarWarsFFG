@@ -19,12 +19,16 @@
 
 .character {
   .tabs {
-    height: 15px;
-    margin-bottom: 10px;
+    height: 28px;
     border: 0;
     .item {
       line-height: 15px;
+	  height: 22px;
     }
+  }
+
+  .item.active {
+    height: 28px;
   }
 }
 
@@ -35,6 +39,14 @@
     border: 0;
     .item {
       line-height: 15px;
+    }
+  }
+}
+
+.item-sheet-gear, .item-sheet-talent, .item-sheet-weapon, .item-sheet-armor {
+  .tabs {
+    .item {
+	  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% 100%, 0 100%, 0% 0%, 0% 100%);
     }
   }
 }
@@ -57,29 +69,38 @@
 
 .tabs {
   height: 40px;
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
+  line-height: 40px;
+  border-top: 1px solid rgb(170, 170, 170);
+  border-bottom: 1px solid rgb(170, 170, 170);
 
   .item {
     line-height: 15px;
     font-weight: bold;
-    background-color: #aaa;
+    background-color: rgb(83, 93, 96);
+	color: rgba(255,255,255,0.9);
+	text-transform: Capitalise;
+	text-shadow: black 1px 2px 0;
     padding: 3px;
     margin: 0 5px;
     --notchSize: 10px;
-
     clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 
     &:hover {
-      text-shadow: 0 0 8px white;
+      background-color: #51624d;
+	  color: rgba(255,255,255,1);
+      text-shadow: black 1px 2px 0;
     }
   }
 
   .item.active {
-    text-decoration: underline;
-    text-shadow: none;
+    background-color: rgba(73, 12, 11,1);
+    color: rgba(255,255,255,1);
     background-color: rgb(73, 12, 11);
-    color: white;
-    font-weight: normal;
+    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% 100%, 0 100%, 0% 0%, 0% 100%);
+	
+    &:hover {
+      background-color: rgba(73, 12, 11,1);
+	  cursor: default;
+    }
   }
 }

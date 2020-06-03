@@ -5,6 +5,7 @@
   }
 
   .characteristics {
+	
     fieldset.skillfilter {
       display: none;
     }
@@ -12,6 +13,9 @@
     .characteristic-item {
       border:0;
       position: relative;
+	  background-color: rgb(222, 222, 222);
+	  --notchSize: 10px;
+	  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 
       .characteristic-label {
         margin-top: 5px;
@@ -21,19 +25,8 @@
         color:white;
         text-transform: uppercase;
         font-size : 10px;
-        --notchSize: 7px;
-        
-        clip-path: 
-          polygon(
-            0% var(--notchSize), 
-            var(--notchSize) 0%, 
-            calc(100% - var(--notchSize)) 0%, 
-            100% var(--notchSize), 
-            100% calc(100% - var(--notchSize)), 
-            calc(100% - var(--notchSize)) 100%, 
-            var(--notchSize) 100%, 
-            0% calc(100% - var(--notchSize))
-          );
+		--notchSize: 7px;
+		clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
       }
     }
 
@@ -43,12 +36,17 @@
   }
 
   .characteristic {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 5px double black;
-    margin: auto;
     position: relative;
+	width: 55px;
+	height: 55px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.5);
+    margin: auto;
+	background: rgba(255,255,255,0.75);
+	
+	select {
+      width: 100px;
+	}
 
     .characteristic-value {
       input {
@@ -57,10 +55,19 @@
         font-size: 30px;
         text-align: center;
       }
+	  
+      input { 
+        height: 49px;
+        font-size: 2rem;
+		text-align: center;
+		border: 1px solid rgba(0,0,0,0.5);
+        border-radius: 50%;
+		margin: 1px 0 0;
+      }
+	  
       input:focus { 
         box-shadow: 0 0 5px rgb(125, 169, 194);
         background-color: rgb(125, 169, 194);
-        border-radius: 50%;
       }
     }
 

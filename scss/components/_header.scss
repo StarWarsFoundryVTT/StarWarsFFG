@@ -1,17 +1,18 @@
 .header-fields {
-  .block-background-shadow {
-    top: 36px;
-  }
 
   .container.flex-group-center {
     border: 0;
-    margin-bottom: 5px;
-    padding: 0 5px 5px 5px;
+    margin: 0;
+    padding: 0;
   }
 
   h1 {
     margin: 0;
     width: 100%;
+  }
+  
+  h2 {
+    border-image: linear-gradient(to right, rgba(73, 12, 11, 1), rgba(0, 0, 0, 0)) 1%;
   }
 
   .header-name {
@@ -33,12 +34,11 @@
   }
 
   .header-description-block {
-    margin-bottom: 5px;
-    margin-top: 5px;
+    margin: 0.5rem 0.5rem 0 0;
   }
 
   .header-description {
-    background-color: rgb(196, 219, 233);
+    background-color: rgba(195, 220, 230,1);
     --notchSize: 10px;
     padding: 3px;
 
@@ -65,7 +65,8 @@
     input {
       width: 100%;
       border: 0;
-      border-bottom: 1px solid black;
+	  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+	  border-image: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0)) 1%;
       border-radius: 0;
 
       &:focus {
@@ -76,119 +77,55 @@
   }
 
   .profile-block {
-    margin-right: 5px;
-    margin-left: 5px;
+    margin: 0 0.5rem;
     height: 130px;
     max-width: 130px;
   }
 
   .profile-img {
     flex: 0 0 100px;
-    height: 124px;
+    height: 130px;
     width: auto;
-    max-width: 124px;
+    max-width: 130px;
     border: 0;
     margin: auto;
-  }
-
-  .attribute {
-    position: relative;
-    padding: 0;
-    z-index: 1;
-    border: 0;
-
-    .block-background {
-      padding: 5px 5px;
-    }
-
-    .block-title {
-      line-height: initial;
-      background-color: rgb(73, 12, 11);
-      color: white;
-      font-size: 13px;
-      text-transform: uppercase;
-      margin: auto;
-      // width: 160px;
-      --notchSize: 8px;
-      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-    }
-
-    .block-attribute {
-      .block-value {
-        display: inline-block;
-      }
-    }
-
-    .block-value {
-      &.block-single {
-        input {
-          width: 100%;
-          padding: 6px;
-        }
-      }
-
-      input {
-        border: 0;
-        font-size: 14px;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-        }
-      }
-    }
-
-    .shadow-text {
-      position: absolute;
-      top: 5px;
-      font-size: 9px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .shadow-left {
-      background-color: rgb(73, 12, 11);
-      width: 50%;
-      height: 100%;
-      float: left;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: white;
-        text-transform: uppercase;
-      }
-    }
-
-    .shadow-right {
-      background-color: rgb(125, 169, 194);
-      width: 50%;
-      height: 100%;
-      float: right;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: black;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
-    }
+	--notchSize: 9px;
+	clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   }
 
   .resource {
     line-height: 30px;
-    width: 110px;
+    width: 24.5%;
+	margin: 1rem 0.25rem 0.5rem;
 
     &.split {
-      width: 130px;
+      width: 24.5%;
     }
     &.single {
-      width: 65px;
+      width: 20%;
     }
 
     input {
       width: 45px;
+    }
+  }
+}
+
+.item-sheet-talent, .item-sheet-gear, .item-sheet-weapon, .item-sheet-armor {
+  .header-fields {
+    h1 {
+	  font-size: 1rem;
+    }
+    .profile-img {
+	  position: absolute;
+	  left: 0.5rem;
+	  top: 2.5rem;
+	  height: 3rem;
+	  clip-path: none;
+    }
+	.item-name {
+	  padding: 0;
+	  text-align: left;
     }
   }
 }
