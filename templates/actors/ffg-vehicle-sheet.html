@@ -6,13 +6,34 @@
       <div class="grid grid-2col">
         <div class="block-background">
           <div class="profile-block">
-          
             <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
           </div>
         </div>
         <div class="container flex-group-right">
-          <div class="block-background defense-block">
-            <div class="defense-block"></div>
+          <div class="block-background defense-group">
+            <div class="defense-decoration">
+              <img src="systems/starwarsffg/images/shipdefence.png" />
+            </div>
+            <div class="defense-block">
+              <div class="defense-block-title">{{localize "SWFFG.Defense"}}</div>
+              <div class="defense-value fore">
+                <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseFore"}}</div>
+              </div>
+              <div class="defense-value aft">
+                <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseAft"}}</div>
+              </div>
+              <div class="defense-value port">
+                <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefensePort"}}</div>
+              </div>
+              <div class="defense-value starboard">
+                <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" />
+                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseStarboard"}}</div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>

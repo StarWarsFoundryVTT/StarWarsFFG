@@ -94,6 +94,10 @@
   "SWFFG.VehicleTabRange": "Range",
   "SWFFG.VehicleTabCritical": "Crit",
   "SWFFG.VehicleTabSpecial": "Special",
-  "SWFFG.VehicleTabHardPoints": "Hard Points Required"
+  "SWFFG.VehicleTabHardPoints": "Hard Points Required",
+  "SWFFG.VehicleDefenseFore": "Fore",
+  "SWFFG.VehicleDefenseAft": "Aft",
+  "SWFFG.VehicleDefensePort": "Port",
+  "SWFFG.VehicleDefenseStarboard": "stbd"
 }
 
