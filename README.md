@@ -26,7 +26,6 @@ Please see [CONTRIBUTING.md](https://github.com/StarWarsFoundryVTT/StarWarsFFG/b
 NEEDED FOR RELEASE V1:
 
 - Group Management sheet for GM use (currently in progress).
-- Localise all values from `swffg-config.js`.
 - Create equipable item functionality and rework inventory to suit. Continue to improve inventory display in the process.
 - Add Forcepower item type (based on talent).
 - Add Maximum Altitude and Crew Capacity to vehicle sheet.
@@ -44,6 +43,7 @@ NICE TO HAVE:
 
 # Changelog
 
+- 03/06/2020 - CStadther - Added localisation for all `swffg-config.js` values.
 - 03/06/2020 - Esrin - Tweaked sensor range dropdown values.
 - 03/06/2020 - CStadther - Fixed positioning issue with tool tips on vehicle sheet.
 - 03/06/2020 - CStadther - Restyled bottom of vehicle biography section.
