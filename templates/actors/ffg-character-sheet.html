@@ -338,7 +338,7 @@
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
           <tr class="item" data-item-id="{{item._id}}">
             <td class="item-name">{{item.name}}</td>
-            <td>{{lookup ../this.FFG.combat_skills.abrev item.data.skill.value}}</td>
+            <td>{{localize (lookup ../this.FFG.combat_skills_abrev item.data.skill.value)}}</td>
             <td>{{item.data.damage.value}}</td>
             <td>{{item.data.range.value}}</td>
             <td>{{item.data.crit.value}}</td>

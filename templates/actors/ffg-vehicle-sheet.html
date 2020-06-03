@@ -292,7 +292,7 @@
               <div class="block-attribute">
                 <select style="text-align: center;" name="data.stats.sensorRange.value">
                   {{#select data.stats.sensorRange.value}} {{#each this.FFG.sensor_ranges as |t|}}
-                  <option value="{{t}}">{{t}}</option>
+                  <option value="{{t.value}}">{{localize t.label}}</option>
                   {{/each}} {{/select}}
                 </select>
               </div>

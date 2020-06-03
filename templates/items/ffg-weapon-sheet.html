@@ -73,7 +73,7 @@
                     <select style="text-align: center;" name="data.skill.value">
                       {{#select data.skill.value}}
                         {{#each this.FFG.combat_skills as |t|}}
-                          <option value="{{t}}">{{t}}</option>
+                      <option value="{{t.value}}">{{localize t.label}}</option>
                         {{/each}}
                       {{/select}}
                     </select>
@@ -90,8 +90,8 @@
                   <div class="block-attribute">
                     <select style="text-align: center;" name="data.range.value">
                       {{#select data.range.value}} {{#each this.FFG.ranges as |t|}}
-                          <option value="{{t}}">{{t}}</option>
-                        {{/each}} {{/select}}
+                      <option value="{{t.value}}">{{localize t.label}}</option>
+                      {{/each}} {{/select}}
                     </select>
                   </div>
                 </div>
@@ -167,28 +167,28 @@
 
       <ol class="attributes-list">
         {{#each data.attributes as |attr key|}}
-          <li class="attribute flexrow" data-attribute="{{key}}">
-            <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
-            <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-              {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
-                  <option value="{{t}}">{{t}}</option>
-                {{/each}} {{/select}}
-            </select>
-            <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-              {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
-                    <option value="{{t}}">{{t}}</option>
-                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
-                    <option value="{{t}}">{{t}}</option>
-                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
-                    <option value="{{t}}">{{t}}</option>
-                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
-                    <option value="{{t}}">{{t}}</option>
-                  {{/each}} {{/iff}} {{/select}}
-            </select>
-            <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
-            <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
-            <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-          </li>
+        <li class="attribute flexrow" data-attribute="{{key}}">
+          <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
+          <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
+            {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/select}}
+          </select>
+          <select class="attribute-mod" name="data.attributes.{{key}}.mod">
+            {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
+            <option value="{{t}}">{{t}}</option>
+            {{/each}} {{/iff}} {{/select}}
+          </select>
+          <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
+          <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+          <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+        </li>
         {{/each}}
       </ol>
     </div>
