@@ -1,130 +1,130 @@
 <form class="{{cssClass}} item-sheet-talent" autocomplete="off">
-    <header class="sheet-header talents">
-        <div class="header-fields">
-          <div class="container flex-group-center">
-            <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-          </div>
-          <div class="container flex-group-center item-name">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-          </div>
+  <header class="sheet-header talents">
+    <div class="header-fields">
+      <div class="container flex-group-center">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+      </div>
+      <div class="container flex-group-center item-name">
+        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+      </div>
 
-          <div class="container flex-group-center">
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.TalentsActivation"}}
-                  </div>
-                  <div class="block-attribute">
-                    <select style="text-align:center;" name="data.activation.value">
-                      {{#select data.activation.value}}
-                      {{#each this.FFG.activations as |t|}}
+      <div class="container flex-group-center">
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.TalentsActivation"}}
+              </div>
+              <div class="block-attribute">
+                <select style="text-align:center;" name="data.activation.value">
+                  {{#select data.activation.value}}
+                    {{#each this.FFG.activations as |t|}}
                       <option value="{{t}}">{{t}}</option>
-                      {{/each}}
-                      {{/select}}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-          
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemTalentRanked"}}
-                  </div>
-                  <div class="block-attribute">
-                    <input class="ranked-toggle" style="text-align:center;" type="checkbox" name="data.ranks.ranked" data-dtype="Boolean" {{checked data.ranks.ranked}} />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.TalentsRank"}}
-                  </div>
-                  <div class="block-attribute">
-                    {{#if data.ranks.ranked}}
-                    <div class="block-value block-single"><input type="text" name="data.price.value" value="{{data.price.value}}" data-dtype="Number" /></div>
-                    {{else}}
-                    <div class="block-value block-single"><input type="text" value="N/A" disabled /></div>
-                    {{/if}}
-                  </div>
-                </div>
+                    {{/each}}
+                  {{/select}}
+                </select>
               </div>
             </div>
           </div>
         </div>
-    </header>
 
-    {{!-- Sheet Tab Navigation --}}
-    <nav class="sheet-tabs tabs" data-group="primary">
-      <a class="item" data-tab="description">{{localize "SWFFG.TabDescription"}}</a>
-      <a class="item" data-tab="attributes">{{localize "SWFFG.TabModifiers"}}</a>
-    </nav>
-
-    {{!-- Sheet Body --}}
-    <section class="sheet-body small">
-
-        {{!-- Description Tab --}}
-        <div class="tab" data-group="primary" data-tab="description">
-            {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.ItemTalentRanked"}}
+              </div>
+              <div class="block-attribute">
+                <input class="ranked-toggle" style="text-align:center;" type="checkbox" name="data.ranks.ranked" data-dtype="Boolean" {{checked data.ranks.ranked}} />
+              </div>
+            </div>
+          </div>
         </div>
-
-        {{!-- Modifiers Tab --}}
-        <div class="tab attributes" data-group="primary" data-tab="attributes">
-            <header class="attributes-header flexrow">
-              <!-- <span class="attribute-key">ID</span> -->
-                <span class="attribute-modtype">Mod Type</span>
-                <span class="attribute-mod">Modifier</span>
-                <span class="attribute-value">Value</span>
-                <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
-            </header>
-
-            <ol class="attributes-list">
-            {{#each data.attributes as |attr key|}}
-                <li class="attribute flexrow" data-attribute="{{key}}">
-                    <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display:none;"/>
-                    <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-                        {{#select attr.modtype}}
-                        {{#each ../this.FFG.mod_types as |t|}}
-                        <option value="{{t}}">{{t}}</option>
-                        {{/each}}
-                        {{/select}}
-                    </select>
-                    <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-                        {{#select attr.mod}}
-                        {{#iff attr.modtype '==' 'Stat' }}
-                        {{#each ../this.FFG.character_stats as |t|}}
-                        <option value="{{t.value}}">{{localize t.label}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Skill Rank' }}
-                        {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t.value}}">{{localize t.label}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Skill Boost' }}
-                        {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t.value}}">{{localize t.label}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{#iff attr.modtype '==' 'Characteristic' }}
-                        {{#each ../this.FFG.characteristics as |t|}}
-                        <option value="{{t.value}}">{{localize t.label}}</option>
-                        {{/each}}
-                        {{/iff}}
-                        {{/select}}
-                    </select>
-                    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0"/>
-                    <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
-                    <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-                </li>
-            {{/each}}
-            </ol>
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.TalentsRank"}}
+              </div>
+              <div class="block-attribute">
+                {{#if data.ranks.ranked}}
+                  <div class="block-value block-single"><input type="text" name="data.ranks.current" value="{{data.ranks.current}}" data-dtype="Number" /></div>
+                {{else}}
+                  <div class="block-value block-single"><input type="text" value="N/A" disabled /></div>
+                {{/if}}
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize "SWFFG.TabDescription"}}</a>
+    <a class="item" data-tab="attributes">{{localize "SWFFG.TabModifiers"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body small">
+
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <header class="attributes-header flexrow">
+        <!-- <span class="attribute-key">ID</span> -->
+        <span class="attribute-modtype">Mod Type</span>
+        <span class="attribute-mod">Modifier</span>
+        <span class="attribute-value">Value</span>
+        <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
+      </header>
+
+      <ol class="attributes-list">
+        {{#each data.attributes as |attr key|}}
+          <li class="attribute flexrow" data-attribute="{{key}}">
+            <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display:none;" />
+            <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
+              {{#select attr.modtype}}
+                {{#each ../this.FFG.mod_types as |t|}}
+                  <option value="{{t}}">{{t}}</option>
+                {{/each}}
+              {{/select}}
+            </select>
+            <select class="attribute-mod" name="data.attributes.{{key}}.mod">
+              {{#select attr.mod}}
+                {{#iff attr.modtype '==' 'Stat' }}
+                  {{#each ../this.FFG.character_stats as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}}
+                {{/iff}}
+                {{#iff attr.modtype '==' 'Skill Rank' }}
+                  {{#each ../this.FFG.skills as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}}
+                {{/iff}}
+                {{#iff attr.modtype '==' 'Skill Boost' }}
+                  {{#each ../this.FFG.skills as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}}
+                {{/iff}}
+                {{#iff attr.modtype '==' 'Characteristic' }}
+                  {{#each ../this.FFG.characteristics as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}}
+                {{/iff}}
+              {{/select}}
+            </select>
+            <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
+            <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+            <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+          </li>
+        {{/each}}
+      </ol>
+    </div>
+  </section>
 </form>
