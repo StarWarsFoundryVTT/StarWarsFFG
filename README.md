@@ -43,6 +43,8 @@ NICE TO HAVE:
 
 # Changelog
 
+- 04/06/2020 - HDScurox - Updated German language file.
+- 04/06/2020 - ForjaSalvaje - Updated Spanish language file.
 - 03/06/2020 - CStadther - Added localisation for all `swffg-config.js` values.
 - 03/06/2020 - Esrin - Tweaked sensor range dropdown values.
 - 03/06/2020 - CStadther - Fixed positioning issue with tool tips on vehicle sheet.
