@@ -132,22 +132,22 @@
                         {{#select attr.mod}}
                         {{#iff attr.modtype '==' 'Stat' }}
                         {{#each ../this.FFG.character_stats as |t|}}
-                        <option value="{{t}}">{{t}}</option>
+                        <option value="{{t.value}}">{{localize t.label}}</option>
                         {{/each}}
                         {{/iff}}
                         {{#iff attr.modtype '==' 'Skill Rank' }}
                         {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t}}">{{t}}</option>
+                        <option value="{{t.value}}">{{localize t.label}}</option>
                         {{/each}}
                         {{/iff}}
                         {{#iff attr.modtype '==' 'Skill Boost' }}
                         {{#each ../this.FFG.skills as |t|}}
-                        <option value="{{t}}">{{t}}</option>
+                        <option value="{{t.value}}">{{localize t.label}}</option>
                         {{/each}}
                         {{/iff}}
                         {{#iff attr.modtype '==' 'Characteristic' }}
                         {{#each ../this.FFG.characteristics as |t|}}
-                        <option value="{{t}}">{{t}}</option>
+                        <option value="{{t.value}}">{{localize t.label}}</option>
                         {{/each}}
                         {{/iff}}
                         {{/select}}

@@ -1,70 +1,110 @@
 export const FFG = {};
 
 FFG.characteristics = {
-  "Brawn": "Brawn",
-  "Agility": "Agility",
-  "Intellect": "Intellect",
-  "Cunning": "Cunning",
-  "Willpower": "Willpower",
-  "Presence": "Presence",
+  "Brawn": {
+    value : "Brawn",
+    label : "SWFFG.CharacteristicBrawn"
+  },
+  "Agility": {
+    value : "Agility",
+    label : "SWFFG.CharacteristicAgility"
+  },
+  "Intellect": {
+    value : "Intellect",
+    label : "SWFFG.CharacteristicIntellect"
+  },
+  "Cunning": {
+    value : "Cunning",
+    label : "SWFFG.CharacteristicCunning"
+  },
+  "Willpower": {
+    value : "Willpower",
+    label : "SWFFG.CharacteristicWillpower"
+  },
+  "Presence": {
+    value : "Presence",
+    label : "SWFFG.CharacteristicPresence"
+  },
 };
 
 FFG.character_stats = {
-  "wounds": "Wounds",
-  "strain": "Strain",
-  "soak": "Soak",
-  "defence": "Defence",
-  "encumbrance": "Encumbrance",
-  "forcePool": "Force Pool",
-  "credits": "Credits",
+  "wounds": {
+    value : "Wounds",
+    label : "SWFFG.Wounds"
+  },
+  "strain": {
+    value : "Strain",
+    label : "SWFFG.Strain"
+  },
+  "soak": {
+    value : "Soak",
+    label : "SWFFG.Soak"
+  },
+  "defence": {
+    value : "Defence",
+    label : "SWFFG.Defense"
+  },
+  "encumbrance": {
+    value : "Encumbrance",
+    label : "SWFFG.Encumbrance"
+  },
+  "forcePool": {
+    value : "ForcePool",
+    label : "SWFFG.ForcePool"
+  },
+  "credits": {
+    value : "Credits",
+    label : "SWFFG.DescriptionCredits"
+  },
 };
 
 FFG.skills = {
-  "Brawl": "Brawl",
-  "Gunnery": "Gunnery",
-  "Lightsaber": "Lightsaber",
-  "Melee": "Melee",
-  "Ranged: Light": "Ranged: Light",
-  "Ranged: Heavy": "Ranged: Heavy",
-  "Astrogation": "Astrogation",
-  "Athletics ": "Athletics",
-  "Charm": "Charm",
-  "Coercion": "Coercion",
-  "Computers": "Computers",
-  "Cool": "Cool",
-  "Coordination": "Coordination",
-  "Deception": "Deception",
-  "Discipline": "Discipline",
-  "Leadership": "Leadership",
-  "Mechanics": "Mechanics",
-  "Medicine": "Medicine",
-  "Negotiation": "Negotiation",
-  "Perception": "Perception",
-  "Piloting: Planetary": "Piloting: Planetary",
-  "Piloting: Space": "Piloting: Space",
-  "Resilience": "Resilience",
-  "Skulduggery": "Skulduggery",
-  "Stealth": "Stealth",
-  "Streetwise": "Streetwise",
-  "Survival": "Survival",
-  "Vigilance": "Vigilance",
-  "Knowledge: Core Worlds": "Knowledge: Core Worlds",
-  "Knowledge: Education": "Knowledge: Education",
-  "Knowledge: Lore": "Knowledge: Lore",
-  "Knowledge: Outer Rim": "Knowledge: Outer Rim",
-  "Knowledge: Underworld": "Knowledge: Underworld",
-  "Knowledge: Warfare": "Knowledge: Warfare",
-  "Knowledge: Xenology": "Knowledge: Xenology",
+  "Astrogation": { value : "Astrogation", label : "SWFFG.SkillsNameAstrogation" },
+  "Athletics ": { value : "Athletics", label : "SWFFG.SkillsNameAthletics" },
+  "Brawl": { value : "Brawl", label : "SWFFG.SkillsNameBrawl" },
+  "Charm": { value : "Charm", label : "SWFFG.SkillsNameCharm" },
+  "Coercion": { value : "Coercion", label : "SWFFG.SkillsNameCoercion" },
+  "Computers": { value : "Computers", label : "SWFFG.SkillsNameComputers" },
+  "Cool": { value : "Cool", label : "SWFFG.SkillsNameCool" },
+  "Coordination": { value : "Coordination", label : "SWFFG.SkillsNameCoordination" },
+  "Deception": { value : "Deception", label : "SWFFG.SkillsNameDeception" },
+  "Discipline": { value : "Discipline", label : "SWFFG.SkillsNameDiscipline" },
+  "Gunnery": { value : "Gunnery", label : "SWFFG.SkillsNameGunnery" },
+  "Knowledge: Core Worlds": { value : "Knowledge: Core Worlds", label : "SWFFG.SkillsNameKnowledgeCoreWorlds" },
+  "Knowledge: Education": { value : "Knowledge: Education", label : "SWFFG.SkillsNameKnowledgeEducation" },
+  "Knowledge: Lore": { value : "Knowledge: Lore", label : "SWFFG.SkillsNameKnowledgeLore" },
+  "Knowledge: Outer Rim": { value : "Knowledge: Outer Rim", label : "SWFFG.SkillsNameKnowledgeOuterRim" },
+  "Knowledge: Underworld": { value : "Knowledge: Underworld", label : "SWFFG.SkillsNameKnowledgeUnderworld" },
+  "Knowledge: Warfare": { value : "Knowledge: Warfare", label : "SWFFG.SkillsNameKnowledgeWarfare" },
+  "Knowledge: Xenology": { value : "Knowledge: Xenology", label : "SWFFG.SkillsNameKnowledgeXenology" },
+  "Leadership": { value : "Leadership", label : "SWFFG.SkillsNameLeadership" },
+  "Lightsaber": { value : "Lightsaber", label : "SWFFG.SkillsNameLightsaber" },
+  "Mechanics": { value : "Mechanics", label : "SWFFG.SkillsNameMechanics" },
+  "Medicine": { value : "Medicine", label : "SWFFG.SkillsNameMedicine" },
+  "Melee": { value : "Melee", label : "SWFFG.SkillsNameMelee" },
+  "Negotiation": { value : "Negotiation", label : "SWFFG.SkillsNameNegotiation" },
+  "Perception": { value : "Perception", label : "SWFFG.SkillsNamePerception" },
+  "Piloting: Planetary": { value : "Piloting: Planetary", label : "SWFFG.SkillsNamePilotingPlanetary" },
+  "Piloting: Space": { value : "Piloting: Space", label : "SWFFG.SkillsNamePilotingSpace" },
+  "Ranged: Heavy": { value : "Ranged: Heavy", label : "SWFFG.SkillsNameRangedHeavy" },
+  "Ranged: Light": { value : "Ranged: Light", label : "SWFFG.SkillsNameRangedLight" },
+  "Resilience": { value : "Resilience", label : "SWFFG.SkillsNameResilience" },
+  "Skulduggery": { value : "Skulduggery", label : "SWFFG.SkillsNameSkulduggery" },
+  "Stealth": { value : "Stealth", label : "SWFFG.SkillsNameStealth" },
+  "Streetwise": { value : "Streetwise", label : "SWFFG.SkillsNameStreetwise" },
+  "Survival": { value : "Survival", label : "SWFFG.Survival" },
+  "Vigilance": { value : "Vigilance", label : "SWFFG.SkillsNameVigilance" },
+  
 };
 
-FFG.skills.knowledgestripped = {
-  "Knowledge: Core Worlds": "Core Worlds",
-  "Knowledge: Education": "Education",
-  "Knowledge: Lore": "Lore",
-  "Knowledge: Outer Rim": "Outer Rim",
-  "Knowledge: Underworld": "Underworld",
-  "Knowledge: Warfare": "Warfare",
-  "Knowledge: Xenology": "Xenology",
+FFG.skills_knowledgestripped = {
+  "Knowledge: Core Worlds": "SWFFG.SkillsNameKnowledgeCoreWorldsStripped",
+  "Knowledge: Education": "SWFFG.SkillsNameKnowledgeEducationStripped",
+  "Knowledge: Lore": "SWFFG.SkillsNameKnowledgeLoreStripped",
+  "Knowledge: Outer Rim": "SWFFG.SkillsNameKnowledgeOuterRimStripped",
+  "Knowledge: Underworld": "SWFFG.SkillsNameKnowledgeUnderworldStripped",
+  "Knowledge: Warfare": "SWFFG.SkillsNameKnowledgeWarfareStripped",
+  "Knowledge: Xenology": "SWFFG.SkillsNameKnowledgeXenologyStripped"
 };
 
 FFG.ranges = {
