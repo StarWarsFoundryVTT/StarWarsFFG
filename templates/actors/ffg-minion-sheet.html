@@ -226,7 +226,7 @@
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Knowledge'}}
               <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                <td>{{lookup ../this.FFG.skills.knowledgestripped [id]~}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>{{localize (lookup ../this.FFG.skills_knowledgestripped [id])}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
                 <td>
                   <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
                 </td>
@@ -400,13 +400,13 @@
           </select>
           <select class="attribute-mod" name="data.attributes.{{key}}.mod">
             {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
-            <option value="{{t}}">{{t}}</option>
+            <option value="{{t.value}}">{{localize t.label}}</option>
             {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
-            <option value="{{t}}">{{t}}</option>
+            <option value="{{t.value}}">{{localize t.label}}</option>
             {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
-            <option value="{{t}}">{{t}}</option>
+            <option value="{{t.value}}">{{localize t.label}}</option>
             {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
-            <option value="{{t}}">{{t}}</option>
+            <option value="{{t.value}}">{{localize t.label}}</option>
             {{/each}} {{/iff}} {{/select}}
           </select>
           <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
