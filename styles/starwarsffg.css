@@ -2766,3 +2766,23 @@
 .starwarsffg .attributes .attribute-value.checkbox {
   text-align: center;
 }
+
+.starwarsffg .item-sheet-criticalinjury .charname {
+  width: 100%;
+}
+
+.starwarsffg .item-sheet-criticalinjury .charname input {
+  color: #830707;
+  border: 0;
+  width: 100%;
+}
+
+.starwarsffg .item-sheet-criticalinjury .charname input:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+}
+
+.starwarsffg .item-sheet-criticalinjury select:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+}

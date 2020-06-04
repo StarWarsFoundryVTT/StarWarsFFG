@@ -1,0 +1,38 @@
+<form class="{{cssClass}} item-sheet-criticalinjury" autocomplete="off">
+  <header class="sheet-header">
+    <div class="header-fields">
+      <div class="container flex-group-center">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+      </div>
+      <div class="container flex-group-center">
+      <div class="container flex-group-center item-name">
+          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+      </div>
+    </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+
+    <div class="container flex-group-center weapon-values">
+      <div class="resource single">
+        <div class="attribute flex-group-center severity-block">
+          <div class="block-background">
+            <div class="block-title">
+              {{localize "SWFFG.Severity"}}
+            </div>
+            <div class="block-attribute">
+              <div class="severity">
+      <select name="data.severity">
+                  {{#select data.severity}} {{#each this.FFG.difficulty as |t|}}
+        <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}} {{/select}}
+                </select>
+              </div>
+
+    {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+  </section>
+
+</form>
+    

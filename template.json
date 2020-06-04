@@ -516,7 +516,7 @@
     }
   },
   "Item": {
-    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment"],
+    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury"],
     "templates": {
       "basic": {
         "description": "",
@@ -693,6 +693,10 @@
           "abrev": "Pr"
         }
       }
+    },
+    "criticalinjury" : {
+      "severity" : 1,
+      "description" : ""
     }
   }
 }

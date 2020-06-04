@@ -25,8 +25,10 @@ export class ItemSheetFFG extends ItemSheet {
   getData() {
     const data = super.getData();
     data.dtypes = ["String", "Number", "Boolean"];
-    for (let attr of Object.values(data.data.attributes)) {
-      attr.isCheckbox = attr.dtype === "Boolean";
+    if(data?.data?.attributes) {
+      for (let attr of Object.values(data.data.attributes)) {
+        attr.isCheckbox = attr.dtype === "Boolean";
+      }
     }
 
     switch (this.object.data.type) {
@@ -42,6 +44,7 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 575;
         break;
       case "talent": 
+      case "criticalinjury":
         this.position.width = 405;
         this.position.height = 475;
         break;
@@ -73,7 +76,29 @@ export class ItemSheetFFG extends ItemSheet {
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
+
+    html.find(".severity").children("select").change(this._onChangeCriticalInjuryServerity.bind(this));
   }
+
+
+/* -------------------------------------------- */
+
+  /**
+   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
+   * @param {MouseEvent} event    The originating left click event
+   * @private
+   */
+  _onChangeCriticalInjuryServerity(event) {
+    event.preventDefault();
+    const DIFFICULTY_ICON = "modules/special-dice-roller/public/images/sw/purple.png";
+
+    const selected = event.currentTarget;
+
+    console.log(event)
+    console.log(selected.options[selected.selectedIndex].value);
+  }
+
+
 
   /* -------------------------------------------- */
 
@@ -121,8 +146,10 @@ export class ItemSheetFFG extends ItemSheet {
     }, {});
 
     // Remove attributes which are no longer used
-    for (let k of Object.keys(this.object.data.data.attributes)) {
-      if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
+    if(this.object.data?.data?.attributes) {
+      for (let k of Object.keys(this.object.data.data.attributes)) {
+        if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
+      }
     }
 
     // Re-combine formData

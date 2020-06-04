@@ -210,6 +210,7 @@ export class ActorSheetFFG extends ActorSheet {
     return this.object.update(formData);
   }
 
+  
   async _rollSkillManual(skill, ability, difficulty) {
     const dicePool = new DicePoolFFG({
       ability: ability,
