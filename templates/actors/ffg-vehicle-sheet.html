@@ -82,7 +82,7 @@
             <div class="attribute flex-group-center">
               <div class="block-background">
                 <div class="block-title">
-                  {{localize "SWFFG.ItemsArmor"}}
+                  {{localize "SWFFG.VehicleArmor"}}
                 </div>
                 <div class="block-attribute">
                   <div class="block-value block-single"><input type="text" name="data.stats.armour.value" value="{{data.stats.armour.value}}" data-dtype="Number" /></div>
@@ -173,24 +173,24 @@
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipweapon'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="hover">
-              {{item.name}}
-              <div class="tooltip">{{item.safe_desc}}</div>
-            </td>
-            <td>{{item.data.firingarc.value}}</td>
-            <td>{{item.data.damage.value}}</td>
-            <td>{{item.data.range.value}}</td>
-            <td>{{item.data.crit.value}}</td>
-            <td class="hover">
-              {{item.data.special.value}}
-              <div class="tooltip">{{item.data.special.value}}</div>
-            </td>
-            <td class="item-controls">
-              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-            </td>
-          </tr>
-          {{/iff}} {{/each}}
+              <tr class="item" data-item-id="{{item._id}}">
+                <td class="hover">
+                  {{item.name}}
+                  <div class="tooltip">{{item.safe_desc}}</div>
+                </td>
+                <td>{{item.data.firingarc.value}}</td>
+                <td>{{item.data.damage.value}}</td>
+                <td>{{item.data.range.value}}</td>
+                <td>{{item.data.crit.value}}</td>
+                <td class="hover">
+                  {{item.data.special.value}}
+                  <div class="tooltip">{{item.data.special.value}}</div>
+                </td>
+                <td class="item-controls">
+                  <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+            {{/iff}} {{/each}}
         </tbody>
       </table>
 
@@ -203,17 +203,17 @@
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipattachment'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="hover">
-              {{item.name}}
-              <div class="tooltip">{{item.safe_desc}}</div>
-            </td>
-            <td>{{item.data.hardpoints.value}}</td>
-            <td class="item-controls">
-              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-            </td>
-          </tr>
-          {{/iff}} {{/each}}
+              <tr class="item" data-item-id="{{item._id}}">
+                <td class="hover">
+                  {{item.name}}
+                  <div class="tooltip">{{item.safe_desc}}</div>
+                </td>
+                <td>{{item.data.hardpoints.value}}</td>
+                <td class="item-controls">
+                  <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+            {{/iff}} {{/each}}
         </tbody>
       </table>
 
@@ -229,20 +229,20 @@
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '!=' 'shipweapon'}} {{#iff item.type '!=' 'shipattachment'}} {{#iff item.type '!=' 'talent'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="hover">
-              {{item.name}}
-              <div class="tooltip">{{item.safe_desc}}</div>
-            </td>
-            <td>{{item.data.price.value}}</td>
-            <td>{{item.data.rarity.value}}</td>
-            <td>{{item.data.quantity.value}}</td>
-            <td>{{item.data.encumbrance.value}}</td>
-            <td class="item-controls">
-              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-            </td>
-          </tr>
-          {{/iff}} {{/iff}} {{/iff}} {{/each}}
+                  <tr class="item" data-item-id="{{item._id}}">
+                    <td class="hover">
+                      {{item.name}}
+                      <div class="tooltip">{{item.safe_desc}}</div>
+                    </td>
+                    <td>{{item.data.price.value}}</td>
+                    <td>{{item.data.rarity.value}}</td>
+                    <td>{{item.data.quantity.value}}</td>
+                    <td>{{item.data.encumbrance.value}}</td>
+                    <td class="item-controls">
+                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                    </td>
+                  </tr>
+                {{/iff}} {{/iff}} {{/iff}} {{/each}}
         </tbody>
       </table>
     </div>
@@ -292,8 +292,8 @@
               <div class="block-attribute">
                 <select style="text-align: center;" name="data.stats.sensorRange.value">
                   {{#select data.stats.sensorRange.value}} {{#each this.FFG.sensor_ranges as |t|}}
-                  <option value="{{t.value}}">{{localize t.label}}</option>
-                  {{/each}} {{/select}}
+                      <option value="{{t.value}}">{{localize t.label}}</option>
+                    {{/each}} {{/select}}
                 </select>
               </div>
             </div>
@@ -330,28 +330,28 @@
 
       <ol class="attributes-list">
         {{#each data.attributes as |attr key|}}
-        <li class="attribute flexrow" data-attribute="{{key}}">
-          <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
-          <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-            {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
-            <option value="{{t}}">{{t}}</option>
-            {{/each}} {{/select}}
-          </select>
-          <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-            {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-            {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-            {{/each}} {{/iff}} {{/select}}
-          </select>
-          <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
-          <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
-          <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-        </li>
+          <li class="attribute flexrow" data-attribute="{{key}}">
+            <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
+            <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
+              {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
+                  <option value="{{t}}">{{t}}</option>
+                {{/each}} {{/select}}
+            </select>
+            <select class="attribute-mod" name="data.attributes.{{key}}.mod">
+              {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}} {{/iff}} {{/select}}
+            </select>
+            <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
+            <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
+            <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+          </li>
         {{/each}}
       </ol>
     </div>
