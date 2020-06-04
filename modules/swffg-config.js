@@ -3,27 +3,33 @@ export const FFG = {};
 FFG.characteristics = {
   "Brawn": {
     value : "Brawn",
-    label : "SWFFG.CharacteristicBrawn"
+    label : "SWFFG.CharacteristicBrawn",
+    abrev : "SWFFG.CharacteristicBrawnAbbreviation"
   },
   "Agility": {
     value : "Agility",
-    label : "SWFFG.CharacteristicAgility"
+    label : "SWFFG.CharacteristicAgility",
+    abrev : "SWFFG.CharacteristicAgilityAbbreviation"
   },
   "Intellect": {
     value : "Intellect",
-    label : "SWFFG.CharacteristicIntellect"
+    label : "SWFFG.CharacteristicIntellect",
+    abrev :  "SWFFG.CharacteristicIntellectAbbreviation"
   },
   "Cunning": {
     value : "Cunning",
-    label : "SWFFG.CharacteristicCunning"
+    label : "SWFFG.CharacteristicCunning",
+    abrev : "SWFFG.CharacteristicCunningAbbreviation"
   },
   "Willpower": {
     value : "Willpower",
-    label : "SWFFG.CharacteristicWillpower"
+    label : "SWFFG.CharacteristicWillpower",
+    abrev : "SWFFG.CharacteristicWillpowerAbbreviation"
   },
   "Presence": {
     value : "Presence",
-    label : "SWFFG.CharacteristicPresence"
+    label : "SWFFG.CharacteristicPresence",
+    abrev : "SWFFG.CharacteristicPresenceAbbreviation"
   },
 };
 
