@@ -10,17 +10,7 @@
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
   "styles": ["styles/starwarsffg.css", "lib/select2/select2.min.css"],
   "scripts": ["lib/select2/select2.min.js"],
-  "packs": [
-    {
-      "name": "rollabletables",
-      "label": "Star Wars FFG: Rollable Tables",
-      "system": "starwarsffg",
-      "module": "starwarsffg",
-      "path": "packs/star-wars-ffg-rollable-tables.db",
-      "entity": "RollTable",
-      "tag": "rolltable"
-    }
-  ],
+  "packs": [],
   "languages": [
     {
       "lang": "en",
