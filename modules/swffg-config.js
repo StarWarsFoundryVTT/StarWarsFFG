@@ -204,11 +204,11 @@ FFG.fire_arcs = {
   },
   "Dorsal": {
     value: "Dorsal",
-    label: "SWFFG:VehicleFiringArcsDorsal",
+    label: "SWFFG:VehicleFiringArcDorsal",
   },
   "Ventral": {
     value: "Ventral",
-    label: "SWFFG:VehicleFiringArcsVentral",
+    label: "SWFFG:VehicleFiringArcVentral",
   },
   "All": {
     value: "All",
