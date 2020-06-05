@@ -176,5 +176,7 @@
   "SWFFG:VehicleFiringArcAft": "Aft",
   "SWFFG:VehicleFiringArcPort": "Port",
   "SWFFG:VehicleFiringArcStarboard": "Starboard",
+  "SWFFG:VehicleFiringArcDorsal": "Dorsal",
+  "SWFFG:VehicleFiringArcVentral": "Ventral",
   "SWFFG:VehicleFiringArcAll": "All"
 }
