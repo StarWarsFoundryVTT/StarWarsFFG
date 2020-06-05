@@ -2,10 +2,17 @@
   margin: 0;
   border: 0;
 
+  h1 {
+    font-size: 1rem;
+    input {
+      padding-left: 130px;
+    }
+  }
+
   table {
     th {
       text-align: left;
-      padding: 3px;
+      padding: 0.25rem;
       border-bottom: 1px solid rgba(0, 0, 0, 0.25);
       background-color: rgb(73, 12, 11);
       color: white;
@@ -13,17 +20,16 @@
       font-weight: normal;
     }
     td {
-      padding: 3px;
+      padding: 0.25rem;
     }
   }
 
-    .block-title {
-      background-color: rgb(73, 12, 11);
-    }
+  .block-title {
+    background-color: rgb(73, 12, 11);
   }
   
   .resource {
-    line-height: 30px;
+    line-height: 1rem;
     width: 110px;
 
     &.split {

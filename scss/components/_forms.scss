@@ -1,3 +1,7 @@
+form {
+height: 100%;
+}
+
 .item-form {
   font-family: $font-primary;
 }
@@ -17,15 +21,14 @@
     z-index: 1;
     border:0;
 
-	.block-title {
-	  line-height: initial;
-	  color: white;
-	  font-size: 12px;
-	  text-transform: uppercase;
-	  margin:auto;
-	  background-color: rgb(73, 12, 11);
-	  line-height: 1rem;
-      
+    .block-title {
+      line-height: initial;
+      color: white;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin:auto;
+      background-color: rgb(73, 12, 11);
+      line-height: 1rem;
       --notchSize: 8px;
       clip-path: 
         polygon(
@@ -54,37 +57,37 @@
       }
     }
 
-	.block-value {
+  .block-value {
 
-		textarea {
-			resize:none;
-			font-family: 'Roboto';
-			border : 0;
+      textarea {
+        resize:none;
+        font-family: 'Roboto';
+        border : 0;
 
-			&:focus {
-				box-shadow: 0 0 5px rgb(125, 169, 194);
-				background-color: rgb(125, 169, 194);
-				outline: none;
-			}
-		}
-		&.block-single {
-			input {
-				width: 100%;
-				padding: 6px;
-			}
-		}
+      &:focus {
+          box-shadow: 0 0 5px rgb(125, 169, 194);
+          background-color: rgb(125, 169, 194);
+          outline: none;
+        }
+      }
+        &.block-single {
+        input {
+          width: 100%;
+          padding: 6px;
+        }
+      }
 
-		input {
-			border:0;
-			font-size:14px;
+      input {
+        border:0;
+        font-size:14px;
 
-			&:focus {
-			  box-shadow: 0 0 5px rgb(125, 169, 194);
-			  background-color: rgb(125, 169, 194);
-			}
-		}
-	}
-}
+        &:focus {
+          box-shadow: 0 0 5px rgb(125, 169, 194);
+          background-color: rgb(125, 169, 194);
+        }
+      }
+    }
+  }
 
 .block-background-shadow {
   position: absolute;
@@ -94,9 +97,7 @@
   background-color: rgb(125, 169, 194);
   padding: 0.9rem 0 0;
   z-index: -1;
-
   --notchSize: 9px;
-
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 }
 
@@ -118,8 +119,8 @@
   padding-top: 25px;
 
   .shadow-text {
-	color: white;
-	text-transform: uppercase;
+    color: white;
+    text-transform: uppercase;
   }
 }
 
@@ -132,9 +133,9 @@
   padding-top: 25px;
 
   .shadow-text {
-	color: black;
-	font-weight: bold;
-	text-transform: uppercase;
+    color: black;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 }
 

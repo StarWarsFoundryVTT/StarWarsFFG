@@ -264,11 +264,6 @@
       width: 45px;
     }
   }
-  .tab{
-    &.active {
-		height: 30%;
-	}
-  }
   .biography-values {
     position: absolute;
     bottom: 0;
@@ -292,11 +287,13 @@
     tr {
       &.item {
         position: relative;
-
         td {
           position: relative;
         }
       }
     }
+  }
+  .tabs {
+    margin-top: 0.5rem;
   }
 }

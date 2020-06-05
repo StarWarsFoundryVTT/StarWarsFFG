@@ -50,17 +50,17 @@
       height: 55px;
       margin: auto;
       border-radius: 10px;
-	  background: rgba(255,255,255,0.75);
+      background: rgba(255,255,255,0.75);
       border: 2px solid rgba(0,0,0,0.5);
-	  .characteristic-value {
+      .characteristic-value {
         height: 100%;
         input {
           height: 100%;
           border: 0;
           font-size: 2rem;
           text-align: center;
-		  border-radius: 50%;
-		  margin: 1px 0 0;
+          border-radius: 50%;
+          margin: 1px 0 0;
         }
         input:focus { 
           box-shadow: 0 0 5px rgba(125, 170, 195,0.5);
@@ -102,9 +102,9 @@
     }
     &.single {      
       width: 25%;
-		&.qty {
-		  width: 15%;
-		}
+      &.qty {
+        width: 15%;
+      }
     }
     &.double {
       width: 235px;
@@ -112,8 +112,6 @@
     &.full {
       width: 100%;
     }
-
-
     input {
       width: 45px;
     }

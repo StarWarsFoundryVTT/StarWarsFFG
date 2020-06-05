@@ -67,8 +67,8 @@
     input {
       width: 100%;
       border: 0;
-	  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-	  border-image: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0)) 1%;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+      border-image: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0)) 1%;
       border-radius: 0;
 
       &:focus {
@@ -91,14 +91,13 @@
     max-width: 130px;
     border: 0;
     margin: auto;
-	--notchSize: 9px;
-	clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+    --notchSize: 9px;
+    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   }
 
   .resource {
     line-height: 30px;
     width: 24.5%;
-	margin: 1rem 0.25rem 0.5rem;
 
     &.split {
       width: 24.5%;
@@ -116,18 +115,21 @@
 .item-sheet-talent, .item-sheet-gear, .item-sheet-weapon, .item-sheet-armor, .item-sheet-vehicle-weapon, .item-sheet-vehicle-attachment {
   .header-fields {
     h1 {
-	  font-size: 1rem;
+      font-size: 1rem;
+      input {
+        padding-left: 130px;
+      }
     }
     .profile-img {
-	  position: absolute;
-	  left: 0.5rem;
-	  top: 2.5rem;
-	  height: 3rem;
-	  clip-path: none;
+      position: absolute;
+      left: 0.5rem;
+      top: 2.5rem;
+      height: 3rem;
+      clip-path: none;
     }
-	.item-name {
-	  padding: 0;
-	  text-align: left;
+  .item-name {
+    padding: 0;
+    text-align: left;
     }
   }
 }
