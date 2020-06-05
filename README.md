@@ -43,6 +43,9 @@ NICE TO HAVE:
 
 # Changelog
 
+- 05/06/2020 - CStadther - Added Critical Injury and Critical Hit item types, along with associated display areas on character and vehicle sheets.
+- 05/06/2020 - CStadther - Standardised localisation hooks for all langs.
+- 05/06/2020 - Esrin - Removed legacy Critical Injury rolltable.
 - 04/06/2020 - Esrin - Completed full transition to SASS. Removed old swffg.css file and ported all CSS logic into relevant SASS files.
 - 04/06/2020 - HDScurox - Updated German language file.
 - 04/06/2020 - ForjaSalvaje - Updated Spanish language file.
