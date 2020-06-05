@@ -505,10 +505,6 @@
   overflow: hidden;
 }
 
-.starwarsffg .sheet-body .characteristics fieldset.skillfilter {
-  display: none;
-}
-
 .starwarsffg .sheet-body .characteristics .characteristic-item {
   border: 0;
   position: relative;
