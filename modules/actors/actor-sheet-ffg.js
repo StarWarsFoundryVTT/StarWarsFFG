@@ -106,34 +106,10 @@ export class ActorSheetFFG extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
-    // Set skill filter element.
-    html.find(".skillfilter").each((_, elem) => {
-      const filters = this._filters.skills;
-      if (!filters.filter) {
-        filters.filter = "all";
-      }
-    });
-
-    // Update radio button checked status for skill filter controls.
-    html.find(".filter-control").each((_, elem) => {
-      if (elem.id == this._filters.skills.filter) {
-        elem.checked = true;
-      } else {
-        elem.checked = false;
-      }
-    });
-
     // Setup dice pool image and hide filtered skills
     html.find(".skill").each((_, elem) => {
       this._addSkillDicePool(elem);
       const filters = this._filters.skills;
-      if (filters.filter != "all") {
-        if (elem.dataset["skilltype"] != filters.filter) {
-          elem.style.display = "none";
-        } else {
-          elem.style.display = "";
-        }
-      }
     });
 
     // Roll Skill
@@ -152,9 +128,6 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
-
-    // Update Filter value.
-    html.find(".skillfilter").on("click", ".filter-control", this._onClickFilterControl.bind(this));
   }
 
   /* -------------------------------------------- */
