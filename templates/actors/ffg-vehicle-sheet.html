@@ -229,7 +229,7 @@
           <th></th>
         </thead>
         <tbody class="items-list">
-          {{#each actor.items as |item id|}} {{#iff item.type '!=' 'shipweapon'}} {{#iff item.type '!=' 'shipattachment'}} {{#iff item.type '!=' 'talent'}} {{#iff item.type '!=' 'criticalinjury'}} {{#iff item.type '!=' 'criticalhit'}}
+          {{#each actor.items as |item id|}} {{#iff item.type '!=' 'shipweapon'}} {{#iff item.type '!=' 'shipattachment'}} {{#iff item.type '!=' 'talent'}} {{#iff item.type '!=' 'criticalinjury'}} {{#iff item.type '!=' 'criticaldamage'}}
                   <tr class="item" data-item-id="{{item._id}}">
                     <td class="hover">
                       {{item.name}}
@@ -334,7 +334,7 @@
                 </div>
               </div>
               <div class="block-attribute">
-                {{#each actor.items as |item id|}} {{#iff item.type '==' 'criticalhit'}}
+                {{#each actor.items as |item id|}} {{#iff item.type '==' 'criticaldamage'}}
                 <div class="grid grid-2col item" data-item-id="{{item._id}}">
                   <div>{{item.name}}</div>
                   <div class="severity">

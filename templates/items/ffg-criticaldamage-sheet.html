@@ -48,7 +48,7 @@
             </div>
             <div class="block-attribute">
               <div class="severity">
-                <select name="data.severity" class="severity-select" id="criticalhit-{{item._id}}">
+                <select name="data.severity" class="severity-select" id="criticaldamage-{{item._id}}">
                   {{#select data.severity}} {{#each this.FFG.difficulty as |t|}}
                   <option value="{{t.value}}">{{localize t.label}} {{t.image}}</option>
                   {{/each}} {{/select}}

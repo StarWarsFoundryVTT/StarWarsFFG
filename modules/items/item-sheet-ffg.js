@@ -48,7 +48,7 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 475;
         break;
       case "criticalinjury":
-      case "criticalhit":
+      case "criticaldamage":
         this.position.width = 275;
         this.position.height = 550;
         break;
@@ -81,11 +81,13 @@ export class ItemSheetFFG extends ItemSheet {
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
 
-    if(this.object.data.type === "criticalinjury" || this.object.data.type === "criticalhit") {
+    if(this.object.data.type === "criticalinjury" || this.object.data.type === "criticaldamage") {
       const formatDropdown = (item) => {
         if (!item.id) {
           return item.text;
         }
+
+        // TODO: This will need to be replaced when the dependency on special-dice-roller is removed.
         const imgUrl = "/modules/special-dice-roller/public/images/sw/purple.png";
 
         let images = [];
@@ -109,34 +111,6 @@ export class ItemSheetFFG extends ItemSheet {
       });
     }
   }
-
-
-/* -------------------------------------------- */
-
-  /**
-   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
-   * @param {MouseEvent} event    The originating left click event
-   * @private
-   */
-  _onChangeCriticalInjuryServerity(event) {
-    event.preventDefault();
-    const DIFFICULTY_ICON = "modules/special-dice-roller/public/images/sw/purple.png";
-
-    const selected = event.currentTarget;
-    const value = selected.options[selected.selectedIndex].value
-    
-    const li = selected.parentNode.getElementsByClassName("severity-display")[0];
-    
-    for(let i = 0; i < value; i+=1) {
-      li.appendChild(`<img src="/${DIFFICULTY_ICON}" />`)
-    }
-
-    console.log(selected)
-    console.log(li)
-    console.log(selected.options[selected.selectedIndex].value);
-  }
-
-
 
   /* -------------------------------------------- */
 
