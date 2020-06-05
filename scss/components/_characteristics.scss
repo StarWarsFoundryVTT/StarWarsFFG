@@ -1,5 +1,4 @@
 .sheet-body {
-
   div.tab.characteristics {
     overflow: hidden;
   }
@@ -10,7 +9,7 @@
     }
 
     .characteristic-item {
-      border:0;
+      border: 0;
       position: relative;
 
       .characteristic-label {
@@ -18,27 +17,17 @@
         width: 100%;
         text-align: center;
         background-color: rgb(73, 12, 11);
-        color:white;
+        color: white;
         text-transform: uppercase;
-        font-size : 10px;
+        font-size: 10px;
         --notchSize: 7px;
-        
-        clip-path: 
-          polygon(
-            0% var(--notchSize), 
-            var(--notchSize) 0%, 
-            calc(100% - var(--notchSize)) 0%, 
-            100% var(--notchSize), 
-            100% calc(100% - var(--notchSize)), 
-            calc(100% - var(--notchSize)) 100%, 
-            var(--notchSize) 100%, 
-            0% calc(100% - var(--notchSize))
-          );
+
+        clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
       }
     }
 
     .grid {
-      margin-top: 0;
+      margin: 0;
     }
   }
 
@@ -57,13 +46,11 @@
         font-size: 30px;
         text-align: center;
       }
-      input:focus { 
+      input:focus {
         box-shadow: 0 0 5px rgb(125, 169, 194);
         background-color: rgb(125, 169, 194);
         border-radius: 50%;
       }
     }
-
-    
   }
 }

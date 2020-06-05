@@ -1,8 +1,13 @@
 .tableWithHeader {
-  
+  overflow-y: auto;
+  margin: -1px;
+  height: calc(100% - 18em);
+  display: flex;
+  margin-top: -5px;
+
   .tableWithHeader-container {
-    flex: 1; 
-    margin: 2px; 
+    flex: 1;
+    margin: 2px;
     position: relative;
   }
 
@@ -10,7 +15,7 @@
     th {
       text-align: left;
       padding: 3px;
-      border-bottom: 1px solid rgba(0, 0, 0, .25);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
       background-color: rgb(73, 12, 11);
       color: white;
       font-size: 12px;
@@ -35,7 +40,7 @@
     }
 
     .careerskill-rank {
-      width: 30px; 
+      width: 30px;
       text-align: center;
     }
   }
@@ -43,7 +48,6 @@
 
 table {
   &.items {
-
     .items-list {
       td {
         &.item-controls {
@@ -53,7 +57,5 @@ table {
         }
       }
     }
-    
   }
 }
-

@@ -248,8 +248,10 @@
     </div>
 
     {{!-- Biography Tab --}}
-    <div class="tab active" style="height: 77%;" data-group="primary" data-tab="description">
-      {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Obligations Section --}}
+    <div class="tab biography active" style="height: 77%;" data-group="primary" data-tab="description">
+      <div class="biography-editor">
+        {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Obligations Section --}}
+      </div>
       <div class="container flex-group-center biography-values">
         {{!-- Hard Points Box --}}
         <div class="resource single">

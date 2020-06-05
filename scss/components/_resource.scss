@@ -2,3 +2,15 @@
   font-weight: bold;
   text-transform: uppercase;
 }
+
+.resource {
+  height: 40px;
+  padding-bottom: 4px;
+  padding-left: 2px;
+  margin: 0;
+  display: inline-table;
+  input {
+    width: 82px;
+    height: 22px;
+  }
+}

@@ -1,16 +1,19 @@
 .items {
+  margin: 0;
+  border: 0;
+
   table {
     th {
       text-align: left;
       padding: 3px;
-      border-bottom: 1px solid rgba(0, 0, 0, .25);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
       background-color: rgb(73, 12, 11);
       color: white;
       font-size: 12px;
       font-weight: normal;
     }
     td {
-      padding:3px;
+      padding: 3px;
     }
   }
 
@@ -18,8 +21,8 @@
     position: relative;
     padding: 0;
     z-index: 1;
-    border:0;
-    
+    border: 0;
+
     .block-background-shadow {
       top: 36px;
     }
@@ -34,31 +37,19 @@
       color: white;
       font-size: 13px;
       text-transform: uppercase;
-      margin:auto;
+      margin: auto;
       // width: 160px;
       --notchSize: 8px;
-      clip-path: 
-        polygon(
-          0% var(--notchSize), 
-          var(--notchSize) 0%, 
-          calc(100% - var(--notchSize)) 0%, 
-          100% var(--notchSize), 
-          100% calc(100% - var(--notchSize)), 
-          calc(100% - var(--notchSize)) 100%, 
-          var(--notchSize) 100%, 
-          0% calc(100% - var(--notchSize))
-      );
+      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
     }
 
     .block-attribute {
-
       .block-value {
         display: inline-block;
       }
     }
 
     .block-value {
-
       &.block-single {
         input {
           width: 100%;
@@ -67,8 +58,8 @@
       }
 
       input {
-        border:0;
-        font-size:14px;
+        border: 0;
+        font-size: 14px;
 
         &:focus {
           box-shadow: 0 0 5px rgb(125, 169, 194);
@@ -89,7 +80,7 @@
       background-color: rgb(73, 12, 11);
       width: 50%;
       height: 100%;
-      float:left;
+      float: left;
       position: relative;
       padding-top: 25px;
 
@@ -103,7 +94,7 @@
       background-color: rgb(125, 169, 194);
       width: 50%;
       height: 100%;
-      float:right;
+      float: right;
       position: relative;
       padding-top: 25px;
 
@@ -118,7 +109,7 @@
   .resource {
     line-height: 30px;
     width: 110px;
-    
+
     &.split {
       width: 130px;
     }
@@ -135,7 +126,33 @@
   }
 
   .item-values {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     border: 0;
+  }
+
+  .items-list {
+    overflow-y: auto;
+    .item {
+      height: 30px;
+      line-height: 24px;
+      padding: 3px 0;
+      border-bottom: 1px solid #bbb;
+      &:hover {
+        background: rgba(25, 24, 19, 0.12);
+        margin: +2px;
+      }
+      img {
+        flex: 0 0 24px;
+        margin-right: 5px;
+      }
+    }
+    .item-name {
+      margin: 0;
+    }
+    .item-controls {
+      z-index: 500;
+      width: 20px;
+      text-align: end;
+    }
   }
 }

@@ -48,7 +48,7 @@ export class ActorSheetFFG extends ActorSheet {
     switch (this.actor.data.type) {
       case "character":
         this.position.width = 588;
-        this.position.height = 766;
+        this.position.height = 762;
         break;
       case "minion":
         this.position.width = 588;
