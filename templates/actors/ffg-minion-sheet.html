@@ -168,7 +168,7 @@
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'General'}}
               <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} ({{localize abrev}}) {{/with}}</td>
                 <td>
                   <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
                 </td>
@@ -198,7 +198,7 @@
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
               <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                <td>{{id}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} ({{localize abrev}}) {{/with}}</td>
                 <td>
                   <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
                 </td>
@@ -226,7 +226,7 @@
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Knowledge'}}
               <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                <td>{{localize (lookup ../this.FFG.skills_knowledgestripped [id])}} {{#with (lookup ../this.data.characteristics [characteristic])~}} ({{abrev}}) {{/with}}</td>
+                <td>{{localize (lookup ../this.FFG.skills_knowledgestripped [id])}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} ({{localize abrev}}) {{/with}}</td>
                 <td>
                   <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
                 </td>
