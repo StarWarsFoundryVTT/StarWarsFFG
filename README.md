@@ -43,6 +43,7 @@ NICE TO HAVE:
 
 # Changelog
 
+- 05/06/2020 - CStadther - Added select2 libraries for better dropdowns.
 - 05/06/2020 - CStadther - Added Critical Injury and Critical Hit item types, along with associated display areas on character and vehicle sheets.
 - 05/06/2020 - CStadther - Standardised localisation hooks for all langs.
 - 05/06/2020 - Esrin - Removed legacy Critical Injury rolltable.
