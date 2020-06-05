@@ -1,18 +1,17 @@
-.window-app .window-content {
-  /* background: #f2f2f2; */
+/*.window-app .window-content {
   background: rgba(255, 255, 255, 0.7);
   font-size: 9pt;
-}
+}*/
 
-.group-manager {
+/* .group-manager {
   background: rgba(255, 255, 255, 0.7);
   font-family: Roboto, sans-serif;
   color: #222;
   height: 100%;
   width: auto;
-}
+} */
 
-.tableWithHeader {
+/* .tableWithHeader {
   overflow-y: auto;
   margin: -1px;
   height: calc(100% - 7em);
@@ -26,9 +25,9 @@
   height: calc(100% - 13em);
   display: flex;
   margin-top: -5px;
-}
+} */
 
-.tooltip {
+/* .tooltip {
   top: 30px;
   background-color: rgb(25, 24, 19, 0.8);
   color: white;
@@ -41,29 +40,29 @@
   -o-transition: opacity 0.5s;
   transition: opacity 0.5s;
   z-index: -500;
-}
+} */
 
-.item:hover .hover {
+/* .item:hover .hover {
   text-decoration: underline;
 }
 
 .hover:hover .tooltip {
   opacity: 1;
   z-index: 500;
-}
+} */
 
-table thead th {
+/* table thead th {
   padding: 0.25em 0;
   text-align: left;
-}
-.skillfilter {
+} */
+/* .skillfilter {
   display: flex;
 }
 .skillfilter div {
   display: flex;
-}
+} */
 
-.skill-rank {
+/* .skill-rank {
   width: 30px;
   text-align: center;
 }
@@ -106,13 +105,13 @@ table thead th {
   right: 4px;
   top: 107px;
   display: grid;
-}
+} */
 
-.special-dice-roller form input[type="checkbox"] {
+/* .special-dice-roller form input[type="checkbox"] {
   margin: 0;
-}
+} */
 
-div .container {
+/* div .container {
   width: 100%;
   height: auto;
   display: flex;
@@ -126,27 +125,27 @@ div .container.attributes {
 
 div .container.talents {
   margin-top: 5px;
-}
+} */
 
-.starwarsffg.sheet .window-content {
+/* .starwarsffg.sheet .window-content {
   padding: 5px;
   overflow-y: hidden;
-}
+} */
 
-.starwarsffg.sheet.actor {
+/* .starwarsffg.sheet.actor {
   min-width: 588px;
   min-height: 489px;
-}
+} */
 
 /* Sheet Header */
-.starwarsffg.sheet .sheet-header {
+/* .starwarsffg.sheet .sheet-header {
   overflow: hidden;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
   flex: 0 0 100px;
-}
+} */
 /* 
 .starwarsffg.sheet .profile-img {
   flex: 0 0 100px;
@@ -158,27 +157,27 @@ div .container.talents {
   border-radius: 15px;
 } */
 
-.starwarsffg.sheet .header-fields {
+/* .starwarsffg.sheet .header-fields {
   flex: 1;
   height: auto;
-}
+} */
 
-.starwarsffg.sheet .charname {
+/* .starwarsffg.sheet .charname {
   border-bottom: 0;
   display: flex;
-}
+} */
 
-.starwarsffg.sheet .charname.minion {
+/* .starwarsffg.sheet .charname.minion {
   border-bottom: 0;
   display: flex;
-}
+} */
 
-.starwarsffg.sheet .charname input {
+/* .starwarsffg.sheet .charname input {
   width: auto;
   margin: 5px 5px 10px 5px;
-}
+} */
 
-.starwarsffg.sheet .resource {
+/* .starwarsffg.sheet .resource {
   height: 40px;
   padding-bottom: 4px;
   padding-left: 2px;
@@ -189,9 +188,9 @@ div .container.talents {
 .starwarsffg.sheet .resource input {
   width: 82px;
   height: 22px;
-}
+} */
 
-.starwarsffg.sheet .xp-box {
+/* .starwarsffg.sheet .xp-box {
   position: absolute;
   padding: 0;
   left: 25px;
@@ -199,9 +198,9 @@ div .container.talents {
   margin: 0;
   bottom: 10px;
   display: flex;
-}
+} */
 
-.starwarsffg.sheet .xp-box input {
+/* .starwarsffg.sheet .xp-box input {
   width: 61px;
   height: 14px;
 }
@@ -209,10 +208,10 @@ div .container.talents {
 .starwarsffg.sheet .resource.small input {
   width: 40px;
   height: 22px;
-}
+} */
 
 /* Navigation Tabs */
-.starwarsffg.sheet .tabs {
+/* .starwarsffg.sheet .tabs {
   flex: 0 0 40px;
   border-top: 1px solid #aaa;
   border-bottom: 1px solid #aaa;
@@ -227,10 +226,10 @@ div .container.talents {
 .starwarsffg.sheet .tabs .item.active {
   text-decoration: underline;
   text-shadow: none;
-}
+} */
 
 /* Content Tabs */
-.starwarsffg.sheet .sheet-body {
+/* .starwarsffg.sheet .sheet-body {
   height: calc(100% - 19em);
   overflow: auto;
   border: 1px solid #868686;
@@ -249,18 +248,18 @@ div .container.talents {
 .starwarsffg.sheet .sheet-body.small {
   height: calc(100% - 16em);
   overflow: auto;
-}
+} */
 
-.starwarsffg.sheet .sheet-body .tab {
+/* .starwarsffg.sheet .sheet-body .tab {
   height: 100%;
 }
 .starwarsffg.sheet .sheet-body .editor {
   width: 100%;
   height: 100%;
-}
+} */
 
 /* Topper */
-.starwarsffg.sheet .sheet-topper {
+/* .starwarsffg.sheet .sheet-topper {
   background: #435a76;
   overflow: auto;
   text-align: center;
@@ -271,27 +270,27 @@ div .container.talents {
   background: #f2f2f2;
   border-radius: 0 0 15px 15px;
   width: auto;
-}
+} */
 
 /*
 This seems to be necessary to make scrolling inside the actor
 sheet work. There is likely a better way to do this.
 */
-.editable {
+/* .editable {
   max-height: 100%;
-}
+} */
 
 /* Items */
-.starwarsffg.sheet .items {
+/* .starwarsffg.sheet .items {
   margin: 0;
   border: 0;
-}
+} */
 
-.starwarsffg.sheet .items-header {
+/* .starwarsffg.sheet .items-header {
   border: 1px solid #aaa;
   border-radius: 2px;
-}
-.starwarsffg.sheet .items-list {
+} */
+/* .starwarsffg.sheet .items-list {
   overflow-y: auto;
 }
 .starwarsffg.sheet .items-list .item {
@@ -316,10 +315,10 @@ sheet work. There is likely a better way to do this.
 .starwarsffg.sheet .items-list .item:hover {
   background: rgb(25, 24, 19, 0.12);
   margin: +2px;
-}
+} */
 
 /* Attributes */
-.starwarsffg.sheet .attributes {
+/* .starwarsffg.sheet .attributes {
   margin: 0;
   border: 0;
 }
@@ -371,14 +370,14 @@ sheet work. There is likely a better way to do this.
 .starwarsffg.sheet .attributes-list .attribute.item:hover {
   background: rgb(25, 24, 19, 0.12);
   margin: +2px;
-}
+} */
 
 /* Talents */
-.starwarsffg.sheet .talents {
+/* .starwarsffg.sheet .talents {
   margin: 0 5px 0 5px;
-}
+} */
 
-.starwarsffg.sheet .talents-header {
+/* .starwarsffg.sheet .talents-header {
   padding: 5px;
   margin: 5px 0;
   background: rgba(0, 0, 0, 0.05);
@@ -389,15 +388,15 @@ sheet work. There is likely a better way to do this.
 }
 .starwarsffg.sheet .talents-label {
   flex: 1.5;
-}
+} */
 
-.starwarsffg.sheet .talents-list {
+/* .starwarsffg.sheet .talents-list {
   list-style: none;
   margin: 0;
   padding: 0;
-}
+} */
 
-.starwarsffg.sheet .talents-list li > * {
+/* .starwarsffg.sheet .talents-list li > * {
   margin: 0 3px;
   height: 28px;
   line-height: 24px;
@@ -407,47 +406,47 @@ sheet work. There is likely a better way to do this.
   border-bottom: 1px solid #aaa;
   text-align: center;
   overflow: auto;
-}
+} */
 
-.starwarsffg.sheet .talents-list .talents.item {
+/* .starwarsffg.sheet .talents-list .talents.item {
   position: relative;
-}
+} */
 
-.starwarsffg.sheet .talents-list .talents.item:hover {
+/* .starwarsffg.sheet .talents-list .talents.item:hover {
   background: rgb(25, 24, 19, 0.12);
   margin: +2px;
-}
+} */
 
-.starwarsffg.sheet .characteristics-list {
+/* .starwarsffg.sheet .characteristics-list {
   list-style: none;
   box-shadow: 0px 1px 1px 0px #999;
-}
+} */
 
-.starwarsffg.sheet .characteristics-list input {
+/* .starwarsffg.sheet .characteristics-list input {
   border-radius: 100%;
   width: 2em;
   height: 2em;
   text-align: center;
   display: block;
   font-size: 18pt;
-}
+} */
 
-.starwarsffg.sheet .characteristics-list input:invalid {
+/* .starwarsffg.sheet .characteristics-list input:invalid {
   border: 2px solid red;
-}
+} */
 
-.starwarsffg.sheet .characteristics-list label {
+/* .starwarsffg.sheet .characteristics-list label {
   display: block;
   width: 3em;
   text-align: center;
-}
+} */
 
 /*
 A split-box is a box that is divided in half.
 This is designed to mimic the threshold, wound and other
 boxes at the top of the standard FFG character sheets.
  */
-.split-box {
+/* .split-box {
   border: 2px solid black;
   border-radius: 19px;
   width: max-content;
@@ -523,10 +522,10 @@ boxes at the top of the standard FFG character sheets.
   background: #90cbdd;
   border-radius: 0px 0px 50px 50px;
   text-align: center;
-}
+} */
 
-.dice-pool img {
+/* .dice-pool img {
   border: 0;
   width: 2em;
   height: 2em;
-}
+} */

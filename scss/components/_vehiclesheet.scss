@@ -1,11 +1,4 @@
 .vehicle {
-
-  .sheet-body {
-    &.vehicle {
-      height: calc(100% - 450px);
-    }
-  }
-
   .header-fields {
     .container {
       &.flex-group-center {
@@ -25,7 +18,7 @@
     .block-background {
       position: relative;
     }
-   
+
     .flex-group-right {
       border: 0;
       padding: 0 5px;
@@ -36,7 +29,7 @@
       left: 50%;
       transform: translateX(-50%);
       max-width: 200px;
-    
+
       .profile-img {
         height: 190px;
         max-width: 200px;
@@ -50,7 +43,7 @@
         border: 0;
       }
 
-      input:focus { 
+      input:focus {
         box-shadow: 0 0 5px rgb(125, 169, 194);
         background-color: rgb(125, 169, 194);
         border-radius: 5px;
@@ -59,7 +52,7 @@
   }
 
   .defense-group {
-    width:100%;
+    width: 100%;
 
     .defense-decoration {
       position: absolute;
@@ -85,10 +78,10 @@
     height: 200px;
     width: 100%;
     position: relative;
-    
+
     .defense-block-title {
       position: absolute;
-      top:0;
+      top: 0;
       left: 0;
       text-transform: uppercase;
       background-color: rgb(33, 25, 46);
@@ -97,18 +90,8 @@
       text-align: center;
 
       --notchSize: 9px;
-    
-        clip-path: 
-          polygon(
-            0% var(--notchSize), 
-            var(--notchSize) 0%, 
-            calc(100% - var(--notchSize)) 0%, 
-            100% var(--notchSize), 
-            100% calc(100% - var(--notchSize)), 
-            calc(100% - var(--notchSize)) 100%, 
-            var(--notchSize) 100%, 
-            0% calc(100% - var(--notchSize))
-          );
+
+      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
     }
 
     .defense-value {
@@ -124,27 +107,17 @@
         background-color: rgb(73, 12, 11);
         width: 100%;
         text-align: center;
-        color:white;
+        color: white;
         font-size: 10px;
         left: 50%;
         transform: translateX(-50%);
         --notchSize: 7px;
-    
-        clip-path: 
-          polygon(
-            0% var(--notchSize), 
-            var(--notchSize) 0%, 
-            calc(100% - var(--notchSize)) 0%, 
-            100% var(--notchSize), 
-            100% calc(100% - var(--notchSize)), 
-            calc(100% - var(--notchSize)) 100%, 
-            var(--notchSize) 100%, 
-            0% calc(100% - var(--notchSize))
-          );
+
+        clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
       }
 
       &.fore {
-        top:0;
+        top: 0;
         left: 50%;
         transform: translateX(-50%);
 
@@ -153,7 +126,7 @@
         }
       }
       &.aft {
-        bottom:0;
+        bottom: 0;
         left: 50%;
         transform: translateX(-50%);
 
@@ -162,7 +135,7 @@
         }
       }
       &.port {
-        left:0;
+        left: 0;
         top: 50%;
         transform: translateY(-50%);
         .defense-value-label {
@@ -172,7 +145,7 @@
         }
       }
       &.starboard {
-        right:0;
+        right: 0;
         top: 50%;
         transform: translateY(-50%);
         .defense-value-label {
@@ -188,8 +161,8 @@
         border: 0;
         font-size: 30px;
         text-align: center;
-        
-        &:focus { 
+
+        &:focus {
           box-shadow: 0 0 5px rgb(125, 169, 194);
           background-color: rgb(125, 169, 194);
           border-radius: 5px;
@@ -199,9 +172,9 @@
   }
 
   .characteristic-item {
-    border:0;
+    border: 0;
     position: relative;
-    padding:0;
+    padding: 0;
     margin: 0 5px;
 
     .characteristic-label {
@@ -209,22 +182,12 @@
       width: 100%;
       text-align: center;
       background-color: rgb(34, 108, 197);
-      color:white;
+      color: white;
       text-transform: uppercase;
-      font-size : 10px;
+      font-size: 10px;
       --notchSize: 7px;
-      
-      clip-path: 
-        polygon(
-          0% var(--notchSize), 
-          var(--notchSize) 0%, 
-          calc(100% - var(--notchSize)) 0%, 
-          100% var(--notchSize), 
-          100% calc(100% - var(--notchSize)), 
-          calc(100% - var(--notchSize)) 100%, 
-          var(--notchSize) 100%, 
-          0% calc(100% - var(--notchSize))
-        );
+
+      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
     }
 
     .characteristic {
@@ -234,7 +197,7 @@
       border: 5px double rgb(31, 28, 57);
       margin: auto;
       position: relative;
-  
+
       .characteristic-value {
         input {
           height: 40px;
@@ -242,23 +205,21 @@
           font-size: 30px;
           text-align: center;
         }
-        input:focus { 
+        input:focus {
           box-shadow: 0 0 5px rgb(125, 169, 194);
           background-color: rgb(125, 169, 194);
           border-radius: 5px;
         }
       }
-  
-      
     }
   }
- 
+
   .attribute {
     position: relative;
     padding: 0;
     z-index: 1;
-    border:0;
-    
+    border: 0;
+
     .block-background-shadow {
       top: 36px;
     }
@@ -272,31 +233,20 @@
     .block-background {
       padding: 5px 5px;
     }
-    
+
     .block-title {
       line-height: initial;
       background-color: rgb(33, 25, 46);
       color: white;
       font-size: 13px;
       text-transform: uppercase;
-      margin:auto;
-      
+      margin: auto;
+
       --notchSize: 8px;
-      clip-path: 
-        polygon(
-          0% var(--notchSize), 
-          var(--notchSize) 0%, 
-          calc(100% - var(--notchSize)) 0%, 
-          100% var(--notchSize), 
-          100% calc(100% - var(--notchSize)), 
-          calc(100% - var(--notchSize)) 100%, 
-          var(--notchSize) 100%, 
-          0% calc(100% - var(--notchSize))
-      );
+      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
     }
 
     .block-attribute {
-
       select {
         &:focus {
           box-shadow: 0 0 5px rgb(125, 169, 194);
@@ -310,11 +260,10 @@
     }
 
     .block-value {
-
       textarea {
-        resize:none;
-        font-family: 'Roboto';
-        border : 0;
+        resize: none;
+        font-family: "Roboto";
+        border: 0;
 
         &:focus {
           box-shadow: 0 0 5px rgb(125, 169, 194);
@@ -338,8 +287,8 @@
       }
 
       input {
-        border:0;
-        font-size:14px;
+        border: 0;
+        font-size: 14px;
 
         &:focus {
           box-shadow: 0 0 5px rgb(125, 169, 194);
@@ -360,7 +309,7 @@
       background-color: rgb(73, 12, 11);
       width: 50%;
       height: 100%;
-      float:left;
+      float: left;
       position: relative;
       padding-top: 25px;
 
@@ -374,7 +323,7 @@
       background-color: rgb(125, 169, 194);
       width: 50%;
       height: 100%;
-      float:right;
+      float: right;
       position: relative;
       padding-top: 25px;
 
@@ -389,7 +338,7 @@
   .resource {
     line-height: 30px;
     width: 110px;
-    
+
     &.split {
       width: 130px;
     }
@@ -409,20 +358,10 @@
           color: white;
           font-size: 13px;
           text-transform: uppercase;
-          margin:auto;
-          
+          margin: auto;
+
           --notchSize: 8px;
-          clip-path: 
-            polygon(
-              0% var(--notchSize), 
-              var(--notchSize) 0%, 
-              calc(100% - var(--notchSize)) 0%, 
-              100% var(--notchSize), 
-              100% calc(100% - var(--notchSize)), 
-              calc(100% - var(--notchSize)) 100%, 
-              var(--notchSize) 100%, 
-              0% calc(100% - var(--notchSize))
-          );
+          clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
         }
       }
     }

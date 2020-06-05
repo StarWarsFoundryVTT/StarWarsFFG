@@ -1,0 +1,28 @@
+.item:hover {
+  .hover {
+    text-decoration: underline;
+  }
+}
+
+.hover {
+  &:hover {
+    .tooltip {
+      opacity: 1;
+      z-index: 500;
+    }
+  }
+  .tooltip {
+    top: 30px;
+    background-color: rgba(25, 24, 19, 0.8);
+    color: white;
+    border-radius: 5px;
+    opacity: 0;
+    position: absolute;
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+    z-index: -500;
+  }
+}

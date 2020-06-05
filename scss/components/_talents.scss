@@ -1,7 +1,16 @@
+.talents {
+  margin: 0;
+}
+
 table {
   &.talent-list {
     border: 0;
-    margin: 0;
+    margin: 1em 0 0 0;
+
+    .item:hover {
+      background: rgba(25, 24, 19, 0.12);
+      margin: +2px;
+    }
 
     th {
       text-align: left;
