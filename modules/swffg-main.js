@@ -192,6 +192,15 @@ Hooks.once("init", async function () {
       return opts.inverse(this);
     }
   });
+
+  Handlebars.registerHelper("renderMultiple", function(count, obj) {
+    let items = [];
+    for(let i = 0; i < count; i+=1) {
+      items.push(obj);
+    }
+
+    return new Handlebars.SafeString(items.join(""));
+  });
 });
 
 /* -------------------------------------------- */

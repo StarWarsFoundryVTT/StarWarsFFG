@@ -2767,6 +2767,10 @@
   text-align: center;
 }
 
+.starwarsffg .item-sheet-criticalinjury .flex-group-center {
+  border: 0;
+}
+
 .starwarsffg .item-sheet-criticalinjury .charname {
   width: 100%;
 }
@@ -2774,7 +2778,6 @@
 .starwarsffg .item-sheet-criticalinjury .charname input {
   color: #830707;
   border: 0;
-  width: 100%;
 }
 
 .starwarsffg .item-sheet-criticalinjury .charname input:focus {
@@ -2782,7 +2785,103 @@
   background-color: #7da9c2;
 }
 
+.starwarsffg .item-sheet-criticalinjury .block-background {
+  border-radius: 10px;
+  background-color: #da9797;
+  padding: 5px;
+}
+
+.starwarsffg .item-sheet-criticalinjury .block-background .block-title {
+  line-height: initial;
+  background-color: #830707;
+  color: white;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin: auto;
+  --notchSize: 8px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .item-sheet-criticalinjury .severity-img {
+  max-height: 15px;
+  max-width: 15px;
+  border: 0;
+}
+
+.starwarsffg .item-sheet-criticalinjury .severity-select {
+  width: 185px;
+}
+
 .starwarsffg .item-sheet-criticalinjury select:focus {
   box-shadow: 0 0 5px #7da9c2;
   background-color: #7da9c2;
+}
+
+.starwarsffg .item-sheet-criticalinjury .block-background.block-editor {
+  height: calc(100% - 14em);
+  padding: 5px 10px;
+  background-color: white;
+}
+
+.starwarsffg .item-sheet-criticalinjury .resource {
+  line-height: 40px;
+  width: 110px;
+}
+
+.starwarsffg .item-sheet-criticalinjury .resource.single {
+  width: 250px;
+}
+
+.starwarsffg .item-sheet-criticalinjury .resource.split {
+  line-height: 30px;
+}
+
+.starwarsffg .item-sheet-criticalinjury .item-name {
+  margin: 0 !important;
+  padding: 0 5px !important;
+}
+
+.starwarsffg .item-sheet-criticalinjury .severity-block {
+  position: relative;
+}
+
+.starwarsffg .injuries div.item {
+  cursor: pointer;
+}
+
+.starwarsffg .injuries .severity {
+  position: relative;
+}
+
+.starwarsffg .injuries .severity-img {
+  max-height: 15px;
+  max-width: 15px;
+  border: 0;
+}
+
+.starwarsffg .injuries .resource.full {
+  width: 225px;
+}
+
+.starwarsffg .injuries .block-header {
+  line-height: initial;
+  background-color: #490c0b;
+  color: white;
+  font-size: 13px;
+  text-transform: uppercase;
+  margin: auto;
+  --notchSize: 8px;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .injuries .item-controls {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.starwarsffg .damage .injuries .resource.full {
+  width: 100%;
 }

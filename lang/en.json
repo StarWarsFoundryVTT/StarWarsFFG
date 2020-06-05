@@ -186,6 +186,10 @@
   "SWFFG.DifficultyDaunting" : "Daunting",
   "SWFFG.DifficultyFormidable" : "Formidable",
   "SWFFG.Severity" : "Severity",
+  "SWFFG.Result" : "Result",
   "SWFFG.TabInjuries" : "Injuries",
-  "SWFFG.CriticalInjuries" : "Critical Injuries"
+  "SWFFG.CriticalInjuries" : "Critical Injuries",
+  "SWFFG.CriticalDamage" : "Critical Damage",
+  "SWFFG.RollLow" : "Low",
+  "SWFFG.RollHigh" : "High"
 }

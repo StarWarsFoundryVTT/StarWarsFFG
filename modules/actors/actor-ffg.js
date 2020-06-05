@@ -102,8 +102,8 @@ export class ActorFFG extends Actor {
         }
       }
 
-      // Calculate encumbrance.
-      if (item.type != "talent") {
+      // Calculate encumbrance, only if encumbrance value exists
+      if(item.data?.encumbrance?.value) {
         encum += +item.data.encumbrance.value;
       }
     }

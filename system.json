@@ -8,7 +8,8 @@
   "templateVersion": 1,
   "author": "Esrin and Jaxxa",
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
-  "styles": ["styles/starwarsffg.css"],
+  "styles": ["styles/starwarsffg.css", "lib/select2/select2.min.css"],
+  "scripts": ["lib/select2/select2.min.js"],
   "packs": [
     {
       "name": "rollabletables",

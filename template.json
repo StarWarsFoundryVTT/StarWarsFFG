@@ -516,7 +516,7 @@
     }
   },
   "Item": {
-    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury"],
+    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticalhit"],
     "templates": {
       "basic": {
         "description": "",
@@ -695,6 +695,14 @@
       }
     },
     "criticalinjury" : {
+      "min" : 0,
+      "max" : 0,
+      "severity" : 1,
+      "description" : ""
+    },
+    "criticalhit" : {
+      "min" : 0,
+      "max" : 0,
       "severity" : 1,
       "description" : ""
     }

@@ -44,9 +44,13 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 575;
         break;
       case "talent": 
-      case "criticalinjury":
         this.position.width = 405;
         this.position.height = 475;
+        break;
+      case "criticalinjury":
+      case "criticalhit":
+        this.position.width = 275;
+        this.position.height = 550;
         break;
       default:
     }
@@ -77,7 +81,33 @@ export class ItemSheetFFG extends ItemSheet {
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
 
-    html.find(".severity").children("select").change(this._onChangeCriticalInjuryServerity.bind(this));
+    if(this.object.data.type === "criticalinjury" || this.object.data.type === "criticalhit") {
+      const formatDropdown = (item) => {
+        if (!item.id) {
+          return item.text;
+        }
+        const imgUrl = "/modules/special-dice-roller/public/images/sw/purple.png";
+
+        let images = [];
+        for(let i = 0; i < item.id; i+=1) {
+          images.push(`<img class="severity-img" src="${imgUrl}" />`);
+        }
+        let selections = `<span>${item.text}${images.join("")}</span>`
+        return $(selections);
+      }
+
+      const id = `#${this.object.data.type}-${this.object.id}`;
+
+      $(id).select2({
+        dropdownParent: $('.severity-block'),
+        dropdownAutoWidth: true,
+        selectionCssClass: "severity-select",
+        width: 'resolve',
+        minimumResultsForSearch: Infinity,
+        templateSelection: formatDropdown,
+        templateResult: formatDropdown
+      });
+    }
   }
 
 
@@ -93,8 +123,16 @@ export class ItemSheetFFG extends ItemSheet {
     const DIFFICULTY_ICON = "modules/special-dice-roller/public/images/sw/purple.png";
 
     const selected = event.currentTarget;
+    const value = selected.options[selected.selectedIndex].value
+    
+    const li = selected.parentNode.getElementsByClassName("severity-display")[0];
+    
+    for(let i = 0; i < value; i+=1) {
+      li.appendChild(`<img src="/${DIFFICULTY_ICON}" />`)
+    }
 
-    console.log(event)
+    console.log(selected)
+    console.log(li)
     console.log(selected.options[selected.selectedIndex].value);
   }
 

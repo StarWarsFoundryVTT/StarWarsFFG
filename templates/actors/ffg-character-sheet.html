@@ -150,7 +150,6 @@
     <a class="item" data-tab="items">{{localize "SWFFG.TabGear"}}</a>
     <a class="item" data-tab="talents">{{localize "SWFFG.TabTalents"}}</a>
     <a class="item" data-tab="description">{{localize "SWFFG.TabBiography"}}</a>
-    <a class="item" data-tab="criticalinjuries">{{localize "SWFFG.TabInjuries"}}</a>
     <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
     <!-- <a class="item" data-tab="description">{{localize "SWFFG.TabForcePowers"}}</a> -->
   </nav>
@@ -442,7 +441,35 @@
       </div>
 
       <div class="container flex-group-center biography-values">
-        {{!-- Experience Box --}}
+        <div class="injuries">
+          <div class="resource full">
+            <div class="attribute flex-group-center">
+              <div class="block-background">
+                <div class="block-header">
+                  <div>{{localize "SWFFG.CriticalInjuries"}}</div>
+                  <div class="grid grid-2col">
+                    <div>{{localize "SWFFG.Result"}}</div>
+                    <div>{{localize "SWFFG.Severity"}}</div>
+                  </div>
+                </div>
+                <div class="block-attribute">
+                  {{#each actor.items as |item id|}} {{#iff item.type '==' 'criticalinjury'}}
+                  <div class="grid grid-2col item" data-item-id="{{item._id}}">
+                    <div>{{item.name}}</div>
+                    <div class="severity">
+                      {{renderMultiple  item.data.severity "<img class='severity-img' src='/modules/special-dice-roller/public/images/sw/purple.png'>"}}
+                      <div class="item-controls">
+                        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+                      </div>
+                    </div>
+                  </div>
+                  {{/iff}} {{/each}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  {{!-- Experience Box --}}
         <div class="resource split">
           <div class="attribute flex-group-center">
             <div class="block-background">
@@ -464,6 +491,8 @@
             </div>
           </div>
         </div>
+        <div class="grid grid-2col">
+        
 
         {{!-- Obligation Box --}}
         <div class="resource single">
@@ -510,7 +539,7 @@
           </div>
         </div>
 
-        {{!-- Duty Box --}}
+        {{!-- Conflict Box --}}
         <div class="resource single">
           <div class="attribute flex-group-center">
             <div class="block-background">
@@ -524,13 +553,14 @@
             <div class="block-background-shadow"></div>
           </div>
         </div>
+        </div>
+
+        
       </div>
     </div>
 
-    {{!-- Critical Injuries Tab --}}
-    <div class="tab injuries active" data-group="primary" data-tab="criticalinjuries">
-
-    </div>
+    
+    
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
