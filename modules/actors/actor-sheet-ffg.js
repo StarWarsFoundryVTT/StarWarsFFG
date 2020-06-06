@@ -148,7 +148,7 @@ export class ActorSheetFFG extends ActorSheet {
     if (action === "create") {
       const nk = Object.keys(attrs).length + 1;
       let newKey = document.createElement("div");
-      newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+      newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}"/>`;
       form.appendChild(newKey);
       await this._onSubmit(event);
     }
@@ -181,7 +181,7 @@ export class ActorSheetFFG extends ActorSheet {
   /** @override */
   _updateObject(event, formData) {
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData).data.attributes || {};
+    const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
       if (/[\s\.]/.test(k)) return ui.notifications.error("Attribute keys may not contain spaces or periods");
