@@ -9,17 +9,26 @@
           <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.MinionName'}}" data-dtype="String" /></h1>
           <div class="container">
             <div class="grid grid-3col minion-stats">
-              <div class="resource single">
+              {{!-- Quantity Box --}}
+              <div class="resource split">
                 <div class="attribute flex-group-center">
                   <div class="block-background">
                     <div class="block-title">
                       {{localize "SWFFG.MinionQuantity"}}
                     </div>
                     <div class="block-attribute">
-                      <div class="block-value block-single"><input type="text" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number" /></div>
+                      <div class="block-value"><input type="text" name="data.quantity.max" value="{{data.quantity.max}}"  data-dtype="Number" /></div>
+                      <div class="block-value"><input type="text" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number" /></div>
                     </div>
                   </div>
-                  <div class="block-background-shadow"></div>
+                  <div class="block-background-shadow">
+                    <div class="shadow-left">
+                      <div class="shadow-text">Max</div>
+                    </div>
+                    <div class="shadow-right">
+                      <div class="shadow-text">Alive</div>
+                    </div>
+                  </div>
                 </div>
               </div>
               {{!-- Soak Box --}}
@@ -155,12 +164,15 @@
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'General'}}
               <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                <td>{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} ({{localize abrev}}) {{/with}}</td>
+                <td>{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}}
+                  ({{localize abrev}}) {{/with}}</td>
                 <td>
-                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} />
+                  <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill"
+                    data-dtype="Boolean" {{checked skill.groupskill}} />
                 </td>
                 <td>
-                  <input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" disabled />
+                  <input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text"
+                    min="0" max="6" data-dtype="Number" placeholder="0" disabled />
                 </td>
                 <td>
                   <!--                        <img class="roll-button" src="icons/dice/d20black.svg">-->

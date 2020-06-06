@@ -50,11 +50,14 @@ export class ActorFFG extends Actor {
     const data = actorData.data;
 
     // Set Wounds threshold to unit_wounds * quantity to account for minion group health.
-    data.stats.wounds.max = Math.floor(data.unit_wounds.value * data.quantity.value);
+    data.stats.wounds.max = Math.floor(data.unit_wounds.value * data.quantity.max);
     // Check we don't go below 0.
     if (data.stats.wounds.max < 0) {
       data.stats.wounds.max = 0;
     }
+
+    //Calculate the number of alive minions
+    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.value -1) / (data.unit_wounds.value)))
 
     // Loop through Skills, and where groupskill = true, set the rank to 1*(quantity-1).
     for (let [key, skill] of Object.entries(data.skills)) {
