@@ -25,7 +25,7 @@ export class ItemSheetFFG extends ItemSheet {
   getData() {
     const data = super.getData();
     data.dtypes = ["String", "Number", "Boolean"];
-    if(data?.data?.attributes) {
+    if (data?.data?.attributes) {
       for (let attr of Object.values(data.data.attributes)) {
         attr.isCheckbox = attr.dtype === "Boolean";
       }
@@ -43,7 +43,7 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.width = 385;
         this.position.height = 575;
         break;
-      case "talent": 
+      case "talent":
         this.position.width = 405;
         this.position.height = 475;
         break;
@@ -66,7 +66,7 @@ export class ItemSheetFFG extends ItemSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
-    // TODO: This is not needed in Foundry 0.6.0    
+    // TODO: This is not needed in Foundry 0.6.0
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
@@ -81,7 +81,7 @@ export class ItemSheetFFG extends ItemSheet {
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
 
-    if(this.object.data.type === "criticalinjury" || this.object.data.type === "criticaldamage") {
+    if (this.object.data.type === "criticalinjury" || this.object.data.type === "criticaldamage") {
       const formatDropdown = (item) => {
         if (!item.id) {
           return item.text;
@@ -91,23 +91,23 @@ export class ItemSheetFFG extends ItemSheet {
         const imgUrl = "/modules/special-dice-roller/public/images/sw/purple.png";
 
         let images = [];
-        for(let i = 0; i < item.id; i+=1) {
+        for (let i = 0; i < item.id; i += 1) {
           images.push(`<img class="severity-img" src="${imgUrl}" />`);
         }
-        let selections = `<span>${item.text}${images.join("")}</span>`
+        let selections = `<span>${item.text}${images.join("")}</span>`;
         return $(selections);
-      }
+      };
 
       const id = `#${this.object.data.type}-${this.object.id}`;
 
       $(id).select2({
-        dropdownParent: $('.severity-block'),
+        dropdownParent: $(".severity-block"),
         dropdownAutoWidth: true,
         selectionCssClass: "severity-select",
-        width: 'resolve',
+        width: "resolve",
         minimumResultsForSearch: Infinity,
         templateSelection: formatDropdown,
-        templateResult: formatDropdown
+        templateResult: formatDropdown,
       });
     }
   }
@@ -148,7 +148,7 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   _updateObject(event, formData) {
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData).data.attributes || {};
+    const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
       if (/[\s\.]/.test(k)) return ui.notifications.error("Attribute keys may not contain spaces or periods");
@@ -158,7 +158,7 @@ export class ItemSheetFFG extends ItemSheet {
     }, {});
 
     // Remove attributes which are no longer used
-    if(this.object.data?.data?.attributes) {
+    if (this.object.data?.data?.attributes) {
       for (let k of Object.keys(this.object.data.data.attributes)) {
         if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
       }
