@@ -84,6 +84,8 @@
   "SWFFG.ItemTalentRanked": "Ranked?",
   "SWFFG.MinionName": "Minion Name",
   "SWFFG.MinionQuantity": "Quantity",
+  "SWFFG.MinionQuantityMax": "Total",
+  "SWFFG.MinionQuantityAlive": "Alive",
   "SWFFG.MinionUnitWounds": "Unit Wounds",
   "SWFFG.VehicleArmor": "Armor",
   "SWFFG.VehicleName": "Vehicle Name",
