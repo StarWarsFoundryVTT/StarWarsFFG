@@ -202,5 +202,8 @@
   "SWFFG.ModTypeCharacteristic": "Characteristic",
   "SWFFG.ModTypeSkillRank": "Skill Rank",
   "SWFFG.ModTypeSkillBoost": "Skill Boost",
-  "SWFFG.ModTypeStat": "Stat"
+  "SWFFG.ModTypeStat": "Stat",
+  "SWFFG.ModifierType": "Modifier Type",
+  "SWFFG.Modifier": "Modifier",
+  "SWFFG.ModifierValue": "Value"
 }
