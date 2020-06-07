@@ -264,7 +264,7 @@
             <td class="item-name">{{item.name}}</td>
             <td>{{localize (lookup ../this.FFG.combat_skills_abrev item.data.skill.value)}}</td>
             <td>{{item.data.damage.value}}</td>
-            <td>{{item.data.range.value}}</td>
+            <td>{{localize item.data.range.label}}</td>
             <td>{{item.data.crit.value}}</td>
             <td>{{item.data.encumbrance.value}}</td>
             <td>{{item.data.special.value}}</td>
@@ -355,7 +355,7 @@
               {{item.name}}
               <div class="tooltip">{{item.safe_desc}}</div>
             </td>
-            <td>{{item.data.activation.value}}</td>
+            <td>{{localize item.data.activation.label}}</td>
             <td>
               {{#if item.data.ranks.ranked}} {{item.data.ranks.current}} {{else}} N/A {{/if}}
             </td>

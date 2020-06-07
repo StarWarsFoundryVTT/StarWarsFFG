@@ -113,94 +113,94 @@ FFG.skills_knowledgestripped = {
 };
 
 FFG.ranges = {
-  "Engaged":  {
-    value : "Engaged",
-    label : "SWFFG.WeaponRangeEngaged"
+  "Engaged": {
+    value: "Engaged",
+    label: "SWFFG.WeaponRangeEngaged",
   },
   "Short": {
-    value : "Short",
-    label : "SWFFG.WeaponRangeShort"
+    value: "Short",
+    label: "SWFFG.WeaponRangeShort",
   },
   "Medium": {
-    value : "Medium",
-    label : "SWFFG.WeaponRangeMedium"
+    value: "Medium",
+    label: "SWFFG.WeaponRangeMedium",
   },
   "Long": {
-    value : "Long",
-    label : "SWFFG.WeaponRangeLong"
+    value: "Long",
+    label: "SWFFG.WeaponRangeLong",
   },
   "Extreme": {
-    value : "Extreme",
-    label : "SWFFG.WeaponRangeExtreme"
-  }
+    value: "Extreme",
+    label: "SWFFG.WeaponRangeExtreme",
+  },
 };
 
 FFG.vehicle_ranges = {
-  "Close":  {
-    value : "Close",
-    label : "SWFFG.VehicleRangeClose"
+  "Close": {
+    value: "Close",
+    label: "SWFFG.VehicleRangeClose",
   },
   "Short": {
-    value : "Short",
-    label : "SWFFG.VehicleRangeShort"
+    value: "Short",
+    label: "SWFFG.VehicleRangeShort",
   },
   "Medium": {
-    value : "Medium",
-    label : "SWFFG.VehicleRangeMedium"
+    value: "Medium",
+    label: "SWFFG.VehicleRangeMedium",
   },
   "Long": {
-    value : "Long",
-    label : "SWFFG.VehicleRangeLong"
+    value: "Long",
+    label: "SWFFG.VehicleRangeLong",
   },
   "Extreme": {
-    value : "Extreme",
-    label : "SWFFG.VehicleRangeExtreme"
-  }
+    value: "Extreme",
+    label: "SWFFG.VehicleRangeExtreme",
+  },
 };
 
 FFG.sensor_ranges = {
-  "None":  {
-    value : "None",
-    label : "SWFFG.VehicleRangeNone"
+  "None": {
+    value: "None",
+    label: "SWFFG.VehicleRangeNone",
   },
-  "Close":  {
-    value : "Close",
-    label : "SWFFG.VehicleRangeClose"
+  "Close": {
+    value: "Close",
+    label: "SWFFG.VehicleRangeClose",
   },
   "Short": {
-    value : "Short",
-    label : "SWFFG.VehicleRangeShort"
+    value: "Short",
+    label: "SWFFG.VehicleRangeShort",
   },
   "Medium": {
-    value : "Medium",
-    label : "SWFFG.VehicleRangeMedium"
+    value: "Medium",
+    label: "SWFFG.VehicleRangeMedium",
   },
   "Long": {
-    value : "Long",
-    label : "SWFFG.VehicleRangeLong"
+    value: "Long",
+    label: "SWFFG.VehicleRangeLong",
   },
   "Extreme": {
-    value : "Extreme",
-    label : "SWFFG.VehicleRangeExtreme"
-  }
-}
+    value: "Extreme",
+    label: "SWFFG.VehicleRangeExtreme",
+  },
+};
 
 FFG.fire_arcs = {
   "Forward": {
-    value : "Forward",
-    label : "SWFFG.VehicleFiringArcForward"
+    value: "Forward",
+    label: "SWFFG.VehicleFiringArcForward",
   },
   "Aft": {
-    value : "Aft",
-    label : "SWFFG.VehicleFiringArcAft"
+    value: "Aft",
+    label: "SWFFG.VehicleFiringArcAft",
   },
   "Port": {
-    value : "Port",
-    label : "SWFFG.VehicleFiringArcPort"
+    value: "Port",
+    label: "SWFFG.VehicleFiringArcPort",
   },
   "Starboard": {
-    value : "Starboard",
-    label : "SWFFG.VehicleFiringArcStarboard"
+    value: "Starboard",
+    label: "SWFFG.VehicleFiringArcStarboard",
   },
   "Dorsal": {
     value: "Dorsal",
@@ -211,9 +211,9 @@ FFG.fire_arcs = {
     label: "SWFFG.VehicleFiringArcVentral",
   },
   "All": {
-    value : "All",
-    label : "SWFFG.VehicleFiringArcAll"
-  }
+    value: "All",
+    label: "SWFFG.VehicleFiringArcAll",
+  },
 };
 
 FFG.combat_skills = {
@@ -253,11 +253,26 @@ FFG.combat_skills_abrev = {
 };
 
 FFG.activations = {
-  "Passive": "Passive",
-  "Active (Incidental)": "Active (Incidental)",
-  "Active (Incidental, Out of Turn)": "Active (Incidental, Out of Turn)",
-  "Active (Action)": "Active (Action)",
-  "Active (Maneuver)": "Active (Maneuver)",
+  "Passive": {
+    "value": "Passive",
+    "label": "SWFFG.TalentActivationsPassive",
+  },
+  "Active (Incidental)": {
+    "value": "Active (Incidental)",
+    "label": "SWFFG.TalentActivationsActiveIncidental",
+  },
+  "Active (Incidental, Out of Turn)": {
+    "value": "Active (Incidental, Out of Turn)",
+    "label": "SWFFG.TalentActivationsActiveIncidentalOutofTurn",
+  },
+  "Active (Action)": {
+    "value": "Active (Action)",
+    "label": "SWFFG.TalentActivationsActiveAction",
+  },
+  "Active (Maneuver)": {
+    "value": "Active (Maneuver)",
+    "label": "SWFFG.TalentActivationsActiveManeuver",
+  },
 };
 
 FFG.mod_types = ["Characteristic", "Skill Rank", "Skill Boost", "Stat"];
@@ -269,28 +284,28 @@ FFG.careers = {};
 FFG.specialisations = {};
 
 FFG.difficulty = {
-  "Simple" : {
-    value : 0,
-    label : "SWFFG.DifficultySimple"
+  "Simple": {
+    value: 0,
+    label: "SWFFG.DifficultySimple",
   },
-  "East" : {
-    value : 1,
-    label : "SWFFG.DifficultyEasy"
+  "East": {
+    value: 1,
+    label: "SWFFG.DifficultyEasy",
   },
-  "Average" : {
-    value : 2,
-    label : "SWFFG.DifficultyAverage"
+  "Average": {
+    value: 2,
+    label: "SWFFG.DifficultyAverage",
   },
-  "Hard" : {
-    value : 3,
-    label : "SWFFG.DifficultyHard"
+  "Hard": {
+    value: 3,
+    label: "SWFFG.DifficultyHard",
   },
-  "Daunting" : {
-    value : 4,
-    label : "SWFFG.DifficultyDaunting"
+  "Daunting": {
+    value: 4,
+    label: "SWFFG.DifficultyDaunting",
   },
-  "Formidable" : {
-    value : 5,
-    label : "SWFFG.DifficultyFormidable"
-  }
-}
+  "Formidable": {
+    value: 5,
+    label: "SWFFG.DifficultyFormidable",
+  },
+};

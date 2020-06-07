@@ -19,7 +19,7 @@
                 <select style="text-align:center;" name="data.activation.value">
                   {{#select data.activation.value}}
                     {{#each this.FFG.activations as |t|}}
-                      <option value="{{t}}">{{t}}</option>
+                      <option value="{{t.value}}">{{localize t.label}}</option>
                     {{/each}}
                   {{/select}}
                 </select>
