@@ -17,6 +17,11 @@ export class ActorFFG extends Actor {
     // things organized.
     if (actorData.type === "minion") this._prepareMinionData(actorData);
     if (actorData.type === "character") this._prepareCharacterData(actorData);
+	
+	// Calculate the wounds value based on real_value and the max.
+	// This is done so that real_value tracks health like FFG does and value can be used for Resource bars
+	data.stats.wounds.value = data.stats.wounds.max - data.stats.wounds.real_value;
+	
   }
 
   _prepareSharedData(actorData) {
@@ -57,7 +62,7 @@ export class ActorFFG extends Actor {
     }
 
     //Calculate the number of alive minions
-    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.value -1) / (data.unit_wounds.value)))
+    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.real_value -1) / (data.unit_wounds.value)))
 
     // Loop through Skills, and where groupskill = true, set the rank to 1*(quantity-1).
     for (let [key, skill] of Object.entries(data.skills)) {

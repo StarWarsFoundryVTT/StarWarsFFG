@@ -43,6 +43,7 @@ NICE TO HAVE:
 
 # Changelog
 
+- 07/06/2020 - Jaxxa - Modify Wound tracking to be compatible with resource bars.
 - 06/06/2020 - Jaxxa - Added Minion sheet calculating number of minions alive and reduce their skills as they die.
 - 05/06/2020 - CStadther - Added select2 libraries for better dropdowns.
 - 05/06/2020 - CStadther - Added Critical Injury and Critical Hit item types, along with associated display areas on character and vehicle sheets.
