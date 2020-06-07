@@ -26,11 +26,13 @@
       "stats": {
         "stats": {
           "wounds": {
+		    "real_value": 0,
             "value": 0,
             "min": 0,
             "max": 10
           },
           "strain": {
+		    "real_value": 0,
             "value": 0,
             "min": 0,
             "max": 10
