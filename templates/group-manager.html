@@ -1,22 +1,22 @@
 <form class="{{cssClass}}" autocomplete="off">
   <div class="destiny-pool flex-center">
-    <h1>Destiny Pool</h1>
+    <h1>{{localize "SWFFG.DestinyPool"}}</h1>
     <div class="grid grid-3col">
-      <label>Light side:<img src="modules/special-dice-roller/public/images/sw/lightside.png" alt="Light side:" /><input type="text" name="g.ffg.DestinyPool.Light" value="{{g.ffg.DestinyPool.Light}}" data-dtype="Number" placeholder="0" /></label>
+      <label>{{localize "SWFFG.Lightside"}}:<img src="modules/special-dice-roller/public/images/sw/lightside.png" alt="Light side:" /><input type="text" name="g.ffg.DestinyPool.Light" value="{{g.ffg.DestinyPool.Light}}" data-dtype="Number" placeholder="0" /></label>
       <div style="display: flex;">
         <button class="destiny-flip-dtl" style="height: 25%; align-self: center;"><i class="fas fa-arrow-left"></i></button>
         <button class="destiny-flip-ltd" style="height: 25%; align-self: center;"><i class="fas fa-arrow-right"></i></button>
       </div>
-      <label>Dark side:<img src="modules/special-dice-roller/public/images/sw/darkside.png" alt="Dark side:" /><input type="text" name="g.ffg.DestinyPool.Dark" value="{{g.ffg.DestinyPool.Dark}}" data-dtype="Number" placeholder="0" /></label>
+      <label>{{localize "SWFFG.Darkside"}}:<img src="modules/special-dice-roller/public/images/sw/darkside.png" alt="Dark side:" /><input type="text" name="g.ffg.DestinyPool.Dark" value="{{g.ffg.DestinyPool.Dark}}" data-dtype="Number" placeholder="0" /></label>
     </div>
     <div class="PC-list">
-      <h1>Player Characters</h1>
+      <h1>{{localize "SWFFG.PlayerCharacters"}}</h1>
       <table style="text-align: center;">
         <thead>
-          <th>Name</th>
-          <th>Obl</th>
-          <th>Cmbt</th>
-          <th>XP</th>
+          <th>{{localize "SWFFG.Name"}}</th>
+          <th>{{localize "SWFFG.DescriptionObligationAbrev"}}</th>
+          <th>{{localize "SWFFG.CombatAbrev"}}</th>
+          <th>{{localize "SWFFG.DescriptionXP"}}</th>
         </thead>
         <tbody>
           <tr>
@@ -25,7 +25,7 @@
             <td>
               <button><i class="fas fa-fist-raised"></i></button>
             </td>
-            <td><button>XP</button></td>
+            <td><button>{{localize "SWFFG.DescriptionXP"}}</button></td>
           </tr>
         </tbody>
       </table>

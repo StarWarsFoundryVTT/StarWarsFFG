@@ -205,5 +205,12 @@
   "SWFFG.ModTypeStat": "Stat",
   "SWFFG.ModifierType": "Modifier Type",
   "SWFFG.Modifier": "Modifier",
-  "SWFFG.ModifierValue": "Value"
+  "SWFFG.ModifierValue": "Value",
+  "SWFFG.DestinyPool": "Destiny Pool",
+  "SWFFG.Lightside": "Light side",
+  "SWFFG.Darkside": "Dark side",
+  "SWFFG.PlayerCharacters": "Player Characters",
+  "SWFFG.DescriptionObligationAbrev": "Obl",
+  "SWFFG.Combat": "Combat",
+  "SWFFG.CombatAbrev": "Cmbt"
 }
