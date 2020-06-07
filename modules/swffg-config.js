@@ -275,7 +275,24 @@ FFG.activations = {
   },
 };
 
-FFG.mod_types = ["Characteristic", "Skill Rank", "Skill Boost", "Stat"];
+FFG.mod_types = {
+  "Characteristic": {
+    "value": "Characteristic",
+    "label": "SWFFG.ModTypeCharacteristic",
+  },
+  "Skill Rank": {
+    "value": "Skill Rank",
+    "label": "SWFFG.ModTypeSkillRank",
+  },
+  "Skill Boost": {
+    "value": "Skill Boost",
+    "label": "SWFFG.ModTypeSkillBoost",
+  },
+  "Stat": {
+    "value": "Stat",
+    "label": "SWFFG.ModTypeStat",
+  },
+};
 
 FFG.species = {};
 

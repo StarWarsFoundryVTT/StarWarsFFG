@@ -171,7 +171,7 @@
           <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
           <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
             {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
-            <option value="{{t}}">{{t}}</option>
+            <option value="{{t.value}}">{{localize t.label}}</option>
             {{/each}} {{/select}}
           </select>
           <select class="attribute-mod" name="data.attributes.{{key}}.mod">

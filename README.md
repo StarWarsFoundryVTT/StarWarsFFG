@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 07/06/2020 - Esrin - Added new localisation for modifier types.
 - 07/06/2020 - Esrin - Added new localisation for talent activations.
 - 07/06/2020 - Esrin - Fixed localisation on character, minion and vehicle sheets for weapon range and firing arc display in inventory.
 - 07/06/2020 - Jaxxa - Modify Wound / Strain tracking to be compatible with resource bars.

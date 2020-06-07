@@ -198,5 +198,9 @@
   "SWFFG.TalentActivationsActiveIncidental": "Active (Incidental)",
   "SWFFG.TalentActivationsActiveIncidentalOutofTurn": "Active (Incidental, Out of Turn)",
   "SWFFG.TalentActivationsActiveAction": "Active (Action)",
-  "SWFFG.TalentActivationsActiveManeuver": "Active (Maneuver)"
+  "SWFFG.TalentActivationsActiveManeuver": "Active (Maneuver)",
+  "SWFFG.ModTypeCharacteristic": "Characteristic",
+  "SWFFG.ModTypeSkillRank": "Skill Rank",
+  "SWFFG.ModTypeSkillBoost": "Skill Boost",
+  "SWFFG.ModTypeStat": "Stat"
 }
