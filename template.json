@@ -26,13 +26,13 @@
       "stats": {
         "stats": {
           "wounds": {
-		    "real_value": 0,
+            "real_value": 0,
             "value": 0,
             "min": 0,
             "max": 10
           },
           "strain": {
-		    "real_value": 0,
+            "real_value": 0,
             "value": 0,
             "min": 0,
             "max": 10
@@ -696,17 +696,17 @@
         }
       }
     },
-    "criticalinjury" : {
-      "min" : 0,
-      "max" : 0,
-      "severity" : 1,
-      "description" : ""
+    "criticalinjury": {
+      "min": 0,
+      "max": 0,
+      "severity": 1,
+      "description": ""
     },
-    "criticaldamage" : {
-      "min" : 0,
-      "max" : 0,
-      "severity" : 1,
-      "description" : ""
+    "criticaldamage": {
+      "min": 0,
+      "max": 0,
+      "severity": 1,
+      "description": ""
     }
   }
 }

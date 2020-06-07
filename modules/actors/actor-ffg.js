@@ -17,12 +17,6 @@ export class ActorFFG extends Actor {
     // things organized.
     if (actorData.type === "minion") this._prepareMinionData(actorData);
     if (actorData.type === "character") this._prepareCharacterData(actorData);
-	
-	  // Calculate the wound/strain value based on real_value and the max.
-	  // This is done so that real_value tracks health/strain like FFG does and value can be used for resource bars
-	  data.stats.wounds.value = data.stats.wounds.max - data.stats.wounds.real_value;
-	  data.stats.strain.value = data.stats.strain.max - data.stats.strain.real_value;
-	
   }
 
   _prepareSharedData(actorData) {
@@ -38,13 +32,18 @@ export class ActorFFG extends Actor {
 
     //localize skill names
     for (let skill of Object.keys(data.skills)) {
-      const cleanedSkillName = skill.replace(/[\W_]+/g,"");
+      const cleanedSkillName = skill.replace(/[\W_]+/g, "");
 
       const strId = `SWFFG.SkillsName${cleanedSkillName}`;
       const localizedField = game.i18n.localize(strId);
 
       data.skills[skill].label = localizedField;
     }
+
+    // Calculate the wound/strain value based on real_value and the max.
+    // This is done so that real_value tracks health/strain like FFG does and value can be used for resource bars
+    data.stats.wounds.value = data.stats.wounds.max - data.stats.wounds.real_value;
+    data.stats.strain.value = data.stats.strain.max - data.stats.strain.real_value;
   }
 
   /**
@@ -63,7 +62,7 @@ export class ActorFFG extends Actor {
     }
 
     //Calculate the number of alive minions
-    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.real_value -1) / (data.unit_wounds.value)))
+    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.real_value - 1) / data.unit_wounds.value));
 
     // Loop through Skills, and where groupskill = true, set the rank to 1*(quantity-1).
     for (let [key, skill] of Object.entries(data.skills)) {
@@ -97,7 +96,6 @@ export class ActorFFG extends Actor {
     // Start with Brawn. Also calculate total encumbrance from items.
     soak = +data.characteristics.Brawn.value;
 
-    
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
       // For armour type, get all Soak values and add to armoursoak.
@@ -112,7 +110,7 @@ export class ActorFFG extends Actor {
       }
 
       // Calculate encumbrance, only if encumbrance value exists
-      if(item.data?.encumbrance?.value) {
+      if (item.data?.encumbrance?.value) {
         encum += +item.data.encumbrance.value;
       }
     }
@@ -133,7 +131,7 @@ export class ActorFFG extends Actor {
    * @param  {String} s   String value to capitalize
    */
   _capitalize(s) {
-    if (typeof s !== 'string') return ''
-    return s.charAt(0).toUpperCase() + s.slice(1)
+    if (typeof s !== "string") return "";
+    return s.charAt(0).toUpperCase() + s.slice(1);
   }
 }
