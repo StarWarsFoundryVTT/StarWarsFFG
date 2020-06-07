@@ -23,23 +23,7 @@ Please see [CONTRIBUTING.md](https://github.com/StarWarsFoundryVTT/StarWarsFFG/b
 
 # To-do
 
-NEEDED FOR RELEASE V1:
-
-- Group Management sheet for GM use (currently in progress).
-- Create equipable item functionality and rework inventory to suit. Continue to improve inventory display in the process.
-- Add Forcepower item type (based on talent).
-- Add Maximum Altitude and Crew Capacity to vehicle sheet.
-- Redo the dice selection popup to be more functional and provide upgrade ability and upgrade difficulty buttons.
-- Rebuild dice functionality to use Foundry Dice instead of chat content, remove requirement for Special-Dice-Roller.
-- Look into drag-and-drop item behaviours for things like transferring items between characters, or into a vehicle cargo hold.
-
-NICE TO HAVE:
-
-- Create JS data models for species, careers and specialisations and use those in prepareData to define career skills and starting characteristics.
-- Attempt to fix display of wound and strain bars so that they suit FFG system.
-- Genesys cross-compatibility (dice, sheets).
-- Rework Special Qualities and Critical Injuries to be item type, add view to item sheets and character sheets.
-- Character creator.
+See our current production goals and progress [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/projects/1).
 
 # Changelog
 
