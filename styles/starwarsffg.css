@@ -3143,3 +3143,7 @@
 .starwarsffg .item-sheet-forcepower .talent-disable-edit .talent-connections i {
   display: none !important;
 }
+
+.starwarsffg .item-sheet-forcepower .talent-action {
+  cursor: pointer;
+}

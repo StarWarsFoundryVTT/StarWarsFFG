@@ -34,6 +34,8 @@ export class ItemFFG extends Item {
         data.activation.label = activationId;
         break;
       default:
+    }
+
     if(this.type === "forcepower") {
       this._prepareForcePowers();
     }
@@ -47,9 +49,10 @@ export class ItemFFG extends Item {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
-  }
 
-
+  /**
+   * Prepare Force Power Item Data
+   */
   _prepareForcePowers() {
     const itemData = this.data;
 
