@@ -45,6 +45,8 @@ export class ActorSheetFFG extends ActorSheet {
     }
     data.FFG = CONFIG.FFG;
 
+    console.log(data);
+
     switch (this.actor.data.type) {
       case "character":
         this.position.width = 595;

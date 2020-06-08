@@ -432,6 +432,48 @@
           {{/iff}} {{/each}}
         </tbody>
       </table>
+      {{!-- Force Powers List --}}
+      <table class="talent-list">
+        <thead>
+          <tr>
+            <th>{{localize "SWFFG.ForcePower"}}</th>
+            <th>{{localize "SWFFG.ForcePowerUpgrades"}}</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each actor.items as |item id|}} {{#iff item.type '==' 'forcepower'}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="item-name hover">
+              {{item.name}}
+              <div class="tooltip">{{item.safe_desc}}</div>
+            </td>
+            <td>
+              <table>
+                <thead>
+                  <th>{{localize "SWFFG.SkillsName"}}</th>
+                  <th>{{localize "SWFFG.SkillsRank"}}</th>
+                </thead>
+                <tbody>
+                  {{#each item.powerUpgrades as |upgrade name|}}
+                  <tr>
+                    <td>{{upgrade.name}}</td>
+                    <td>{{upgrade.rank}}</td>
+                  </tr>
+                {{/each}}
+                </tbody>
+              </table>
+            </td>
+            <td>
+              <div class="item-controls">
+                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+              </div>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
+        </tbody>
+      </table>
     </div>
 
     {{!-- Biography Tab --}}
