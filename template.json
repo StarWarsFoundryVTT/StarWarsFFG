@@ -518,7 +518,7 @@
     }
   },
   "Item": {
-    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticaldamage"],
+    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticaldamage", "forcepower"],
     "templates": {
       "basic": {
         "description": "",
@@ -707,6 +707,27 @@
       "max": 0,
       "severity": 1,
       "description": ""
+    },
+    "forcepower" : {
+      "description" : "",
+      "upgrades" : {
+        "upgrade0" : {},
+        "upgrade1" : {},
+        "upgrade2" : {},
+        "upgrade3" : {},
+        "upgrade4" : {},
+        "upgrade5" : {},
+        "upgrade6" : {},
+        "upgrade7" : {},
+        "upgrade8" : {},
+        "upgrade9" : {},
+        "upgrade10" : {},
+        "upgrade11" : {},
+        "upgrade12" : {},
+        "upgrade13" : {},
+        "upgrade14" : {},
+        "upgrade15" : {}
+      }
     }
   }
 }

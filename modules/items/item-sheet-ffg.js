@@ -52,6 +52,10 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.width = 275;
         this.position.height = 550;
         break;
+      case "forcepower": 
+        this.position.width = 715;
+        this.position.height = 840;
+        break;
       default:
     }
 
@@ -109,6 +113,10 @@ export class ItemSheetFFG extends ItemSheet {
         templateSelection: formatDropdown,
         templateResult: formatDropdown,
       });
+    }
+
+    if(this.object.data.type === "forcepower") {
+      html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
     }
   }
 
@@ -178,4 +186,98 @@ export class ItemSheetFFG extends ItemSheet {
     // Update the Actor
     return this.object.update(formData);
   }
+
+
+  async _onClickTalentControl(event) {
+    event.preventDefault();
+    const a = event.currentTarget;
+    const action = a.dataset.action;
+    const key = a.dataset.key;
+    const attrs = this.object.data.data.upgrades;
+    const form = this.form;
+    
+    if (action === "edit") {
+      const currentValue =  $(`input[name='data.isEditing']`).val() == 'true';
+      $(`input[name='data.isEditing']`).val(!currentValue);
+
+      $(".talent-grid").toggleClass("talent-disable-edit");
+    }
+
+    if (action === "combine") {
+      
+      const nextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 1}`;
+      const nextNextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 2}`;
+      const nextNextNextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 3}`;
+
+      if(!attrs[key].size || attrs[key].size === "single") {
+        if(attrs[nextKey].size === "double") {
+          $(`input[name='data.upgrades.${key}.size']`).val("triple");
+        } else if(attrs[nextKey].size === "triple") {
+          $(`input[name='data.upgrades.${key}.size']`).val("full");
+        } else {
+          $(`input[name='data.upgrades.${key}.size']`).val("double");
+        }
+        
+        $(`input[name='data.upgrades.${nextKey}.visible']`).val("false");
+      } else if (attrs[key].size === "double") {
+        if(attrs[nextNextKey].size === "double") {
+          $(`input[name='data.upgrades.${key}.size']`).val("full");
+        } else {
+          $(`input[name='data.upgrades.${key}.size']`).val("triple");
+        }
+        $(`input[name='data.upgrades.${nextKey}.visible']`).val("false");
+        $(`input[name='data.upgrades.${nextNextKey}.visible']`).val("false");
+      } else {
+        $(`input[name='data.upgrades.${key}.size']`).val("full");
+        $(`input[name='data.upgrades.${nextKey}.visible']`).val("false");
+        $(`input[name='data.upgrades.${nextNextKey}.visible']`).val("false");
+        $(`input[name='data.upgrades.${nextNextNextKey}.visible']`).val("false");
+      }
+      await this._onSubmit(event);
+    }
+    
+    if (action === "split") {
+      const nextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 1}`;
+      const nextNextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 2}`;
+      const nextNextNextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 3}`;
+
+      if (attrs[key].size === "double") {
+        $(`input[name='data.upgrades.${key}.size']`).val("single");
+        $(`input[name='data.upgrades.${nextKey}.visible']`).val(true);
+        $(`input[name='data.upgrades.${nextKey}.size']`).val("single");
+      } else if (attrs[key].size === "triple") {
+        $(`input[name='data.upgrades.${key}.size']`).val("double");
+        $(`input[name='data.upgrades.${nextNextKey}.visible']`).val(true);
+        $(`input[name='data.upgrades.${nextNextKey}.size']`).val("single");
+      } else {
+        $(`input[name='data.upgrades.${key}.size']`).val("double");
+        $(`input[name='data.upgrades.${nextNextKey}.visible']`).val(true);
+        $(`input[name='data.upgrades.${nextNextKey}.size']`).val("double");
+      }
+      await this._onSubmit(event);
+    }
+    
+    if (action === "link-top") {
+      if ($(".talent-disable-edit").length === 0) {
+        const linkid = a.dataset.linknumber;
+
+        const currentValue = $(`input[name='data.upgrades.${key}.links-top-${linkid}']`).val() == 'true';
+        $(`input[name='data.upgrades.${key}.links-top-${linkid}']`).val(!currentValue);
+    
+        await this._onSubmit(event);
+      }
+    }
+        
+    if (action === "link-right") { 
+      if ($(".talent-disable-edit").length === 0) {
+        const linkid = a.dataset.linknumber;
+        const currentValue = $(`input[name='data.upgrades.${key}.links-right']`).val() == 'true';
+        $(`input[name='data.upgrades.${key}.links-right']`).val(!currentValue);
+    
+        await this._onSubmit(event);
+      }
+    }
+  }
+
+  
 }

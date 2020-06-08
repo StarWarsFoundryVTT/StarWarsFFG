@@ -2885,3 +2885,265 @@
 .starwarsffg .damage .injuries .resource.full {
   width: 100%;
 }
+
+.starwarsffg .item-sheet-forcepower {
+  min-width: 700px;
+  min-height: 600px;
+}
+
+.starwarsffg .item-sheet-forcepower textarea {
+  height: 100px;
+  overflow: auto;
+  border: 0;
+}
+
+.starwarsffg .item-sheet-forcepower textarea:focus {
+  box-shadow: 0 0 5px #7da9c2;
+  background-color: #7da9c2;
+  outline: 0;
+}
+
+.starwarsffg .item-sheet-forcepower .header-fields {
+  position: relative;
+}
+
+.starwarsffg .item-sheet-forcepower .header-fields .talent-actions {
+  position: absolute;
+  right: 10px;
+  top: 14px;
+  color: white;
+}
+
+.starwarsffg .item-sheet-forcepower .header-fields textarea {
+  max-width: 695px;
+}
+
+.starwarsffg .item-sheet-forcepower .sheet-body {
+  height: calc(100% - 10em);
+}
+
+.starwarsffg .item-sheet-forcepower .talent-hidden {
+  display: none;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade {
+  position: relative;
+  margin: 10px 10px 0 10px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions {
+  display: none;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions .split, .starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions .combine {
+  display: none;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions.talent-canSplit {
+  display: block;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions.talent-canSplit .split {
+  display: initial;
+  position: absolute;
+  right: 30px;
+  top: 15px;
+  font-size: 15px;
+  color: white;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions.talent-canSplit .split i {
+  transform: rotate(45deg);
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions.talent-canCombine {
+  display: block;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions.talent-canCombine .combine {
+  display: initial;
+  position: absolute;
+  right: -16px;
+  font-size: 15px;
+  top: 15px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade .talent-actions.talent-canCombine .combine i {
+  transform: rotate(45deg);
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade.talent-single {
+  flex: 1 0 21%;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade.talent-double {
+  flex: 1 0 46%;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade.talent-triple {
+  flex: 1 0 71%;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-upgrade.talent-full {
+  flex: 1 0 97%;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-background {
+  background-color: #ddd;
+  padding: 5px;
+  --notchSize: 9px;
+  -webkit-clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .item-sheet-forcepower .talent-background .talent-header {
+  background-color: #0e4400;
+  padding: 5px;
+  --notchSize: 9px;
+  -webkit-clip-path: polygon(0 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .item-sheet-forcepower .talent-background .talent-header div {
+  display: inline-block;
+  vertical-align: middle;
+  color: white;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-background .talent-header div.talent-name {
+  width: 75%;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-background .talent-header div input[type="text"] {
+  border: 0px;
+  background-color: #1a8200;
+  color: white;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-row {
+  margin: 10px 0;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-row .talent-upgrade {
+  margin: 0 3px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connections {
+  font-size: 15px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-single textarea {
+  max-width: 145px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-double textarea {
+  max-width: 315px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-triple textarea {
+  max-width: 495px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-full textarea {
+  max-width: 670px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-top {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-top.talent-single {
+  position: relative;
+  text-align: center;
+  transform: initial;
+  left: initial;
+  display: inline-block;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-top.talent-double {
+  position: relative;
+  display: inline-block;
+  width: 50%;
+  left: initial;
+  transform: none;
+  text-align: center;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-top.talent-triple {
+  position: relative;
+  display: inline-block;
+  width: 33%;
+  left: initial;
+  transform: none;
+  text-align: center;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-top.talent-full {
+  position: relative;
+  display: inline-block;
+  width: 25%;
+  left: initial;
+  transform: none;
+  text-align: center;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-top .talent-connector-up {
+  display: none;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-right {
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connection-point-right .talent-connector-side {
+  display: none;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connector i {
+  display: none;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connector .talent-connector-up, .starwarsffg .item-sheet-forcepower .talent-connector .talent-connector-side {
+  display: inline-block;
+  width: 20px;
+  height: 12px;
+  background-color: black;
+  position: absolute;
+  top: -3px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connector .talent-connector-up i, .starwarsffg .item-sheet-forcepower .talent-connector .talent-connector-side i {
+  display: initial;
+  color: white;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-connector .talent-connector-side {
+  right: -15px;
+  width: 20px;
+  height: 20px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-disable-edit .talent-actions {
+  display: none !important;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-disable-edit .talent-connections i {
+  display: none !important;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-action {
+  cursor: pointer;
+}
