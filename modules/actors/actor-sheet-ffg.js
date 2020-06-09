@@ -130,6 +130,16 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
+
+    // transfer items between owned actor objects
+    const dragDrop = new DragDrop({
+      dragSelector: ".items-list .item",
+      dropSelector: ".sheet-body",
+      permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+      callbacks: { dragstart: this._onTransferItemDragStart.bind(this), drop: this._onTransferItemDrop.bind(this) }
+    });
+    
+    dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
   }
 
   /* -------------------------------------------- */
@@ -304,5 +314,68 @@ export class ActorSheetFFG extends ActorSheet {
 
     const rollButton = elem.querySelector(".roll-button");
     dicePool.renderPreview(rollButton);
+  }
+
+  
+  /**
+   * Drag Event function for transferring items between owned actors
+   * @param  {Object} event
+   */
+  _onTransferItemDragStart(event) {
+    const li = event.currentTarget;
+    
+    $(event.currentTarget).attr("data-item-actorid", this.actor.id);
+
+    const item = this.actor.getOwnedItem(li.dataset.itemId);
+
+    // limit transfer on personal weapons/armour/gear
+    if(["weapon", "armour", "gear"].includes(item.data.type)) {
+      const dragData = {
+        type: "Transfer",
+        actorId: this.actor.id,
+        data: item.data
+      };
+      if (this.actor.isToken) dragData.tokenId = this.actor.token.id;
+      event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+    } else {
+      return false;
+    }
+  }
+
+  _canDragStart(selector) {
+    return this.options.editable && this.actor.owner;
+  }
+
+  _canDragDrop(selector) {
+    return true;
+  }
+
+  /**
+   * Drop Event function for transferring items between actors
+   * 
+   * @param  {Object} event
+   */
+  async _onTransferItemDrop(event) {
+    // Try to extract the data
+    let data;
+    try {
+      data = JSON.parse(event.dataTransfer.getData('text/plain'));
+      if (data.type !== "Transfer") return;
+    } catch (err) {
+      return false;
+    }
+
+    if(data.data) {
+      let sameActor = data.actorId === this.actor._id;
+      if (!sameActor) {
+        try {
+          this.actor.createEmbeddedEntity("OwnedItem", duplicate(data.data));  // Create a new Item
+          const actor = game.actors.get(data.actorId);
+          await actor.deleteOwnedItem(data.data._id); // Delete originating item from other actor
+        } catch (err)  {
+          console.log(`${err.message}`);
+        } 
+      }
+    }
   }
 }
