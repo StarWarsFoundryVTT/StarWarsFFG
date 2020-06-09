@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 08/06/2020 - CStadther - Added force power trees and associated view on the character sheets.
 - 07/06/2020 - Esrin - Began localisation of Group Manager popup.
 - 07/06/2020 - Esrin - Added new localisation for modifier types.
 - 07/06/2020 - Esrin - Added new localisation for talent activations.
