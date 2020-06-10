@@ -305,7 +305,7 @@ FFG.difficulty = {
     value: 0,
     label: "SWFFG.DifficultySimple",
   },
-  "East": {
+  "Easy": {
     value: 1,
     label: "SWFFG.DifficultyEasy",
   },
