@@ -1,3 +1,5 @@
+import PopoutEditor from "../popout-editor.js";
+
 /**
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
@@ -14,8 +16,9 @@ export class ItemFFG extends Item {
     const actorData = this.actor ? this.actor.data : {};
     const data = itemData.data;
 
+    data.renderedDesc = PopoutEditor.renderDiceImages(data.description);
     itemData.safe_desc = data.description.replace(/(<([^>]+)>)/gi, "");
-
+    
     // perform localisation of dynamic values
     switch (this.type) {
       case "weapon":

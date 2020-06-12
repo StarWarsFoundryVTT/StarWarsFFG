@@ -1,3 +1,5 @@
+import PopoutEditor from "../popout-editor.js";
+
 /**
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
@@ -118,6 +120,8 @@ export class ItemSheetFFG extends ItemSheet {
     if(this.object.data.type === "forcepower") {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
     }
+
+    html.find(".popout-editor").on("click", this._onPopoutEditor.bind(this));
   }
 
   /* -------------------------------------------- */
@@ -279,5 +283,15 @@ export class ItemSheetFFG extends ItemSheet {
     }
   }
 
-  
+  _onPopoutEditor(event) {
+    event.preventDefault();
+    const a = event.currentTarget;
+    const label = a.dataset.label;
+    const key = a.dataset.target;
+
+    new PopoutEditor(this.object, {
+      name : key,
+      title: `Editor for ${this.object.name}: ${label}`
+    }).render(true);
+  }
 }

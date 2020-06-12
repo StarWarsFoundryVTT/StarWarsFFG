@@ -131,7 +131,10 @@
                     {{localize "SWFFG.ItemWeaponSpecial"}}
                   </div>
                   <div class="block-attribute">
-                    <div class="block-value block-single"><textarea name="data.special.value" rows="1" cols="50" data-dtype="String">{{data.special.value}}</textarea></div>
+                    <div class="block-value block-single">
+                      <div class="popout-editor" data-target="data.special.value" data-label="{{localize 'SWFFG.ItemWeaponSpecial'}}">
+                        {{{renderDiceTags data.special.value}}}
+                      </div>
                   </div>
                 </div>
               </div>
@@ -153,7 +156,7 @@
 
         {{!-- Description Tab --}}
         <div class="tab" data-group="primary" data-tab="description">
-            {{editor content=data.description target="data.description" button=true owner=owner editable=editable}}
+            {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
         </div>
 
         {{!-- Modifiers Tab --}}
