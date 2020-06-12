@@ -13,5 +13,11 @@
   src: url("../fonts/Signika-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "EotESymbol";
+  src: url("../fonts/EotESymbol-Regular-PLUS.otf") format("opentype");
+}
+
 $font-primary: "Roboto", sans-serif;
 $font-secondary: "StarJedi", sans-serif;
+$font-dice: "EotESymbol", sans-serif;

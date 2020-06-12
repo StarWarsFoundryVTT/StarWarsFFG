@@ -14,6 +14,7 @@ import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
 import { DicePoolFFG } from "./dice-pool-ffg.js";
 import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
+import PopoutEditor from "./popout-editor.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -27,6 +28,9 @@ Hooks.once("init", async function () {
     ActorFFG,
     ItemFFG,
     CombatFFG,
+    addons: {
+      PopoutEditor
+    }
   };
 
   // Check required module is active and store result to game.requirements_installed
@@ -211,6 +215,10 @@ Hooks.once("init", async function () {
     }
 
     return new Handlebars.SafeString(items.join(""));
+  });
+
+  Handlebars.registerHelper("renderDiceTags", function(string) {
+    return PopoutEditor.renderDiceImages(string);
   });
 });
 

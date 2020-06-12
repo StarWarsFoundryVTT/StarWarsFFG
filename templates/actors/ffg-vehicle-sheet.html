@@ -184,8 +184,8 @@
                 <td>{{localize item.data.range.label}}</td>
                 <td>{{item.data.crit.value}}</td>
                 <td class="hover">
-                  {{item.data.special.value}}
-                  <div class="tooltip">{{item.data.special.value}}</div>
+                  {{{renderDiceTags item.data.special.value}}}
+                  <div class="tooltip">{{{renderDiceTags item.data.special.value}}}</div>
                 </td>
                 <td class="item-controls">
                   <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
