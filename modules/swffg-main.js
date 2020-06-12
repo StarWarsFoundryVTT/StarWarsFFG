@@ -29,6 +29,12 @@ Hooks.once("init", async function () {
     CombatFFG,
   };
 
+  // Check required module is active and store result to game.requirements_installed
+  const moduletest = game.data.modules.reduce(function (arr, mod, index) {
+    return { ...arr, [mod.id]: mod };
+  }, {});
+  game.requirements_installed = moduletest["special-dice-roller"].active;
+
   game.ffg.StarWars = game.specialDiceRoller.starWars.parsers[0];
   game.ffg.DestinyPool = {
     "Light": 0,
@@ -236,4 +242,10 @@ Hooks.on("getSceneControlButtons", (controls) => {
 
 Hooks.once("canvasInit", (canvas) => {
   canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), 8);
+
+  // Check for required modules and throw error notice if missing.
+  if (!game.requirements_installed) {
+    ui.notifications.error("ERROR: You must install and activate the 'Special-Dice-Roller' module in order for this system to function correctly.");
+    console.error("ERROR: You must install and activate the 'Special-Dice-Roller' module in order for this system to function correctly.");
+  }
 });
