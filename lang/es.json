@@ -11,7 +11,7 @@
   "SWFFG.Defense": "Defensa",
   "SWFFG.DefenseRanged": "AD",
   "SWFFG.DefenseMelee": "CC",
-  "SWFFG.ForcePool": "Reserva de Fuerza",
+  "SWFFG.ForcePool": "Dominio de la Fuerza",
   "SWFFG.ForcePoolCommitted": "Asignada",
   "SWFFG.ForcePoolAvailable": "Disponible",
   "SWFFG.Encumbrance": "Impedimento",
@@ -212,5 +212,13 @@
   "SWFFG.PlayerCharacters": "Personajes",
   "SWFFG.DescriptionObligationAbrev": "Obl",
   "SWFFG.Combat": "Combate",
-  "SWFFG.CombatAbrev": "Cmbt"
+  "SWFFG.CombatAbrev": "Cmbt",
+  "SWFFG.ForceBasicPower": "Poder Básico",
+  "SWFFG.ForcePowerName": "Nombre Poder",
+  "SWFFG.ForceUpgradeName": "Nombre Incremento",
+  "SWFFG.CombineBox": "Combinar Casilla",
+  "SWFFG.SplitBox": "Dividir Casilla",
+  "SWFFG.ForcePower": "Poder de la Fuerza",
+  "SWFFG.ForcePowerUpgrades": "Incrementos",
+  "SWFFG.InitiativeMode": "Opción Iniciativa"
 }
