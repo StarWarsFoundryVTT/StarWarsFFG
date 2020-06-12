@@ -2,6 +2,22 @@
   min-width: 700px;
   min-height: 600px;
 
+  
+  .talent-body {
+    height : 100px;
+  }
+
+  .header-fields {
+    .talent-body {
+      margin-top: 5px;
+      padding: 0 5px;
+
+      .popout-editor {
+        height: 100px;
+      }
+    }
+  }
+
   textarea {
     height: 100px;
     overflow: auto;

@@ -26,13 +26,7 @@ export default class PopoutEditor extends FormApplication {
   /** @override */
   getData() {
     // Get current value
-
-    console.log(this.attribute);
-    console.log(this.object.data);
-
     let attr = getProperty(this.object.data, this.attribute);
-    
-    console.log(attr);
 
     // Return data
 	  return {
@@ -46,9 +40,6 @@ export default class PopoutEditor extends FormApplication {
   /** @override */
   _updateObject(event, formData) {
     const updateData = {};
-    
-    console.log(formData);
-
     updateData[`${this.attribute}`] = formData.value;
     
     // Update the object
@@ -56,9 +47,13 @@ export default class PopoutEditor extends FormApplication {
 
     this.close();
   }
-
-  static renderDiceImages(string) {
-    let html = string;
+  
+  /**
+   * Renders the dice symbols based on strings
+   * @param  {String} string
+   */
+  static renderDiceImages(str) {
+    let html = str || "";
 
     const replaceValues = [
       {
