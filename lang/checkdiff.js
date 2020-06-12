@@ -4,9 +4,9 @@
 
 const enlang = require("./en.json");
 
-const checklang = require("./fr.json");
+const checklang = require("./de.json");
 
-Object.keys(enlang).forEach((key) => {
+Object.keys(enlang).forEach((key, index) => {
   if (!(key in checklang)) {
     console.log(`\"${key}\": \"\",`);
   }

@@ -220,5 +220,12 @@
   "SWFFG.SplitBox": "Box aufteilen",
   "SWFFG.ForcePower": "Machtfähigkeit",
   "SWFFG.ForcePowerUpgrades": "Machtfähigkeit Verbesserungen",
-  "SWFFG.InitiativeMode": "Initiative Modus"
+  "SWFFG.InitiativeMode": "Initiative Modus",
+  "SWFFG.Amount": "Amount",
+  "SWFFG.NoPlayersConnected": "Keine aktiven Spieler",
+  "SWFFG.GroupActions": "Gruppenaktionen",
+  "SWFFG.GrantXP": "EP verteilen",
+  "SWFFG.GrantXPTo": "Gib EP an",
+  "SWFFG.GrantXPToAllCharacters": "Allen SC EP geben",
+  "SWFFG.Cancel": "Abbrechen"
 }
