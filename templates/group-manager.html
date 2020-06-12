@@ -1,32 +1,23 @@
 <form class="{{cssClass}} group-manager" autocomplete="off">
-  <div class="grid grid-2col">
-    <div class="destiny-pool flex-center">
-      <h1>{{localize "SWFFG.DestinyPool"}}</h1>
-      <div class="grid grid-3col">
-        <label>{{localize "SWFFG.Lightside"}}:<img src="modules/special-dice-roller/public/images/sw/lightside.png" alt="Light side:" /><input type="text" name="g.ffg.DestinyPool.Light" value="{{g.ffg.DestinyPool.Light}}" data-dtype="Number" placeholder="0" /></label>
-        <div style="display: flex;">
-          <button class="destiny-flip-dtl" style="height: 25%; align-self: center;"><i class="fas fa-arrow-left"></i></button>
-          <button class="destiny-flip-ltd" style="height: 25%; align-self: center;"><i class="fas fa-arrow-right"></i></button>
-        </div>
-        <label>{{localize "SWFFG.Darkside"}}:<img src="modules/special-dice-roller/public/images/sw/darkside.png" alt="Dark side:" /><input type="text" name="g.ffg.DestinyPool.Dark" value="{{g.ffg.DestinyPool.Dark}}" data-dtype="Number" placeholder="0" /></label>
+  <div class="initiative">
+    <h1>{{localize "SWFFG.InitiativeMode"}}</h1>
+    <select class="initiative-mode" name="initiative-mode" id="initiative-mode">
+      {{#select initiative.value}}
+      <option value="Vigilance">{{localize "SWFFG.SkillsNameVigilance"}}</option>
+      <option value="Cool">{{localize "SWFFG.SkillsNameCool"}}</option>
+      {{/select}}
+    </select>
+  </div>
+
+  <div class="destiny-pool flex-center">
+    <h1>{{localize "SWFFG.DestinyPool"}}</h1>
+    <div class="grid grid-3col">
+      <label>{{localize "SWFFG.Lightside"}}:<img src="modules/special-dice-roller/public/images/sw/lightside.png" alt="Light side:" /><input type="text" name="g.ffg.DestinyPool.Light" value="{{g.ffg.DestinyPool.Light}}" data-dtype="Number" placeholder="0" /></label>
+      <div style="display: flex;">
+        <button class="destiny-flip-dtl" style="height: 25%; align-self: center;"><i class="fas fa-arrow-left"></i></button>
+        <button class="destiny-flip-ltd" style="height: 25%; align-self: center;"><i class="fas fa-arrow-right"></i></button>
       </div>
-    </div>
-    <div>
-      <div class="initiative">
-        <h1>{{localize "SWFFG.InitiativeMode"}}</h1>
-        <select class="initiative-mode" name="initiative-mode" id="initiative-mode">
-          {{#select initiative.value}}
-          <option value="Vigilance">{{localize "SWFFG.SkillsNameVigilance"}}</option>
-          <option value="Cool">{{localize "SWFFG.SkillsNameCool"}}</option>
-          {{/select}}
-        </select>
-      </div>
-      <div>
-        <h1>Group Actions</h1>
-        <button class="temp-button">Add all characters to combat tracker</button>
-        <button class="temp-button">Grant XP to all characters</button>
-        <button class="temp-button">Roll for Group Obligation</button>
-      </div>
+      <label>{{localize "SWFFG.Darkside"}}:<img src="modules/special-dice-roller/public/images/sw/darkside.png" alt="Dark side:" /><input type="text" name="g.ffg.DestinyPool.Dark" value="{{g.ffg.DestinyPool.Dark}}" data-dtype="Number" placeholder="0" /></label>
     </div>
   </div>
 
@@ -38,26 +29,26 @@
         <th>{{localize "SWFFG.Wounds"}}</th>
         <th>{{localize "SWFFG.Strain"}}</th>
         <th>{{localize "SWFFG.Soak"}}</th>
-        <th>{{localize "SWFFG.DescriptionObligationAbrev"}}</th>
+        <!-- <th>{{localize "SWFFG.DescriptionObligationAbrev"}}</th> -->
         <th>{{localize "SWFFG.CombatAbrev"}}</th>
         <th>{{localize "SWFFG.DescriptionXP"}}</th>
       </thead>
       <tbody>
         {{#if players.connected}} {{#each players as |p key|}}
         <tr class="player-character" data-character="{{p.character.id}}">
-          <td style="width: 180px;">{{p.character.name}}</td>
+          <td style="width: 100px;">{{p.character.name}}</td>
           <td><input type="text" value="{{p.character.data.data.stats.wounds.real_value}}" disabled /></td>
           <td><input type="text" value="{{p.character.data.data.stats.strain.real_value}}" disabled /></td>
           <td><input type="text" value="{{p.character.data.data.stats.soak.value}}" disabled /></td>
-          <td><input type="text" value="{{p.character.data.data.obligation.value}}" disabled /></td>
+          <!-- <td><input type="text" value="{{p.character.data.data.obligation.value}}" disabled /></td> -->
           <td>
             <button class="add-to-combat" data-character="{{p.character.id}}"><i class="fas fa-fist-raised"></i></button>
           </td>
-          <td><button class="temp-button">{{localize "SWFFG.DescriptionXP"}}</button></td>
+          <td><button class="add-XP" data-character="{{p.character.id}}">{{localize "SWFFG.DescriptionXP"}}</button></td>
         </tr>
         {{/each}}{{else}}
         <tr>
-          <td style="width: 180px;">No players connected</td>
+          <td style="width: 180px;">{{localize "SWFFG.NoPlayersConnected"}}</td>
           <td><input type="text" value="N/A" disabled /></td>
           <td><input type="text" value="N/A" disabled /></td>
           <td><input type="text" value="N/A" disabled /></td>
@@ -70,5 +61,14 @@
         {{/if}}
       </tbody>
     </table>
+  </div>
+
+  <div class="group-actions">
+    <h2>{{localize "SWFFG.GroupActions"}}</h2>
+    <div style="display: flex;">
+      <button class="group-to-combat"><i class="fas fa-fist-raised"></i></button>
+      <button class="bulk-XP">{{localize "SWFFG.DescriptionXP"}}</button>
+      <!-- <button class="temp-button">Obligation</button> -->
+    </div>
   </div>
 </form>
