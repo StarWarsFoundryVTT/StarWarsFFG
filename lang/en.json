@@ -220,5 +220,12 @@
   "SWFFG.SplitBox": "Split Boxes",
   "SWFFG.ForcePower": "Force Power",
   "SWFFG.ForcePowerUpgrades": "Force Power Upgrades",
-  "SWFFG.InitiativeMode": "Initiative Mode"
+  "SWFFG.InitiativeMode": "Initiative Mode",
+  "SWFFG.Amount": "Amount",
+  "SWFFG.NoPlayersConnected": "No players connected",
+  "SWFFG.GroupActions": "Group Actions",
+  "SWFFG.GrantXP": "Grant XP",
+  "SWFFG.GrantXPTo": "Grant XP to",
+  "SWFFG.GrantXPToAllCharacters": "Grant XP to all characters",
+  "SWFFG.Cancel": "Cancel"
 }

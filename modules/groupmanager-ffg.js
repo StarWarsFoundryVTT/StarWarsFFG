@@ -186,7 +186,7 @@ export class GroupManager extends FormApplication {
 
   async _grantXP(character) {
     const id = randomID();
-    const description = `Grant XP to ${character.name}...`;
+    const description = game.i18n.localize("SWFFG.GrantXPTo") + ` ${character.name}...`;
     const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
       id,
     });
@@ -197,7 +197,7 @@ export class GroupManager extends FormApplication {
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
-          label: "Grant XP",
+          label: game.i18n.localize("SWFFG.GrantXP"),
           callback: () => {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
@@ -208,7 +208,7 @@ export class GroupManager extends FormApplication {
         },
         two: {
           icon: '<i class="fas fa-times"></i>',
-          label: "Cancel",
+          label: game.i18n.localize("SWFFG.Cancel"),
         },
       },
     }).render(true);
@@ -216,7 +216,7 @@ export class GroupManager extends FormApplication {
 
   async _bulkXP(characters) {
     const id = randomID();
-    const description = `Grant XP to all characters...`;
+    const description = game.i18n.localize("SWFFG.GrantXPToAllCharacters");
     const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
       id,
     });
@@ -227,7 +227,7 @@ export class GroupManager extends FormApplication {
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
-          label: "Grant XP",
+          label: game.i18n.localize("SWFFG.GrantXP"),
           callback: () => {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
@@ -241,7 +241,7 @@ export class GroupManager extends FormApplication {
         },
         two: {
           icon: '<i class="fas fa-times"></i>',
-          label: "Cancel",
+          label: game.i18n.localize("SWFFG.Cancel"),
         },
       },
     }).render(true);

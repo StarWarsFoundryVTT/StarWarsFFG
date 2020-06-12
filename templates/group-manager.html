@@ -48,7 +48,7 @@
         </tr>
         {{/each}}{{else}}
         <tr>
-          <td style="width: 180px;">No players connected</td>
+          <td style="width: 180px;">{{localize "SWFFG.NoPlayersConnected"}}</td>
           <td><input type="text" value="N/A" disabled /></td>
           <td><input type="text" value="N/A" disabled /></td>
           <td><input type="text" value="N/A" disabled /></td>
@@ -64,10 +64,10 @@
   </div>
 
   <div class="group-actions">
-    <h2>Group Actions</h2>
+    <h2>{{localize "SWFFG.GroupActions"}}</h2>
     <div style="display: flex;">
       <button class="group-to-combat"><i class="fas fa-fist-raised"></i></button>
-      <button class="bulk-XP">XP</button>
+      <button class="bulk-XP">{{localize "SWFFG.DescriptionXP"}}</button>
       <!-- <button class="temp-button">Obligation</button> -->
     </div>
   </div>
