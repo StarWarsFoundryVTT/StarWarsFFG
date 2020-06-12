@@ -2914,6 +2914,19 @@
   min-height: 600px;
 }
 
+.starwarsffg .item-sheet-forcepower .talent-body {
+  height: 100px;
+}
+
+.starwarsffg .item-sheet-forcepower .header-fields .talent-body {
+  margin-top: 5px;
+  padding: 0 5px;
+}
+
+.starwarsffg .item-sheet-forcepower .header-fields .talent-body .popout-editor {
+  height: 100px;
+}
+
 .starwarsffg .item-sheet-forcepower textarea {
   height: 100px;
   overflow: auto;
@@ -3243,6 +3256,8 @@
   text-align: left;
   font-size: 12px;
   overflow: auto;
+  height: 50px;
+  width: 100%;
 }
 
 .starwarsffg .popout-editor-window .sheet-body {
@@ -3254,6 +3269,11 @@
   height: 100%;
 }
 
-.starwarsffg .popout-editor-window .tox.tox-tinymce {
+.starwarsffg .editor {
+  width: 100%;
+  height: 100%;
+}
+
+.starwarsffg .tox.tox-tinymce {
   height: 100% !important;
 }

@@ -289,9 +289,24 @@ export class ItemSheetFFG extends ItemSheet {
     const label = a.dataset.label;
     const key = a.dataset.target;
 
+    const parent = $(a.parentElement);
+    const parentPosition = $(parent).offset();
+    
+    const windowHeight = parseInt($(parent).height(), 10) + 100 < 200 ? 200 : parseInt($(parent).height(), 10) + 100;
+    const windowWidth = parseInt($(parent).width(), 10) < 320 ? 320 : parseInt($(parent).width(), 10);
+    const windowLeft = parseInt(parentPosition.left, 10);
+    const windowTop = parseInt(parentPosition.top, 10);
+
+
+    const title = a.dataset.label ? `Editor for ${this.object.name}: ${label}` : `Editor for ${this.object.name}`;
+
     new PopoutEditor(this.object, {
       name : key,
-      title: `Editor for ${this.object.name}: ${label}`
+      title: title,
+      height: windowHeight,
+      width: windowWidth,
+      left: windowLeft,
+      top: windowTop,
     }).render(true);
   }
 }

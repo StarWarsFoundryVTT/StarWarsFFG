@@ -8,7 +8,10 @@
           <div>{{localize 'SWFFG.ForceBasicPower'}}</div>
         </div>
         <div class="talent-body">
-          <textarea name="data.description" rows="1" cols="50" data-dtype="String">{{data.description}}</textarea>
+          <div class="popout-editor" data-target="data.description" data-label="{{item.name}} {{localize 'SWFFG.ForceBasicPower'}}">
+            {{{renderDiceTags data.description}}}
+          </div>
+          <!-- {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}} -->
         </div>
         <div class="talent-actions">
           <a class="talent-action" data-action="edit"><i class="fas fa-edit"></i></a>
@@ -30,7 +33,9 @@
             <div class="talent-name"><input name="data.upgrades.{{key}}.name" type="text" value="{{upgrade.name}}" placeholder="{{localize 'SWFFG.ForceUpgradeName'}}"/></div>
           </div>   
           <div class="talent-body">
-            <textarea name="data.upgrades.{{key}}.description" rows="1" cols="50" data-dtype="String">{{upgrade.description}}</textarea>
+            <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-label="{{upgrade.name}}">
+              {{{renderDiceTags upgrade.description}}}
+            </div>
             <input class="talent-hidden" name="data.upgrades.{{key}}.size" type="text" value="{{upgrade.size}}" data-dtype="String"/>
             <input class="talent-hidden" name="data.upgrades.{{key}}.visible" type="text" value="{{upgrade.visible}}" data-dtype="Boolean" />
           </div>
