@@ -139,6 +139,11 @@ Hooks.once("init", async function () {
       formula: formula,
       decimals: 2,
     };
+    if (canvas) {
+      if (canvas.groupmanager.window) {
+        canvas.groupmanager.window.render(true);
+      }
+    }
   }
 
   function combineAll(values, monoid) {
@@ -193,9 +198,9 @@ Hooks.once("init", async function () {
     }
   });
 
-  Handlebars.registerHelper("renderMultiple", function(count, obj) {
+  Handlebars.registerHelper("renderMultiple", function (count, obj) {
     let items = [];
-    for(let i = 0; i < count; i+=1) {
+    for (let i = 0; i < count; i += 1) {
       items.push(obj);
     }
 
@@ -220,7 +225,7 @@ Hooks.on("getSceneControlButtons", (controls) => {
           title: "Open Group Sheet",
           icon: "fas fa-users",
           onClick: () => {
-            new GroupManager().render(true);
+            canvas.groupmanager.window = new GroupManager().render(true);
           },
           button: true,
         },

@@ -1,7 +1,15 @@
 .group-manager {
-  background: rgba(255, 255, 255, 0.7);
   font-family: Roboto, sans-serif;
   color: rgb(34, 34, 34);
   height: 100%;
   width: auto;
+  .initiative-mode {
+    width: 100%;
+  }
+  .player-character {
+    &:hover {
+      background: rgba(25, 24, 19, 0.03);
+      margin: +2px;
+    }
+  }
 }

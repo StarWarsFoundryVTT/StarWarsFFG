@@ -2688,11 +2688,19 @@
 }
 
 .starwarsffg .group-manager {
-  background: rgba(255, 255, 255, 0.7);
   font-family: Roboto, sans-serif;
   color: #222222;
   height: 100%;
   width: auto;
+}
+
+.starwarsffg .group-manager .initiative-mode {
+  width: 100%;
+}
+
+.starwarsffg .group-manager .player-character:hover {
+  background: rgba(25, 24, 19, 0.03);
+  margin: +2px;
 }
 
 .starwarsffg .item:hover .hover {

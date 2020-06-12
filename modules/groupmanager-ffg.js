@@ -36,8 +36,8 @@ export class GroupManager extends FormApplication {
       submitOnClose: true,
       popOut: true,
       editable: game.user.isGM,
-      width: 300,
-      height: 450,
+      width: 600,
+      height: 550,
       template: "systems/starwarsffg/templates/group-manager.html",
       id: "group-manager",
       title: "Group Manager",
@@ -51,7 +51,12 @@ export class GroupManager extends FormApplication {
    * @return {Object}   The data provided to the template when rendering the form
    */
   getData() {
-    return { g: game };
+    const players = game.users.entities.filter((u) => !u.isGM && u.character && u.active);
+    if (players.length > 0) {
+      players.connected = true;
+    }
+    const initiative = { "value": CONFIG.Combat.initiative.formula };
+    return { g: game, players, initiative };
   }
 
   /* -------------------------------------------- */
@@ -86,6 +91,37 @@ export class GroupManager extends FormApplication {
         this.form.elements["g.ffg.DestinyPool.Dark"].value = DarkPool;
       }
     });
+
+    // Listen for initiative dropdown change and update initiative formula accordingly.
+    html.find(".initiative-mode").change((ev) => {
+      const init_value = ev.target.value.charAt(0).toLowerCase();
+      game.settings.set("starwarsffg", "initiativeRule", init_value);
+      ui.notifications.info(`Initiative mode changed to: ${ev.target.value}`);
+    });
+
+    // Add individual character to combat tracker.
+    html.find(".add-to-combat").click((ev) => {
+      const character = ev.currentTarget.dataset.character;
+      const c = game.actors.get(character);
+      ui.notifications.warn("This function is not yet implemented.");
+    });
+
+    // Temporary warning for non-functional buttons.
+    html.find(".temp-button").click((ev) => {
+      ui.notifications.warn("This function is not yet implemented.");
+    });
+
+    // Open character sheet on row click.
+    html.find(".player-character").click((ev) => {
+      if (!$(ev.target).hasClass("fas") && ev.target.localName !== "button") {
+        const li = $(ev.currentTarget);
+        const actorId = li.data("character");
+        const actor = game.actors.get(actorId);
+        if (actor?.sheet) {
+          actor.sheet.render(true);
+        }
+      }
+    });
   }
 
   /**
@@ -101,3 +137,18 @@ export class GroupManager extends FormApplication {
     return formData;
   }
 }
+
+// Catch updates to connected players and update the group manager window if necessary.
+Hooks.on("renderPlayerList", (playerList) => {
+  const groupmanager = canvas.groupmanager.window;
+  if (groupmanager) {
+    groupmanager.render();
+  }
+});
+// Catch updates to actors and update the group manager window if necessary.
+Hooks.on("updateActor", (actor, data, options, id) => {
+  const groupmanager = canvas.groupmanager.window;
+  if (groupmanager) {
+    groupmanager.render();
+  }
+});

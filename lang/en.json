@@ -213,11 +213,12 @@
   "SWFFG.DescriptionObligationAbrev": "Obl",
   "SWFFG.Combat": "Combat",
   "SWFFG.CombatAbrev": "Cmbt",
-  "SWFFG.ForceBasicPower" : "Basic Power",
-  "SWFFG.ForcePowerName" : "Force Power Name",
-  "SWFFG.ForceUpgradeName" : "Force Upgrade Name",
-  "SWFFG.CombineBox" : "Combine Boxes",
-  "SWFFG.SplitBox" : "Split Boxes",
-  "SWFFG.ForcePower" : "Force Power",
-  "SWFFG.ForcePowerUpgrades" : "Force Power Upgrades"
+  "SWFFG.ForceBasicPower": "Basic Power",
+  "SWFFG.ForcePowerName": "Force Power Name",
+  "SWFFG.ForceUpgradeName": "Force Upgrade Name",
+  "SWFFG.CombineBox": "Combine Boxes",
+  "SWFFG.SplitBox": "Split Boxes",
+  "SWFFG.ForcePower": "Force Power",
+  "SWFFG.ForcePowerUpgrades": "Force Power Upgrades",
+  "SWFFG.InitiativeMode": "Initiative Mode"
 }

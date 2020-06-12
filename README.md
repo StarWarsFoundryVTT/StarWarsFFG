@@ -27,6 +27,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/06/2020 - Esrin - Added warning on startup if Special-Dice-Roller module is not installed and activated.
+- 12/06/2020 - Esrin - First pass on the group sheet. Now automatically populates with player characters, can open character sheets, change initiative mode and use the destiny pool. Other functionality under construction.
 - 10/06/2020 - Cstadther - Readded Force Pool to Talent Tab
 - 10/06/2020 - CStadther - Buxfix for Force Power Description field.
 - 09/06/2020 - CStadther - Added drag-drop transfer of weapon, armour and gear items between owned character sheets.
