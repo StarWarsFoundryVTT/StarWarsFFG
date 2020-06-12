@@ -36,8 +36,8 @@ export class GroupManager extends FormApplication {
       submitOnClose: true,
       popOut: true,
       editable: game.user.isGM,
-      width: 600,
-      height: 550,
+      width: 330,
+      height: 650,
       template: "systems/starwarsffg/templates/group-manager.html",
       id: "group-manager",
       title: "Group Manager",
@@ -103,7 +103,39 @@ export class GroupManager extends FormApplication {
     html.find(".add-to-combat").click((ev) => {
       const character = ev.currentTarget.dataset.character;
       const c = game.actors.get(character);
-      ui.notifications.warn("This function is not yet implemented.");
+      const token = c.getActiveTokens();
+      this._addCharacterToCombat(c, token, game.combat);
+    });
+    // Add all characters to combat tracker.
+    html.find(".group-to-combat").click((ev) => {
+      const characters = [];
+      const groupmanager = document.getElementById("group-manager");
+      const charlist = groupmanager.querySelectorAll('tr[class="player-character"]');
+      charlist.forEach((element) => {
+        characters.push(element.dataset["character"]);
+      });
+      characters.forEach((c) => {
+        const character = game.actors.get(c);
+        const token = character.getActiveTokens();
+        this._addCharacterToCombat(character, token, game.combat);
+      });
+    });
+
+    // Add XP to individual character.
+    html.find(".add-XP").click((ev) => {
+      const character = ev.currentTarget.dataset.character;
+      const c = game.actors.get(character);
+      this._grantXP(c);
+    });
+    // Add XP to all characters.
+    html.find(".bulk-XP").click((ev) => {
+      const characters = [];
+      const groupmanager = document.getElementById("group-manager");
+      const charlist = groupmanager.querySelectorAll('tr[class="player-character"]');
+      charlist.forEach((element) => {
+        characters.push(element.dataset["character"]);
+      });
+      this._bulkXP(characters);
     });
 
     // Temporary warning for non-functional buttons.
@@ -135,6 +167,84 @@ export class GroupManager extends FormApplication {
     game.ffg.DestinyPool.Light = formDPool.Light;
     game.ffg.DestinyPool.Dark = formDPool.Dark;
     return formData;
+  }
+
+  async _addCharacterToCombat(character, token, cbt) {
+    if (token.length > 0) {
+      // If no combat encounter is active, create one.
+      if (!cbt) {
+        let scene = game.scenes.viewed;
+        if (!scene) return;
+        let cbt = await game.combats.object.create({ scene: scene._id, active: true });
+        await cbt.activate();
+      }
+      await token[0].toggleCombat(game.combat);
+    } else {
+      ui.notifications.warn(`${character.name} has no active Token in the current scene.`);
+    }
+  }
+
+  async _grantXP(character) {
+    const id = randomID();
+    const description = `Grant XP to ${character.name}...`;
+    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
+      id,
+    });
+
+    new Dialog({
+      title: description,
+      content,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "Grant XP",
+          callback: () => {
+            const container = document.getElementById(id);
+            const amount = container.querySelector('input[name="amount"]');
+            character.update({ ["data.experience.total"]: character.data.data.experience.total + +amount.value });
+            character.update({ ["data.experience.available"]: character.data.data.experience.available + +amount.value });
+            ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
+          },
+        },
+        two: {
+          icon: '<i class="fas fa-times"></i>',
+          label: "Cancel",
+        },
+      },
+    }).render(true);
+  }
+
+  async _bulkXP(characters) {
+    const id = randomID();
+    const description = `Grant XP to all characters...`;
+    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
+      id,
+    });
+
+    new Dialog({
+      title: description,
+      content,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "Grant XP",
+          callback: () => {
+            const container = document.getElementById(id);
+            const amount = container.querySelector('input[name="amount"]');
+            characters.forEach((c) => {
+              const character = game.actors.get(c);
+              character.update({ ["data.experience.total"]: character.data.data.experience.total + +amount.value });
+              character.update({ ["data.experience.available"]: character.data.data.experience.available + +amount.value });
+              ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
+            });
+          },
+        },
+        two: {
+          icon: '<i class="fas fa-times"></i>',
+          label: "Cancel",
+        },
+      },
+    }).render(true);
   }
 }
 

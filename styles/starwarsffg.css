@@ -2707,6 +2707,11 @@
   color: #222222;
   height: 100%;
   width: auto;
+  text-align: center;
+}
+
+.starwarsffg .group-manager .PC-list {
+  margin: 20px 0;
 }
 
 .starwarsffg .group-manager .initiative-mode {
