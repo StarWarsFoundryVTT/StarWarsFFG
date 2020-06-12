@@ -31,7 +31,7 @@
   "SWFFG.CharacteristicCunningAbbreviation": "Li",
   "SWFFG.CharacteristicWillpower": "Willenskr.",
   "SWFFG.CharacteristicWillpowerAbbreviation": "Will",
-  "SWFFG.CharacteristicPresence": "Charme",
+  "SWFFG.CharacteristicPresence": "Charisma",
   "SWFFG.CharacteristicPresenceAbbreviation": "Ch",
   "SWFFG.SkillsGeneral": "Allgemeine Fertigkeiten",
   "SWFFG.SkillsCombat": "Kampffertigkeiten",
@@ -212,5 +212,13 @@
   "SWFFG.PlayerCharacters": "Speielercharakter",
   "SWFFG.DescriptionObligationAbrev": "Verpfl",
   "SWFFG.Combat": "Kampf",
-  "SWFFG.CombatAbrev": "Kmpf"
+  "SWFFG.CombatAbrev": "Kmpf",
+  "SWFFG.ForceBasicPower": "Basisform",
+  "SWFFG.ForcePowerName": "Machtfähigkeit",
+  "SWFFG.ForceUpgradeName": "Machtverbesserung",
+  "SWFFG.CombineBox": "Box verbinden",
+  "SWFFG.SplitBox": "Box aufteilen",
+  "SWFFG.ForcePower": "Machtfähigkeit",
+  "SWFFG.ForcePowerUpgrades": "Machtfähigkeit Verbesserungen",
+  "SWFFG.InitiativeMode": "Initiative Modus"
 }
