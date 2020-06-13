@@ -12,6 +12,7 @@ export class ItemSheetFFG extends ItemSheet {
       width: 784,
       height: 484,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
+      scrollY: [".sheet-body", ".tab"],
     });
   }
 
