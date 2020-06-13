@@ -220,5 +220,13 @@
   "SWFFG.SplitBox": "Dividir Casilla",
   "SWFFG.ForcePower": "Poder de la Fuerza",
   "SWFFG.ForcePowerUpgrades": "Incrementos",
-  "SWFFG.InitiativeMode": "Opción Iniciativa"
+  "SWFFG.InitiativeMode": "Opción Iniciativa",
+  "SWFFG.Amount": "Cantidad",
+  "SWFFG.NoPlayersConnected": "Sin jugador conectado",
+  "SWFFG.GroupActions": "Acciones de Grupo",
+  "SWFFG.GrantXP": "Repartir PE",
+  "SWFFG.GrantXPTo": "Dar PE a",
+  "SWFFG.GrantXPToAllCharacters": "Dar PE a todos los PJs",
+  "SWFFG.Cancel": "Cancelar",
+  "SWFFG.Specialization": "Especialización"
 }
