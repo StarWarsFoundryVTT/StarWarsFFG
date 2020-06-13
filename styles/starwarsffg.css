@@ -3184,10 +3184,6 @@
   padding: 0 5px;
 }
 
-.starwarsffg .item-sheet-forcepower .header-fields .talent-body .popout-editor {
-  height: 100px;
-}
-
 .starwarsffg .item-sheet-forcepower .header-fields {
   position: relative;
 }
@@ -3279,7 +3275,7 @@
   text-align: left;
   font-size: 12px;
   overflow: auto;
-  height: 50px;
+  height: 100%;
   width: 100%;
 }
 
@@ -3304,11 +3300,6 @@
 .starwarsffg .item-sheet-specialization {
   min-width: 700px;
   min-height: 600px;
-}
-
-.starwarsffg .item-sheet-specialization .popout-editor {
-  height: 100px;
-  overflow: auto;
 }
 
 .starwarsffg .item-sheet-specialization .sheet-body {
