@@ -27,6 +27,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 13/06/2020 - Esrin - Added 4 extra talent slots to the specialisation trees to match sourcebook examples.
+- 13/06/2020 - Esrin - Added localisation to the talent activations on specialisation sheet.
 - 13/06/2020 - Esrin - QoL improvements to specialisations to keep them synced up with any changes to linked talent descriptions or activations.
 - 13/06/2020 - Esrin - Restored individual embedded talents to character sheets to allow for talents without associated specialisations (such as for rivals and nemesis).
 - 13/06/2020 - Esrin - Bugfix to force power description display area.
