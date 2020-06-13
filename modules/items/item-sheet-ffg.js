@@ -54,15 +54,24 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.width = 275;
         this.position.height = 550;
         break;
-      case "forcepower": 
-      case "specialization": 
+      case "forcepower":
+      case "specialization":
         this.position.width = 715;
         this.position.height = 840;
         data.data.isReadOnly = false;
         if (!this.options.editable) {
           data.data.isEditing = false;
           data.data.isReadOnly = true;
-        } 
+        }
+        // Check for updates to talents description and activation.
+        const talents = data.data.talents;
+        for (let talent in talents) {
+          if (talents[talent].itemId) {
+            const parentTalent = game.items.get(talents[talent].itemId);
+            talents[talent].description = parentTalent.data.data.description;
+            talents[talent].activation = parentTalent.data.data.activation.value;
+          }
+        }
         break;
       default:
     }
@@ -90,8 +99,8 @@ export class ItemSheetFFG extends ItemSheet {
     html.find(".specialization-talent .talent-body").on("click", (event) => {
       const li = event.currentTarget;
       const parent = $(li).parents(".specialization-talent")[0];
-      const itemId = parent.dataset.itemid
-      
+      const itemId = parent.dataset.itemid;
+
       const item = game.items.get(itemId);
       item.sheet.render(true);
     });
@@ -132,11 +141,11 @@ export class ItemSheetFFG extends ItemSheet {
       });
     }
 
-    if(["forcepower", "specialization"].includes(this.object.data.type)) {
+    if (["forcepower", "specialization"].includes(this.object.data.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
     }
 
-    if(this.object.data.type === "specialization") {
+    if (this.object.data.type === "specialization") {
       const dragDrop = new DragDrop({
         dragSelector: ".item",
         dropSelector: ".specialization-talent",
@@ -148,8 +157,6 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     html.find(".popout-editor").on("click", this._onPopoutEditor.bind(this));
-
-    
   }
 
   /* -------------------------------------------- */
@@ -219,7 +226,6 @@ export class ItemSheetFFG extends ItemSheet {
     return this.object.update(formData);
   }
 
-
   async _onClickTalentControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
@@ -229,39 +235,37 @@ export class ItemSheetFFG extends ItemSheet {
     let attrs = this.object.data.data.upgrades;
     let itemType = "upgrades";
 
-    if($(a).parents(".specialization-talent").length > 0) {
+    if ($(a).parents(".specialization-talent").length > 0) {
       attrs = this.object.data.data.talents;
       itemType = "talents";
-    } 
-    
-    
+    }
+
     const form = this.form;
-    
+
     if (action === "edit") {
-      const currentValue =  $(`input[name='data.isEditing']`).val() == 'true';
+      const currentValue = $(`input[name='data.isEditing']`).val() == "true";
       $(`input[name='data.isEditing']`).val(!currentValue);
 
       $(".talent-grid").toggleClass("talent-disable-edit");
     }
 
     if (action === "combine") {
-      
       const nextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 1}`;
       const nextNextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 2}`;
       const nextNextNextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 3}`;
 
-      if(!attrs[key].size || attrs[key].size === "single") {
-        if(attrs[nextKey].size === "double") {
+      if (!attrs[key].size || attrs[key].size === "single") {
+        if (attrs[nextKey].size === "double") {
           $(`input[name='data.upgrades.${key}.size']`).val("triple");
-        } else if(attrs[nextKey].size === "triple") {
+        } else if (attrs[nextKey].size === "triple") {
           $(`input[name='data.upgrades.${key}.size']`).val("full");
         } else {
           $(`input[name='data.upgrades.${key}.size']`).val("double");
         }
-        
+
         $(`input[name='data.upgrades.${nextKey}.visible']`).val("false");
       } else if (attrs[key].size === "double") {
-        if(attrs[nextNextKey].size === "double") {
+        if (attrs[nextNextKey].size === "double") {
           $(`input[name='data.upgrades.${key}.size']`).val("full");
         } else {
           $(`input[name='data.upgrades.${key}.size']`).val("triple");
@@ -276,7 +280,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
       await this._onSubmit(event);
     }
-    
+
     if (action === "split") {
       const nextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 1}`;
       const nextNextKey = `upgrade${parseInt(key.replace("upgrade", ""), 10) + 2}`;
@@ -297,24 +301,24 @@ export class ItemSheetFFG extends ItemSheet {
       }
       await this._onSubmit(event);
     }
-    
+
     if (action === "link-top") {
       if ($(".talent-disable-edit").length === 0) {
         const linkid = a.dataset.linknumber;
 
-        const currentValue = $(`input[name='data.${itemType}.${key}.links-top-${linkid}']`).val() == 'true';
+        const currentValue = $(`input[name='data.${itemType}.${key}.links-top-${linkid}']`).val() == "true";
         $(`input[name='data.${itemType}.${key}.links-top-${linkid}']`).val(!currentValue);
-    
+
         await this._onSubmit(event);
       }
     }
-        
-    if (action === "link-right") { 
+
+    if (action === "link-right") {
       if ($(".talent-disable-edit").length === 0) {
         const linkid = a.dataset.linknumber;
-        const currentValue = $(`input[name='data.${itemType}.${key}.links-right']`).val() == 'true';
+        const currentValue = $(`input[name='data.${itemType}.${key}.links-right']`).val() == "true";
         $(`input[name='data.${itemType}.${key}.links-right']`).val(!currentValue);
-    
+
         await this._onSubmit(event);
       }
     }
@@ -328,17 +332,16 @@ export class ItemSheetFFG extends ItemSheet {
 
     const parent = $(a.parentElement);
     const parentPosition = $(parent).offset();
-    
+
     const windowHeight = parseInt($(parent).height(), 10) + 100 < 200 ? 200 : parseInt($(parent).height(), 10) + 100;
     const windowWidth = parseInt($(parent).width(), 10) < 320 ? 320 : parseInt($(parent).width(), 10);
     const windowLeft = parseInt(parentPosition.left, 10);
     const windowTop = parseInt(parentPosition.top, 10);
 
-
     const title = a.dataset.label ? `Editor for ${this.object.name}: ${label}` : `Editor for ${this.object.name}`;
 
     new PopoutEditor(this.object, {
-      name : key,
+      name: key,
       title: title,
       height: windowHeight,
       width: windowWidth,
@@ -358,7 +361,7 @@ export class ItemSheetFFG extends ItemSheet {
   importItemFromCollection(collection, entryId) {
     const pack = game.packs.get(collection);
     if (pack.metadata.entity !== "Item") return;
-    return pack.getEntity(entryId).then(ent => {
+    return pack.getEntity(entryId).then((ent) => {
       console.log(`${vtt} | Importing Item ${ent.name} from ${collection}`);
       delete ent.data._id;
       return ent;
@@ -380,14 +383,14 @@ export class ItemSheetFFG extends ItemSheet {
     if (data.pack) {
       itemObject = this.importItemFromCollection(data.pack, data.id);
     }
-    
+
     // Case 2 - Import from World entity
     else {
       itemObject = game.items.get(data.id);
       if (!itemObject) return;
     }
 
-    if(itemObject.data.type === "talent") {
+    if (itemObject.data.type === "talent") {
       const li = event.currentTarget;
       const talentId = $(li).attr("id");
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
