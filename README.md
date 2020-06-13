@@ -27,7 +27,10 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
-- 12/06/2020 - Cstadther - Added Specializations Trees, utilizing drag and drop talents.  Only for characters.
+- 13/06/2020 - Esrin - QoL improvements to specialisations to keep them synced up with any changes to linked talent descriptions or activations.
+- 13/06/2020 - Esrin - Restored individual embedded talents to character sheets to allow for talents without associated specialisations (such as for rivals and nemesis).
+- 13/06/2020 - Esrin - Bugfix to force power description display area.
+- 12/06/2020 - Cstadther - Added Specializations Trees, utilizing drag and drop talents. Only for characters.
 - 12/06/2020 - Esrin - Completed all initial Group Manager functionality and added last localisation hooks.
 - 12/06/2020 - Cstadther - Added popout editor and dice symbol rendering for force powers. Updated popout editor to specify height/width/left/top.
 - 12/06/2020 - Cstadther - Added popout editor for specials and dice symbol rendering in descriptions and specials
