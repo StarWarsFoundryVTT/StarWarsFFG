@@ -390,9 +390,6 @@ export class ItemSheetFFG extends ItemSheet {
     if(itemObject.data.type === "talent") {
       const li = event.currentTarget;
       const talentId = $(li).attr("id");
-
-      console.log(talentId);
-
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
       $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
@@ -401,9 +398,5 @@ export class ItemSheetFFG extends ItemSheet {
 
       await this._onSubmit(event);
     }
-
-    console.log(itemObject);
-
-    
   }
 }

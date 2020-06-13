@@ -139,7 +139,7 @@ export class ActorFFG extends Actor {
           const item = talent;
           item.activationLabel = CONFIG.FFG.activations[item.activation].label;
           item.firstSpecialization = element._id;
-          item.rank = 1;
+          item.rank = talent.rank;
 
           let index = globalTalentList.findIndex(obj => {
             return obj.name === item.name;
@@ -148,7 +148,7 @@ export class ActorFFG extends Actor {
           if (index < 0) {
             globalTalentList.push(item);
           } else {
-            globalTalentList[index].rank += 1;
+            globalTalentList[index].rank += talent.rank;
           }
         });
         for (let talents of Object.keys(element.talentList)) {
