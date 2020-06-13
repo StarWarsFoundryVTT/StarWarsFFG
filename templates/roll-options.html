@@ -1,44 +1,91 @@
 <div id="{{id}}">
+  <style>
+    .dice-pool img {
+      border: 0;
+    }
+    .dice-pool {
+      margin: auto;
+    }
+    .pool-container img {
+      border: 0;
+    }
+    .pool-value {
+      height: 42px;
+      border: 1px solid black;
+      margin: auto;
+      position: relative;
+      background-color: #ddd;
+    }
+    .pool-value input {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      font-size: 30px;
+      text-align: center;
+      background: none;
+    }
+    .upgrade-buttons {
+      display: flex;
+      margin: 10px;
+    }
+  </style>
   <div class="dice-pool"></div>
+  <div class="upgrade-buttons">
+    <button id="upgrade-ability">Upgrade Ability</button>
+    <button id="upgrade-difficulty">Upgrade Difficulty</button>
+  </div>
   <table>
-    <tr>
-	  <td><img src="modules/special-dice-roller/public/images/sw/yellow.png" width="20" height="20"></td>
+    <tr class="pool-container flex-group-center">
+      <td><img src="modules/special-dice-roller/public/images/sw/yellow.png" width="40" height="40" /></td>
+      <td>
+        <div class="pool-value"><input type="button" name="proficiency" min="0" /></div>
+      </td>
       <td>Proficiency</td>
-      <td><input type="number" name="proficiency" min="0"></td>
     </tr>
-    <tr>
-	  <td><img src="modules/special-dice-roller/public/images/sw/green.png" width="20" height="20"></td>
+    <tr class="pool-container flex-group-center">
+      <td><img src="modules/special-dice-roller/public/images/sw/green.png" width="40" height="40" /></td>
+      <td>
+        <div class="pool-value"><input type="button" name="ability" min="0" /></div>
+      </td>
       <td>Ability</td>
-      <td><input type="number" name="ability" min="0"></td>
     </tr>
-    <tr>
-	  <td><img src="modules/special-dice-roller/public/images/sw/red.png" width="20" height="20"></td>
+    <tr class="pool-container flex-group-center">
+      <td><img src="modules/special-dice-roller/public/images/sw/red.png" width="40" height="40" /></td>
+      <td>
+        <div class="pool-value"><input type="button" name="challenge" min="0" /></div>
+      </td>
       <td>Challenge</td>
-      <td><input type="number"name="challenge" min="0"></td>
     </tr>
-    <tr>
-	  <td><img src="modules/special-dice-roller/public/images/sw/purple.png" width="20" height="20"></td>
+    <tr class="pool-container flex-group-center">
+      <td><img src="modules/special-dice-roller/public/images/sw/purple.png" width="40" height="40" /></td>
+      <td>
+        <div class="pool-value"><input type="button" name="difficulty" min="0" /></div>
+      </td>
       <td>Difficulty</td>
-      <td><input type="number" name="difficulty" min="0"></td>
     </tr>
-    <tr>
-	  <td><img src="modules/special-dice-roller/public/images/sw/blue.png" width="20" height="20"></td>
+    <tr class="pool-container flex-group-center">
+      <td><img src="modules/special-dice-roller/public/images/sw/blue.png" width="40" height="40" /></td>
+      <td>
+        <div class="pool-value"><input type="button" name="boost" min="0" /></div>
+      </td>
       <td>Boost</td>
-      <td><input type="number"name="boost" min="0"></td>
     </tr>
-    <tr>
-	  <td><img src="modules/special-dice-roller/public/images/sw/black.png" width="20" height="20"></td>
+    <tr class="pool-container flex-group-center">
+      <td><img src="modules/special-dice-roller/public/images/sw/black.png" width="40" height="40" /></td>
+      <td>
+        <div class="pool-value"><input type="button" name="setback" min="0" /></div>
+      </td>
       <td>Setback</td>
-      <td><input type="number" name="setback" min="0"></td>
     </tr>
-    <tr>
-	  <td><img src="modules/special-dice-roller/public/images/sw/whiteHex.png" width="20" height="20"></td>
+    <tr class="pool-container flex-group-center">
+      <td><img src="modules/special-dice-roller/public/images/sw/whiteHex.png" width="40" height="40" /></td>
+      <td>
+        <div class="pool-value"><input type="button" name="force" min="0" /></div>
+      </td>
       <td>Force</td>
-      <td><input type="number" name="force" min="0"></td>
     </tr>
   </table>
 </div>
-
 
 <script>
   function setupInput(scope, pool, type) {
@@ -48,6 +95,18 @@
       input.addEventListener("change", (event) => {
           pool[type] = parseInt(event.target.value);
           updatePreview(scope, pool);
+      });
+      input.addEventListener("click", (event) => {
+        event.target.value++;
+        pool[type] = parseInt(event.target.value);
+        updatePreview(scope, pool);
+      });
+      input.addEventListener("contextmenu", (event) => {
+        if (event.target.value > 0) {
+          event.target.value--;
+          pool[type] = parseInt(event.target.value);
+          updatePreview(scope, pool);
+        }
       });
   }
 
@@ -60,6 +119,21 @@
   (function() {
       const scope = document.getElementById("{{{id}}}");
       const pool = new DicePoolFFG({{{json dicePool}}});
+      const upgradeAbButton = document.getElementById("upgrade-ability");
+      const upgradeDiButton = document.getElementById("upgrade-difficulty");
+
+      upgradeAbButton.addEventListener("click", (event) => {
+        pool.upgrade(1);
+        setupInput(scope, pool, "proficiency");
+        setupInput(scope, pool, "ability");
+        updatePreview(scope, pool);
+      });
+      upgradeDiButton.addEventListener("click", (event) => {
+        pool.upgradeDifficulty(1);
+        setupInput(scope, pool, "challenge");
+        setupInput(scope, pool, "difficulty");
+        updatePreview(scope, pool);
+      });
 
       updatePreview(scope, pool);
       setupInput(scope, pool, "proficiency");
