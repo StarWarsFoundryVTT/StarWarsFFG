@@ -55,8 +55,14 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 550;
         break;
       case "forcepower": 
+      case "specialization": 
         this.position.width = 715;
         this.position.height = 840;
+        data.data.isReadOnly = false;
+        if (!this.options.editable) {
+          data.data.isEditing = false;
+          data.data.isReadOnly = true;
+        } 
         break;
       default:
     }
@@ -79,6 +85,15 @@ export class ItemSheetFFG extends ItemSheet {
     new TabsV2(tabs, {
       initial: initial,
       callback: (clicked) => (this._sheetTab = clicked.data("tab")),
+    });
+
+    html.find(".specialization-talent .talent-body").on("click", (event) => {
+      const li = event.currentTarget;
+      const parent = $(li).parents(".specialization-talent")[0];
+      const itemId = parent.dataset.itemid
+      
+      const item = game.items.get(itemId);
+      item.sheet.render(true);
     });
 
     // Everything below here is only needed if the sheet is editable
@@ -117,11 +132,24 @@ export class ItemSheetFFG extends ItemSheet {
       });
     }
 
-    if(this.object.data.type === "forcepower") {
+    if(["forcepower", "specialization"].includes(this.object.data.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
     }
 
+    if(this.object.data.type === "specialization") {
+      const dragDrop = new DragDrop({
+        dragSelector: ".item",
+        dropSelector: ".specialization-talent",
+        permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+        callbacks: { drop: this._onDropTalentToSpecialization.bind(this) },
+      });
+
+      dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
+    }
+
     html.find(".popout-editor").on("click", this._onPopoutEditor.bind(this));
+
+    
   }
 
   /* -------------------------------------------- */
@@ -197,7 +225,16 @@ export class ItemSheetFFG extends ItemSheet {
     const a = event.currentTarget;
     const action = a.dataset.action;
     const key = a.dataset.key;
-    const attrs = this.object.data.data.upgrades;
+
+    let attrs = this.object.data.data.upgrades;
+    let itemType = "upgrades";
+
+    if($(a).parents(".specialization-talent").length > 0) {
+      attrs = this.object.data.data.talents;
+      itemType = "talents";
+    } 
+    
+    
     const form = this.form;
     
     if (action === "edit") {
@@ -265,8 +302,8 @@ export class ItemSheetFFG extends ItemSheet {
       if ($(".talent-disable-edit").length === 0) {
         const linkid = a.dataset.linknumber;
 
-        const currentValue = $(`input[name='data.upgrades.${key}.links-top-${linkid}']`).val() == 'true';
-        $(`input[name='data.upgrades.${key}.links-top-${linkid}']`).val(!currentValue);
+        const currentValue = $(`input[name='data.${itemType}.${key}.links-top-${linkid}']`).val() == 'true';
+        $(`input[name='data.${itemType}.${key}.links-top-${linkid}']`).val(!currentValue);
     
         await this._onSubmit(event);
       }
@@ -275,8 +312,8 @@ export class ItemSheetFFG extends ItemSheet {
     if (action === "link-right") { 
       if ($(".talent-disable-edit").length === 0) {
         const linkid = a.dataset.linknumber;
-        const currentValue = $(`input[name='data.upgrades.${key}.links-right']`).val() == 'true';
-        $(`input[name='data.upgrades.${key}.links-right']`).val(!currentValue);
+        const currentValue = $(`input[name='data.${itemType}.${key}.links-right']`).val() == 'true';
+        $(`input[name='data.${itemType}.${key}.links-right']`).val(!currentValue);
     
         await this._onSubmit(event);
       }
@@ -308,5 +345,58 @@ export class ItemSheetFFG extends ItemSheet {
       left: windowLeft,
       top: windowTop,
     }).render(true);
+  }
+
+  _canDragStart(selector) {
+    return this.options.editable && this.object.owner;
+  }
+
+  _canDragDrop(selector) {
+    return true;
+  }
+
+  importItemFromCollection(collection, entryId) {
+    const pack = game.packs.get(collection);
+    if (pack.metadata.entity !== "Item") return;
+    return pack.getEntity(entryId).then(ent => {
+      console.log(`${vtt} | Importing Item ${ent.name} from ${collection}`);
+      delete ent.data._id;
+      return ent;
+    });
+  }
+
+  async _onDropTalentToSpecialization(event) {
+    let data;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    // Case 1 - Import from a Compendium pack
+    let itemObject;
+    if (data.pack) {
+      itemObject = this.importItemFromCollection(data.pack, data.id);
+    }
+    
+    // Case 2 - Import from World entity
+    else {
+      itemObject = game.items.get(data.id);
+      if (!itemObject) return;
+    }
+
+    if(itemObject.data.type === "talent") {
+      const li = event.currentTarget;
+      const talentId = $(li).attr("id");
+      $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
+      $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
+      $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
+      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
+      $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
+
+      await this._onSubmit(event);
+    }
   }
 }

@@ -82,7 +82,7 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Update Inventory Item - By clicking entire line
     html.find(".item").click((ev) => {
-      if (!$(ev.target).hasClass("fa-trash")) {
+      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fa-times")) {
         const li = $(ev.currentTarget);
         const item = this.actor.getOwnedItem(li.data("itemId"));
         if (item?.sheet) {

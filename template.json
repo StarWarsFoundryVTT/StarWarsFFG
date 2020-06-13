@@ -20,6 +20,7 @@
       "specialisation": {
         "specialisation": {
           "value": "",
+          "list": [],
           "type": "String"
         }
       },
@@ -518,7 +519,7 @@
     }
   },
   "Item": {
-    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticaldamage", "forcepower"],
+    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticaldamage", "forcepower", "specialization"],
     "templates": {
       "basic": {
         "description": "",
@@ -727,6 +728,27 @@
         "upgrade13" : {},
         "upgrade14" : {},
         "upgrade15" : {}
+      }
+    },
+    "specialization" : {
+      "description" : "",
+      "talents" : {
+        "talent0" : {},
+        "talent1" : {},
+        "talent2" : {},
+        "talent3" : {},
+        "talent4" : {},
+        "talent5" : {},
+        "talent6" : {},
+        "talent7" : {},
+        "talent8" : {},
+        "talent9" : {},
+        "talent10" : {},
+        "talent11" : {},
+        "talent12" : {},
+        "talent13" : {},
+        "talent14" : {},
+        "talent15" : {}
       }
     }
   }

@@ -36,3 +36,264 @@ table {
     }
   }
 }
+
+.talent-body {
+  height : 100px;
+}
+
+
+.talent-hidden {
+  display: none;
+}
+
+.talent-grid {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.talent-upgrade {
+  position: relative;
+  margin: 10px 10px 0 10px;
+  .talent-actions {
+    display:none;
+
+    .split, .combine {
+      display: none;
+    }
+
+    &.talent-canSplit {
+      display: block;
+
+      .split {
+        display: initial;
+        position: absolute;
+        right: 30px;
+        top: 15px;
+        font-size: 15px;
+        color: white;
+
+        i {
+          transform: rotate(45deg);
+        }
+      }
+    }
+
+    &.talent-canCombine {
+      display: block;
+
+      .combine {
+        display: initial;
+        position: absolute;
+        right: -16px;
+        font-size: 15px;
+        top: 15px;
+
+        i {
+          transform: rotate(45deg);
+        }
+      }
+    }
+  }
+
+  &.talent-single {
+    flex: 1 0 21%
+  }
+  &.talent-double {
+    flex: 1 0 46%
+  }
+  &.talent-triple {
+    flex: 1 0 71%
+  }
+  &.talent-full {
+    flex: 1 0 97%
+  }
+}
+
+.talent-background {
+  
+  background-color: #ddd;
+  padding: 5px;
+
+  
+
+  --notchSize: 9px;
+
+  clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+
+  .talent-header {
+
+    background-color: rgb(0, 5, 68);
+    padding: 5px;
+
+    --notchSize: 9px;
+
+    clip-path: polygon(0 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
+
+    div {
+      display: inline-block;
+      vertical-align: middle;
+      color: white;
+
+      &.talent-name {
+        width: 75%;
+      }
+
+      input[type="text"] {
+        border: 0px;
+        background-color: rgb(0, 30, 130);
+        color: white;
+      }
+    }
+
+  }
+}
+
+.talent-row {
+  margin: 10px 0;
+
+  .talent-upgrade {
+    margin: 0 3px;
+  }
+}
+
+.talent-connections {
+  font-size: 15px;;
+}
+
+.talent-single {
+  textarea {
+    max-width: 145px;
+    // max-height: 50px;
+  }
+}
+
+.talent-double {
+  textarea {
+    max-width: 315px;
+    // max-height: 50px;
+  }
+}
+
+.talent-triple {
+  textarea {
+    max-width: 495px;
+    // max-height: 50px;
+  }
+}
+
+.talent-full {
+  textarea {
+    max-width: 670px;
+    // max-height: 50px;
+  }
+}
+
+.talent-connection-point-top {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+
+  &.talent-single {
+    position: relative;
+    text-align: center;
+    transform: initial;
+    left: initial;
+    display: inline-block;
+  }
+
+  &.talent-double {
+    position: relative;
+    display: inline-block;
+    width: 50%;
+    left: initial;
+    transform: none;
+    text-align: center;
+  }
+  &.talent-triple {
+    position: relative;
+    display: inline-block;
+    width: 33%;
+    left: initial;
+    transform: none;
+    text-align: center;
+  }
+  &.talent-full {
+    position: relative;
+    display: inline-block;
+    width: 25%;
+    left: initial;
+    transform: none;
+    text-align: center;
+  }
+
+  .talent-connector-up {
+    display: none;
+  }
+}
+
+.talent-connection-point-right {
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  .talent-connector-side {
+    display: none;
+  }
+}
+
+.talent-connector {
+  i {
+    display:none;
+  }
+
+  .talent-connector-up, .talent-connector-side {
+    display: inline-block;
+    width: 20px;
+    height: 12px;
+    background-color: black;
+    position: absolute;
+    top: -3px;
+
+    i {
+      display: initial;
+      color: white;
+    }
+  }
+
+  .talent-connector-side {
+    right: -15px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.talent-disable-edit {
+  .talent-actions {
+    display: none !important;
+  }
+
+  .talent-connections {
+    i {
+      display: none !important;
+    }
+  }
+}
+
+.talent-action {
+  cursor: pointer;
+}
+
+.header-fields {
+  position: relative;
+
+  .talent-actions {
+    position: absolute;
+    right: 10px;
+    top: 14px;
+    color: white;
+  }
+}

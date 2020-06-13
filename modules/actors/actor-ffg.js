@@ -124,6 +124,43 @@ export class ActorFFG extends Actor {
 
     // Finally set Soak value on character.
     data.stats.soak.value = soak;
+
+    // Build complete talent list.
+
+    const specializations = actorData.items.filter(item => {
+      return item.type === "specialization";
+    });
+
+    const globalTalentList = [];
+    specializations.forEach(element => {
+      console.log(element);
+      if(element?.talentList && element.talentList.length > 0) {
+        element.talentList.forEach(talent => {
+          const item = talent;
+          item.activationLabel = CONFIG.FFG.activations[item.activation].label;
+          item.firstSpecialization = element._id;
+          item.rank = talent.rank;
+
+          let index = globalTalentList.findIndex(obj => {
+            return obj.name === item.name;
+          });
+
+          if (index < 0) {
+            globalTalentList.push(item);
+          } else {
+            globalTalentList[index].rank += talent.rank;
+          }
+        });
+        for (let talents of Object.keys(element.talentList)) {
+          console.log(talents);
+        }
+      }
+      
+    });
+
+    console.log(globalTalentList)
+
+    data.talentList = globalTalentList;
   }
 
   /**
