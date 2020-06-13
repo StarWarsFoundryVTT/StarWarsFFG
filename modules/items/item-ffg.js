@@ -18,7 +18,7 @@ export class ItemFFG extends Item {
 
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description);
     itemData.safe_desc = data.description.replace(/(<([^>]+)>)/gi, "");
-    
+
     // perform localisation of dynamic values
     switch (this.type) {
       case "weapon":
@@ -39,11 +39,11 @@ export class ItemFFG extends Item {
       default:
     }
 
-    if(this.type === "forcepower") {
+    if (this.type === "forcepower") {
       this._prepareForcePowers();
     }
 
-    if(this.type === "specialization") {
+    if (this.type === "specialization") {
       this._prepareSpecializations();
     }
   }
@@ -60,19 +60,19 @@ export class ItemFFG extends Item {
     const itemData = this.data;
     const talents = itemData.data[collection];
     let rowcount = 0;
-    const controls = Object.keys(talents).filter(item => {
+    const controls = Object.keys(talents).filter((item) => {
       return item.includes(itemType);
     });
 
     let itemList = [];
-    
-    for (let upgrade of controls) { 
-      if(upgrade.includes(itemType)) {
-        if(talents[upgrade].islearned) {
+
+    for (let upgrade of controls) {
+      if (upgrade.includes(itemType)) {
+        if (talents[upgrade].islearned) {
           const item = talents[upgrade];
           item.rank = 1;
 
-          let index = itemList.findIndex(obj => {
+          let index = itemList.findIndex((obj) => {
             return obj.name === item.name;
           });
 
@@ -83,15 +83,15 @@ export class ItemFFG extends Item {
           }
         }
 
-        if(talents[upgrade].visible) {
-          if(!talents[upgrade].size || talents[upgrade].size === "single" ) {
+        if (talents[upgrade].visible) {
+          if (!talents[upgrade].size || talents[upgrade].size === "single") {
             talents[upgrade].size = "single";
             talents[upgrade].canSplit = false;
             rowcount += 1;
-          } else if(talents[upgrade].size === "double") {
+          } else if (talents[upgrade].size === "double") {
             rowcount += 2;
             talents[upgrade].canSplit = true;
-          } else if(talents[upgrade].size === "triple") {
+          } else if (talents[upgrade].size === "triple") {
             rowcount += 3;
             talents[upgrade].canSplit = true;
           } else {
@@ -102,20 +102,20 @@ export class ItemFFG extends Item {
 
         talents[upgrade].canCombine = false;
 
-        if(typeof talents[upgrade].visible === "undefined") {
+        if (typeof talents[upgrade].visible === "undefined") {
           talents[upgrade].visible = true;
         }
 
         talents[upgrade].canLinkTop = true;
         talents[upgrade].canLinkRight = true;
 
-        if(rowcount === 4) {
+        if (rowcount === 4) {
           talents[upgrade].canLinkRight = false;
         }
 
         const controlNumber = parseInt(upgrade.replace(itemType, ""), 10);
-        
-        if(rowcount < 4) {
+
+        if (rowcount < 4) {
           talents[upgrade].canCombine = true;
         } else {
           rowcount = 0;
@@ -129,7 +129,6 @@ export class ItemFFG extends Item {
 
     itemData[listProperty] = itemList;
   }
-
 
   _prepareSpecializations() {
     this._prepareTalentTrees("talents", "talent", "talentList");

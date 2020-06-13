@@ -70,6 +70,11 @@ export class ItemSheetFFG extends ItemSheet {
             const parentTalent = game.items.get(talents[talent].itemId);
             talents[talent].description = parentTalent.data.data.description;
             talents[talent].activation = parentTalent.data.data.activation.value;
+
+            // Localise talent activations
+            const cleanedActivationName = talents[talent].activation.replace(/[\W_]+/g, "");
+            const activationId = `SWFFG.TalentActivations${cleanedActivationName}`;
+            talents[talent].activationlabel = activationId;
           }
         }
         break;
