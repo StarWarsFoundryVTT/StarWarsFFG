@@ -31,8 +31,6 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 12/06/2020 - Esrin - Completed all initial Group Manager functionality and added last localisation hooks.
 - 12/06/2020 - Cstadther - Added popout editor and dice symbol rendering for force powers. Updated popout editor to specify height/width/left/top.
 - 12/06/2020 - Cstadther - Added popout editor for specials and dice symbol rendering in descriptions and specials
-- 12/06/2020 - Cstadther - Added popout editor and dice symbol rendering for force powers.  Updated popout editor to specify height/width/left/top.
-- 11/06/2020 - Cstadther - Added popout editor for specials and dice symbol rendering in descriptions and specials
 - 12/06/2020 - Esrin - Added warning on startup if Special-Dice-Roller module is not installed and activated.
 - 12/06/2020 - Esrin - First pass on the group sheet. Now automatically populates with player characters, can open character sheets, change initiative mode and use the destiny pool. Other functionality under construction.
 - 10/06/2020 - Cstadther - Readded Force Pool to Talent Tab
