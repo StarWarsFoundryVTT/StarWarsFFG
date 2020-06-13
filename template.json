@@ -709,46 +709,50 @@
       "severity": 1,
       "description": ""
     },
-    "forcepower" : {
-      "description" : "",
-      "upgrades" : {
-        "upgrade0" : {},
-        "upgrade1" : {},
-        "upgrade2" : {},
-        "upgrade3" : {},
-        "upgrade4" : {},
-        "upgrade5" : {},
-        "upgrade6" : {},
-        "upgrade7" : {},
-        "upgrade8" : {},
-        "upgrade9" : {},
-        "upgrade10" : {},
-        "upgrade11" : {},
-        "upgrade12" : {},
-        "upgrade13" : {},
-        "upgrade14" : {},
-        "upgrade15" : {}
+    "forcepower": {
+      "description": "",
+      "upgrades": {
+        "upgrade0": {},
+        "upgrade1": {},
+        "upgrade2": {},
+        "upgrade3": {},
+        "upgrade4": {},
+        "upgrade5": {},
+        "upgrade6": {},
+        "upgrade7": {},
+        "upgrade8": {},
+        "upgrade9": {},
+        "upgrade10": {},
+        "upgrade11": {},
+        "upgrade12": {},
+        "upgrade13": {},
+        "upgrade14": {},
+        "upgrade15": {}
       }
     },
-    "specialization" : {
-      "description" : "",
-      "talents" : {
-        "talent0" : {},
-        "talent1" : {},
-        "talent2" : {},
-        "talent3" : {},
-        "talent4" : {},
-        "talent5" : {},
-        "talent6" : {},
-        "talent7" : {},
-        "talent8" : {},
-        "talent9" : {},
-        "talent10" : {},
-        "talent11" : {},
-        "talent12" : {},
-        "talent13" : {},
-        "talent14" : {},
-        "talent15" : {}
+    "specialization": {
+      "description": "",
+      "talents": {
+        "talent0": {},
+        "talent1": {},
+        "talent2": {},
+        "talent3": {},
+        "talent4": {},
+        "talent5": {},
+        "talent6": {},
+        "talent7": {},
+        "talent8": {},
+        "talent9": {},
+        "talent10": {},
+        "talent11": {},
+        "talent12": {},
+        "talent13": {},
+        "talent14": {},
+        "talent15": {},
+        "talent16": {},
+        "talent17": {},
+        "talent18": {},
+        "talent19": {}
       }
     }
   }

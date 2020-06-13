@@ -55,9 +55,17 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 550;
         break;
       case "forcepower":
-      case "specialization":
         this.position.width = 715;
         this.position.height = 840;
+        data.data.isReadOnly = false;
+        if (!this.options.editable) {
+          data.data.isEditing = false;
+          data.data.isReadOnly = true;
+        }
+        break;
+      case "specialization":
+        this.position.width = 715;
+        this.position.height = 980;
         data.data.isReadOnly = false;
         if (!this.options.editable) {
           data.data.isEditing = false;
