@@ -88,14 +88,15 @@
 </div>
 
 <script>
+  function updateInput(scope, pool, type) {
+    const input = scope.querySelector(`[name="${type}"`);
+    input.value = pool[type];
+  }
+
   function setupInput(scope, pool, type) {
       const input = scope.querySelector(`[name="${type}"`);
       input.value = pool[type];
 
-      input.addEventListener("change", (event) => {
-          pool[type] = parseInt(event.target.value);
-          updatePreview(scope, pool);
-      });
       input.addEventListener("click", (event) => {
         event.target.value++;
         pool[type] = parseInt(event.target.value);
@@ -124,14 +125,14 @@
 
       upgradeAbButton.addEventListener("click", (event) => {
         pool.upgrade(1);
-        setupInput(scope, pool, "proficiency");
-        setupInput(scope, pool, "ability");
+        updateInput(scope, pool, "proficiency");
+        updateInput(scope, pool, "ability");
         updatePreview(scope, pool);
       });
       upgradeDiButton.addEventListener("click", (event) => {
         pool.upgradeDifficulty(1);
-        setupInput(scope, pool, "challenge");
-        setupInput(scope, pool, "difficulty");
+        updateInput(scope, pool, "challenge");
+        updateInput(scope, pool, "difficulty");
         updatePreview(scope, pool);
       });
 
