@@ -257,3 +257,10 @@ Hooks.once("canvasInit", (canvas) => {
     console.error("ERROR: You must install and activate the 'Special-Dice-Roller' module in order for this system to function correctly.");
   }
 });
+
+
+Hooks.on("renderJournalSheet", (journal, obj, data) => {
+  let content = $(obj).find(".editor-content").html();
+
+  $(obj).find(".editor-content").html(PopoutEditor.renderDiceImages(content));
+})
