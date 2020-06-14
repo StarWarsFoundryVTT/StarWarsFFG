@@ -15,3 +15,123 @@
     cursor: pointer;
   }
 }
+
+
+span.dietype {
+  font-family: $font-dice;
+
+  &.ability {
+    color: green;
+
+    // &::after {
+    //   content: "d";
+    // }
+  }
+
+  &.advantage {
+    color: black;
+
+    // &::after {
+    //   content: "a";
+    // }
+  }
+
+  &.boost {
+    color: lightskyblue;
+
+    // &::after {
+    //   content: "b";
+    // }
+  }
+  &.challenge {
+    color: red;
+
+    // &::after {
+    //   content: "c";
+    // }
+  }
+  &.dark {
+    color: black;
+
+    // &::after {
+    //   content: "z";
+    // }
+  }
+  &.despair {
+    color: black;
+
+    // &::after {
+    //   content: "y";
+    // }
+  }
+  &.difficulty {
+    color: purple;
+
+    // &::after {
+    //   content: "d";
+    // }
+  }
+  &.forcepoint {
+    color: black;
+
+    // &::after {
+    //   content: "Y";
+    // }
+  }
+  &.failure {
+    color: black;
+
+    // &::after {
+    //   content: "f";
+    // }
+  }
+  &.force {
+    color: black;
+
+    // &::after {
+    //   content: "C";
+    // }
+  }
+  &.light {
+    color: black;
+
+    // &::after {
+    //   content: "Z";
+    // }
+  }
+  &.proficiency {
+    color: yellow;
+
+    // &::after {
+    //   content: "c";
+    // }
+  }
+  &.setback {
+    color: black;
+
+    // &::after {
+    //   content: "b";
+    // }
+  }
+  &.success {
+    color: black;
+
+    // &::after {
+    //   content: "s";
+    // }
+  }
+  &.threat {
+    color: black;
+
+    // &::after {
+    //   content: "t";
+    // }
+  }
+  &.triumph {
+    color: black;
+
+    // &::after {
+    //   content: "x";
+    // }
+  }
+}
