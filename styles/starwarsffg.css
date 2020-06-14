@@ -881,6 +881,7 @@ span.dietype.triumph {
 
 .starwarsffg .talent-body {
   height: 100px;
+  overflow: auto;
 }
 
 .starwarsffg .talent-hidden {
