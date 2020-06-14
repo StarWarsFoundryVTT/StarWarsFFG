@@ -80,10 +80,12 @@ export class ItemSheetFFG extends ItemSheet {
             talents[talent].description = parentTalent.data.data.description;
             talents[talent].activation = parentTalent.data.data.activation.value;
             talents[talent].activationlabel = parentTalent.data.data.activation.label;
-            if (!this.object.options.actor.isToken) {
-              this.object.update({ [`data.talents.${talent}.description`]: parentTalent.data.data.description });
-              this.object.update({ [`data.talents.${talent}.activation`]: parentTalent.data.data.activation.value });
-              this.object.update({ [`data.talents.${talent}.activationLabel`]: parentTalent.data.data.activation.label });
+            if (this.object.actor) {
+              if (!this.object.options.actor.isToken) {
+                this.object.update({ [`data.talents.${talent}.description`]: parentTalent.data.data.description });
+                this.object.update({ [`data.talents.${talent}.activation`]: parentTalent.data.data.activation.value });
+                this.object.update({ [`data.talents.${talent}.activationLabel`]: parentTalent.data.data.activation.label });
+              }
             }
           }
         }
