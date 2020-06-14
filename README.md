@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/06/2020 - Esrin - Bug fix for significant performance issues with synthetic actors containing specialisation items.
 - 14/06/2020 - Cstadther - Bug fix for #92, adding scroll bar to talent/force boxes.
 - 13/06/2020 - Cstadther - Added hook and text replace to add dice symbols to journal entries.
 - 13/06/2020 - Esrin - Added 4 extra talent slots to the specialisation trees to match sourcebook examples.
