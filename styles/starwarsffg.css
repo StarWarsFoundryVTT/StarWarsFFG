@@ -34,6 +34,74 @@
   cursor: pointer;
 }
 
+span.dietype {
+  font-family: "EotESymbol", sans-serif;
+}
+
+span.dietype.ability {
+  color: green;
+}
+
+span.dietype.advantage {
+  color: black;
+}
+
+span.dietype.boost {
+  color: lightskyblue;
+}
+
+span.dietype.challenge {
+  color: red;
+}
+
+span.dietype.dark {
+  color: black;
+}
+
+span.dietype.despair {
+  color: black;
+}
+
+span.dietype.difficulty {
+  color: purple;
+}
+
+span.dietype.forcepoint {
+  color: black;
+}
+
+span.dietype.failure {
+  color: black;
+}
+
+span.dietype.force {
+  color: black;
+}
+
+span.dietype.light {
+  color: black;
+}
+
+span.dietype.proficiency {
+  color: yellow;
+}
+
+span.dietype.setback {
+  color: black;
+}
+
+span.dietype.success {
+  color: black;
+}
+
+span.dietype.threat {
+  color: black;
+}
+
+span.dietype.triumph {
+  color: black;
+}
+
 .grid,
 .grid-2col {
   display: grid;
