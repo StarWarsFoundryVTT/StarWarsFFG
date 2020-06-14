@@ -158,7 +158,7 @@
             "type": "General",
             "max": 6
           },
-          "Athletics ": {
+          "Athletics": {
             "rank": 0,
             "characteristic": "Brawn",
             "groupskill": false,
