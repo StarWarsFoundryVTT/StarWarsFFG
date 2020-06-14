@@ -260,12 +260,7 @@ Hooks.once("canvasInit", (canvas) => {
 
 
 Hooks.on("renderJournalSheet", (journal, obj, data) => {
-  console.log(journal);
-  console.log(obj);
-  console.log(data);
-  
-  let content = $(".journal-sheet .editor-content").html();
+  let content = $(obj).find(".editor-content").html();
 
-  $(".journal-sheet .editor-content").html(PopoutEditor.renderDiceImages(content));
-
+  $(obj).find(".editor-content").html(PopoutEditor.renderDiceImages(content));
 })
