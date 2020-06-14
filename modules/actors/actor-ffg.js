@@ -38,6 +38,7 @@ export class ActorFFG extends Actor {
       const localizedField = game.i18n.localize(strId);
 
       data.skills[skill].label = localizedField;
+      data.skills = this._sortSkills(data.skills);
     }
 
     // Calculate the wound/strain value based on real_value and the max.
@@ -163,5 +164,32 @@ export class ActorFFG extends Actor {
   _capitalize(s) {
     if (typeof s !== "string") return "";
     return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  // Sort skills by label
+  _sortSkills(skills) {
+    // Break down skills object into an array for sorting (I hate Javascript)
+    let skillarray = Object.entries(skills);
+    skillarray.sort(function (a, b) {
+      // a should come before b in the sorted order
+      if (a[1]["label"] < b[1]["label"]) {
+        return -1 * 1;
+        // a should come after b in the sorted order
+      } else if (a[1]["label"] > b[1]["label"]) {
+        return 1 * 1;
+        // a and b are the same
+      } else {
+        return 0 * 1;
+      }
+    });
+    let skillobject = {};
+    // Reconstruct skills object from sorted array.
+    skillarray.forEach((skill) => {
+      const skillname = skill[0];
+      const value = skill[1];
+      skillobject[skillname] = value;
+    });
+    skills = skillobject;
+    return skills;
   }
 }
