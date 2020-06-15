@@ -221,4 +221,11 @@
   "SWFFG.CharacteristicCunningAbbreviation": "Ru",
   "SWFFG.CharacteristicWillpowerAbbreviation": "Vol",
   "SWFFG.CharacteristicPresenceAbbreviation": "Pré"
+  "SWFFG.NoPlayersConnected": "Aucun joueur connecté",
+  "SWFFG.GroupActions": "Actions de groupe",
+  "SWFFG.GrantXP": "Attribuer XP",
+  "SWFFG.GrantXPTo": "Attribuer XP à",
+  "SWFFG.GrantXPToAllCharacters": "Attribuer XP à tout les joueurs",
+  "SWFFG.Cancel": "Annuler",
+  "SWFFG.Specialization": "Spécialité"
 }
