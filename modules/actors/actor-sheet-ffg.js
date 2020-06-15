@@ -138,6 +138,27 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
+
+    $("input[type='text'][data-dtype='Number'][min][max]").on("change", event => {
+      const a = event.currentTarget;
+      const min = parseInt($(a).attr("min"), 10);
+      const max = parseInt($(a).attr("max"), 10);
+      const value = parseInt($(a).val(), 10) || min;
+
+      if(value > max) {
+        $(a).val(max);
+      }
+    });
+
+    $("input[type='text'][data-dtype='Number'][pattern]").on("change", event => {
+      const a = event.currentTarget;
+      const value = $(a).val() || "2";
+      const pattern = new RegExp($(a).attr("pattern"));
+
+      if(!value.match(pattern)) {
+        $(a).val("2");
+      }
+    });
   }
 
   /* -------------------------------------------- */
