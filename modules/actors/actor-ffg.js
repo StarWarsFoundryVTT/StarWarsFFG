@@ -137,7 +137,6 @@ export class ActorFFG extends Actor {
       if (element?.talentList && element.talentList.length > 0) {
         element.talentList.forEach((talent) => {
           const item = talent;
-          if (item.activation) item.activationLabel = CONFIG.FFG.activations[item.activation].label;
           item.firstSpecialization = element._id;
           item.rank = talent.rank;
 
