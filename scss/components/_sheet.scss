@@ -6,6 +6,7 @@
 
   .sheet-body {
     border: 0;
+    min-height: 100px;
     height: calc(100% - 19em);
     overflow: auto;
     &.minion {
