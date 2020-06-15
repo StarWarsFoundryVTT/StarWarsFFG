@@ -232,6 +232,7 @@ span.dietype.triumph {
 
 .starwarsffg.sheet .sheet-body {
   border: 0;
+  min-height: 100px;
   height: calc(100% - 19em);
   overflow: auto;
 }
@@ -1446,10 +1447,6 @@ span.dietype.triumph {
   line-height: 15px;
 }
 
-.starwarsffg .item-sheet-armor .header-fields {
-  height: 340px;
-}
-
 .starwarsffg .item-sheet-armor .charname {
   width: 100%;
 }
@@ -1649,10 +1646,6 @@ span.dietype.triumph {
   line-height: 15px;
 }
 
-.starwarsffg .item-sheet-gear .header-fields {
-  height: 340px;
-}
-
 .starwarsffg .item-sheet-gear .charname {
   width: 100%;
 }
@@ -1850,10 +1843,6 @@ span.dietype.triumph {
 
 .starwarsffg .item-sheet-gear .tabs .item {
   line-height: 15px;
-}
-
-.starwarsffg .item-sheet-talent .header-fields {
-  height: 260px;
 }
 
 .starwarsffg .item-sheet-talent .charname {
@@ -2617,10 +2606,6 @@ span.dietype.triumph {
   width: 215px;
 }
 
-.starwarsffg .item-sheet-vehicle-weapon .header-fields {
-  height: 435px;
-}
-
 .starwarsffg .item-sheet-vehicle-weapon .charname {
   width: 100%;
 }
@@ -2818,10 +2803,6 @@ span.dietype.triumph {
 
 .starwarsffg .item-sheet-vehicle-weapon .tabs .item {
   line-height: 15px;
-}
-
-.starwarsffg .item-sheet-vehicle-attachment .header-fields {
-  height: 340px;
 }
 
 .starwarsffg .item-sheet-vehicle-attachment .charname {

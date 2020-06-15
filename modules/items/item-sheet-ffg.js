@@ -9,8 +9,6 @@ export class ItemSheetFFG extends ItemSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "item"],
-      width: 784,
-      height: 484,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
       scrollY: [".sheet-body", ".tab"],
     });
@@ -38,26 +36,21 @@ export class ItemSheetFFG extends ItemSheet {
       case "weapon":
       case "shipweapon":
         this.position.width = 450;
-        this.position.height = 650;
         break;
       case "armour":
       case "gear":
       case "shipattachment":
         this.position.width = 385;
-        this.position.height = 575;
         break;
       case "talent":
         this.position.width = 405;
-        this.position.height = 475;
         break;
       case "criticalinjury":
       case "criticaldamage":
         this.position.width = 275;
-        this.position.height = 550;
         break;
       case "forcepower":
         this.position.width = 715;
-        this.position.height = 840;
         data.data.isReadOnly = false;
         if (!this.options.editable) {
           data.data.isEditing = false;
@@ -66,7 +59,6 @@ export class ItemSheetFFG extends ItemSheet {
         break;
       case "specialization":
         this.position.width = 715;
-        this.position.height = 980;
         data.data.isReadOnly = false;
         if (!this.options.editable) {
           data.data.isEditing = false;
