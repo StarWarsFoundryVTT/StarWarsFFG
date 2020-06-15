@@ -64,9 +64,8 @@ export class ItemFFG extends Item {
             if(item.type === "specialization") {
               for (let talentData in item.data.talents) {
                 if(item.data.talents[talentData].itemId === this.data._id) {
-                  
-                  if(!data.trees.includes(item.id)) {
-                    data.trees.push(item.id);
+                  if(!data.trees.includes(item._id)) {
+                    data.trees.push(item._id);
                   }
 
                   this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
