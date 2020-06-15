@@ -39,16 +39,42 @@ export class ItemFFG extends Item {
         data.activation.label = activationId;
         
         // A talent update occured, update specializations
-        game.data.items.forEach(item => {
-          if(item.type === "specialization") {
-            for (let talentData in item.data.talents) {
-              if(item.data.talents[talentData].itemId === this.data._id) {
-                this._updateSpecializationTalentReference(item.data.talents[talentData], this.data);
+
+        // first lets look at the talents trees list
+        if(data.trees.length > 0) {
+          console.debug("Starwars FFG - Using Talent Tree property for update");
+
+          data.trees.forEach(spec => {
+            const specializations = game.data.items.filter(item => {
+              return item.id === spec;
+            })
+
+            specializations.forEach(item => {
+              console.debug(`Starwars FFG - Updating Specialization`)
+              for (let talentData in item.data.talents) {
+                this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
+              }
+            })
+          });
+        } 
+        // if there are no values in trees, this may be a legacy item.
+        else {
+          console.debug("Starwars FFG - Legacy item, updating all specializations");
+          game.data.items.forEach(item => {
+            if(item.type === "specialization") {
+              for (let talentData in item.data.talents) {
+                if(item.data.talents[talentData].itemId === this.data._id) {
+                  
+                  if(!data.trees.includes(item.id)) {
+                    data.trees.push(item.id);
+                  }
+
+                  this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
+                }
               }
             }
-          }
-        })
-
+          })
+        }
         break;
       default:
     }
@@ -173,6 +199,7 @@ export class ItemFFG extends Item {
     specializationTalentItem.name = talentItem.name;
     specializationTalentItem.description = talentItem.data.description;
     specializationTalentItem.activation = talentItem.data.activation.value;
-    specializationTalentItem.activationlabel = talentItem.data.activation.label;
+    specializationTalentItem.activationLabel = talentItem.data.activation.label;
+    specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
   }
 }

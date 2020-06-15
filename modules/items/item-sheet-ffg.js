@@ -396,14 +396,52 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     if (itemObject.data.type === "talent") {
+      const specialization = this.object;
       const li = event.currentTarget;
       const talentId = $(li).attr("id");
+
+      // we need to remove if this is the last instance of the talent in the specialization
+      const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
+      const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
+      if (!isPreviousItemFromPack) {
+        console.debug('Starwars FFG - Non-compendium pack talent update');
+
+        const talentList = [];
+        for(let talent in specialization.data.data.talents) {
+          if (talent.itemId === itemObject.id) {
+            talentList.push(talent);
+          }
+        }
+
+        // check if this is the last talent of the specializtion
+        if(talentList.length === 1) {
+          let tree = itemObject.data.data.trees;
+
+          const index = tree.findIndex(tal => {
+            return tal === specialization.id;
+          });
+
+          // remove the specialization reference fromt the talent
+          tree.splice(index, 1);
+          itemObject.update({ [`data.trees`] : tree });
+        }
+      }
+
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
       $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
       $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
+      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.ranked);
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
+
+      // check to see if the talent already has a reference to the specialization
+      if(!itemObject.data.data.trees.includes(specialization.id)) {
+        // the talent doesn't already have the reference, add it
+        let tree = itemObject.data.data.trees;
+        tree.push(specialization.id);
+        itemObject.update({ [`data.trees`] : tree });
+      }
 
       await this._onSubmit(event);
     }
