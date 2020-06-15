@@ -27,6 +27,9 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   getData() {
     const data = super.getData();
+
+    console.debug(`Starwars FFG - Getting Item Data`);
+
     data.dtypes = ["String", "Number", "Boolean"];
     if (data?.data?.attributes) {
       for (let attr of Object.values(data.data.attributes)) {
@@ -71,23 +74,6 @@ export class ItemSheetFFG extends ItemSheet {
         if (!this.options.editable) {
           data.data.isEditing = false;
           data.data.isReadOnly = true;
-        }
-        // Check for updates to talents description and activation.
-        const talents = data.data.talents;
-        for (let talent in talents) {
-          if (talents[talent].itemId) {
-            const parentTalent = game.items.get(talents[talent].itemId);
-            talents[talent].description = parentTalent.data.data.description;
-            talents[talent].activation = parentTalent.data.data.activation.value;
-            talents[talent].activationlabel = parentTalent.data.data.activation.label;
-            if (this.object.actor) {
-              if (!this.object.options.actor.isToken) {
-                this.object.update({ [`data.talents.${talent}.description`]: parentTalent.data.data.description });
-                this.object.update({ [`data.talents.${talent}.activation`]: parentTalent.data.data.activation.value });
-                this.object.update({ [`data.talents.${talent}.activationLabel`]: parentTalent.data.data.activation.label });
-              }
-            }
-          }
         }
         break;
       default:
@@ -211,6 +197,8 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
+    console.debug(`Updating ${this.object.type}`);
+
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
@@ -413,6 +401,7 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
       $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
+      $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
 

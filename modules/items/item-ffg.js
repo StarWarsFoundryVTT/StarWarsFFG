@@ -11,6 +11,8 @@ export class ItemFFG extends Item {
   prepareData() {
     super.prepareData();
 
+    console.debug(`Starwars FFG - Preparing Item Data ${this.type}`);
+
     // Get the Item's data
     const itemData = this.data;
     const actorData = this.actor ? this.actor.data : {};
@@ -35,6 +37,18 @@ export class ItemFFG extends Item {
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
         data.activation.label = activationId;
+        
+        // A talent update occured, update specializations
+        game.data.items.forEach(item => {
+          if(item.type === "specialization") {
+            for (let talentData in item.data.talents) {
+              if(item.data.talents[talentData].itemId === this.data._id) {
+                this._updateSpecializationTalentReference(item.data.talents[talentData], this.data);
+              }
+            }
+          }
+        })
+
         break;
       default:
     }
@@ -131,6 +145,19 @@ export class ItemFFG extends Item {
   }
 
   _prepareSpecializations() {
+    // We need to update the specialization talents information with the linked item.
+    const specializationTalents = this.data.data.talents;
+    for (let talent in specializationTalents) {
+    
+      const gameItem = game.data.items.find(item => {
+        return item._id === specializationTalents[talent].itemId;
+      });
+
+      if(gameItem) {
+        this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
+      }
+    }
+
     this._prepareTalentTrees("talents", "talent", "talentList");
   }
 
@@ -139,5 +166,13 @@ export class ItemFFG extends Item {
    */
   _prepareForcePowers() {
     this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
+  }
+
+  _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
+    console.debug(`Starwars FFG - Updating Specializations Talent`);
+    specializationTalentItem.name = talentItem.name;
+    specializationTalentItem.description = talentItem.data.description;
+    specializationTalentItem.activation = talentItem.data.activation.value;
+    specializationTalentItem.activationlabel = talentItem.data.activation.label;
   }
 }
