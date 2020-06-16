@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/06/2020 - Cstadther - Added functionality to change characteristic associated to skill.
 - 14/06/2020 - Cstadther - Bug fix for #87 (min/max values for skills and characteristics)
 - 14/06/2020 - Cstadther - Bug fix in Character Sheet PrepareData.
 - 14/06/2020 - Cstadther - Bug fix for item sheet rendering, more responsive design by removing set height on items.
