@@ -81,7 +81,7 @@ export class ActorSheetFFG extends ActorSheet {
     if (!this.options.editable) return;
 
     // Update Inventory Item - By clicking entire line
-    html.find(".item").click((ev) => {
+    html.find("table.items .item, .header-description-block .item").click((ev) => {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fa-times")) {
         const li = $(ev.currentTarget);
         const item = this.actor.getOwnedItem(li.data("itemId"));
@@ -91,11 +91,22 @@ export class ActorSheetFFG extends ActorSheet {
       }
     });
     // Update Talent - By clicking entire line
-    html.find(".talents.item").click((ev) => {
+    html.find(".talents .item").click((ev) => {
       if (!$(ev.target).hasClass("fa-trash")) {
         const li = $(ev.currentTarget);
-        const item = this.actor.getOwnedItem(li.data("itemId"));
-        item.sheet.render(true);
+        const row = $(li).parents("tr")[0];
+
+        let itemId = li.data("itemId");
+
+        let item;
+        if (!$(li).closest("tr").hasClass("specialization-talent-item")) {
+          item = this.actor.getOwnedItem(itemId);
+        } else {
+          item = game.items.get(itemId);
+        }
+        if (item?.sheet) {
+          item.sheet.render(true);
+        }
       }
     });
 
