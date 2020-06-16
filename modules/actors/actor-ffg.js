@@ -138,13 +138,18 @@ export class ActorFFG extends Actor {
         element.talentList.forEach((talent) => {
           const item = talent;
           item.firstSpecialization = element._id;
-          item.rank = talent.rank;
+
+          if(item.isRanked) {
+            item.rank = talent.rank;
+          } else {
+            item.rank = "N/A";
+          }
 
           let index = globalTalentList.findIndex((obj) => {
             return obj.name === item.name;
           });
 
-          if (index < 0) {
+          if (index < 0 || !item.isRanked) {
             globalTalentList.push(item);
           } else {
             globalTalentList[index].rank += talent.rank;
@@ -153,6 +158,7 @@ export class ActorFFG extends Actor {
       }
     });
 
+    console.debug(globalTalentList);
     data.talentList = globalTalentList;
   }
 

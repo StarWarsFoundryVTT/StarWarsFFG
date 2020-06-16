@@ -109,13 +109,18 @@ export class ItemFFG extends Item {
       if (upgrade.includes(itemType)) {
         if (talents[upgrade].islearned) {
           const item = talents[upgrade];
-          item.rank = 1;
+
+          if(item.isRanked) {
+            item.rank = 1;
+          } else {
+            item.rank = "N/A";
+          }
 
           let index = itemList.findIndex((obj) => {
             return obj.name === item.name;
           });
 
-          if (index < 0) {
+          if (index < 0 || !item.isRanked) {
             itemList.push(item);
           } else {
             itemList[index].rank += 1;
