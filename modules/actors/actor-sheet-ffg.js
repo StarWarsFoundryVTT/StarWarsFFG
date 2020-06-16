@@ -169,7 +169,7 @@ export class ActorSheetFFG extends ActorSheet {
 
       new Dialog(
         {
-          title: `Change Characteristic For ${ability}`,
+          title: `${game.i18n.localize("SWFFG.SkillCharacteristicDialogTitle")} ${ability}`,
           content: {
             options: CONFIG.FFG.characteristics,
             char: characteristic,
@@ -177,7 +177,7 @@ export class ActorSheetFFG extends ActorSheet {
           buttons: {
             one: {
               icon: '<i class="fas fa-check"></i>',
-              label: "Accept",
+              label: game.i18n.localize("SWFFG.ButtonAccept"),
               callback: (html) => {
                 let newCharacteristic = $(html).find("input[type='radio']:checked").val();
 
@@ -188,7 +188,7 @@ export class ActorSheetFFG extends ActorSheet {
             },
             two: {
               icon: '<i class="fas fa-times"></i>',
-              label: "Cancel",
+              label: game.i18n.localize("SWFFG.Cancel"),
             },
           },
         },
