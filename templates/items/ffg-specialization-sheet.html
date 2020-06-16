@@ -31,12 +31,12 @@
             <div class="talent-name">{{{talent.name}}}</div>
           </div>
           <div class="talent-body">
-            <input type="text" name="data.talents.{{key}}.activation" value="{{localize talent.activationlabel}}" disabled />
+            <input type="text" name="data.talents.{{key}}.activationLabel" value="{{localize talent.activationLabel}}" disabled />
             {{{renderDiceTags talent.description}}}
             <div class="talent-hidden">
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.name" value="{{talent.name}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.description" value="{{talent.description}}" />
-              <!-- <input class="talent-hidden" type="text" name="data.talents.{{key}}.activation" value="{{talent.activation}}" /> -->
+              <input class="talent-hidden" type="text" name="data.talents.{{key}}.activation" value="{{talent.activation}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.itemId" value="{{talent.itemId}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.isRanked" value="{{talent.ranks.ranked}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.pack" value="{{talent.pack}}" />

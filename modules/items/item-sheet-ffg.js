@@ -25,6 +25,9 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   getData() {
     const data = super.getData();
+
+    console.debug(`Starwars FFG - Getting Item Data`);
+
     data.dtypes = ["String", "Number", "Boolean"];
     if (data?.data?.attributes) {
       for (let attr of Object.values(data.data.attributes)) {
@@ -63,23 +66,6 @@ export class ItemSheetFFG extends ItemSheet {
         if (!this.options.editable) {
           data.data.isEditing = false;
           data.data.isReadOnly = true;
-        }
-        // Check for updates to talents description and activation.
-        const talents = data.data.talents;
-        for (let talent in talents) {
-          if (talents[talent].itemId) {
-            const parentTalent = game.items.get(talents[talent].itemId);
-            talents[talent].description = parentTalent.data.data.description;
-            talents[talent].activation = parentTalent.data.data.activation.value;
-            talents[talent].activationlabel = parentTalent.data.data.activation.label;
-            if (this.object.actor) {
-              if (!this.object.options.actor.isToken) {
-                this.object.update({ [`data.talents.${talent}.description`]: parentTalent.data.data.description });
-                this.object.update({ [`data.talents.${talent}.activation`]: parentTalent.data.data.activation.value });
-                this.object.update({ [`data.talents.${talent}.activationLabel`]: parentTalent.data.data.activation.label });
-              }
-            }
-          }
         }
         break;
       default:
@@ -203,6 +189,8 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
+    console.debug(`Updating ${this.object.type}`);
+
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
@@ -400,13 +388,52 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     if (itemObject.data.type === "talent") {
+      const specialization = this.object;
       const li = event.currentTarget;
       const talentId = $(li).attr("id");
+
+      // we need to remove if this is the last instance of the talent in the specialization
+      const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
+      const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
+      if (!isPreviousItemFromPack) {
+        console.debug('Starwars FFG - Non-compendium pack talent update');
+
+        const talentList = [];
+        for(let talent in specialization.data.data.talents) {
+          if (talent.itemId === itemObject.id) {
+            talentList.push(talent);
+          }
+        }
+
+        // check if this is the last talent of the specializtion
+        if(talentList.length === 1) {
+          let tree = itemObject.data.data.trees;
+
+          const index = tree.findIndex(tal => {
+            return tal === specialization.id;
+          });
+
+          // remove the specialization reference fromt the talent
+          tree.splice(index, 1);
+          itemObject.update({ [`data.trees`] : tree });
+        }
+      }
+
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
       $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
+      $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
+      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.ranked);
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
+
+      // check to see if the talent already has a reference to the specialization
+      if(!itemObject.data.data.trees.includes(specialization.id)) {
+        // the talent doesn't already have the reference, add it
+        let tree = itemObject.data.data.trees;
+        tree.push(specialization.id);
+        itemObject.update({ [`data.trees`] : tree });
+      }
 
       await this._onSubmit(event);
     }
