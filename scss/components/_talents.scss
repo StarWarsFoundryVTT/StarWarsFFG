@@ -137,6 +137,11 @@ table {
 
       &.talent-name {
         width: 75%;
+
+        span {
+          font-size: 9px;
+          float: right;
+        }
       }
 
       input[type="text"] {

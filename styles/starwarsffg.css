@@ -1000,6 +1000,11 @@ span.dietype.triumph {
   width: 75%;
 }
 
+.starwarsffg .talent-background .talent-header div.talent-name span {
+  font-size: 9px;
+  float: right;
+}
+
 .starwarsffg .talent-background .talent-header div input[type="text"] {
   border: 0px;
   background-color: #001e82;
