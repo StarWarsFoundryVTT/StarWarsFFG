@@ -207,7 +207,7 @@
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
               <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                <td>{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} ({{localize abrev}}) {{/with}}</td>
+                <td>{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}}(<div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>) {{/with}}</td>
                 <td>
                   <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
                 </td>

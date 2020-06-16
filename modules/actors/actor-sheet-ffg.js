@@ -159,6 +159,43 @@ export class ActorSheetFFG extends ActorSheet {
         $(a).val("2");
       }
     });
+
+    $("div.skill-characteristic").on("click", event => {
+      const a = event.currentTarget;
+      const characteristic = a.dataset.characteristic;
+      const ability = $(a).parents("tr[data-ability]")[0].dataset.ability;
+
+      console.debug(characteristic);
+
+      new Dialog({
+        title: `Change Characteristic For ${ability}`,
+        content: {
+          options: CONFIG.FFG.characteristics,
+          char : characteristic
+        },
+        buttons: {
+          one: {
+            icon: '<i class="fas fa-check"></i>',
+            label: "Accept",
+            callback: (html) => {
+              let newCharacteristic = $(html).find("input[type='radio']:checked").val();
+
+              console.debug(`Starwars FFG - Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
+
+              this.object.update({[`data.skills.${ability}.characteristic`] : newCharacteristic});
+            }
+          },
+          two: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel",
+          }
+        }
+      },{
+        classes: ['dialog', 'starwarsffg'],
+        width: 300,
+        template: 'systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html'
+      }).render(true);
+    });
   }
 
   /* -------------------------------------------- */

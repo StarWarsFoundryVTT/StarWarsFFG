@@ -1,0 +1,19 @@
+<div class="dialog-content skill-characteristic-select-dialog">
+  {{#each content.options as |characteristics id|}}
+  {{content.char}}
+    <li>
+      <label class="radio" for="{{id}}">
+        <input type="radio" id="{{id}}" name="characteristic" value="{{id}}" {{#iff ../content.char '==' id}}checked{{/iff}}>
+        {{localize characteristics.label}}
+      </label>
+    </li>
+  {{/each}}
+</div>
+<div class="dialog-buttons">
+  {{#each buttons as |button id|}}
+  <button class="dialog-button" data-button="{{id}}">
+      {{{button.icon}}}
+      {{{button.label}}}
+  </button>
+  {{/each}}
+</div>
