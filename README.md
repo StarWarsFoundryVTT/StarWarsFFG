@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 16/06/2020 - Cstadther - Bug fix for #97, specialization talent click display.
 - 16/06/2020 - Cstadther - Styled characteristic change dialog, and added localized values.
 - 14/06/2020 - Cstadther - Added functionality to change characteristic associated to skill.
 - 14/06/2020 - Cstadther - Bug fix for #87 (min/max values for skills and characteristics)
