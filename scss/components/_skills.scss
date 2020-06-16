@@ -1,3 +1,18 @@
+.skill-characteristic {
+  display: inline;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.skill-characteristic-select-dialog {
+  li {
+    list-style: none;
+  }
+}
+
 .tableWithHeader {
   overflow-y: auto;
   margin: -1px;

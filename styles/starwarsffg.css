@@ -634,6 +634,19 @@ span.dietype.triumph {
   border-radius: 50%;
 }
 
+.starwarsffg .skill-characteristic {
+  display: inline;
+  cursor: pointer;
+}
+
+.starwarsffg .skill-characteristic:hover {
+  text-decoration: underline;
+}
+
+.starwarsffg .skill-characteristic-select-dialog li {
+  list-style: none;
+}
+
 .starwarsffg .tableWithHeader {
   overflow-y: auto;
   margin: -1px;
