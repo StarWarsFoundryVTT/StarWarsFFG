@@ -220,6 +220,14 @@ Hooks.once("init", async function () {
   Handlebars.registerHelper("renderDiceTags", function(string) {
     return PopoutEditor.renderDiceImages(string);
   });
+
+  Handlebars.registerHelper("calculateSpecializationTalentCost", function(idString) {
+    const id = parseInt(idString.replace("talent", ""), 10);
+
+    const cost = (Math.trunc(id / 4) + 1) * 5;
+
+    return cost;
+  }); 
 });
 
 /* -------------------------------------------- */

@@ -28,7 +28,7 @@
         <div class="talent-background">
           <div class="talent-header">
             <div><input type="checkbox" name="data.talents.{{key}}.islearned" data-dtype="Boolean" {{#if talent.islearned }}checked{{else}} {{/if}}></div>
-            <div class="talent-name">{{{talent.name}}}</div>
+            <div class="talent-name">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
           </div>
           <div class="talent-body">
             <input type="text" name="data.talents.{{key}}.activationLabel" value="{{localize talent.activationLabel}}" disabled />
@@ -40,6 +40,7 @@
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.itemId" value="{{talent.itemId}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.isRanked" value="{{talent.ranks.ranked}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.pack" value="{{talent.pack}}" />
+              <input class="talent-hidden" type="text" name="data.talents.{{key}}.cost" value="{{calculateSpecializationTalentCost key}}" />
             </div>
           </div>
         </div>
