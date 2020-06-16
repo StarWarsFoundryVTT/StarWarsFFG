@@ -48,11 +48,11 @@ export class ActorSheetFFG extends ActorSheet {
     switch (this.actor.data.type) {
       case "character":
         this.position.width = 595;
-        this.position.height = 762;
+        this.position.height = 783;
         break;
       case "minion":
         this.position.width = 595;
-        this.position.height = 620;
+        this.position.height = 644;
         break;
       case "vehicle":
         this.position.width = 595;
@@ -139,62 +139,65 @@ export class ActorSheetFFG extends ActorSheet {
 
     dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
 
-    $("input[type='text'][data-dtype='Number'][min][max]").on("change", event => {
+    $("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
       const a = event.currentTarget;
       const min = parseInt($(a).attr("min"), 10);
       const max = parseInt($(a).attr("max"), 10);
       const value = parseInt($(a).val(), 10) || min;
 
-      if(value > max) {
+      if (value > max) {
         $(a).val(max);
       }
     });
 
-    $("input[type='text'][data-dtype='Number'][pattern]").on("change", event => {
+    $("input[type='text'][data-dtype='Number'][pattern]").on("change", (event) => {
       const a = event.currentTarget;
       const value = $(a).val() || "2";
       const pattern = new RegExp($(a).attr("pattern"));
 
-      if(!value.match(pattern)) {
+      if (!value.match(pattern)) {
         $(a).val("2");
       }
     });
 
-    $("div.skill-characteristic").on("click", event => {
+    $("div.skill-characteristic").on("click", (event) => {
       const a = event.currentTarget;
       const characteristic = a.dataset.characteristic;
       const ability = $(a).parents("tr[data-ability]")[0].dataset.ability;
 
       console.debug(characteristic);
 
-      new Dialog({
-        title: `Change Characteristic For ${ability}`,
-        content: {
-          options: CONFIG.FFG.characteristics,
-          char : characteristic
-        },
-        buttons: {
-          one: {
-            icon: '<i class="fas fa-check"></i>',
-            label: "Accept",
-            callback: (html) => {
-              let newCharacteristic = $(html).find("input[type='radio']:checked").val();
-
-              console.debug(`Starwars FFG - Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
-
-              this.object.update({[`data.skills.${ability}.characteristic`] : newCharacteristic});
-            }
+      new Dialog(
+        {
+          title: `Change Characteristic For ${ability}`,
+          content: {
+            options: CONFIG.FFG.characteristics,
+            char: characteristic,
           },
-          two: {
-            icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
-          }
+          buttons: {
+            one: {
+              icon: '<i class="fas fa-check"></i>',
+              label: "Accept",
+              callback: (html) => {
+                let newCharacteristic = $(html).find("input[type='radio']:checked").val();
+
+                console.debug(`Starwars FFG - Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
+
+                this.object.update({ [`data.skills.${ability}.characteristic`]: newCharacteristic });
+              },
+            },
+            two: {
+              icon: '<i class="fas fa-times"></i>',
+              label: "Cancel",
+            },
+          },
+        },
+        {
+          classes: ["dialog", "starwarsffg"],
+          width: 300,
+          template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
         }
-      },{
-        classes: ['dialog', 'starwarsffg'],
-        width: 300,
-        template: 'systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html'
-      }).render(true);
+      ).render(true);
     });
   }
 
