@@ -643,6 +643,11 @@ span.dietype.triumph {
   text-decoration: underline;
 }
 
+.starwarsffg .skill-characteristic-select-dialog {
+  display: inline-block;
+  margin: auto;
+}
+
 .starwarsffg .skill-characteristic-select-dialog li {
   list-style: none;
 }

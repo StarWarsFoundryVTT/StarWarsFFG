@@ -228,5 +228,8 @@
   "SWFFG.GrantXPTo": "Grant XP to",
   "SWFFG.GrantXPToAllCharacters": "Grant XP to all characters",
   "SWFFG.Cancel": "Cancel",
-  "SWFFG.Specialization": "Specialization"
+  "SWFFG.Specialization": "Specialization",
+  "SWFFG.SkillCharacteristicDialogTitle" : "Change Characteristic For:",
+  "SWFFG.ButtonClose" : "Close",
+  "SWFFG.ButtonAccept" : "Accept"
 }
