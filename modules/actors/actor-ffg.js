@@ -9,6 +9,8 @@ export class ActorFFG extends Actor {
   prepareData() {
     super.prepareData();
 
+    console.debug(`Starwars FFG - Preparing Actor Data ${this.data.type}`);
+
     const actorData = this.data;
     const data = actorData.data;
     const flags = actorData.flags;
@@ -132,6 +134,7 @@ export class ActorFFG extends Actor {
       return item.type === "specialization";
     });
 
+    
     const globalTalentList = [];
     specializations.forEach((element) => {
       if (element?.talentList && element.talentList.length > 0) {
@@ -157,8 +160,6 @@ export class ActorFFG extends Actor {
         });
       }
     });
-
-    console.debug(globalTalentList);
     data.talentList = globalTalentList;
   }
 
@@ -197,4 +198,5 @@ export class ActorFFG extends Actor {
     skills = skillobject;
     return skills;
   }
+
 }

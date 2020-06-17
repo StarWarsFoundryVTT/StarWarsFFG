@@ -189,7 +189,7 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
-    console.debug(`Updating ${this.object.type}`);
+    console.debug(`Starwars FFG - Updating ${this.object.type}`);
 
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
@@ -423,7 +423,7 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
       $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
-      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.ranked);
+      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.current);
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
 

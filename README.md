@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 16/06/2020 - Cstadther - Bug fix for 2-way binding.  
 - 16/06/2020 - Cstadther - Bug fix for #90, add talent cost in specialization tree.
 - 16/06/2020 - Cstadther - Bug fix for #97, specialization talent click display.
 - 16/06/2020 - Cstadther - Styled characteristic change dialog, and added localized values.
