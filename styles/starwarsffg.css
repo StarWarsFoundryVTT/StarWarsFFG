@@ -192,6 +192,10 @@ span.dietype.triumph {
   justify-content: space-between;
 }
 
+.starwarsffg form {
+  height: 100%;
+}
+
 .starwarsffg .item-form {
   font-family: "Roboto", sans-serif;
 }
@@ -227,7 +231,7 @@ span.dietype.triumph {
 
 .starwarsffg.sheet.actor {
   min-width: 588px;
-  min-height: 489px;
+  min-height: 525px;
 }
 
 .starwarsffg.sheet .sheet-body {
@@ -237,18 +241,8 @@ span.dietype.triumph {
   overflow: auto;
 }
 
-.starwarsffg.sheet .sheet-body.minion {
-  height: calc(100% - 21em);
-  overflow: auto;
-}
-
 .starwarsffg.sheet .sheet-body.vehicle {
-  height: calc(100% - 38em);
-  overflow: auto;
-}
-
-.starwarsffg.sheet .sheet-body.small {
-  height: calc(100% - 16em);
+  height: calc(100% - 29rem);
   overflow: auto;
 }
 
@@ -654,10 +648,9 @@ span.dietype.triumph {
 
 .starwarsffg .tableWithHeader {
   overflow-y: auto;
-  margin: -1px;
-  height: calc(100% - 18em);
+  margin: 0;
+  height: calc(100% - 5rem);
   display: flex;
-  margin-top: -5px;
 }
 
 .starwarsffg .tableWithHeader .tableWithHeader-container {
@@ -2234,14 +2227,6 @@ span.dietype.triumph {
   margin: 1em 0;
 }
 
-.starwarsffg .minion .tableWithHeader {
-  overflow-y: auto;
-  margin: -1px;
-  height: calc(100% - 29em);
-  display: flex;
-  margin-top: -5px;
-}
-
 .starwarsffg .minion .biography-editor {
   height: 100%;
 }
@@ -3128,6 +3113,10 @@ span.dietype.triumph {
   text-align: center;
 }
 
+.starwarsffg .item-sheet-criticalinjury .sheet-body {
+  height: calc(100% - 12rem);
+}
+
 .starwarsffg .item-sheet-criticalinjury .flex-group-center {
   border: 0;
 }
@@ -3180,8 +3169,7 @@ span.dietype.triumph {
 }
 
 .starwarsffg .item-sheet-criticalinjury .block-background.block-editor {
-  height: calc(100% - 14em);
-  padding: 5px 10px;
+  padding: 10px;
   background-color: white;
 }
 
@@ -3281,7 +3269,7 @@ span.dietype.triumph {
 }
 
 .starwarsffg .item-sheet-forcepower .sheet-body {
-  height: calc(100% - 10em);
+  height: calc(100% - 10rem);
 }
 
 .starwarsffg span.dietype {
@@ -3358,6 +3346,7 @@ span.dietype.triumph {
   overflow: auto;
   height: 100%;
   width: 100%;
+  min-height: 2rem;
 }
 
 .starwarsffg .popout-editor-window .sheet-body {
@@ -3372,6 +3361,7 @@ span.dietype.triumph {
 .starwarsffg .editor {
   width: 100%;
   height: 100%;
+  min-height: 2rem;
 }
 
 .starwarsffg .tox.tox-tinymce {
@@ -3384,5 +3374,5 @@ span.dietype.triumph {
 }
 
 .starwarsffg .item-sheet-specialization .sheet-body {
-  height: calc(100% - 10em);
+  height: calc(100% - 9rem);
 }

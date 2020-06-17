@@ -1,11 +1,15 @@
 .item-sheet-criticalinjury {
+  .sheet-body {
+    height: calc(100% - 12rem);
+  }
+
   .flex-group-center {
     border: 0;
   }
 
   .charname {
     width: 100%;
-    
+
     input {
       color: rgb(131, 7, 7);
       border: 0;
@@ -19,29 +23,19 @@
 
   .block-background {
     border-radius: 10px;
-    background-color: rgb(218, 151, 151);;
+    background-color: rgb(218, 151, 151);
     padding: 5px;
 
     .block-title {
-        line-height: initial;
-        background-color: rgb(131, 7, 7);
-        color: white;
-        font-size: 13px;
-        text-transform: uppercase;
-        margin:auto;
-        
-        --notchSize: 8px;
-        clip-path: 
-          polygon(
-            0% var(--notchSize), 
-            var(--notchSize) 0%, 
-            calc(100% - var(--notchSize)) 0%, 
-            100% var(--notchSize), 
-            100% calc(100% - var(--notchSize)), 
-            calc(100% - var(--notchSize)) 100%, 
-            var(--notchSize) 100%, 
-            0% calc(100% - var(--notchSize))
-        );
+      line-height: initial;
+      background-color: rgb(131, 7, 7);
+      color: white;
+      font-size: 13px;
+      text-transform: uppercase;
+      margin: auto;
+
+      --notchSize: 8px;
+      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
     }
   }
 
@@ -63,15 +57,14 @@
   }
 
   .block-background.block-editor {
-    height: calc(100% - 14em);
-    padding: 5px 10px;
-    background-color: rgb(255, 255, 255);;
+    padding: 10px;
+    background-color: rgb(255, 255, 255);
   }
 
   .resource {
     line-height: 40px;
     width: 110px;
-    
+
     &.single {
       width: 250px;
     }
@@ -82,7 +75,7 @@
   }
 
   .item-name {
-    margin:0 !important;
+    margin: 0 !important;
     padding: 0 5px !important;
   }
 
@@ -90,4 +83,3 @@
     position: relative;
   }
 }
-

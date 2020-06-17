@@ -18,10 +18,9 @@
 
 .tableWithHeader {
   overflow-y: auto;
-  margin: -1px;
-  height: calc(100% - 18em);
+  margin: 0;
+  height: calc(100% - 5rem);
   display: flex;
-  margin-top: -5px;
 
   .tableWithHeader-container {
     flex: 1;
