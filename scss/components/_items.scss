@@ -145,6 +145,12 @@
         flex: 0 0 24px;
         margin-right: 5px;
       }
+      .toggle-equipped {
+        color: #888;
+        &.active {
+          color: #191813;
+        }
+      }
     }
     .item-name {
       margin: 0;

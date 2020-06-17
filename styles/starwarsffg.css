@@ -844,6 +844,14 @@ span.dietype.triumph {
   margin-right: 5px;
 }
 
+.starwarsffg .items .items-list .item .toggle-equipped {
+  color: #888;
+}
+
+.starwarsffg .items .items-list .item .toggle-equipped.active {
+  color: #191813;
+}
+
 .starwarsffg .items .items-list .item-name {
   margin: 0;
 }

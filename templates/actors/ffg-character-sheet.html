@@ -207,7 +207,11 @@
             <tbody>
               {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
               <tr data-ability="{{id}}" data-skilltype="{{skill.type}}" class="skill">
-                <td>{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}}(<div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>) {{/with}}</td>
+                <td>
+                  {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}}(
+                  <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
+                  ) {{/with}}
+                </td>
                 <td>
                   <input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} />
                 </td>
@@ -332,6 +336,7 @@
         <thead>
           <tr class="items-header">
             <th>{{localize "SWFFG.ItemsArmor"}}</th>
+            <th>{{localize "SWFFG.Equipped"}}</th>
             <th>{{localize "SWFFG.ItemsDefense"}}</th>
             <th>{{localize "SWFFG.ItemsSoak"}}</th>
             <th>{{localize "SWFFG.ItemsHP"}}</th>
@@ -343,6 +348,13 @@
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
           <tr class="item" data-item-id="{{item._id}}">
             <td class="item-name">{{item.name}}</td>
+            <td>
+              {{#if item.data.equippable.equipped}}
+              <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
+              {{else}}
+              <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
+              {{/if}}
+            </td>
             <td>{{item.data.defence.value}}</td>
             <td>{{item.data.soak.value}}</td>
             <td>{{item.data.hardpoints.value}}</td>

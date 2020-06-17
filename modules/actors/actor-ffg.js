@@ -102,7 +102,7 @@ export class ActorFFG extends Actor {
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
       // For armour type, get all Soak values and add to armoursoak.
-      if (item.type == "armour") {
+      if (item.type == "armour" && item.data.equippable.equipped) {
         armoursoak += +item.data.soak.value;
       }
       // Loop through all item attributes and add any modifiers to our collection.

@@ -51,20 +51,20 @@ export class ActorSheetFFG extends ActorSheet {
         this.position.height = 783;
 
         // we need to update all specialization talents with the latest talent information
-        if(!this.actor.data.flags.loaded) {
+        if (!this.actor.data.flags.loaded) {
           console.debug(`Starwars FFG - Running Actor initial load`);
           this.actor.data.flags.loaded = true;
 
-          const specializations = this.actor.data.items.filter(item => {
+          const specializations = this.actor.data.items.filter((item) => {
             return item.type === "specialization";
           });
 
-          specializations.forEach(spec => {
+          specializations.forEach((spec) => {
             const specializationTalents = spec.data.talents;
             for (let talent in specializationTalents) {
               const gameItem = game.items.get(specializationTalents[talent].itemId);
-              
-              if(gameItem) {
+
+              if (gameItem) {
                 this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
               }
             }
@@ -75,7 +75,7 @@ export class ActorSheetFFG extends ActorSheet {
                 const item = talent;
                 item.firstSpecialization = spec._id;
 
-                if(item.isRanked) {
+                if (item.isRanked) {
                   item.rank = typeof talent.rank === "number" ? talent.rank : 1;
                 } else {
                   item.rank = "N/A";
@@ -94,7 +94,7 @@ export class ActorSheetFFG extends ActorSheet {
             }
 
             data.actor.data.talentList = globalTalentList;
-          })
+          });
         }
 
         break;
@@ -128,9 +128,18 @@ export class ActorSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
+    // Toggle item equipped
+    html.find("table.items .item a.toggle-equipped").click((ev) => {
+      const li = $(ev.currentTarget);
+      const item = this.actor.getOwnedItem(li.data("itemId"));
+      if (item) {
+        item.update({ ["data.equippable.equipped"]: !item.data.data.equippable.equipped });
+      }
+    });
+
     // Update Inventory Item - By clicking entire line
     html.find("table.items .item, .header-description-block .item").click((ev) => {
-      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fa-times")) {
+      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas")) {
         const li = $(ev.currentTarget);
         const item = this.actor.getOwnedItem(li.data("itemId"));
         if (item?.sheet) {
