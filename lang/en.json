@@ -221,6 +221,7 @@
   "SWFFG.ForcePower": "Force Power",
   "SWFFG.ForcePowerUpgrades": "Force Power Upgrades",
   "SWFFG.InitiativeMode": "Initiative Mode",
+  "SWFFG.InitiativeModeHint": "Choose between Vigilance or Cool for Initiative rolls.",
   "SWFFG.Amount": "Amount",
   "SWFFG.NoPlayersConnected": "No players connected",
   "SWFFG.GroupActions": "Group Actions",
@@ -244,5 +245,11 @@
   "SWFFG.ButtonRoll": "Roll",
   "SWFFG.Rolling": "Rolling",
   "SWFFG.RollingDefaultTitle": "Finalize your roll",
-  "SWFFG.Equipped": "Equipped"
+  "SWFFG.Equipped": "Equipped",
+  "SWFFG.SettingsPCListMode": "Group Manager - Player Character List Mode",
+  "SWFFG.SettingsPCListModeHint": "'Active Only' will list only characters the active players have chosen to represent via their player configuration. 'All Owned Characters' will list all characters for which the connected players have owner permission.",
+  "SWFFG.SettingsPCListModeActive": "Active Only",
+  "SWFFG.SettingsPCListModeOwned": "All Owned Characters",
+  "SWFFG.SettingsSkillSorting": "Sort skills by localised name?",
+  "SWFFG.SettingsSkillSortingHint": "By default skills will be sorted alphabetically by the original English names on the character sheets. Enable this setting if you would prefer sorting to use the localised skill names instead."
 }

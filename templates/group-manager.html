@@ -3,7 +3,7 @@
   <div class="initiative">
     <h1>{{localize "SWFFG.InitiativeMode"}}</h1>
     <select class="initiative-mode" name="initiative-mode" id="initiative-mode">
-      {{#select initiative.value}}
+      {{#select initiative}}
       <option value="Vigilance">{{localize "SWFFG.SkillsNameVigilance"}}</option>
       <option value="Cool">{{localize "SWFFG.SkillsNameCool"}}</option>
       {{/select}}
@@ -38,18 +38,18 @@
         {{/if}}
       </thead>
       <tbody>
-        {{#if players.connected}} {{#each players as |p key|}}
-        <tr class="player-character" data-character="{{p.character.id}}">
-          <td style="width: 100px;">{{p.character.name}}</td>
-          <td><input type="text" value="{{p.character.data.data.stats.wounds.real_value}}" disabled /></td>
-          <td><input type="text" value="{{p.character.data.data.stats.strain.real_value}}" disabled /></td>
-          <td><input type="text" value="{{p.character.data.data.stats.soak.value}}" disabled /></td>
-          <!-- <td><input type="text" value="{{p.character.data.data.obligation.value}}" disabled /></td> -->
+        {{#if players.connected}} {{#each characters as |c key|}}
+        <tr class="player-character" data-character="{{c.id}}">
+          <td style="width: 100px;">{{c.name}}</td>
+          <td><input type="text" value="{{c.data.data.stats.wounds.real_value}}" disabled /></td>
+          <td><input type="text" value="{{c.data.data.stats.strain.real_value}}" disabled /></td>
+          <td><input type="text" value="{{c.data.data.stats.soak.value}}" disabled /></td>
+          <!-- <td><input type="text" value="{{c.data.data.obligation.value}}" disabled /></td> -->
           {{#if ../isGM}}
           <td>
-            <button class="add-to-combat" data-character="{{p.character.id}}"><i class="fas fa-fist-raised"></i></button>
+            <button class="add-to-combat" data-character="{{c.id}}"><i class="fas fa-fist-raised"></i></button>
           </td>
-          <td><button class="add-XP" data-character="{{p.character.id}}">{{localize "SWFFG.DescriptionXP"}}</button></td>
+          <td><button class="add-XP" data-character="{{c.id}}">{{localize "SWFFG.DescriptionXP"}}</button></td>
           {{/if}}
         </tr>
         {{/each}}{{else}}

@@ -51,14 +51,34 @@ export class GroupManager extends FormApplication {
    * @return {Object}   The data provided to the template when rendering the form
    */
   getData() {
-    const players = game.users.entities.filter((u) => !u.isGM && u.character && u.active);
+    const players = game.users.entities.filter((u) => !u.isGM && u.active);
     if (players.length > 0) {
       players.connected = true;
     }
-    const initiative = { "value": CONFIG.Combat.initiative.formula };
+
+    const pcListMode = game.settings.get("starwarsffg", "pcListMode");
+    const characters = [];
+
+    if (pcListMode === "active") {
+      players.forEach((player) => {
+        if (player.character) {
+          characters.push(player.character);
+        }
+      });
+    } else if (pcListMode === "owned") {
+      players.forEach((player) => {
+        const char = game.actors.filter((actor) => actor.hasPerm(player, "OWNER"));
+        char.forEach((c) => {
+          characters.push(c);
+        });
+      });
+    }
+    console.log(characters);
+
+    const initiative = CONFIG.Combat.initiative.formula;
     const isGM = game.user.isGM;
     if (!isGM) this.position.height = 470;
-    return { g: game, players, initiative, isGM };
+    return { g: game, players, initiative, isGM, pcListMode, characters };
   }
 
   /* -------------------------------------------- */
@@ -259,6 +279,12 @@ Hooks.on("renderPlayerList", (playerList) => {
 });
 // Catch updates to actors and update the group manager window if necessary.
 Hooks.on("updateActor", (actor, data, options, id) => {
+  const groupmanager = canvas.groupmanager.window;
+  if (groupmanager) {
+    groupmanager.render();
+  }
+});
+Hooks.on("renderActorSheet", (actor, data, options, id) => {
   const groupmanager = canvas.groupmanager.window;
   if (groupmanager) {
     groupmanager.render();

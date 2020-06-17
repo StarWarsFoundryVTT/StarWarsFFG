@@ -119,15 +119,15 @@ Hooks.once("init", async function () {
    */
   // Register initiative rule
   game.settings.register("starwarsffg", "initiativeRule", {
-    name: "Initiative Type",
-    hint: "Choose between Vigilance or Cool for Initiative rolls.",
+    name: game.i18n.localize("SWFFG.InitiativeMode"),
+    hint: game.i18n.localize("SWFFG.InitiativeModeHint"),
     scope: "world",
     config: true,
     default: "v",
     type: String,
     choices: {
-      v: "Use Vigilance",
-      c: "Use Cool",
+      v: game.i18n.localize("SWFFG.SkillsNameVigilance"),
+      c: game.i18n.localize("SWFFG.SkillsNameCool"),
     },
     onChange: (rule) => _setffgInitiative(rule),
   });
@@ -158,13 +158,33 @@ Hooks.once("init", async function () {
 
   // Register skill sorting by localised value setting
   game.settings.register("starwarsffg", "skillSorting", {
-    name: "Sort skills by localised name?",
-    hint: "By default skills will be sorted alphabetically by the original English names on the character sheets. Enable this setting if you would prefer sorting to use the localised skill names instead.",
+    name: game.i18n.localize("SWFFG.SettingsSkillSorting"),
+    hint: game.i18n.localize("SWFFG.SettingsSkillSortingHint"),
     scope: "world",
     config: true,
     default: false,
     type: Boolean,
     onChange: (rule) => window.location.reload(),
+  });
+
+  // Register setting for group manager Player Character List display mode
+  game.settings.register("starwarsffg", "pcListMode", {
+    name: game.i18n.localize("SWFFG.SettingsPCListMode"),
+    hint: game.i18n.localize("SWFFG.SettingsPCListModeHint"),
+    scope: "world",
+    config: true,
+    default: "active",
+    type: String,
+    choices: {
+      active: game.i18n.localize("SWFFG.SettingsPCListModeActive"),
+      owned: game.i18n.localize("SWFFG.SettingsPCListModeOwned"),
+    },
+    onChange: (rule) => {
+      const groupmanager = canvas.groupmanager.window;
+      if (groupmanager) {
+        groupmanager.render();
+      }
+    },
   });
 
   function combineAll(values, monoid) {
