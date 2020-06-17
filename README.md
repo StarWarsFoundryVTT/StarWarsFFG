@@ -27,6 +27,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/06/2020 - Esrin - Localised all system settings.
+- 17/06/2020 - Esrin - Added new Player Character List Mode system setting that determines how the Group Manager lists player characters.
 - 17/06/2020 - Esrin - Added 'equipped' toggle to Armour in character inventory display. Only equipped armour will apply its soak value.
 - 17/06/2020 - Cstadther - Bug fix - Width of Characteristic Selector
 - 17/06/2020 - Cstadther - Bug fix #60 - Dice localization
