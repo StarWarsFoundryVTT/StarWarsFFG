@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/06/2020 - Esrin - Added 'equipped' toggle to Armour in character inventory display. Only equipped armour will apply its soak value.
 - 17/06/2020 - Cstadther - Bug fix - Width of Characteristic Selector
 - 17/06/2020 - Cstadther - Bug fix #60 - Dice localization
 - 17/06/2020 - Esrin - Added limited player view to the Group Manager tool.
