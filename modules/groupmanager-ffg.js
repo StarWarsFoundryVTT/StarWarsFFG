@@ -56,7 +56,9 @@ export class GroupManager extends FormApplication {
       players.connected = true;
     }
     const initiative = { "value": CONFIG.Combat.initiative.formula };
-    return { g: game, players, initiative };
+    const isGM = game.user.isGM;
+    if (!isGM) this.position.height = 470;
+    return { g: game, players, initiative, isGM };
   }
 
   /* -------------------------------------------- */

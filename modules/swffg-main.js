@@ -209,7 +209,7 @@ Hooks.once("init", async function () {
         bool = a != b;
         break;
       case "contains":
-        if(a && b) {
+        if (a && b) {
           bool = a.includes(b);
         } else {
           bool = false;
@@ -253,25 +253,23 @@ Hooks.once("init", async function () {
 /* -------------------------------------------- */
 
 Hooks.on("getSceneControlButtons", (controls) => {
-  if (game.user.isGM) {
-    controls.push({
-      name: "groupmanager",
-      title: "Group Manager",
-      icon: "fas fa-users",
-      layer: "GroupManagerLayer",
-      tools: [
-        {
-          name: "groupsheet",
-          title: "Open Group Sheet",
-          icon: "fas fa-users",
-          onClick: () => {
-            canvas.groupmanager.window = new GroupManager().render(true);
-          },
-          button: true,
+  controls.push({
+    name: "groupmanager",
+    title: "Group Manager",
+    icon: "fas fa-users",
+    layer: "GroupManagerLayer",
+    tools: [
+      {
+        name: "groupsheet",
+        title: "Open Group Sheet",
+        icon: "fas fa-users",
+        onClick: () => {
+          canvas.groupmanager.window = new GroupManager().render(true);
         },
-      ],
-    });
-  }
+        button: true,
+      },
+    ],
+  });
 });
 
 Hooks.once("canvasInit", (canvas) => {

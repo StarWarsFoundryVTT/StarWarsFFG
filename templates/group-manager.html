@@ -1,4 +1,5 @@
 <form class="{{cssClass}} group-manager" autocomplete="off">
+  {{#if isGM}}
   <div class="initiative">
     <h1>{{localize "SWFFG.InitiativeMode"}}</h1>
     <select class="initiative-mode" name="initiative-mode" id="initiative-mode">
@@ -8,6 +9,7 @@
       {{/select}}
     </select>
   </div>
+  {{/if}}
 
   <div class="destiny-pool flex-center">
     <h1>{{localize "SWFFG.DestinyPool"}}</h1>
@@ -30,8 +32,10 @@
         <th>{{localize "SWFFG.Strain"}}</th>
         <th>{{localize "SWFFG.Soak"}}</th>
         <!-- <th>{{localize "SWFFG.DescriptionObligationAbrev"}}</th> -->
+        {{#if isGM}}
         <th>{{localize "SWFFG.CombatAbrev"}}</th>
         <th>{{localize "SWFFG.DescriptionXP"}}</th>
+        {{/if}}
       </thead>
       <tbody>
         {{#if players.connected}} {{#each players as |p key|}}
@@ -41,10 +45,12 @@
           <td><input type="text" value="{{p.character.data.data.stats.strain.real_value}}" disabled /></td>
           <td><input type="text" value="{{p.character.data.data.stats.soak.value}}" disabled /></td>
           <!-- <td><input type="text" value="{{p.character.data.data.obligation.value}}" disabled /></td> -->
+          {{#if ../isGM}}
           <td>
             <button class="add-to-combat" data-character="{{p.character.id}}"><i class="fas fa-fist-raised"></i></button>
           </td>
           <td><button class="add-XP" data-character="{{p.character.id}}">{{localize "SWFFG.DescriptionXP"}}</button></td>
+          {{/if}}
         </tr>
         {{/each}}{{else}}
         <tr>
@@ -62,6 +68,7 @@
     </table>
   </div>
 
+  {{#if isGM}}
   <div class="group-actions">
     <h2>{{localize "SWFFG.GroupActions"}}</h2>
     <div style="display: flex;">
@@ -70,4 +77,5 @@
       <!-- <button class="temp-button">Obligation</button> -->
     </div>
   </div>
+  {{/if}}
 </form>
