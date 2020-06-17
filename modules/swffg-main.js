@@ -11,6 +11,7 @@ import { CombatFFG } from "./combat-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
+import { AdversarySheetFFG } from "./actors/adversary-sheet-ffg.js";
 import { DicePoolFFG } from "./dice-pool-ffg.js";
 import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
@@ -203,6 +204,7 @@ Hooks.once("init", async function () {
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true });
+  Actors.registerSheet("ffg", AdversarySheetFFG);
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("ffg", ItemSheetFFG, { makeDefault: true });
 
