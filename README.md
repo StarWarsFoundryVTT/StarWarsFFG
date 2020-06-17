@@ -32,6 +32,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 17/06/2020 - Esrin - Added 'equipped' toggle to Armour in character inventory display. Only equipped armour will apply its soak value.
 - 17/06/2020 - Cstadther - Bug fix - Width of Characteristic Selector
 - 17/06/2020 - Cstadther - Bug fix #60 - Dice localization
+- 17/06/2020 - Cstadther - Added Adversary Sheet, which hides everything for non-owner except picture, name, and species.  Name is in the title bar and can't easily be changed.
+- 17/06/2020 - Cstadther - Big fix #60 - Dice localization
 - 17/06/2020 - Esrin - Added limited player view to the Group Manager tool.
 - 17/06/2020 - Esrin - Made skill sorting by localised name an optional setting in System Settings, defaults to off.
 - 17/06/2020 - Esrin - Fixed localised skill sorting for Knowledge skill types.

@@ -2,6 +2,10 @@
   &.actor {
     min-width: 588px;
     min-height: 525px;
+
+    &.adversary {
+      min-height: 100px;
+    }
   }
 
   .sheet-body {
