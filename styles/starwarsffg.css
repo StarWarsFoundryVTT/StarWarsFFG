@@ -1011,6 +1011,14 @@ span.dietype.triumph {
   color: white;
 }
 
+.starwarsffg .talent-background.talent-active .talent-header {
+  background-color: #490c0b;
+}
+
+.starwarsffg .talent-background.talent-passive .talent-header {
+  background-color: #464855;
+}
+
 .starwarsffg .talent-row {
   margin: 10px 0;
 }

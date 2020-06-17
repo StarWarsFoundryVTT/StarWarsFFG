@@ -197,6 +197,13 @@ Hooks.once("init", async function () {
       case "!=":
         bool = a != b;
         break;
+      case "contains":
+        if(a && b) {
+          bool = a.includes(b);
+        } else {
+          bool = false;
+        }
+        break;
       default:
         throw "Unknown operator " + operator;
     }

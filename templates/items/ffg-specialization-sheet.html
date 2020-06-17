@@ -25,7 +25,7 @@
     <div class="talent-grid {{#if data.isEditing}}{{else}}talent-disable-edit{{/if}}">
       {{#each data.talents as |talent key|}}
       <div class="talent-block talent-upgrade talent-single specialization-talent" id="{{key}}" data-itemid="{{talent.itemId}}">
-        <div class="talent-background">
+        <div class="talent-background {{#iff talent.activationLabel 'contains' 'Passive'}}talent-passive{{else}}talent-active{{/iff}}">
           <div class="talent-header">
             <div><input type="checkbox" name="data.talents.{{key}}.islearned" data-dtype="Boolean" {{#if talent.islearned }}checked{{else}} {{/if}}></div>
             <div class="talent-name">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>

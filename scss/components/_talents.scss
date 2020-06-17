@@ -114,13 +114,10 @@ table {
   
   background-color: #ddd;
   padding: 5px;
-
-  
-
   --notchSize: 9px;
 
   clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-
+  
   .talent-header {
 
     background-color: rgb(0, 5, 68);
@@ -151,6 +148,19 @@ table {
       }
     }
 
+    
+  
+  }
+
+  &.talent-active {
+    .talent-header {
+      background-color: #490c0b
+    }
+  }
+  &.talent-passive {
+    .talent-header {
+      background-color: rgb(70,72,85)
+    }
   }
 }
 

@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/06/2020 - Cstadther - Enhancement #91, Specialization Color Difference between Active and Passive
 - 16/06/2020 - Cstadther - Bug fix for 2-way binding.  
 - 16/06/2020 - Cstadther - Bug fix for #90, add talent cost in specialization tree.
 - 16/06/2020 - Cstadther - Bug fix for #97, specialization talent click display.
