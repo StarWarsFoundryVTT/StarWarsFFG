@@ -36,6 +36,7 @@ export class ItemFFG extends Item {
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
+
         data.activation.label = activationId;
         
         // A talent update occured, update specializations
@@ -67,7 +68,6 @@ export class ItemFFG extends Item {
                   if(!data.trees.includes(item._id)) {
                     data.trees.push(item._id);
                   }
-
                   this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
                 }
               }
@@ -183,7 +183,7 @@ export class ItemFFG extends Item {
         return item._id === specializationTalents[talent].itemId;
       });
 
-      if(gameItem) {
+      if(gameItem && !this.isOwned) {
         this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
       }
     }

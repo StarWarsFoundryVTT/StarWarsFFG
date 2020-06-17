@@ -49,6 +49,54 @@ export class ActorSheetFFG extends ActorSheet {
       case "character":
         this.position.width = 595;
         this.position.height = 783;
+
+        // we need to update all specialization talents with the latest talent information
+        if(!this.actor.data.flags.loaded) {
+          console.debug(`Starwars FFG - Running Actor initial load`);
+          this.actor.data.flags.loaded = true;
+
+          const specializations = this.actor.data.items.filter(item => {
+            return item.type === "specialization";
+          });
+
+          specializations.forEach(spec => {
+            const specializationTalents = spec.data.talents;
+            for (let talent in specializationTalents) {
+              const gameItem = game.items.get(specializationTalents[talent].itemId);
+              
+              if(gameItem) {
+                this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
+              }
+            }
+
+            const globalTalentList = [];
+            if (spec?.talentList && spec.talentList.length > 0) {
+              spec.talentList.forEach((talent) => {
+                const item = talent;
+                item.firstSpecialization = spec._id;
+
+                if(item.isRanked) {
+                  item.rank = typeof talent.rank === "number" ? talent.rank : 1;
+                } else {
+                  item.rank = "N/A";
+                }
+
+                let index = globalTalentList.findIndex((obj) => {
+                  return obj.name === item.name;
+                });
+
+                if (index < 0 || !item.isRanked) {
+                  globalTalentList.push(item);
+                } else {
+                  globalTalentList[index].rank += talent.rank;
+                }
+              });
+            }
+
+            data.actor.data.talentList = globalTalentList;
+          })
+        }
+
         break;
       case "minion":
         this.position.width = 595;
@@ -175,9 +223,6 @@ export class ActorSheetFFG extends ActorSheet {
       const a = event.currentTarget;
       const characteristic = a.dataset.characteristic;
       const ability = $(a).parents("tr[data-ability]")[0].dataset.ability;
-
-      console.debug(characteristic);
-
       new Dialog(
         {
           title: `${game.i18n.localize("SWFFG.SkillCharacteristicDialogTitle")} ${ability}`,
@@ -446,5 +491,14 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
     }
+  }
+
+  _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
+    console.debug(`Starwars FFG - Updating Specializations Talent`);
+    specializationTalentItem.name = talentItem.name;
+    specializationTalentItem.description = talentItem.data.description;
+    specializationTalentItem.activation = talentItem.data.activation.value;
+    specializationTalentItem.activationLabel = talentItem.data.activation.label;
+    specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
   }
 }

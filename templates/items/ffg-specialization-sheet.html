@@ -7,7 +7,7 @@
           <div class="talent-name"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'SWFFG.Specialization'}}" /></div>
         </div>
         <div class="talent-body">
-          <div class="popout-editor" data-target="data.description" data-label="{{item.name}} {{localize 'SWFFG.ForceBasicPower'}}">
+          <div class="popout-editor" data-target="data.description" data-label="{{item.name}}">
             {{{renderDiceTags data.description}}}
           </div>
           <!-- {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}} -->
@@ -38,7 +38,7 @@
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.description" value="{{talent.description}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.activation" value="{{talent.activation}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.itemId" value="{{talent.itemId}}" />
-              <input class="talent-hidden" type="text" name="data.talents.{{key}}.isRanked" value="{{talent.ranks.ranked}}" />
+              <input class="talent-hidden" type="text" name="data.talents.{{key}}.isRanked" value="{{talent.isRanked}}" data-dtype="Boolean" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.pack" value="{{talent.pack}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.cost" value="{{calculateSpecializationTalentCost key}}" />
             </div>
