@@ -8,6 +8,6 @@ const checklang = require("./de.json");
 
 Object.keys(enlang).forEach((key, index) => {
   if (!(key in checklang)) {
-    console.log(`\"${key}\": \"\",`);
+    console.log(`\"${key}\": \"${enlang[key]}\",`);
   }
 });
