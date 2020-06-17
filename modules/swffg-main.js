@@ -164,7 +164,7 @@ Hooks.once("init", async function () {
     config: true,
     default: false,
     type: Boolean,
-    onChange: (rule) => console.log(rule),
+    onChange: (rule) => window.location.reload(),
   });
 
   function combineAll(values, monoid) {
