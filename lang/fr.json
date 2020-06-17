@@ -227,5 +227,20 @@
   "SWFFG.GrantXPTo": "Attribuer XP à",
   "SWFFG.GrantXPToAllCharacters": "Attribuer XP à tout les joueurs",
   "SWFFG.Cancel": "Annuler",
-  "SWFFG.Specialization": "Spécialité"
+  "SWFFG.Specialization": "Spécialité",
+  "SWFFG.SkillCharacteristicDialogTitle" : "Change Characteristic For:",
+  "SWFFG.ButtonClose" : "Fermer",
+  "SWFFG.ButtonAccept" : "Accepter",
+  "SWFFG.DiceProficiency" : "Maîtrise",
+  "SWFFG.DiceAbility" : "Aptitude",
+  "SWFFG.DiceChallenge" : "Défi",
+  "SWFFG.DiceDifficulty" : "Difficulté",
+  "SWFFG.DiceBoost" : "Fortune",
+  "SWFFG.DiceSetback" : "Infortune",
+  "SWFFG.DiceForce" : "Force",
+  "SWFFG.UpgradeAbility" : "Améliorer Aptitude",
+  "SWFFG.UpgradeDifficulty" : "Améliorer Difficulté",
+  "SWFFG.ButtonRoll" : "Lancer",
+  "SWFFG.Rolling" : "En cours de lancer",
+  "SWFFG.RollingDefaultTitle" : "Finaliser votre lancé"
 }
