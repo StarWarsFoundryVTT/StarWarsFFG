@@ -27,8 +27,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/06/2020 - Cstadther - Big fix #60 - Dice localization
 - 17/06/2020 - Esrin - Added limited player view to the Group Manager tool.
-- 17/07/2020 - Cstadther - Big fix #60 - Dice localization
 - 17/06/2020 - Esrin - Made skill sorting by localised name an optional setting in System Settings, defaults to off.
 - 17/06/2020 - Esrin - Fixed localised skill sorting for Knowledge skill types.
 - 17/06/2020 - Cstadther - Enhancement #91, Specialization Color Difference between Active and Passive
