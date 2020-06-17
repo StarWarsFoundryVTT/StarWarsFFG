@@ -29,8 +29,8 @@ Hooks.once("init", async function () {
     ItemFFG,
     CombatFFG,
     addons: {
-      PopoutEditor
-    }
+      PopoutEditor,
+    },
   };
 
   // Check required module is active and store result to game.requirements_installed
@@ -156,6 +156,17 @@ Hooks.once("init", async function () {
     }
   }
 
+  // Register skill sorting by localised value setting
+  game.settings.register("starwarsffg", "skillSorting", {
+    name: "Sort skills by localised name?",
+    hint: "By default skills will be sorted alphabetically by the original English names on the character sheets. Enable this setting if you would prefer sorting to use the localised skill names instead.",
+    scope: "world",
+    config: true,
+    default: false,
+    type: Boolean,
+    onChange: (rule) => console.log(rule),
+  });
+
   function combineAll(values, monoid) {
     return values.reduce((prev, curr) => monoid.combine(prev, curr), monoid.identity);
   }
@@ -217,17 +228,17 @@ Hooks.once("init", async function () {
     return new Handlebars.SafeString(items.join(""));
   });
 
-  Handlebars.registerHelper("renderDiceTags", function(string) {
+  Handlebars.registerHelper("renderDiceTags", function (string) {
     return PopoutEditor.renderDiceImages(string);
   });
 
-  Handlebars.registerHelper("calculateSpecializationTalentCost", function(idString) {
+  Handlebars.registerHelper("calculateSpecializationTalentCost", function (idString) {
     const id = parseInt(idString.replace("talent", ""), 10);
 
     const cost = (Math.trunc(id / 4) + 1) * 5;
 
     return cost;
-  }); 
+  });
 });
 
 /* -------------------------------------------- */
@@ -266,9 +277,8 @@ Hooks.once("canvasInit", (canvas) => {
   }
 });
 
-
 Hooks.on("renderJournalSheet", (journal, obj, data) => {
   let content = $(obj).find(".editor-content").html();
 
   $(obj).find(".editor-content").html(PopoutEditor.renderDiceImages(content));
-})
+});
