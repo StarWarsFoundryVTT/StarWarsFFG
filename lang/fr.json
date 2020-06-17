@@ -241,6 +241,6 @@
   "SWFFG.UpgradeAbility" : "Améliorer Aptitude",
   "SWFFG.UpgradeDifficulty" : "Améliorer Difficulté",
   "SWFFG.ButtonRoll" : "Lancer",
-  "SWFFG.Rolling" : "En cours de lancer",
+  "SWFFG.Rolling" : "En train de lancer",
   "SWFFG.RollingDefaultTitle" : "Finaliser votre lancé"
 }
