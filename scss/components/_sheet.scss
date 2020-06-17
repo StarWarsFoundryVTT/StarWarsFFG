@@ -1,7 +1,7 @@
 &.sheet {
   &.actor {
     min-width: 588px;
-    min-height: 489px;
+    min-height: 525px;
   }
 
   .sheet-body {
@@ -9,18 +9,14 @@
     min-height: 100px;
     height: calc(100% - 19em);
     overflow: auto;
-    &.minion {
-      height: calc(100% - 21em);
-      overflow: auto;
-    }
     &.vehicle {
-      height: calc(100% - 38em);
+      height: calc(100% - 29rem);
       overflow: auto;
     }
-    &.small {
-      height: calc(100% - 16em);
-      overflow: auto;
-    }
+    // &.small {
+    //   height: calc(100% - 25rem);
+    //   overflow: auto;
+    // }
     .tab {
       height: 100%;
       overflow: auto;
