@@ -231,5 +231,17 @@
   "SWFFG.Specialization": "Specialization",
   "SWFFG.SkillCharacteristicDialogTitle" : "Change Characteristic For:",
   "SWFFG.ButtonClose" : "Close",
-  "SWFFG.ButtonAccept" : "Accept"
+  "SWFFG.ButtonAccept" : "Accept",
+  "SWFFG.DiceProficiency" : "Proficiency",
+  "SWFFG.DiceAbility" : "Ability",
+  "SWFFG.DiceChallenge" : "Challenge",
+  "SWFFG.DiceDifficulty" : "Difficulty",
+  "SWFFG.DiceBoost" : "Boost",
+  "SWFFG.DiceSetback" : "Setback",
+  "SWFFG.DiceForce" : "Force",
+  "SWFFG.UpgradeAbility" : "Upgrade Ability",
+  "SWFFG.UpgradeDifficulty" : "Upgrade Difficulty",
+  "SWFFG.ButtonRoll" : "Roll",
+  "SWFFG.Rolling" : "Rolling",
+  "SWFFG.RollingDefaultTitle" : "Finalize your roll"
 }

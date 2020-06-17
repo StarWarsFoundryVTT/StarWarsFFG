@@ -367,7 +367,7 @@ export class ActorSheetFFG extends ActorSheet {
       dicePool.upgradeDifficulty();
     }
 
-    await this._completeRoll(dicePool, `Rolling ${skill.label}`, skill.label);
+    await this._completeRoll(dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label);
   }
 
   async _completeRoll(dicePool, description, skillName) {
@@ -379,12 +379,12 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     new Dialog({
-      title: description || "Finalize your roll",
+      title: description || game.i18n.localize("SWFFG.RollingDefaultTitle"),
       content,
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
-          label: "Roll",
+          label: game.i18n.localize("SWFFG.ButtonRoll"),
           callback: () => {
             const container = document.getElementById(id);
             const finalPool = DicePoolFFG.fromContainer(container);
@@ -392,7 +392,7 @@ export class ActorSheetFFG extends ActorSheet {
             ChatMessage.create({
               user: game.user._id,
               speaker: this.getData(),
-              flavor: `Rolling ${skillName}...`,
+              flavor: `${game.i18n.localize("SWFFG.Rolling")} ${skillName}...`,
               sound: CONFIG.sounds.dice,
               content: `/sw ${finalPool.renderDiceExpression()}`,
             });
@@ -400,7 +400,7 @@ export class ActorSheetFFG extends ActorSheet {
         },
         two: {
           icon: '<i class="fas fa-times"></i>',
-          label: "Cancel",
+          label: game.i18n.localize("SWFFG.Cancel"),
         },
       },
     }).render(true);
@@ -410,7 +410,7 @@ export class ActorSheetFFG extends ActorSheet {
     ChatMessage.create({
       user: game.user._id,
       speaker: this.getData(),
-      flavor: `Rolling ${skillName}...`,
+      flavor: `${game.i18n.localize("SWFFG.Rolling")} ${skillName}...`,
       sound: CONFIG.sounds.dice,
       content: `/sw ${dicePool.renderDiceExpression()}`,
     });
