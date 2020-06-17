@@ -259,7 +259,6 @@ export class ActorSheetFFG extends ActorSheet {
         },
         {
           classes: ["dialog", "starwarsffg"],
-          width: 300,
           template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
         }
       ).render(true);
