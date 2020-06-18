@@ -27,6 +27,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/06/2020 - Cstadther - Added force talent checkbox to talent data, update specialization sheet rendering to include it.
 - 17/06/2020 - Cstadther - Added Adversary Sheet, which hides everything for non-owner except picture, name, and species.  Name is in the title bar and can't easily be changed.
 - 17/06/2020 - Esrin - Localised all system settings.
 - 17/06/2020 - Esrin - Added new Player Character List Mode system setting that determines how the Group Manager lists player characters.
