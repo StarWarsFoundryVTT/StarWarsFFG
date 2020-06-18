@@ -251,5 +251,7 @@
   "SWFFG.SettingsPCListModeActive": "Active Only",
   "SWFFG.SettingsPCListModeOwned": "All Owned Characters",
   "SWFFG.SettingsSkillSorting": "Sort skills by localised name?",
-  "SWFFG.SettingsSkillSortingHint": "By default skills will be sorted alphabetically by the original English names on the character sheets. Enable this setting if you would prefer sorting to use the localised skill names instead."
+  "SWFFG.SettingsSkillSortingHint": "By default skills will be sorted alphabetically by the original English names on the character sheets. Enable this setting if you would prefer sorting to use the localised skill names instead.",
+  "SWFFG.TalentsForce": "Force Talent?"
+
 }

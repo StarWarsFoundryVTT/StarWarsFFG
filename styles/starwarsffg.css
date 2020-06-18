@@ -915,6 +915,7 @@ span.dietype.triumph {
 .starwarsffg .talent-grid {
   display: flex;
   flex-wrap: wrap;
+  position: relative;
 }
 
 .starwarsffg .talent-upgrade {
@@ -1976,6 +1977,8 @@ span.dietype.triumph {
   font-size: 13px;
   text-transform: uppercase;
   margin: auto;
+  white-space: nowrap;
+  padding: 0 10px;
   --notchSize: 8px;
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
@@ -3387,4 +3390,27 @@ span.dietype.triumph {
 
 .starwarsffg .item-sheet-specialization .sheet-body {
   height: calc(100% - 9rem);
+}
+
+.starwarsffg .burst-8 {
+  z-index: -1;
+  top: 10px;
+  left: 12px;
+  background: white;
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  text-align: center;
+  transform: rotate(20deg);
+}
+
+.starwarsffg .burst-8:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 26px;
+  width: 26px;
+  background: white;
+  transform: rotate(135deg);
 }

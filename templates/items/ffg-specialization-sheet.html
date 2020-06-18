@@ -24,10 +24,16 @@
   <section class="sheet-body">
     <div class="talent-grid {{#if data.isEditing}}{{else}}talent-disable-edit{{/if}}">
       {{#each data.talents as |talent key|}}
+      
       <div class="talent-block talent-upgrade talent-single specialization-talent" id="{{key}}" data-itemid="{{talent.itemId}}">
+        
         <div class="talent-background {{#iff talent.activationLabel 'contains' 'Passive'}}talent-passive{{else}}talent-active{{/iff}}">
           <div class="talent-header">
-            <div><input type="checkbox" name="data.talents.{{key}}.islearned" data-dtype="Boolean" {{#if talent.islearned }}checked{{else}} {{/if}}></div>
+            <div>
+              {{#if talent.isForceTalent}}
+        <div class="burst-8"></div>
+      {{/if}}
+              <input type="checkbox" name="data.talents.{{key}}.islearned" data-dtype="Boolean" {{#if talent.islearned }}checked{{else}} {{/if}}></div>
             <div class="talent-name">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
           </div>
           <div class="talent-body">
@@ -41,6 +47,7 @@
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.isRanked" value="{{talent.isRanked}}" data-dtype="Boolean" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.pack" value="{{talent.pack}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.cost" value="{{calculateSpecializationTalentCost key}}" />
+              <input class="talent-hidden" type="text" name="data.talents.{{key}}.isForceTalent" value="{{talent.isForceTalent}}" />
             </div>
           </div>
         </div>

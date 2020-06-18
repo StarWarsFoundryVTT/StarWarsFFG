@@ -205,5 +205,6 @@ export class ItemFFG extends Item {
     specializationTalentItem.activation = talentItem.data.activation.value;
     specializationTalentItem.activationLabel = talentItem.data.activation.label;
     specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
+    specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
   }
 }
