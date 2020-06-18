@@ -624,6 +624,7 @@
         "current": 1,
         "min": 0
       },
+      "isForceTalent" : false,
       "trees": [],
       "attributes": {}
     },

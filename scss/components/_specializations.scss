@@ -6,3 +6,25 @@
     height: calc(100% - 9rem);
   }
 }
+
+.burst-8 {
+  z-index: -1;
+  top:10px;
+  left:12px;
+  background: white;
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  text-align: center;
+  transform: rotate(20deg);
+}
+.burst-8:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 26px;
+  width: 26px;
+  background: white;
+  transform: rotate(135deg);
+}
