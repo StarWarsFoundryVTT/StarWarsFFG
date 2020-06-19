@@ -174,14 +174,25 @@ export class ItemFFG extends Item {
     itemData[listProperty] = itemList;
   }
 
-  _prepareSpecializations() {
+  async _prepareSpecializations() {
     // We need to update the specialization talents information with the linked item.
     const specializationTalents = this.data.data.talents;
     for (let talent in specializationTalents) {
-    
-      const gameItem = game.data.items.find(item => {
-        return item._id === specializationTalents[talent].itemId;
-      });
+      let gameItem;
+      if(specializationTalents[talent].pack.length > 0) {
+        try {
+          const pack = game.packs.get(specializationTalents[talent].pack);
+          const entry = pack.index.find(e => e.id === specializationTalents[talent].itemId);
+          gameItem = pack.getEntity(entry.id)
+        } catch {
+          console.debug('Starwars FFG - Pack Item, deferring load.')
+        }
+      } else {
+        gameItem = game.data.items.find(item => {
+          return item._id === specializationTalents[talent].itemId;
+        });
+      }
+     
 
       if(gameItem && !this.isOwned) {
         this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);

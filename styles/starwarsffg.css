@@ -989,6 +989,7 @@ span.dietype.triumph {
 }
 
 .starwarsffg .talent-background .talent-header {
+  position: relative;
   background-color: #000544;
   padding: 5px;
   --notchSize: 9px;
@@ -3394,8 +3395,7 @@ span.dietype.triumph {
 
 .starwarsffg .burst-8 {
   z-index: -1;
-  top: 10px;
-  left: 12px;
+  left: 7px;
   background: white;
   width: 26px;
   height: 26px;
@@ -3413,4 +3413,12 @@ span.dietype.triumph {
   width: 26px;
   background: white;
   transform: rotate(135deg);
+}
+
+.starwarsffg.data-import .import-file-selector div {
+  display: inline-block;
+}
+
+.starwarsffg.data-import .import-invalid {
+  display: none;
 }
