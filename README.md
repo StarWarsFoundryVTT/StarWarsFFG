@@ -26,6 +26,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 19/06/2020 - Cstadther - Bug fix #123 - localization of change characteristic dialog.
 - 19/06/2020 - Cstadther - Bug fix for console error where pack index has not been populated.
 - 19/06/2020 - Cstadther - Bug fix for talent upgrades not adding up correctly
 - 18/06/2020 - Cstadther - First pass as Talent Import from OggDude Data Set

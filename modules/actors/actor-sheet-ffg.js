@@ -190,9 +190,11 @@ export class ActorSheetFFG extends ActorSheet {
       const a = event.currentTarget;
       const characteristic = a.dataset.characteristic;
       const ability = $(a).parents("tr[data-ability]")[0].dataset.ability;
+      const label = CONFIG.FFG.skills[ability].label;
+
       new Dialog(
         {
-          title: `${game.i18n.localize("SWFFG.SkillCharacteristicDialogTitle")} ${ability}`,
+          title: `${game.i18n.localize("SWFFG.SkillCharacteristicDialogTitle")} ${game.i18n.localize(label)}`,
           content: {
             options: CONFIG.FFG.characteristics,
             char: characteristic,
