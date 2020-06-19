@@ -110,7 +110,7 @@ export class ItemFFG extends Item {
         if (talents[upgrade].islearned) {
           const item = talents[upgrade];
 
-          if(item.isRanked) {
+          if(item.isRanked || listProperty === "powerUpgrades") {
             item.rank = 1;
           } else {
             item.rank = "N/A";
@@ -120,7 +120,7 @@ export class ItemFFG extends Item {
             return obj.name === item.name;
           });
 
-          if (index < 0 || !item.isRanked) {
+          if (index < 0 || (!item.isRanked && listProperty !== "powerUpgrades")) {
             itemList.push(item);
           } else {
             itemList[index].rank += 1;
@@ -182,6 +182,7 @@ export class ItemFFG extends Item {
       if(specializationTalents[talent].pack.length > 0) {
         try {
           const pack = game.packs.get(specializationTalents[talent].pack);
+          pack.getIndex();
           const entry = pack.index.find(e => e.id === specializationTalents[talent].itemId);
           gameItem = pack.getEntity(entry.id)
         } catch {
