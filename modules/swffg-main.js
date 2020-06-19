@@ -16,6 +16,7 @@ import { DicePoolFFG } from "./dice-pool-ffg.js";
 import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
+import DataImporter from "./importer/data-importer.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -186,6 +187,25 @@ Hooks.once("init", async function () {
         groupmanager.render();
       }
     },
+  });
+
+  // Importer Control Menu
+  game.settings.registerMenu("starwarsffg", "odImporter", {
+    name: "Data Import",
+    label: "OggDude Dataset Importer",
+    hint: "Import data from an OggDude Dataset into Foundry",
+    icon: "fas fa-file-import",
+    type: DataImporter,
+    restricted: true
+  });
+
+  game.settings.register("starwarsffg", "odImporter", {
+    name: "Item Importer",
+    scope: "world",
+    default: {},
+    config: false,
+    default: {},
+    type: Object
   });
 
   function combineAll(values, monoid) {

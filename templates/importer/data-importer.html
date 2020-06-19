@@ -1,0 +1,36 @@
+<form class="{{cssClass}}" autocomplete="off">
+  
+  <div class="import-file-selector">
+    <div>
+      <select style="text-align:center;" name="import-file" id="import-file">
+        <option></option>
+        {{#each files as |t|}}
+        <option value="{{t}}">{{t}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <div>
+      <button class="dialog-button" data-button="load">
+        <i class="fas fa-check"></i>
+        Load File
+      </button>
+    </div>
+  </div>
+  <div>
+    <input type="checkbox" id="importTalents" name="imports" value="/Talents.xml" data-name="Talents" data-type="Item" data-itemtype="talent" disabled>
+    <label for="importTalents"> Talents</label><br>
+    <input type="checkbox" id="importGear" name="imports" value="/Gear.xml" disabled>
+    <label for="importTalents"> Gear</label><br>
+    <input type="checkbox" id="importWeapons" name="imports" value="/Weapons.xml" disabled>
+    <label for="importTalents"> Weapons</label><br>
+    <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" disabled>
+    <label for="importTalents"> Armor</label><br>
+  </div>
+
+  <div>
+    <button class="dialog-button" data-button="import">
+      <i class="fas fa-file-import"></i>
+      Import
+    </button>
+  </div>
+</form>

@@ -54,50 +54,8 @@ export class AdversarySheetFFG extends ActorSheet {
         } 
 
         // we need to update all specialization talents with the latest talent information
-        if(!this.actor.data.flags.loaded) {
-          console.debug(`Starwars FFG - Running Actor initial load`);
-          this.actor.data.flags.loaded = true;
-
-          const specializations = this.actor.data.items.filter(item => {
-            return item.type === "specialization";
-          });
-
-          specializations.forEach(spec => {
-            const specializationTalents = spec.data.talents;
-            for (let talent in specializationTalents) {
-              const gameItem = game.items.get(specializationTalents[talent].itemId);
-              
-              if(gameItem) {
-                this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
-              }
-            }
-
-            const globalTalentList = [];
-            if (spec?.talentList && spec.talentList.length > 0) {
-              spec.talentList.forEach((talent) => {
-                const item = talent;
-                item.firstSpecialization = spec._id;
-
-                if(item.isRanked) {
-                  item.rank = typeof talent.rank === "number" ? talent.rank : 1;
-                } else {
-                  item.rank = "N/A";
-                }
-
-                let index = globalTalentList.findIndex((obj) => {
-                  return obj.name === item.name;
-                });
-
-                if (index < 0 || !item.isRanked) {
-                  globalTalentList.push(item);
-                } else {
-                  globalTalentList[index].rank += talent.rank;
-                }
-              });
-            }
-
-            data.actor.data.talentList = globalTalentList;
-          })
+        if (!this.actor.data.flags.loaded) {
+          this._updateSpecialization(data);
         }
         break;
       case "minion":
@@ -109,8 +67,6 @@ export class AdversarySheetFFG extends ActorSheet {
         this.position.height = 824;
       default:
     }
-
-    console.debug(data);
     return data;
   }
 
@@ -339,6 +295,7 @@ export class AdversarySheetFFG extends ActorSheet {
       );
 
     // Update the Actor
+    this.actor.data.flags.loaded = false;
     return this.object.update(formData);
   }
 
@@ -496,6 +453,60 @@ export class AdversarySheetFFG extends ActorSheet {
     }
   }
 
+
+  async _updateSpecialization(data) {
+    console.debug(`Starwars FFG - Running Actor initial load`);
+          this.actor.data.flags.loaded = true;
+
+          const specializations = this.actor.data.items.filter((item) => {
+            return item.type === "specialization";
+          });
+
+          specializations.forEach(async (spec) => {
+            const specializationTalents = spec.data.talents;
+            for (let talent in specializationTalents) {
+              let gameItem;
+              if(specializationTalents[talent].pack.length > 0) {
+                const pack = await game.packs.get(specializationTalents[talent].pack);
+                const entry = await pack.index.find(e => e.id === specializationTalents[talent].itemId);
+                gameItem = await pack.getEntity(entry.id)
+              } else {
+                gameItem = game.items.get(specializationTalents[talent].itemId);
+              }
+
+              if (gameItem) {
+                this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
+              }
+            }
+
+            const globalTalentList = [];
+            if (spec?.talentList && spec.talentList.length > 0) {
+              spec.talentList.forEach((talent) => {
+                const item = talent;
+                item.firstSpecialization = spec._id;
+
+                if (item.isRanked) {
+                  item.rank = typeof talent.rank === "number" ? talent.rank : 1;
+                } else {
+                  item.rank = "N/A";
+                }
+
+                let index = globalTalentList.findIndex((obj) => {
+                  return obj.name === item.name;
+                });
+
+                if (index < 0 || !item.isRanked) {
+                  globalTalentList.push(item);
+                } else {
+                  globalTalentList[index].rank += talent.rank;
+                }
+              });
+            }
+
+            data.actor.data.talentList = globalTalentList;
+          });
+  }
+
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
     console.debug(`Starwars FFG - Updating Specializations Talent`);
     specializationTalentItem.name = talentItem.name;
@@ -503,5 +514,6 @@ export class AdversarySheetFFG extends ActorSheet {
     specializationTalentItem.activation = talentItem.data.activation.value;
     specializationTalentItem.activationLabel = talentItem.data.activation.label;
     specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
+    specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
   }
 }

@@ -23,7 +23,7 @@ export class ItemSheetFFG extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
+  async getData() {
     const data = super.getData();
 
     console.debug(`Starwars FFG - Getting Item Data`);
@@ -66,6 +66,29 @@ export class ItemSheetFFG extends ItemSheet {
         if (!this.options.editable) {
           data.data.isEditing = false;
           data.data.isReadOnly = true;
+        }
+
+        if (!this.item.data.flags.loaded) {
+          console.debug(`Starwars FFG - Running Item initial load`);
+          this.item.data.flags.loaded = true;
+
+          const specializationTalents = data.data.talents;
+
+          for (let talent in specializationTalents) {
+            let gameItem;
+            if(specializationTalents[talent].pack.length > 0) {
+              const pack = game.packs.get(specializationTalents[talent].pack);
+              await pack.getIndex();
+              const entry = await pack.index.find(e => e._id === specializationTalents[talent].itemId);
+              gameItem = await pack.getEntity(entry._id)
+            } else {
+              gameItem = game.items.get(specializationTalents[talent].itemId);
+            }
+    
+            if (gameItem) {
+              this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
+            }
+          }
         }
         break;
       default:
@@ -219,7 +242,8 @@ export class ItemSheetFFG extends ItemSheet {
         { _id: this.object._id, "data.attributes": attributes }
       );
 
-    // Update the Actor
+    // Update the Item
+    this.item.data.flags.loaded = false;
     return this.object.update(formData);
   }
 
@@ -360,13 +384,15 @@ export class ItemSheetFFG extends ItemSheet {
     if (pack.metadata.entity !== "Item") return;
     return pack.getEntity(entryId).then((ent) => {
       console.log(`${vtt} | Importing Item ${ent.name} from ${collection}`);
-      delete ent.data._id;
       return ent;
     });
   }
 
   async _onDropTalentToSpecialization(event) {
     let data;
+    const specialization = this.object;
+    const li = event.currentTarget;
+    const talentId = $(li).attr("id");
 
     try {
       data = JSON.parse(event.dataTransfer.getData("text/plain"));
@@ -378,19 +404,17 @@ export class ItemSheetFFG extends ItemSheet {
     // Case 1 - Import from a Compendium pack
     let itemObject;
     if (data.pack) {
-      itemObject = this.importItemFromCollection(data.pack, data.id);
+      itemObject = await this.importItemFromCollection(data.pack, data.id);
     }
 
     // Case 2 - Import from World entity
     else {
-      itemObject = game.items.get(data.id);
+      itemObject = await game.items.get(data.id);
       if (!itemObject) return;
     }
 
     if (itemObject.data.type === "talent") {
-      const specialization = this.object;
-      const li = event.currentTarget;
-      const talentId = $(li).attr("id");
+      
 
       // we need to remove if this is the last instance of the talent in the specialization
       const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
@@ -425,7 +449,7 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
       $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.ranked);
       $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.data.data.isForceTalent);
-      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
+      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(data.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
 
       // check to see if the talent already has a reference to the specialization
@@ -433,10 +457,23 @@ export class ItemSheetFFG extends ItemSheet {
         // the talent doesn't already have the reference, add it
         let tree = itemObject.data.data.trees;
         tree.push(specialization.id);
-        itemObject.update({ [`data.trees`] : tree });
+
+        if(!data.pack) {
+          itemObject.update({ [`data.trees`] : tree });
+        }
       }
 
       await this._onSubmit(event);
     }
+  }
+
+  _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
+    console.debug(`Starwars FFG - Updating Specializations Talent`);
+    specializationTalentItem.name = talentItem.name;
+    specializationTalentItem.description = talentItem.data.description;
+    specializationTalentItem.activation = talentItem.data.activation.value;
+    specializationTalentItem.activationLabel = talentItem.data.activation.label;
+    specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
+    specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
   }
 }
