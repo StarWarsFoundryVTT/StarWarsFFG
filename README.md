@@ -26,6 +26,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 19/06/2020 - Cstadther - Bug fix for talent upgrades not adding up correctly
 - 18/06/2020 - Cstadther - First pass as Talent Import from OggDude Data Set
 - 17/06/2020 - Cstadther - Added force talent checkbox to talent data, update specialization sheet rendering to include it.
 - 17/06/2020 - Cstadther - Added Adversary Sheet, which hides everything for non-owner except picture, name, and species.  Name is in the title bar and can't easily be changed.
