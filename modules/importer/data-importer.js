@@ -77,8 +77,11 @@ export default class DataImporter extends FormApplication {
     }
 
     if(action === "import") {
-      console.log('Starwars FFG - Importing Data Files')
+      console.log('Starwars FFG - Importing Data Files');
+      $(".import-progress").toggleClass("import-hidden");
 
+      let totalCount = 0
+      let currentCount = 0;
       const importFiles = $("input:checkbox[name=imports]:checked").map(function(){return { file : $(this).val(), label : $(this).data("name"), type : $(this).data("type"), itemtype : $(this).data("itemtype") } }).get()
 
       const selectedFile = $("#import-file").val();
@@ -105,7 +108,9 @@ export default class DataImporter extends FormApplication {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data,"text/xml");
 
+        // Handle import or talents
         const talents = xmlDoc.getElementsByTagName("Talent");
+        totalCount += talents.length;
         for(let i = 0; i < talents.length; i+=1) {
           const talent = talents[i];
           const importkey = talent.getElementsByTagName("Key")[0]?.textContent;
@@ -150,19 +155,21 @@ export default class DataImporter extends FormApplication {
             }
           }
 
-          let newCompendiumItem;
+          let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === item.name);
 
           if(!entry) {
             console.debug(`Starwars FFG - Importing ${file.itemtype} ${file.type} - ${item.name}`);
             if(file.type === "Item") {
-              newCompendiumItem = new Item(item);  
+              compendiumItem = new Item(item);  
             }
 
             pack.importEntity(newCompendiumItem);
-          }
-         
+          } 
+          currentCount +=1 ;
+          
+          $(".import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
         }
 
       });

@@ -12,25 +12,29 @@
     <div>
       <button class="dialog-button" data-button="load">
         <i class="fas fa-check"></i>
-        Load File
+        {{localize "SWFFG.LoadFile"}}
       </button>
     </div>
   </div>
   <div>
     <input type="checkbox" id="importTalents" name="imports" value="/Talents.xml" data-name="Talents" data-type="Item" data-itemtype="talent" disabled>
-    <label for="importTalents"> Talents</label><br>
+    <label for="importTalents"> {{localize "SWFFG.Talents"}}</label><br>
     <input type="checkbox" id="importGear" name="imports" value="/Gear.xml" disabled>
-    <label for="importTalents"> Gear</label><br>
+    <label for="importTalents"> {{localize "SWFFG.ItemsGear"}}</label><br>
     <input type="checkbox" id="importWeapons" name="imports" value="/Weapons.xml" disabled>
-    <label for="importTalents"> Weapons</label><br>
+    <label for="importTalents"> {{localize "SWFFG.ItemsWeapons"}}</label><br>
     <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" disabled>
-    <label for="importTalents"> Armor</label><br>
+    <label for="importTalents"> {{localize "SWFFG.ItemsArmor"}}</label><br>
+  </div>
+
+  <div class="import-progress import-hidden">
+    <div class="import-progress-bar" style="width: 0%"></div>
   </div>
 
   <div>
     <button class="dialog-button" data-button="import">
       <i class="fas fa-file-import"></i>
-      Import
+      {{localize "SWFFG.ImportFile"}}
     </button>
   </div>
 </form>
