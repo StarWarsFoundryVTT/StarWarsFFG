@@ -8,4 +8,22 @@
   .import-invalid {
     display: none;
   }
+
+  .import-hidden {
+    visibility: hidden;
+  }
+
+  .import-progress {
+    background-color: #f1f1f1;
+    margin: 5px 0;
+    .import-progress-bar {
+      height: 24px;
+      background-color: green;
+      text-align: center;
+
+      span {
+        line-height: 24px;
+      }
+    }
+  }
 }
