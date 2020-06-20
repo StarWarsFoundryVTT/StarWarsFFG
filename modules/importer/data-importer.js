@@ -275,23 +275,48 @@ export default class DataImporter extends FormApplication {
             rowAbility.name = rowAbilityData.Name;
             rowAbility.description = rowAbilityData.Description;
             rowAbility.cost = row.Costs.Cost[index];
+            rowAbility.visible = true;
 
+            if(row.Directions.Direction[index].Up) {
+              rowAbility["links-top-1"] = true;
+            }
+            
             switch(row.AbilitySpan.Span[index]) {
               case "1" :
                 rowAbility.size = "single";
                 break;
               case "2" :
                 rowAbility.size = "double";
+                if(index < 3 && row.Directions.Direction[index+1].Up) {
+                  rowAbility["links-top-2"] = true;
+                }
                 break;
               case "3" :
                 rowAbility.size = "triple";
+                if(index < 2 && row.Directions.Direction[index+1].Up) {
+                  rowAbility["links-top-2"] = true;
+                }
+                if(index < 2 && row.Directions.Direction[index+2].Up) {
+                  rowAbility["links-top-3"] = true;
+                }
                 break;
-              default:
+              case "4": 
                 rowAbility.size = "full";
+                if(index < 1 && row.Directions.Direction[index+1].Up) {
+                  rowAbility["links-top-2"] = true;
+                }
+                if(index < 1 && row.Directions.Direction[index+2].Up) {
+                  rowAbility["links-top-3"] = true;
+                }
+                if(index < 1 && row.Directions.Direction[index+3].Up) {
+                  rowAbility["links-top-4"] = true;
+                }
+                break
+              default:
+                rowAbility.size = "single";
+                rowAbility.visible = false;
             }
-            if(row.Directions.Direction[index].Up) {
-              rowAbility["links-top-1"] = true;
-            }
+            
             if(row.Directions.Direction[index].Right) {
               rowAbility["links-right"] = true;
             }
