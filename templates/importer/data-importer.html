@@ -17,18 +17,32 @@
     </div>
   </div>
   <div>
-    <input type="checkbox" id="importTalents" name="imports" value="/Talents.xml" data-name="Talents" data-type="Item" data-itemtype="talent" disabled>
-    <label for="importTalents"> {{localize "SWFFG.Talents"}}</label><br>
+    <div style="display: flex">
+      <div style="white-space: nowrap;">
+        <input type="checkbox" id="importTalents" name="imports" value="/Talents.xml" data-name="Talents" data-type="Item" data-itemtype="talent" disabled>
+        <label for="importTalents"> {{localize "SWFFG.Talents"}}</label><br>
+      </div>
+      <div class="import-progress talents import-hidden">
+        <div class="import-progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
+    <div style="display: flex">
+      <div style="white-space: nowrap;">
+        <input type="checkbox" id="importForceAbilities" name="imports" value="/Force Abilities.xml" data-name="Force Powers" data-type="Item" data-itemtype="forcepower" disabled>
+        <label for="importForceAbilities"> {{localize "SWFFG.ForcePower"}}</label><br>
+      </div>
+      <div class="import-progress force import-hidden">
+        <div class="import-progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
+
+    
     <input type="checkbox" id="importGear" name="imports" value="/Gear.xml" disabled>
     <label for="importTalents"> {{localize "SWFFG.ItemsGear"}}</label><br>
     <input type="checkbox" id="importWeapons" name="imports" value="/Weapons.xml" disabled>
     <label for="importTalents"> {{localize "SWFFG.ItemsWeapons"}}</label><br>
     <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" disabled>
     <label for="importTalents"> {{localize "SWFFG.ItemsArmor"}}</label><br>
-  </div>
-
-  <div class="import-progress import-hidden">
-    <div class="import-progress-bar" style="width: 0%"></div>
   </div>
 
   <div>
