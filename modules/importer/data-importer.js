@@ -165,7 +165,7 @@ export default class DataImporter extends FormApplication {
               compendiumItem = new Item(item);  
             }
 
-            pack.importEntity(newCompendiumItem);
+            pack.importEntity(compendiumItem);
           } 
           currentCount +=1 ;
           
