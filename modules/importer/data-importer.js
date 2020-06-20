@@ -80,7 +80,7 @@ export default class DataImporter extends FormApplication {
     }
 
     if(action === "import") {
-      console.log('Starwars FFG - Importing Data Files');
+      console.debug('Starwars FFG - Importing Data Files');
       
       const importFiles = $("input:checkbox[name=imports]:checked").map(function(){return { file : $(this).val(), label : $(this).data("name"), type : $(this).data("type"), itemtype : $(this).data("itemtype") } }).get()
 
@@ -222,8 +222,6 @@ export default class DataImporter extends FormApplication {
       let pack = await this._getCompendiumPack('Item', `oggdude.ForcePowers`);
 
       const fa = JXON.xmlToJs(xmlDoc)
-      console.log(fa);
-
       // now we need to loop through the files in the Force Powers folder
 
       const forcePowersFiles = Object.values(zip.files).filter(file => {
@@ -239,7 +237,6 @@ export default class DataImporter extends FormApplication {
         const xmlDoc1 = domparser.parseFromString(data,"text/xml");
         const fp = JXON.xmlToJs(xmlDoc1);
 
-        console.log(fp);
         // setup the base information
 
         let power = {
@@ -333,9 +330,6 @@ export default class DataImporter extends FormApplication {
         if(!entry) {
           console.debug(`Starwars FFG - Importing Force Power - Item`);
           compendiumItem = new Item(power);  
-
-          console.log(compendiumItem);
-
           pack.importEntity(compendiumItem);
         } else {
           console.debug(`Starwars FFG - Updating Force Power - Item`);
