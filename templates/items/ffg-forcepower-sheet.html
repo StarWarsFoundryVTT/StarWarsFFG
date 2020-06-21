@@ -9,9 +9,9 @@
         </div>
         <div class="talent-body">
           <div class="popout-editor" data-target="data.description" data-label="{{item.name}} {{localize 'SWFFG.ForceBasicPower'}}">
+            <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
             {{{renderDiceTags data.description}}}
           </div>
-          <!-- {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}} -->
         </div>
         <div class="talent-actions">
           <a class="talent-action" data-action="edit"><i class="fas fa-edit"></i></a>
@@ -34,6 +34,7 @@
           </div>   
           <div class="talent-body">
             <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-label="{{upgrade.name}}">
+              <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
               {{{renderDiceTags upgrade.description}}}
             </div>
             <input class="talent-hidden" name="data.upgrades.{{key}}.size" type="text" value="{{upgrade.size}}" data-dtype="String"/>

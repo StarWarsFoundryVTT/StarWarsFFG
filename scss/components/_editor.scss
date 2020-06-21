@@ -198,6 +198,23 @@ span {
   height: 100%;
   width: 100%;
   min-height: 2rem;
+  position: relative;
+
+  .popout-editor-button {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+  }
+
+  // &:hover {
+  //   .popout-editor-button {
+  //     display: block;
+  //     cursor: pointer;
+  //   }
+  // }
+
 }
 
 .popout-editor-window {
