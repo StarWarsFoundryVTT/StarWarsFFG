@@ -423,8 +423,6 @@ export default class DataImporter extends FormApplication {
           }
           updateData["_id"] = entry._id
           pack.updateEntity(updateData);
-
-          console.log(updateData)
         }
         currentCount +=1 ;
 
