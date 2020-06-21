@@ -71,7 +71,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Talents");
         this._enableImportSelection(zip.files, "Force Abilities");
         this._enableImportSelection(zip.files, "Gear");
-        // this._enableImportSelection(zip.files, "Weapons");
+        this._enableImportSelection(zip.files, "Weapons");
         // this._enableImportSelection(zip.files, "Armor");
    
       } catch (err) {
@@ -102,6 +102,7 @@ export default class DataImporter extends FormApplication {
         const xmlDoc = parser.parseFromString(data,"text/xml");
 
         await this._handleGear(xmlDoc);
+        await this._handleWeapons(xmlDoc);
         await this._handleTalents(xmlDoc);
         await this._handleForcePowers(xmlDoc, zip);
       });
@@ -415,6 +416,123 @@ export default class DataImporter extends FormApplication {
         currentCount +=1 ;
 
         $(".gear .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+      }
+    }
+  }
+
+  async _handleWeapons(xmlDoc) {
+    const weapons = xmlDoc.getElementsByTagName("Weapon");
+   
+    if(weapons.length > 0) { 
+      let totalCount = weapons.length;
+      let currentCount = 0;
+
+      $(".import-progress.weapons").toggleClass("import-hidden");
+      let pack = await this._getCompendiumPack('Item', `oggdude.Weapons`);
+
+      for(let i = 0; i < weapons.length; i+=1) {
+        const weapon = weapons[i];
+
+        const importkey = weapon.getElementsByTagName("Key")[0]?.textContent;
+        const name = weapon.getElementsByTagName("Name")[0]?.textContent;
+        const description = weapon.getElementsByTagName("Description")[0]?.textContent;
+        const price = weapon.getElementsByTagName("Price")[0]?.textContent;
+        const rarity = weapon.getElementsByTagName("Rarity")[0]?.textContent;
+        const encumbrance = weapon.getElementsByTagName("Encumbrance")[0]?.textContent;
+        const damage = weapon.getElementsByTagName("Damage")[0]?.textContent;
+        const crit = weapon.getElementsByTagName("Crit")[0]?.textContent;
+
+        const skillkey = weapon.getElementsByTagName("SkillKey")[0]?.textContent;
+        const range = weapon.getElementsByTagName("Range")[0]?.textContent;
+        const hardpoints = weapon.getElementsByTagName("HP")[0]?.textContent;
+
+        let skill = "";
+
+        switch(skillkey) {
+          case "RANGLT":
+            skill = "Ranged: Light";
+            break;
+          case "RANGHVY":
+            skill = "Ranged: Heavy";
+            break;
+          case "GUNN":
+            skill = "Gunnery";
+            break;
+          case "BRAWL":
+            skill = "Brawl";
+            break;
+          case "MELEE":
+            skill = "Melee";
+            break;
+          case "LTSABER":
+            skill = "Lightsaber";
+            break;
+          default:
+        }
+        
+        const fp = JXON.xmlToJs(weapon);
+
+        const qualities = [];
+
+        if(fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
+          fp.Qualities.Quality.forEach(quality => {
+            qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`)
+          });
+        }
+
+        let newItem = {
+          name,
+          type: "weapon",
+          data: {
+            importkey,
+            description,
+            encumbrance : {
+              value : encumbrance
+            },
+            price : {
+              value: price
+            },
+            rarity : {
+              value : rarity
+            },
+            damage : {
+              value: damage
+            },
+            crit : {
+              value : crit
+            },
+            special : {
+              value : qualities.join(",")
+            },
+            skill : {
+              value : skill
+            },
+            range : {
+              value : range
+            },
+            hardpoints : {
+              value : hardpoints
+            }
+          }
+        }
+
+        let compendiumItem;
+        await pack.getIndex();
+        let entry = pack.index.find(e => e.name === newItem.name);
+
+        if(!entry) {
+          console.debug(`Starwars FFG - Importing Weapon - Item`);
+          compendiumItem = new Item(newItem);  
+          pack.importEntity(compendiumItem);
+        } else {
+          console.debug(`Starwars FFG - Updating Weapon - Item`);
+          let updateData = this.buildUpdateData(newItem);
+          updateData["_id"] = entry._id
+          pack.updateEntity(updateData);
+        }
+        currentCount +=1 ;
+
+        $(".weapons .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
       }
     }
   }
