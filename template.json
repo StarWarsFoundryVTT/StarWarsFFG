@@ -27,13 +27,11 @@
       "stats": {
         "stats": {
           "wounds": {
-            "real_value": 0,
             "value": 0,
             "min": 0,
             "max": 10
           },
           "strain": {
-            "real_value": 0,
             "value": 0,
             "min": 0,
             "max": 10
@@ -432,7 +430,7 @@
       "templates": ["biography", "stats", "characteristics", "skills", "attributes", "modifiers"],
       "quantity": {
         "value": 1,
-		"max": 1,
+        "max": 1,
         "type": "Number",
         "label": "Quantity",
         "abrev": "Qty"
@@ -624,7 +622,7 @@
         "current": 1,
         "min": 0
       },
-      "isForceTalent" : false,
+      "isForceTalent": false,
       "trees": [],
       "attributes": {}
     },
