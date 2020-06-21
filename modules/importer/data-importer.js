@@ -203,7 +203,12 @@ export default class DataImporter extends FormApplication {
           console.debug(`Starwars FFG - Importing Talent - Item`);
           compendiumItem = new Item(item);  
           pack.importEntity(compendiumItem);
-        } 
+        } else {
+          console.debug(`Starwars FFG - Update Talent - Item`);
+          let updateData = this.buildUpdateData(item);
+          updateData["_id"] = entry._id
+          pack.updateEntity(updateData);
+        }
         currentCount +=1 ;
         
         $(".talents .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
@@ -343,6 +348,9 @@ export default class DataImporter extends FormApplication {
           pack.importEntity(compendiumItem);
         } else {
           console.debug(`Starwars FFG - Updating Force Power - Item`);
+          let updateData = this.buildUpdateData(power);
+          updateData["_id"] = entry._id
+          pack.updateEntity(updateData);
         }
         currentCount +=1 ;
         
@@ -399,28 +407,8 @@ export default class DataImporter extends FormApplication {
           compendiumItem = new Item(newItem);  
           pack.importEntity(compendiumItem);
         } else {
-          let updateData = {};
-          for(let key in newItem.data) {
-            const recursiveObject = (itemkey, obj) => {
-              for(let objkey in obj) {
-                if(typeof obj[objkey] === "object") {
-                  recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
-                } else {
-                  if(obj[objkey]) {
-                    const datakey = `data.${itemkey}.${objkey}`;
-                    updateData[datakey] = obj[objkey];
-                  }
-                }
-              }
-            }
-
-            if(typeof newItem.data[key] === "object") {
-              recursiveObject(key, newItem.data[key]);
-            } else {
-              const datakey = `data.${key}`;
-              updateData[datakey] = `${newItem.data[key]}`
-            }
-          }
+          console.debug(`Starwars FFG - Updating Gear - Item`);
+          let updateData = this.buildUpdateData(newItem);
           updateData["_id"] = entry._id
           pack.updateEntity(updateData);
         }
@@ -432,8 +420,6 @@ export default class DataImporter extends FormApplication {
   }
 
   async _getCompendiumPack(type, name) {
-    console.log(game.packs)
-
     let pack = game.packs.find(p => {
       return p.metadata.label === name
     });
@@ -460,4 +446,30 @@ export default class DataImporter extends FormApplication {
     }
   };
 
+
+  buildUpdateData = (newItem) => {
+    let updateData = {};
+    for(let key in newItem.data) {
+      const recursiveObject = (itemkey, obj) => {
+        for(let objkey in obj) {
+          if(typeof obj[objkey] === "object") {
+            recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
+          } else {
+            if(obj[objkey]) {
+              const datakey = `data.${itemkey}.${objkey}`;
+              updateData[datakey] = obj[objkey];
+            }
+          }
+        }
+      }
+
+      if(typeof newItem.data[key] === "object") {
+        recursiveObject(key, newItem.data[key]);
+      } else {
+        const datakey = `data.${key}`;
+        updateData[datakey] = `${newItem.data[key]}`
+      }
+    }
+    return updateData
+  }
 }
