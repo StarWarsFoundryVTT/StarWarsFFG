@@ -9,12 +9,22 @@ This is most easily available from the in-game Module browser. After installing 
 
 # Installing
 
+## Installing Star Wars FFG game system
+
 1. Open Foundry VTT
 2. Go to the "Game Systems" Tab
 3. Click the "Install System" button
 4. Copy the Following link into the "Manifest URL" section:
    https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/master/system.json
 5. Click Install, after a few seconds the system should be installed.
+6. Install (if not already done) "Special Dice Roller" module, see below for details.
+
+## Installing Special Dice Roller module
+
+1. Go to "Add-on Modules" Tab
+2. Click the "Install Module" button
+3. In the search field, type "Special"
+4. Press the "Install" button for the "Special Dice Roller" module.
 
 # Contributing
 
