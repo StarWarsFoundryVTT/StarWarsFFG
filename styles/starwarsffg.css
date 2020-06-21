@@ -981,6 +981,8 @@ span.dietype.triumph {
 }
 
 .starwarsffg .talent-background {
+  position: relative;
+  z-index: 10;
   background-color: #ddd;
   padding: 5px;
   --notchSize: 9px;
@@ -1056,7 +1058,7 @@ span.dietype.triumph {
 
 .starwarsffg .talent-connection-point-top {
   position: absolute;
-  top: -4px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -1129,6 +1131,18 @@ span.dietype.triumph {
 .starwarsffg .talent-connector .talent-connector-up i, .starwarsffg .talent-connector .talent-connector-side i {
   display: initial;
   color: white;
+}
+
+.starwarsffg .talent-connector .talent-connector-up {
+  height: 100px;
+  top: -50px;
+  z-index: 5;
+}
+
+.starwarsffg .talent-connector .talent-connector-up i {
+  position: absolute;
+  top: 50%;
+  left: 3px;
 }
 
 .starwarsffg .talent-connector .talent-connector-side {

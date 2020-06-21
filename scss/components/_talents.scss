@@ -112,7 +112,8 @@ table {
 }
 
 .talent-background {
-  
+  position: relative;
+  z-index: 10;
   background-color: #ddd;
   padding: 5px;
   --notchSize: 9px;
@@ -207,7 +208,7 @@ table {
 
 .talent-connection-point-top {
   position: absolute;
-  top: -4px;
+  top: -6px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -280,6 +281,19 @@ table {
       color: white;
     }
   }
+
+  .talent-connector-up {
+    height: 100px;
+    top : -50px;
+    z-index: 5;
+
+    i {
+      position: absolute;
+      top: 50%;
+      left: 3px;
+    }
+  }
+
 
   .talent-connector-side {
     right: -15px;

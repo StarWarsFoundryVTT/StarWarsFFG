@@ -179,7 +179,7 @@ export class ItemFFG extends Item {
     const specializationTalents = this.data.data.talents;
     for (let talent in specializationTalents) {
       let gameItem;
-      if(specializationTalents[talent].pack.length > 0) {
+      if(specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
         try {
           const pack = game.packs.get(specializationTalents[talent].pack);
           pack.getIndex();
