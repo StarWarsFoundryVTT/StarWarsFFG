@@ -26,6 +26,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 21/06/2020 - Cstadther - Bug fix #138 - CSS fix to specialization connectors
 - 20/06/2020 - Cstadther - Added additional OggDude symbol handling to enhance imported text
 - 20/06/2020 - Cstadther - Added force power import from OggDude Data Set
 - 20/06/2020 - Cstadther - Bug fix - Data importer mis-named variable
