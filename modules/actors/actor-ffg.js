@@ -42,11 +42,6 @@ export class ActorFFG extends Actor {
       data.skills[skill].label = localizedField;
       data.skills = this._sortSkills(data.skills);
     }
-
-    // Calculate the wound/strain value based on real_value and the max.
-    // This is done so that real_value tracks health/strain like FFG does and value can be used for resource bars
-    data.stats.wounds.value = data.stats.wounds.max - data.stats.wounds.real_value;
-    data.stats.strain.value = data.stats.strain.max - data.stats.strain.real_value;
   }
 
   /**
@@ -65,7 +60,7 @@ export class ActorFFG extends Actor {
     }
 
     //Calculate the number of alive minions
-    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.real_value - 1) / data.unit_wounds.value));
+    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.value - 1) / data.unit_wounds.value));
 
     // Loop through Skills, and where groupskill = true, set the rank to 1*(quantity-1).
     for (let [key, skill] of Object.entries(data.skills)) {

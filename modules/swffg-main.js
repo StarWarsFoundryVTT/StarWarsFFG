@@ -53,6 +53,32 @@ Hooks.once("init", async function () {
   CONFIG.Item.entityClass = ItemFFG;
   CONFIG.Combat.entityClass = CombatFFG;
 
+  // Override the default Token _drawBar function to allow for FFG style wound and strain values.
+  Token.prototype._drawBar = function (number, bar, data) {
+    let val = Number(data.value);
+    // FFG style behaviour for wounds and strain.
+    if (data.attribute === "stats.wounds" || data.attribute === "stats.strain") {
+      val = Number(data.max - data.value);
+    }
+
+    const pct = Math.clamped(val, 0, data.max) / data.max;
+    let h = Math.max(canvas.dimensions.size / 12, 8);
+    if (this.data.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
+    // Draw the bar
+    let color = number === 0 ? [1 - pct / 2, pct, 0] : [0.5 * pct, 0.7 * pct, 0.5 + pct / 2];
+    bar
+      .clear()
+      .beginFill(0x000000, 0.5)
+      .lineStyle(2, 0x000000, 0.9)
+      .drawRoundedRect(0, 0, this.w, h, 3)
+      .beginFill(PIXI.utils.rgb2hex(color), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(1, 1, pct * (this.w - 2), h - 2, 2);
+    // Set position
+    let posY = number === 0 ? this.h - h : 0;
+    bar.position.set(0, posY);
+  };
+
   // A very hacky temporary workaround to override how initiative functions and provide the results of a FFG roll to the initiative tracker.
   // Currently overriding the prototype due to a bug with overriding the core Combat entity which resets to default after page refresh.
   /** @override */
@@ -196,7 +222,7 @@ Hooks.once("init", async function () {
     hint: "Import data from an OggDude Dataset into Foundry",
     icon: "fas fa-file-import",
     type: DataImporter,
-    restricted: true
+    restricted: true,
   });
 
   game.settings.register("starwarsffg", "odImporter", {
@@ -205,7 +231,7 @@ Hooks.once("init", async function () {
     default: {},
     config: false,
     default: {},
-    type: Object
+    type: Object,
   });
 
   function combineAll(values, monoid) {
@@ -328,4 +354,26 @@ Hooks.on("renderJournalSheet", (journal, obj, data) => {
   let content = $(obj).find(".editor-content").html();
 
   $(obj).find(".editor-content").html(PopoutEditor.renderDiceImages(content));
+});
+
+// Handle migration duties
+Hooks.once("ready", () => {
+  // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
+  // This is a temporary migration check to transfer existing actors .real_value back into the correct .value location.
+  game.actors.forEach((actor) => {
+    if (actor.data.type === "character" || actor.data.type === "minion") {
+      if (actor.data.data.stats.wounds.real_value != null) {
+        actor.data.data.stats.wounds.value = actor.data.data.stats.wounds.real_value;
+        game.actors.get(actor._id).update({ ["data.stats.wounds.real_value"]: null });
+        console.log("Migrated stats.wounds.value from stats.wounds.real_value");
+        console.log(actor.data.data.stats.wounds);
+      }
+      if (actor.data.data.stats.strain.real_value != null) {
+        actor.data.data.stats.strain.value = actor.data.data.stats.strain.real_value;
+        game.actors.get(actor._id).update({ ["data.stats.strain.real_value"]: null });
+        console.log("Migrated stats.strain.value from stats.strain.real_value");
+        console.log(actor.data.data.stats.strain);
+      }
+    }
+  });
 });
