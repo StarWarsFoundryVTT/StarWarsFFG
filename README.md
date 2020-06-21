@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 21/06/2020 - Cstadther - Update Force Power Import - Removes unused rows for force powers that do not untilize them (ex Heal/Harm)
 - 21/06/2020 - Cstadther - Bug fix #126 - Clicking embedded journal entries triggering editor also
 - 21/06/2020 - Cstadther - Bug fix #138 - CSS fix to specialization connectors
 - 20/06/2020 - Cstadther - Added additional OggDude symbol handling to enhance imported text
