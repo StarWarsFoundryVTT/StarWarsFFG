@@ -1,5 +1,6 @@
 span.dietype {
   font-family: $font-dice;
+  position: relative;
 
   &.ability {
     color: green;
@@ -87,6 +88,30 @@ span.dietype {
     //   content: "c";
     // }
   }
+  &.remsetback {
+    color: black;
+    
+    &::after {
+      content : "-";
+      color: white;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.restricted {
+    color: red;
+    
+    &::after {
+      content : "-";
+      color: white;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
   &.setback {
     color: black;
 
@@ -115,8 +140,57 @@ span.dietype {
     //   content: "x";
     // }
   }
+
+  &.adddifficulty {
+    color: purple;;
+    
+    &::after {
+      content : "+";
+      color: white;
+      position: absolute;
+      left: 50%;
+      top: 5%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.updifficulty {
+    color: purple;;
+    
+    &::after {
+      content : "\2191";
+      color: white;
+      position: absolute;
+      left: 50%;
+      top: 5%;
+      transform: translateX(-50%);
+    }
+  }
+
+  &.cancelthreat {
+    color: black;
+    
+    &::after {
+      content : "\2716";
+      color: red;
+      position: absolute;
+      left: 50%;
+      top: 5%;
+      transform: translateX(-50%);
+    }
+  }
+
 }
 
+span {
+  &.bold {
+    font-weight: bold;
+  }
+  &.italic {
+    font-style: italic;
+  }
+
+}
 .popout-editor {
   text-align: left;
   font-size: 12px;
@@ -146,3 +220,4 @@ span.dietype {
 .tox.tox-tinymce {
   height: 100% !important;
 }
+

@@ -3290,6 +3290,7 @@ span.dietype.triumph {
 
 .starwarsffg span.dietype {
   font-family: "EotESymbol", sans-serif;
+  position: relative;
 }
 
 .starwarsffg span.dietype.ability {
@@ -3340,6 +3341,30 @@ span.dietype.triumph {
   color: yellow;
 }
 
+.starwarsffg span.dietype.remsetback {
+  color: black;
+}
+
+.starwarsffg span.dietype.remsetback::after {
+  content: "-";
+  color: white;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg span.dietype.restricted {
+  color: red;
+}
+
+.starwarsffg span.dietype.restricted::after {
+  content: "-";
+  color: white;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .starwarsffg span.dietype.setback {
   color: black;
 }
@@ -3354,6 +3379,53 @@ span.dietype.triumph {
 
 .starwarsffg span.dietype.triumph {
   color: black;
+}
+
+.starwarsffg span.dietype.adddifficulty {
+  color: purple;
+}
+
+.starwarsffg span.dietype.adddifficulty::after {
+  content: "+";
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg span.dietype.updifficulty {
+  color: purple;
+}
+
+.starwarsffg span.dietype.updifficulty::after {
+  content: "\2191";
+  color: white;
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg span.dietype.cancelthreat {
+  color: black;
+}
+
+.starwarsffg span.dietype.cancelthreat::after {
+  content: "\2716";
+  color: red;
+  position: absolute;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
+}
+
+.starwarsffg span.bold {
+  font-weight: bold;
+}
+
+.starwarsffg span.italic {
+  font-style: italic;
 }
 
 .starwarsffg .popout-editor {
