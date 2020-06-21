@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 21/06/2020 - Esrin - Reworked Token HUD behaviour to allow for core functionality to behave properly with FFG style wounds / strain values.
 - 21/06/2020 - Cstadther - Add Force Power Upgrade Cost to force power sheet.
 - 21/06/2020 - Cstadther - Update Force Power Import - Removes unused rows for force powers that do not untilize them (ex Heal/Harm)
 - 21/06/2020 - Cstadther - Bug fix #126 - Clicking embedded journal entries triggering editor also
@@ -48,7 +49,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 19/06/2020 - Cstadther - Bug fix for talent upgrades not adding up correctly
 - 18/06/2020 - Cstadther - First pass as Talent Import from OggDude Data Set
 - 17/06/2020 - Cstadther - Added force talent checkbox to talent data, update specialization sheet rendering to include it.
-- 17/06/2020 - Cstadther - Added Adversary Sheet, which hides everything for non-owner except picture, name, and species.  Name is in the title bar and can't easily be changed.
+- 17/06/2020 - Cstadther - Added Adversary Sheet, which hides everything for non-owner except picture, name, and species. Name is in the title bar and can't easily be changed.
 - 17/06/2020 - Esrin - Localised all system settings.
 - 17/06/2020 - Esrin - Added new Player Character List Mode system setting that determines how the Group Manager lists player characters.
 - 17/06/2020 - Esrin - Added 'equipped' toggle to Armour in character inventory display. Only equipped armour will apply its soak value.
