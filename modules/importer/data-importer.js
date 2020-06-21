@@ -319,6 +319,19 @@ export default class DataImporter extends FormApplication {
           });
         }
 
+        if(fp.ForcePower.AbilityRows.AbilityRow.length < 5) {
+          for(let i = fp.ForcePower.AbilityRows.AbilityRow.length; i < 5; i+=1) {
+
+            for(let index = 0; index < 4; index+=1) {
+              const talentKey = `upgrade${((i - 1) * 4) + index}`;
+
+              let rowAbility = { visible : false }
+  
+              power.data.upgrades[talentKey] = rowAbility;
+            }
+          }
+        }
+
         let compendiumItem;
         await pack.getIndex();
         let entry = pack.index.find(e => e.name === power.name);
