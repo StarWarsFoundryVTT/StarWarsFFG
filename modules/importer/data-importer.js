@@ -70,7 +70,7 @@ export default class DataImporter extends FormApplication {
 
         this._enableImportSelection(zip.files, "Talents");
         this._enableImportSelection(zip.files, "Force Abilities");
-        // this._enableImportSelection(zip.files, "Gear");
+        this._enableImportSelection(zip.files, "Gear");
         // this._enableImportSelection(zip.files, "Weapons");
         // this._enableImportSelection(zip.files, "Armor");
    
@@ -101,6 +101,7 @@ export default class DataImporter extends FormApplication {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data,"text/xml");
 
+        await this._handleGear(xmlDoc);
         await this._handleTalents(xmlDoc);
         await this._handleForcePowers(xmlDoc, zip);
       });
@@ -179,10 +180,10 @@ export default class DataImporter extends FormApplication {
         const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent ? true : false;
   
         const item = {
-          importkey,
           name,
           type: "talent",
           data : {
+            importkey,
             description,
             ranks: {
               ranked
@@ -350,8 +351,92 @@ export default class DataImporter extends FormApplication {
     }
   }
 
+  async _handleGear(xmlDoc) {
+    const gear = xmlDoc.getElementsByTagName("Gear");
+   
+    if(gear.length > 0) { 
+      let totalCount = gear.length;
+      let currentCount = 0;
+
+      $(".import-progress.gear").toggleClass("import-hidden");
+      let pack = await this._getCompendiumPack('Item', `oggdude.Gear`);
+
+      for(let i = 0; i < gear.length; i+=1) {
+        const item = gear[i];
+
+        const importkey = item.getElementsByTagName("Key")[0]?.textContent;
+        const name = item.getElementsByTagName("Name")[0]?.textContent;
+        const description = item.getElementsByTagName("Description")[0]?.textContent;
+        const price = item.getElementsByTagName("Price")[0]?.textContent;
+        const rarity = item.getElementsByTagName("Rarity")[0]?.textContent;
+        const encumbrance = item.getElementsByTagName("Encumbrance")[0]?.textContent;
+        const type = item.getElementsByTagName("Type")[0]?.textContent;
+
+        const newItem = {
+          name,
+          type: "gear",
+          data: {
+            importkey,
+            description,
+            encumbrance: {
+              value : encumbrance
+            },
+            price : {
+              value : price
+            },
+            rarity: {
+              value: rarity
+            }
+          }
+        }
+
+        let compendiumItem;
+        await pack.getIndex();
+        let entry = pack.index.find(e => e.name === newItem.name);
+
+        if(!entry) {
+          console.debug(`Starwars FFG - Importing Gear - Item`);
+          compendiumItem = new Item(newItem);  
+          pack.importEntity(compendiumItem);
+        } else {
+          let updateData = {};
+          for(let key in newItem.data) {
+            const recursiveObject = (itemkey, obj) => {
+              for(let objkey in obj) {
+                if(typeof obj[objkey] === "object") {
+                  recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
+                } else {
+                  if(obj[objkey]) {
+                    const datakey = `data.${itemkey}.${objkey}`;
+                    updateData[datakey] = obj[objkey];
+                  }
+                }
+              }
+            }
+
+            if(typeof newItem.data[key] === "object") {
+              recursiveObject(key, newItem.data[key]);
+            } else {
+              const datakey = `data.${key}`;
+              updateData[datakey] = `${newItem.data[key]}`
+            }
+          }
+          updateData["_id"] = entry._id
+          pack.updateEntity(updateData);
+        }
+        currentCount +=1 ;
+
+        $(".gear .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+      }
+    }
+  }
+
   async _getCompendiumPack(type, name) {
-    let pack = game.packs.find(p => p.collection === name);
+    console.log(game.packs)
+
+    let pack = game.packs.find(p => {
+      return p.metadata.label === name
+    });
     if(!pack) {
       pack = await Compendium.create({ entity : type, label: name});
     }
