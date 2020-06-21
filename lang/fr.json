@@ -252,5 +252,7 @@
   "SWFFG.SettingsPCListModeOwned": "Tout les personnages possédés",
   "SWFFG.SettingsSkillSorting": "Trier les compétences par leur traduction?",
   "SWFFG.SettingsSkillSortingHint": "Par défaut, les compétences dans les feuilles de personnage sont triés dans l'ordre d'origine, à savoir alphabétiquement en anglais. En activant cette option, ils seront en ordre alphabétique dans la langue courante.",
-  "SWFFG.TalentsForce": "Talent de la Force?"
+  "SWFFG.TalentsForce": "Talent de la Force?",
+  "SWFFG.LoadFile" : "Charger Fichier",
+  "SWFFG.ImportFile" : "Importer"
 }
