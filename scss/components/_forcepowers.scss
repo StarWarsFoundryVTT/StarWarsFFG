@@ -39,4 +39,18 @@
   .sheet-body {
     height: calc(100% - 10rem);
   }
+
+  .talent-cost {
+    bottom: -5px;
+    left: 7px;
+    position: absolute;
+    z-index: 10;
+    width: 60px;
+
+    input {
+      width: 25px;
+      border: 0;
+      background: rgba(0,0,0,0);
+    }
+  }
 }

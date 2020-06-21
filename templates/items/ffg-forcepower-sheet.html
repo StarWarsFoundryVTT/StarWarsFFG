@@ -41,6 +41,7 @@
             <input class="talent-hidden" name="data.upgrades.{{key}}.visible" type="text" value="{{upgrade.visible}}" data-dtype="Boolean" />
           </div>
         </div>
+        <div class="talent-cost">{{ localize "SWFFG.Cost"}}<input name="data.upgrades.{{key}}.cost" type="text" value="{{upgrade.cost}}" data-dtype="String"/></div>
         <div class="talent-actions {{#if upgrade.canCombine}}talent-canCombine{{/if}} {{#if upgrade.canSplit}}talent-canSplit{{/if}}">
           <div class="talent-action combine hover" data-action="combine" data-key="{{key}}"><i class="fas fa-compress-alt"></i><div class="tooltip">{{localize 'SWFFG.CombineBox'}}</div></div>
           <div class="talent-action split hover" data-action="split" data-key="{{key}}"><i class="fas fa-expand-alt"></i><div class="tooltip">{{localize 'SWFFG.SplitBox'}}</div></div>

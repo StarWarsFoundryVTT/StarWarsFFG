@@ -254,5 +254,6 @@
   "SWFFG.SettingsSkillSortingHint": "By default skills will be sorted alphabetically by the original English names on the character sheets. Enable this setting if you would prefer sorting to use the localised skill names instead.",
   "SWFFG.TalentsForce": "Force Talent?",
   "SWFFG.LoadFile" : "Load File",
-  "SWFFG.ImportFile" : "Start Import"
+  "SWFFG.ImportFile" : "Start Import",
+  "SWFFG.Cost": "COST:"
 }
