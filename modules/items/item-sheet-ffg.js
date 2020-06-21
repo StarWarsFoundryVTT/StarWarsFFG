@@ -173,8 +173,15 @@ export class ItemSheetFFG extends ItemSheet {
 
       dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
     }
-
-    html.find(".popout-editor").on("click", this._onPopoutEditor.bind(this));
+    
+    // hidden here instead of css to prevent non-editable display of edit button
+    html.find(".popout-editor").on("mouseover", (event) => { 
+      $(event.currentTarget).find(".popout-editor-button").show(); 
+    });
+    html.find(".popout-editor").on("mouseout", (event) => { 
+      $(event.currentTarget).find(".popout-editor-button").hide(); 
+    });
+    html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
   }
 
   /* -------------------------------------------- */
@@ -347,7 +354,7 @@ export class ItemSheetFFG extends ItemSheet {
 
   _onPopoutEditor(event) {
     event.preventDefault();
-    const a = event.currentTarget;
+    const a = event.currentTarget.parentElement;
     const label = a.dataset.label;
     const key = a.dataset.target;
 

@@ -3449,6 +3449,15 @@ span.dietype.triumph {
   height: 100%;
   width: 100%;
   min-height: 2rem;
+  position: relative;
+}
+
+.starwarsffg .popout-editor .popout-editor-button {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
 }
 
 .starwarsffg .popout-editor-window .sheet-body {
