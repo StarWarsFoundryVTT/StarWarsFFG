@@ -181,7 +181,7 @@ export default class PopoutEditor extends FormApplication {
       {
         startTag: "<br />",
         endTag: "",
-        pattern: /(\[P\])(.[^\[]*)/gm
+        pattern: /(\[BR\])(.[^\[]*)/gm
       },
       {
         startTag: "<span class='italic'>",

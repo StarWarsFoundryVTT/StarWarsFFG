@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 21/06/2020 - Cstadther - Added Armor Import
 - 21/06/2020 - Cstadther - Added Weapon Import
 - 21/06/2020 - Cstadther - Added compendium item updates to talents and force powers, so that the import will update the data correctly.
 - 21/06/2020 - Cstadther - Add Gear Import, plus 0.6.3 bug fix for compendium structure change

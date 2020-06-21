@@ -72,7 +72,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Force Abilities");
         this._enableImportSelection(zip.files, "Gear");
         this._enableImportSelection(zip.files, "Weapons");
-        // this._enableImportSelection(zip.files, "Armor");
+        this._enableImportSelection(zip.files, "Armor");
    
       } catch (err) {
         console.log(err);
@@ -103,6 +103,7 @@ export default class DataImporter extends FormApplication {
 
         await this._handleGear(xmlDoc);
         await this._handleWeapons(xmlDoc);
+        await this._handleArmor(xmlDoc);
         await this._handleTalents(xmlDoc);
         await this._handleForcePowers(xmlDoc, zip);
       });
@@ -533,6 +534,78 @@ export default class DataImporter extends FormApplication {
         currentCount +=1 ;
 
         $(".weapons .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+      }
+    }
+  }
+
+  async _handleArmor(xmlDoc) {
+    const armors = xmlDoc.getElementsByTagName("Armor");
+   
+    if(armors.length > 0) { 
+      let totalCount = armors.length;
+      let currentCount = 0;
+
+      $(".import-progress.armor").toggleClass("import-hidden");
+      let pack = await this._getCompendiumPack('Item', `oggdude.Armor`);
+
+      for(let i = 0; i < armors.length; i+=1) {
+        const armor = armors[i];
+
+        const importkey = armor.getElementsByTagName("Key")[0]?.textContent;
+        const name = armor.getElementsByTagName("Name")[0]?.textContent;
+        const description = armor.getElementsByTagName("Description")[0]?.textContent;
+        const price = armor.getElementsByTagName("Price")[0]?.textContent;
+        const rarity = armor.getElementsByTagName("Rarity")[0]?.textContent;
+        const encumbrance = armor.getElementsByTagName("Encumbrance")[0]?.textContent;
+
+        const defense = armor.getElementsByTagName("Defense")[0]?.textContent;
+        const soak = armor.getElementsByTagName("Soak")[0]?.textContent;
+        const hardpoints = armor.getElementsByTagName("HP")[0]?.textContent;
+
+        let newItem = {
+          name,
+          type : "armour",
+          data : {
+            importkey,
+            description,
+            encumbrance : {
+              value : encumbrance
+            },
+            price : {
+              value: price
+            },
+            rarity : {
+              value : rarity
+            },
+            defence : {
+              value : defense
+            },
+            soak : {
+              value : soak
+            },
+            hardpoints : {
+              value : hardpoints
+            }
+          }
+        }
+
+        let compendiumItem;
+        await pack.getIndex();
+        let entry = pack.index.find(e => e.name === newItem.name);
+
+        if(!entry) {
+          console.debug(`Starwars FFG - Importing Armor - Item`);
+          compendiumItem = new Item(newItem);  
+          pack.importEntity(compendiumItem);
+        } else {
+          console.debug(`Starwars FFG - Updating Armor - Item`);
+          let updateData = this.buildUpdateData(newItem);
+          updateData["_id"] = entry._id
+          pack.updateEntity(updateData);
+        }
+        currentCount +=1 ;
+
+        $(".armor .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
       }
     }
   }

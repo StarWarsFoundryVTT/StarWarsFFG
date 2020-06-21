@@ -47,15 +47,21 @@
     <div style="display: flex">
       <div style="white-space: nowrap;">
         <input type="checkbox" id="importWeapons" name="imports" value="/Weapons.xml" data-name="Weapons" data-type="Item" data-itemtype="weapon" disabled>
-        <label for="importForceAbilimportWeaponsities"> {{localize "SWFFG.ItemsWeapons"}}</label><br>
+        <label for="importWeapons"> {{localize "SWFFG.ItemsWeapons"}}</label><br>
       </div>
       <div class="import-progress weapons import-hidden">
         <div class="import-progress-bar" style="width: 0%"></div>
       </div>
     </div>
-
-    <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" disabled>
-    <label for="importTalents"> {{localize "SWFFG.ItemsArmor"}}</label><br>
+    <div style="display: flex">
+      <div style="white-space: nowrap;">
+        <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" data-name="Armor" data-type="Item" data-itemtype="armor" disabled>
+        <label for="importArmor"> {{localize "SWFFG.ItemsArmor"}}</label><br>
+      </div>
+      <div class="import-progress armor import-hidden">
+        <div class="import-progress-bar" style="width: 0%"></div>
+      </div>
+    </div>
   </div>
 
   <div>
