@@ -3302,6 +3302,20 @@ span.dietype.triumph {
   height: calc(100% - 10rem);
 }
 
+.starwarsffg .item-sheet-forcepower .talent-cost {
+  bottom: -5px;
+  left: 7px;
+  position: absolute;
+  z-index: 10;
+  width: 60px;
+}
+
+.starwarsffg .item-sheet-forcepower .talent-cost input {
+  width: 25px;
+  border: 0;
+  background: rgba(0, 0, 0, 0);
+}
+
 .starwarsffg span.dietype {
   font-family: "EotESymbol", sans-serif;
   position: relative;
