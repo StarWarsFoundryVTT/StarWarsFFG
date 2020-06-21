@@ -117,6 +117,16 @@ export default class PopoutEditor extends FormApplication {
         pattern:/\[(PR)[a-zA-Z]*\]/gmi
       },
       {
+        type : "remsetback",
+        character: "b",
+        pattern:/\[(RS[a-zA-Z]*|REMSETBACK)\]/gmi
+      },
+      {
+        type : "restricted",
+        character: "z",
+        pattern:/\[(RE)[a-zA-Z]*\]/gmi
+      },
+      {
         type : "setback",
         character: "b",
         pattern:/\[(SE)[a-zA-Z]*\]/gmi
@@ -135,12 +145,74 @@ export default class PopoutEditor extends FormApplication {
         type : "triumph",
         character: "x",
         pattern:/\[(TR)[a-zA-Z]*\]/gmi
+      },
+      {
+        type : "adddifficulty",
+        character: "d",
+        pattern:/\[(DD[a-zA-Z]*|ADDDIFFICULTY)\]/gmi
+      },
+      {
+        type : "updifficulty",
+        character: "d",
+        pattern:/\[(UD[a-zA-Z]*|UPDIFFICULTY)\]/gmi
+      },
+      {
+        type : "cancelthreat",
+        character: "t",
+        pattern:/\[(CT[a-zA-Z]*|CANCELTHREAT)\]/gmi
       }
     ]
 
     replaceValues.forEach(item => {
       html = html.replace(item.pattern, `<span class='dietype ${item.type}'>${item.character}</span>`)
-    })
+    });
+
+    const oggdudeTags = [
+      {
+        startTag: "<span class='bold'>",
+        endTag: "</span>",
+        pattern: /(\[B\])(.[^\[]*)\[b\]/gm
+      },
+      {
+        startTag: "<p>",
+        endTag: "</p>",
+        pattern: /(\[P\])(.[^\[]*)/gm
+      },
+      {
+        startTag: "<br />",
+        endTag: "",
+        pattern: /(\[P\])(.[^\[]*)/gm
+      },
+      {
+        startTag: "<span class='italic'>",
+        endTag: "</span>",
+        pattern: /(\[I\])(.[^\[]*)\[i\]/gm
+      },
+      {
+        startTag: "<h1>",
+        endTag: "</h1>",
+        pattern: /(\[H1\])(.[^\[]*)\[h1\]/gm
+      },
+      {
+        startTag: "<h2>",
+        endTag: "</h2>",
+        pattern: /(\[H2\])(.[^\[]*)\[h2\]/gm
+      },
+      {
+        startTag: "<h3>",
+        endTag: "</h3>",
+        pattern: /(\[H3\])(.[^\[]*)\[h3\]/gm
+      },
+      {
+        startTag: "<h4>",
+        endTag: "</h4>",
+        pattern: /(\[H4\])(.[^\[]*)\[h4\]/gm
+      }
+    ]
+
+    oggdudeTags.forEach(item => {
+      html = html.replace(item.pattern, `${item.startTag}$2${item.endTag}`);
+    });
 
     return html;
   }

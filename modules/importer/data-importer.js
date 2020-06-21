@@ -212,12 +212,8 @@ export default class DataImporter extends FormApplication {
   }
 
   async _handleForcePowers(xmlDoc, zip) {
-    
     const forceabilities = xmlDoc.getElementsByTagName("ForceAbility");
-
     if(forceabilities.length > 0) {
-      
-      
       $(".import-progress.force").toggleClass("import-hidden");
       let pack = await this._getCompendiumPack('Item', `oggdude.ForcePowers`);
 
