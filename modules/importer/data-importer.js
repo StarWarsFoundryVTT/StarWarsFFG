@@ -95,18 +95,28 @@ export default class DataImporter extends FormApplication {
       })
       .then(JSZip.loadAsync); 
 
+      const promises = [];
+
       await this.asyncForEach(importFiles, async file => {
         const data = await zip.file(file.file).async("text");
 
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data,"text/xml");
 
-        await this._handleGear(xmlDoc);
-        await this._handleWeapons(xmlDoc);
-        await this._handleArmor(xmlDoc);
-        await this._handleTalents(xmlDoc);
-        await this._handleForcePowers(xmlDoc, zip);
+        promises.push(this._handleGear(xmlDoc));
+        promises.push(this._handleWeapons(xmlDoc));
+        promises.push(this._handleArmor(xmlDoc));
+        promises.push(this._handleTalents(xmlDoc));
+        promises.push(this._handleForcePowers(xmlDoc, zip));
+
+        // this._handleGear(xmlDoc);
+        // this._handleWeapons(xmlDoc);
+        // await this._handleArmor(xmlDoc);
+        // await this._handleTalents(xmlDoc);
+        // await this._handleForcePowers(xmlDoc, zip);
       });
+
+      await Promise.all(promises);
 
       this.close();
     }
@@ -144,7 +154,6 @@ export default class DataImporter extends FormApplication {
   }
 
   async _handleTalents(xmlDoc) {
-    
     const talents = xmlDoc.getElementsByTagName("Talent");
     if(talents.length > 0) {
       let totalCount = talents.length;
@@ -154,66 +163,72 @@ export default class DataImporter extends FormApplication {
       let pack = await this._getCompendiumPack('Item', `oggdude.Talents`);
 
       for(let i = 0; i < talents.length; i+=1) {
-        const talent = talents[i];
-        const importkey = talent.getElementsByTagName("Key")[0]?.textContent;
-        const name = talent.getElementsByTagName("Name")[0]?.textContent;
-        const description = talent.getElementsByTagName("Description")[0]?.textContent;
-        const ranked = talent.getElementsByTagName("Ranked")[0]?.textContent;
-  
-        let activation = "Passive";
-        
-        switch (talent.getElementsByTagName("Activation")[0]?.textContent) {
-          case "Maneuver":
-            activation = "Active (Maneuver)";
-            break;
-          case "Action":
-            activation = "Active (Action)";
-            break;
-          case "Incidental":
-            activation = "Active (Incidental)";
-            break;
-          case "OOT Incidental":
-            activation = "Active (Incidental, Out of Turn)";
-            break;
-          default: 
-            activation = "Passive";
-        }
-  
-        const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent ? true : false;
-  
-        const item = {
-          name,
-          type: "talent",
-          data : {
-            importkey,
-            description,
-            ranks: {
-              ranked
-            },
-            activation : {
-              value : activation
-            },
-            isForceTalent : forcetalent
+        try {
+          const talent = talents[i];
+          const importkey = talent.getElementsByTagName("Key")[0]?.textContent;
+          const name = talent.getElementsByTagName("Name")[0]?.textContent;
+          const description = talent.getElementsByTagName("Description")[0]?.textContent;
+          const ranked = talent.getElementsByTagName("Ranked")[0]?.textContent;
+    
+          let activation = "Passive";
+          
+          switch (talent.getElementsByTagName("Activation")[0]?.textContent) {
+            case "Maneuver":
+              activation = "Active (Maneuver)";
+              break;
+            case "Action":
+              activation = "Active (Action)";
+              break;
+            case "Incidental":
+              activation = "Active (Incidental)";
+              break;
+            case "OOT Incidental":
+              activation = "Active (Incidental, Out of Turn)";
+              break;
+            default: 
+              activation = "Passive";
           }
+    
+          const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent ? true : false;
+    
+          const item = {
+            name,
+            type: "talent",
+            data : {
+              importkey,
+              description,
+              ranks: {
+                ranked
+              },
+              activation : {
+                value : activation
+              },
+              isForceTalent : forcetalent
+            }
+          }
+    
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find(e => e.name === item.name);
+    
+          if(!entry) {
+            console.debug(`Starwars FFG - Importing Talent - Item`);
+            compendiumItem = new Item(item);  
+            pack.importEntity(compendiumItem);
+          } else {
+            console.debug(`Starwars FFG - Update Talent - Item`);
+            let updateData = this.buildUpdateData(item);
+            updateData["_id"] = entry._id
+            pack.updateEntity(updateData);
+          }
+          currentCount +=1 ;
+          
+          $(".talents .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+        } catch (err) {
+          console.error(`Starwars FFG - Error importing record : ${err.message}`);
+          console.debug(err);
         }
-  
-        let compendiumItem;
-        await pack.getIndex();
-        let entry = pack.index.find(e => e.name === item.name);
-  
-        if(!entry) {
-          console.debug(`Starwars FFG - Importing Talent - Item`);
-          compendiumItem = new Item(item);  
-          pack.importEntity(compendiumItem);
-        } else {
-          console.debug(`Starwars FFG - Update Talent - Item`);
-          let updateData = this.buildUpdateData(item);
-          updateData["_id"] = entry._id
-          pack.updateEntity(updateData);
-        }
-        currentCount +=1 ;
-        
-        $(".talents .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+
       }
     }
     
@@ -236,127 +251,137 @@ export default class DataImporter extends FormApplication {
       let currentCount = 0;
 
       await this.asyncForEach(forcePowersFiles, async (file) => {
-        const data = await zip.file(file.name).async("text");
-        const domparser = new DOMParser();
-        const xmlDoc1 = domparser.parseFromString(data,"text/xml");
-        const fp = JXON.xmlToJs(xmlDoc1);
-
-        // setup the base information
-
-        let power = {
-          name : fp.ForcePower.Name,
-          type : "forcepower",
-          data : {
-            upgrades : {
-
+        try {
+          const data = await zip.file(file.name).async("text");
+          const domparser = new DOMParser();
+          const xmlDoc1 = domparser.parseFromString(data,"text/xml");
+          const fp = JXON.xmlToJs(xmlDoc1);
+  
+          // setup the base information
+  
+          let power = {
+            name : fp.ForcePower.Name,
+            type : "forcepower",
+            data : {
+              upgrades : {
+  
+              }
             }
           }
-        }
-
-        // get the basic power informatio
-        const importKey = fp.ForcePower.AbilityRows.AbilityRow[0].Abilities.Key[0];
-
-        let forceAbility = fa.ForceAbilities.ForceAbility.find(ability => {
-          return ability.Key === importKey
-        })
-
-        power.data.description = forceAbility.Description;
-
-        // next we will parse the rows
-
-        for(let i = 1; i < fp.ForcePower.AbilityRows.AbilityRow.length; i+=1) {
-          const row = fp.ForcePower.AbilityRows.AbilityRow[i];
-          row.Abilities.Key.forEach((keyName, index) => {
-            let rowAbility = { }
-
-            let rowAbilityData = fa.ForceAbilities.ForceAbility.find(a => {
-              return a.Key === keyName;
-            })
-
-            rowAbility.name = rowAbilityData.Name;
-            rowAbility.description = rowAbilityData.Description;
-            rowAbility.cost = row.Costs.Cost[index];
-            rowAbility.visible = true;
-
-            if(row.Directions.Direction[index].Up) {
-              rowAbility["links-top-1"] = true;
-            }
-            
-            switch(row.AbilitySpan.Span[index]) {
-              case "1" :
-                rowAbility.size = "single";
-                break;
-              case "2" :
-                rowAbility.size = "double";
-                if(index < 3 && row.Directions.Direction[index+1].Up) {
-                  rowAbility["links-top-2"] = true;
-                }
-                break;
-              case "3" :
-                rowAbility.size = "triple";
-                if(index < 2 && row.Directions.Direction[index+1].Up) {
-                  rowAbility["links-top-2"] = true;
-                }
-                if(index < 2 && row.Directions.Direction[index+2].Up) {
-                  rowAbility["links-top-3"] = true;
-                }
-                break;
-              case "4": 
-                rowAbility.size = "full";
-                if(index < 1 && row.Directions.Direction[index+1].Up) {
-                  rowAbility["links-top-2"] = true;
-                }
-                if(index < 1 && row.Directions.Direction[index+2].Up) {
-                  rowAbility["links-top-3"] = true;
-                }
-                if(index < 1 && row.Directions.Direction[index+3].Up) {
-                  rowAbility["links-top-4"] = true;
-                }
-                break
-              default:
-                rowAbility.size = "single";
-                rowAbility.visible = false;
-            }
-            
-            if(row.Directions.Direction[index].Right) {
-              rowAbility["links-right"] = true;
-            }
-
-            const talentKey = `upgrade${((i - 1) * 4) + index}`;
-            power.data.upgrades[talentKey] = rowAbility;
-          });
-        }
-
-        if(fp.ForcePower.AbilityRows.AbilityRow.length < 5) {
-          for(let i = fp.ForcePower.AbilityRows.AbilityRow.length; i < 5; i+=1) {
-
-            for(let index = 0; index < 4; index+=1) {
-              const talentKey = `upgrade${((i - 1) * 4) + index}`;
-
-              let rowAbility = { visible : false }
   
-              power.data.upgrades[talentKey] = rowAbility;
+          // get the basic power informatio
+          const importKey = fp.ForcePower.AbilityRows.AbilityRow[0].Abilities.Key[0];
+  
+          let forceAbility = fa.ForceAbilities.ForceAbility.find(ability => {
+            return ability.Key === importKey
+          })
+  
+          power.data.description = forceAbility.Description;
+  
+          // next we will parse the rows
+  
+          for(let i = 1; i < fp.ForcePower.AbilityRows.AbilityRow.length; i+=1) {
+            try {
+              const row = fp.ForcePower.AbilityRows.AbilityRow[i];
+              row.Abilities.Key.forEach((keyName, index) => {
+                let rowAbility = { }
+    
+                let rowAbilityData = fa.ForceAbilities.ForceAbility.find(a => {
+                  return a.Key === keyName;
+                })
+    
+                rowAbility.name = rowAbilityData.Name;
+                rowAbility.description = rowAbilityData.Description;
+                rowAbility.cost = row.Costs.Cost[index];
+                rowAbility.visible = true;
+    
+                if(row.Directions.Direction[index].Up) {
+                  rowAbility["links-top-1"] = true;
+                }
+                
+                switch(row.AbilitySpan.Span[index]) {
+                  case "1" :
+                    rowAbility.size = "single";
+                    break;
+                  case "2" :
+                    rowAbility.size = "double";
+                    if(index < 3 && row.Directions.Direction[index+1].Up) {
+                      rowAbility["links-top-2"] = true;
+                    }
+                    break;
+                  case "3" :
+                    rowAbility.size = "triple";
+                    if(index < 2 && row.Directions.Direction[index+1].Up) {
+                      rowAbility["links-top-2"] = true;
+                    }
+                    if(index < 2 && row.Directions.Direction[index+2].Up) {
+                      rowAbility["links-top-3"] = true;
+                    }
+                    break;
+                  case "4": 
+                    rowAbility.size = "full";
+                    if(index < 1 && row.Directions.Direction[index+1].Up) {
+                      rowAbility["links-top-2"] = true;
+                    }
+                    if(index < 1 && row.Directions.Direction[index+2].Up) {
+                      rowAbility["links-top-3"] = true;
+                    }
+                    if(index < 1 && row.Directions.Direction[index+3].Up) {
+                      rowAbility["links-top-4"] = true;
+                    }
+                    break
+                  default:
+                    rowAbility.size = "single";
+                    rowAbility.visible = false;
+                }
+                
+                if(row.Directions.Direction[index].Right) {
+                  rowAbility["links-right"] = true;
+                }
+    
+                const talentKey = `upgrade${((i - 1) * 4) + index}`;
+                power.data.upgrades[talentKey] = rowAbility;
+              });
+            } catch (err) {
+              console.error(`Starwars FFG - Error importing record : ${err.message}`);
+              console.debug(err);
             }
           }
-        }
-
-        let compendiumItem;
-        await pack.getIndex();
-        let entry = pack.index.find(e => e.name === power.name);
   
-        if(!entry) {
-          console.debug(`Starwars FFG - Importing Force Power - Item`);
-          compendiumItem = new Item(power);  
-          pack.importEntity(compendiumItem);
-        } else {
-          console.debug(`Starwars FFG - Updating Force Power - Item`);
-          let updateData = this.buildUpdateData(power);
-          updateData["_id"] = entry._id
-          pack.updateEntity(updateData);
+          if(fp.ForcePower.AbilityRows.AbilityRow.length < 5) {
+            for(let i = fp.ForcePower.AbilityRows.AbilityRow.length; i < 5; i+=1) {
+  
+              for(let index = 0; index < 4; index+=1) {
+                const talentKey = `upgrade${((i - 1) * 4) + index}`;
+  
+                let rowAbility = { visible : false }
+    
+                power.data.upgrades[talentKey] = rowAbility;
+              }
+            }
+          }
+  
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find(e => e.name === power.name);
+    
+          if(!entry) {
+            console.debug(`Starwars FFG - Importing Force Power - Item`);
+            compendiumItem = new Item(power);  
+            pack.importEntity(compendiumItem);
+          } else {
+            console.debug(`Starwars FFG - Updating Force Power - Item`);
+            let updateData = this.buildUpdateData(power);
+            updateData["_id"] = entry._id
+            pack.updateEntity(updateData);
+          }
+          currentCount +=1 ;
+          
+          $(".force .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+        } catch (err) {
+          console.error(`Starwars FFG - Error importing record : ${err.message}`);
+          console.debug(err);
         }
-        currentCount +=1 ;
-        
-        $(".force .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
       });
     }
   }
@@ -372,51 +397,56 @@ export default class DataImporter extends FormApplication {
       let pack = await this._getCompendiumPack('Item', `oggdude.Gear`);
 
       for(let i = 0; i < gear.length; i+=1) {
-        const item = gear[i];
+        try {
+          const item = gear[i];
 
-        const importkey = item.getElementsByTagName("Key")[0]?.textContent;
-        const name = item.getElementsByTagName("Name")[0]?.textContent;
-        const description = item.getElementsByTagName("Description")[0]?.textContent;
-        const price = item.getElementsByTagName("Price")[0]?.textContent;
-        const rarity = item.getElementsByTagName("Rarity")[0]?.textContent;
-        const encumbrance = item.getElementsByTagName("Encumbrance")[0]?.textContent;
-        const type = item.getElementsByTagName("Type")[0]?.textContent;
+          const importkey = item.getElementsByTagName("Key")[0]?.textContent;
+          const name = item.getElementsByTagName("Name")[0]?.textContent;
+          const description = item.getElementsByTagName("Description")[0]?.textContent;
+          const price = item.getElementsByTagName("Price")[0]?.textContent;
+          const rarity = item.getElementsByTagName("Rarity")[0]?.textContent;
+          const encumbrance = item.getElementsByTagName("Encumbrance")[0]?.textContent;
+          const type = item.getElementsByTagName("Type")[0]?.textContent;
 
-        const newItem = {
-          name,
-          type: "gear",
-          data: {
-            importkey,
-            description,
-            encumbrance: {
-              value : encumbrance
-            },
-            price : {
-              value : price
-            },
-            rarity: {
-              value: rarity
+          const newItem = {
+            name,
+            type: "gear",
+            data: {
+              importkey,
+              description,
+              encumbrance: {
+                value : encumbrance
+              },
+              price : {
+                value : price
+              },
+              rarity: {
+                value: rarity
+              }
             }
           }
+
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find(e => e.name === newItem.name);
+
+          if(!entry) {
+            console.debug(`Starwars FFG - Importing Gear - Item`);
+            compendiumItem = new Item(newItem);  
+            pack.importEntity(compendiumItem);
+          } else {
+            console.debug(`Starwars FFG - Updating Gear - Item`);
+            let updateData = this.buildUpdateData(newItem);
+            updateData["_id"] = entry._id
+            pack.updateEntity(updateData);
+          }
+          currentCount +=1 ;
+
+          $(".gear .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+        } catch (err) {
+          console.error(`Starwars FFG - Error importing record : ${err.message}`);
+          console.debug(err);
         }
-
-        let compendiumItem;
-        await pack.getIndex();
-        let entry = pack.index.find(e => e.name === newItem.name);
-
-        if(!entry) {
-          console.debug(`Starwars FFG - Importing Gear - Item`);
-          compendiumItem = new Item(newItem);  
-          pack.importEntity(compendiumItem);
-        } else {
-          console.debug(`Starwars FFG - Updating Gear - Item`);
-          let updateData = this.buildUpdateData(newItem);
-          updateData["_id"] = entry._id
-          pack.updateEntity(updateData);
-        }
-        currentCount +=1 ;
-
-        $(".gear .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
       }
     }
   }
@@ -432,108 +462,118 @@ export default class DataImporter extends FormApplication {
       let pack = await this._getCompendiumPack('Item', `oggdude.Weapons`);
 
       for(let i = 0; i < weapons.length; i+=1) {
-        const weapon = weapons[i];
+        try {
 
-        const importkey = weapon.getElementsByTagName("Key")[0]?.textContent;
-        const name = weapon.getElementsByTagName("Name")[0]?.textContent;
-        const description = weapon.getElementsByTagName("Description")[0]?.textContent;
-        const price = weapon.getElementsByTagName("Price")[0]?.textContent;
-        const rarity = weapon.getElementsByTagName("Rarity")[0]?.textContent;
-        const encumbrance = weapon.getElementsByTagName("Encumbrance")[0]?.textContent;
-        const damage = weapon.getElementsByTagName("Damage")[0]?.textContent;
-        const crit = weapon.getElementsByTagName("Crit")[0]?.textContent;
+          if(i === 26) {
+            throw new Error("Testing");
+          }
 
-        const skillkey = weapon.getElementsByTagName("SkillKey")[0]?.textContent;
-        const range = weapon.getElementsByTagName("Range")[0]?.textContent;
-        const hardpoints = weapon.getElementsByTagName("HP")[0]?.textContent;
+          const weapon = weapons[i];
 
-        let skill = "";
+          const importkey = weapon.getElementsByTagName("Key")[0]?.textContent;
+          const name = weapon.getElementsByTagName("Name")[0]?.textContent;
+          const description = weapon.getElementsByTagName("Description")[0]?.textContent;
+          const price = weapon.getElementsByTagName("Price")[0]?.textContent;
+          const rarity = weapon.getElementsByTagName("Rarity")[0]?.textContent;
+          const encumbrance = weapon.getElementsByTagName("Encumbrance")[0]?.textContent;
+          const damage = weapon.getElementsByTagName("Damage")[0]?.textContent;
+          const crit = weapon.getElementsByTagName("Crit")[0]?.textContent;
 
-        switch(skillkey) {
-          case "RANGLT":
-            skill = "Ranged: Light";
-            break;
-          case "RANGHVY":
-            skill = "Ranged: Heavy";
-            break;
-          case "GUNN":
-            skill = "Gunnery";
-            break;
-          case "BRAWL":
-            skill = "Brawl";
-            break;
-          case "MELEE":
-            skill = "Melee";
-            break;
-          case "LTSABER":
-            skill = "Lightsaber";
-            break;
-          default:
-        }
-        
-        const fp = JXON.xmlToJs(weapon);
+          const skillkey = weapon.getElementsByTagName("SkillKey")[0]?.textContent;
+          const range = weapon.getElementsByTagName("Range")[0]?.textContent;
+          const hardpoints = weapon.getElementsByTagName("HP")[0]?.textContent;
 
-        const qualities = [];
+          let skill = "";
 
-        if(fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
-          fp.Qualities.Quality.forEach(quality => {
-            qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`)
-          });
-        }
+          switch(skillkey) {
+            case "RANGLT":
+              skill = "Ranged: Light";
+              break;
+            case "RANGHVY":
+              skill = "Ranged: Heavy";
+              break;
+            case "GUNN":
+              skill = "Gunnery";
+              break;
+            case "BRAWL":
+              skill = "Brawl";
+              break;
+            case "MELEE":
+              skill = "Melee";
+              break;
+            case "LTSABER":
+              skill = "Lightsaber";
+              break;
+            default:
+          }
+          
+          const fp = JXON.xmlToJs(weapon);
 
-        let newItem = {
-          name,
-          type: "weapon",
-          data: {
-            importkey,
-            description,
-            encumbrance : {
-              value : encumbrance
-            },
-            price : {
-              value: price
-            },
-            rarity : {
-              value : rarity
-            },
-            damage : {
-              value: damage
-            },
-            crit : {
-              value : crit
-            },
-            special : {
-              value : qualities.join(",")
-            },
-            skill : {
-              value : skill
-            },
-            range : {
-              value : range
-            },
-            hardpoints : {
-              value : hardpoints
+          const qualities = [];
+
+          if(fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
+            fp.Qualities.Quality.forEach(quality => {
+              qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`)
+            });
+          }
+
+          let newItem = {
+            name,
+            type: "weapon",
+            data: {
+              importkey,
+              description,
+              encumbrance : {
+                value : encumbrance
+              },
+              price : {
+                value: price
+              },
+              rarity : {
+                value : rarity
+              },
+              damage : {
+                value: damage
+              },
+              crit : {
+                value : crit
+              },
+              special : {
+                value : qualities.join(",")
+              },
+              skill : {
+                value : skill
+              },
+              range : {
+                value : range
+              },
+              hardpoints : {
+                value : hardpoints
+              }
             }
           }
+
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find(e => e.name === newItem.name);
+
+          if(!entry) {
+            console.debug(`Starwars FFG - Importing Weapon - Item`);
+            compendiumItem = new Item(newItem);  
+            pack.importEntity(compendiumItem);
+          } else {
+            console.debug(`Starwars FFG - Updating Weapon - Item`);
+            let updateData = this.buildUpdateData(newItem);
+            updateData["_id"] = entry._id
+            pack.updateEntity(updateData);
+          }
+          currentCount +=1 ;
+
+          $(".weapons .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+        } catch (err) {
+          console.error(`Starwars FFG - Error importing record : ${err.message}`);
+          console.debug(err);
         }
-
-        let compendiumItem;
-        await pack.getIndex();
-        let entry = pack.index.find(e => e.name === newItem.name);
-
-        if(!entry) {
-          console.debug(`Starwars FFG - Importing Weapon - Item`);
-          compendiumItem = new Item(newItem);  
-          pack.importEntity(compendiumItem);
-        } else {
-          console.debug(`Starwars FFG - Updating Weapon - Item`);
-          let updateData = this.buildUpdateData(newItem);
-          updateData["_id"] = entry._id
-          pack.updateEntity(updateData);
-        }
-        currentCount +=1 ;
-
-        $(".weapons .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
       }
     }
   }
@@ -549,63 +589,69 @@ export default class DataImporter extends FormApplication {
       let pack = await this._getCompendiumPack('Item', `oggdude.Armor`);
 
       for(let i = 0; i < armors.length; i+=1) {
-        const armor = armors[i];
+        try {
+          const armor = armors[i];
 
-        const importkey = armor.getElementsByTagName("Key")[0]?.textContent;
-        const name = armor.getElementsByTagName("Name")[0]?.textContent;
-        const description = armor.getElementsByTagName("Description")[0]?.textContent;
-        const price = armor.getElementsByTagName("Price")[0]?.textContent;
-        const rarity = armor.getElementsByTagName("Rarity")[0]?.textContent;
-        const encumbrance = armor.getElementsByTagName("Encumbrance")[0]?.textContent;
+          const importkey = armor.getElementsByTagName("Key")[0]?.textContent;
+          const name = armor.getElementsByTagName("Name")[0]?.textContent;
+          const description = armor.getElementsByTagName("Description")[0]?.textContent;
+          const price = armor.getElementsByTagName("Price")[0]?.textContent;
+          const rarity = armor.getElementsByTagName("Rarity")[0]?.textContent;
+          const encumbrance = armor.getElementsByTagName("Encumbrance")[0]?.textContent;
 
-        const defense = armor.getElementsByTagName("Defense")[0]?.textContent;
-        const soak = armor.getElementsByTagName("Soak")[0]?.textContent;
-        const hardpoints = armor.getElementsByTagName("HP")[0]?.textContent;
+          const defense = armor.getElementsByTagName("Defense")[0]?.textContent;
+          const soak = armor.getElementsByTagName("Soak")[0]?.textContent;
+          const hardpoints = armor.getElementsByTagName("HP")[0]?.textContent;
 
-        let newItem = {
-          name,
-          type : "armour",
-          data : {
-            importkey,
-            description,
-            encumbrance : {
-              value : encumbrance
-            },
-            price : {
-              value: price
-            },
-            rarity : {
-              value : rarity
-            },
-            defence : {
-              value : defense
-            },
-            soak : {
-              value : soak
-            },
-            hardpoints : {
-              value : hardpoints
+          let newItem = {
+            name,
+            type : "armour",
+            data : {
+              importkey,
+              description,
+              encumbrance : {
+                value : encumbrance
+              },
+              price : {
+                value: price
+              },
+              rarity : {
+                value : rarity
+              },
+              defence : {
+                value : defense
+              },
+              soak : {
+                value : soak
+              },
+              hardpoints : {
+                value : hardpoints
+              }
             }
           }
+
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find(e => e.name === newItem.name);
+
+          if(!entry) {
+            console.debug(`Starwars FFG - Importing Armor - Item`);
+            compendiumItem = new Item(newItem);  
+            pack.importEntity(compendiumItem);
+          } else {
+            console.debug(`Starwars FFG - Updating Armor - Item`);
+            let updateData = this.buildUpdateData(newItem);
+            updateData["_id"] = entry._id
+            pack.updateEntity(updateData);
+          }
+          currentCount +=1 ;
+
+          $(".armor .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+        } catch (err) {
+          console.error(`Starwars FFG - Error importing record : ${err.message}`);
+          console.debug(err);
         }
 
-        let compendiumItem;
-        await pack.getIndex();
-        let entry = pack.index.find(e => e.name === newItem.name);
-
-        if(!entry) {
-          console.debug(`Starwars FFG - Importing Armor - Item`);
-          compendiumItem = new Item(newItem);  
-          pack.importEntity(compendiumItem);
-        } else {
-          console.debug(`Starwars FFG - Updating Armor - Item`);
-          let updateData = this.buildUpdateData(newItem);
-          updateData["_id"] = entry._id
-          pack.updateEntity(updateData);
-        }
-        currentCount +=1 ;
-
-        $(".armor .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
       }
     }
   }
