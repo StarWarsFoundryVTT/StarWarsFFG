@@ -255,5 +255,7 @@
   "SWFFG.TalentsForce": "Force Talent?",
   "SWFFG.LoadFile" : "Load File",
   "SWFFG.ImportFile" : "Start Import",
-  "SWFFG.Cost": "COST:"
+  "SWFFG.Cost": "COST:",
+  "SWFFG.EnableSoakCalc": "Enable Soak Auto-Calculation",
+  "SWFFG.EnableSoakCalcHint": "Enable soak auto-calculation and unload field for manual entry"
 }

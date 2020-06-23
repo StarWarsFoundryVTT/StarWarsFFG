@@ -84,6 +84,48 @@ export class ActorFFG extends Actor {
     this._prepareSharedData(actorData);
 
     const data = actorData.data;
+
+    if (game.settings.get("starwarsffg", "enableSoakCalc")) {
+      this._calculateSoak(actorData);
+    }
+
+    // Build complete talent list.
+
+    const specializations = actorData.items.filter((item) => {
+      return item.type === "specialization";
+    });
+
+    const globalTalentList = [];
+    specializations.forEach((element) => {
+      if (element?.talentList && element.talentList.length > 0) {
+        element.talentList.forEach((talent) => {
+          const item = talent;
+          item.firstSpecialization = element._id;
+
+          if (item.isRanked) {
+            item.rank = talent.rank;
+          } else {
+            item.rank = "N/A";
+          }
+
+          let index = globalTalentList.findIndex((obj) => {
+            return obj.name === item.name;
+          });
+
+          if (index < 0 || !item.isRanked) {
+            globalTalentList.push(item);
+          } else {
+            globalTalentList[index].rank += talent.rank;
+          }
+        });
+      }
+    });
+    data.talentList = globalTalentList;
+  }
+
+  _calculateSoak(actorData) {
+    
+    const data = actorData.data;
     const items = actorData.items;
     var soak = 0;
     var armoursoak = 0;
@@ -122,39 +164,6 @@ export class ActorFFG extends Actor {
 
     // Finally set Soak value on character.
     data.stats.soak.value = soak;
-
-    // Build complete talent list.
-
-    const specializations = actorData.items.filter((item) => {
-      return item.type === "specialization";
-    });
-
-    const globalTalentList = [];
-    specializations.forEach((element) => {
-      if (element?.talentList && element.talentList.length > 0) {
-        element.talentList.forEach((talent) => {
-          const item = talent;
-          item.firstSpecialization = element._id;
-
-          if (item.isRanked) {
-            item.rank = talent.rank;
-          } else {
-            item.rank = "N/A";
-          }
-
-          let index = globalTalentList.findIndex((obj) => {
-            return obj.name === item.name;
-          });
-
-          if (index < 0 || !item.isRanked) {
-            globalTalentList.push(item);
-          } else {
-            globalTalentList[index].rank += talent.rank;
-          }
-        });
-      }
-    });
-    data.talentList = globalTalentList;
   }
 
   /**
