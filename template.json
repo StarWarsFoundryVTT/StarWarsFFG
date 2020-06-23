@@ -728,7 +728,8 @@
         "upgrade13": {},
         "upgrade14": {},
         "upgrade15": {}
-      }
+      },
+      "attributes": {}
     },
     "specialization": {
       "description": "",
@@ -753,7 +754,8 @@
         "talent17": {},
         "talent18": {},
         "talent19": {}
-      }
+      },
+      "attributes": {}
     }
   }
 }
