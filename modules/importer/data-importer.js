@@ -463,11 +463,6 @@ export default class DataImporter extends FormApplication {
 
       for(let i = 0; i < weapons.length; i+=1) {
         try {
-
-          if(i === 26) {
-            throw new Error("Testing");
-          }
-
           const weapon = weapons[i];
 
           const importkey = weapon.getElementsByTagName("Key")[0]?.textContent;
@@ -477,6 +472,7 @@ export default class DataImporter extends FormApplication {
           const rarity = weapon.getElementsByTagName("Rarity")[0]?.textContent;
           const encumbrance = weapon.getElementsByTagName("Encumbrance")[0]?.textContent;
           const damage = weapon.getElementsByTagName("Damage")[0]?.textContent;
+          const damageAdd = weapon.getElementsByTagName("DamageAdd")[0]?.textContent;
           const crit = weapon.getElementsByTagName("Crit")[0]?.textContent;
 
           const skillkey = weapon.getElementsByTagName("SkillKey")[0]?.textContent;
@@ -533,7 +529,7 @@ export default class DataImporter extends FormApplication {
                 value : rarity
               },
               damage : {
-                value: damage
+                value: !damage ? damageAdd : damage
               },
               crit : {
                 value : crit
@@ -550,6 +546,20 @@ export default class DataImporter extends FormApplication {
               hardpoints : {
                 value : hardpoints
               }
+            }
+          }
+
+          if(damageAdd) {
+            if(!newItem.data.attributes) {
+              newItem.data.attributes = {};
+            }
+            const nk = Object.keys(newItem.data.attributes).length + 1;
+
+            newItem.data.attributes[`attr${nk}`] = {
+              isCheckbox: false,
+              mod: "damage",
+              modtype: "Weapon Stat",
+              value: damageAdd
             }
           }
 

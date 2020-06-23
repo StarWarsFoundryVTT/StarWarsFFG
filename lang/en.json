@@ -203,6 +203,7 @@
   "SWFFG.ModTypeSkillRank": "Skill Rank",
   "SWFFG.ModTypeSkillBoost": "Skill Boost",
   "SWFFG.ModTypeStat": "Stat",
+  "SWFFG.ModTypeStatWeapon": "Weapon Stat",
   "SWFFG.ModifierType": "Modifier Type",
   "SWFFG.Modifier": "Modifier",
   "SWFFG.ModifierValue": "Value",

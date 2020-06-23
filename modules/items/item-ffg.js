@@ -26,6 +26,20 @@ export class ItemFFG extends Item {
       case "weapon":
         const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.value)}`;
         data.range.label = rangeId;
+
+        if(this.isOwned && this.actor) {
+          if(data.skill.value === "Melee" || data.skill.value === "Brawl") {
+            let damageAdd = 0;
+            for(let attr in data.attributes) {
+              if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
+                damageAdd += parseInt(data.attributes[attr].value, 10);
+              }
+            }
+
+            data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
+          }
+        }
+
         break;
       case "shipweapon":
         const vehiclerangeId = `SWFFG.VehicleRange${this._capitalize(data.range.value)}`;
