@@ -184,6 +184,16 @@ Hooks.once("init", async function () {
     }
   }
 
+  game.settings.register("starwarsffg", "enableSoakCalc", {
+    name: game.i18n.localize("SWFFG.EnableSoakCalc"),
+    hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean,
+    onChange: (rule) => window.location.reload(),
+  })
+
   // Register skill sorting by localised value setting
   game.settings.register("starwarsffg", "skillSorting", {
     name: game.i18n.localize("SWFFG.SettingsSkillSorting"),

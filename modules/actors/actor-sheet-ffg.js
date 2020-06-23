@@ -44,6 +44,9 @@ export class ActorSheetFFG extends ActorSheet {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
     data.FFG = CONFIG.FFG;
+    data.settings = {
+      enableSoakCalculation : game.settings.get("starwarsffg", "enableSoakCalc")
+    }
 
     switch (this.actor.data.type) {
       case "character":

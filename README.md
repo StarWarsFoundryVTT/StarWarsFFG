@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 22/06/2020 - Cstadther - Added setting to disable Soak Autocalculation
 - 22/06/2020 - Cstadther - Enhancement - Data Imported error handling and async importing.
 - 21/06/2020 - Cstadther - Added Armor Import
 - 21/06/2020 - Cstadther - Added Weapon Import
