@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 23/06/2020 - Cstadther - Bug fix # 155 part 2 - Added attributed to the template.json structure for forcepower and specializations
 - 23/06/2020 - Cstadther - Bug fix # 155 - Force talents from compendium do no have attributes field, until they are imported into the world from the compendium
 - 23/06/2020 - Cstadther - Bug fix # 152 - Ship silhouette size
 - 22/06/2020 - Cstadther - Added setting to disable Soak Autocalculation
