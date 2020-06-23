@@ -33,6 +33,25 @@ FFG.characteristics = {
   },
 };
 
+FFG.weapon_stats = {
+  "damage" : {
+    value : "damage",
+    label : "SWFFG.ItemsDamage"
+  },
+  "critical" : {
+    value : "critical",
+    label : "SWFFG.ItemsCrit", 
+  },
+  "encumbrance" : {
+    value : "emcubrance",
+    label : "SWFFG.ItemsEncum", 
+  },
+  "hardpoints" : {
+    value : "hardpoints",
+    label : "SWFFG.ItemsHP", 
+  }
+}
+
 FFG.character_stats = {
   "wounds": {
     value: "Wounds",
@@ -291,8 +310,31 @@ FFG.mod_types = {
   "Stat": {
     "value": "Stat",
     "label": "SWFFG.ModTypeStat",
-  },
+  }
 };
+
+FFG.weapon_mod_types = {
+  "Characteristic": {
+    "value": "Characteristic",
+    "label": "SWFFG.ModTypeCharacteristic",
+  },
+  "Skill Rank": {
+    "value": "Skill Rank",
+    "label": "SWFFG.ModTypeSkillRank",
+  },
+  "Skill Boost": {
+    "value": "Skill Boost",
+    "label": "SWFFG.ModTypeSkillBoost",
+  },
+  "Stat": {
+    "value": "Stat",
+    "label": "SWFFG.ModTypeStat",
+  },
+  "Weapon Stat": {
+    "value": "Weapon Stat",
+    "label": "SWFFG.ModTypeStatWeapon",
+  }
+}
 
 FFG.species = {};
 

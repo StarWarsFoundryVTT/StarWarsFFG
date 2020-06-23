@@ -36,7 +36,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
-- 23/06/2020 - Cstadther - Bug fix # 155 part 2 - Added attributed to the template.json structure for forcepower and specializations
+- 23/06/2020 - Cstadther - Bug fix # 154 - Added damage add to damage characteristic for melee weapons.  Added modifier calculations with damage for melee/brawl weapons.
+- 23/06/2020 - Cstadther - Bug fix # 155 part 2 - Added attributes to the template.json structure for forcepower and specializations
 - 23/06/2020 - Cstadther - Bug fix # 155 - Force talents from compendium do no have attributes field, until they are imported into the world from the compendium
 - 23/06/2020 - Cstadther - Bug fix # 152 - Ship silhouette size
 - 22/06/2020 - Cstadther - Added setting to disable Soak Autocalculation
