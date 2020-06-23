@@ -138,20 +138,24 @@ export class ActorFFG extends Actor {
 
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
-      // For armour type, get all Soak values and add to armoursoak.
-      if (item.type == "armour" && item.data.equippable.equipped) {
-        armoursoak += +item.data.soak.value;
-      }
-      // Loop through all item attributes and add any modifiers to our collection.
-      for (let [k, mod] of Object.entries(item.data.attributes)) {
-        if (mod.mod == "Soak") {
-          othersoak += +mod.value;
+      try {
+        // For armour type, get all Soak values and add to armoursoak.
+        if (item.type == "armour" && item?.data?.equippable?.equipped) {
+          armoursoak += +item.data.soak.value;
         }
-      }
+        // Loop through all item attributes and add any modifiers to our collection.
+        for(let mod in item.data.attributes) {
+          if (mod.mod == "Soak") {
+            othersoak += +mod.value;
+          }
+        }
 
-      // Calculate encumbrance, only if encumbrance value exists
-      if (item.data?.encumbrance?.value) {
-        encum += +item.data.encumbrance.value;
+        // Calculate encumbrance, only if encumbrance value exists
+        if (item.data?.encumbrance?.value) {
+          encum += +item.data.encumbrance.value;
+        }
+      } catch (err) {
+        console.debug(err);
       }
     }
 
