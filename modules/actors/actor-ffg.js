@@ -86,7 +86,7 @@ export class ActorFFG extends Actor {
     const data = actorData.data;
 
     if (game.settings.get("starwarsffg", "enableSoakCalc")) {
-      this._calculateSoak(actorData);
+      this._calculateDerivedValues(actorData);
     }
 
     // Build complete talent list.
@@ -123,14 +123,14 @@ export class ActorFFG extends Actor {
     data.talentList = globalTalentList;
   }
 
-  _calculateSoak(actorData) {
+  _calculateDerivedValues(actorData) {
     const data = actorData.data;
     const items = actorData.items;
     var soak = 0;
     var armoursoak = 0;
     var othersoak = 0;
     var encum = 0;
-
+    var defence = 0;
     // Calculate soak based on Brawn value, and any Soak modifiers in weapons, armour, gear and talents.
     // Start with Brawn. Also calculate total encumbrance from items.
     soak = +data.characteristics.Brawn.value;
@@ -141,12 +141,14 @@ export class ActorFFG extends Actor {
         // For armour type, get all Soak values and add to armoursoak.
         if (item.type === "armour" && item?.data?.equippable?.equipped) {
           armoursoak += +item.data.soak.value;
+          defence = Math.max(defence, item.data.defence.value)
         }
         // Loop through all item attributes and add any modifiers to our collection.
         for (let mod in item.data.attributes) {
           if (mod.mod == "Soak") {
             othersoak += +mod.value;
           }
+          
         }
 
         // Calculate encumbrance, only if encumbrance value exists
@@ -171,6 +173,10 @@ export class ActorFFG extends Actor {
 
     // Finally set Soak value on character.
     data.stats.soak.value = soak;
+
+    // Set defence value of equipped items.
+    data.stats.defence.ranged = defence;
+    data.stats.defence.melee = defence;
   }
 
   /**
