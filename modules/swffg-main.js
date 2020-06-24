@@ -192,7 +192,7 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean,
     onChange: (rule) => window.location.reload(),
-  })
+  });
 
   // Register skill sorting by localised value setting
   game.settings.register("starwarsffg", "skillSorting", {
@@ -260,7 +260,7 @@ Hooks.once("init", async function () {
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true });
-  Actors.registerSheet("ffg", AdversarySheetFFG {types: ["character"]});
+  Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"] });
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("ffg", ItemSheetFFG, { makeDefault: true });
 
