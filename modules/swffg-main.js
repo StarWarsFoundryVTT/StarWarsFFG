@@ -260,7 +260,7 @@ Hooks.once("init", async function () {
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
   Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true });
-  Actors.registerSheet("ffg", AdversarySheetFFG);
+  Actors.registerSheet("ffg", AdversarySheetFFG {types: ["character"]});
   Items.unregisterSheet("core", ItemSheet);
   Items.registerSheet("ffg", ItemSheetFFG, { makeDefault: true });
 

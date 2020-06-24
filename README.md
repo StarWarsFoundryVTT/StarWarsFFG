@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 24/06/2020 - Esrin - Bug fix #160 & #159 - Limited Adversary sheet registration to "character" actor types only.
 - 24/06/2020 - Esrin - Bug fix #161 - Added check during character encumbrance calculation and do not add encumbrance for equipped armour.
 - 23/06/2020 - Cstadther - Bug fix # 154 - Added damage add to damage characteristic for melee weapons. Added modifier calculations with damage for melee/brawl weapons.
 - 23/06/2020 - Cstadther - Bug fix # 155 part 2 - Added attributes to the template.json structure for forcepower and specializations
