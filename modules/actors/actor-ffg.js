@@ -140,7 +140,7 @@ export class ActorFFG extends Actor {
       try {
         // For armour type, get all Soak values and add to armoursoak.
         if (item.type === "armour" && item?.data?.equippable?.equipped) {
-          armoursoak += item.data.soak.value;
+          armoursoak += +item.data.soak.value;
           defence = Math.max(defence, item.data.defence.value)
         }
         // Loop through all item attributes and add any modifiers to our collection.
