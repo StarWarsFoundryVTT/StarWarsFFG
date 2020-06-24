@@ -36,7 +36,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
-- 23/06/2020 - Cstadther - Bug fix # 154 - Added damage add to damage characteristic for melee weapons.  Added modifier calculations with damage for melee/brawl weapons.
+- 24/06/2020 - Esrin - Bug fix #161 - Added check during character encumbrance calculation and do not add encumbrance for equipped armour.
+- 23/06/2020 - Cstadther - Bug fix # 154 - Added damage add to damage characteristic for melee weapons. Added modifier calculations with damage for melee/brawl weapons.
 - 23/06/2020 - Cstadther - Bug fix # 155 part 2 - Added attributes to the template.json structure for forcepower and specializations
 - 23/06/2020 - Cstadther - Bug fix # 155 - Force talents from compendium do no have attributes field, until they are imported into the world from the compendium
 - 23/06/2020 - Cstadther - Bug fix # 152 - Ship silhouette size
@@ -59,7 +60,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 19/06/2020 - Cstadther - Bug fix for talent upgrades not adding up correctly
 - 18/06/2020 - Cstadther - First pass as Talent Import from OggDude Data Set
 - 17/06/2020 - Cstadther - Added force talent checkbox to talent data, update specialization sheet rendering to include it.
-- 17/06/2020 - Cstadther - Added Adversary Sheet, which hides everything for non-owner except picture, name, and species.  Name is in the title bar and can't easily be changed.
+- 17/06/2020 - Cstadther - Added Adversary Sheet, which hides everything for non-owner except picture, name, and species. Name is in the title bar and can't easily be changed.
 - 17/06/2020 - Esrin - Localised all system settings.
 - 17/06/2020 - Esrin - Added new Player Character List Mode system setting that determines how the Group Manager lists player characters.
 - 17/06/2020 - Esrin - Added 'equipped' toggle to Armour in character inventory display. Only equipped armour will apply its soak value.

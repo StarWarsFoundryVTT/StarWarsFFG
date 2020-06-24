@@ -124,7 +124,6 @@ export class ActorFFG extends Actor {
   }
 
   _calculateSoak(actorData) {
-    
     const data = actorData.data;
     const items = actorData.items;
     var soak = 0;
@@ -140,11 +139,11 @@ export class ActorFFG extends Actor {
     for (let [key, item] of Object.entries(items)) {
       try {
         // For armour type, get all Soak values and add to armoursoak.
-        if (item.type == "armour" && item?.data?.equippable?.equipped) {
+        if (item.type === "armour" && item?.data?.equippable?.equipped) {
           armoursoak += +item.data.soak.value;
         }
         // Loop through all item attributes and add any modifiers to our collection.
-        for(let mod in item.data.attributes) {
+        for (let mod in item.data.attributes) {
           if (mod.mod == "Soak") {
             othersoak += +mod.value;
           }
@@ -152,7 +151,11 @@ export class ActorFFG extends Actor {
 
         // Calculate encumbrance, only if encumbrance value exists
         if (item.data?.encumbrance?.value) {
-          encum += +item.data.encumbrance.value;
+          if (item.type === "armour" && !item?.data?.equippable?.equipped) {
+            encum += +item.data.encumbrance.value;
+          } else if (item.type !== "armour") {
+            encum += +item.data.encumbrance.value;
+          }
         }
       } catch (err) {
         console.debug(err);
