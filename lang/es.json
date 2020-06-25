@@ -251,5 +251,11 @@
   "SWFFG.SettingsPCListModeActive": "Sólo Activos",
   "SWFFG.SettingsPCListModeOwned": "Todos Asignados",
   "SWFFG.SettingsSkillSorting": "¿Ordenar listado de habilidades?",
-  "SWFFG.SettingsSkillSortingHint": "Por defecto las habilidades se ordenarán según el orden alfabético original de las hojas en inglés. Activa esta opción si prefieres el orden alfabético de la traducción."
+  "SWFFG.SettingsSkillSortingHint": "Por defecto las habilidades se ordenarán según el orden alfabético original de las hojas en inglés. Activa esta opción si prefieres el orden alfabético de la traducción.",
+  "SWFFG.TalentsForce": "¿Talento Fuerza?",
+  "SWFFG.LoadFile" : "Abrir Fichero",
+  "SWFFG.ImportFile" : "Comenzar Importación",
+  "SWFFG.Cost": "PRECIO:",
+  "SWFFG.EnableSoakCalc": "Activar Protección Auto",
+  "SWFFG.EnableSoakCalcHint": "Activar cálculo automático de protección, sin posibilidad de entrada manual."
 }
