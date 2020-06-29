@@ -2,6 +2,9 @@
 
 This is an implementation of the [Fantasy Flight Games Star Wars](https://www.fantasyflightgames.com/en/starwarsrpg/) roleplaying system for [Foundry Virtual Tabletop](https://foundryvtt.com/).
 
+- For support on this game system : Discord [The Foundry](https://discord.gg/bNyxuk9) #starwars-ffg
+- Read this document in another language : [Français](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/master/README-fr.md)
+
 # Requirements
 
 The system requires the [Special Dice Roller](https://foundry-vtt-community.github.io/wiki/Community-Modules/#special-dice-roller) Module to Roll the dice and calculate the results.
@@ -36,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 29/06/2020 - ezeri - Added french documentation (README-fr.md)
 - 29/06/2020 - Cstadther - Added import log creation options
 - 29/06/2020 - Cstadther - Added image import for oggDude data for weapons/armor/gear
 - 24/06/2020 - Esrin - Bug fix #160 & #159 - Limited Adversary sheet registration to "character" actor types only.
