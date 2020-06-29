@@ -1,3 +1,5 @@
+import ImportHelpers from "./import-helpers.js";
+
 /**
  * A specialized form used to pop out the editor.
  * @extends {FormApplication}
@@ -103,7 +105,7 @@ export default class DataImporter extends FormApplication {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data,"text/xml");
 
-        promises.push(this._handleGear(xmlDoc));
+        promises.push(this._handleGear(xmlDoc, zip));
         promises.push(this._handleWeapons(xmlDoc));
         promises.push(this._handleArmor(xmlDoc));
         promises.push(this._handleTalents(xmlDoc));
@@ -386,7 +388,7 @@ export default class DataImporter extends FormApplication {
     }
   }
 
-  async _handleGear(xmlDoc) {
+  async _handleGear(xmlDoc, zip) {
     const gear = xmlDoc.getElementsByTagName("Gear");
    
     if(gear.length > 0) { 
@@ -411,8 +413,10 @@ export default class DataImporter extends FormApplication {
           const newItem = {
             name,
             type: "gear",
+            flags: {
+              importid: importkey
+            },
             data: {
-              importkey,
               description,
               encumbrance: {
                 value : encumbrance
@@ -426,13 +430,19 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = ImportHelpers.getImageFilename(zip, "Equipment", "Gear", importkey);
+          if(imgPath) {
+            newItem.img = await ImportHelpers.importImage(imgPath, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
             console.debug(`Starwars FFG - Importing Gear - Item`);
-            compendiumItem = new Item(newItem);  
+            compendiumItem = new Item(newItem, {temporary: true});  
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Gear - Item`);
@@ -516,8 +526,10 @@ export default class DataImporter extends FormApplication {
           let newItem = {
             name,
             type: "weapon",
+            flags: {
+              importid: importkey
+            },
             data: {
-              importkey,
               description,
               encumbrance : {
                 value : encumbrance
@@ -563,13 +575,19 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          if(imgPath) {
+            newItem.img = await ImportHelpers.importImage(imgPath, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
             console.debug(`Starwars FFG - Importing Weapon - Item`);
-            compendiumItem = new Item(newItem);  
+            compendiumItem = new Item(newItem, {temporary : true});  
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Weapon - Item`);
@@ -616,8 +634,10 @@ export default class DataImporter extends FormApplication {
           let newItem = {
             name,
             type : "armour",
+            flags: {
+              importid: importkey
+            },
             data : {
-              importkey,
               description,
               encumbrance : {
                 value : encumbrance
@@ -640,13 +660,19 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          if(imgPath) {
+            newItem.img = await ImportHelpers.importImage(imgPath, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
             console.debug(`Starwars FFG - Importing Armor - Item`);
-            compendiumItem = new Item(newItem);  
+            compendiumItem = new Item(newItem, {temporary : true});  
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Armor - Item`);
