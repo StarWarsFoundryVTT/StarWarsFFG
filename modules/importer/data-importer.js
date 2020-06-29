@@ -44,6 +44,8 @@ export default class DataImporter extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
 
+    // $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#data-importer header a");
+
     html.find(".dialog-button").on("click",this._dialogButton.bind(this));
   }
 
@@ -219,7 +221,7 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Update Talent - Item`);
-            let updateData = this.buildUpdateData(item);
+            let updateData = ImportHelpers.buildUpdateData(item);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -373,7 +375,7 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Force Power - Item`);
-            let updateData = this.buildUpdateData(power);
+            let updateData = ImportHelpers.buildUpdateData(power);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -431,9 +433,9 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = ImportHelpers.getImageFilename(zip, "Equipment", "Gear", importkey);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", importkey);
           if(imgPath) {
-            newItem.img = await ImportHelpers.importImage(imgPath, zip, pack);
+            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
 
           let compendiumItem;
@@ -446,7 +448,7 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Gear - Item`);
-            let updateData = this.buildUpdateData(newItem);
+            let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -576,9 +578,9 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
           if(imgPath) {
-            newItem.img = await ImportHelpers.importImage(imgPath, zip, pack);
+            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
 
           let compendiumItem;
@@ -591,7 +593,7 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Weapon - Item`);
-            let updateData = this.buildUpdateData(newItem);
+            let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -661,9 +663,9 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
           if(imgPath) {
-            newItem.img = await ImportHelpers.importImage(imgPath, zip, pack);
+            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
 
           let compendiumItem;
@@ -676,7 +678,7 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Armor - Item`);
-            let updateData = this.buildUpdateData(newItem);
+            let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -720,29 +722,29 @@ export default class DataImporter extends FormApplication {
   };
 
 
-  buildUpdateData = (newItem) => {
-    let updateData = {};
-    for(let key in newItem.data) {
-      const recursiveObject = (itemkey, obj) => {
-        for(let objkey in obj) {
-          if(typeof obj[objkey] === "object") {
-            recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
-          } else {
-            if(obj[objkey]) {
-              const datakey = `data.${itemkey}.${objkey}`;
-              updateData[datakey] = obj[objkey];
-            }
-          }
-        }
-      }
+  // buildUpdateData = (newItem) => {
+  //   let updateData = {};
+  //   for(let key in newItem.data) {
+  //     const recursiveObject = (itemkey, obj) => {
+  //       for(let objkey in obj) {
+  //         if(typeof obj[objkey] === "object") {
+  //           recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
+  //         } else {
+  //           if(obj[objkey]) {
+  //             const datakey = `data.${itemkey}.${objkey}`;
+  //             updateData[datakey] = obj[objkey];
+  //           }
+  //         }
+  //       }
+  //     }
 
-      if(typeof newItem.data[key] === "object") {
-        recursiveObject(key, newItem.data[key]);
-      } else {
-        const datakey = `data.${key}`;
-        updateData[datakey] = `${newItem.data[key]}`
-      }
-    }
-    return updateData
-  }
+  //     if(typeof newItem.data[key] === "object") {
+  //       recursiveObject(key, newItem.data[key]);
+  //     } else {
+  //       const datakey = `data.${key}`;
+  //       updateData[datakey] = `${newItem.data[key]}`
+  //     }
+  //   }
+  //   return updateData
+  // }
 }

@@ -28,3 +28,18 @@
     }
   }
 }
+
+.debug label {
+  display: block;
+  padding-left: 15px;
+  text-indent: -15px;
+}
+
+.debug input[type="checkbox"] {
+
+  position: relative;
+  padding: 0;
+  margin: 0;
+  width: 13px;
+  height: 13px;
+}

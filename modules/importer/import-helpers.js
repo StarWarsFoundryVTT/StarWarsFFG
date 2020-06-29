@@ -1,4 +1,4 @@
-class ImportHelpers {
+export default class ImportHelpers {
   /**
    * Verifies server path exists, and if it doesn't creates it.
    * 
@@ -39,14 +39,13 @@ class ImportHelpers {
    */
   static async importImage(path, zip, pack) {
     if(path) {
-      const serverPath = `worlds/${game.world.id}/packs/images/${pack.metadata.name}`
-
+      const serverPath = `worlds/${game.world.id}/images/packs/${pack.metadata.name}`
       const filename = path.replace(/^.*[\\\/]/, '')
-      await Helpers.verifyPath("data", serverPath);
+      await ImportHelpers.verifyPath("data", serverPath);
       const img = await zip.file(path).async("uint8array");
       const i = new File([img], filename);
-      await FilePicker.upload("data", `${serverPath}/${path.replace(filename, "")}`, i, { bucket: null });
-      return `${serverPath}/${path.replace(filename, "")}`;
+      await FilePicker.upload("data", `${serverPath}`, i, { bucket: null });
+      return `${serverPath}/${filename}`;
     }
   }
 
@@ -68,5 +67,40 @@ class ImportHelpers {
       }
       return undefined;
     });
+  }
+
+  /**
+   * Converts and object into an update object for entity update function
+   * @param  {object} newItem - Object data
+   * @returns {object} - Entity Update Object
+   */
+  static buildUpdateData = (newItem) => {
+    let updateData = {};
+    if(newItem.img) {
+      updateData.img = newItem.img;
+    }
+
+    for(let key in newItem.data) {
+      const recursiveObject = (itemkey, obj) => {
+        for(let objkey in obj) {
+          if(typeof obj[objkey] === "object") {
+            recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
+          } else {
+            if(obj[objkey]) {
+              const datakey = `data.${itemkey}.${objkey}`;
+              updateData[datakey] = obj[objkey];
+            }
+          }
+        }
+      }
+
+      if(typeof newItem.data[key] === "object") {
+        recursiveObject(key, newItem.data[key]);
+      } else {
+        const datakey = `data.${key}`;
+        updateData[datakey] = `${newItem.data[key]}`
+      }
+    }
+    return updateData
   }
 }
