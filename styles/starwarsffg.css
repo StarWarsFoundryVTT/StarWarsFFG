@@ -3551,3 +3551,17 @@ span.dietype.triumph {
 .starwarsffg.data-import .import-progress .import-progress-bar span {
   line-height: 24px;
 }
+
+.starwarsffg .debug label {
+  display: block;
+  padding-left: 15px;
+  text-indent: -15px;
+}
+
+.starwarsffg .debug input[type="checkbox"] {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  width: 13px;
+  height: 13px;
+}

@@ -1,3 +1,5 @@
+import ImportHelpers from "./import-helpers.js";
+
 /**
  * A specialized form used to pop out the editor.
  * @extends {FormApplication}
@@ -41,6 +43,8 @@ export default class DataImporter extends FormApplication {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+
+    // $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#data-importer header a");
 
     html.find(".dialog-button").on("click",this._dialogButton.bind(this));
   }
@@ -103,7 +107,7 @@ export default class DataImporter extends FormApplication {
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data,"text/xml");
 
-        promises.push(this._handleGear(xmlDoc));
+        promises.push(this._handleGear(xmlDoc, zip));
         promises.push(this._handleWeapons(xmlDoc));
         promises.push(this._handleArmor(xmlDoc));
         promises.push(this._handleTalents(xmlDoc));
@@ -217,7 +221,7 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Update Talent - Item`);
-            let updateData = this.buildUpdateData(item);
+            let updateData = ImportHelpers.buildUpdateData(item);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -371,7 +375,7 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Force Power - Item`);
-            let updateData = this.buildUpdateData(power);
+            let updateData = ImportHelpers.buildUpdateData(power);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -386,7 +390,7 @@ export default class DataImporter extends FormApplication {
     }
   }
 
-  async _handleGear(xmlDoc) {
+  async _handleGear(xmlDoc, zip) {
     const gear = xmlDoc.getElementsByTagName("Gear");
    
     if(gear.length > 0) { 
@@ -411,8 +415,10 @@ export default class DataImporter extends FormApplication {
           const newItem = {
             name,
             type: "gear",
+            flags: {
+              importid: importkey
+            },
             data: {
-              importkey,
               description,
               encumbrance: {
                 value : encumbrance
@@ -426,17 +432,23 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", importkey);
+          if(imgPath) {
+            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
             console.debug(`Starwars FFG - Importing Gear - Item`);
-            compendiumItem = new Item(newItem);  
+            compendiumItem = new Item(newItem, {temporary: true});  
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Gear - Item`);
-            let updateData = this.buildUpdateData(newItem);
+            let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -516,8 +528,10 @@ export default class DataImporter extends FormApplication {
           let newItem = {
             name,
             type: "weapon",
+            flags: {
+              importid: importkey
+            },
             data: {
-              importkey,
               description,
               encumbrance : {
                 value : encumbrance
@@ -563,17 +577,23 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          if(imgPath) {
+            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
             console.debug(`Starwars FFG - Importing Weapon - Item`);
-            compendiumItem = new Item(newItem);  
+            compendiumItem = new Item(newItem, {temporary : true});  
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Weapon - Item`);
-            let updateData = this.buildUpdateData(newItem);
+            let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -616,8 +636,10 @@ export default class DataImporter extends FormApplication {
           let newItem = {
             name,
             type : "armour",
+            flags: {
+              importid: importkey
+            },
             data : {
-              importkey,
               description,
               encumbrance : {
                 value : encumbrance
@@ -640,17 +662,23 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          if(imgPath) {
+            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
             console.debug(`Starwars FFG - Importing Armor - Item`);
-            compendiumItem = new Item(newItem);  
+            compendiumItem = new Item(newItem, {temporary : true});  
             pack.importEntity(compendiumItem);
           } else {
             console.debug(`Starwars FFG - Updating Armor - Item`);
-            let updateData = this.buildUpdateData(newItem);
+            let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             pack.updateEntity(updateData);
           }
@@ -694,29 +722,29 @@ export default class DataImporter extends FormApplication {
   };
 
 
-  buildUpdateData = (newItem) => {
-    let updateData = {};
-    for(let key in newItem.data) {
-      const recursiveObject = (itemkey, obj) => {
-        for(let objkey in obj) {
-          if(typeof obj[objkey] === "object") {
-            recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
-          } else {
-            if(obj[objkey]) {
-              const datakey = `data.${itemkey}.${objkey}`;
-              updateData[datakey] = obj[objkey];
-            }
-          }
-        }
-      }
+  // buildUpdateData = (newItem) => {
+  //   let updateData = {};
+  //   for(let key in newItem.data) {
+  //     const recursiveObject = (itemkey, obj) => {
+  //       for(let objkey in obj) {
+  //         if(typeof obj[objkey] === "object") {
+  //           recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
+  //         } else {
+  //           if(obj[objkey]) {
+  //             const datakey = `data.${itemkey}.${objkey}`;
+  //             updateData[datakey] = obj[objkey];
+  //           }
+  //         }
+  //       }
+  //     }
 
-      if(typeof newItem.data[key] === "object") {
-        recursiveObject(key, newItem.data[key]);
-      } else {
-        const datakey = `data.${key}`;
-        updateData[datakey] = `${newItem.data[key]}`
-      }
-    }
-    return updateData
-  }
+  //     if(typeof newItem.data[key] === "object") {
+  //       recursiveObject(key, newItem.data[key]);
+  //     } else {
+  //       const datakey = `data.${key}`;
+  //       updateData[datakey] = `${newItem.data[key]}`
+  //     }
+  //   }
+  //   return updateData
+  // }
 }
