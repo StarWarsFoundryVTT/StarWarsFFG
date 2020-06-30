@@ -32,6 +32,10 @@ export default class DataImporter extends FormApplication {
 
     $(".import-progress").addClass("import-hidden");
 
+    if(!CONFIG?.temporary) {
+      CONFIG.temporary = {};
+    }
+
     return {
       data,
       files,
@@ -84,9 +88,10 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Gear");
         this._enableImportSelection(zip.files, "Weapons");
         this._enableImportSelection(zip.files, "Armor");
+        this._enableImportSelection(zip.files, "Specializations", true);
    
       } catch (err) {
-        console.log(err);
+        console.error(err);
       }
     }
 
@@ -112,16 +117,20 @@ export default class DataImporter extends FormApplication {
       const promises = [];
 
       await this.asyncForEach(importFiles, async file => {
-        const data = await zip.file(file.file).async("text");
+        if(zip.files[file.file].dir) {
+          promises.push(this._handleSpecializations(zip));
+        } else {
+          const data = await zip.file(file.file).async("text");
 
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data,"text/xml");
-
-        promises.push(this._handleGear(xmlDoc, zip));
-        promises.push(this._handleWeapons(xmlDoc, zip));
-        promises.push(this._handleArmor(xmlDoc, zip));
-        promises.push(this._handleTalents(xmlDoc));
-        promises.push(this._handleForcePowers(xmlDoc, zip));
+          const parser = new DOMParser();
+          const xmlDoc = parser.parseFromString(data,"text/xml");
+  
+          promises.push(this._handleGear(xmlDoc, zip));
+          promises.push(this._handleWeapons(xmlDoc, zip));
+          promises.push(this._handleArmor(xmlDoc, zip));
+          promises.push(this._handleTalents(xmlDoc));
+          promises.push(this._handleForcePowers(xmlDoc, zip));
+        }
       });
 
       await Promise.all(promises);
@@ -183,24 +192,24 @@ export default class DataImporter extends FormApplication {
 
           let activation = "Passive";
           
-          switch (talent.getElementsByTagName("Activation")[0]?.textContent) {
-            case "Maneuver":
+          switch (talent.getElementsByTagName("ActivationValue")[0]?.textContent) {
+            case "taManeuver":
               activation = "Active (Maneuver)";
               break;
-            case "Action":
+            case "taAction":
               activation = "Active (Action)";
               break;
-            case "Incidental":
+            case "taIncidental":
               activation = "Active (Incidental)";
               break;
-            case "OOT Incidental":
+            case "taIncidentalOOT":
               activation = "Active (Incidental, Out of Turn)";
               break;
             default: 
               activation = "Passive";
           }
     
-          const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent ? true : false;
+          const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent === "true" ? true : false;
     
           const item = {
             name,
@@ -281,6 +290,9 @@ export default class DataImporter extends FormApplication {
           let power = {
             name : fp.ForcePower.Name,
             type : "forcepower",
+            flags: {
+              importid: fp.ForcePower.Key
+            },
             data : {
               upgrades : {
   
@@ -708,7 +720,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", importkey);
           if(imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -743,6 +755,108 @@ export default class DataImporter extends FormApplication {
     this._importLogger(`Completed Armor Import`);
   }
 
+  async _handleSpecializations(zip) {
+    this._importLogger(`Starting Specialization Import`);
+
+    const specializationFiles = Object.values(zip.files).filter(file => {
+      return !file.dir && file.name.split('.').pop() === 'xml' && file.name.includes("/Specializations/");
+    })
+
+    let totalCount = specializationFiles.length;
+    let currentCount = 0;
+
+    if(specializationFiles.length > 0) {
+      $(".import-progress.specializations").toggleClass("import-hidden");
+      let pack = await this._getCompendiumPack('Item', `oggdude.Specializations`);
+
+      await this.asyncForEach(specializationFiles, async (file) => {
+        try {
+          const data = await zip.file(file.name).async("text");
+          const domparser = new DOMParser();
+          const xmlDoc = domparser.parseFromString(data,"text/xml");
+          const specData = JXON.xmlToJs(xmlDoc);
+
+          let specialization = {
+            name: specData.Specialization.Name,
+            type: "specialization",
+            flags: {
+              importid: specData.Specialization.Key
+            },
+            data: {
+              description: specData.Specialization.Description,
+              talents: {}
+            }
+          };
+          this._importLogger(`Start importing Specialization ${specialization.Name}`);
+
+          for (let i = 0; i < specData.Specialization.TalentRows.TalentRow.length; i+=1) {
+            const row = specData.Specialization.TalentRows.TalentRow[i];
+
+            await this.asyncForEach(row.Talents.Key, async (keyName, index) => {
+              let rowTalent = {};
+
+              let talentItem = ImportHelpers.findEntityByImportId('items', keyName);
+              if(!talentItem) {
+                talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", keyName);
+              }
+
+              if (talentItem) {
+                rowTalent.name = talentItem.data.name;
+                rowTalent.description = talentItem.data.data.description;
+                rowTalent.activation = talentItem.data.data.activation.value;
+                rowTalent.activationLabel = talentItem.data.data.activation.label;
+                rowTalent.isForceTalent = talentItem.data.data.isForceTalent;
+                rowTalent.isRanked =  talentItem.data.data.ranks.ranked;
+                rowTalent.itemId = talentItem.data._id;
+
+                if(row.Directions.Direction[index].Up) {
+                  rowTalent["links-top-1"] = true;
+                }
+
+                if(row.Directions.Direction[index].Right) {
+                  rowTalent["links-right"] = true;
+                }
+
+                if(talentItem.compendium) {
+                  rowTalent.pack = `${talentItem.compendium.metadata.package}.${talentItem.compendium.metadata.name}`
+                }
+                
+                const talentKey = `talent${(i * 4) + index}`;
+                specialization.data.talents[talentKey] = rowTalent;
+              }
+            });
+          }
+
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find(e => e.name === specialization.name);
+          if(!entry) {
+            console.debug(`Starwars FFG - Importing Specialization - Item`);
+            compendiumItem = new Item(specialization, {temporary:true});  
+            this._importLogger(`New Specialization ${specialization.Name} : ${JSON.stringify(compendiumItem)}`);
+            pack.importEntity(compendiumItem);
+          } else {
+            console.debug(`Starwars FFG - Updating Specialization - Item`);
+            let updateData = ImportHelpers.buildUpdateData(specialization);
+            updateData["_id"] = entry._id
+            this._importLogger(`Updating Specialization ${specialization.Name} : ${JSON.stringify(updateData)}`);
+            pack.updateEntity(updateData);
+          }
+          currentCount +=1 ;
+          
+          $(".specializations .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          this._importLogger(`End importing Specialization ${specialization.Name}`);
+
+        } catch (err) {
+          console.error(`Starwars FFG - Error importing record : ${err.message}`);
+          console.debug(err);
+        }
+      });
+    }
+
+    this._importLogger(`Completed Specialization Import`);
+  }
+
   async _getCompendiumPack(type, name) {
     this._importLogger(`Checking for existing compendium pack ${name}`);
     let pack = game.packs.find(p => {
@@ -758,10 +872,10 @@ export default class DataImporter extends FormApplication {
     return pack;
   }
 
-  _enableImportSelection(files, name) {
+  _enableImportSelection(files, name, isDirectory) {
     this._importLogger(`Checking zip file for ${name}`);
     Object.values(files).findIndex(file => {
-      if(file.name.includes(`/${name}.xml`)) {
+      if(file.name.includes(`/${name}.xml`) || (isDirectory && file.name.includes(`/${name}`))) {
         this._importLogger(`Found file ${file.name}`);
         $(`#import${name.replace(" ", "")}`).removeAttr("disabled").val(file.name);
         return true;
@@ -775,7 +889,5 @@ export default class DataImporter extends FormApplication {
       await callback(array[index], index, array);
     }
   };
-
-
   
 }

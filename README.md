@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 29/06/2020 - Cstadther - Added Specialization Importing from OggDude dataset
 - 29/06/2020 - ezeri - Added french documentation (README-fr.md)
 - 29/06/2020 - Cstadther - Added import log creation options
 - 29/06/2020 - Cstadther - Added image import for oggDude data for weapons/armor/gear

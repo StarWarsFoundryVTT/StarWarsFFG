@@ -103,4 +103,46 @@ export default class ImportHelpers {
     }
     return updateData
   }
+
+    
+  /**
+   * Find an entity by the import key.
+   * @param  {string} type - Entity type to search for
+   * @param  {string} id - Entity Id 
+   * @returns {object} - Entity Object Data
+   */
+  static findEntityByImportId(type, id) {
+    return game.data[type].find(item => {
+      return item.flags.importid === id;
+    });
+  }
+
+  /**
+   * Find an entity by the import key.
+   * @param  {string} type - Entity type to search for
+   * @param  {string} id - Entity Id 
+   * @returns {object} - Entity Object Data
+   */
+  static async findCompendiumEntityByImportId(type, id) {
+    let packs = await game.packs.keys();
+    let index = 0;
+
+    for (let packId of packs) {
+      if(!CONFIG.temporary[packId]) {
+        console.debug(`Starwars FFG - Caching pack content ${packId}`);
+        CONFIG.temporary[packId] = {};
+        const pack = await game.packs.get(packId);
+        const content = await pack.getContent();  
+        for (var i = 0; i< content.length; i++) {
+          CONFIG.temporary[packId][content[i].data.flags.importid] = content[i];
+        }
+      } else {
+        console.debug(`Starwars FFG - Using cached content for ${packId}`);
+      }
+
+      return CONFIG.temporary[packId][id];
+    }
+
+    return undefined;
+  }
 }
