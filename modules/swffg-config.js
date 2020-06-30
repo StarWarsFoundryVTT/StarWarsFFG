@@ -117,7 +117,7 @@ FFG.skills = {
   "Skulduggery": { value: "Skulduggery", label: "SWFFG.SkillsNameSkulduggery" },
   "Stealth": { value: "Stealth", label: "SWFFG.SkillsNameStealth" },
   "Streetwise": { value: "Streetwise", label: "SWFFG.SkillsNameStreetwise" },
-  "Survival": { value: "Survival", label: "SWFFG.Survival" },
+  "Survival": { value: "Survival", label: "SWFFG.SkillsNameSurvival" },
   "Vigilance": { value: "Vigilance", label: "SWFFG.SkillsNameVigilance" },
 };
 
