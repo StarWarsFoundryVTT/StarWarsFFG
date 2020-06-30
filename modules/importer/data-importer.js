@@ -117,9 +117,7 @@ export default class DataImporter extends FormApplication {
       const promises = [];
 
       await this.asyncForEach(importFiles, async file => {
-        if(zip.files[file.file].dir) {
-          promises.push(this._handleSpecializations(zip));
-        } else {
+        if(!zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
 
           const parser = new DOMParser();
@@ -130,6 +128,8 @@ export default class DataImporter extends FormApplication {
           promises.push(this._handleArmor(xmlDoc, zip));
           promises.push(this._handleTalents(xmlDoc));
           promises.push(this._handleForcePowers(xmlDoc, zip));
+        } else {
+          promises.push(this._handleSpecializations(zip));
         }
       });
 
