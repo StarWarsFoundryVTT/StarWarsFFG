@@ -86,7 +86,7 @@ export default class ImportHelpers {
           if(typeof obj[objkey] === "object") {
             recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
           } else {
-            if(obj[objkey]) {
+            if(typeof obj[objkey] !== undefined) {
               const datakey = `data.${itemkey}.${objkey}`;
               updateData[datakey] = obj[objkey];
             }

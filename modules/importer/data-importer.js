@@ -137,6 +137,8 @@ export default class DataImporter extends FormApplication {
       if ($(".debug input:checked").length > 0) {
         saveDataToFile(this._importLog.join("\n"), "text/plain", "import-log.txt");
       }
+
+      CONFIG.temporary = {};
       this.close();
     }
 
@@ -186,7 +188,7 @@ export default class DataImporter extends FormApplication {
           const importkey = talent.getElementsByTagName("Key")[0]?.textContent;
           const name = talent.getElementsByTagName("Name")[0]?.textContent;
           const description = talent.getElementsByTagName("Description")[0]?.textContent;
-          const ranked = talent.getElementsByTagName("Ranked")[0]?.textContent;
+          const ranked = talent.getElementsByTagName("Ranked")[0]?.textContent === "true" ? true : false;
     
           this._importLogger(`Start importing talent ${name}`);
 
@@ -784,10 +786,55 @@ export default class DataImporter extends FormApplication {
             },
             data: {
               description: specData.Specialization.Description,
-              talents: {}
+              talents: {},
+              careerskills: {}
             }
           };
           this._importLogger(`Start importing Specialization ${specialization.Name}`);
+
+          // assign career skills
+          try {
+            if(!CONFIG.temporary.skillsMap) {
+              const skillFile = Object.values(zip.files).find(file => {
+                if(file.name.includes(`/Skills.xml`)) {
+                  return true;
+                }
+                return false;
+              })
+              const skills = await zip.file(skillFile.name).async("text");
+              const skillsDoc = domparser.parseFromString(skills,"text/xml");
+              const skillsData = JXON.xmlToJs(skillsDoc);
+            
+              CONFIG.temporary.skillsMap = skillsData.Skills.Skill.map(skill => {
+                let item = {
+                  key : skill.Key,
+                  keyName : skill.Name
+                }
+
+                const swffgskill = Object.values(CONFIG.FFG.skills).find(ffgSkill => {
+                  return ffgSkill.value.toLowerCase().replace(/[^a-zA-Z]/gmi, "") === skill.Name.toLowerCase().replace(/[^a-zA-Z]/gmi, "")
+                });
+
+                if(swffgskill) {
+                  item.skillName = swffgskill.value;
+                }
+                return item;
+              });
+            }
+
+            specData.Specialization.CareerSkills.Key.forEach(skillKey => {
+              let skill = CONFIG.temporary.skillsMap.find(item => {
+                return item.key === skillKey;
+              })
+
+              if(skill) {
+                specialization.data.careerskills[Object.keys(specialization.data.careerskills).length] = skill.skillName;
+              }
+            })
+          } catch (err) {
+            // skipping career skills
+          }
+
 
           for (let i = 0; i < specData.Specialization.TalentRows.TalentRow.length; i+=1) {
             const row = specData.Specialization.TalentRows.TalentRow[i];
@@ -805,8 +852,8 @@ export default class DataImporter extends FormApplication {
                 rowTalent.description = talentItem.data.data.description;
                 rowTalent.activation = talentItem.data.data.activation.value;
                 rowTalent.activationLabel = talentItem.data.data.activation.label;
-                rowTalent.isForceTalent = talentItem.data.data.isForceTalent;
-                rowTalent.isRanked =  talentItem.data.data.ranks.ranked;
+                rowTalent.isForceTalent = talentItem.data.data.isForceTalent === "true" ? true : false;
+                rowTalent.isRanked =  talentItem.data.data.ranks.ranked === "true" ? true : false;
                 rowTalent.itemId = talentItem.data._id;
 
                 if(row.Directions.Direction[index].Up) {
