@@ -17,6 +17,7 @@ import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 import DataImporter from "./importer/data-importer.js";
+import DiceHelpers from "./helpers/dice-helpers.js"
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -366,6 +367,14 @@ Hooks.on("renderJournalSheet", (journal, obj, data) => {
   $(obj).find(".editor-content").html(PopoutEditor.renderDiceImages(content));
 });
 
+Hooks.on("renderSidebarTab", (app, html, data) => {
+  html.find(".roll-type-select label").click(async (event) => {
+    const dicePool = new DicePoolFFG();
+    
+    await DiceHelpers.displayRollDialog(game.user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+  });
+});
+
 // Handle migration duties
 Hooks.once("ready", () => {
   // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
@@ -387,3 +396,4 @@ Hooks.once("ready", () => {
     }
   });
 });
+
