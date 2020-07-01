@@ -40,6 +40,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 # Changelog
 
 - 30/06/2020 - ezeri - Minor bugfix of the label of a skill
+- 30/06/2020 - Cstadther - Refactor dice rolling code into helper module.  Added ad-hoc die rolling by clicking on dice icon over chat box.
 - 29/06/2020 - Cstadther - Added Specialization Importing from OggDude dataset
 - 29/06/2020 - ezeri - Added french documentation (README-fr.md)
 - 29/06/2020 - Cstadther - Added import log creation options

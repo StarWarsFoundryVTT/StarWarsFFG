@@ -3565,3 +3565,38 @@ span.dietype.triumph {
   width: 13px;
   height: 13px;
 }
+
+.starwarsffg .dice-pool-dialog .dice-pool img {
+  border: 0;
+}
+
+.starwarsffg .dice-pool-dialog .dice-pool {
+  min-height: 51px;
+  margin: auto;
+}
+
+.starwarsffg .dice-pool-dialog .pool-container img {
+  border: 0;
+}
+
+.starwarsffg .dice-pool-dialog .pool-value {
+  height: 42px;
+  border: 1px solid black;
+  margin: auto;
+  position: relative;
+  background-color: #ddd;
+}
+
+.starwarsffg .dice-pool-dialog .pool-value input {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  font-size: 30px;
+  text-align: center;
+  background: none;
+}
+
+.starwarsffg .dice-pool-dialog .upgrade-buttons {
+  display: flex;
+  margin: 10px;
+}
