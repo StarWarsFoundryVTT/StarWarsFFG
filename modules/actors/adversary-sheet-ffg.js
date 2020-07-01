@@ -2,6 +2,8 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
+import DiceHelpers from "../helpers/dice-helpers.js";
+
 export class AdversarySheetFFG extends ActorSheet {
   constructor(...args) {
     super(...args);
@@ -142,7 +144,7 @@ export class AdversarySheetFFG extends ActorSheet {
         } else if (!event.ctrlKey && event.shiftKey) {
           upgradeType = "difficulty";
         }
-        await this._rollSkill(event, upgradeType);
+        await DiceHelpers.rollSkill(this, event, upgradeType);
       });
 
     // Add or Remove Attribute
@@ -298,84 +300,7 @@ export class AdversarySheetFFG extends ActorSheet {
     this.actor.data.flags.loaded = false;
     return this.object.update(formData);
   }
-
-  async _rollSkillManual(skill, ability, difficulty) {
-    const dicePool = new DicePoolFFG({
-      ability: ability,
-      difficulty: difficulty,
-    });
-    dicePool.upgrade(skill);
-    await this._completeRollManual(dicePool, skillName);
-  }
-
-  async _rollSkill(event, upgradeType) {
-    const data = this.getData();
-    const row = event.target.parentElement.parentElement;
-    const skillName = row.parentElement.dataset["ability"];
-    const skill = data.data.skills[skillName];
-    const characteristic = data.data.characteristics[skill.characteristic];
-
-    const dicePool = new DicePoolFFG({
-      ability: Math.max(characteristic.value, skill.rank),
-      difficulty: 2, // Default to average difficulty
-    });
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
-
-    if (upgradeType === "ability") {
-      dicePool.upgrade();
-    } else if (upgradeType === "difficulty") {
-      dicePool.upgradeDifficulty();
-    }
-
-    await this._completeRoll(dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label);
-  }
-
-  async _completeRoll(dicePool, description, skillName) {
-    const id = randomID();
-
-    const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
-      dicePool,
-      id,
-    });
-
-    new Dialog({
-      title: description || game.i18n.localize("SWFFG.RollingDefaultTitle"),
-      content,
-      buttons: {
-        one: {
-          icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize("SWFFG.ButtonRoll"),
-          callback: () => {
-            const container = document.getElementById(id);
-            const finalPool = DicePoolFFG.fromContainer(container);
-
-            ChatMessage.create({
-              user: game.user._id,
-              speaker: this.getData(),
-              flavor: `${game.i18n.localize("SWFFG.Rolling")} ${skillName}...`,
-              sound: CONFIG.sounds.dice,
-              content: `/sw ${finalPool.renderDiceExpression()}`,
-            });
-          },
-        },
-        two: {
-          icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize("SWFFG.Cancel"),
-        },
-      },
-    }).render(true);
-  }
-
-  async _completeRollManual(dicePool, skillName) {
-    ChatMessage.create({
-      user: game.user._id,
-      speaker: this.getData(),
-      flavor: `${game.i18n.localize("SWFFG.Rolling")} ${skillName}...`,
-      sound: CONFIG.sounds.dice,
-      content: `/sw ${dicePool.renderDiceExpression()}`,
-    });
-  }
-
+  
   _addSkillDicePool(elem) {
     const data = this.getData();
     const skillName = elem.dataset["ability"];
