@@ -129,9 +129,10 @@ export default class ImportHelpers {
 
     for (let packId of packs) {
       if(!CONFIG.temporary[packId]) {
+        const pack = await game.packs.get(packId);
         console.debug(`Starwars FFG - Caching pack content ${packId}`);
         CONFIG.temporary[packId] = {};
-        const pack = await game.packs.get(packId);
+        
         const content = await pack.getContent();  
         for (var i = 0; i< content.length; i++) {
           CONFIG.temporary[packId][content[i].data.flags.importid] = content[i];
@@ -139,8 +140,9 @@ export default class ImportHelpers {
       } else {
         console.debug(`Starwars FFG - Using cached content for ${packId}`);
       }
-
-      return CONFIG.temporary[packId][id];
+      if(CONFIG.temporary[packId][id]) {
+        return CONFIG.temporary[packId][id];
+      }      
     }
 
     return undefined;
