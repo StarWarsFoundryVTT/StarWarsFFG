@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 02/07/2020 - cSTADTHER - Import fixes.  Took specialization import out of promise all and run aftert to make sure talents in completed first.
 - 30/06/2020 - Cstadther - Import fixes.  All talents were listed as ranked because boolean was being interpreted as a string from the import file.
 - 30/06/2020 - ezeri - Minor bugfix of the label of a skill
 - 30/06/2020 - Cstadther - Refactor dice rolling code into helper module.  Added ad-hoc die rolling by clicking on dice icon over chat box.

@@ -115,7 +115,7 @@ export default class DataImporter extends FormApplication {
       .then(JSZip.loadAsync); 
 
       const promises = [];
-
+      
       await this.asyncForEach(importFiles, async file => {
         if(!zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
@@ -128,12 +128,12 @@ export default class DataImporter extends FormApplication {
           promises.push(this._handleArmor(xmlDoc, zip));
           promises.push(this._handleTalents(xmlDoc));
           promises.push(this._handleForcePowers(xmlDoc, zip));
-        } else {
-          promises.push(this._handleSpecializations(zip));
         }
       });
 
       await Promise.all(promises);
+      await this._handleSpecializations(zip);
+      
       if ($(".debug input:checked").length > 0) {
         saveDataToFile(this._importLog.join("\n"), "text/plain", "import-log.txt");
       }
