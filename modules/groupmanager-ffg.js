@@ -73,12 +73,12 @@ export class GroupManager extends FormApplication {
         });
       });
     }
-    console.log(characters);
 
+    const dPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
     const initiative = CONFIG.Combat.initiative.formula;
     const isGM = game.user.isGM;
     if (!isGM) this.position.height = 470;
-    return { g: game, players, initiative, isGM, pcListMode, characters };
+    return { dPool, players, initiative, isGM, pcListMode, characters };
   }
 
   /* -------------------------------------------- */
@@ -92,25 +92,25 @@ export class GroupManager extends FormApplication {
 
     // Flip destiny pool DARK to LIGHT
     html.find(".destiny-flip-dtl").click((ev) => {
-      let LightPool = this.form.elements["g.ffg.DestinyPool.Light"].value;
-      let DarkPool = this.form.elements["g.ffg.DestinyPool.Dark"].value;
+      let LightPool = this.form.elements["dPool.light"].value;
+      let DarkPool = this.form.elements["dPool.dark"].value;
       if (DarkPool > 0) {
         LightPool++;
         DarkPool--;
-        this.form.elements["g.ffg.DestinyPool.Light"].value = LightPool;
-        this.form.elements["g.ffg.DestinyPool.Dark"].value = DarkPool;
+        this.form.elements["dPool.light"].value = LightPool;
+        this.form.elements["dPool.dark"].value = DarkPool;
       }
     });
 
     // Flip destiny pool LIGHT to DARK
     html.find(".destiny-flip-ltd").click((ev) => {
-      let LightPool = this.form.elements["g.ffg.DestinyPool.Light"].value;
-      let DarkPool = this.form.elements["g.ffg.DestinyPool.Dark"].value;
+      let LightPool = this.form.elements["dPool.light"].value;
+      let DarkPool = this.form.elements["dPool.dark"].value;
       if (LightPool > 0) {
         LightPool--;
         DarkPool++;
-        this.form.elements["g.ffg.DestinyPool.Light"].value = LightPool;
-        this.form.elements["g.ffg.DestinyPool.Dark"].value = DarkPool;
+        this.form.elements["dPool.light"].value = LightPool;
+        this.form.elements["dPool.dark"].value = DarkPool;
       }
     });
 
@@ -185,9 +185,9 @@ export class GroupManager extends FormApplication {
    * @private
    */
   _updateObject(event, formData) {
-    const formDPool = expandObject(formData).g.ffg.DestinyPool || {};
-    game.ffg.DestinyPool.Light = formDPool.Light;
-    game.ffg.DestinyPool.Dark = formDPool.Dark;
+    const formDPool = expandObject(formData).dPool || {};
+    game.settings.set("starwarsffg", "dPoolLight", formDPool.light);
+    game.settings.set("starwarsffg", "dPoolDark", formDPool.dark);
     return formData;
   }
 

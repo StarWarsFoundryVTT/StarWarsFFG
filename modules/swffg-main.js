@@ -17,7 +17,7 @@ import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 import DataImporter from "./importer/data-importer.js";
-import DiceHelpers from "./helpers/dice-helpers.js"
+import DiceHelpers from "./helpers/dice-helpers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -226,6 +226,34 @@ Hooks.once("init", async function () {
     },
   });
 
+  // Register placeholder settings to store Destiny Pool values for the group manager.
+  game.settings.register("starwarsffg", "dPoolLight", {
+    name: "Destiny Pool Light",
+    scope: "world",
+    default: 0,
+    config: false,
+    type: Number,
+    onChange: (rule) => {
+      const groupmanager = canvas.groupmanager.window;
+      if (groupmanager) {
+        groupmanager.render();
+      }
+    },
+  });
+  game.settings.register("starwarsffg", "dPoolDark", {
+    name: "Destiny Pool Dark",
+    scope: "world",
+    default: 0,
+    config: false,
+    type: Number,
+    onChange: (rule) => {
+      const groupmanager = canvas.groupmanager.window;
+      if (groupmanager) {
+        groupmanager.render();
+      }
+    },
+  });
+
   // Importer Control Menu
   game.settings.registerMenu("starwarsffg", "odImporter", {
     name: "Data Import",
@@ -370,7 +398,7 @@ Hooks.on("renderJournalSheet", (journal, obj, data) => {
 Hooks.on("renderSidebarTab", (app, html, data) => {
   html.find(".roll-type-select label").click(async (event) => {
     const dicePool = new DicePoolFFG();
-    
+
     await DiceHelpers.displayRollDialog(game.user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
   });
 });
@@ -396,4 +424,3 @@ Hooks.once("ready", () => {
     }
   });
 });
-
