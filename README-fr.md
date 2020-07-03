@@ -40,7 +40,13 @@ Voyez nos objectifs de productions et nos progés [ici](https://github.com/StarW
 
 # Journal des modifications
 
+- 03/07/2020 - Esrin - Lise à jour du gestionnaire de groupes pour utiliser "game.settings" pour la réserve de points de destins. Ceci permet la réplication des valeurs sur tout les clients connectés ainsi que la persistance entre les sessions.
+- 03/07/2020 - Esrin - Répara l'affichage des Blessures et du Stree dans le gestionnaire de groupes, utilise l'attribut ".value" au lieu de ".real_value" maintenant.
+- 02/07/2020 - CStadther - Correctif de bug - Système d'imports. Répara le soucis si des compendiums vérouillés sont présents au moment de l'import.
+- 02/07/2020 - CStadther - Correctif de bug - Système d'imports. Sépara l'import des spécialisation des autres éléments pour que les talents soient prêt avant la création des spécialisations.
+- 30/06/2020 - Cstadther - Correctif de bug - Système d'imports. Tout les talents listés étaient listés comme des talents ayant des rangs a cause des booleans mal interprétés.
 - 30/06/2020 - ezeri - Correctif de bug mineur sur le nommage d'une compétence
+- 30/06/2020 - Cstadther - Refactorisation du code gérant les lancés de dés dans un module externe. Intégra l'utilisation du bouton de lancé de dé du chat.
 - 29/06/2020 - Cstadther - Rajout de l'import des Spédialisation depuis les données OggDude
 - 29/06/2020 - ezeri - Localisation Francaise etendue dans la documentation (rajout de README-fr.md)
 - 29/06/2020 - Cstadther - Rajout de l'option pour créer un log au moment de l'import
