@@ -41,8 +41,8 @@
         {{#if players.connected}} {{#each characters as |c key|}}
         <tr class="player-character" data-character="{{c.id}}">
           <td style="width: 100px;">{{c.name}}</td>
-          <td><input type="text" value="{{c.data.data.stats.wounds.real_value}}" disabled /></td>
-          <td><input type="text" value="{{c.data.data.stats.strain.real_value}}" disabled /></td>
+          <td><input type="text" value="{{c.data.data.stats.wounds.value}}" disabled /></td>
+          <td><input type="text" value="{{c.data.data.stats.strain.value}}" disabled /></td>
           <td><input type="text" value="{{c.data.data.stats.soak.value}}" disabled /></td>
           <!-- <td><input type="text" value="{{c.data.data.obligation.value}}" disabled /></td> -->
           {{#if ../isGM}}
