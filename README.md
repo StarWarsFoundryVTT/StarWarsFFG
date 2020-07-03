@@ -39,11 +39,13 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
-- 02/07/2020 - CStadther - Import fixes.  Fixed issue if there are locked compendiums with importing.
-- 02/07/2020 - CStadther - Import fixes.  Took specialization import out of promise all and run aftert to make sure talents in completed first.
-- 30/06/2020 - Cstadther - Import fixes.  All talents were listed as ranked because boolean was being interpreted as a string from the import file.
+- 03/07/2020 - Esrin - Updated the Group Manager to use game.settings for the Destiny Pool. This allows replication of the destiny pool values and changes across all connected clients and persists across sessions.
+- 03/07/2020 - Esrin - Fixed Wound and Strain display on Group Manager, now uses .value instead of the deprecated .real_value.
+- 02/07/2020 - CStadther - Import fixes. Fixed issue if there are locked compendiums with importing.
+- 02/07/2020 - CStadther - Import fixes. Took specialization import out of promise all and run aftert to make sure talents in completed first.
+- 30/06/2020 - Cstadther - Import fixes. All talents were listed as ranked because boolean was being interpreted as a string from the import file.
 - 30/06/2020 - ezeri - Minor bugfix of the label of a skill
-- 30/06/2020 - Cstadther - Refactor dice rolling code into helper module.  Added ad-hoc die rolling by clicking on dice icon over chat box.
+- 30/06/2020 - Cstadther - Refactor dice rolling code into helper module. Added ad-hoc die rolling by clicking on dice icon over chat box.
 - 29/06/2020 - Cstadther - Added Specialization Importing from OggDude dataset
 - 29/06/2020 - ezeri - Added french documentation (README-fr.md)
 - 29/06/2020 - Cstadther - Added import log creation options
