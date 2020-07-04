@@ -256,5 +256,7 @@
   "SWFFG.TalentsForce": "Talent de la Force?",
   "SWFFG.LoadFile" : "Charger Fichier",
   "SWFFG.ImportFile" : "Importer",
-  "SWFFG.Cost": "COÛT:"
+  "SWFFG.Cost": "COÛT:",
+  "SWFFG.EnableSoakCalc": "Activer l'auto-calcul de l'Encaissement.",
+  "SWFFG.EnableSoakCalcHint": "Activer le calcul automatique de l'encaissement, et enlever la possibilité d'editer manuelement la valeur dans les feuilles."
 }
