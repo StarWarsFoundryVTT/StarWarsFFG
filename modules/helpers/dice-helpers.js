@@ -1,4 +1,4 @@
-export default class ImportHelpers {
+export default class DiceHelpers {
   static async rollSkill (obj, event, type) {
     const data = obj.getData();
     const row = event.target.parentElement.parentElement;

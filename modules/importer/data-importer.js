@@ -96,7 +96,7 @@ export default class DataImporter extends FormApplication {
     }
 
     if(action === "import") {
-      console.debug('Starwars FFG - Importing Data Files');
+      CONFIG.logger.debug('Importing Data Files');
       this._importLogger(`Starting import`);
       
       const importFiles = $("input:checkbox[name=imports]:checked").map(function(){return { file : $(this).val(), label : $(this).data("name"), type : $(this).data("type"), itemtype : $(this).data("itemtype") } }).get()
@@ -240,12 +240,12 @@ export default class DataImporter extends FormApplication {
           let entry = pack.index.find(e => e.name === item.name);
     
           if(!entry) {
-            console.debug(`Starwars FFG - Importing Talent - Item`);
+            CONFIG.logger.debug(`Importing Talent - Item`);
             compendiumItem = new Item(item, {temporary:true});  
             this._importLogger(`New talent ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
-            console.debug(`Starwars FFG - Update Talent - Item`);
+            CONFIG.logger.debug(`Update Talent - Item`);
             let updateData = ImportHelpers.buildUpdateData(item);
             updateData["_id"] = entry._id
             this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
@@ -256,8 +256,7 @@ export default class DataImporter extends FormApplication {
           $(".talents .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing talent ${name}`);
         } catch (err) {
-          console.error(`Starwars FFG - Error importing record : ${err.message}`);
-          console.debug(err);
+          CONFIG.logger.error(`Error importing record : `, err);
           this._importLogger(`Error importing talent: ${JSON.stringify(err)}`);
         }
 
@@ -382,8 +381,7 @@ export default class DataImporter extends FormApplication {
                 power.data.upgrades[talentKey] = rowAbility;
               });
             } catch (err) {
-              console.error(`Starwars FFG - Error importing record : ${err.message}`);
-              console.debug(err);
+              CONFIG.logger.error(`Error importing record : `, err);
             }
           }
   
@@ -405,12 +403,12 @@ export default class DataImporter extends FormApplication {
           let entry = pack.index.find(e => e.name === power.name);
     
           if(!entry) {
-            console.debug(`Starwars FFG - Importing Force Power - Item`);
+            CONFIG.logger.debug(`Importing Force Power - Item`);
             compendiumItem = new Item(power, {temporary:true});  
             this._importLogger(`New force power ${fp.ForcePower.Name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
-            console.debug(`Starwars FFG - Updating Force Power - Item`);
+            CONFIG.logger.debug(`Updating Force Power - Item`);
             let updateData = ImportHelpers.buildUpdateData(power);
             updateData["_id"] = entry._id
             this._importLogger(`Updating force power ${fp.ForcePower.Name} : ${JSON.stringify(updateData)}`);
@@ -422,8 +420,7 @@ export default class DataImporter extends FormApplication {
           this._importLogger(`End importing force power ${fp.ForcePower.Name}`);
           
         } catch (err) {
-          console.error(`Starwars FFG - Error importing record : ${err.message}`);
-          console.debug(err);
+          CONFIG.logger.error(`Error importing record : `, err);
         }
       });
     }
@@ -487,12 +484,12 @@ export default class DataImporter extends FormApplication {
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
-            console.debug(`Starwars FFG - Importing Gear - Item`);
+            CONFIG.logger.debug(`Importing Gear - Item`);
             compendiumItem = new Item(newItem, {temporary: true});  
             this._importLogger(`New gear ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
-            console.debug(`Starwars FFG - Updating Gear - Item`);
+            CONFIG.logger.debug(`Updating Gear - Item`);
             let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             this._importLogger(`Updating gear ${name} : ${JSON.stringify(updateData)}`);
@@ -503,8 +500,7 @@ export default class DataImporter extends FormApplication {
           $(".gear .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing gear ${name}`);
         } catch (err) {
-          console.error(`Starwars FFG - Error importing record : ${err.message}`);
-          console.debug(err);
+          CONFIG.logger.error(`Error importing record : `, err);
           this._importLogger(`Error importing gear: ${JSON.stringify(err)}`);
         }
       }
@@ -642,12 +638,12 @@ export default class DataImporter extends FormApplication {
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
-            console.debug(`Starwars FFG - Importing Weapon - Item`);
+            CONFIG.logger.debug(`Importing Weapon - Item`);
             compendiumItem = new Item(newItem, {temporary : true});  
             this._importLogger(`New weapon ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
-            console.debug(`Starwars FFG - Updating Weapon - Item`);
+            CONFIG.logger.debug(`Updating Weapon - Item`);
             let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             this._importLogger(`Updating weapon ${name} : ${JSON.stringify(updateData)}`);
@@ -658,8 +654,7 @@ export default class DataImporter extends FormApplication {
           $(".weapons .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing weapon ${name}`);
         } catch (err) {
-          console.error(`Starwars FFG - Error importing record : ${err.message}`);
-          console.debug(err);
+          CONFIG.logger.error(`Error importing record : `, err);
           this._importLogger(`Error importing weapon: ${JSON.stringify(err)}`);
         }
       }
@@ -736,12 +731,12 @@ export default class DataImporter extends FormApplication {
           let entry = pack.index.find(e => e.name === newItem.name);
 
           if(!entry) {
-            console.debug(`Starwars FFG - Importing Armor - Item`);
+            CONFIG.logger.debug(`Importing Armor - Item`);
             compendiumItem = new Item(newItem, {temporary : true});  
             this._importLogger(`New armor ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
-            console.debug(`Starwars FFG - Updating Armor - Item`);
+            CONFIG.logger.debug(`Updating Armor - Item`);
             let updateData = ImportHelpers.buildUpdateData(newItem);
             updateData["_id"] = entry._id
             this._importLogger(`Updating armor ${name} : ${JSON.stringify(updateData)}`);
@@ -752,8 +747,7 @@ export default class DataImporter extends FormApplication {
           $(".armor .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing armor ${name}`);
         } catch (err) {
-          console.error(`Starwars FFG - Error importing record : ${err.message}`);
-          console.debug(err);
+          CONFIG.logger.error(`Error importing record : `, err);
           this._importLogger(`Error importing armor: ${JSON.stringify(err)}`);
         }
       }
@@ -882,12 +876,12 @@ export default class DataImporter extends FormApplication {
           await pack.getIndex();
           let entry = pack.index.find(e => e.name === specialization.name);
           if(!entry) {
-            console.debug(`Starwars FFG - Importing Specialization - Item`);
+            CONFIG.logger.debug(`Importing Specialization - Item`);
             compendiumItem = new Item(specialization, {temporary:true});  
             this._importLogger(`New Specialization ${specialization.Name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
-            console.debug(`Starwars FFG - Updating Specialization - Item`);
+            CONFIG.logger.debug(`Updating Specialization - Item`);
             let updateData = ImportHelpers.buildUpdateData(specialization);
             updateData["_id"] = entry._id
             this._importLogger(`Updating Specialization ${specialization.Name} : ${JSON.stringify(updateData)}`);
@@ -899,8 +893,7 @@ export default class DataImporter extends FormApplication {
           this._importLogger(`End importing Specialization ${specialization.Name}`);
 
         } catch (err) {
-          console.error(`Starwars FFG - Error importing record : ${err.message}`);
-          console.debug(err);
+          CONFIG.logger.error(`Error importing record : `, err);
         }
       });
     }

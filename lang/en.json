@@ -258,5 +258,7 @@
   "SWFFG.ImportFile" : "Start Import",
   "SWFFG.Cost": "COST:",
   "SWFFG.EnableSoakCalc": "Enable Soak Auto-Calculation",
-  "SWFFG.EnableSoakCalcHint": "Enable soak auto-calculation and unload field for manual entry"
+  "SWFFG.EnableSoakCalcHint": "Enable soak auto-calculation and unload field for manual entry",
+  "SWFFG.EnableDebug" : "Enable console debugging",
+  "SWFFG.EnableDebugHint" : "Enable debugging messages in console, use for diagnostic purposes only"
 }

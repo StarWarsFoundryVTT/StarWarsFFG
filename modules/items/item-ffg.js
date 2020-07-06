@@ -11,7 +11,7 @@ export class ItemFFG extends Item {
   prepareData() {
     super.prepareData();
 
-    console.debug(`Starwars FFG - Preparing Item Data ${this.type}`);
+    CONFIG.logger.debug(`Preparing Item Data ${this.type}`);
 
     // Get the Item's data
     const itemData = this.data;
@@ -57,7 +57,7 @@ export class ItemFFG extends Item {
 
         // first lets look at the talents trees list
         if(data.trees.length > 0) {
-          console.debug("Starwars FFG - Using Talent Tree property for update");
+          CONFIG.logger.debug("Using Talent Tree property for update");
 
           data.trees.forEach(spec => {
             const specializations = game.data.items.filter(item => {
@@ -65,7 +65,7 @@ export class ItemFFG extends Item {
             })
 
             specializations.forEach(item => {
-              console.debug(`Starwars FFG - Updating Specialization`)
+              CONFIG.logger.debug(`Updating Specialization`)
               for (let talentData in item.data.talents) {
                 this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
               }
@@ -74,7 +74,7 @@ export class ItemFFG extends Item {
         } 
         // if there are no values in trees, this may be a legacy item.
         else {
-          console.debug("Starwars FFG - Legacy item, updating all specializations");
+          CONFIG.logger.debug("Legacy item, updating all specializations");
           game.data.items.forEach(item => {
             if(item.type === "specialization") {
               for (let talentData in item.data.talents) {
@@ -200,7 +200,7 @@ export class ItemFFG extends Item {
           const entry = pack.index.find(e => e.id === specializationTalents[talent].itemId);
           gameItem = pack.getEntity(entry.id)
         } catch {
-          console.debug('Starwars FFG - Pack Item, deferring load.')
+          CONFIG.logger.debug('Pack Item, deferring load.')
         }
       } else {
         gameItem = game.data.items.find(item => {
@@ -225,7 +225,7 @@ export class ItemFFG extends Item {
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
-    console.debug(`Starwars FFG - Updating Specializations Talent`);
+    CONFIG.logger.debug(`Updating Specializations Talent`);
     specializationTalentItem.name = talentItem.name;
     specializationTalentItem.description = talentItem.data.description;
     specializationTalentItem.activation = talentItem.data.activation.value;

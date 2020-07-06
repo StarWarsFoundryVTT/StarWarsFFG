@@ -44,7 +44,7 @@ export class CombatFFG extends Combat {
 
     let total = +success+(advantage*0.01);
 
-    console.log(`Total is: ${total}`);
+    CONFIG.logger.log(`Total is: ${total}`);
 
     let roll = new Roll(origFormula, rollData).roll();
     roll._result = total;
