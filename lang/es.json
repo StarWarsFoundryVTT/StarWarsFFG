@@ -258,5 +258,7 @@
   "SWFFG.ImportFile": "Comenzar Importación",
   "SWFFG.Cost": "PRECIO:",
   "SWFFG.EnableSoakCalc": "Activar Protección Auto",
-  "SWFFG.EnableSoakCalcHint": "Activar cálculo automático de protección, sin posibilidad de entrada manual."
+  "SWFFG.EnableSoakCalcHint": "Activar cálculo automático de protección, sin posibilidad de entrada manual.",
+  "SWFFG.EnableDebug": "Activar consola depuración",
+  "SWFFG.EnableDebugHint": "Activar mensajes de depuración en consola, utilizar sólo para diagnóstico"
 }
