@@ -218,7 +218,7 @@ export class ItemSheetFFG extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  _updateObject(event, formData) {
+  async _updateObject(event, formData) {
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
     // Handle the free-form attributes list
@@ -251,7 +251,40 @@ export class ItemSheetFFG extends ItemSheet {
 
     // Update the Item
     this.item.data.flags.loaded = false;
-    return this.object.update(formData);
+    await this.object.update(formData);
+
+    if(this.object.data.type === "talent" ) {
+      let data = this.object.data.data;
+      if(data.trees.length > 0) {
+        CONFIG.logger.debug("Using Talent Tree property for update");
+        data.trees.forEach(spec => {
+          const specializations = game.data.items.filter(item => {
+            return item.id === spec;
+          })
+  
+          specializations.forEach(item => {
+            CONFIG.logger.debug(`Updating Specialization`)
+            for (let talentData in item.data.talents) {
+              this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
+            }
+          })
+        });
+      } else {
+        CONFIG.logger.debug("Legacy item, updating all specializations");
+          game.data.items.forEach(item => {
+            if(item.type === "specialization") {
+              for (let talentData in item.data.talents) {
+                if(item.data.talents[talentData].itemId === this.data._id) {
+                  if(!data.trees.includes(item._id)) {
+                    data.trees.push(item._id);
+                  }
+                  this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
+                }
+              }
+            }
+          })
+      }
+    }
   }
 
   async _onClickTalentControl(event) {
@@ -475,7 +508,7 @@ export class ItemSheetFFG extends ItemSheet {
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
-    CONFIG.logger.debug(`Updating Specializations Talent`);
+    CONFIG.logger.debug(`Updating Specializations Talent during sheet render`);
     specializationTalentItem.name = talentItem.name;
     specializationTalentItem.description = talentItem.data.description;
     specializationTalentItem.activation = talentItem.data.activation.value;

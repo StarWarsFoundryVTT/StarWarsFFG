@@ -11,7 +11,7 @@ export class ItemFFG extends Item {
   prepareData() {
     super.prepareData();
 
-    CONFIG.logger.debug(`Preparing Item Data ${this.type}`);
+    CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
 
     // Get the Item's data
     const itemData = this.data;
@@ -52,42 +52,6 @@ export class ItemFFG extends Item {
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
 
         data.activation.label = activationId;
-        
-        // A talent update occured, update specializations
-
-        // first lets look at the talents trees list
-        if(data.trees.length > 0) {
-          CONFIG.logger.debug("Using Talent Tree property for update");
-
-          data.trees.forEach(spec => {
-            const specializations = game.data.items.filter(item => {
-              return item.id === spec;
-            })
-
-            specializations.forEach(item => {
-              CONFIG.logger.debug(`Updating Specialization`)
-              for (let talentData in item.data.talents) {
-                this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
-              }
-            })
-          });
-        } 
-        // if there are no values in trees, this may be a legacy item.
-        else {
-          CONFIG.logger.debug("Legacy item, updating all specializations");
-          game.data.items.forEach(item => {
-            if(item.type === "specialization") {
-              for (let talentData in item.data.talents) {
-                if(item.data.talents[talentData].itemId === this.data._id) {
-                  if(!data.trees.includes(item._id)) {
-                    data.trees.push(item._id);
-                  }
-                  this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
-                }
-              }
-            }
-          })
-        }
         break;
       default:
     }
@@ -225,7 +189,7 @@ export class ItemFFG extends Item {
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
-    CONFIG.logger.debug(`Updating Specializations Talent`);
+    CONFIG.logger.debug(`Updating Specializations Talent ${specializationTalentItem.name} with ${talentItem.name}`);
     specializationTalentItem.name = talentItem.name;
     specializationTalentItem.description = talentItem.data.description;
     specializationTalentItem.activation = talentItem.data.activation.value;
