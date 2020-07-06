@@ -40,7 +40,8 @@ Voyez nos objectifs de productions et nos progés [ici](https://github.com/StarW
 
 # Journal des modifications
 
-- 03/07/2020 - Esrin - Lise à jour du gestionnaire de groupes pour utiliser "game.settings" pour la réserve de points de destins. Ceci permet la réplication des valeurs sur tout les clients connectés ainsi que la persistance entre les sessions.
+- 06/07/2020 - Cstadther - Refactorisation du système de log, intégra une aide au système de logging, rajouta une option de configuration pour permettre d'activer le mode débug. Par défaut désactivé.
+- 03/07/2020 - Esrin - Mise à jour du gestionnaire de groupes pour utiliser "game.settings" pour la réserve de points de destins. Ceci permet la réplication des valeurs sur tout les clients connectés ainsi que la persistance entre les sessions.
 - 03/07/2020 - Esrin - Répara l'affichage des Blessures et du Stree dans le gestionnaire de groupes, utilise l'attribut ".value" au lieu de ".real_value" maintenant.
 - 02/07/2020 - CStadther - Correctif de bug - Système d'imports. Répara le soucis si des compendiums vérouillés sont présents au moment de l'import.
 - 02/07/2020 - CStadther - Correctif de bug - Système d'imports. Sépara l'import des spécialisation des autres éléments pour que les talents soient prêt avant la création des spécialisations.
