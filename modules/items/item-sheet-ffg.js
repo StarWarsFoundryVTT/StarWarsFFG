@@ -26,7 +26,7 @@ export class ItemSheetFFG extends ItemSheet {
   async getData() {
     const data = super.getData();
 
-    console.debug(`Starwars FFG - Getting Item Data`);
+    CONFIG.logger.debug(`Getting Item Data`);
 
     data.dtypes = ["String", "Number", "Boolean"];
     if (data?.data?.attributes) {
@@ -69,7 +69,7 @@ export class ItemSheetFFG extends ItemSheet {
         }
 
         if (!this.item.data.flags.loaded) {
-          console.debug(`Starwars FFG - Running Item initial load`);
+          CONFIG.logger.debug(`Running Item initial load`);
           this.item.data.flags.loaded = true;
 
           const specializationTalents = data.data.talents;
@@ -219,7 +219,7 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
-    console.debug(`Starwars FFG - Updating ${this.object.type}`);
+    CONFIG.logger.debug(`Updating ${this.object.type}`);
 
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
@@ -390,7 +390,7 @@ export class ItemSheetFFG extends ItemSheet {
     const pack = game.packs.get(collection);
     if (pack.metadata.entity !== "Item") return;
     return pack.getEntity(entryId).then((ent) => {
-      console.log(`${vtt} | Importing Item ${ent.name} from ${collection}`);
+      CONFIG.logger.debug(`Importing Item ${ent.name} from ${collection}`);
       return ent;
     });
   }
@@ -427,7 +427,7 @@ export class ItemSheetFFG extends ItemSheet {
       const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
       const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
       if (!isPreviousItemFromPack) {
-        console.debug('Starwars FFG - Non-compendium pack talent update');
+        CONFIG.logger.debug('Non-compendium pack talent update');
 
         const talentList = [];
         for(let talent in specialization.data.data.talents) {
@@ -475,7 +475,7 @@ export class ItemSheetFFG extends ItemSheet {
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
-    console.debug(`Starwars FFG - Updating Specializations Talent`);
+    CONFIG.logger.debug(`Updating Specializations Talent`);
     specializationTalentItem.name = talentItem.name;
     specializationTalentItem.description = talentItem.data.description;
     specializationTalentItem.activation = talentItem.data.activation.value;

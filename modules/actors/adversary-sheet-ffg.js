@@ -199,7 +199,7 @@ export class AdversarySheetFFG extends ActorSheet {
               callback: (html) => {
                 let newCharacteristic = $(html).find("input[type='radio']:checked").val();
 
-                console.debug(`Starwars FFG - Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
+                CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
                 this.object.update({ [`data.skills.${ability}.characteristic`]: newCharacteristic });
               },
@@ -372,7 +372,7 @@ export class AdversarySheetFFG extends ActorSheet {
           const actor = game.actors.get(data.actorId);
           await actor.deleteOwnedItem(data.data._id); // Delete originating item from other actor
         } catch (err) {
-          console.log(`${err.message}`);
+          CONFIG.logger.error(`Error transfering item between actors.`, err);
         }
       }
     }
@@ -380,61 +380,61 @@ export class AdversarySheetFFG extends ActorSheet {
 
 
   async _updateSpecialization(data) {
-    console.debug(`Starwars FFG - Running Actor initial load`);
-          this.actor.data.flags.loaded = true;
+    CONFIG.logger.debug(`Running Actor initial load`);
+    this.actor.data.flags.loaded = true;
 
-          const specializations = this.actor.data.items.filter((item) => {
-            return item.type === "specialization";
+    const specializations = this.actor.data.items.filter((item) => {
+      return item.type === "specialization";
+    });
+
+    specializations.forEach(async (spec) => {
+      const specializationTalents = spec.data.talents;
+      for (let talent in specializationTalents) {
+        let gameItem;
+        if(specializationTalents[talent].pack && specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
+          const pack = await game.packs.get(specializationTalents[talent].pack);
+          await pack.getIndex();
+          const entry = await pack.index.find(e => e.id === specializationTalents[talent].itemId);
+          gameItem = await pack.getEntity(entry.id)
+        } else {
+          gameItem = game.items.get(specializationTalents[talent].itemId);
+        }
+
+        if (gameItem) {
+          this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
+        }
+      }
+
+      const globalTalentList = [];
+      if (spec?.talentList && spec.talentList.length > 0) {
+        spec.talentList.forEach((talent) => {
+          const item = talent;
+          item.firstSpecialization = spec._id;
+
+          if (item.isRanked) {
+            item.rank = typeof talent.rank === "number" ? talent.rank : 1;
+          } else {
+            item.rank = "N/A";
+          }
+
+          let index = globalTalentList.findIndex((obj) => {
+            return obj.name === item.name;
           });
 
-          specializations.forEach(async (spec) => {
-            const specializationTalents = spec.data.talents;
-            for (let talent in specializationTalents) {
-              let gameItem;
-              if(specializationTalents[talent].pack && specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
-                const pack = await game.packs.get(specializationTalents[talent].pack);
-                await pack.getIndex();
-                const entry = await pack.index.find(e => e.id === specializationTalents[talent].itemId);
-                gameItem = await pack.getEntity(entry.id)
-              } else {
-                gameItem = game.items.get(specializationTalents[talent].itemId);
-              }
+          if (index < 0 || !item.isRanked) {
+            globalTalentList.push(item);
+          } else {
+            globalTalentList[index].rank += talent.rank;
+          }
+        });
+      }
 
-              if (gameItem) {
-                this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
-              }
-            }
-
-            const globalTalentList = [];
-            if (spec?.talentList && spec.talentList.length > 0) {
-              spec.talentList.forEach((talent) => {
-                const item = talent;
-                item.firstSpecialization = spec._id;
-
-                if (item.isRanked) {
-                  item.rank = typeof talent.rank === "number" ? talent.rank : 1;
-                } else {
-                  item.rank = "N/A";
-                }
-
-                let index = globalTalentList.findIndex((obj) => {
-                  return obj.name === item.name;
-                });
-
-                if (index < 0 || !item.isRanked) {
-                  globalTalentList.push(item);
-                } else {
-                  globalTalentList[index].rank += talent.rank;
-                }
-              });
-            }
-
-            data.actor.data.talentList = globalTalentList;
-          });
+      data.actor.data.talentList = globalTalentList;
+    });
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
-    console.debug(`Starwars FFG - Updating Specializations Talent`);
+    CONFIG.logger.debug(`Updating Specializations Talent`);
     specializationTalentItem.name = talentItem.name;
     specializationTalentItem.description = talentItem.data.description;
     specializationTalentItem.activation = talentItem.data.activation.value;

@@ -18,6 +18,7 @@ import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 import DataImporter from "./importer/data-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
+import Helpers from "./helpers/common.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -47,6 +48,10 @@ Hooks.once("init", async function () {
     "Light": 0,
     "Dark": 0,
   };
+
+  // Define custom log prefix and logger
+  CONFIG.module = "Starwars FFG";
+  CONFIG.logger = Helpers.logger;
 
   // Define custom Entity classes. This will override the default Actor
   // to instead use our extended version.
@@ -127,7 +132,7 @@ Hooks.once("init", async function () {
 
     let total = +success + advantage * 0.01;
 
-    console.log(`Total is: ${total}`);
+    CONFIG.logger.log(`Total is: ${total}`);
 
     let roll = new Roll(origFormula, rollData).roll();
     roll._result = total;
@@ -273,6 +278,16 @@ Hooks.once("init", async function () {
     type: Object,
   });
 
+  game.settings.register("starwarsffg", "enableDebug", {
+    name: game.i18n.localize("SWFFG.EnableDebug"),
+    hint: game.i18n.localize("SWFFG.EnableDebugHint"),
+    scope: "world",
+    config: true,
+    default: false,
+    type: Boolean,
+    onChange: (rule) => window.location.reload(),
+  }); 
+
   function combineAll(values, monoid) {
     return values.reduce((prev, curr) => monoid.combine(prev, curr), monoid.identity);
   }
@@ -412,14 +427,14 @@ Hooks.once("ready", () => {
       if (actor.data.data.stats.wounds.real_value != null) {
         actor.data.data.stats.wounds.value = actor.data.data.stats.wounds.real_value;
         game.actors.get(actor._id).update({ ["data.stats.wounds.real_value"]: null });
-        console.log("Migrated stats.wounds.value from stats.wounds.real_value");
-        console.log(actor.data.data.stats.wounds);
+        CONFIG.logger.log("Migrated stats.wounds.value from stats.wounds.real_value");
+        CONFIG.logger.log(actor.data.data.stats.wounds);
       }
       if (actor.data.data.stats.strain.real_value != null) {
         actor.data.data.stats.strain.value = actor.data.data.stats.strain.real_value;
         game.actors.get(actor._id).update({ ["data.stats.strain.real_value"]: null });
-        console.log("Migrated stats.strain.value from stats.strain.real_value");
-        console.log(actor.data.data.stats.strain);
+        CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
+        CONFIG.logger.log(actor.data.data.stats.strain);
       }
     }
   });

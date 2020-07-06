@@ -203,6 +203,7 @@
   "SWFFG.ModTypeSkillRank": "Pericia Habilidad",
   "SWFFG.ModTypeSkillBoost": "Beneficio Habilidad",
   "SWFFG.ModTypeStat": "Otros",
+  "SWFFG.ModTypeStatWeapon": "Caract. Arma",
   "SWFFG.ModifierType": "Tipo",
   "SWFFG.Modifier": "Modificador",
   "SWFFG.ModifierValue": "Valor",
@@ -253,9 +254,11 @@
   "SWFFG.SettingsSkillSorting": "¿Ordenar listado de habilidades?",
   "SWFFG.SettingsSkillSortingHint": "Por defecto las habilidades se ordenarán según el orden alfabético original de las hojas en inglés. Activa esta opción si prefieres el orden alfabético de la traducción.",
   "SWFFG.TalentsForce": "¿Talento Fuerza?",
-  "SWFFG.LoadFile" : "Abrir Fichero",
-  "SWFFG.ImportFile" : "Comenzar Importación",
+  "SWFFG.LoadFile": "Abrir Fichero",
+  "SWFFG.ImportFile": "Comenzar Importación",
   "SWFFG.Cost": "PRECIO:",
   "SWFFG.EnableSoakCalc": "Activar Protección Auto",
-  "SWFFG.EnableSoakCalcHint": "Activar cálculo automático de protección, sin posibilidad de entrada manual."
+  "SWFFG.EnableSoakCalcHint": "Activar cálculo automático de protección, sin posibilidad de entrada manual.",
+  "SWFFG.EnableDebug": "Activar consola depuración",
+  "SWFFG.EnableDebugHint": "Activar mensajes de depuración en consola, utilizar sólo para diagnóstico"
 }
