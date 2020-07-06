@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 06/07/2020 - Cstadther - Refactored logging, added logging helper, added config option to enable debug level logging which defaults to false
 - 03/07/2020 - Esrin - Updated the Group Manager to use game.settings for the Destiny Pool. This allows replication of the destiny pool values and changes across all connected clients and persists across sessions.
 - 03/07/2020 - Esrin - Fixed Wound and Strain display on Group Manager, now uses .value instead of the deprecated .real_value.
 - 02/07/2020 - CStadther - Import fixes. Fixed issue if there are locked compendiums with importing.

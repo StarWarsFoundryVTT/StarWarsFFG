@@ -19,7 +19,7 @@ export default class ImportHelpers {
           await FilePicker.createDirectory(startingSource, `${currentSource}`, {bucket:null});
           
         } catch (err) {
-          console.debug(err);
+          CONFIG.logger.debug(`Error verifying path ${startingSource}, ${path}`, err);
         }
       }
     } catch (err) {
@@ -130,7 +130,7 @@ export default class ImportHelpers {
     for (let packId of packs) {
       if(!CONFIG.temporary[packId]) {
         const pack = await game.packs.get(packId);
-        console.debug(`Starwars FFG - Caching pack content ${packId}`);
+        CONFIG.logger.debug(`Caching pack content ${packId}`);
         CONFIG.temporary[packId] = {};
         
         const content = await pack.getContent();  
@@ -138,7 +138,7 @@ export default class ImportHelpers {
           CONFIG.temporary[packId][content[i].data.flags.importid] = content[i];
         }
       } else {
-        console.debug(`Starwars FFG - Using cached content for ${packId}`);
+        CONFIG.logger.debug(`Using cached content for ${packId}`);
       }
       if(CONFIG.temporary[packId][id]) {
         return CONFIG.temporary[packId][id];

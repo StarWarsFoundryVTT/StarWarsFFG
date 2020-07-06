@@ -8,9 +8,7 @@ export class ActorFFG extends Actor {
    */
   prepareData() {
     super.prepareData();
-
-    console.debug(`Starwars FFG - Preparing Actor Data ${this.data.type}`);
-
+    CONFIG.logger.debug(`Preparing Actor Data ${this.data.type}`);
     const actorData = this.data;
     const data = actorData.data;
     const flags = actorData.flags;
@@ -160,7 +158,7 @@ export class ActorFFG extends Actor {
           }
         }
       } catch (err) {
-        console.debug(err);
+        CONFIG.logger.error(`Error calculating derived Soak`, err);
       }
     }
 
