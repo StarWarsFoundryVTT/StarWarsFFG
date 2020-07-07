@@ -304,6 +304,7 @@
       <table class="items">
         <thead>
           <th>{{localize "SWFFG.ItemsWeapons"}}</th>
+          <th>{{localize "SWFFG.Equipped"}}</th>
           <th>{{localize "SWFFG.ItemsSkill"}}</th>
           <th>{{localize "SWFFG.ItemsDamage"}}</th>
           <th>{{localize "SWFFG.ItemsRange"}}</th>
@@ -316,6 +317,13 @@
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
           <tr class="item" data-item-id="{{item._id}}">
             <td class="item-name">{{item.name}}</td>
+            <td>
+              {{#if item.data.equippable.equipped}}
+              <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
+              {{else}}
+              <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
+              {{/if}}
+            </td>
             <td>{{localize (lookup ../this.FFG.combat_skills_abrev item.data.skill.value)}}</td>
             <td>{{item.data.damage.value}}</td>
             <td>{{localize item.data.range.label}}</td>
