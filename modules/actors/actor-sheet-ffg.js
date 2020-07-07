@@ -138,6 +138,47 @@ export class ActorSheetFFG extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
+    html.find(".item-info").click(ev => {
+      const li = $(ev.currentTarget).parents(".item");
+      const itemId = li.data("itemId");
+     
+      const item = this.actor.data.data.talentList.find(talent => {
+        return talent.itemId === itemId;
+      });
+
+      const title = `Talent Rank Sources for ${item.name}`;
+
+      new Dialog({
+        title : title,
+        content : {
+          source : item.source
+        },
+        buttons: {
+          done : {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.ButtonAccept"),
+            callback: (html) => {
+              const talentsToRemove = $(html).find("input[type='checkbox']:checked");
+              CONFIG.logger.debug(`Removing ${talentsToRemove.length} talents`);
+
+              for(let i = 0; i < talentsToRemove.length; i+=1) {
+                const id = $(talentsToRemove[i]).val();
+                this.actor.deleteOwnedItem(id);
+              }
+
+            }
+          },
+          cancel : {
+            icon: '<i class="fas fa-times"></i>',
+            label: game.i18n.localize("SWFFG.Cancel")
+          }
+        }
+      }, {
+        classes: ["dialog", "starwarsffg"],
+        template: "systems/starwarsffg/templates/actors/dialogs/ffg-talent-selector.html"
+      }).render(true);
+    });
+
     // Setup dice pool image and hide filtered skills
     html.find(".skill").each((_, elem) => {
       this._addSkillDicePool(elem);

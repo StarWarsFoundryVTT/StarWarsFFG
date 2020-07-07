@@ -260,5 +260,8 @@
   "SWFFG.EnableSoakCalc": "Enable Soak Auto-Calculation",
   "SWFFG.EnableSoakCalcHint": "Enable soak auto-calculation and unload field for manual entry",
   "SWFFG.EnableDebug" : "Enable console debugging",
-  "SWFFG.EnableDebugHint" : "Enable debugging messages in console, use for diagnostic purposes only"
+  "SWFFG.EnableDebugHint" : "Enable debugging messages in console, use for diagnostic purposes only",
+  "SWFFG.Talent": "Talent",
+  "SWFFG.Source": "Source",
+  "SWFFG.Delete": "Delete"
 }

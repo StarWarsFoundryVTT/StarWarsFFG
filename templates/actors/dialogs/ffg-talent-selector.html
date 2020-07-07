@@ -1,0 +1,35 @@
+<div class="dialog-content talent-source-dialog">
+  
+  <table class="talent-list">
+    <thead>
+      <tr>
+        <th>{{localize "SWFFG.Name"}}</th>
+        <th>{{localize "SWFFG.Source"}}</th>
+        <th>{{localize "SWFFG.Delete"}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each content.source as |source id|}}
+      <tr class="item specialization-talent-item" data-item-id="{{source.id}}">
+        <td class="item-name">
+          {{source.name}}
+        </td>
+        <td>{{localize source.typeLabel}}</td>
+        <td>
+          {{#iff source.type '==' 'talent'}}
+            <input type="checkbox" id="{{id}}" name="talent" value="{{source.id}}" />
+          {{/iff}}
+        </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+<div class="dialog-buttons">
+  {{#each buttons as |button id|}}
+  <button class="dialog-button" data-button="{{id}}">
+      {{{button.icon}}}
+      {{{button.label}}}
+  </button>
+  {{/each}}
+</div>

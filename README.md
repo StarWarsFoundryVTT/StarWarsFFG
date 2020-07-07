@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 06/07/2020 - Cstadther - Combined Talents and Specialization Talents, added dialog to display talent calc source and ability to remove talents from owned items.
 - 06/07/2020 - Cstadther - Refactored specializations to move specialization talent updates to `onUpdate` method for talent.
 - 06/07/2020 - Cstadther - Refactored logging, added logging helper, added config option to enable debug level logging which defaults to false
 - 03/07/2020 - Esrin - Updated the Group Manager to use game.settings for the Destiny Pool. This allows replication of the destiny pool values and changes across all connected clients and persists across sessions.

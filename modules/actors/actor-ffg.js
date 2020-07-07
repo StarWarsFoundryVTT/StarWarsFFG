@@ -97,8 +97,10 @@ export class ActorFFG extends Actor {
     specializations.forEach((element) => {
       if (element?.talentList && element.talentList.length > 0) {
         element.talentList.forEach((talent) => {
-          const item = talent;
+          const item = JSON.parse(JSON.stringify(talent));
           item.firstSpecialization = element._id;
+          item.source = [{ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
+          item.safe_desc = talent.description.replace(/(<([^>]+)>)/gi, "");
 
           if (item.isRanked) {
             item.rank = talent.rank;
@@ -113,11 +115,49 @@ export class ActorFFG extends Actor {
           if (index < 0 || !item.isRanked) {
             globalTalentList.push(item);
           } else {
+            globalTalentList[index].source.push({ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id })
             globalTalentList[index].rank += talent.rank;
           }
         });
       }
     });
+
+    const talents = actorData.items.filter((item) => {
+      return item.type === "talent";
+    });
+
+    talents.forEach((element) => {
+      const item = {
+        name : element.name,
+        itemId : element._id,
+        description : element.data.description,
+        activation: element.data.activation.value,
+        activationLabel: element.data.activation.label,
+        isRanked: element.data.ranks.ranked,
+        safe_desc: element.data.description.replace(/(<([^>]+)>)/gi, ""),
+        source : [{ type : "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }]
+      }
+
+      if(item.isRanked) {
+        item.rank = element.data.ranks.current;
+      } else {
+        item.rank = "N/A";
+      }
+
+      let index = globalTalentList.findIndex((obj) => {
+        return obj.name === item.name;
+      });
+
+      if (index < 0 || !item.isRanked) {
+        globalTalentList.push(item);
+      } else {
+        globalTalentList[index].source.push({ type : "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id })
+        globalTalentList[index].rank += element.data.ranks.current;
+      }
+
+    });
+
+
     data.talentList = globalTalentList;
   }
 
