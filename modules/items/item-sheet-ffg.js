@@ -80,7 +80,10 @@ export class ItemSheetFFG extends ItemSheet {
               const pack = game.packs.get(specializationTalents[talent].pack);
               await pack.getIndex();
               const entry = await pack.index.find(e => e._id === specializationTalents[talent].itemId);
-              gameItem = await pack.getEntity(entry._id)
+              
+              if(entry) {
+                gameItem = await pack.getEntity(entry._id);
+              }
             } else {
               gameItem = game.items.get(specializationTalents[talent].itemId);
             }
