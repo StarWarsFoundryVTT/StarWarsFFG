@@ -193,12 +193,13 @@ export default class DataImporter extends FormApplication {
           const name = talent.getElementsByTagName("Name")[0]?.textContent;
           const description = talent.getElementsByTagName("Description")[0]?.textContent;
           const ranked = talent.getElementsByTagName("Ranked")[0]?.textContent === "true" ? true : false;
+          const activationValue = talent.getElementsByTagName("ActivationValue")[0]?.textContent;
     
           this._importLogger(`Start importing talent ${name}`);
 
           let activation = "Passive";
           
-          switch (talent.getElementsByTagName("ActivationValue")[0]?.textContent) {
+          switch (activationValue) {
             case "taManeuver":
               activation = "Active (Maneuver)";
               break;
@@ -216,7 +217,7 @@ export default class DataImporter extends FormApplication {
           }
     
           const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent === "true" ? true : false;
-    
+
           const item = {
             name,
             type: "talent",
@@ -854,11 +855,11 @@ export default class DataImporter extends FormApplication {
                 rowTalent.isRanked =  talentItem.data.data.ranks.ranked === "true" ? true : false;
                 rowTalent.itemId = talentItem.data._id;
 
-                if(row.Directions.Direction[index].Up) {
+                if(row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
                   rowTalent["links-top-1"] = true;
                 }
 
-                if(row.Directions.Direction[index].Right) {
+                if(row.Directions.Direction[index].Right && row.Directions.Direction[index].Right === "true") {
                   rowTalent["links-right"] = true;
                 }
 
