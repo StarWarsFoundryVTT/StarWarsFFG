@@ -3089,6 +3089,7 @@ span.dietype.triumph {
   position: absolute;
   transition: opacity 0.5s;
   z-index: -500;
+  padding: 0 10px;
 }
 
 .starwarsffg .attributes {

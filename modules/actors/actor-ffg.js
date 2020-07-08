@@ -1,3 +1,5 @@
+import PopoutEditor from "../popout-editor.js";
+
 /**
  * Extend the base Actor entity.
  * @extends {Actor}
@@ -100,7 +102,8 @@ export class ActorFFG extends Actor {
           const item = JSON.parse(JSON.stringify(talent));
           item.firstSpecialization = element._id;
           item.source = [{ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
-          item.safe_desc = talent.description.replace(/(<([^>]+)>)/gi, "");
+          item.safe_desc = PopoutEditor.renderDiceImages(talent.description.replace(/(<([^>]+)>)/gi, ""));
+          
 
           if (item.isRanked) {
             item.rank = talent.rank;
@@ -134,7 +137,7 @@ export class ActorFFG extends Actor {
         activation: element.data.activation.value,
         activationLabel: element.data.activation.label,
         isRanked: element.data.ranks.ranked,
-        safe_desc: element.data.description.replace(/(<([^>]+)>)/gi, ""),
+        safe_desc: PopoutEditor.renderDiceImages(element.data.description.replace(/(<([^>]+)>)/gi, "")),
         source : [{ type : "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }]
       }
 

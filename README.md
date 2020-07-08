@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 08/07/2020 - Cstadther - Enhancement, updated padding on tooltips, and added rendering of dice images in tooltips.
 - 08/07/2020 - Cstadther - Bug Fix, issue with combined talents not displaying item sheet when clicked on.
 - 08/07/2020 - Cstadther - Bug Fix, issue with importer where connectors were incorrectly populated to due a variation in import data.
 - 08/07/2020 - ezeri - Bug Fix, Character sheet configuration was not defaulting correctly, blocking character sheet drawing.
