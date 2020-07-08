@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 08/07/2020 - ezeri - Bug Fix, Character sheet configuration was not defaulting correctly, blocking character sheet drawing.
 - 07/07/2020 - Cstadther - Enhancement #121, added character sheet configuration settings, morality/obligation/conflict/duty display can be toggled.  (added through new actor-ffg-options module)
 - 07/07/2020 - Cstadther - Enhancement #119, added equipped function for weapons.
 - 07/07/2020 - Cstadther - Minor bug fix, where isForceTalent attribute is converted to string when should be boolean.
