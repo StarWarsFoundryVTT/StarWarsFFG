@@ -40,6 +40,12 @@ Voyez nos objectifs de productions et nos progés [ici](https://github.com/StarW
 
 # Journal des modifications
 
+
+- 08/07/2020 - ezeri - Correction de bug, Le systeme de configuration de personnage ne prenait pas correctement les valeures pars défaut, empéchant une partie de la feuille de se générer.
+- 07/07/2020 - Cstadther - Amélioration #121, intégra le système de configuration des feuilles de personnage, moralité/obligation/conflit/devoir peuvent être désactivés (intégré au travers du nouveau module actor-ffg-options)
+- 07/07/2020 - Cstadther - Amélioration #119, rendu les armes "équipable"
+- 07/07/2020 - Cstadther - Correctif de bug mineur, où l'attribute isForceTalent était converti en str au lieu de rester en bool.
+- 06/07/2020 - Cstadther - Combina les talents et les talents de spécialisation, rajouta un dialogue pour montrer les sources des talents, et la possibilité de les enlever, au besoin.
 - 06/07/2020 - Cstadther - Refactorisation du système de log, intégra une aide au système de logging, rajouta une option de configuration pour permettre d'activer le mode débug. Par défaut désactivé.
 - 03/07/2020 - Esrin - Mise à jour du gestionnaire de groupes pour utiliser "game.settings" pour la réserve de points de destins. Ceci permet la réplication des valeurs sur tout les clients connectés ainsi que la persistance entre les sessions.
 - 03/07/2020 - Esrin - Répara l'affichage des Blessures et du Stree dans le gestionnaire de groupes, utilise l'attribut ".value" au lieu de ".real_value" maintenant.
