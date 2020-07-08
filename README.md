@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 07/07/2020 - Cstadther - Enhancement #121, added character sheet configuration settings, morality/obligation/conflict/duty display can be toggled.  (added through new actor-ffg-options module)
 - 07/07/2020 - Cstadther - Enhancement #119, added equipped function for weapons.
 - 07/07/2020 - Cstadther - Minor bug fix, where isForceTalent attribute is converted to string when should be boolean.
 - 06/07/2020 - Cstadther - Combined Talents and Specialization Talents, added dialog to display talent calc source and ability to remove talents from owned items.

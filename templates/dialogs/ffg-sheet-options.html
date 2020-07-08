@@ -1,0 +1,27 @@
+<div class="dialog-content sheet-options-dialog">
+  <form class="flexcol" autocomplete="off">
+  {{#each content.options as |option id|}}
+    <div class="form-group">
+      <label>{{option.name}}</label>
+      <div class="form-fields">
+        {{#iff option.type "==" Boolean}}
+          <input type="checkbox" name="flags.config.{{id}}" id="{{id}}" data-dtype="Boolean" {{checked option.value}}>
+        {{else}}
+          <input type="text" name="flags.config.{{id}}" id="{{id}}" data-dtype="String" value="{{option.value}}">
+        {{/iff}}        
+      </div>
+      <p class="notes">
+        {{option.hint}}
+      </p>
+    </div>
+  {{/each}}
+  </form>
+</div>
+<div class="dialog-buttons">
+  {{#each buttons as |button id|}}
+  <button class="dialog-button" data-button="{{id}}">
+      {{{button.icon}}}
+      {{{button.label}}}
+  </button>
+  {{/each}}
+</div>
