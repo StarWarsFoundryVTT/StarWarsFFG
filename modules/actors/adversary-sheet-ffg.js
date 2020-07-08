@@ -394,8 +394,8 @@ export class AdversarySheetFFG extends ActorSheet {
         if(specializationTalents[talent].pack && specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
           const pack = await game.packs.get(specializationTalents[talent].pack);
           await pack.getIndex();
-          const entry = await pack.index.find(e => e.id === specializationTalents[talent].itemId);
-          gameItem = await pack.getEntity(entry.id)
+          const entry = await pack.index.find(e => e._id === specializationTalents[talent].itemId);
+          gameItem = await pack.getEntity(entry._id)
         } else {
           gameItem = game.items.get(specializationTalents[talent].itemId);
         }

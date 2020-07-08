@@ -118,6 +118,30 @@ export default class ImportHelpers {
   }
 
   /**
+   * Find a compendium entity by type an id
+   * @param  {string} type - Entity type to search for
+   * @param  {string} id - Entity Id 
+   * @returns {object} - Entity Object Data
+   */
+  static async findCompendiumEntityById(type, id) {
+    let packs = await game.packs.keys();
+
+    let entity;
+
+    for (let packId of packs) {
+      const pack = await game.packs.get(packId);
+      if(pack.entity === type) {
+        await pack.getIndex();
+        entity = await pack.index.find(e => e._id === id);
+        if(entity) {
+          return await pack.getEntity(entity._id);
+        }
+      }
+    }
+    
+  }
+
+  /**
    * Find an entity by the import key.
    * @param  {string} type - Entity type to search for
    * @param  {string} id - Entity Id 
@@ -125,17 +149,18 @@ export default class ImportHelpers {
    */
   static async findCompendiumEntityByImportId(type, id) {
     let packs = await game.packs.keys();
-    let index = 0;
-
+    
     for (let packId of packs) {
       if(!CONFIG.temporary[packId]) {
         const pack = await game.packs.get(packId);
-        CONFIG.logger.debug(`Caching pack content ${packId}`);
-        CONFIG.temporary[packId] = {};
-        
-        const content = await pack.getContent();  
-        for (var i = 0; i< content.length; i++) {
-          CONFIG.temporary[packId][content[i].data.flags.importid] = content[i];
+        if(pack.entity === type) {
+          CONFIG.logger.debug(`Caching pack content ${packId}`);
+          CONFIG.temporary[packId] = {};
+          
+          const content = await pack.getContent();  
+          for (var i = 0; i< content.length; i++) {
+            CONFIG.temporary[packId][content[i].data.flags.importid] = content[i];
+          }
         }
       } else {
         CONFIG.logger.debug(`Using cached content for ${packId}`);

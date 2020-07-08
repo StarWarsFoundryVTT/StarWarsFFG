@@ -6,6 +6,7 @@
 import Helpers from "../helpers/common.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
+import ImportHelpers from "../importer/import-helpers.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -138,19 +139,23 @@ export class ActorSheetFFG extends ActorSheet {
       }
     });
     // Update Talent - By clicking entire line
-    html.find(".talents .item").click((ev) => {
+    html.find(".talents .item").click(async (ev) => {
       if (!$(ev.target).hasClass("fa-trash")) {
         const li = $(ev.currentTarget);
         const row = $(li).parents("tr")[0];
 
         let itemId = li.data("itemId");
 
-        let item;
-        if (!$(li).closest("tr").hasClass("specialization-talent-item")) {
-          item = this.actor.getOwnedItem(itemId);
-        } else {
+        let item = this.actor.getOwnedItem(itemId);
+        if(!item) {
           item = game.items.get(itemId);
+
+          if(!item) {
+            item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+          }
         }
+
+        
         if (item?.sheet) {
           item.sheet.render(true);
         }
