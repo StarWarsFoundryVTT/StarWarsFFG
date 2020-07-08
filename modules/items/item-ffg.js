@@ -19,7 +19,7 @@ export class ItemFFG extends Item {
     const data = itemData.data;
 
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description);
-    itemData.safe_desc = data.description.replace(/(<([^>]+)>)/gi, "");
+    itemData.safe_desc = PopoutEditor.renderDiceImages(data.description.replace(/(<([^>]+)>)/gi, ""));
 
     // perform localisation of dynamic values
     switch (this.type) {
