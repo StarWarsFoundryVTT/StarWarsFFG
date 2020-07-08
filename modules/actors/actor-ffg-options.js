@@ -65,6 +65,9 @@ export default class ActorOptions {
     if(!this.options[optionName]) {
       this.options[optionName] = {...options}
     }
+    if (typeof this.data.object.data.flags.config == "undefined") {
+      this.data.object.data.flags["config"]  = {};
+    }
 
     if(typeof this.data.object.data.flags.config[optionName] !== "undefined") {
       this.options[optionName].value = this.data.object.data.flags.config[optionName];
