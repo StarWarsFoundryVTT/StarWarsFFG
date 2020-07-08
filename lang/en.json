@@ -263,5 +263,17 @@
   "SWFFG.EnableDebugHint" : "Enable debugging messages in console, use for diagnostic purposes only",
   "SWFFG.Talent": "Talent",
   "SWFFG.Source": "Source",
-  "SWFFG.Delete": "Delete"
+  "SWFFG.Delete": "Delete",
+  "SWFFG.SheetOptions": "Sheet Options",
+  "SWFFG.CharacterSheet": "Character Sheet",
+  "SWFFG.Options": "Options",
+  "SWFFG.TalentSource": "Talent Rank Sources for",
+  "SWFFG.EnableObligation": "Enable Obligation",
+  "SWFFG.EnableObligationHint": "Enables the Obligation fields on the character sheet",
+  "SWFFG.EnableDuty": "Enable Duty",
+  "SWFFG.EnableDutyHint": "Enables the Duty fields on the character sheet",
+  "SWFFG.EnableMorality": "Enable Morality",
+  "SWFFG.EnableMoralityHint": "Enables the Morality fields on the character sheet",
+  "SWFFG.EnableConflict": "Enable Conflict",
+  "SWFFG.EnableConflictHint": "Enables the Conflict fields on the character sheet"
 }

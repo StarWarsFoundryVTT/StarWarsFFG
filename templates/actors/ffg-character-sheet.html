@@ -566,6 +566,10 @@
         </div>
         <div class="grid grid-2col">
           {{!-- Obligation Box --}}
+          {{#if (or
+            (eq actor.flags.config.enableObligation undefined)
+            (eq actor.flags.config.enableObligation true)
+          )}}
           <div class="resource single">
             <div class="attribute flex-group-center">
               <div class="block-background">
@@ -579,8 +583,12 @@
               <div class="block-background-shadow"></div>
             </div>
           </div>
-
+          {{/if}}
           {{!-- Duty Box --}}
+          {{#if (or
+            (eq actor.flags.config.enableDuty undefined)
+            (eq actor.flags.config.enableDuty true)
+          )}}
           <div class="resource single">
             <div class="attribute flex-group-center">
               <div class="block-background">
@@ -594,8 +602,13 @@
               <div class="block-background-shadow"></div>
             </div>
           </div>
-
+          {{/if}}
+          
           {{!-- Morality Box --}}
+          {{#if (or
+            (eq actor.flags.config.enableMorality undefined)
+            (eq actor.flags.config.enableMorality true)
+          )}}
           <div class="resource single">
             <div class="attribute flex-group-center">
               <div class="block-background">
@@ -609,8 +622,13 @@
               <div class="block-background-shadow"></div>
             </div>
           </div>
+          {{/if}}
 
           {{!-- Conflict Box --}}
+          {{#if (or
+              (eq actor.flags.config.enableConflict undefined)
+              (eq actor.flags.config.enableConflict true)
+            )}}
           <div class="resource single">
             <div class="attribute flex-group-center">
               <div class="block-background">
@@ -624,6 +642,7 @@
               <div class="block-background-shadow"></div>
             </div>
           </div>
+          {{/if}}
         </div>
       </div>
     </div>

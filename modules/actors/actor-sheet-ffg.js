@@ -1,9 +1,11 @@
-import Helpers from "../helpers/common.js";
+
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
+import Helpers from "../helpers/common.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
+import ActorOptions from "./actor-ffg-options.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -92,6 +94,30 @@ export class ActorSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
+    if (this.actor.data.type === "character") {
+      const options = new ActorOptions(this, html);
+      options.register("enableObligation", {
+        name: game.i18n.localize("SWFFG.EnableObligation"),
+        hint: game.i18n.localize("SWFFG.EnableObligationHint"),
+        default: true
+      });
+      options.register("enableDuty", {
+        name: game.i18n.localize("SWFFG.EnableDuty"),
+        hint: game.i18n.localize("SWFFG.EnableDutyHint"),
+        default: true
+      });   
+      options.register("enableMorality", {
+        name: game.i18n.localize("SWFFG.EnableMorality"),
+        hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
+        default: true
+      });  
+      options.register("enableConflict", {
+        name: game.i18n.localize("SWFFG.EnableConflict"),
+        hint: game.i18n.localize("SWFFG.EnableConflictHint"),
+        default: true
+      });
+    }
+
     // Toggle item equipped
     html.find("table.items .item a.toggle-equipped").click((ev) => {
       const li = $(ev.currentTarget);
@@ -146,7 +172,7 @@ export class ActorSheetFFG extends ActorSheet {
         return talent.itemId === itemId;
       });
 
-      const title = `Talent Rank Sources for ${item.name}`;
+      const title = `${game.i18n.localize("SWFFG.TalentSource")} ${item.name}`;
 
       new Dialog({
         title : title,
