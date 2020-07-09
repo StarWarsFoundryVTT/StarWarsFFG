@@ -368,3 +368,18 @@ FFG.difficulty = {
     label: "SWFFG.DifficultyFormidable",
   },
 };
+
+FFG.vehicle_consumable_range = {
+  "days": {
+    value: 0,
+    label: "SWFFG.Days",
+  },
+  "months": {
+    value: 0,
+    label: "SWFFG.Months",
+  },
+  "years": {
+    value: 0,
+    label: "SWFFG.Years",
+  }
+}
