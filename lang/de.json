@@ -276,6 +276,8 @@
   "SWFFG.EnableMoralityHint": "Zeigt das Moral-Feld auf dem Charakterblatt an",
   "SWFFG.EnableConflict": "Aktiviere Konflikt",
   "SWFFG.EnableConflictHint": "Zeigt das Konflikt-Feld auf dem Charakterblatt an",
+  "SWFFG.EnableForcePool": "Aktiviere Machtwert",
+  "SWFFG.EnableForcePoolHint": "Aktiviert das Machtwert-Feld auf dem Charakterblatt",
   "SWFFG.Hyperdrive": "Hyperraumantrieb",
   "SWFFG.Consumables": "Verpflegung",
   "SWFFG.Days": "Tage",
