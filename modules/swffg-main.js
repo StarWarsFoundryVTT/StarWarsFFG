@@ -134,7 +134,7 @@ Hooks.once("init", async function () {
 
     CONFIG.logger.log(`Total is: ${total}`);
 
-    let roll = new Roll(origFormula, rollData).roll();
+    let roll = new Roll(`0d6 ${origFormula}`, rollData).roll();
     roll._result = total;
     roll._total = total;
 
@@ -286,7 +286,7 @@ Hooks.once("init", async function () {
     default: false,
     type: Boolean,
     onChange: (rule) => window.location.reload(),
-  }); 
+  });
 
   function combineAll(values, monoid) {
     return values.reduce((prev, curr) => monoid.combine(prev, curr), monoid.identity);
