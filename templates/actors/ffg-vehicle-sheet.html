@@ -254,6 +254,36 @@
         {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Obligations Section --}}
       </div>
       <div class="container flex-group-center biography-values">
+        {{!-- Hyperdrive Box --}}
+        <div class="resource single">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.Hyperdrive"}}
+              </div>
+              <div class="block-attribute">
+                <select style="text-align: center;" name="data.stats.hyperdrive.value">
+                  {{#select data.stats.hyperdrive.value}} 
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                    {{/select}}
+                </select>
+              </div>
+            </div>
+            <div class="block-background-shadow"></div>
+          </div>
+        </div>
+
         {{!-- Hard Points Box --}}
         <div class="resource single">
           <div class="attribute flex-group-center">
@@ -313,6 +343,28 @@
               </div>
               <div class="block-attribute">
                 <div class="block-value block-single"><input type="text" name="data.stats.passengerCapacity.value" value="{{data.stats.passengerCapacity.value}}" data-dtype="Number" /></div>
+              </div>
+            </div>
+            <div class="block-background-shadow"></div>
+          </div>
+        </div>
+
+        {{!-- Consumables Box --}}
+        <div class="resource double">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.Consumables"}}
+              </div>
+              <div class="block-attribute">
+                <div class="block-value block-double">
+                  <input type="text" name="data.stats.consumables.value" value="{{data.stats.consumables.value}}" data-dtype="Number" />
+                  <select style="text-align: center;" name="data.stats.consumables.duration">
+                    {{#select data.stats.consumables.duration}} {{#each this.FFG.vehicle_consumable_range as |t|}}
+                        <option value="{{t.value}}">{{localize t.label}}</option>
+                      {{/each}} {{/select}}
+                  </select>
+                </div>
               </div>
             </div>
             <div class="block-background-shadow"></div>

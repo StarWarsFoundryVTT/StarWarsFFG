@@ -275,5 +275,10 @@
   "SWFFG.EnableMorality": "Enable Morality",
   "SWFFG.EnableMoralityHint": "Enables the Morality fields on the character sheet",
   "SWFFG.EnableConflict": "Enable Conflict",
-  "SWFFG.EnableConflictHint": "Enables the Conflict fields on the character sheet"
+  "SWFFG.EnableConflictHint": "Enables the Conflict fields on the character sheet",
+  "SWFFG.Hyperdrive" : "Hyperdrive",
+  "SWFFG.Consumables" : "Consumables",
+  "SWFFG.Days" : "Days",
+  "SWFFG.Months" : "Months",
+  "SWFFG.Years" : "Years"
 }

@@ -513,6 +513,17 @@
           "value": 0,
           "type": "Number",
           "label": "Hard Points"
+        },
+        "hyperdrive" : {
+          "value" : 1,
+          "type": "Number",
+          "label": "SWFFG.Hyperdrive"
+        },
+        "consumables" : {
+          "value" : 1,
+          "duration" : "months",
+          "type": "Number",
+          "label": "SWFFG.Consumables"
         }
       }
     }
