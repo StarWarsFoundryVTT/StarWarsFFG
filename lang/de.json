@@ -263,5 +263,22 @@
   "SWFFG.EnableDebugHint": "Enable debugging messages in console, use for diagnostic purposes only",
   "SWFFG.Talent": "Talent",
   "SWFFG.Source": "Quelle",
-  "SWFFG.Delete": "Löschen"
+  "SWFFG.Delete": "Löschen",
+  "SWFFG.SheetOptions": "Charakterblatt Optionen",
+  "SWFFG.CharacterSheet": "Charakterblatt",
+  "SWFFG.Options": "Optionen",
+  "SWFFG.TalentSource": "Talent Rank Sources for",
+  "SWFFG.EnableObligation": "Aktiviere Verpflichtung",
+  "SWFFG.EnableObligationHint": "Zeigt das Verpflichtung-Feld auf dem Charakterblatt an",
+  "SWFFG.EnableDuty": "Enable Duty",
+  "SWFFG.EnableDutyHint": "Enables the Duty fields on the character sheet",
+  "SWFFG.EnableMorality": "Aktiviere Moral",
+  "SWFFG.EnableMoralityHint": "Zeigt das Moral-Feld auf dem Charakterblatt an",
+  "SWFFG.EnableConflict": "Aktiviere Konflikt",
+  "SWFFG.EnableConflictHint": "Zeigt das Konflikt-Feld auf dem Charakterblatt an",
+  "SWFFG.Hyperdrive": "Hyperraumantrieb",
+  "SWFFG.Consumables": "Verpflegung",
+  "SWFFG.Days": "Tage",
+  "SWFFG.Months": "Monate",
+  "SWFFG.Years": "Jahre"
 }
