@@ -1,4 +1,3 @@
-
 /**
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
@@ -51,8 +50,8 @@ export class ActorSheetFFG extends ActorSheet {
     }
     data.FFG = CONFIG.FFG;
     data.settings = {
-      enableSoakCalculation : game.settings.get("starwarsffg", "enableSoakCalc")
-    }
+      enableSoakCalculation: game.settings.get("starwarsffg", "enableSoakCalc"),
+    };
 
     switch (this.actor.data.type) {
       case "character":
@@ -100,22 +99,27 @@ export class ActorSheetFFG extends ActorSheet {
       options.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
         hint: game.i18n.localize("SWFFG.EnableObligationHint"),
-        default: true
+        default: true,
       });
       options.register("enableDuty", {
         name: game.i18n.localize("SWFFG.EnableDuty"),
         hint: game.i18n.localize("SWFFG.EnableDutyHint"),
-        default: true
-      });   
+        default: true,
+      });
       options.register("enableMorality", {
         name: game.i18n.localize("SWFFG.EnableMorality"),
         hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
-        default: true
-      });  
+        default: true,
+      });
       options.register("enableConflict", {
         name: game.i18n.localize("SWFFG.EnableConflict"),
         hint: game.i18n.localize("SWFFG.EnableConflictHint"),
-        default: true
+        default: true,
+      });
+      options.register("enableForcePool", {
+        name: game.i18n.localize("SWFFG.EnableForcePool"),
+        hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
+        default: true,
       });
     }
 
@@ -147,15 +151,14 @@ export class ActorSheetFFG extends ActorSheet {
         let itemId = li.data("itemId");
 
         let item = this.actor.getOwnedItem(itemId);
-        if(!item) {
+        if (!item) {
           item = game.items.get(itemId);
 
-          if(!item) {
+          if (!item) {
             item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
           }
         }
 
-        
         if (item?.sheet) {
           item.sheet.render(true);
         }
@@ -169,45 +172,47 @@ export class ActorSheetFFG extends ActorSheet {
       li.slideUp(200, () => this.render(false));
     });
 
-    html.find(".item-info").click(ev => {
+    html.find(".item-info").click((ev) => {
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
-     
-      const item = this.actor.data.data.talentList.find(talent => {
+
+      const item = this.actor.data.data.talentList.find((talent) => {
         return talent.itemId === itemId;
       });
 
       const title = `${game.i18n.localize("SWFFG.TalentSource")} ${item.name}`;
 
-      new Dialog({
-        title : title,
-        content : {
-          source : item.source
-        },
-        buttons: {
-          done : {
-            icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize("SWFFG.ButtonAccept"),
-            callback: (html) => {
-              const talentsToRemove = $(html).find("input[type='checkbox']:checked");
-              CONFIG.logger.debug(`Removing ${talentsToRemove.length} talents`);
-
-              for(let i = 0; i < talentsToRemove.length; i+=1) {
-                const id = $(talentsToRemove[i]).val();
-                this.actor.deleteOwnedItem(id);
-              }
-
-            }
+      new Dialog(
+        {
+          title: title,
+          content: {
+            source: item.source,
           },
-          cancel : {
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize("SWFFG.Cancel")
-          }
+          buttons: {
+            done: {
+              icon: '<i class="fas fa-check"></i>',
+              label: game.i18n.localize("SWFFG.ButtonAccept"),
+              callback: (html) => {
+                const talentsToRemove = $(html).find("input[type='checkbox']:checked");
+                CONFIG.logger.debug(`Removing ${talentsToRemove.length} talents`);
+
+                for (let i = 0; i < talentsToRemove.length; i += 1) {
+                  const id = $(talentsToRemove[i]).val();
+                  this.actor.deleteOwnedItem(id);
+                }
+              },
+            },
+            cancel: {
+              icon: '<i class="fas fa-times"></i>',
+              label: game.i18n.localize("SWFFG.Cancel"),
+            },
+          },
+        },
+        {
+          classes: ["dialog", "starwarsffg"],
+          template: "systems/starwarsffg/templates/actors/dialogs/ffg-talent-selector.html",
         }
-      }, {
-        classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/actors/dialogs/ffg-talent-selector.html"
-      }).render(true);
+      ).render(true);
     });
 
     // Setup dice pool image and hide filtered skills
@@ -385,7 +390,7 @@ export class ActorSheetFFG extends ActorSheet {
     this.actor.data.flags.loaded = false;
     return this.object.update(formData);
   }
-  
+
   _addSkillDicePool(elem) {
     const data = this.getData();
     const skillName = elem.dataset["ability"];
@@ -475,11 +480,11 @@ export class ActorSheetFFG extends ActorSheet {
       const specializationTalents = spec.data.talents;
       for (let talent in specializationTalents) {
         let gameItem;
-        if(specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
+        if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
           const pack = await game.packs.get(specializationTalents[talent].pack);
           await pack.getIndex();
-          const entry = await pack.index.find(e => e._id === specializationTalents[talent].itemId);
-          gameItem = await pack.getEntity(entry._id)
+          const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+          gameItem = await pack.getEntity(entry._id);
         } else {
           gameItem = game.items.get(specializationTalents[talent].itemId);
         }
