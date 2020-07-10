@@ -162,7 +162,7 @@ export class ItemFFG extends Item {
           const pack = game.packs.get(specializationTalents[talent].pack);
           await pack.getIndex();
           const entry = pack.index.find(e => e._id === specializationTalents[talent].itemId);
-          gameItem = await pack.getEntity(entry._id)
+          gameItem = (await pack.getEntity(entry._id)).data;
         } catch {
           CONFIG.logger.debug('Pack Item, deferring load.')
         }
@@ -172,7 +172,6 @@ export class ItemFFG extends Item {
         });
       }
      
-
       if(gameItem && !this.isOwned) {
         this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
       }
