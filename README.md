@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 10/07/2020 - Cstadther - Fixed bug with latest dice roller update.
 - 10/07/2020 - Cstadther - Bug fix for importing specializations
 - 09/07/2020 - Esrin - Added Force Pool toggle to character sheet configuration.
 - 09/07/2020 - Esrin - Fixed bug with Initiative Rolls caused by core changes in FVTT 0.6.5. This removes backwards compatibility with previous versions.
