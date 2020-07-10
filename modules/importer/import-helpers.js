@@ -75,6 +75,7 @@ export default class ImportHelpers {
    * @returns {object} - Entity Update Object
    */
   static buildUpdateData = (newItem) => {
+    CONFIG.logger.debug(`Starting BuildUpdateData for item - ${newItem.name}`);
     let updateData = {};
     if(newItem.img) {
       updateData.img = newItem.img;
@@ -101,6 +102,7 @@ export default class ImportHelpers {
         updateData[datakey] = `${newItem.data[key]}`
       }
     }
+    CONFIG.logger.debug(`Completed BuildUpdateData for item - ${newItem.name}`);
     return updateData
   }
 
