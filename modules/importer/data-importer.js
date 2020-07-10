@@ -789,7 +789,7 @@ export default class DataImporter extends FormApplication {
               careerskills: {}
             }
           };
-          this._importLogger(`Start importing Specialization ${specialization.Name}`);
+          this._importLogger(`Start importing Specialization ${specialization.name}`);
 
           // assign career skills
           try {
