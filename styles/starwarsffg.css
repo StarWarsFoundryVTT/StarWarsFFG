@@ -634,11 +634,6 @@ span.dietype.triumph {
 
 .starwarsffg .skill-characteristic {
   display: inline;
-  cursor: pointer;
-}
-
-.starwarsffg .skill-characteristic:hover {
-  text-decoration: underline;
 }
 
 .starwarsffg .skill-characteristic-select-dialog {
@@ -689,6 +684,101 @@ span.dietype.triumph {
 }
 
 .starwarsffg .tableWithHeader table .careerskill-rank {
+  width: 30px;
+  text-align: center;
+}
+
+.starwarsffg .skillsGrid {
+  overflow-y: auto;
+  height: calc(100% - 6.5rem);
+}
+
+.starwarsffg .skillsGrid .pure-g {
+  letter-spacing: initial;
+}
+
+.starwarsffg .skillsGrid .skillTable {
+  border: 1px solid #7a7971;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.starwarsffg .skillsGrid .skillTable .skillsHeader div {
+  text-align: center;
+  padding: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  background-color: #490c0b;
+  color: white;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.starwarsffg .skillsGrid .skillTable .skillsHeader div:first-of-type {
+  text-align: left;
+}
+
+.starwarsffg .skillsGrid .skillTable div.skill > div {
+  text-align: center;
+}
+
+.starwarsffg .skillsGrid .skillTable div.skill > div:first-of-type {
+  text-align: left;
+  padding-left: 3px;
+  padding-top: 7px;
+}
+
+.starwarsffg .skillsGrid .skillTable div.skill input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin: 2px 5px;
+}
+
+.starwarsffg .skillsGrid .skillTable .careerskill-toggle {
+  margin: 0;
+  padding: 0;
+}
+
+.starwarsffg .skillsGrid .skillTable .careerskill-rank {
+  margin-top: 2px;
+  width: 30px;
+  text-align: center;
+}
+
+.starwarsffg .skillsGrid .dice-pool {
+  margin: .5em 0;
+}
+
+.starwarsffg .skillsGrid .dice-pool img {
+  width: 1em;
+  height: 1em;
+  border: 0;
+}
+
+.starwarsffg .skillsGrid table th {
+  text-align: left;
+  padding: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  background-color: #490c0b;
+  color: white;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.starwarsffg .skillsGrid table td {
+  padding: 0 0 0 3px;
+}
+
+.starwarsffg .skillsGrid table td .dice-pool img {
+  width: 1em;
+  height: 1em;
+  border: 0;
+}
+
+.starwarsffg .skillsGrid table .careerskill-toggle {
+  margin: 0;
+  padding: 0;
+}
+
+.starwarsffg .skillsGrid table .careerskill-rank {
   width: 30px;
   text-align: center;
 }
