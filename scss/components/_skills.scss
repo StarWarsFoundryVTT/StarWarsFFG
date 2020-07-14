@@ -1,10 +1,5 @@
 .skill-characteristic {
   display: inline;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }
 
 .skill-characteristic-select-dialog {
@@ -62,6 +57,108 @@
     }
   }
 }
+
+.skillsGrid {
+  overflow-y: auto;
+  height: calc(100% - 6.5rem);
+  
+  .pure-g {
+    letter-spacing: initial;
+  }
+
+  .skillTable {
+    border: 1px solid #7a7971;
+    background: rgba(0, 0, 0, 0.05);
+
+    .skillsHeader {
+      div {
+        text-align: center;
+        padding: 3px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+        background-color: rgb(73, 12, 11);
+        color: white;
+        font-size: 12px;
+        font-weight: normal;
+        &:first-of-type {
+          text-align: left;
+        }
+      }
+    }
+    div.skill {
+      & > div {
+        text-align: center;
+
+        &:first-of-type {
+          text-align: left;
+          padding-left: 3px;
+          padding-top: 7px;
+        }
+      }
+
+      input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin: 2px 5px;
+      }
+    }
+
+    .careerskill-toggle {
+      margin: 0; 
+      padding: 0;
+    }
+
+    .careerskill-rank {
+      margin-top:2px;
+      width: 30px;
+      text-align: center;
+    }
+
+  }
+
+  .dice-pool {
+    margin: .5em 0;
+    img {
+      width: 1em;
+      height: 1em;
+      border: 0;
+    }
+  }
+    
+  table {
+    th {
+      text-align: left;
+      padding: 3px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+      background-color: rgb(73, 12, 11);
+      color: white;
+      font-size: 12px;
+      font-weight: normal;
+    }
+
+    td {
+      padding: 0 0 0 3px;
+
+      .dice-pool {
+        img {
+          width: 1em;
+          height: 1em;
+          border: 0;
+        }
+      }
+    }
+
+    .careerskill-toggle {
+      margin: 0;
+      padding: 0;
+    }
+
+    .careerskill-rank {
+      width: 30px;
+      text-align: center;
+    }
+  }
+}
+
 
 table {
   &.items {

@@ -94,6 +94,16 @@ export class ActorSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
+    new ContextMenu(html, ".skillsGrid .skill", [
+      {
+        name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
+        icon: '<i class="fas fa-times"></i>',
+        callback: li => {
+          this._onChangeSkillCharacteristic(li);
+        }
+      }
+    ])
+
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);
       options.register("enableObligation", {
@@ -268,44 +278,45 @@ export class ActorSheetFFG extends ActorSheet {
         $(a).val("2");
       }
     });
+  }
 
-    $("div.skill-characteristic").on("click", (event) => {
-      const a = event.currentTarget;
-      const characteristic = a.dataset.characteristic;
-      const ability = $(a).parents("tr[data-ability]")[0].dataset.ability;
-      const label = CONFIG.FFG.skills[ability].label;
 
-      new Dialog(
-        {
-          title: `${game.i18n.localize("SWFFG.SkillCharacteristicDialogTitle")} ${game.i18n.localize(label)}`,
-          content: {
-            options: CONFIG.FFG.characteristics,
-            char: characteristic,
+  _onChangeSkillCharacteristic(a) {
+    //const a = event.currentTarget;
+    const characteristic = $(a).data("characteristic");
+    const ability = $(a).data("ability");
+    const label = CONFIG.FFG.skills[ability].label;
+
+    new Dialog(
+      {
+        title: `${game.i18n.localize("SWFFG.SkillCharacteristicDialogTitle")} ${game.i18n.localize(label)}`,
+        content: {
+          options: CONFIG.FFG.characteristics,
+          char: characteristic,
+        },
+        buttons: {
+          one: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.ButtonAccept"),
+            callback: (html) => {
+              let newCharacteristic = $(html).find("input[type='radio']:checked").val();
+
+              CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
+
+              this.object.update({ [`data.skills.${ability}.characteristic`]: newCharacteristic });
+            },
           },
-          buttons: {
-            one: {
-              icon: '<i class="fas fa-check"></i>',
-              label: game.i18n.localize("SWFFG.ButtonAccept"),
-              callback: (html) => {
-                let newCharacteristic = $(html).find("input[type='radio']:checked").val();
-
-                CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
-
-                this.object.update({ [`data.skills.${ability}.characteristic`]: newCharacteristic });
-              },
-            },
-            two: {
-              icon: '<i class="fas fa-times"></i>',
-              label: game.i18n.localize("SWFFG.Cancel"),
-            },
+          two: {
+            icon: '<i class="fas fa-times"></i>',
+            label: game.i18n.localize("SWFFG.Cancel"),
           },
         },
-        {
-          classes: ["dialog", "starwarsffg"],
-          template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
-        }
-      ).render(true);
-    });
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
+      }
+    ).render(true);
   }
 
   /* -------------------------------------------- */

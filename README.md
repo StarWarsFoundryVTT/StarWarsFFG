@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/07/2020 - Cstadther - Updated skill display code using new grid css, added context menu to skill list for modifing skill characteristic.
 - 10/07/2020 - Cstadther - Fixed bug with latest dice roller update.
 - 10/07/2020 - Cstadther - Bug fix for importing specializations
 - 09/07/2020 - Esrin - Added Force Pool toggle to character sheet configuration.

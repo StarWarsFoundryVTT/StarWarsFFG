@@ -282,5 +282,6 @@
   "SWFFG.Consumables": "Consumables",
   "SWFFG.Days": "Days",
   "SWFFG.Months": "Months",
-  "SWFFG.Years": "Years"
+  "SWFFG.Years": "Years",
+  "SWFFG.SkillChangeCharacteristicContextItem": "Change Characteristic"
 }
