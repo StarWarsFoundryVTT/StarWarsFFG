@@ -155,7 +155,7 @@ export default class ImportHelpers {
     for (let packId of packs) {
       if(!CONFIG.temporary[packId]) {
         const pack = await game.packs.get(packId);
-        if(pack.entity === type) {
+        if(pack.entity === type && !pack.locked) {
           CONFIG.logger.debug(`Caching pack content ${packId}`);
           CONFIG.temporary[packId] = {};
           
@@ -167,7 +167,7 @@ export default class ImportHelpers {
       } else {
         CONFIG.logger.debug(`Using cached content for ${packId}`);
       }
-      if(CONFIG.temporary[packId][id]) {
+      if(CONFIG.temporary?.[packId]?.[id]) {
         return CONFIG.temporary[packId][id];
       }      
     }
