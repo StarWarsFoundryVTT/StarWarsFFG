@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/07/2020 - Cstadther - Added right click context menu to add skills (done from skill header row), and delete a skill by left clicking and selecting `Remove Skill`
 - 14/07/2020 - Cstadther - Import fix for locked compendiums
 - 14/07/2020 - Cstadther - Updated skill display code using new grid css, added context menu to skill list for modifing skill characteristic.
 - 10/07/2020 - Cstadther - Fixed bug with latest dice roller update.

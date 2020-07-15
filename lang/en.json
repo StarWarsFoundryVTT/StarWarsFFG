@@ -283,5 +283,8 @@
   "SWFFG.Days": "Days",
   "SWFFG.Months": "Months",
   "SWFFG.Years": "Years",
-  "SWFFG.SkillChangeCharacteristicContextItem": "Change Characteristic"
+  "SWFFG.SkillChangeCharacteristicContextItem": "Change Characteristic",
+  "SWFFG.SkillAddContextItem": "Add Skill",
+  "SWFFG.SkillAddDialogTitle": "Create A New Skill",
+  "SWFFG.SkillRemoveContextItem": "Remove Skill"
 }
