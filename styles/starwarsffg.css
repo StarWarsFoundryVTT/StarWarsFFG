@@ -645,6 +645,11 @@ span.dietype.triumph {
   list-style: none;
 }
 
+.starwarsffg .skill-create-dialog {
+  display: inline-flex;
+  margin: auto;
+}
+
 .starwarsffg .tableWithHeader {
   overflow-y: auto;
   margin: 0;

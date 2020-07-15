@@ -97,12 +97,29 @@ export class ActorSheetFFG extends ActorSheet {
     new ContextMenu(html, ".skillsGrid .skill", [
       {
         name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
-        icon: '<i class="fas fa-times"></i>',
+        icon: '<i class="fas fa-wrench"></i>',
         callback: li => {
           this._onChangeSkillCharacteristic(li);
         }
+      },
+      {
+        name: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
+        icon: '<i class="fas fa-times"></i>',
+        callback: li => {
+          this._onRemoveSkill(li);
+        }
       }
-    ])
+    ]);
+
+    new ContextMenu(html, "div.skillsHeader", [
+      {
+        name: game.i18n.localize("SWFFG.SkillAddContextItem"),
+        icon: '<i class="fas fa-plus-circle"></i>',
+        callback: li => {
+          this._onCreateSkill(li);
+        }
+      }
+    ]);
 
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);
@@ -280,12 +297,14 @@ export class ActorSheetFFG extends ActorSheet {
     });
   }
 
-
   _onChangeSkillCharacteristic(a) {
     //const a = event.currentTarget;
     const characteristic = $(a).data("characteristic");
     const ability = $(a).data("ability");
-    const label = CONFIG.FFG.skills[ability].label;
+    let label = ability;
+    if(CONFIG.FFG.skills[ability]?.label) {
+      label = CONFIG.FFG.skills[ability].label;
+    }
 
     new Dialog(
       {
@@ -317,6 +336,59 @@ export class ActorSheetFFG extends ActorSheet {
         template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
       }
     ).render(true);
+  }
+
+  _onCreateSkill(a) {
+    const group = $(a).parent().data("type");
+
+    new Dialog(
+      {
+        title: `${game.i18n.localize("SWFFG.SkillAddDialogTitle")}`,
+        content: {
+          options: CONFIG.FFG.characteristics,
+        },
+        buttons: {
+          one: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.ButtonAccept"),
+            callback: (html) => {
+              const name = $(html).find("input[name='name']").val();
+              const characteristic = $(html).find("select[name='characteristic']").val()
+
+              let newSkill = {
+                careerskill: false,
+                characteristic,
+                groupskill: false,
+                label: name,
+                max: 6,
+                rank: 0,
+                type: group,
+                custom: true
+              }
+
+              if(name.trim().length > 0) {
+                CONFIG.logger.debug(`Creating new skill ${name} (${characteristic})`);
+
+                this.object.update({ [`data.skills.${name}`]: newSkill });
+              }
+            },
+          },
+          two: {
+            icon: '<i class="fas fa-times"></i>',
+            label: game.i18n.localize("SWFFG.Cancel"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-new.html",
+      }
+    ).render(true);
+  }
+
+  _onRemoveSkill(a) {
+    const ability = $(a).data("ability");
+    this.object.update({"data.skills": {["-=" + ability]:null}});
   }
 
   /* -------------------------------------------- */
