@@ -223,6 +223,7 @@ span.dietype.triumph {
 
 .starwarsffg .character {
   min-width: 575px;
+  flex: auto;
 }
 
 .starwarsffg .position-relative {
