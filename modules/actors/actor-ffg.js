@@ -39,9 +39,7 @@ export class ActorFFG extends Actor {
       const strId = `SWFFG.SkillsName${cleanedSkillName}`;
       const localizedField = game.i18n.localize(strId);
 
-      if(!data.skills[skill].custom) { 
-        data.skills[skill].label = localizedField;
-      }
+      data.skills[skill].label = localizedField;
       data.skills = this._sortSkills(data.skills);
     }
   }
