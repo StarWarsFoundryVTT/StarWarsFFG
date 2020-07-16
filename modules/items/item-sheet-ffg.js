@@ -222,7 +222,7 @@ export class ItemSheetFFG extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  async _updateObject(event, formData) {
+  _updateObject(event, formData) {
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
     // Handle the free-form attributes list
@@ -255,7 +255,7 @@ export class ItemSheetFFG extends ItemSheet {
 
     // Update the Item
     this.item.data.flags.loaded = false;
-    await this.object.update(formData);
+    return this.object.update(formData);
 
     if(this.object.data.type === "talent" ) {
       let data = this.object.data.data;

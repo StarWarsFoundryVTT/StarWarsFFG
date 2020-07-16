@@ -200,6 +200,7 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     html.find(".item-info").click((ev) => {
+      ev.stopPropagation()
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
 
