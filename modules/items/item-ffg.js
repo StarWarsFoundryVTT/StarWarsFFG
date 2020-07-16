@@ -1,4 +1,5 @@
 import PopoutEditor from "../popout-editor.js";
+import ActorOptions from "../actors/actor-ffg-options.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -86,7 +87,7 @@ export class ItemFFG extends Item {
     for (let upgrade of controls) {
       if (upgrade.includes(itemType)) {
         if (talents[upgrade].islearned) {
-          const item = talents[upgrade];
+          const item = JSON.parse(JSON.stringify(talents[upgrade]));
 
           if(item.isRanked || listProperty === "powerUpgrades") {
             item.rank = 1;
@@ -103,6 +104,10 @@ export class ItemFFG extends Item {
           } else {
             itemList[index].rank += 1;
           }
+        }
+
+        if (typeof talents[upgrade].visible === "undefined") {
+          talents[upgrade].visible = true;
         }
 
         if (talents[upgrade].visible) {
@@ -123,11 +128,6 @@ export class ItemFFG extends Item {
         }
 
         talents[upgrade].canCombine = false;
-
-        if (typeof talents[upgrade].visible === "undefined") {
-          talents[upgrade].visible = true;
-        }
-
         talents[upgrade].canLinkTop = true;
         talents[upgrade].canLinkRight = true;
 

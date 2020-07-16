@@ -786,7 +786,8 @@ export default class DataImporter extends FormApplication {
             data: {
               description: specData.Specialization.Description,
               talents: {},
-              careerskills: {}
+              careerskills: {},
+              isReadOnly: true
             }
           };
           this._importLogger(`Start importing Specialization ${specialization.name}`);
@@ -853,6 +854,9 @@ export default class DataImporter extends FormApplication {
                 rowTalent.activationLabel = talentItem.data.data.activation.label;
                 rowTalent.isForceTalent = talentItem.data.data.isForceTalent === "true" ? true : false;
                 rowTalent.isRanked =  talentItem.data.data.ranks.ranked === "true" ? true : false;
+                rowTalent.size = "single";
+                rowTalent.canLinkTop = true;
+                rowTalent.canLinkRight = true;
                 rowTalent.itemId = talentItem.data._id;
 
                 if(row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
