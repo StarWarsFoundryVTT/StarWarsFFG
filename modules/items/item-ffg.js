@@ -105,6 +105,10 @@ export class ItemFFG extends Item {
           }
         }
 
+        if (typeof talents[upgrade].visible === "undefined") {
+          talents[upgrade].visible = true;
+        }
+
         if (talents[upgrade].visible) {
           if (!talents[upgrade].size || talents[upgrade].size === "single") {
             talents[upgrade].size = "single";
@@ -123,11 +127,6 @@ export class ItemFFG extends Item {
         }
 
         talents[upgrade].canCombine = false;
-
-        if (typeof talents[upgrade].visible === "undefined") {
-          talents[upgrade].visible = true;
-        }
-
         talents[upgrade].canLinkTop = true;
         talents[upgrade].canLinkRight = true;
 
