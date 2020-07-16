@@ -99,32 +99,60 @@ export class ActorFFG extends Actor {
 
     const globalTalentList = [];
     specializations.forEach((element) => {
-      if (element?.talentList && element.talentList.length > 0) {
-        element.talentList.forEach((talent) => {
-          const item = JSON.parse(JSON.stringify(talent));
-          item.firstSpecialization = element._id;
-          item.source = [{ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
-          item.safe_desc = PopoutEditor.renderDiceImages(talent.description.replace(/(<([^>]+)>)/gi, ""));
+
+      //go throut each list of talent where learned = true
+
+      const learnedTalents = Object.keys(element.data.talents).filter(key => element.data.talents[key].islearned === true);
+
+      learnedTalents.forEach(talent => {
+        const item = JSON.parse(JSON.stringify(element.data.talents[talent]));
+        item.firstSpecialization = element._id;
+        item.source = [{ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
+        item.safe_desc = PopoutEditor.renderDiceImages(item.description.replace(/(<([^>]+)>)/gi, ""));
+        if (item.isRanked) {
+          item.rank = element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
+        } else {
+          item.rank = "N/A";
+        }
+
+        let index = globalTalentList.findIndex((obj) => {
+          return obj.name === item.name;
+        });
+
+        if (index < 0 || !item.isRanked) {
+          globalTalentList.push(item);
+        } else {
+          globalTalentList[index].source.push({ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id })
+          globalTalentList[index].rank += element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
+        }
+      });
+
+      // if (element?.talentList && element.talentList.length > 0) {
+      //   element.talentList.forEach((talent) => {
+      //     const item = JSON.parse(JSON.stringify(talent));
+      //     item.firstSpecialization = element._id;
+      //     item.source = [{ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
+      //     item.safe_desc = PopoutEditor.renderDiceImages(talent.description.replace(/(<([^>]+)>)/gi, ""));
           
 
-          if (item.isRanked) {
-            item.rank = talent.rank;
-          } else {
-            item.rank = "N/A";
-          }
+      //     if (item.isRanked) {
+      //       item.rank = talent.rank;
+      //     } else {
+      //       item.rank = "N/A";
+      //     }
 
-          let index = globalTalentList.findIndex((obj) => {
-            return obj.name === item.name;
-          });
+      //     let index = globalTalentList.findIndex((obj) => {
+      //       return obj.name === item.name;
+      //     });
 
-          if (index < 0 || !item.isRanked) {
-            globalTalentList.push(item);
-          } else {
-            globalTalentList[index].source.push({ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id })
-            globalTalentList[index].rank += talent.rank;
-          }
-        });
-      }
+      //     if (index < 0 || !item.isRanked) {
+      //       globalTalentList.push(item);
+      //     } else {
+      //       globalTalentList[index].source.push({ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id })
+      //       globalTalentList[index].rank += talent.rank;
+      //     }
+      //   });
+      // }
     });
 
     const talents = actorData.items.filter((item) => {
@@ -160,6 +188,16 @@ export class ActorFFG extends Actor {
         globalTalentList[index].rank += element.data.ranks.current;
       }
 
+    });
+
+    globalTalentList.sort((a, b) => {
+      let comparison = 0;
+      if (a.name > b.name) {
+        comparison = 1;
+      } else if (a.name < b.name) {
+        comparison = -1;
+      }
+      return comparison;
     });
 
 

@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 16/07/2020 - Cstadther - Fix for specialization and talent combined talent list for adversaries and characters.
 - 15/07/2020 - Cstadther - Import fix for specializations, prepopulate data that is not being populated through item-ffg.js load routine.
 - 15/07/2020 - Cstadther - CSS Fix, set flex to `auto` on character sheet to resolve issue with different form height between FF and Chrome
 - 14/07/2020 - Cstadther - Added right click context menu to add skills (done from skill header row), and delete a skill by left clicking and selecting `Remove Skill`
