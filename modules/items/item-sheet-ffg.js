@@ -1,4 +1,5 @@
 import PopoutEditor from "../popout-editor.js";
+import Helpers from "../helpers/common.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -117,12 +118,12 @@ export class ItemSheetFFG extends ItemSheet {
       callback: (clicked) => (this._sheetTab = clicked.data("tab")),
     });
 
-    html.find(".specialization-talent .talent-body").on("click", (event) => {
+    html.find(".specialization-talent .talent-body").on("click", async (event) => {
       const li = event.currentTarget;
       const parent = $(li).parents(".specialization-talent")[0];
       const itemId = parent.dataset.itemid;
 
-      const item = game.items.get(itemId);
+      const item = await Helpers.getSpecializationTalent(itemId);
       item.sheet.render(true);
     });
 
@@ -277,7 +278,7 @@ export class ItemSheetFFG extends ItemSheet {
           game.data.items.forEach(item => {
             if(item.type === "specialization") {
               for (let talentData in item.data.talents) {
-                if(item.data.talents[talentData].itemId === this.data._id) {
+                if(item.data.talents[talentData].itemId === this.object.data._id) {
                   if(!data.trees.includes(item._id)) {
                     data.trees.push(item._id);
                   }
