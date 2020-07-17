@@ -286,5 +286,7 @@
   "SWFFG.SkillChangeCharacteristicContextItem": "Change Characteristic",
   "SWFFG.SkillAddContextItem": "Add Skill",
   "SWFFG.SkillAddDialogTitle": "Create A New Skill",
-  "SWFFG.SkillRemoveContextItem": "Remove Skill"
+  "SWFFG.SkillRemoveContextItem": "Remove Skill",
+  "SWFFG.DefenseRangedLabel": "Defense (Ranged)",
+  "SWFFG.DefenseMeleeLabel": "Defense (Melee)"
 }
