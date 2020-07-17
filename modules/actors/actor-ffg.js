@@ -17,6 +17,8 @@ export class ActorFFG extends Actor {
 
     // Make separate methods for each Actor type (character, minion, etc.) to keep
     // things organized.
+
+    this._prepareSharedData(actorData);
     if (actorData.type === "minion") this._prepareMinionData(actorData);
     if (actorData.type === "character") this._prepareCharacterData(actorData);
   }
@@ -44,14 +46,15 @@ export class ActorFFG extends Actor {
       }
       data.skills = this._sortSkills(data.skills);
     }
+
+    this._applyModifiers(actorData);
+
   }
 
   /**
    * Prepare Minion type specific data
    */
   _prepareMinionData(actorData) {
-    this._prepareSharedData(actorData);
-
     const data = actorData.data;
 
     // Set Wounds threshold to unit_wounds * quantity to account for minion group health.
@@ -83,8 +86,6 @@ export class ActorFFG extends Actor {
    * Prepare Character type specific data
    */
   _prepareCharacterData(actorData) {
-    this._prepareSharedData(actorData);
-
     const data = actorData.data;
 
     if (game.settings.get("starwarsffg", "enableSoakCalc")) {
@@ -126,33 +127,6 @@ export class ActorFFG extends Actor {
           globalTalentList[index].rank += element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
         }
       });
-
-      // if (element?.talentList && element.talentList.length > 0) {
-      //   element.talentList.forEach((talent) => {
-      //     const item = JSON.parse(JSON.stringify(talent));
-      //     item.firstSpecialization = element._id;
-      //     item.source = [{ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
-      //     item.safe_desc = PopoutEditor.renderDiceImages(talent.description.replace(/(<([^>]+)>)/gi, ""));
-          
-
-      //     if (item.isRanked) {
-      //       item.rank = talent.rank;
-      //     } else {
-      //       item.rank = "N/A";
-      //     }
-
-      //     let index = globalTalentList.findIndex((obj) => {
-      //       return obj.name === item.name;
-      //     });
-
-      //     if (index < 0 || !item.isRanked) {
-      //       globalTalentList.push(item);
-      //     } else {
-      //       globalTalentList[index].source.push({ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id })
-      //       globalTalentList[index].rank += talent.rank;
-      //     }
-      //   });
-      // }
     });
 
     const talents = actorData.items.filter((item) => {
@@ -343,5 +317,64 @@ export class ActorFFG extends Actor {
     });
     skills = skillobject;
     return skills;
+  }
+
+
+  _applyModifiers(actorData) {
+    const data = actorData.data;
+    // Characteristics
+
+    // first get the attributes associated with the characteristics
+    const attributesForCharacteristics = Object.keys(data.attributes).filter(key => {
+      return Object.keys(CONFIG.FFG.characteristics).includes(key);
+    });
+    const characteristics = attributesForCharacteristics.map(key => Object.assign(data.attributes[key], { key }) );
+
+    // loop through all characteristics and prepopulate any attributes not created yet.
+    actorData.characteristics = Object.keys(CONFIG.FFG.characteristics).map(key => {
+      let attr = (characteristics.find(item => item.mod === key));
+
+      if(!attr) {
+        data.attributes[`${key}`] = {
+          modtype : "Characteristic",
+          mod : key,
+          value : 0
+        }
+        attr = {
+          key: `${key}`,
+          value: 0
+        }
+      }
+
+      return {
+        id: attr.key,
+        key,
+        value: attr?.value ? parseInt(attr.value, 10) : 0,
+        modtype : "Characteristic",
+        mod : key,
+        label : game.i18n.localize(CONFIG.FFG.characteristics[key].label)
+      }
+    })
+
+    Object.keys(CONFIG.FFG.characteristics).forEach(key => {
+      let total = 0;
+
+      total += data.attributes[key].value;
+
+      actorData.items.forEach(item => {
+        const attrsToApply = Object.keys(item.data.attributes).filter(id => item.data.attributes[id].mod === key).map(i => item.data.attributes[i]);
+
+        if(attrsToApply.length > 0) {
+          attrsToApply.forEach(attr => {
+            total += parseInt(attr.value, 10);
+          })
+          
+        }
+      });
+
+      data.characteristics[key].value = total > 7 ? 7 : total;
+    })
+
+    console.log(actorData.characteristics)
   }
 }

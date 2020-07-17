@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/07/2020 - Cstadther - Add characteristic modifiers to character/adversary/minion sheets, add drag/drop of species onto character/adversaries (not minion)
 - 16/07/2020 - Cstadther - Added species item type, values stored in modifiers, preparing for characteristic modifiers.
 - 16/07/2020 - Cstadther - Fix for specialization and talent combined talent list for adversaries and characters.
 - 15/07/2020 - Cstadther - Import fix for specializations, prepopulate data that is not being populated through item-ffg.js load routine.

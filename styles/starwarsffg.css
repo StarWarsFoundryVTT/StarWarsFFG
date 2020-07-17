@@ -461,6 +461,17 @@ span.dietype.triumph {
   cursor: pointer;
 }
 
+.starwarsffg .header-fields .row .row-input .species-pill {
+  padding: 3px 9px;
+  background-color: #aaa;
+  border: 1px solid black;
+  border-radius: 20px;
+}
+
+.starwarsffg .header-fields .row .row-input .species-pill .item-delete {
+  cursor: pointer;
+}
+
 .starwarsffg .header-fields .row input {
   width: 100%;
   border: 0;
