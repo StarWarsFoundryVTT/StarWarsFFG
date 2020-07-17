@@ -20,6 +20,9 @@ import DataImporter from "./importer/data-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
 
+// Import Dice Types
+import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
+
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
@@ -58,6 +61,15 @@ Hooks.once("init", async function () {
   CONFIG.Actor.entityClass = ActorFFG;
   CONFIG.Item.entityClass = ItemFFG;
   CONFIG.Combat.entityClass = CombatFFG;
+
+  // Define DiceTerms
+  CONFIG.Dice.terms["a"] = AbilityDie;
+  CONFIG.Dice.terms["b"] = BoostDie;
+  CONFIG.Dice.terms["c"] = ChallengeDie;
+  CONFIG.Dice.terms["d"] = DifficultyDie;
+  CONFIG.Dice.terms["f"] = ForceDie;
+  CONFIG.Dice.terms["p"] = ProficiencyDie;
+  CONFIG.Dice.terms["s"] = SetbackDie;
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   Token.prototype._drawBar = function (number, bar, data) {
