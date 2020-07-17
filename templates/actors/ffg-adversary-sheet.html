@@ -388,6 +388,7 @@
         </tbody>
       </table>
       {{!-- Force Powers List --}}
+      {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}}
       <table class="talent-list">
         <thead>
           <tr>
@@ -429,6 +430,7 @@
           {{/iff}} {{/each}}
         </tbody>
       </table>
+      {{/if}}
     </div>
 
     {{!-- Biography Tab --}}
