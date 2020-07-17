@@ -529,10 +529,13 @@
     }
   },
   "Item": {
-    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticaldamage", "forcepower", "specialization"],
+    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticaldamage", "forcepower", "specialization", "species"],
     "templates": {
-      "basic": {
+      "core": {
         "description": "",
+        "attributes": {}
+      },
+      "basic": {
         "quantity": {
           "value": 1,
           "type": "Number",
@@ -554,8 +557,7 @@
           "value": 0,
           "type": "Number",
           "label": "Rarity"
-        },
-        "attributes": {}
+        }
       },
       "hardpoints": {
         "hardpoints": {
@@ -574,10 +576,10 @@
       }
     },
     "gear": {
-      "templates": ["basic"]
+      "templates": ["core", "basic"]
     },
     "weapon": {
-      "templates": ["basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable"],
       "skill": {
         "value": "Ranged: Light",
         "type": "String",
@@ -607,7 +609,7 @@
       }
     },
     "armour": {
-      "templates": ["basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable"],
       "defence": {
         "value": 0,
         "type": "Number",
@@ -621,8 +623,7 @@
       }
     },
     "talent": {
-      "templates": ["basic"],
-      "description": "",
+      "templates": ["core"],
       "activation": {
         "value": "Passive",
         "type": "String",
@@ -634,11 +635,10 @@
         "min": 0
       },
       "isForceTalent": false,
-      "trees": [],
-      "attributes": {}
+      "trees": []
     },
     "shipweapon": {
-      "templates": ["basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable"],
       "label": "Ship Weapon",
       "firingarc": {
         "value": "Fore",
@@ -669,59 +669,26 @@
       }
     },
     "shipattachment": {
-      "templates": ["basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable"],
       "label": "Ship Attachment"
     },
     "species": {
-      "description": "",
-      "careerskills": [],
-      "characteristics": {
-        "Brawn": {
-          "value": 2,
-          "label": "Brawn",
-          "abrev": "Br"
-        },
-        "Agility": {
-          "value": 2,
-          "label": "Agility",
-          "abrev": "Ag"
-        },
-        "Intellect": {
-          "value": 2,
-          "label": "Intellect",
-          "abrev": "Int"
-        },
-        "Cunning": {
-          "value": 2,
-          "label": "Cunning",
-          "abrev": "Cun"
-        },
-        "Willpower": {
-          "value": 2,
-          "label": "Willpower",
-          "abrev": "Will"
-        },
-        "Presence": {
-          "value": 2,
-          "label": "Presence",
-          "abrev": "Pr"
-        }
-      }
+      "templates": ["core"]
     },
     "criticalinjury": {
+      "templates": ["core"],
       "min": 0,
       "max": 0,
-      "severity": 1,
-      "description": ""
+      "severity": 1
     },
     "criticaldamage": {
+      "templates": ["core"],
       "min": 0,
       "max": 0,
-      "severity": 1,
-      "description": ""
+      "severity": 1
     },
     "forcepower": {
-      "description": "",
+      "templates": ["core"],
       "upgrades": {
         "upgrade0": {},
         "upgrade1": {},
@@ -739,11 +706,10 @@
         "upgrade13": {},
         "upgrade14": {},
         "upgrade15": {}
-      },
-      "attributes": {}
+      }
     },
     "specialization": {
-      "description": "",
+      "templates": ["core"],
       "talents": {
         "talent0": {},
         "talent1": {},
@@ -765,8 +731,7 @@
         "talent17": {},
         "talent18": {},
         "talent19": {}
-      },
-      "attributes": {}
+      }
     }
   }
 }
