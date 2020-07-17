@@ -95,6 +95,67 @@ export class ItemSheetFFG extends ItemSheet {
           }
         }
         break;
+      case "species" : 
+        this.position.width = 550;
+
+        const attributesForCharacteristics = Object.keys(data.data.attributes).filter(key => {
+          return Object.keys(CONFIG.FFG.characteristics).includes(key);
+        });
+
+        const speciesCharacteristics = attributesForCharacteristics.map(key => Object.assign(data.data.attributes[key], { key }) );
+        data.characteristics = Object.keys(CONFIG.FFG.characteristics).map(key => {
+          let attr = (speciesCharacteristics.find(item => item.mod === key));
+
+          if(!attr) {
+            data.data.attributes[`${key}`] = {
+              modtype : "Characteristic",
+              mod : key,
+              value : 0
+            }
+            attr = {
+              key: `${key}`,
+              value: 0
+            }
+          }
+
+          return {
+            id: attr.key,
+            key,
+            value: attr?.value ? parseInt(attr.value, 10) : 0,
+            modtype : "Characteristic",
+            mod : key,
+            label : game.i18n.localize(CONFIG.FFG.characteristics[key].label)
+          }
+        })
+
+        if(!data.data.attributes?.Wounds) {
+          data.data.attributes.Wounds = {
+            modtype : "Stat",
+            mod : "Wounds",
+            value : 0
+          }
+        }
+        if(!data.data.attributes?.Strain) {
+          data.data.attributes.Strain = {
+            modtype : "Stat",
+            mod : "Strain",
+            value : 0
+          }
+        }
+
+
+
+        const attributesToDisplay = Object.keys(data.data.attributes).filter(key => {
+          return key.startsWith("attr");
+        });
+
+        data.attributes = {};
+
+        attributesToDisplay.forEach(key => {
+          data.attributes[key] = data.data.attributes[key];
+        })
+
+        break;
       default:
     }
 
