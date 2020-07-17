@@ -181,31 +181,11 @@ export class ActorFFG extends Actor {
   _calculateDerivedValues(actorData) {
     const data = actorData.data;
     const items = actorData.items;
-    var soak = 0;
-    var armoursoak = 0;
-    var othersoak = 0;
     var encum = 0;
-    var defence = 0;
-    // Calculate soak based on Brawn value, and any Soak modifiers in weapons, armour, gear and talents.
-    // Start with Brawn. Also calculate total encumbrance from items.
-    soak = +data.characteristics.Brawn.value;
-
+    
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
       try {
-        // For armour type, get all Soak values and add to armoursoak.
-        if (item.type === "armour" && item?.data?.equippable?.equipped) {
-          armoursoak += +item.data.soak.value;
-          defence = Math.max(defence, item.data.defence.value)
-        }
-        // Loop through all item attributes and add any modifiers to our collection.
-        for (let mod in item.data.attributes) {
-          if (mod.mod == "Soak") {
-            othersoak += +mod.value;
-          }
-          
-        }
-
         // Calculate encumbrance, only if encumbrance value exists
         if (item.data?.encumbrance?.value) {
           if (item.type === "armour" && !item?.data?.equippable?.equipped) {
@@ -221,17 +201,6 @@ export class ActorFFG extends Actor {
 
     // Set Encumbrance value on character.
     data.stats.encumbrance.value = encum;
-
-    // Add together all of our soak results.
-    soak += +armoursoak;
-    soak += +othersoak;
-
-    // Finally set Soak value on character.
-    data.stats.soak.value = soak;
-
-    // Set defence value of equipped items.
-    data.stats.defence.ranged = defence;
-    data.stats.defence.melee = defence;
   }
 
   /**
@@ -322,7 +291,7 @@ export class ActorFFG extends Actor {
 
   _applyModifiers(actorData) {
     const data = actorData.data;
-    // Characteristics
+    /* Characteristics */
 
     // first get the attributes associated with the characteristics
     const attributesForCharacteristics = Object.keys(data.attributes).filter(key => {
@@ -375,6 +344,82 @@ export class ActorFFG extends Actor {
       data.characteristics[key].value = total > 7 ? 7 : total;
     })
 
-    console.log(actorData.characteristics)
+    /* Stats */
+
+    const attributesForStats = Object.keys(data.attributes).filter(key => Object.keys(CONFIG.FFG.character_stats).includes(key)).map(key => Object.assign(data.attributes[key], { key }));
+
+    const credits = data.stats.credits;
+    actorData.stats = Object.keys(CONFIG.FFG.character_stats).map(k => {
+      const key = CONFIG.FFG.character_stats[k].value;
+
+      let attr = (attributesForStats.find(item => item.mod.toLowerCase() === key.toLowerCase()));
+
+      if(!attr) {
+        data.attributes[`${key}`] = {
+          modtype : "Stat",
+          mod : key,
+          value : key === "Soak" ? data.characteristics["Brawn"].value : 0
+        }
+        attr = {
+          key: `${key}`,
+          value: key === "Soak" ? data.characteristics["Brawn"].value : 0
+        }
+      }
+
+      return {
+        id: attr.key,
+        key,
+        value: attr?.value ? parseInt(attr.value, 10) : 0,
+        modtype : "Stat",
+        mod : key,
+        label : game.i18n.localize(CONFIG.FFG.character_stats[k].label)
+      }
+    });
+
+    Object.keys(CONFIG.FFG.character_stats).forEach(k => {
+      const key = CONFIG.FFG.character_stats[k].value;
+
+      let total = 0;
+
+      total += data.attributes[key].value;
+
+      actorData.items.forEach(item => {
+        const attrsToApply = Object.keys(item.data.attributes).filter(id => item.data.attributes[id].mod === key).map(i => item.data.attributes[i]);
+
+        if (item.type === "armour" && item?.data?.equippable?.equipped) {
+          if(key === "Soak") {
+            total += parseInt(item.data.soak.value, 10);
+          }
+          if(key === "Defence-Melee" || key === "Defence-Ranged") {
+            // get the highest defense item
+            const shouldUse = actorData.items.filter(i => item.data.defence >= i.data.defence).length >= 0;
+            if(shouldUse) {
+              total += parseInt(item.data.defence.value, 10);
+            }
+          }
+          
+          //defence = Math.max(defence, item.data.defence.value)
+        }
+
+        if(attrsToApply.length > 0) {
+          attrsToApply.forEach(attr => {
+            total += parseInt(attr.value, 10);
+          })
+          
+        }
+      });
+
+      if(key === "Soak") {
+        data.stats[k].value = total;
+      } else if (key === "Defence-Melee") {
+        data.stats.defence.melee = total;
+      } else if (key === "Defence-Ranged"){
+        data.stats.defence.ranged = total;
+      } else {
+        data.stats[k].max = total;  
+      }
+     
+    })
+
   }
 }

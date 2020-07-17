@@ -65,9 +65,13 @@ FFG.character_stats = {
     value: "Soak",
     label: "SWFFG.Soak",
   },
-  "defence": {
-    value: "Defence",
-    label: "SWFFG.Defense",
+  "defencemelee": {
+    value: "Defence-Melee",
+    label: "SWFFG.DefenseMeleeLabel",
+  },
+  "defenceranged": {
+    value: "Defence-Ranged",
+    label: "SWFFG.DefenseRangedLabel",
   },
   "encumbrance": {
     value: "Encumbrance",
@@ -76,11 +80,7 @@ FFG.character_stats = {
   "forcePool": {
     value: "ForcePool",
     label: "SWFFG.ForcePool",
-  },
-  "credits": {
-    value: "Credits",
-    label: "SWFFG.DescriptionCredits",
-  },
+  }
 };
 
 FFG.skills = {
