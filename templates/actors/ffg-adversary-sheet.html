@@ -19,7 +19,11 @@
             <div class="table">
               <div class="row">
                 <div>{{localize "SWFFG.Species"}}:</div>
-                <div class="row-input"><input name="data.species.value" type="text" value="{{data.species.value}}" data-dtype="String" /></div>
+                <div class="row-input">
+                  {{#each actor.items as |item id|}} {{#iff item.type '==' 'species'}}
+                    <div class="species-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
+                  {{/iff}}{{/each}}
+                </div>
               </div>
               <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Career"}}:</div>

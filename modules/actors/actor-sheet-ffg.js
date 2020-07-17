@@ -94,6 +94,23 @@ export class ActorSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
+    Hooks.on("preCreateOwnedItem", (actor, item, options, userid) => {
+      if(item.type === "species" ) {
+        if(actor.data.type === "character") {
+          // we only allow one species, find any other species and remove them.
+          const speciesToDelete = actor.items.filter(item => item.type === "species");
+          speciesToDelete.forEach(species => {
+            this.actor.deleteOwnedItem(species._id);
+          })
+        } else {
+          return false;
+        }
+      } 
+
+      return true;
+    });
+
+
     new ContextMenu(html, ".skillsGrid .skill", [
       {
         name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
@@ -438,10 +455,42 @@ export class ActorSheetFFG extends ActorSheet {
     await this._onSubmit(event);
   }
 
+
+  _getCalculatedValue(key) {
+    let total = 0;
+
+    total += this.actor.data.data.attributes[key].value;
+
+    this.actor.data.items.forEach(item => {
+      const attrsToApply = Object.keys(item.data.attributes).filter(id => item.data.attributes[id].mod === key).map(i => item.data.attributes[i]);
+
+      if(attrsToApply.length > 0) {
+        attrsToApply.forEach(attr => {
+          total += parseInt(attr.value, 10);
+        })
+      }
+    });
+
+    return total;
+  }
+
+
   /* -------------------------------------------- */
 
   /** @override */
   _updateObject(event, formData) {
+
+    Object.keys(CONFIG.FFG.characteristics).forEach(key => {
+      let total = this._getCalculatedValue(key);
+      let x = parseInt(formData[`data.characteristics.${key}.value`], 10) - total;
+      let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+      if(y > 0) {
+        formData[`data.attributes.${key}.value`] = y;
+      } else {
+        formData[`data.attributes.${key}.value`] = 0;
+      }
+    })
+
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {

@@ -384,17 +384,10 @@
       },
       "attributes": {
         "attributes": {}
-      },
-      "modifiers": {
-        "modifiers": {
-          "Characteristic": {},
-          "Skill Rank": {},
-          "Stat": {}
-        }
       }
     },
     "character": {
-      "templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes", "modifiers"],
+      "templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes"],
       "encumbrance": {
         "value": 0,
         "type": "Number",
@@ -427,7 +420,7 @@
       }
     },
     "minion": {
-      "templates": ["biography", "stats", "characteristics", "skills", "attributes", "modifiers"],
+      "templates": ["biography", "stats", "characteristics", "skills", "attributes"],
       "quantity": {
         "value": 1,
         "max": 1,
