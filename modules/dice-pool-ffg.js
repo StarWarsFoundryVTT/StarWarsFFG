@@ -112,6 +112,39 @@ export class AbilityDie extends DiceTerm {
 
   /* -------------------------------------------- */
   /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._evaluated) {
+      throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
+    }
+
+    // Roll the initial number of dice
+    for (let n = 1; n <= this.number; n++) {
+      this.roll({ minimize, maximize });
+    }
+
+    // Apply modifiers
+    this._evaluateModifiers();
+
+    // Combine all FFG results.
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.results.forEach((result) => {
+      this.ffg.success += parseInt(result.ffg.success);
+      this.ffg.failure += parseInt(result.ffg.failure);
+      this.ffg.advantage += parseInt(result.ffg.advantage);
+      this.ffg.threat += parseInt(result.ffg.threat);
+      this.ffg.triumph += parseInt(result.ffg.triumph);
+      this.ffg.despair += parseInt(result.ffg.despair);
+      this.ffg.light += parseInt(result.ffg.light);
+      this.ffg.dark += parseInt(result.ffg.dark);
+    });
+
+    // Return the evaluated term
+    this._evaluated = true;
+    return this;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
   roll(options) {
     const roll = super.roll(options);
     roll.ffg = ABILITY_RESULTS[roll.result];
@@ -138,6 +171,39 @@ export class BoostDie extends DiceTerm {
   /** @override */
   get formula() {
     return `${this.number}${this.constructor.DENOMINATION}${this.modifiers.join("")}`;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._evaluated) {
+      throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
+    }
+
+    // Roll the initial number of dice
+    for (let n = 1; n <= this.number; n++) {
+      this.roll({ minimize, maximize });
+    }
+
+    // Apply modifiers
+    this._evaluateModifiers();
+
+    // Combine all FFG results.
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.results.forEach((result) => {
+      this.ffg.success += parseInt(result.ffg.success);
+      this.ffg.failure += parseInt(result.ffg.failure);
+      this.ffg.advantage += parseInt(result.ffg.advantage);
+      this.ffg.threat += parseInt(result.ffg.threat);
+      this.ffg.triumph += parseInt(result.ffg.triumph);
+      this.ffg.despair += parseInt(result.ffg.despair);
+      this.ffg.light += parseInt(result.ffg.light);
+      this.ffg.dark += parseInt(result.ffg.dark);
+    });
+
+    // Return the evaluated term
+    this._evaluated = true;
+    return this;
   }
 
   /* -------------------------------------------- */
@@ -172,6 +238,39 @@ export class ChallengeDie extends DiceTerm {
 
   /* -------------------------------------------- */
   /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._evaluated) {
+      throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
+    }
+
+    // Roll the initial number of dice
+    for (let n = 1; n <= this.number; n++) {
+      this.roll({ minimize, maximize });
+    }
+
+    // Apply modifiers
+    this._evaluateModifiers();
+
+    // Combine all FFG results.
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.results.forEach((result) => {
+      this.ffg.success += parseInt(result.ffg.success);
+      this.ffg.failure += parseInt(result.ffg.failure);
+      this.ffg.advantage += parseInt(result.ffg.advantage);
+      this.ffg.threat += parseInt(result.ffg.threat);
+      this.ffg.triumph += parseInt(result.ffg.triumph);
+      this.ffg.despair += parseInt(result.ffg.despair);
+      this.ffg.light += parseInt(result.ffg.light);
+      this.ffg.dark += parseInt(result.ffg.dark);
+    });
+
+    // Return the evaluated term
+    this._evaluated = true;
+    return this;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
   roll(options) {
     const roll = super.roll(options);
     roll.ffg = CHALLENGE_RESULTS[roll.result];
@@ -198,6 +297,39 @@ export class DifficultyDie extends DiceTerm {
   /** @override */
   get formula() {
     return `${this.number}${this.constructor.DENOMINATION}${this.modifiers.join("")}`;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._evaluated) {
+      throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
+    }
+
+    // Roll the initial number of dice
+    for (let n = 1; n <= this.number; n++) {
+      this.roll({ minimize, maximize });
+    }
+
+    // Apply modifiers
+    this._evaluateModifiers();
+
+    // Combine all FFG results.
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.results.forEach((result) => {
+      this.ffg.success += parseInt(result.ffg.success);
+      this.ffg.failure += parseInt(result.ffg.failure);
+      this.ffg.advantage += parseInt(result.ffg.advantage);
+      this.ffg.threat += parseInt(result.ffg.threat);
+      this.ffg.triumph += parseInt(result.ffg.triumph);
+      this.ffg.despair += parseInt(result.ffg.despair);
+      this.ffg.light += parseInt(result.ffg.light);
+      this.ffg.dark += parseInt(result.ffg.dark);
+    });
+
+    // Return the evaluated term
+    this._evaluated = true;
+    return this;
   }
 
   /* -------------------------------------------- */
@@ -232,6 +364,39 @@ export class ForceDie extends DiceTerm {
 
   /* -------------------------------------------- */
   /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._evaluated) {
+      throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
+    }
+
+    // Roll the initial number of dice
+    for (let n = 1; n <= this.number; n++) {
+      this.roll({ minimize, maximize });
+    }
+
+    // Apply modifiers
+    this._evaluateModifiers();
+
+    // Combine all FFG results.
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.results.forEach((result) => {
+      this.ffg.success += parseInt(result.ffg.success);
+      this.ffg.failure += parseInt(result.ffg.failure);
+      this.ffg.advantage += parseInt(result.ffg.advantage);
+      this.ffg.threat += parseInt(result.ffg.threat);
+      this.ffg.triumph += parseInt(result.ffg.triumph);
+      this.ffg.despair += parseInt(result.ffg.despair);
+      this.ffg.light += parseInt(result.ffg.light);
+      this.ffg.dark += parseInt(result.ffg.dark);
+    });
+
+    // Return the evaluated term
+    this._evaluated = true;
+    return this;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
   roll(options) {
     const roll = super.roll(options);
     roll.ffg = FORCE_RESULTS[roll.result];
@@ -258,6 +423,39 @@ export class ProficiencyDie extends DiceTerm {
   /** @override */
   get formula() {
     return `${this.number}${this.constructor.DENOMINATION}${this.modifiers.join("")}`;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._evaluated) {
+      throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
+    }
+
+    // Roll the initial number of dice
+    for (let n = 1; n <= this.number; n++) {
+      this.roll({ minimize, maximize });
+    }
+
+    // Apply modifiers
+    this._evaluateModifiers();
+
+    // Combine all FFG results.
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.results.forEach((result) => {
+      this.ffg.success += parseInt(result.ffg.success);
+      this.ffg.failure += parseInt(result.ffg.failure);
+      this.ffg.advantage += parseInt(result.ffg.advantage);
+      this.ffg.threat += parseInt(result.ffg.threat);
+      this.ffg.triumph += parseInt(result.ffg.triumph);
+      this.ffg.despair += parseInt(result.ffg.despair);
+      this.ffg.light += parseInt(result.ffg.light);
+      this.ffg.dark += parseInt(result.ffg.dark);
+    });
+
+    // Return the evaluated term
+    this._evaluated = true;
+    return this;
   }
 
   /* -------------------------------------------- */
@@ -292,6 +490,39 @@ export class SetbackDie extends DiceTerm {
 
   /* -------------------------------------------- */
   /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._evaluated) {
+      throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
+    }
+
+    // Roll the initial number of dice
+    for (let n = 1; n <= this.number; n++) {
+      this.roll({ minimize, maximize });
+    }
+
+    // Apply modifiers
+    this._evaluateModifiers();
+
+    // Combine all FFG results.
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.results.forEach((result) => {
+      this.ffg.success += parseInt(result.ffg.success);
+      this.ffg.failure += parseInt(result.ffg.failure);
+      this.ffg.advantage += parseInt(result.ffg.advantage);
+      this.ffg.threat += parseInt(result.ffg.threat);
+      this.ffg.triumph += parseInt(result.ffg.triumph);
+      this.ffg.despair += parseInt(result.ffg.despair);
+      this.ffg.light += parseInt(result.ffg.light);
+      this.ffg.dark += parseInt(result.ffg.dark);
+    });
+
+    // Return the evaluated term
+    this._evaluated = true;
+    return this;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
   roll(options) {
     const roll = super.roll(options);
     roll.ffg = SETBACK_RESULTS[roll.result];
@@ -302,6 +533,88 @@ export class SetbackDie extends DiceTerm {
   /** @override */
   static getResultLabel(result) {
     return SETBACK_RESULTS[result].label;
+  }
+}
+
+/**
+ * New extension of the core DicePool class for evaluating rolls with the FFG DiceTerms
+ */
+export class RollFFG extends Roll {
+  constructor(...args) {
+    super(...args);
+    this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+    this.hasFFG = false;
+  }
+
+  /* -------------------------------------------- */
+
+  /* -------------------------------------------- */
+  /** @override */
+  evaluate({ minimize = false, maximize = false } = {}) {
+    if (this._rolled) throw new Error("This Roll object has already been rolled.");
+
+    // Step 1 - evaluate any inner Rolls and recompile the formula
+    let hasInner = false;
+    this.terms = this.terms.map((t) => {
+      if (t instanceof RollFFG) {
+        hasInner = true;
+        t.evaluate({ minimize, maximize });
+        this._dice = this._dice.concat(t.dice);
+        return `${t.total}`;
+      }
+      return t;
+    });
+
+    // Step 2 - if inner rolls occurred, re-compile the formula and re-identify terms
+    if (hasInner) {
+      const formula = this.constructor.cleanFormula(this.terms);
+      this.terms = this._identifyTerms(formula);
+    }
+
+    // Step 3 - evaluate any remaining terms and return any non-FFG dice to the total.
+    this.results = this.terms.map((term) => {
+      if (!game.ffg.diceterms.includes(term.constructor)) {
+        if (term.evaluate) return term.evaluate({ minimize, maximize }).total;
+        else return term;
+      } else {
+        if (term.evaluate) term.evaluate({ minimize, maximize });
+        this.hasFFG = true;
+        return 0;
+      }
+    });
+
+    // Step 4 - safely evaluate the final total
+    const total = this._safeEval(this.results.join(" "));
+    if (!Number.isNumeric(total)) {
+      throw new Error(game.i18n.format("DICE.ErrorNonNumeric", { formula: this.formula }));
+    }
+
+    // Step 5 - Retrieve all FFG results and combine into a single total.
+    if (this.hasFFG) {
+      this.terms.forEach((term) => {
+        if (game.ffg.diceterms.includes(term.constructor)) {
+          this.ffg.success += parseInt(term.ffg.success);
+          this.ffg.failure += parseInt(term.ffg.failure);
+          this.ffg.advantage += parseInt(term.ffg.advantage);
+          this.ffg.threat += parseInt(term.ffg.threat);
+          this.ffg.triumph += parseInt(term.ffg.triumph);
+          this.ffg.despair += parseInt(term.ffg.despair);
+          this.ffg.light += parseInt(term.ffg.light);
+          this.ffg.dark += parseInt(term.ffg.dark);
+        }
+      });
+    }
+
+    // Store final outputs
+    this._total = total;
+    this._rolled = true;
+    return this;
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
+  roll() {
+    return this.evaluate();
   }
 }
 

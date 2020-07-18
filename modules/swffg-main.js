@@ -12,7 +12,7 @@ import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
 import { AdversarySheetFFG } from "./actors/adversary-sheet-ffg.js";
-import { DicePoolFFG } from "./dice-pool-ffg.js";
+import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
 import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
@@ -35,9 +35,11 @@ Hooks.once("init", async function () {
     ActorFFG,
     ItemFFG,
     CombatFFG,
+    RollFFG,
     addons: {
       PopoutEditor,
     },
+    diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
   };
 
   // Check required module is active and store result to game.requirements_installed
@@ -62,6 +64,9 @@ Hooks.once("init", async function () {
   CONFIG.Item.entityClass = ItemFFG;
   CONFIG.Combat.entityClass = CombatFFG;
 
+  // Define custom Roll class
+  CONFIG.Dice.rolls["RollFFG"] = RollFFG;
+
   // Define DiceTerms
   CONFIG.Dice.terms["a"] = AbilityDie;
   CONFIG.Dice.terms["b"] = BoostDie;
@@ -70,6 +75,12 @@ Hooks.once("init", async function () {
   CONFIG.Dice.terms["f"] = ForceDie;
   CONFIG.Dice.terms["p"] = ProficiencyDie;
   CONFIG.Dice.terms["s"] = SetbackDie;
+
+  // Give global access to FFG config.
+  CONFIG.FFG = FFG;
+
+  // TURN ON OR OFF HOOK DEBUGGING
+  CONFIG.debug.hooks = false;
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   Token.prototype._drawBar = function (number, bar, data) {
@@ -152,12 +163,6 @@ Hooks.once("init", async function () {
 
     return roll;
   };
-
-  // TURN ON OR OFF HOOK DEBUGGING
-  CONFIG.debug.hooks = false;
-
-  // Give global access to FFG config.
-  CONFIG.FFG = FFG;
 
   /**
    * Set an initiative formula for the system
