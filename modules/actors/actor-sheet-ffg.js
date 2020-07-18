@@ -29,7 +29,7 @@ export class ActorSheetFFG extends ActorSheet {
       width: 710,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],
-      scrollY: [".tableWithHeader", ".tab"],
+      scrollY: [".tableWithHeader", ".tab", ".skillsGrid"],
     });
   }
 
@@ -95,47 +95,46 @@ export class ActorSheetFFG extends ActorSheet {
     if (!this.options.editable) return;
 
     Hooks.on("preCreateOwnedItem", (actor, item, options, userid) => {
-      if(item.type === "species" ) {
-        if(actor.data.type === "character") {
+      if (item.type === "species") {
+        if (actor.data.type === "character") {
           // we only allow one species, find any other species and remove them.
-          const speciesToDelete = actor.items.filter(item => item.type === "species");
-          speciesToDelete.forEach(species => {
+          const speciesToDelete = actor.items.filter((item) => item.type === "species");
+          speciesToDelete.forEach((species) => {
             this.actor.deleteOwnedItem(species._id);
-          })
+          });
         } else {
           return false;
         }
-      } 
+      }
 
       return true;
     });
-
 
     new ContextMenu(html, ".skillsGrid .skill", [
       {
         name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
         icon: '<i class="fas fa-wrench"></i>',
-        callback: li => {
+        callback: (li) => {
           this._onChangeSkillCharacteristic(li);
-        }
+        },
       },
       {
         name: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
         icon: '<i class="fas fa-times"></i>',
-        callback: li => {
+        callback: (li) => {
           this._onRemoveSkill(li);
-        }
-      }
+        },
+      },
     ]);
 
     new ContextMenu(html, "div.skillsHeader", [
       {
         name: game.i18n.localize("SWFFG.SkillAddContextItem"),
         icon: '<i class="fas fa-plus-circle"></i>',
-        callback: li => {
+        callback: (li) => {
           this._onCreateSkill(li);
-        }
-      }
+        },
+      },
     ]);
 
     if (this.actor.data.type === "character") {
@@ -217,7 +216,7 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     html.find(".item-info").click((ev) => {
-      ev.stopPropagation()
+      ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
 
@@ -320,7 +319,7 @@ export class ActorSheetFFG extends ActorSheet {
     const characteristic = $(a).data("characteristic");
     const ability = $(a).data("ability");
     let label = ability;
-    if(CONFIG.FFG.skills[ability]?.label) {
+    if (CONFIG.FFG.skills[ability]?.label) {
       label = CONFIG.FFG.skills[ability].label;
     }
 
@@ -371,7 +370,7 @@ export class ActorSheetFFG extends ActorSheet {
             label: game.i18n.localize("SWFFG.ButtonAccept"),
             callback: (html) => {
               const name = $(html).find("input[name='name']").val();
-              const characteristic = $(html).find("select[name='characteristic']").val()
+              const characteristic = $(html).find("select[name='characteristic']").val();
 
               let newSkill = {
                 careerskill: false,
@@ -381,10 +380,10 @@ export class ActorSheetFFG extends ActorSheet {
                 max: 6,
                 rank: 0,
                 type: group,
-                custom: true
-              }
+                custom: true,
+              };
 
-              if(name.trim().length > 0) {
+              if (name.trim().length > 0) {
                 CONFIG.logger.debug(`Creating new skill ${name} (${characteristic})`);
 
                 this.object.update({ [`data.skills.${name}`]: newSkill });
@@ -406,7 +405,7 @@ export class ActorSheetFFG extends ActorSheet {
 
   _onRemoveSkill(a) {
     const ability = $(a).data("ability");
-    this.object.update({"data.skills": {["-=" + ability]:null}});
+    this.object.update({ "data.skills": { ["-=" + ability]: null } });
   }
 
   /* -------------------------------------------- */
@@ -455,41 +454,40 @@ export class ActorSheetFFG extends ActorSheet {
     await this._onSubmit(event);
   }
 
-
   _getCalculatedValue(key) {
     let total = 0;
 
     total += this.actor.data.data.attributes[key].value;
 
-    this.actor.data.items.forEach(item => {
-      const attrsToApply = Object.keys(item.data.attributes).filter(id => item.data.attributes[id].mod === key).map(i => item.data.attributes[i]);
+    this.actor.data.items.forEach((item) => {
+      const attrsToApply = Object.keys(item.data.attributes)
+        .filter((id) => item.data.attributes[id].mod === key)
+        .map((i) => item.data.attributes[i]);
 
-      if(attrsToApply.length > 0) {
-        attrsToApply.forEach(attr => {
+      if (attrsToApply.length > 0) {
+        attrsToApply.forEach((attr) => {
           total += parseInt(attr.value, 10);
-        })
+        });
       }
     });
 
     return total;
   }
 
-
   /* -------------------------------------------- */
 
   /** @override */
   _updateObject(event, formData) {
-
-    Object.keys(CONFIG.FFG.characteristics).forEach(key => {
+    Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
       let total = this._getCalculatedValue(key);
       let x = parseInt(formData[`data.characteristics.${key}.value`], 10) - total;
       let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
-      if(y > 0) {
+      if (y > 0) {
         formData[`data.attributes.${key}.value`] = y;
       } else {
         formData[`data.attributes.${key}.value`] = 0;
       }
-    })
+    });
 
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
