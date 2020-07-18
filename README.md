@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/07/2020 - Cstadther - Bug Fix #218 - Fixed the Minion Sheet's scrolling issue
 - 17/07/2020 - Cstadther - Bug Fix #214 - disabling force pool will now also disable force powers section
 - 17/07/2020 - Cstadther - Add stat modifiers, and reworked Soak/Defence calculation to allow for modifiers of just Melee or Ranged Defense
 - 17/07/2020 - Cstadther - Add characteristic modifiers to character/adversary/minion sheets, add drag/drop of species onto character/adversaries (not minion)

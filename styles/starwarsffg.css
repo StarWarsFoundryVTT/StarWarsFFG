@@ -2210,6 +2210,10 @@ span.dietype.triumph {
   line-height: 15px;
 }
 
+.starwarsffg .minion {
+  flex: auto;
+}
+
 .starwarsffg .minion .minion-name {
   flex: 1;
   flex-wrap: wrap;
