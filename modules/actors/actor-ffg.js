@@ -48,7 +48,9 @@ export class ActorFFG extends Actor {
     }
 
     this._applyModifiers(actorData);
-
+    if (game.settings.get("starwarsffg", "enableSoakCalc")) {
+      this._calculateDerivedValues(actorData);
+    }
   }
 
   /**
@@ -87,10 +89,6 @@ export class ActorFFG extends Actor {
    */
   _prepareCharacterData(actorData) {
     const data = actorData.data;
-
-    if (game.settings.get("starwarsffg", "enableSoakCalc")) {
-      this._calculateDerivedValues(actorData);
-    }
 
     // Build complete talent list.
 
@@ -292,7 +290,6 @@ export class ActorFFG extends Actor {
   _applyModifiers(actorData) {
     const data = actorData.data;
     /* Characteristics */
-
     // first get the attributes associated with the characteristics
     const attributesForCharacteristics = Object.keys(data.attributes).filter(key => {
       return Object.keys(CONFIG.FFG.characteristics).includes(key);
@@ -304,14 +301,15 @@ export class ActorFFG extends Actor {
       let attr = (characteristics.find(item => item.mod === key));
 
       if(!attr) {
+        // the expected attrbute for the characteristic doesn't exist, this is an older or new character, we need to migrate the current value to an attribute
         data.attributes[`${key}`] = {
           modtype : "Characteristic",
           mod : key,
-          value : 0
+          value : data.characteristics[key].value
         }
         attr = {
           key: `${key}`,
-          value: 0
+          value: data.characteristics[key].value
         }
       }
 
@@ -355,14 +353,27 @@ export class ActorFFG extends Actor {
       let attr = (attributesForStats.find(item => item.mod.toLowerCase() === key.toLowerCase()));
 
       if(!attr) {
+        // the expected attrbute for the stat doesn't exist, this is an older or new character, we need to migrate the current value to an attribute
+        let value = 0;
+
+        if(key === "Soak") {
+          value = data.stats[k].value;
+        } else if (key === "Defence-Melee") {
+          value = data.stats.defence.melee;
+        } else if (key === "Defence-Ranged"){
+          value = data.stats.defence.ranged;
+        } else {
+          value = data.stats[k].max;  
+        }
+
         data.attributes[`${key}`] = {
           modtype : "Stat",
           mod : key,
-          value : key === "Soak" ? data.characteristics["Brawn"].value : 0
+          valuevalue
         }
         attr = {
           key: `${key}`,
-          value: key === "Soak" ? data.characteristics["Brawn"].value : 0
+          value
         }
       }
 

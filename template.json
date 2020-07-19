@@ -61,37 +61,37 @@
       "characteristics": {
         "characteristics": {
           "Brawn": {
-            "value": 2,
+            "value": 0,
             "label": "Brawn",
             "abrev": "Br",
             "max": 7
           },
           "Agility": {
-            "value": 2,
+            "value": 0,
             "label": "Agility",
             "abrev": "Ag",
             "max": 7
           },
           "Intellect": {
-            "value": 2,
+            "value": 0,
             "label": "Intellect",
             "abrev": "Int",
             "max": 7
           },
           "Cunning": {
-            "value": 2,
+            "value": 0,
             "label": "Cunning",
             "abrev": "Cun",
             "max": 7
           },
           "Willpower": {
-            "value": 2,
+            "value": 0,
             "label": "Willpower",
             "abrev": "Will",
             "max": 7
           },
           "Presence": {
-            "value": 2,
+            "value": 0,
             "label": "Presence",
             "abrev": "Pr",
             "max": 7
