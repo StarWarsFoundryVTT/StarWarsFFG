@@ -28,32 +28,32 @@ export class ActorFFG extends Actor {
     console.log(data);
     // localize characteristic names
     if (actorData.type !== "vehicle") {
-    for (let characteristic of Object.keys(data.characteristics)) {
-      const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
-      const localizedField = game.i18n.localize(strId);
+      for (let characteristic of Object.keys(data.characteristics)) {
+        const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
+        const localizedField = game.i18n.localize(strId);
 
-      data.characteristics[characteristic].label = localizedField;
-    }
+        data.characteristics[characteristic].label = localizedField;
+      }
 
-    //localize skill names
-    for (let skill of Object.keys(data.skills)) {
-      const cleanedSkillName = skill.replace(/[\W_]+/g, "");
+      //localize skill names
+      for (let skill of Object.keys(data.skills)) {
+        const cleanedSkillName = skill.replace(/[\W_]+/g, "");
 
-      const strId = `SWFFG.SkillsName${cleanedSkillName}`;
-      const localizedField = game.i18n.localize(strId);
+        const strId = `SWFFG.SkillsName${cleanedSkillName}`;
+        const localizedField = game.i18n.localize(strId);
 
         if (!data.skills[skill].custom) {
-        data.skills[skill].label = localizedField;
+          data.skills[skill].label = localizedField;
+        }
+        data.skills = this._sortSkills(data.skills);
       }
-      data.skills = this._sortSkills(data.skills);
-    }
     }
 
     if (actorData.type === "minion" || actorData.type === "character") {
       this._applyModifiers(actorData);
       if (game.settings.get("starwarsffg", "enableSoakCalc")) {
         this._calculateDerivedValues(actorData);
-       }
+      }
     }
   }
 
@@ -289,20 +289,26 @@ export class ActorFFG extends Actor {
 
   _setModifiers(actorData, properties, name, modifierType) {
     const data = actorData.data;
-    const attributes = Object.keys(data.attributes).filter(key => Object.keys(properties).map(item => item.toLowerCase()).includes(key.toLowerCase())).map(key => Object.assign(data.attributes[key], { key }));
+    const attributes = Object.keys(data.attributes)
+      .filter((key) =>
+        Object.keys(properties)
+          .map((item) => item.toLowerCase())
+          .includes(key.toLowerCase())
+      )
+      .map((key) => Object.assign(data.attributes[key], { key }));
 
-    actorData.modifiers[name] = Object.keys(properties).map(k => {
+    actorData.modifiers[name] = Object.keys(properties).map((k) => {
       const key = properties[k].value;
-      let attr = (attributes.find(item => item.key === key));
+      let attr = attributes.find((item) => item.key === key);
 
       if (!attr) {
         let value = 0;
 
-        if(data[name][k]?.max && name !== "characteristics") {
+        if (data[name][k]?.max && name !== "characteristics") {
           value = data[name][k].max;
         } else if (key === "Defence-Melee") {
           value = data.stats.defence.melee;
-        } else if (key === "Defence-Ranged"){
+        } else if (key === "Defence-Ranged") {
           value = data.stats.defence.ranged;
         } else {
           value = data[name][k].value;
@@ -310,14 +316,14 @@ export class ActorFFG extends Actor {
 
         // the expected attrbute for the characteristic doesn't exist, this is an older or new character, we need to migrate the current value to an attribute
         data.attributes[`${key}`] = {
-          modtype : modifierType,
-          mod : key,
-          value
-        }
+          modtype: modifierType,
+          mod: key,
+          value,
+        };
         attr = {
           key: `${key}`,
-          value
-        }
+          value,
+        };
       } else {
         data.attributes[`${key}`].modtype = modifierType;
         data.attributes[`${key}`].mod = key;
@@ -327,9 +333,9 @@ export class ActorFFG extends Actor {
       return {
         key,
         value: attr?.value ? parseInt(attr.value, 10) : 0,
-        modtype : modifierType,
-        mod : key
-      }
+        modtype: modifierType,
+        mod: key,
+      };
     });
   }
 
@@ -338,10 +344,10 @@ export class ActorFFG extends Actor {
     if (!actorData.modifiers) {
       actorData.modifiers = {};
     }
-    
+
     /* Characteristics */
     this._setModifiers(actorData, CONFIG.FFG.characteristics, "characteristics", "Characteristic");
-    Object.keys(CONFIG.FFG.characteristics).forEach(key => {
+    Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
       let total = 0;
 
       total += data.attributes[key].value;
@@ -351,19 +357,18 @@ export class ActorFFG extends Actor {
           .filter((id) => item.data.attributes[id].mod === key)
           .map((i) => item.data.attributes[i]);
 
-        if(attrsToApply.length > 0) {
-
+        if (attrsToApply.length > 0) {
           // only apply actor updates if equipable item is equipped.
-          if ((item.type === "armour" || item.type === "weapon") ) {
-            if(item?.data?.equippable?.equipped) {
-              attrsToApply.forEach(attr => {
+          if (item.type === "armour" || item.type === "weapon") {
+            if (item?.data?.equippable?.equipped) {
+              attrsToApply.forEach((attr) => {
                 total += parseInt(attr.value, 10);
-              })
+              });
             }
           } else {
-            attrsToApply.forEach(attr => {
+            attrsToApply.forEach((attr) => {
               total += parseInt(attr.value, 10);
-            })
+            });
           }
         }
       });
@@ -372,7 +377,7 @@ export class ActorFFG extends Actor {
     });
 
     /* Stats */
-    
+
     this._setModifiers(actorData, CONFIG.FFG.character_stats, "stats", "Stat");
     Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
       const key = CONFIG.FFG.character_stats[k].value;
@@ -387,28 +392,28 @@ export class ActorFFG extends Actor {
           .map((i) => item.data.attributes[i]);
 
         if (item.type === "armour" || item.type === "weapon") {
-          if(item?.data?.equippable?.equipped) {
-          if (key === "Soak") {
+          if (item?.data?.equippable?.equipped) {
+            if (key === "Soak") {
               total += parseInt(item.data.soak.value, 10);
             }
-          if (key === "Defence-Melee" || key === "Defence-Ranged") {
+            if (key === "Defence-Melee" || key === "Defence-Ranged") {
               // get the highest defense item
-            const shouldUse = actorData.items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
-            if (shouldUse) {
+              const shouldUse = actorData.items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
+              if (shouldUse) {
                 total += parseInt(item.data.defence.value, 10);
               }
             }
-            if(attrsToApply.length > 0) {
-              attrsToApply.forEach(attr => {
+            if (attrsToApply.length > 0) {
+              attrsToApply.forEach((attr) => {
                 total += parseInt(attr.value, 10);
-              })
+              });
             }
           }
         } else {
-        if (attrsToApply.length > 0) {
-          attrsToApply.forEach((attr) => {
+          if (attrsToApply.length > 0) {
+            attrsToApply.forEach((attr) => {
               total += parseInt(attr.value, 10);
-            })
+            });
           }
         }
       });
@@ -422,6 +427,6 @@ export class ActorFFG extends Actor {
       } else {
         data.stats[k].max = total;
       }
-    })
+    });
   }
 }

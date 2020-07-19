@@ -77,83 +77,81 @@ export class ItemSheetFFG extends ItemSheet {
 
           for (let talent in specializationTalents) {
             let gameItem;
-            if(specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
+            if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
               const pack = game.packs.get(specializationTalents[talent].pack);
               await pack.getIndex();
-              const entry = await pack.index.find(e => e._id === specializationTalents[talent].itemId);
-              
-              if(entry) {
+              const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+
+              if (entry) {
                 gameItem = await pack.getEntity(entry._id);
               }
             } else {
               gameItem = game.items.get(specializationTalents[talent].itemId);
             }
-    
+
             if (gameItem) {
               this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
             }
           }
         }
         break;
-      case "species" : 
+      case "species":
         this.position.width = 550;
 
-        const attributesForCharacteristics = Object.keys(data.data.attributes).filter(key => {
+        const attributesForCharacteristics = Object.keys(data.data.attributes).filter((key) => {
           return Object.keys(CONFIG.FFG.characteristics).includes(key);
         });
 
-        const speciesCharacteristics = attributesForCharacteristics.map(key => Object.assign(data.data.attributes[key], { key }) );
-        data.characteristics = Object.keys(CONFIG.FFG.characteristics).map(key => {
-          let attr = (speciesCharacteristics.find(item => item.mod === key));
+        const speciesCharacteristics = attributesForCharacteristics.map((key) => Object.assign(data.data.attributes[key], { key }));
+        data.characteristics = Object.keys(CONFIG.FFG.characteristics).map((key) => {
+          let attr = speciesCharacteristics.find((item) => item.mod === key);
 
-          if(!attr) {
+          if (!attr) {
             data.data.attributes[`${key}`] = {
-              modtype : "Characteristic",
-              mod : key,
-              value : 0
-            }
+              modtype: "Characteristic",
+              mod: key,
+              value: 0,
+            };
             attr = {
               key: `${key}`,
-              value: 0
-            }
+              value: 0,
+            };
           }
 
           return {
             id: attr.key,
             key,
             value: attr?.value ? parseInt(attr.value, 10) : 0,
-            modtype : "Characteristic",
-            mod : key,
-            label : game.i18n.localize(CONFIG.FFG.characteristics[key].label)
-          }
-        })
+            modtype: "Characteristic",
+            mod: key,
+            label: game.i18n.localize(CONFIG.FFG.characteristics[key].label),
+          };
+        });
 
-        if(!data.data.attributes?.Wounds) {
+        if (!data.data.attributes?.Wounds) {
           data.data.attributes.Wounds = {
-            modtype : "Stat",
-            mod : "Wounds",
-            value : 0
-          }
+            modtype: "Stat",
+            mod: "Wounds",
+            value: 0,
+          };
         }
-        if(!data.data.attributes?.Strain) {
+        if (!data.data.attributes?.Strain) {
           data.data.attributes.Strain = {
-            modtype : "Stat",
-            mod : "Strain",
-            value : 0
-          }
+            modtype: "Stat",
+            mod: "Strain",
+            value: 0,
+          };
         }
 
-
-
-        const attributesToDisplay = Object.keys(data.data.attributes).filter(key => {
+        const attributesToDisplay = Object.keys(data.data.attributes).filter((key) => {
           return key.startsWith("attr");
         });
 
         data.attributes = {};
 
-        attributesToDisplay.forEach(key => {
+        attributesToDisplay.forEach((key) => {
           data.attributes[key] = data.data.attributes[key];
-        })
+        });
 
         break;
       default:
@@ -238,13 +236,13 @@ export class ItemSheetFFG extends ItemSheet {
 
       dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
     }
-    
+
     // hidden here instead of css to prevent non-editable display of edit button
-    html.find(".popout-editor").on("mouseover", (event) => { 
-      $(event.currentTarget).find(".popout-editor-button").show(); 
+    html.find(".popout-editor").on("mouseover", (event) => {
+      $(event.currentTarget).find(".popout-editor-button").show();
     });
-    html.find(".popout-editor").on("mouseout", (event) => { 
-      $(event.currentTarget).find(".popout-editor-button").hide(); 
+    html.find(".popout-editor").on("mouseout", (event) => {
+      $(event.currentTarget).find(".popout-editor-button").hide();
     });
     html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
   }
@@ -318,36 +316,36 @@ export class ItemSheetFFG extends ItemSheet {
     this.item.data.flags.loaded = false;
     return this.object.update(formData);
 
-    if(this.object.data.type === "talent" ) {
+    if (this.object.data.type === "talent") {
       let data = this.object.data.data;
-      if(data.trees.length > 0) {
+      if (data.trees.length > 0) {
         CONFIG.logger.debug("Using Talent Tree property for update");
-        data.trees.forEach(spec => {
-          const specializations = game.data.items.filter(item => {
+        data.trees.forEach((spec) => {
+          const specializations = game.data.items.filter((item) => {
             return item.id === spec;
-          })
-  
-          specializations.forEach(item => {
-            CONFIG.logger.debug(`Updating Specialization`)
+          });
+
+          specializations.forEach((item) => {
+            CONFIG.logger.debug(`Updating Specialization`);
             for (let talentData in item.data.talents) {
               this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
             }
-          })
+          });
         });
       } else {
         CONFIG.logger.debug("Legacy item, updating all specializations");
-          game.data.items.forEach(item => {
-            if(item.type === "specialization") {
-              for (let talentData in item.data.talents) {
-                if(item.data.talents[talentData].itemId === this.object.data._id) {
-                  if(!data.trees.includes(item._id)) {
-                    data.trees.push(item._id);
-                  }
-                  this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
+        game.data.items.forEach((item) => {
+          if (item.type === "specialization") {
+            for (let talentData in item.data.talents) {
+              if (item.data.talents[talentData].itemId === this.object.data._id) {
+                if (!data.trees.includes(item._id)) {
+                  data.trees.push(item._id);
                 }
+                this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
               }
             }
-          })
+          }
+        });
       }
     }
   }
@@ -519,32 +517,30 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     if (itemObject.data.type === "talent") {
-      
-
       // we need to remove if this is the last instance of the talent in the specialization
       const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
       const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
       if (!isPreviousItemFromPack) {
-        CONFIG.logger.debug('Non-compendium pack talent update');
+        CONFIG.logger.debug("Non-compendium pack talent update");
 
         const talentList = [];
-        for(let talent in specialization.data.data.talents) {
+        for (let talent in specialization.data.data.talents) {
           if (talent.itemId === itemObject.id) {
             talentList.push(talent);
           }
         }
 
         // check if this is the last talent of the specializtion
-        if(talentList.length === 1) {
+        if (talentList.length === 1) {
           let tree = itemObject.data.data.trees;
 
-          const index = tree.findIndex(tal => {
+          const index = tree.findIndex((tal) => {
             return tal === specialization.id;
           });
 
           // remove the specialization reference fromt the talent
           tree.splice(index, 1);
-          itemObject.update({ [`data.trees`] : tree });
+          itemObject.update({ [`data.trees`]: tree });
         }
       }
 
@@ -558,13 +554,13 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
 
       // check to see if the talent already has a reference to the specialization
-      if(!itemObject.data.data.trees.includes(specialization.id)) {
+      if (!itemObject.data.data.trees.includes(specialization.id)) {
         // the talent doesn't already have the reference, add it
         let tree = itemObject.data.data.trees;
         tree.push(specialization.id);
 
-        if(!data.pack) {
-          itemObject.update({ [`data.trees`] : tree });
+        if (!data.pack) {
+          itemObject.update({ [`data.trees`]: tree });
         }
       }
 
