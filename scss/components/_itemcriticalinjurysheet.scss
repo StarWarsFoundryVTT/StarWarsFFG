@@ -56,9 +56,14 @@
     }
   }
 
+  .editor-wrapper {
+    display: block;
+  }
+
   .block-background.block-editor {
     padding: 10px;
     background-color: rgb(255, 255, 255);
+    height: 10rem;
   }
 
   .resource {
