@@ -25,26 +25,28 @@ export class ActorFFG extends Actor {
 
   _prepareSharedData(actorData) {
     const data = actorData.data;
-
+    console.log(data);
     // localize characteristic names
-    for (let characteristic of Object.keys(data.characteristics)) {
-      const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
-      const localizedField = game.i18n.localize(strId);
+    if (actorData.type !== "vehicle") {
+      for (let characteristic of Object.keys(data.characteristics)) {
+        const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
+        const localizedField = game.i18n.localize(strId);
 
-      data.characteristics[characteristic].label = localizedField;
-    }
-
-    //localize skill names
-    for (let skill of Object.keys(data.skills)) {
-      const cleanedSkillName = skill.replace(/[\W_]+/g, "");
-
-      const strId = `SWFFG.SkillsName${cleanedSkillName}`;
-      const localizedField = game.i18n.localize(strId);
-
-      if(!data.skills[skill].custom) { 
-        data.skills[skill].label = localizedField;
+        data.characteristics[characteristic].label = localizedField;
       }
-      data.skills = this._sortSkills(data.skills);
+
+      //localize skill names
+      for (let skill of Object.keys(data.skills)) {
+        const cleanedSkillName = skill.replace(/[\W_]+/g, "");
+
+        const strId = `SWFFG.SkillsName${cleanedSkillName}`;
+        const localizedField = game.i18n.localize(strId);
+
+        if (!data.skills[skill].custom) {
+          data.skills[skill].label = localizedField;
+        }
+        data.skills = this._sortSkills(data.skills);
+      }
     }
 
     this._applyModifiers(actorData);
@@ -98,15 +100,14 @@ export class ActorFFG extends Actor {
 
     const globalTalentList = [];
     specializations.forEach((element) => {
-
       //go throut each list of talent where learned = true
 
-      const learnedTalents = Object.keys(element.data.talents).filter(key => element.data.talents[key].islearned === true);
+      const learnedTalents = Object.keys(element.data.talents).filter((key) => element.data.talents[key].islearned === true);
 
-      learnedTalents.forEach(talent => {
+      learnedTalents.forEach((talent) => {
         const item = JSON.parse(JSON.stringify(element.data.talents[talent]));
         item.firstSpecialization = element._id;
-        item.source = [{ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
+        item.source = [{ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
         item.safe_desc = PopoutEditor.renderDiceImages(item.description.replace(/(<([^>]+)>)/gi, ""));
         if (item.isRanked) {
           item.rank = element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
@@ -121,7 +122,7 @@ export class ActorFFG extends Actor {
         if (index < 0 || !item.isRanked) {
           globalTalentList.push(item);
         } else {
-          globalTalentList[index].source.push({ type : "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id })
+          globalTalentList[index].source.push({ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id });
           globalTalentList[index].rank += element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
         }
       });
@@ -133,17 +134,17 @@ export class ActorFFG extends Actor {
 
     talents.forEach((element) => {
       const item = {
-        name : element.name,
-        itemId : element._id,
-        description : element.data.description,
+        name: element.name,
+        itemId: element._id,
+        description: element.data.description,
         activation: element.data.activation.value,
         activationLabel: element.data.activation.label,
         isRanked: element.data.ranks.ranked,
         safe_desc: PopoutEditor.renderDiceImages(element.data.description.replace(/(<([^>]+)>)/gi, "")),
-        source : [{ type : "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }]
-      }
+        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
+      };
 
-      if(item.isRanked) {
+      if (item.isRanked) {
         item.rank = element.data.ranks.current;
       } else {
         item.rank = "N/A";
@@ -156,10 +157,9 @@ export class ActorFFG extends Actor {
       if (index < 0 || !item.isRanked) {
         globalTalentList.push(item);
       } else {
-        globalTalentList[index].source.push({ type : "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id })
+        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id });
         globalTalentList[index].rank += element.data.ranks.current;
       }
-
     });
 
     globalTalentList.sort((a, b) => {
@@ -172,7 +172,6 @@ export class ActorFFG extends Actor {
       return comparison;
     });
 
-
     data.talentList = globalTalentList;
   }
 
@@ -180,7 +179,7 @@ export class ActorFFG extends Actor {
     const data = actorData.data;
     const items = actorData.items;
     var encum = 0;
-    
+
     // Loop through all items
     for (let [key, item] of Object.entries(items)) {
       try {
@@ -286,151 +285,152 @@ export class ActorFFG extends Actor {
     return skills;
   }
 
-
   _applyModifiers(actorData) {
     const data = actorData.data;
     /* Characteristics */
     // first get the attributes associated with the characteristics
-    const attributesForCharacteristics = Object.keys(data.attributes).filter(key => {
+    const attributesForCharacteristics = Object.keys(data.attributes).filter((key) => {
       return Object.keys(CONFIG.FFG.characteristics).includes(key);
     });
-    const characteristics = attributesForCharacteristics.map(key => Object.assign(data.attributes[key], { key }) );
+    const characteristics = attributesForCharacteristics.map((key) => Object.assign(data.attributes[key], { key }));
 
     // loop through all characteristics and prepopulate any attributes not created yet.
-    actorData.characteristics = Object.keys(CONFIG.FFG.characteristics).map(key => {
-      let attr = (characteristics.find(item => item.mod === key));
+    actorData.characteristics = Object.keys(CONFIG.FFG.characteristics).map((key) => {
+      let attr = characteristics.find((item) => item.mod === key);
 
-      if(!attr) {
+      if (!attr) {
         // the expected attrbute for the characteristic doesn't exist, this is an older or new character, we need to migrate the current value to an attribute
         data.attributes[`${key}`] = {
-          modtype : "Characteristic",
-          mod : key,
-          value : data.characteristics[key].value
-        }
+          modtype: "Characteristic",
+          mod: key,
+          value: data.characteristics[key].value,
+        };
         attr = {
           key: `${key}`,
-          value: data.characteristics[key].value
-        }
+          value: data.characteristics[key].value,
+        };
       }
 
       return {
         id: attr.key,
         key,
         value: attr?.value ? parseInt(attr.value, 10) : 0,
-        modtype : "Characteristic",
-        mod : key,
-        label : game.i18n.localize(CONFIG.FFG.characteristics[key].label)
-      }
-    })
+        modtype: "Characteristic",
+        mod: key,
+        label: game.i18n.localize(CONFIG.FFG.characteristics[key].label),
+      };
+    });
 
-    Object.keys(CONFIG.FFG.characteristics).forEach(key => {
+    Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
       let total = 0;
 
       total += data.attributes[key].value;
 
-      actorData.items.forEach(item => {
-        const attrsToApply = Object.keys(item.data.attributes).filter(id => item.data.attributes[id].mod === key).map(i => item.data.attributes[i]);
+      actorData.items.forEach((item) => {
+        const attrsToApply = Object.keys(item.data.attributes)
+          .filter((id) => item.data.attributes[id].mod === key)
+          .map((i) => item.data.attributes[i]);
 
-        if(attrsToApply.length > 0) {
-          attrsToApply.forEach(attr => {
+        if (attrsToApply.length > 0) {
+          attrsToApply.forEach((attr) => {
             total += parseInt(attr.value, 10);
-          })
-          
+          });
         }
       });
 
       data.characteristics[key].value = total > 7 ? 7 : total;
-    })
+    });
 
     /* Stats */
 
-    const attributesForStats = Object.keys(data.attributes).filter(key => Object.keys(CONFIG.FFG.character_stats).includes(key)).map(key => Object.assign(data.attributes[key], { key }));
+    const attributesForStats = Object.keys(data.attributes)
+      .filter((key) => Object.keys(CONFIG.FFG.character_stats).includes(key))
+      .map((key) => Object.assign(data.attributes[key], { key }));
 
     const credits = data.stats.credits;
-    actorData.stats = Object.keys(CONFIG.FFG.character_stats).map(k => {
+    actorData.stats = Object.keys(CONFIG.FFG.character_stats).map((k) => {
       const key = CONFIG.FFG.character_stats[k].value;
 
-      let attr = (attributesForStats.find(item => item.mod.toLowerCase() === key.toLowerCase()));
+      let attr = attributesForStats.find((item) => item.mod.toLowerCase() === key.toLowerCase());
 
-      if(!attr) {
+      if (!attr) {
         // the expected attrbute for the stat doesn't exist, this is an older or new character, we need to migrate the current value to an attribute
         let value = 0;
 
-        if(key === "Soak") {
+        if (key === "Soak") {
           value = data.stats[k].value;
         } else if (key === "Defence-Melee") {
           value = data.stats.defence.melee;
-        } else if (key === "Defence-Ranged"){
+        } else if (key === "Defence-Ranged") {
           value = data.stats.defence.ranged;
         } else {
-          value = data.stats[k].max;  
+          value = data.stats[k].max;
         }
 
         data.attributes[`${key}`] = {
-          modtype : "Stat",
-          mod : key,
-          valuevalue
-        }
+          modtype: "Stat",
+          mod: key,
+          value: value,
+        };
         attr = {
           key: `${key}`,
-          value
-        }
+          value,
+        };
       }
 
       return {
         id: attr.key,
         key,
         value: attr?.value ? parseInt(attr.value, 10) : 0,
-        modtype : "Stat",
-        mod : key,
-        label : game.i18n.localize(CONFIG.FFG.character_stats[k].label)
-      }
+        modtype: "Stat",
+        mod: key,
+        label: game.i18n.localize(CONFIG.FFG.character_stats[k].label),
+      };
     });
 
-    Object.keys(CONFIG.FFG.character_stats).forEach(k => {
+    Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
       const key = CONFIG.FFG.character_stats[k].value;
 
       let total = 0;
 
       total += data.attributes[key].value;
 
-      actorData.items.forEach(item => {
-        const attrsToApply = Object.keys(item.data.attributes).filter(id => item.data.attributes[id].mod === key).map(i => item.data.attributes[i]);
+      actorData.items.forEach((item) => {
+        const attrsToApply = Object.keys(item.data.attributes)
+          .filter((id) => item.data.attributes[id].mod === key)
+          .map((i) => item.data.attributes[i]);
 
         if (item.type === "armour" && item?.data?.equippable?.equipped) {
-          if(key === "Soak") {
+          if (key === "Soak") {
             total += parseInt(item.data.soak.value, 10);
           }
-          if(key === "Defence-Melee" || key === "Defence-Ranged") {
+          if (key === "Defence-Melee" || key === "Defence-Ranged") {
             // get the highest defense item
-            const shouldUse = actorData.items.filter(i => item.data.defence >= i.data.defence).length >= 0;
-            if(shouldUse) {
+            const shouldUse = actorData.items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
+            if (shouldUse) {
               total += parseInt(item.data.defence.value, 10);
             }
           }
-          
+
           //defence = Math.max(defence, item.data.defence.value)
         }
 
-        if(attrsToApply.length > 0) {
-          attrsToApply.forEach(attr => {
+        if (attrsToApply.length > 0) {
+          attrsToApply.forEach((attr) => {
             total += parseInt(attr.value, 10);
-          })
-          
+          });
         }
       });
 
-      if(key === "Soak") {
+      if (key === "Soak") {
         data.stats[k].value = total;
       } else if (key === "Defence-Melee") {
         data.stats.defence.melee = total;
-      } else if (key === "Defence-Ranged"){
+      } else if (key === "Defence-Ranged") {
         data.stats.defence.ranged = total;
       } else {
-        data.stats[k].max = total;  
+        data.stats[k].max = total;
       }
-     
-    })
-
+    });
   }
 }
