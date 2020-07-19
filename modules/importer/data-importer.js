@@ -541,6 +541,8 @@ export default class DataImporter extends FormApplication {
           const range = weapon.getElementsByTagName("Range")[0]?.textContent;
           const hardpoints = weapon.getElementsByTagName("HP")[0]?.textContent;
 
+          const weaponType = weapon.getElementsByTagName("Type")[0]?.textContent;
+
           this._importLogger(`Start importing weapon ${name}`);
 
           let skill = "";
@@ -579,7 +581,7 @@ export default class DataImporter extends FormApplication {
 
           let newItem = {
             name,
-            type: "weapon",
+            type: weaponType === "Vehicle" ? "shipweapon" : "weapon",
             flags: {
               importid: importkey,
             },
