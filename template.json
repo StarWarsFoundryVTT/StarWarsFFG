@@ -63,38 +63,32 @@
           "Brawn": {
             "value": 0,
             "label": "Brawn",
-            "abrev": "Br",
-            "max": 7
+            "abrev": "Br"
           },
           "Agility": {
             "value": 0,
             "label": "Agility",
-            "abrev": "Ag",
-            "max": 7
+            "abrev": "Ag"
           },
           "Intellect": {
             "value": 0,
             "label": "Intellect",
-            "abrev": "Int",
-            "max": 7
+            "abrev": "Int"
           },
           "Cunning": {
             "value": 0,
             "label": "Cunning",
-            "abrev": "Cun",
-            "max": 7
+            "abrev": "Cun"
           },
           "Willpower": {
             "value": 0,
             "label": "Willpower",
-            "abrev": "Will",
-            "max": 7
+            "abrev": "Will"
           },
           "Presence": {
             "value": 0,
             "label": "Presence",
-            "abrev": "Pr",
-            "max": 7
+            "abrev": "Pr"
           }
         }
       },
