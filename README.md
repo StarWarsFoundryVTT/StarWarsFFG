@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 19/07/2020 - Cstadther - Bug Fix #232 - Fixed issue with minion groupskill calculations
 - 19/07/2020 - Cstadther - Bug Fix #222 - Fixed issue where soak options were not being used on Adversary Sheet.
 - 17/07/2020 - Cstadther - Bug Fix #218 - Fixed the Minion Sheet's scrolling issue
 - 16/07/2020 - Cstadther - Fix for specialization and talent combined talent list for adversaries and characters.
