@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 19/07/2020 - Cstadther - Bug Fix #227 - Fixed issue with critical injuries and damage description areas not big enough.
 - 19/07/2020 - Cstadther - Bug Fix #232 - Fixed issue with minion groupskill calculations
 - 19/07/2020 - Cstadther - Bug Fix #222 - Fixed issue where soak options were not being used on Adversary Sheet.
 - 18/07/2020 - Cstadther - Added characteristic and stat migration to attributes for existing characters.

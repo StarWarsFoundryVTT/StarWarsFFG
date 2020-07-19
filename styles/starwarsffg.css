@@ -3310,9 +3310,14 @@ span.dietype.triumph {
   background-color: #7da9c2;
 }
 
+.starwarsffg .item-sheet-criticalinjury .editor-wrapper {
+  display: block;
+}
+
 .starwarsffg .item-sheet-criticalinjury .block-background.block-editor {
   padding: 10px;
   background-color: white;
+  height: 10rem;
 }
 
 .starwarsffg .item-sheet-criticalinjury .resource {
