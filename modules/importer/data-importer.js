@@ -11,7 +11,7 @@ export default class DataImporter extends FormApplication {
       id: "data-importer",
       classes: ["starwarsffg", "data-import"],
       title: "Data Importer",
-      template: "systems/starwarsffg/templates/importer/data-importer.html"
+      template: "systems/starwarsffg/templates/importer/data-importer.html",
     });
   }
 
@@ -20,28 +20,27 @@ export default class DataImporter extends FormApplication {
    * @type {String}
    */
   get attribute() {
-	  return this.options.name;
+    return this.options.name;
   }
 
   /** @override */
   async getData() {
-    let data = await FilePicker.browse("data", "", {bucket:null, extensions: [".zip", ".ZIP"], wildcard: false});
-    const files = data.files.map(file => {
+    let data = await FilePicker.browse("data", "", { bucket: null, extensions: [".zip", ".ZIP"], wildcard: false });
+    const files = data.files.map((file) => {
       return decodeURIComponent(file);
-    })
+    });
 
     $(".import-progress").addClass("import-hidden");
 
-    if(!CONFIG?.temporary) {
+    if (!CONFIG?.temporary) {
       CONFIG.temporary = {};
     }
 
     return {
       data,
       files,
-      cssClass : "data-importer-window"
+      cssClass: "data-importer-window",
     };
-  
   }
 
   /** @override */
@@ -49,14 +48,14 @@ export default class DataImporter extends FormApplication {
     super.activateListeners(html);
 
     $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#data-importer header a");
-    
-    html.find(".dialog-button").on("click",this._dialogButton.bind(this));
+
+    html.find(".dialog-button").on("click", this._dialogButton.bind(this));
   }
 
   _importLog = [];
-  _importLogger (message) {
+  _importLogger(message) {
     if ($(".debug input:checked").length > 0) {
-      this._importLog.push(`[${(new Date()).getTime()}] ${message}`);
+      this._importLog.push(`[${new Date().getTime()}] ${message}`);
     }
   }
 
@@ -70,18 +69,18 @@ export default class DataImporter extends FormApplication {
     $("input[type='checkbox'][name='imports']").attr("disabled", true);
 
     // load the requested file
-    if(action === "load") {
+    if (action === "load") {
       try {
         const selectedFile = $("#import-file").val();
-        const zip = await fetch(`/${selectedFile}`) 
-        .then(function (response) {                       
+        const zip = await fetch(`/${selectedFile}`)
+          .then(function (response) {
             if (response.status === 200 || response.status === 0) {
-                return Promise.resolve(response.blob());
+              return Promise.resolve(response.blob());
             } else {
-                return Promise.reject(new Error(response.statusText));
+              return Promise.reject(new Error(response.statusText));
             }
-        })
-        .then(JSZip.loadAsync);                           
+          })
+          .then(JSZip.loadAsync);
 
         this._enableImportSelection(zip.files, "Talents");
         this._enableImportSelection(zip.files, "Force Abilities");
@@ -89,40 +88,43 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Weapons");
         this._enableImportSelection(zip.files, "Armor");
         this._enableImportSelection(zip.files, "Specializations", true);
-   
       } catch (err) {
         console.error(err);
       }
     }
 
-    if(action === "import") {
-      CONFIG.logger.debug('Importing Data Files');
+    if (action === "import") {
+      CONFIG.logger.debug("Importing Data Files");
       this._importLogger(`Starting import`);
-      
-      const importFiles = $("input:checkbox[name=imports]:checked").map(function(){return { file : $(this).val(), label : $(this).data("name"), type : $(this).data("type"), itemtype : $(this).data("itemtype") } }).get()
+
+      const importFiles = $("input:checkbox[name=imports]:checked")
+        .map(function () {
+          return { file: $(this).val(), label: $(this).data("name"), type: $(this).data("type"), itemtype: $(this).data("itemtype") };
+        })
+        .get();
 
       const selectedFile = $("#import-file").val();
       this._importLogger(`Using ${selectedFile} for import source`);
 
-      const zip = await fetch(`/${selectedFile}`) 
-      .then(function (response) {                       
+      const zip = await fetch(`/${selectedFile}`)
+        .then(function (response) {
           if (response.status === 200 || response.status === 0) {
-              return Promise.resolve(response.blob());
+            return Promise.resolve(response.blob());
           } else {
-              return Promise.reject(new Error(response.statusText));
+            return Promise.reject(new Error(response.statusText));
           }
-      })
-      .then(JSZip.loadAsync); 
+        })
+        .then(JSZip.loadAsync);
 
       const promises = [];
       let isSpecialization = false;
-      await this.asyncForEach(importFiles, async file => {
-        if(!zip.files[file.file].dir) {
+      await this.asyncForEach(importFiles, async (file) => {
+        if (!zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
 
           const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data,"text/xml");
-  
+          const xmlDoc = parser.parseFromString(data, "text/xml");
+
           promises.push(this._handleGear(xmlDoc, zip));
           promises.push(this._handleWeapons(xmlDoc, zip));
           promises.push(this._handleArmor(xmlDoc, zip));
@@ -134,10 +136,10 @@ export default class DataImporter extends FormApplication {
       });
 
       await Promise.all(promises);
-      if(isSpecialization) {
+      if (isSpecialization) {
         await this._handleSpecializations(zip);
       }
-      
+
       if ($(".debug input:checked").length > 0) {
         saveDataToFile(this._importLog.join("\n"), "text/plain", "import-log.txt");
       }
@@ -156,7 +158,7 @@ export default class DataImporter extends FormApplication {
     //   let d = 0;
     //   progress_cb(0);
     //   for (const p of proms) {
-    //     p.then(()=> {    
+    //     p.then(()=> {
     //       d ++;
     //       progress_cb( (d * 100) / proms.length );
     //     });
@@ -172,21 +174,19 @@ export default class DataImporter extends FormApplication {
     // const data = await allProgress(promises, (p) => {
     //   console.log(`% Done = ${p.toFixed(2)}`);
     // });
-
-    
   }
 
   async _handleTalents(xmlDoc) {
     this._importLogger(`Starting Talent Import`);
     const talents = xmlDoc.getElementsByTagName("Talent");
-    if(talents.length > 0) {
+    if (talents.length > 0) {
       let totalCount = talents.length;
       let currentCount = 0;
       this._importLogger(`Beginning import of ${talents.length} talents`);
       $(".import-progress.talents").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack('Item', `oggdude.Talents`);
+      let pack = await this._getCompendiumPack("Item", `oggdude.Talents`);
 
-      for(let i = 0; i < talents.length; i+=1) {
+      for (let i = 0; i < talents.length; i += 1) {
         try {
           const talent = talents[i];
           const importkey = talent.getElementsByTagName("Key")[0]?.textContent;
@@ -194,11 +194,11 @@ export default class DataImporter extends FormApplication {
           const description = talent.getElementsByTagName("Description")[0]?.textContent;
           const ranked = talent.getElementsByTagName("Ranked")[0]?.textContent === "true" ? true : false;
           const activationValue = talent.getElementsByTagName("ActivationValue")[0]?.textContent;
-    
+
           this._importLogger(`Start importing talent ${name}`);
 
           let activation = "Passive";
-          
+
           switch (activationValue) {
             case "taManeuver":
               activation = "Active (Maneuver)";
@@ -212,55 +212,56 @@ export default class DataImporter extends FormApplication {
             case "taIncidentalOOT":
               activation = "Active (Incidental, Out of Turn)";
               break;
-            default: 
+            default:
               activation = "Passive";
           }
-    
+
           const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent === "true" ? true : false;
 
           const item = {
             name,
             type: "talent",
             flags: {
-              importid: importkey
+              importid: importkey,
             },
-            data : {
+            data: {
               description,
               ranks: {
-                ranked
+                ranked,
               },
-              activation : {
-                value : activation
+              activation: {
+                value: activation,
               },
-              isForceTalent : forcetalent
-            }
-          }
-    
+              isForceTalent: forcetalent,
+            },
+          };
+
           let compendiumItem;
           await pack.getIndex();
-          let entry = pack.index.find(e => e.name === item.name);
-    
-          if(!entry) {
+          let entry = pack.index.find((e) => e.name === item.name);
+
+          if (!entry) {
             CONFIG.logger.debug(`Importing Talent - Item`);
-            compendiumItem = new Item(item, {temporary:true});  
+            compendiumItem = new Item(item, { temporary: true });
             this._importLogger(`New talent ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Update Talent - Item`);
             let updateData = ImportHelpers.buildUpdateData(item);
-            updateData["_id"] = entry._id
+            updateData["_id"] = entry._id;
             this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
-          currentCount +=1 ;
-          
-          $(".talents .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          currentCount += 1;
+
+          $(".talents .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing talent ${name}`);
         } catch (err) {
           CONFIG.logger.error(`Error importing record : `, err);
           this._importLogger(`Error importing talent: ${JSON.stringify(err)}`);
         }
-
       }
     }
     this._importLogger(`Completed Talent Import`);
@@ -269,16 +270,16 @@ export default class DataImporter extends FormApplication {
   async _handleForcePowers(xmlDoc, zip) {
     this._importLogger(`Starting Force Power Import`);
     const forceabilities = xmlDoc.getElementsByTagName("ForceAbility");
-    if(forceabilities.length > 0) {
+    if (forceabilities.length > 0) {
       $(".import-progress.force").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack('Item', `oggdude.ForcePowers`);
+      let pack = await this._getCompendiumPack("Item", `oggdude.ForcePowers`);
 
-      const fa = JXON.xmlToJs(xmlDoc)
+      const fa = JXON.xmlToJs(xmlDoc);
       // now we need to loop through the files in the Force Powers folder
 
-      const forcePowersFiles = Object.values(zip.files).filter(file => {
-        return !file.dir && file.name.split('.').pop() === 'xml' && file.name.includes("/Force Powers/");
-      })
+      const forcePowersFiles = Object.values(zip.files).filter((file) => {
+        return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/Force Powers/");
+      });
 
       let totalCount = forcePowersFiles.length;
       let currentCount = 0;
@@ -288,138 +289,136 @@ export default class DataImporter extends FormApplication {
         try {
           const data = await zip.file(file.name).async("text");
           const domparser = new DOMParser();
-          const xmlDoc1 = domparser.parseFromString(data,"text/xml");
+          const xmlDoc1 = domparser.parseFromString(data, "text/xml");
           const fp = JXON.xmlToJs(xmlDoc1);
-  
+
           // setup the base information
-  
+
           let power = {
-            name : fp.ForcePower.Name,
-            type : "forcepower",
+            name: fp.ForcePower.Name,
+            type: "forcepower",
             flags: {
-              importid: fp.ForcePower.Key
+              importid: fp.ForcePower.Key,
             },
-            data : {
-              upgrades : {
-  
-              }
-            }
-          }
+            data: {
+              upgrades: {},
+            },
+          };
 
           this._importLogger(`Start importing force power ${fp.ForcePower.Name}`);
-  
+
           // get the basic power informatio
           const importKey = fp.ForcePower.AbilityRows.AbilityRow[0].Abilities.Key[0];
-  
-          let forceAbility = fa.ForceAbilities.ForceAbility.find(ability => {
-            return ability.Key === importKey
-          })
-  
+
+          let forceAbility = fa.ForceAbilities.ForceAbility.find((ability) => {
+            return ability.Key === importKey;
+          });
+
           power.data.description = forceAbility.Description;
-  
+
           // next we will parse the rows
-  
-          for(let i = 1; i < fp.ForcePower.AbilityRows.AbilityRow.length; i+=1) {
+
+          for (let i = 1; i < fp.ForcePower.AbilityRows.AbilityRow.length; i += 1) {
             try {
               const row = fp.ForcePower.AbilityRows.AbilityRow[i];
               row.Abilities.Key.forEach((keyName, index) => {
-                let rowAbility = { }
-    
-                let rowAbilityData = fa.ForceAbilities.ForceAbility.find(a => {
+                let rowAbility = {};
+
+                let rowAbilityData = fa.ForceAbilities.ForceAbility.find((a) => {
                   return a.Key === keyName;
-                })
-    
+                });
+
                 rowAbility.name = rowAbilityData.Name;
                 rowAbility.description = rowAbilityData.Description;
                 rowAbility.cost = row.Costs.Cost[index];
                 rowAbility.visible = true;
-    
-                if(row.Directions.Direction[index].Up) {
+
+                if (row.Directions.Direction[index].Up) {
                   rowAbility["links-top-1"] = true;
                 }
-                
-                switch(row.AbilitySpan.Span[index]) {
-                  case "1" :
+
+                switch (row.AbilitySpan.Span[index]) {
+                  case "1":
                     rowAbility.size = "single";
                     break;
-                  case "2" :
+                  case "2":
                     rowAbility.size = "double";
-                    if(index < 3 && row.Directions.Direction[index+1].Up) {
+                    if (index < 3 && row.Directions.Direction[index + 1].Up) {
                       rowAbility["links-top-2"] = true;
                     }
                     break;
-                  case "3" :
+                  case "3":
                     rowAbility.size = "triple";
-                    if(index < 2 && row.Directions.Direction[index+1].Up) {
+                    if (index < 2 && row.Directions.Direction[index + 1].Up) {
                       rowAbility["links-top-2"] = true;
                     }
-                    if(index < 2 && row.Directions.Direction[index+2].Up) {
+                    if (index < 2 && row.Directions.Direction[index + 2].Up) {
                       rowAbility["links-top-3"] = true;
                     }
                     break;
-                  case "4": 
+                  case "4":
                     rowAbility.size = "full";
-                    if(index < 1 && row.Directions.Direction[index+1].Up) {
+                    if (index < 1 && row.Directions.Direction[index + 1].Up) {
                       rowAbility["links-top-2"] = true;
                     }
-                    if(index < 1 && row.Directions.Direction[index+2].Up) {
+                    if (index < 1 && row.Directions.Direction[index + 2].Up) {
                       rowAbility["links-top-3"] = true;
                     }
-                    if(index < 1 && row.Directions.Direction[index+3].Up) {
+                    if (index < 1 && row.Directions.Direction[index + 3].Up) {
                       rowAbility["links-top-4"] = true;
                     }
-                    break
+                    break;
                   default:
                     rowAbility.size = "single";
                     rowAbility.visible = false;
                 }
-                
-                if(row.Directions.Direction[index].Right) {
+
+                if (row.Directions.Direction[index].Right) {
                   rowAbility["links-right"] = true;
                 }
-    
-                const talentKey = `upgrade${((i - 1) * 4) + index}`;
+
+                const talentKey = `upgrade${(i - 1) * 4 + index}`;
                 power.data.upgrades[talentKey] = rowAbility;
               });
             } catch (err) {
               CONFIG.logger.error(`Error importing record : `, err);
             }
           }
-  
-          if(fp.ForcePower.AbilityRows.AbilityRow.length < 5) {
-            for(let i = fp.ForcePower.AbilityRows.AbilityRow.length; i < 5; i+=1) {
-  
-              for(let index = 0; index < 4; index+=1) {
-                const talentKey = `upgrade${((i - 1) * 4) + index}`;
-  
-                let rowAbility = { visible : false }
-    
+
+          if (fp.ForcePower.AbilityRows.AbilityRow.length < 5) {
+            for (let i = fp.ForcePower.AbilityRows.AbilityRow.length; i < 5; i += 1) {
+              for (let index = 0; index < 4; index += 1) {
+                const talentKey = `upgrade${(i - 1) * 4 + index}`;
+
+                let rowAbility = { visible: false };
+
                 power.data.upgrades[talentKey] = rowAbility;
               }
             }
           }
-  
+
           let compendiumItem;
           await pack.getIndex();
-          let entry = pack.index.find(e => e.name === power.name);
-    
-          if(!entry) {
+          let entry = pack.index.find((e) => e.name === power.name);
+
+          if (!entry) {
             CONFIG.logger.debug(`Importing Force Power - Item`);
-            compendiumItem = new Item(power, {temporary:true});  
+            compendiumItem = new Item(power, { temporary: true });
             this._importLogger(`New force power ${fp.ForcePower.Name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Force Power - Item`);
             let updateData = ImportHelpers.buildUpdateData(power);
-            updateData["_id"] = entry._id
+            updateData["_id"] = entry._id;
             this._importLogger(`Updating force power ${fp.ForcePower.Name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
-          currentCount +=1 ;
-          
-          $(".force .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          currentCount += 1;
+
+          $(".force .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing force power ${fp.ForcePower.Name}`);
-          
         } catch (err) {
           CONFIG.logger.error(`Error importing record : `, err);
         }
@@ -431,16 +430,16 @@ export default class DataImporter extends FormApplication {
   async _handleGear(xmlDoc, zip) {
     this._importLogger(`Starting Gear Import`);
     const gear = xmlDoc.getElementsByTagName("Gear");
-   
-    if(gear.length > 0) { 
+
+    if (gear.length > 0) {
       let totalCount = gear.length;
       let currentCount = 0;
-      this._importLogger(`Beginning import of ${gear.length} gear`)
+      this._importLogger(`Beginning import of ${gear.length} gear`);
 
       $(".import-progress.gear").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack('Item', `oggdude.Gear`);
+      let pack = await this._getCompendiumPack("Item", `oggdude.Gear`);
 
-      for(let i = 0; i < gear.length; i+=1) {
+      for (let i = 0; i < gear.length; i += 1) {
         try {
           const item = gear[i];
 
@@ -458,47 +457,49 @@ export default class DataImporter extends FormApplication {
             name,
             type: "gear",
             flags: {
-              importid: importkey
+              importid: importkey,
             },
             data: {
               description,
               encumbrance: {
-                value : encumbrance
+                value: encumbrance,
               },
-              price : {
-                value : price
+              price: {
+                value: price,
               },
               rarity: {
-                value: rarity
-              }
-            }
-          }
+                value: rarity,
+              },
+            },
+          };
 
           // does an image exist?
           let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", importkey);
-          if(imgPath) {
+          if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
 
           let compendiumItem;
           await pack.getIndex();
-          let entry = pack.index.find(e => e.name === newItem.name);
+          let entry = pack.index.find((e) => e.name === newItem.name);
 
-          if(!entry) {
+          if (!entry) {
             CONFIG.logger.debug(`Importing Gear - Item`);
-            compendiumItem = new Item(newItem, {temporary: true});  
+            compendiumItem = new Item(newItem, { temporary: true });
             this._importLogger(`New gear ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Gear - Item`);
             let updateData = ImportHelpers.buildUpdateData(newItem);
-            updateData["_id"] = entry._id
+            updateData["_id"] = entry._id;
             this._importLogger(`Updating gear ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
-          currentCount +=1 ;
+          currentCount += 1;
 
-          $(".gear .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          $(".gear .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing gear ${name}`);
         } catch (err) {
           CONFIG.logger.error(`Error importing record : `, err);
@@ -513,16 +514,16 @@ export default class DataImporter extends FormApplication {
   async _handleWeapons(xmlDoc, zip) {
     this._importLogger(`Starting Weapon Import`);
     const weapons = xmlDoc.getElementsByTagName("Weapon");
-   
-    if(weapons.length > 0) { 
+
+    if (weapons.length > 0) {
       let totalCount = weapons.length;
       let currentCount = 0;
-      this._importLogger(`Beginning import of ${weapons.length} weapons`)
+      this._importLogger(`Beginning import of ${weapons.length} weapons`);
 
       $(".import-progress.weapons").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack('Item', `oggdude.Weapons`);
+      let pack = await this._getCompendiumPack("Item", `oggdude.Weapons`);
 
-      for(let i = 0; i < weapons.length; i+=1) {
+      for (let i = 0; i < weapons.length; i += 1) {
         try {
           const weapon = weapons[i];
 
@@ -544,7 +545,7 @@ export default class DataImporter extends FormApplication {
 
           let skill = "";
 
-          switch(skillkey) {
+          switch (skillkey) {
             case "RANGLT":
               skill = "Ranged: Light";
               break;
@@ -565,14 +566,14 @@ export default class DataImporter extends FormApplication {
               break;
             default:
           }
-          
+
           const fp = JXON.xmlToJs(weapon);
 
           const qualities = [];
 
-          if(fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
-            fp.Qualities.Quality.forEach(quality => {
-              qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`)
+          if (fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
+            fp.Qualities.Quality.forEach((quality) => {
+              qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
             });
           }
 
@@ -580,42 +581,42 @@ export default class DataImporter extends FormApplication {
             name,
             type: "weapon",
             flags: {
-              importid: importkey
+              importid: importkey,
             },
             data: {
               description,
-              encumbrance : {
-                value : encumbrance
+              encumbrance: {
+                value: encumbrance,
               },
-              price : {
-                value: price
+              price: {
+                value: price,
               },
-              rarity : {
-                value : rarity
+              rarity: {
+                value: rarity,
               },
-              damage : {
-                value: !damage ? damageAdd : damage
+              damage: {
+                value: !damage ? damageAdd : damage,
               },
-              crit : {
-                value : crit
+              crit: {
+                value: crit,
               },
-              special : {
-                value : qualities.join(",")
+              special: {
+                value: qualities.join(","),
               },
-              skill : {
-                value : skill
+              skill: {
+                value: skill,
               },
-              range : {
-                value : range
+              range: {
+                value: range,
               },
-              hardpoints : {
-                value : hardpoints
-              }
-            }
-          }
+              hardpoints: {
+                value: hardpoints,
+              },
+            },
+          };
 
-          if(damageAdd) {
-            if(!newItem.data.attributes) {
+          if (damageAdd) {
+            if (!newItem.data.attributes) {
               newItem.data.attributes = {};
             }
             const nk = Object.keys(newItem.data.attributes).length + 1;
@@ -624,35 +625,37 @@ export default class DataImporter extends FormApplication {
               isCheckbox: false,
               mod: "damage",
               modtype: "Weapon Stat",
-              value: damageAdd
-            }
+              value: damageAdd,
+            };
           }
 
           // does an image exist?
           let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
-          if(imgPath) {
+          if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
 
           let compendiumItem;
           await pack.getIndex();
-          let entry = pack.index.find(e => e.name === newItem.name);
+          let entry = pack.index.find((e) => e.name === newItem.name);
 
-          if(!entry) {
+          if (!entry) {
             CONFIG.logger.debug(`Importing Weapon - Item`);
-            compendiumItem = new Item(newItem, {temporary : true});  
+            compendiumItem = new Item(newItem, { temporary: true });
             this._importLogger(`New weapon ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Weapon - Item`);
             let updateData = ImportHelpers.buildUpdateData(newItem);
-            updateData["_id"] = entry._id
+            updateData["_id"] = entry._id;
             this._importLogger(`Updating weapon ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
-          currentCount +=1 ;
+          currentCount += 1;
 
-          $(".weapons .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          $(".weapons .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing weapon ${name}`);
         } catch (err) {
           CONFIG.logger.error(`Error importing record : `, err);
@@ -666,16 +669,16 @@ export default class DataImporter extends FormApplication {
   async _handleArmor(xmlDoc, zip) {
     this._importLogger(`Starting Armor Import`);
     const armors = xmlDoc.getElementsByTagName("Armor");
-   
-    if(armors.length > 0) { 
+
+    if (armors.length > 0) {
       let totalCount = armors.length;
       let currentCount = 0;
-      this._importLogger(`Beginning import of ${armors.length} armor`)
+      this._importLogger(`Beginning import of ${armors.length} armor`);
 
       $(".import-progress.armor").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack('Item', `oggdude.Armor`);
+      let pack = await this._getCompendiumPack("Item", `oggdude.Armor`);
 
-      for(let i = 0; i < armors.length; i+=1) {
+      for (let i = 0; i < armors.length; i += 1) {
         try {
           const armor = armors[i];
 
@@ -694,58 +697,60 @@ export default class DataImporter extends FormApplication {
 
           let newItem = {
             name,
-            type : "armour",
+            type: "armour",
             flags: {
-              importid: importkey
+              importid: importkey,
             },
-            data : {
+            data: {
               description,
-              encumbrance : {
-                value : encumbrance
+              encumbrance: {
+                value: encumbrance,
               },
-              price : {
-                value: price
+              price: {
+                value: price,
               },
-              rarity : {
-                value : rarity
+              rarity: {
+                value: rarity,
               },
-              defence : {
-                value : defense
+              defence: {
+                value: defense,
               },
-              soak : {
-                value : soak
+              soak: {
+                value: soak,
               },
-              hardpoints : {
-                value : hardpoints
-              }
-            }
-          }
+              hardpoints: {
+                value: hardpoints,
+              },
+            },
+          };
 
           // does an image exist?
           let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", importkey);
-          if(imgPath) {
+          if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
 
           let compendiumItem;
           await pack.getIndex();
-          let entry = pack.index.find(e => e.name === newItem.name);
+          let entry = pack.index.find((e) => e.name === newItem.name);
 
-          if(!entry) {
+          if (!entry) {
             CONFIG.logger.debug(`Importing Armor - Item`);
-            compendiumItem = new Item(newItem, {temporary : true});  
+            compendiumItem = new Item(newItem, { temporary: true });
             this._importLogger(`New armor ${name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Armor - Item`);
             let updateData = ImportHelpers.buildUpdateData(newItem);
-            updateData["_id"] = entry._id
+            updateData["_id"] = entry._id;
             this._importLogger(`Updating armor ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
-          currentCount +=1 ;
+          currentCount += 1;
 
-          $(".armor .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          $(".armor .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing armor ${name}`);
         } catch (err) {
           CONFIG.logger.error(`Error importing record : `, err);
@@ -759,91 +764,90 @@ export default class DataImporter extends FormApplication {
   async _handleSpecializations(zip) {
     this._importLogger(`Starting Specialization Import`);
 
-    const specializationFiles = Object.values(zip.files).filter(file => {
-      return !file.dir && file.name.split('.').pop() === 'xml' && file.name.includes("/Specializations/");
-    })
+    const specializationFiles = Object.values(zip.files).filter((file) => {
+      return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/Specializations/");
+    });
 
     let totalCount = specializationFiles.length;
     let currentCount = 0;
 
-    if(specializationFiles.length > 0) {
+    if (specializationFiles.length > 0) {
       $(".import-progress.specializations").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack('Item', `oggdude.Specializations`);
+      let pack = await this._getCompendiumPack("Item", `oggdude.Specializations`);
 
       await this.asyncForEach(specializationFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
           const domparser = new DOMParser();
-          const xmlDoc = domparser.parseFromString(data,"text/xml");
+          const xmlDoc = domparser.parseFromString(data, "text/xml");
           const specData = JXON.xmlToJs(xmlDoc);
 
           let specialization = {
             name: specData.Specialization.Name,
             type: "specialization",
             flags: {
-              importid: specData.Specialization.Key
+              importid: specData.Specialization.Key,
             },
             data: {
               description: specData.Specialization.Description,
               talents: {},
               careerskills: {},
-              isReadOnly: true
-            }
+              isReadOnly: true,
+            },
           };
           this._importLogger(`Start importing Specialization ${specialization.name}`);
 
           // assign career skills
           try {
-            if(!CONFIG.temporary.skillsMap) {
-              const skillFile = Object.values(zip.files).find(file => {
-                if(file.name.includes(`/Skills.xml`)) {
+            if (!CONFIG.temporary.skillsMap) {
+              const skillFile = Object.values(zip.files).find((file) => {
+                if (file.name.includes(`/Skills.xml`)) {
                   return true;
                 }
                 return false;
-              })
+              });
               const skills = await zip.file(skillFile.name).async("text");
-              const skillsDoc = domparser.parseFromString(skills,"text/xml");
+              const skillsDoc = domparser.parseFromString(skills, "text/xml");
               const skillsData = JXON.xmlToJs(skillsDoc);
-            
-              CONFIG.temporary.skillsMap = skillsData.Skills.Skill.map(skill => {
-                let item = {
-                  key : skill.Key,
-                  keyName : skill.Name
-                }
 
-                const swffgskill = Object.values(CONFIG.FFG.skills).find(ffgSkill => {
-                  return ffgSkill.value.toLowerCase().replace(/[^a-zA-Z]/gmi, "") === skill.Name.toLowerCase().replace(/[^a-zA-Z]/gmi, "")
+              CONFIG.temporary.skillsMap = skillsData.Skills.Skill.map((skill) => {
+                let item = {
+                  key: skill.Key,
+                  keyName: skill.Name,
+                };
+
+                const swffgskill = Object.values(CONFIG.FFG.skills).find((ffgSkill) => {
+                  return ffgSkill.value.toLowerCase().replace(/[^a-zA-Z]/gim, "") === skill.Name.toLowerCase().replace(/[^a-zA-Z]/gim, "");
                 });
 
-                if(swffgskill) {
+                if (swffgskill) {
                   item.skillName = swffgskill.value;
                 }
                 return item;
               });
             }
 
-            specData.Specialization.CareerSkills.Key.forEach(skillKey => {
-              let skill = CONFIG.temporary.skillsMap.find(item => {
+            specData.Specialization.CareerSkills.Key.forEach((skillKey) => {
+              let skill = CONFIG.temporary.skillsMap.find((item) => {
                 return item.key === skillKey;
-              })
+              });
 
-              if(skill) {
+              if (skill) {
                 specialization.data.careerskills[Object.keys(specialization.data.careerskills).length] = skill.skillName;
               }
-            })
+            });
           } catch (err) {
             // skipping career skills
           }
 
-
-          for (let i = 0; i < specData.Specialization.TalentRows.TalentRow.length; i+=1) {
+          for (let i = 0; i < specData.Specialization.TalentRows.TalentRow.length; i += 1) {
             const row = specData.Specialization.TalentRows.TalentRow[i];
 
             await this.asyncForEach(row.Talents.Key, async (keyName, index) => {
               let rowTalent = {};
 
-              let talentItem = ImportHelpers.findEntityByImportId('items', keyName);
-              if(!talentItem) {
+              let talentItem = ImportHelpers.findEntityByImportId("items", keyName);
+              if (!talentItem) {
                 talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", keyName);
               }
 
@@ -853,25 +857,25 @@ export default class DataImporter extends FormApplication {
                 rowTalent.activation = talentItem.data.data.activation.value;
                 rowTalent.activationLabel = talentItem.data.data.activation.label;
                 rowTalent.isForceTalent = talentItem.data.data.isForceTalent === "true" ? true : false;
-                rowTalent.isRanked =  talentItem.data.data.ranks.ranked === "true" ? true : false;
+                rowTalent.isRanked = talentItem.data.data.ranks.ranked === "true" ? true : false;
                 rowTalent.size = "single";
                 rowTalent.canLinkTop = true;
                 rowTalent.canLinkRight = true;
                 rowTalent.itemId = talentItem.data._id;
 
-                if(row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
+                if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
                   rowTalent["links-top-1"] = true;
                 }
 
-                if(row.Directions.Direction[index].Right && row.Directions.Direction[index].Right === "true") {
+                if (row.Directions.Direction[index].Right && row.Directions.Direction[index].Right === "true") {
                   rowTalent["links-right"] = true;
                 }
 
-                if(talentItem.compendium) {
-                  rowTalent.pack = `${talentItem.compendium.metadata.package}.${talentItem.compendium.metadata.name}`
+                if (talentItem.compendium) {
+                  rowTalent.pack = `${talentItem.compendium.metadata.package}.${talentItem.compendium.metadata.name}`;
                 }
-                
-                const talentKey = `talent${(i * 4) + index}`;
+
+                const talentKey = `talent${i * 4 + index}`;
                 specialization.data.talents[talentKey] = rowTalent;
               }
             });
@@ -879,24 +883,25 @@ export default class DataImporter extends FormApplication {
 
           let compendiumItem;
           await pack.getIndex();
-          let entry = pack.index.find(e => e.name === specialization.name);
-          if(!entry) {
+          let entry = pack.index.find((e) => e.name === specialization.name);
+          if (!entry) {
             CONFIG.logger.debug(`Importing Specialization - Item`);
-            compendiumItem = new Item(specialization, {temporary:true});  
+            compendiumItem = new Item(specialization, { temporary: true });
             this._importLogger(`New Specialization ${specialization.Name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Specialization - Item`);
             let updateData = ImportHelpers.buildUpdateData(specialization);
-            updateData["_id"] = entry._id
+            updateData["_id"] = entry._id;
             this._importLogger(`Updating Specialization ${specialization.Name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
-          currentCount +=1 ;
-          
-          $(".specializations .import-progress-bar").width(`${Math.trunc((currentCount / totalCount) * 100)}%`).html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          this._importLogger(`End importing Specialization ${specialization.Name}`);
+          currentCount += 1;
 
+          $(".specializations .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          this._importLogger(`End importing Specialization ${specialization.Name}`);
         } catch (err) {
           CONFIG.logger.error(`Error importing record : `, err);
         }
@@ -908,12 +913,12 @@ export default class DataImporter extends FormApplication {
 
   async _getCompendiumPack(type, name) {
     this._importLogger(`Checking for existing compendium pack ${name}`);
-    let pack = game.packs.find(p => {
-      return p.metadata.label === name
+    let pack = game.packs.find((p) => {
+      return p.metadata.label === name;
     });
-    if(!pack) {
+    if (!pack) {
       this._importLogger(`Compendium pack ${name} not found, creating new`);
-      pack = await Compendium.create({ entity : type, label: name});
+      pack = await Compendium.create({ entity: type, label: name });
     } else {
       this._importLogger(`Existing compendium pack ${name} found`);
     }
@@ -923,10 +928,12 @@ export default class DataImporter extends FormApplication {
 
   _enableImportSelection(files, name, isDirectory) {
     this._importLogger(`Checking zip file for ${name}`);
-    Object.values(files).findIndex(file => {
-      if(file.name.includes(`/${name}.xml`) || (isDirectory && file.name.includes(`/${name}`))) {
+    Object.values(files).findIndex((file) => {
+      if (file.name.includes(`/${name}.xml`) || (isDirectory && file.name.includes(`/${name}`))) {
         this._importLogger(`Found file ${file.name}`);
-        $(`#import${name.replace(" ", "")}`).removeAttr("disabled").val(file.name);
+        $(`#import${name.replace(" ", "")}`)
+          .removeAttr("disabled")
+          .val(file.name);
         return true;
       }
       return false;
@@ -938,5 +945,4 @@ export default class DataImporter extends FormApplication {
       await callback(array[index], index, array);
     }
   };
-  
 }

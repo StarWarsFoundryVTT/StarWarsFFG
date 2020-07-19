@@ -51,9 +51,9 @@ export class AdversarySheetFFG extends ActorSheet {
       case "character":
         this.position.width = 595;
         this.position.height = 783;
-        if(data.limited) {
+        if (data.limited) {
           this.position.height = 165;
-        } 
+        }
 
         // we need to update all specialization talents with the latest talent information
         if (!this.actor.data.flags.loaded) {
@@ -300,7 +300,7 @@ export class AdversarySheetFFG extends ActorSheet {
     this.actor.data.flags.loaded = false;
     return this.object.update(formData);
   }
-  
+
   _addSkillDicePool(elem) {
     const data = this.getData();
     const skillName = elem.dataset["ability"];
@@ -378,7 +378,6 @@ export class AdversarySheetFFG extends ActorSheet {
     }
   }
 
-
   async _updateSpecialization(data) {
     CONFIG.logger.debug(`Running Actor initial load`);
     this.actor.data.flags.loaded = true;
@@ -391,11 +390,11 @@ export class AdversarySheetFFG extends ActorSheet {
       const specializationTalents = spec.data.talents;
       for (let talent in specializationTalents) {
         let gameItem;
-        if(specializationTalents[talent].pack && specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
+        if (specializationTalents[talent].pack && specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
           const pack = await game.packs.get(specializationTalents[talent].pack);
           await pack.getIndex();
-          const entry = await pack.index.find(e => e._id === specializationTalents[talent].itemId);
-          gameItem = await pack.getEntity(entry._id)
+          const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+          gameItem = await pack.getEntity(entry._id);
         } else {
           gameItem = game.items.get(specializationTalents[talent].itemId);
         }

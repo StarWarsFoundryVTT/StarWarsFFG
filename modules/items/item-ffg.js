@@ -28,10 +28,10 @@ export class ItemFFG extends Item {
         const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.value)}`;
         data.range.label = rangeId;
 
-        if(this.isOwned && this.actor) {
-          if(data.skill.value === "Melee" || data.skill.value === "Brawl") {
+        if (this.isOwned && this.actor) {
+          if (data.skill.value === "Melee" || data.skill.value === "Brawl") {
             let damageAdd = 0;
-            for(let attr in data.attributes) {
+            for (let attr in data.attributes) {
               if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
                 damageAdd += parseInt(data.attributes[attr].value, 10);
               }
@@ -89,7 +89,7 @@ export class ItemFFG extends Item {
         if (talents[upgrade].islearned) {
           const item = JSON.parse(JSON.stringify(talents[upgrade]));
 
-          if(item.isRanked || listProperty === "powerUpgrades") {
+          if (item.isRanked || listProperty === "powerUpgrades") {
             item.rank = 1;
           } else {
             item.rank = "N/A";
@@ -157,22 +157,22 @@ export class ItemFFG extends Item {
     const specializationTalents = this.data.data.talents;
     for (let talent in specializationTalents) {
       let gameItem;
-      if(specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
+      if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
         try {
           const pack = game.packs.get(specializationTalents[talent].pack);
           await pack.getIndex();
-          const entry = pack.index.find(e => e._id === specializationTalents[talent].itemId);
+          const entry = pack.index.find((e) => e._id === specializationTalents[talent].itemId);
           gameItem = (await pack.getEntity(entry._id)).data;
         } catch {
-          CONFIG.logger.debug('Pack Item, deferring load.')
+          CONFIG.logger.debug("Pack Item, deferring load.");
         }
       } else {
-        gameItem = game.data.items.find(item => {
+        gameItem = game.data.items.find((item) => {
           return item._id === specializationTalents[talent].itemId;
         });
       }
-     
-      if(gameItem && !this.isOwned) {
+
+      if (gameItem && !this.isOwned) {
         this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
       }
     }

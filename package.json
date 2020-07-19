@@ -5,14 +5,26 @@
   "main": "index.js",
   "scripts": {
     "compile": "gulp css",
-    "watch": "gulp"
+    "watch": "gulp",
+    "prettier": "prettier --quote-props=preserve --print-width=5000 --write"
   },
   "author": "",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^7.0.1",
     "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^2.6.5"
+    "gulp-sourcemaps": "^2.6.5",
+    "husky": "4.2.5",
+    "lint-staged": "10.2.11",
+    "prettier": "2.0.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "prettier --quote-props=preserve --print-width=5000 --write"
   }
 }

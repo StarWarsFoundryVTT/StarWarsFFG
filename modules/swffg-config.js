@@ -34,23 +34,23 @@ FFG.characteristics = {
 };
 
 FFG.weapon_stats = {
-  "damage" : {
-    value : "damage",
-    label : "SWFFG.ItemsDamage"
+  "damage": {
+    value: "damage",
+    label: "SWFFG.ItemsDamage",
   },
-  "critical" : {
-    value : "critical",
-    label : "SWFFG.ItemsCrit", 
+  "critical": {
+    value: "critical",
+    label: "SWFFG.ItemsCrit",
   },
-  "encumbrance" : {
-    value : "emcubrance",
-    label : "SWFFG.ItemsEncum", 
+  "encumbrance": {
+    value: "emcubrance",
+    label: "SWFFG.ItemsEncum",
   },
-  "hardpoints" : {
-    value : "hardpoints",
-    label : "SWFFG.ItemsHP", 
-  }
-}
+  "hardpoints": {
+    value: "hardpoints",
+    label: "SWFFG.ItemsHP",
+  },
+};
 
 FFG.character_stats = {
   "wounds": {
@@ -80,7 +80,7 @@ FFG.character_stats = {
   "forcePool": {
     value: "ForcePool",
     label: "SWFFG.ForcePool",
-  }
+  },
 };
 
 FFG.skills = {
@@ -310,7 +310,7 @@ FFG.mod_types = {
   "Stat": {
     "value": "Stat",
     "label": "SWFFG.ModTypeStat",
-  }
+  },
 };
 
 FFG.weapon_mod_types = {
@@ -333,8 +333,8 @@ FFG.weapon_mod_types = {
   "Weapon Stat": {
     "value": "Weapon Stat",
     "label": "SWFFG.ModTypeStatWeapon",
-  }
-}
+  },
+};
 
 FFG.species = {};
 
@@ -381,5 +381,5 @@ FFG.vehicle_consumable_range = {
   "years": {
     value: 0,
     label: "SWFFG.Years",
-  }
-}
+  },
+};
