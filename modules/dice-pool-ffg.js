@@ -140,6 +140,7 @@ export class AbilityDie extends DiceTerm {
 
     // Return the evaluated term
     this._evaluated = true;
+    this._isFFG = true;
     return this;
   }
 
@@ -203,6 +204,7 @@ export class BoostDie extends DiceTerm {
 
     // Return the evaluated term
     this._evaluated = true;
+    this._isFFG = true;
     return this;
   }
 
@@ -266,6 +268,7 @@ export class ChallengeDie extends DiceTerm {
 
     // Return the evaluated term
     this._evaluated = true;
+    this._isFFG = true;
     return this;
   }
 
@@ -329,6 +332,7 @@ export class DifficultyDie extends DiceTerm {
 
     // Return the evaluated term
     this._evaluated = true;
+    this._isFFG = true;
     return this;
   }
 
@@ -392,6 +396,7 @@ export class ForceDie extends DiceTerm {
 
     // Return the evaluated term
     this._evaluated = true;
+    this._isFFG = true;
     return this;
   }
 
@@ -455,6 +460,7 @@ export class ProficiencyDie extends DiceTerm {
 
     // Return the evaluated term
     this._evaluated = true;
+    this._isFFG = true;
     return this;
   }
 
@@ -518,6 +524,7 @@ export class SetbackDie extends DiceTerm {
 
     // Return the evaluated term
     this._evaluated = true;
+    this._isFFG = true;
     return this;
   }
 
@@ -544,7 +551,12 @@ export class RollFFG extends Roll {
     super(...args);
     this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
     this.hasFFG = false;
+    this.hasStandard = false;
   }
+
+  static CHAT_TEMPLATE = "systems/starwarsffg/templates/dice/roll-ffg.html";
+
+  static TOOLTIP_TEMPLATE = "systems/starwarsffg/templates/dice/tooltip-ffg.html";
 
   /* -------------------------------------------- */
 
@@ -574,8 +586,10 @@ export class RollFFG extends Roll {
     // Step 3 - evaluate any remaining terms and return any non-FFG dice to the total.
     this.results = this.terms.map((term) => {
       if (!game.ffg.diceterms.includes(term.constructor)) {
-        if (term.evaluate) return term.evaluate({ minimize, maximize }).total;
-        else return term;
+        if (term.evaluate) {
+          this.hasStandard = true;
+          return term.evaluate({ minimize, maximize }).total;
+        } else return term;
       } else {
         if (term.evaluate) term.evaluate({ minimize, maximize });
         this.hasFFG = true;
@@ -615,6 +629,89 @@ export class RollFFG extends Roll {
   /** @override */
   roll() {
     return this.evaluate();
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
+  getTooltip() {
+    const parts = this.dice.map((d) => {
+      const cls = d.constructor;
+      let isFFG = "notFFG";
+      if (game.ffg.diceterms.includes(d.constructor)) isFFG = "isFFG";
+      return {
+        formula: d.formula,
+        total: d.total,
+        faces: d.faces,
+        flavor: d.options.flavor,
+        isFFG: game.ffg.diceterms.includes(d.constructor),
+        notFFG: !game.ffg.diceterms.includes(d.constructor),
+        rolls: d.results.map((r) => {
+          return {
+            result: cls.getResultLabel(r.result),
+            classes: [cls.name.toLowerCase(), isFFG, "d" + d.faces, r.rerolled ? "rerolled" : null, r.exploded ? "exploded" : null, r.discarded ? "discarded" : null, r.result === 1 ? "min" : null, r.result === d.faces ? "max" : null].filter((c) => c).join(" "),
+          };
+        }),
+      };
+    });
+    return renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { parts });
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
+  async render(chatOptions = {}) {
+    chatOptions = mergeObject(
+      {
+        user: game.user._id,
+        flavor: null,
+        template: this.constructor.CHAT_TEMPLATE,
+        blind: false,
+      },
+      chatOptions
+    );
+    const isPrivate = chatOptions.isPrivate;
+
+    // Execute the roll, if needed
+    if (!this._rolled) this.roll();
+
+    // Define chat data
+    const chatData = {
+      formula: isPrivate ? "???" : this._formula,
+      flavor: isPrivate ? null : chatOptions.flavor,
+      user: chatOptions.user,
+      tooltip: isPrivate ? "" : await this.getTooltip(),
+      total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
+    };
+
+    // Render the roll display template
+    return renderTemplate(chatOptions.template, chatData);
+  }
+
+  /* -------------------------------------------- */
+  /** @override */
+  toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
+    // Perform the roll, if it has not yet been rolled
+    if (!this._rolled) this.evaluate();
+
+    // Prepare chat data
+    messageData = mergeObject(
+      {
+        user: game.user._id,
+        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+        content: this.total,
+        sound: CONFIG.sounds.dice,
+        ffg: this.ffg,
+        hasFFG: this.hasFFG,
+        hasStandard: this.hasStandard,
+      },
+      messageData
+    );
+    messageData.roll = this;
+
+    // Prepare message options
+    const messageOptions = { rollMode };
+
+    // Either create the message or just return the chat data
+    return create ? CONFIG.ChatMessage.entityClass.create(messageData, messageOptions) : messageData;
   }
 }
 
