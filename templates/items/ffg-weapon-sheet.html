@@ -13,7 +13,7 @@
             <div class="characteristic-item flex-group-center">
               <div class="characteristic">
                 <div class="characteristic-value">
-                  <input type="text" name="data.damage.value" value="{{data.damage.value}}" data-dtype="Number" />
+                  <input type="text" name="data.damage.value" value="{{#if (or (eq data.skill.value "Brawl") (eq data.skill.value "Melee"))}}0{{else}}{{data.damage.value}}{{/if}}" data-dtype="Number" {{#if (or (eq data.skill.value "Brawl") (eq data.skill.value "Melee"))}}disabled{{/if}} />
                 </div>
               </div>
               <div class="characteristic-label">

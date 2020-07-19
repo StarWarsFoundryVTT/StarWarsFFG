@@ -284,6 +284,10 @@ export class ItemSheetFFG extends ItemSheet {
   _updateObject(event, formData) {
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
+    if (this.object.data.type === "weapon" && (formData["data.skill.value"] === "Melee" || formData["data.skill.value"] === "Brawl")) {
+      formData["data.damage.value"] = 0;
+    }
+
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
