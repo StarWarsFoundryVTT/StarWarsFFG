@@ -286,5 +286,7 @@
   "SWFFG.SkillChangeCharacteristicContextItem": "Cambiar Característica",
   "SWFFG.SkillAddContextItem": "Añadir Habilidad",
   "SWFFG.SkillAddDialogTitle": "Crear una Habilidad",
-  "SWFFG.SkillRemoveContextItem": "Borrar Habilidad"
+  "SWFFG.SkillRemoveContextItem": "Borrar Habilidad",
+  "SWFFG.DefenseRangedLabel": "Defensa (Distancia)",
+  "SWFFG.DefenseMeleeLabel": "Defense (CC)"
 }
