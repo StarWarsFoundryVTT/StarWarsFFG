@@ -406,40 +406,7 @@
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
-      <header class="attributes-header flexrow">
-        <!-- <span class="attribute-key">ID</span> -->
-        <span class="attribute-modtype">{{localize "SWFFG.ModifierType"}}</span>
-        <span class="attribute-mod">{{localize "SWFFG.Modifier"}}</span>
-        <span class="attribute-value">{{localize "SWFFG.ModifierValue"}}</span>
-        <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
-      </header>
-
-      <ol class="attributes-list">
-        {{#each data.attributes as |attr key|}}
-          <li class="attribute flexrow" data-attribute="{{key}}">
-            <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
-            <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-              {{#select attr.modtype}} {{#each ../this.FFG.mod_types as |t|}}
-                  <option value="{{t.value}}">{{localize t.label}}</option>
-                {{/each}} {{/select}}
-            </select>
-            <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-              {{#select attr.mod}} {{#iff attr.modtype '==' 'Stat' }} {{#each ../this.FFG.character_stats as |t|}}
-                    <option value="{{t.value}}">{{localize t.label}}</option>
-                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Rank' }} {{#each ../this.FFG.skills as |t|}}
-                    <option value="{{t.value}}">{{localize t.label}}</option>
-                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Skill Boost' }} {{#each ../this.FFG.skills as |t|}}
-                    <option value="{{t.value}}">{{localize t.label}}</option>
-                  {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
-                    <option value="{{t.value}}">{{localize t.label}}</option>
-                  {{/each}} {{/iff}} {{/select}}
-            </select>
-            <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
-            <!-- <input class="attribute-label" type="text" name="data.attributes.{{key}}.label" value="{{attr.label}}"/> -->
-            <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
-          </li>
-        {{/each}}
-      </ol>
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
   </section>
 </form>
