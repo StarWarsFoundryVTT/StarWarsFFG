@@ -174,24 +174,24 @@
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipweapon'}}
-              <tr class="item" data-item-id="{{item._id}}">
-                <td class="hover">
-                  {{item.name}}
-                  <div class="tooltip">{{{item.safe_desc}}}</div>
-                </td>
-                <td>{{localize item.data.firingarc.label}}</td>
-                <td>{{item.data.damage.value}}</td>
-                <td>{{localize item.data.range.label}}</td>
-                <td>{{item.data.crit.value}}</td>
-                <td class="hover">
-                  {{{renderDiceTags item.data.special.value}}}
-                  <div class="tooltip">{{{renderDiceTags item.data.special.value}}}</div>
-                </td>
-                <td class="item-controls">
-                  <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                </td>
-              </tr>
-            {{/iff}} {{/each}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="hover">
+              {{item.name}}
+              <div class="tooltip">{{{item.safe_desc}}}</div>
+            </td>
+            <td>{{localize item.data.firingarc.label}}</td>
+            <td>{{item.data.damage.value}}</td>
+            <td>{{localize item.data.range.label}}</td>
+            <td>{{item.data.crit.value}}</td>
+            <td class="hover">
+              {{{renderDiceTags item.data.special.value}}}
+              <div class="tooltip">{{{renderDiceTags item.data.special.value}}}</div>
+            </td>
+            <td class="item-controls">
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
         </tbody>
       </table>
 
@@ -204,17 +204,17 @@
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipattachment'}}
-              <tr class="item" data-item-id="{{item._id}}">
-                <td class="hover">
-                  {{item.name}}
-                  <div class="tooltip">{{{item.safe_desc}}}</div>
-                </td>
-                <td>{{item.data.hardpoints.value}}</td>
-                <td class="item-controls">
-                  <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                </td>
-              </tr>
-            {{/iff}} {{/each}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="hover">
+              {{item.name}}
+              <div class="tooltip">{{{item.safe_desc}}}</div>
+            </td>
+            <td>{{item.data.hardpoints.value}}</td>
+            <td class="item-controls">
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/each}}
         </tbody>
       </table>
 
@@ -230,20 +230,20 @@
         </thead>
         <tbody class="items-list">
           {{#each actor.items as |item id|}} {{#iff item.type '!=' 'shipweapon'}} {{#iff item.type '!=' 'shipattachment'}} {{#iff item.type '!=' 'talent'}} {{#iff item.type '!=' 'criticalinjury'}} {{#iff item.type '!=' 'criticaldamage'}}
-                  <tr class="item" data-item-id="{{item._id}}">
-                    <td class="hover">
-                      {{item.name}}
-                      <div class="tooltip">{{{item.safe_desc}}}</div>
-                    </td>
-                    <td>{{item.data.price.value}}</td>
-                    <td>{{item.data.rarity.value}}</td>
-                    <td>{{item.data.quantity.value}}</td>
-                    <td>{{item.data.encumbrance.value}}</td>
-                    <td class="item-controls">
-                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                    </td>
-                  </tr>
-                {{/iff}} {{/iff}} {{/iff}} {{/iff}} {{/iff}} {{/each}}
+          <tr class="item" data-item-id="{{item._id}}">
+            <td class="hover">
+              {{item.name}}
+              <div class="tooltip">{{{item.safe_desc}}}</div>
+            </td>
+            <td>{{item.data.price.value}}</td>
+            <td>{{item.data.rarity.value}}</td>
+            <td>{{item.data.quantity.value}}</td>
+            <td>{{item.data.encumbrance.value}}</td>
+            <td class="item-controls">
+              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+            </td>
+          </tr>
+          {{/iff}} {{/iff}} {{/iff}} {{/iff}} {{/iff}} {{/each}}
         </tbody>
       </table>
     </div>
@@ -263,20 +263,20 @@
               </div>
               <div class="block-attribute">
                 <select style="text-align: center;" name="data.stats.hyperdrive.value">
-                  {{#select data.stats.hyperdrive.value}} 
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                    {{/select}}
+                  {{#select data.stats.hyperdrive.value}}
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  {{/select}}
                 </select>
               </div>
             </div>
@@ -325,8 +325,8 @@
               <div class="block-attribute">
                 <select style="text-align: center;" name="data.stats.sensorRange.value">
                   {{#select data.stats.sensorRange.value}} {{#each this.FFG.sensor_ranges as |t|}}
-                      <option value="{{t.value}}">{{localize t.label}}</option>
-                    {{/each}} {{/select}}
+                  <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}} {{/select}}
                 </select>
               </div>
             </div>
@@ -361,8 +361,8 @@
                   <input type="text" name="data.stats.consumables.value" value="{{data.stats.consumables.value}}" data-dtype="Number" />
                   <select style="text-align: center;" name="data.stats.consumables.duration">
                     {{#select data.stats.consumables.duration}} {{#each this.FFG.vehicle_consumable_range as |t|}}
-                        <option value="{{t.value}}">{{localize t.label}}</option>
-                      {{/each}} {{/select}}
+                    <option value="{{t.value}}">{{localize t.label}}</option>
+                    {{/each}} {{/select}}
                   </select>
                 </div>
               </div>
@@ -390,7 +390,7 @@
                 <div class="grid grid-2col item" data-item-id="{{item._id}}">
                   <div>{{item.name}}</div>
                   <div class="severity">
-                    {{renderMultiple  item.data.severity "<img class='severity-img' src='/modules/special-dice-roller/public/images/sw/purple.png'>"}}
+                    {{renderMultiple item.data.severity "<img class="severity-img" src="/modules/special-dice-roller/public/images/sw/purple.png" />"}}
                     <div class="item-controls">
                       <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
                     </div>

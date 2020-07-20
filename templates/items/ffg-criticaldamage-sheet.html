@@ -2,25 +2,22 @@
   <header class="sheet-header">
     <div class="header-fields">
       <div class="container flex-group-center">
-        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
       </div>
       <div class="container flex-group-center item-name">
-        
-          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
-        
+        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
       </div>
     </div>
   </header>
 
   {{!-- Sheet Body --}}
   <section class="sheet-body">
-
     <div class="container flex-group-center items">
       <div class="resource split">
         <div class="attribute flex-group-center">
           <div class="block-background">
             <div class="block-title">
-              d100 Roll 
+              d100 Roll
             </div>
             <div class="block-attribute">
               <div class="block-value"><input type="text" name="data.min" value="{{data.min}}" data-dtype="Number" /></div>
@@ -66,6 +63,4 @@
       </div>
     </div>
   </section>
-
 </form>
-    

@@ -1,5 +1,5 @@
 <div class="dialog-content skill-create-dialog">
-  <input type="text" name="name" placeholder="Skill Name"/>
+  <input type="text" name="name" placeholder="Skill Name" />
   <select name="characteristic">
     {{#each content.options as |characteristics id|}}
     <option value="{{id}}">{{localize characteristics.label}}</option>
@@ -9,8 +9,7 @@
 <div class="dialog-buttons">
   {{#each buttons as |button id|}}
   <button class="dialog-button" data-button="{{id}}">
-      {{{button.icon}}}
-      {{{button.label}}}
+    {{{button.icon}}} {{{button.label}}}
   </button>
   {{/each}}
 </div>

@@ -1,12 +1,12 @@
 <form class="{{cssClass}} item-sheet-species" autocomplete="off">
   <header class="sheet-header">
     <div class="header-fields">
-        <div class="container flex-group-center">
-          <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}"/>
-        </div>
-        <div class="container flex-group-center">
+      <div class="container flex-group-center">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+      </div>
+      <div class="container flex-group-center">
         <div class="container flex-group-center item-name">
-            <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name"/></h1>
+          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
         </div>
         <div class="container flex-group-center">
           <div class="grid grid-6col characteristics">
@@ -14,10 +14,10 @@
             <div class="characteristic-item flex-group-center">
               <div class="characteristic">
                 <div class="characteristic-value">
-                  <input class="attribute-key" type="text" name="data.attributes.{{characteristic.id}}.key" value="{{characteristic.id}}" style="display:none;"/>
+                  <input class="attribute-key" type="text" name="data.attributes.{{characteristic.id}}.key" value="{{characteristic.id}}" style="display: none;" />
                   <input type="text" name="data.attributes.{{characteristic.id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[1-7]" />
-                  <input type="text" name="data.attributes.{{characteristic.id}}.modtype" value="{{characteristic.modtype}}" style="display:none;"/>
-                  <input type="text" name="data.attributes.{{characteristic.id}}.mod" value="{{characteristic.mod}}" style="display:none;"/>
+                  <input type="text" name="data.attributes.{{characteristic.id}}.modtype" value="{{characteristic.modtype}}" style="display: none;" />
+                  <input type="text" name="data.attributes.{{characteristic.id}}.mod" value="{{characteristic.mod}}" style="display: none;" />
                 </div>
               </div>
               <div class="characteristic-label">
@@ -26,7 +26,6 @@
             </div>
             {{/each}}
           </div>
-        
         </div>
 
         <div class="container flex-group-center">
@@ -39,10 +38,10 @@
                 </div>
                 <div class="block-attribute">
                   <div class="block-value block-single">
-                    <input class="attribute-key" type="text" name="data.attributes.Wounds.key" value="Wounds" style="display:none;"/>
+                    <input class="attribute-key" type="text" name="data.attributes.Wounds.key" value="Wounds" style="display: none;" />
                     <input type="text" name="data.attributes.Wounds.value" value="{{data.attributes.Wounds.value}}" data-dtype="Number" type="text" />
-                    <input type="text" name="data.attributes.Wounds.modtype" value="Stats" style="display:none;"/>
-                    <input type="text" name="data.attributes.Wounds.mod" value="Wounds" style="display:none;"/>
+                    <input type="text" name="data.attributes.Wounds.modtype" value="Stats" style="display: none;" />
+                    <input type="text" name="data.attributes.Wounds.mod" value="Wounds" style="display: none;" />
                   </div>
                 </div>
               </div>
@@ -58,10 +57,10 @@
                 </div>
                 <div class="block-attribute">
                   <div class="block-value block-single">
-                    <input class="attribute-key" type="text" name="data.attributes.Strain.key" value="Strain" style="display:none;"/>
+                    <input class="attribute-key" type="text" name="data.attributes.Strain.key" value="Strain" style="display: none;" />
                     <input type="text" name="data.attributes.Strain.value" value="{{data.attributes.Strain.value}}" data-dtype="Number" type="text" />
-                    <input type="text" name="data.attributes.Strain.modtype" value="Stats" style="display:none;"/>
-                    <input type="text" name="data.attributes.Strain.mod" value="Strain" style="display:none;"/>
+                    <input type="text" name="data.attributes.Strain.modtype" value="Stats" style="display: none;" />
+                    <input type="text" name="data.attributes.Strain.mod" value="Strain" style="display: none;" />
                   </div>
                 </div>
               </div>
@@ -72,23 +71,22 @@
     </div>
   </header>
 
-
   {{!-- Sheet Tab Navigation --}}
   <nav class="sheet-tabs tabs" data-group="primary">
-      <a class="item" data-tab="description">{{localize "SWFFG.TabDescription"}}</a>
-      <a class="item" data-tab="attributes">{{localize "SWFFG.TabModifiers"}}</a>
+    <a class="item" data-tab="description">{{localize "SWFFG.TabDescription"}}</a>
+    <a class="item" data-tab="attributes">{{localize "SWFFG.TabModifiers"}}</a>
   </nav>
 
   {{!-- Sheet Body --}}
   <section class="sheet-body small">
-      {{!-- Description Tab --}}
-      <div class="tab" data-group="primary" data-tab="description">
-          {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
-      </div>
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
+    </div>
 
-      {{!-- Modifiers Tab --}}
-      <div class="tab attributes" data-group="primary" data-tab="attributes">
-        {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
-      </div>
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
+    </div>
   </section>
 </form>

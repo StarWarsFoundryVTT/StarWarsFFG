@@ -16,12 +16,10 @@
                 {{localize "SWFFG.TalentsActivation"}}
               </div>
               <div class="block-attribute">
-                <select style="text-align:center;" name="data.activation.value">
-                  {{#select data.activation.value}}
-                    {{#each this.FFG.activations as |t|}}
-                      <option value="{{t.value}}">{{localize t.label}}</option>
-                    {{/each}}
-                  {{/select}}
+                <select style="text-align: center;" name="data.activation.value">
+                  {{#select data.activation.value}} {{#each this.FFG.activations as |t|}}
+                  <option value="{{t.value}}">{{localize t.label}}</option>
+                  {{/each}} {{/select}}
                 </select>
               </div>
             </div>
@@ -35,7 +33,7 @@
                 {{localize "SWFFG.ItemTalentRanked"}}
               </div>
               <div class="block-attribute">
-                <input class="ranked-toggle" style="text-align:center;" type="checkbox" name="data.ranks.ranked" data-dtype="Boolean" {{checked data.ranks.ranked}} />
+                <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="data.ranks.ranked" data-dtype="Boolean" {{checked data.ranks.ranked}} />
               </div>
             </div>
           </div>
@@ -48,9 +46,9 @@
               </div>
               <div class="block-attribute">
                 {{#if data.ranks.ranked}}
-                  <div class="block-value block-single"><input type="text" name="data.ranks.current" value="{{data.ranks.current}}" data-dtype="Number" /></div>
+                <div class="block-value block-single"><input type="text" name="data.ranks.current" value="{{data.ranks.current}}" data-dtype="Number" /></div>
                 {{else}}
-                  <div class="block-value block-single"><input type="text" value="N/A" disabled /></div>
+                <div class="block-value block-single"><input type="text" value="N/A" disabled /></div>
                 {{/if}}
               </div>
             </div>
@@ -63,7 +61,7 @@
                 {{localize "SWFFG.TalentsForce"}}
               </div>
               <div class="block-attribute">
-                <input class="ranked-toggle" style="text-align:center;" type="checkbox" name="data.isForceTalent" data-dtype="Boolean" {{checked data.isForceTalent}} />
+                <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="data.isForceTalent" data-dtype="Boolean" {{checked data.isForceTalent}} />
               </div>
             </div>
           </div>
@@ -80,7 +78,6 @@
 
   {{!-- Sheet Body --}}
   <section class="sheet-body small">
-
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
       {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
