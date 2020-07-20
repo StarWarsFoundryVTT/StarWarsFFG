@@ -1,4 +1,5 @@
 import PopoutEditor from "../popout-editor.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 /**
  * Extend the base Actor entity.
@@ -370,30 +371,8 @@ export class ActorFFG extends Actor {
     this._setModifiers(actorData, CONFIG.FFG.characteristics, "characteristics", "Characteristic");
     Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
       let total = 0;
-
       total += data.attributes[key].value;
-
-      actorData.items.forEach((item) => {
-        const attrsToApply = Object.keys(item.data.attributes)
-          .filter((id) => item.data.attributes[id].mod === key)
-          .map((i) => item.data.attributes[i]);
-
-        if (attrsToApply.length > 0) {
-          // only apply actor updates if equipable item is equipped.
-          if (item.type === "armour" || item.type === "weapon") {
-            if (item?.data?.equippable?.equipped) {
-              attrsToApply.forEach((attr) => {
-                total += parseInt(attr.value, 10);
-              });
-            }
-          } else {
-            attrsToApply.forEach((attr) => {
-              total += parseInt(attr.value, 10);
-            });
-          }
-        }
-      });
-
+      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key);
       data.characteristics[key].value = total > 7 ? 7 : total;
     });
 
@@ -403,40 +382,8 @@ export class ActorFFG extends Actor {
       const key = CONFIG.FFG.character_stats[k].value;
 
       let total = 0;
-
       total += data.attributes[key].value;
-
-      actorData.items.forEach((item) => {
-        const attrsToApply = Object.keys(item.data.attributes)
-          .filter((id) => item.data.attributes[id].mod === key)
-          .map((i) => item.data.attributes[i]);
-
-        if (item.type === "armour" || item.type === "weapon") {
-          if (item?.data?.equippable?.equipped) {
-            if (key === "Soak") {
-              total += parseInt(item.data.soak.value, 10);
-            }
-            if (key === "Defence-Melee" || key === "Defence-Ranged") {
-              // get the highest defense item
-              const shouldUse = actorData.items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
-              if (shouldUse) {
-                total += parseInt(item.data.defence.value, 10);
-              }
-            }
-            if (attrsToApply.length > 0) {
-              attrsToApply.forEach((attr) => {
-                total += parseInt(attr.value, 10);
-              });
-            }
-          }
-        } else {
-          if (attrsToApply.length > 0) {
-            attrsToApply.forEach((attr) => {
-              total += parseInt(attr.value, 10);
-            });
-          }
-        }
-      });
+      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key);
 
       if (key === "Soak") {
         data.stats[k].value = total;
@@ -453,30 +400,8 @@ export class ActorFFG extends Actor {
     this._setModifiers(actorData, data.skills, "skills", "Skill Rank");
     Object.keys(data.skills).forEach((key) => {
       let total = 0;
-
       total += data.attributes[key].value;
-
-      actorData.items.forEach((item) => {
-        const attrsToApply = Object.keys(item.data.attributes)
-          .filter((id) => item.data.attributes[id].mod === key)
-          .map((i) => item.data.attributes[i]);
-
-        if (attrsToApply.length > 0) {
-          // only apply actor updates if equipable item is equipped.
-          if (item.type === "armour" || item.type === "weapon") {
-            if (item?.data?.equippable?.equipped) {
-              attrsToApply.forEach((attr) => {
-                total += parseInt(attr.value, 10);
-              });
-            }
-          } else {
-            attrsToApply.forEach((attr) => {
-              total += parseInt(attr.value, 10);
-            });
-          }
-        }
-      });
-
+      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key);
       data.skills[key].rank = total > 6 ? 6 : total;
     });
   }

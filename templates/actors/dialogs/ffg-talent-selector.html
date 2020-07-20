@@ -1,5 +1,4 @@
 <div class="dialog-content talent-source-dialog">
-  
   <table class="talent-list">
     <thead>
       <tr>
@@ -17,7 +16,7 @@
         <td>{{localize source.typeLabel}}</td>
         <td>
           {{#iff source.type '==' 'talent'}}
-            <input type="checkbox" id="{{id}}" name="talent" value="{{source.id}}" />
+          <input type="checkbox" id="{{id}}" name="talent" value="{{source.id}}" />
           {{/iff}}
         </td>
       </tr>
@@ -28,8 +27,7 @@
 <div class="dialog-buttons">
   {{#each buttons as |button id|}}
   <button class="dialog-button" data-button="{{id}}">
-      {{{button.icon}}}
-      {{{button.label}}}
+    {{{button.icon}}} {{{button.label}}}
   </button>
   {{/each}}
 </div>
