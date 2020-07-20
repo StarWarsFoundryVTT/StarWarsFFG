@@ -19,6 +19,7 @@ import PopoutEditor from "./popout-editor.js";
 import DataImporter from "./importer/data-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
+import TemplateHelpers from "./helpers/partial-templates.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
@@ -385,6 +386,8 @@ Hooks.once("init", async function () {
 
     return cost;
   });
+
+  TemplateHelpers.preload();
 });
 
 /* -------------------------------------------- */

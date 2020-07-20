@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 20/07/2020 - Cstadther - Refactored modifier display to a partial.  Refactored applying logic.
 - 20/07/2020 - Cstadther - Added skill rank modifiers, works for current skills and any new added skills correctly.
 - 20/07/2020 - Cstadther - Stat modifiers save on update of actor and store value of difference in attribute.
 - 19/07/2020 - Cstadther - Bug Fix #212 - Vehicle weapons are now imported correctly as Vehicle Weapons.
