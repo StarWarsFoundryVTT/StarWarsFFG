@@ -287,6 +287,14 @@ export class ActorFFG extends Actor {
     return skills;
   }
 
+  /**
+   * Prepares the modifier data in the attributes object
+   *
+   * @param  {object} actorData
+   * @param  {object} properties
+   * @param  {string} name
+   * @param  {string} modifierType
+   */
   _setModifiers(actorData, properties, name, modifierType) {
     const data = actorData.data;
     const attributes = Object.keys(data.attributes)
@@ -298,18 +306,26 @@ export class ActorFFG extends Actor {
       .map((key) => Object.assign(data.attributes[key], { key }));
 
     actorData.modifiers[name] = Object.keys(properties).map((k) => {
-      const key = properties[k].value;
+      let key;
+      if (name === "skills") {
+        key = k;
+      } else {
+        key = properties[k].value;
+      }
+
       let attr = attributes.find((item) => item.key === key);
 
       if (!attr) {
         let value = 0;
 
-        if (data[name][k]?.max && name !== "characteristics") {
+        if (data[name][k]?.max && name !== "characteristics" && name !== "skills") {
           value = data[name][k].max;
         } else if (key === "Defence-Melee") {
           value = data.stats.defence.melee;
         } else if (key === "Defence-Ranged") {
           value = data.stats.defence.ranged;
+        } else if (name === "skills") {
+          value = data[name][k].rank;
         } else {
           value = data[name][k].value;
         }
@@ -339,6 +355,11 @@ export class ActorFFG extends Actor {
     });
   }
 
+  /**
+   * Applies the modifers from all attributes on all associated items for an actor
+   *
+   * @param  {object} actorData
+   */
   _applyModifiers(actorData) {
     const data = actorData.data;
     if (!actorData.modifiers) {
@@ -377,7 +398,6 @@ export class ActorFFG extends Actor {
     });
 
     /* Stats */
-
     this._setModifiers(actorData, CONFIG.FFG.character_stats, "stats", "Stat");
     Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
       const key = CONFIG.FFG.character_stats[k].value;
@@ -427,6 +447,37 @@ export class ActorFFG extends Actor {
       } else {
         data.stats[k].max = total;
       }
+    });
+
+    /* Skill Rank */
+    this._setModifiers(actorData, data.skills, "skills", "Skill Rank");
+    Object.keys(data.skills).forEach((key) => {
+      let total = 0;
+
+      total += data.attributes[key].value;
+
+      actorData.items.forEach((item) => {
+        const attrsToApply = Object.keys(item.data.attributes)
+          .filter((id) => item.data.attributes[id].mod === key)
+          .map((i) => item.data.attributes[i]);
+
+        if (attrsToApply.length > 0) {
+          // only apply actor updates if equipable item is equipped.
+          if (item.type === "armour" || item.type === "weapon") {
+            if (item?.data?.equippable?.equipped) {
+              attrsToApply.forEach((attr) => {
+                total += parseInt(attr.value, 10);
+              });
+            }
+          } else {
+            attrsToApply.forEach((attr) => {
+              total += parseInt(attr.value, 10);
+            });
+          }
+        }
+      });
+
+      data.skills[key].rank = total > 6 ? 6 : total;
     });
   }
 }
