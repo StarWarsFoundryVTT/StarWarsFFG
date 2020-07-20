@@ -6,6 +6,7 @@ import Helpers from "../helpers/common.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -453,34 +454,39 @@ export class ActorSheetFFG extends ActorSheet {
     filters.filter = filter;
     await this._onSubmit(event);
   }
-
-  _getCalculatedValue(key) {
-    let total = 0;
-
-    total += this.actor.data.data.attributes[key].value;
-
-    this.actor.data.items.forEach((item) => {
-      const attrsToApply = Object.keys(item.data.attributes)
-        .filter((id) => item.data.attributes[id].mod === key)
-        .map((i) => item.data.attributes[i]);
-
-      if (attrsToApply.length > 0) {
-        attrsToApply.forEach((attr) => {
-          total += parseInt(attr.value, 10);
-        });
-      }
-    });
-
-    return total;
-  }
-
   /* -------------------------------------------- */
 
   /** @override */
   _updateObject(event, formData) {
+    // Handle characteristic updates
     Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
-      let total = this._getCalculatedValue(key);
+      let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
       let x = parseInt(formData[`data.characteristics.${key}.value`], 10) - total;
+      let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+      if (y > 0) {
+        formData[`data.attributes.${key}.value`] = y;
+      } else {
+        formData[`data.attributes.${key}.value`] = 0;
+      }
+    });
+    // Handle stat updates
+    Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
+      const key = CONFIG.FFG.character_stats[k].value;
+
+      let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+
+      let statValue = 0;
+      if (key === "Soak") {
+        statValue = parseInt(formData[`data.stats.${k}.value`], 10);
+      } else if (key === "Defence-Melee") {
+        statValue = parseInt(formData[`data.stats.defence.melee`], 10);
+      } else if (key === "Defence-Ranged") {
+        statValue = parseInt(formData[`data.stats.defence.ranged`], 10);
+      } else {
+        statValue = parseInt(formData[`data.stats.${k}.max`], 10);
+      }
+
+      let x = statValue - total;
       let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
       if (y > 0) {
         formData[`data.attributes.${key}.value`] = y;
