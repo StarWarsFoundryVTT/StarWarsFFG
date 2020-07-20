@@ -494,12 +494,23 @@ export class ActorSheetFFG extends ActorSheet {
         formData[`data.attributes.${key}.value`] = 0;
       }
     });
+    // Handle skill rank updates
+    Object.keys(this.object.data.data.skills).forEach((key) => {
+      let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+      let x = parseInt(formData[`data.skills.${key}.rank`], 10) - total;
+      let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+      if (y > 0) {
+        formData[`data.attributes.${key}.value`] = y;
+      } else {
+        formData[`data.attributes.${key}.value`] = 0;
+      }
+    });
 
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
-      if (/[\s\.]/.test(k)) return ui.notifications.error("Attribute keys may not contain spaces or periods");
+      //if (/[\s\.]/.test(k)) return ui.notifications.error("Attribute keys may not contain spaces or periods");
       delete v["key"];
       obj[k] = v;
       return obj;
