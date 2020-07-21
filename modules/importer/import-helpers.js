@@ -171,4 +171,30 @@ export default class ImportHelpers {
 
     return undefined;
   }
+
+  static getAttributeObject(attributes) {
+    const attrs = JXON.xmlToJs(attributes);
+
+    let itemAttributes = {};
+    if (attrs.SoakValue) {
+      itemAttributes.Soak = { mod: "Soak", modtype: "Stat", value: attrs.SoakValue };
+    }
+    if (attrs.ForceRating) {
+      itemAttributes.ForcePool = { mod: "ForcePool", modtype: "Stat", value: attrs.ForceRating };
+    }
+    if (attrs.StrainThreshold) {
+      itemAttributes.Strain = { mod: "Strain", modtype: "Stat", value: attrs.StrainThreshold };
+    }
+    if (attrs.DefenseRanged) {
+      itemAttributes["Defence-Ranged"] = { mod: "Defence-Ranged", modtype: "Stat", value: attrs.DefenseRanged };
+    }
+    if (attrs.DefenseMelee) {
+      itemAttributes["Defence-Melee"] = { mod: "Defence-Melee", modtype: "Stat", value: attrs.DefenseMelee };
+    }
+    if (attrs.WoundThreshold) {
+      itemAttributes.Wounds = { mod: "Wounds", modtype: "Stat", value: attrs.WoundThreshold };
+    }
+
+    return itemAttributes;
+  }
 }

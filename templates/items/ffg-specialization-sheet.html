@@ -47,7 +47,7 @@
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.isRanked" value="{{talent.isRanked}}" data-dtype="Boolean" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.pack" value="{{talent.pack}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.cost" value="{{calculateSpecializationTalentCost key}}" />
-              <input class="talent-hidden" type="text" name="data.talents.{{key}}.isForceTalent" value="{{talent.isForceTalent}}" data-dtype="Boolean" />
+              <input class="talent-hidden" type="checkbox" name="data.talents.{{key}}.isForceTalent" data-dtype="Boolean" {{checked talent.isForceTalent}} />
             </div>
           </div>
         </div>

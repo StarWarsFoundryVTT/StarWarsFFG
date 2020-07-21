@@ -281,7 +281,7 @@ export class ActorSheetFFG extends ActorSheet {
       });
 
     // Add or Remove Attribute
-    html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
+    html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
     // transfer items between owned actor objects
     const dragDrop = new DragDrop({
@@ -412,35 +412,6 @@ export class ActorSheetFFG extends ActorSheet {
   /* -------------------------------------------- */
 
   /**
-   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
-   * @param {MouseEvent} event    The originating left click event
-   * @private
-   */
-  async _onClickAttributeControl(event) {
-    event.preventDefault();
-    const a = event.currentTarget;
-    const action = a.dataset.action;
-    const attrs = this.object.data.data.attributes;
-    const form = this.form;
-
-    // Add new attribute
-    if (action === "create") {
-      const nk = Object.keys(attrs).length + 1;
-      let newKey = document.createElement("div");
-      newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
-      form.appendChild(newKey);
-      await this._onSubmit(event);
-    }
-
-    // Remove existing attribute
-    else if (action === "delete") {
-      const li = a.closest(".attribute");
-      li.parentElement.removeChild(li);
-      await this._onSubmit(event);
-    }
-  }
-
-  /**
    * Listen for click events on a filter control to modify the selected filter option.
    * @param {MouseEvent} event    The originating left click event
    * @private
@@ -458,53 +429,55 @@ export class ActorSheetFFG extends ActorSheet {
 
   /** @override */
   _updateObject(event, formData) {
-    // Handle characteristic updates
-    Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
-      let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
-      let x = parseInt(formData[`data.characteristics.${key}.value`], 10) - total;
-      let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
-      if (y > 0) {
-        formData[`data.attributes.${key}.value`] = y;
-      } else {
-        formData[`data.attributes.${key}.value`] = 0;
-      }
-    });
-    // Handle stat updates
-    Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
-      const key = CONFIG.FFG.character_stats[k].value;
+    if (this.object.data.type !== "vehicle") {
+      // Handle characteristic updates
+      Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+        let x = parseInt(formData[`data.characteristics.${key}.value`], 10) - total;
+        let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+        if (y > 0) {
+          formData[`data.attributes.${key}.value`] = y;
+        } else {
+          formData[`data.attributes.${key}.value`] = 0;
+        }
+      });
+      // Handle stat updates
+      Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
+        const key = CONFIG.FFG.character_stats[k].value;
 
-      let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
 
-      let statValue = 0;
-      if (key === "Soak") {
-        statValue = parseInt(formData[`data.stats.${k}.value`], 10);
-      } else if (key === "Defence-Melee") {
-        statValue = parseInt(formData[`data.stats.defence.melee`], 10);
-      } else if (key === "Defence-Ranged") {
-        statValue = parseInt(formData[`data.stats.defence.ranged`], 10);
-      } else {
-        statValue = parseInt(formData[`data.stats.${k}.max`], 10);
-      }
+        let statValue = 0;
+        if (key === "Soak") {
+          statValue = parseInt(formData[`data.stats.${k}.value`], 10);
+        } else if (key === "Defence-Melee") {
+          statValue = parseInt(formData[`data.stats.defence.melee`], 10);
+        } else if (key === "Defence-Ranged") {
+          statValue = parseInt(formData[`data.stats.defence.ranged`], 10);
+        } else {
+          statValue = parseInt(formData[`data.stats.${k}.max`], 10);
+        }
 
-      let x = statValue - total;
-      let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
-      if (y > 0) {
-        formData[`data.attributes.${key}.value`] = y;
-      } else {
-        formData[`data.attributes.${key}.value`] = 0;
-      }
-    });
-    // Handle skill rank updates
-    Object.keys(this.object.data.data.skills).forEach((key) => {
-      let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
-      let x = parseInt(formData[`data.skills.${key}.rank`], 10) - total;
-      let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
-      if (y > 0) {
-        formData[`data.attributes.${key}.value`] = y;
-      } else {
-        formData[`data.attributes.${key}.value`] = 0;
-      }
-    });
+        let x = statValue - total;
+        let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+        if (y > 0) {
+          formData[`data.attributes.${key}.value`] = y;
+        } else {
+          formData[`data.attributes.${key}.value`] = 0;
+        }
+      });
+      // Handle skill rank updates
+      Object.keys(this.object.data.data.skills).forEach((key) => {
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+        let x = parseInt(formData[`data.skills.${key}.rank`], 10) - total;
+        let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+        if (y > 0) {
+          formData[`data.attributes.${key}.value`] = y;
+        } else {
+          formData[`data.attributes.${key}.value`] = 0;
+        }
+      });
+    }
 
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
@@ -677,5 +650,6 @@ export class ActorSheetFFG extends ActorSheet {
     specializationTalentItem.activationLabel = talentItem.data.activation.label;
     specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
     specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
+    specializationTalentItem.attributes = talentItem.data.attributes;
   }
 }

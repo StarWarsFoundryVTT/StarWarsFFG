@@ -288,5 +288,7 @@
   "SWFFG.SkillAddDialogTitle": "Create A New Skill",
   "SWFFG.SkillRemoveContextItem": "Remove Skill",
   "SWFFG.DefenseRangedLabel": "Defense (Ranged)",
-  "SWFFG.DefenseMeleeLabel": "Defense (Melee)"
+  "SWFFG.DefenseMeleeLabel": "Defense (Melee)",
+  "SWFFG.ModTypeCareerSkill": "Career Skill",
+  "SWFFG.ModTypeSkillSetback": "Skill Setback"
 }

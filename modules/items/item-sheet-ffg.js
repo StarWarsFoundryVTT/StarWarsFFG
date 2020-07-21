@@ -1,5 +1,6 @@
 import PopoutEditor from "../popout-editor.js";
 import Helpers from "../helpers/common.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -190,7 +191,7 @@ export class ItemSheetFFG extends ItemSheet {
     if (!this.options.editable) return;
 
     // Add or Remove Attribute
-    html.find(".attributes").on("click", ".attribute-control", this._onClickAttributeControl.bind(this));
+    html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
     if (this.object.data.type === "criticalinjury" || this.object.data.type === "criticaldamage") {
       const formatDropdown = (item) => {
@@ -245,37 +246,6 @@ export class ItemSheetFFG extends ItemSheet {
       $(event.currentTarget).find(".popout-editor-button").hide();
     });
     html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
-  }
-
-  /* -------------------------------------------- */
-
-  /**
-   * Listen for click events on an attribute control to modify the composition of attributes in the sheet
-   * @param {MouseEvent} event    The originating left click event
-   * @private
-   */
-  async _onClickAttributeControl(event) {
-    event.preventDefault();
-    const a = event.currentTarget;
-    const action = a.dataset.action;
-    const attrs = this.object.data.data.attributes;
-    const form = this.form;
-
-    // Add new attribute
-    if (action === "create") {
-      const nk = Object.keys(attrs).length + 1;
-      let newKey = document.createElement("div");
-      newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
-      form.appendChild(newKey);
-      await this._onSubmit(event);
-    }
-
-    // Remove existing attribute
-    else if (action === "delete") {
-      const li = a.closest(".attribute");
-      li.parentElement.removeChild(li);
-      await this._onSubmit(event);
-    }
   }
 
   /* -------------------------------------------- */
@@ -580,5 +550,6 @@ export class ItemSheetFFG extends ItemSheet {
     specializationTalentItem.activationLabel = talentItem.data.activation.label;
     specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
     specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
+    specializationTalentItem.attributes = talentItem.data.attributes;
   }
 }

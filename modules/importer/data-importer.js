@@ -225,6 +225,7 @@ export default class DataImporter extends FormApplication {
               importid: importkey,
             },
             data: {
+              attributes: {},
               description,
               ranks: {
                 ranked,
@@ -235,6 +236,11 @@ export default class DataImporter extends FormApplication {
               isForceTalent: forcetalent,
             },
           };
+
+          const attributes = talent.getElementsByTagName("Attributes")[0];
+          if (attributes) {
+            item.data.attributes = Object.assign(item.data.attributes, ImportHelpers.getAttributeObject(attributes));
+          }
 
           let compendiumItem;
           await pack.getIndex();
@@ -864,6 +870,7 @@ export default class DataImporter extends FormApplication {
                 rowTalent.canLinkTop = true;
                 rowTalent.canLinkRight = true;
                 rowTalent.itemId = talentItem.data._id;
+                rowTalent.attributes = talentItem.data.data.attributes;
 
                 if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
                   rowTalent["links-top-1"] = true;
