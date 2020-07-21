@@ -299,13 +299,21 @@ FFG.mod_types = {
     "value": "Characteristic",
     "label": "SWFFG.ModTypeCharacteristic",
   },
-  "Skill Rank": {
-    "value": "Skill Rank",
-    "label": "SWFFG.ModTypeSkillRank",
+  "Career Skill": {
+    "value": "Career Skill",
+    "label": "SWFFG.ModTypeCareerSkill",
   },
   "Skill Boost": {
     "value": "Skill Boost",
     "label": "SWFFG.ModTypeSkillBoost",
+  },
+  "Skill Rank": {
+    "value": "Skill Rank",
+    "label": "SWFFG.ModTypeSkillRank",
+  },
+  "Skill Setback": {
+    "value": "Skill Setback",
+    "label": "SWFFG.ModTypeSkillSetback",
   },
   "Stat": {
     "value": "Stat",
@@ -325,6 +333,14 @@ FFG.weapon_mod_types = {
   "Skill Boost": {
     "value": "Skill Boost",
     "label": "SWFFG.ModTypeSkillBoost",
+  },
+  "Career Skill": {
+    "value": "Career Skill",
+    "label": "SWFFG.ModTypeCareerSkill",
+  },
+  "Skill Setback": {
+    "value": "Skill Setback",
+    "label": "SWFFG.ModTypeSkillSetback",
   },
   "Stat": {
     "value": "Stat",

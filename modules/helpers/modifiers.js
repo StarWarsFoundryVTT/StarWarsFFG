@@ -30,6 +30,11 @@ export default class ModifierHelpers {
     return total;
   }
 
+  /**
+   * Calculate total value from embedded items
+   * @param  {array} items
+   * @param  {string} key
+   */
   static getCalculatedValueFromItems(items, key) {
     let total = 0;
 
@@ -57,6 +62,8 @@ export default class ModifierHelpers {
           }
         }
       } else if (item.type === "specialization") {
+        const talents = Object.keys(item.data.talents).map((key) => item.data.talents[key]);
+        console.log(talents);
       } else {
         if (attrsToApply.length > 0) {
           attrsToApply.forEach((attr) => {
@@ -67,5 +74,29 @@ export default class ModifierHelpers {
     });
 
     return total;
+  }
+
+  static async onClickAttributeControl(event) {
+    event.preventDefault();
+    const a = event.currentTarget;
+    const action = a.dataset.action;
+    const attrs = this.object.data.data.attributes;
+    const form = this.form;
+
+    // Add new attribute
+    if (action === "create") {
+      const nk = new Date().getTime();
+      let newKey = document.createElement("div");
+      newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+      form.appendChild(newKey);
+      await this._onSubmit(event);
+    }
+
+    // Remove existing attribute
+    else if (action === "delete") {
+      const li = a.closest(".attribute");
+      li.parentElement.removeChild(li);
+      await this._onSubmit(event);
+    }
   }
 }
