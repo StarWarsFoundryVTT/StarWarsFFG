@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 20/07/2020 - Cstadther - Refactored modifier part 2, fixed issue with weapon mods, added new mod (setback and career skill), updated importer to correctly populate talent and specialization characteristic and stat modifiers.
 - 20/07/2020 - Cstadther - Bug Fix #243 - Updated english localization to used knowledge stripped values and updated skill grid layout.
 - 20/07/2020 - Cstadther - Refactored modifier display to a partial.  Refactored applying logic.
 - 20/07/2020 - Cstadther - Added skill rank modifiers, works for current skills and any new added skills correctly.
