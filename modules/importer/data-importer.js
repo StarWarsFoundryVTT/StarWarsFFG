@@ -118,6 +118,17 @@ export default class DataImporter extends FormApplication {
 
       const promises = [];
       let isSpecialization = false;
+
+      const skillsFileName = await this._enableImportSelection(zip.files, "Skills", false, true);
+
+      if (skillsFileName) {
+        // load skills for reference
+        const data = await zip.file(skillsFileName).async("text");
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(data, "text/xml");
+        await this._loadSkillsList(xmlDoc);
+      }
+
       await this.asyncForEach(importFiles, async (file) => {
         if (!zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
@@ -174,6 +185,25 @@ export default class DataImporter extends FormApplication {
     // const data = await allProgress(promises, (p) => {
     //   console.log(`% Done = ${p.toFixed(2)}`);
     // });
+  }
+
+  async _loadSkillsList(xmlDoc) {
+    const skills = xmlDoc.getElementsByTagName("Skill");
+    if (skills.length > 0) {
+      CONFIG.temporary["skills"] = {};
+      for (let i = 0; i < skills.length; i += 1) {
+        const skill = skills[i];
+        const importkey = skill.getElementsByTagName("Key")[0]?.textContent;
+        let name = skill.getElementsByTagName("Name")[0]?.textContent;
+
+        name = name.replace(" - ", ": ");
+        if (["CORE", "EDU", "LORE", "OUT", "UND", "WARF", "XEN"].includes(importkey)) {
+          name = `Knowledge: ${name}`;
+        }
+
+        CONFIG.temporary.skills[importkey] = name;
+      }
+    }
   }
 
   async _handleTalents(xmlDoc) {
@@ -466,6 +496,7 @@ export default class DataImporter extends FormApplication {
               importid: importkey,
             },
             data: {
+              attributes: {},
               description,
               encumbrance: {
                 value: encumbrance,
@@ -478,6 +509,14 @@ export default class DataImporter extends FormApplication {
               },
             },
           };
+
+          const baseMods = item.getElementsByTagName("BaseMods")[0];
+          if (baseMods) {
+            const mods = await ImportHelpers.getBaseModObject(baseMods);
+            if (mods) {
+              newItem.data.attributes = mods;
+            }
+          }
 
           // does an image exist?
           let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", importkey);
@@ -592,6 +631,7 @@ export default class DataImporter extends FormApplication {
               importid: importkey,
             },
             data: {
+              attributes: {},
               description,
               encumbrance: {
                 value: encumbrance,
@@ -622,6 +662,14 @@ export default class DataImporter extends FormApplication {
               },
             },
           };
+
+          const baseMods = weapon.getElementsByTagName("BaseMods")[0];
+          if (baseMods) {
+            const mods = await ImportHelpers.getBaseModObject(baseMods);
+            if (mods) {
+              newItem.data.attributes = mods;
+            }
+          }
 
           if (damageAdd) {
             if (!newItem.data.attributes) {
@@ -710,6 +758,7 @@ export default class DataImporter extends FormApplication {
               importid: importkey,
             },
             data: {
+              attributes: {},
               description,
               encumbrance: {
                 value: encumbrance,
@@ -731,6 +780,14 @@ export default class DataImporter extends FormApplication {
               },
             },
           };
+
+          const baseMods = armor.getElementsByTagName("BaseMods")[0];
+          if (baseMods) {
+            const mods = await ImportHelpers.getBaseModObject(baseMods);
+            if (mods) {
+              newItem.data.attributes = mods;
+            }
+          }
 
           // does an image exist?
           let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", importkey);
@@ -935,18 +992,24 @@ export default class DataImporter extends FormApplication {
     return pack;
   }
 
-  _enableImportSelection(files, name, isDirectory) {
+  _enableImportSelection(files, name, isDirectory, returnFilename) {
     this._importLogger(`Checking zip file for ${name}`);
+    let fileName;
     Object.values(files).findIndex((file) => {
       if (file.name.includes(`/${name}.xml`) || (isDirectory && file.name.includes(`/${name}`))) {
         this._importLogger(`Found file ${file.name}`);
         $(`#import${name.replace(" ", "")}`)
           .removeAttr("disabled")
           .val(file.name);
+        if (returnFilename) {
+          fileName = file.name;
+        }
         return true;
       }
       return false;
     }) > -1;
+
+    return fileName;
   }
 
   asyncForEach = async (array, callback) => {

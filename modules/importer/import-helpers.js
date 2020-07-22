@@ -197,4 +197,75 @@ export default class ImportHelpers {
 
     return itemAttributes;
   }
+
+  static getBaseModAttributeObject(mod) {
+    let type;
+    let modtype;
+    let value = parseInt(mod.Count, 10);
+
+    if (["BR", "AG", "INT", "CUN", "WIL", "PR"].includes(mod.Key)) {
+      modtype = "Characteristic";
+      switch (mod.Key) {
+        case "BR":
+          type = "Brawn";
+          break;
+        case "AG":
+          type = "Agility";
+          break;
+        case "INT":
+          type = "Intellect";
+          break;
+        case "CUN":
+          type = "Cunning";
+          break;
+        case "WIL":
+          type = "Willpower";
+          break;
+        case "PR":
+          type = "Presence";
+          break;
+      }
+    }
+
+    if (Object.keys(CONFIG.temporary.skills).includes(mod.Key)) {
+      if (mod.SkillIsCareer) {
+        modtype = "Career Skill";
+      } else {
+        modtype = "Skill Rank";
+      }
+      type = CONFIG.temporary.skills[mod.Key];
+    }
+
+    if (type) {
+      return { type, value: { mod: type, modtype, value } };
+    }
+  }
+
+  /**
+   * @param  {object} basemods
+   */
+  static getBaseModObject(basemods) {
+    const attrs = JXON.xmlToJs(basemods);
+    let itemAttributes = {};
+
+    if (Array.isArray(attrs.Mod)) {
+      attrs.Mod.forEach((mod) => {
+        if (mod.Key) {
+          const attr = this.getBaseModAttributeObject(mod);
+          if (attr) {
+            itemAttributes[attr.type] = attr.value;
+          }
+        }
+      });
+    }
+
+    if (attrs?.Mod?.Key) {
+      const attr = this.getBaseModAttributeObject(attrs.Mod);
+      if (attr) {
+        itemAttributes[attr.type] = attr.value;
+      }
+    }
+
+    return itemAttributes;
+  }
 }

@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 21/07/2020 - Cstadther - Specialization Talents now apply stat/skill rank/characteristic modifiers.  Importer was updated to apply stat/skill rank/characteristic modifiers for weapons/armor/gear.
 - 20/07/2020 - Cstadther - Refactored modifier part 2, fixed issue with weapon mods, added new mod (setback and career skill), updated importer to correctly populate talent and specialization characteristic and stat modifiers.
 - 20/07/2020 - Cstadther - Bug Fix #243 - Updated english localization to used knowledge stripped values and updated skill grid layout.
 - 20/07/2020 - Cstadther - Refactored modifier display to a partial.  Refactored applying logic.
