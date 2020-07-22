@@ -26,8 +26,6 @@ export class ActorFFG extends Actor {
 
   _prepareSharedData(actorData) {
     const data = actorData.data;
-    console.log(data);
-
     data.biography = PopoutEditor.renderDiceImages(data.biography);
 
     // localize characteristic names

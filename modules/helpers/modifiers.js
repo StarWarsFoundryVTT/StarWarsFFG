@@ -11,22 +11,7 @@ export default class ModifierHelpers {
 
     total += attrs[key].value;
 
-    items.forEach((item) => {
-      if (item.type === "specialization") {
-        // special handling for specializations as we need to parse the object and all learned talents.
-      } else {
-        const attrsToApply = Object.keys(item.data.attributes)
-          .filter((id) => item.data.attributes[id].mod === key)
-          .map((i) => item.data.attributes[i]);
-
-        if (attrsToApply.length > 0) {
-          attrsToApply.forEach((attr) => {
-            total += parseInt(attr.value, 10);
-          });
-        }
-      }
-    });
-
+    total += this.getCalculatedValueFromItems(items, key);
     return total;
   }
 
@@ -50,7 +35,7 @@ export default class ModifierHelpers {
           }
           if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
             // get the highest defense item
-            const shouldUse = actorData.items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
+            const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
             if (shouldUse) {
               total += parseInt(item.data.defence.value, 10);
             }
@@ -62,8 +47,17 @@ export default class ModifierHelpers {
           }
         }
       } else if (item.type === "specialization") {
-        const talents = Object.keys(item.data.talents).map((key) => item.data.talents[key]);
-        console.log(talents);
+        const talents = Object.keys(item.data.talents)
+          .filter((k) => item.data.talents[k].islearned)
+          .map((k) => {
+            return {
+              type: "talent",
+              data: {
+                attributes: item.data.talents[k].attributes,
+              },
+            };
+          });
+        total += this.getCalculatedValueFromItems(talents, key);
       } else {
         if (attrsToApply.length > 0) {
           attrsToApply.forEach((attr) => {

@@ -29,15 +29,15 @@
           "wounds": {
             "value": 0,
             "min": 0,
-            "max": 10
+            "max": 0
           },
           "strain": {
             "value": 0,
             "min": 0,
-            "max": 10
+            "max": 0
           },
           "soak": {
-            "value": 2
+            "value": 0
           },
           "defence": {
             "ranged": 0,
