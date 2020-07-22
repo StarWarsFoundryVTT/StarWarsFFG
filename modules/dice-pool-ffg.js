@@ -36,8 +36,8 @@ const CHALLENGE_RESULTS = {
   7: { label: `<img src='systems/starwarsffg/images/dice/starwars/redt.png'/>`, success: 0, failure: 0, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
   8: { label: `<img src='systems/starwarsffg/images/dice/starwars/redft.png'/>`, success: 0, failure: 1, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
   9: { label: `<img src='systems/starwarsffg/images/dice/starwars/redft.png'/>`, success: 0, failure: 1, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
-  10: { label: `<img src='systems/starwarsffg/images/dice/starwars/redtt.png'/>`, success: 0, failure: 0, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
-  11: { label: `<img src='systems/starwarsffg/images/dice/starwars/redtt.png'/>`, success: 0, failure: 0, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
+  10: { label: `<img src='systems/starwarsffg/images/dice/starwars/redtt.png'/>`, success: 0, failure: 0, advantage: 0, threat: 2, triumph: 0, despair: 0, light: 0, dark: 0 },
+  11: { label: `<img src='systems/starwarsffg/images/dice/starwars/redtt.png'/>`, success: 0, failure: 0, advantage: 0, threat: 2, triumph: 0, despair: 0, light: 0, dark: 0 },
   12: { label: `<img src='systems/starwarsffg/images/dice/starwars/redd.png'/>`, success: 0, failure: 1, advantage: 0, threat: 0, triumph: 0, despair: 1, light: 0, dark: 0 },
 };
 
