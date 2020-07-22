@@ -680,6 +680,21 @@ export class RollFFG extends Roll {
       user: chatOptions.user,
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
+      ffg: isPrivate ? {} : this.ffg,
+      ffgDice: this.dice.map((d) => {
+        const cls = d.constructor;
+        return {
+          isFFG: game.ffg.diceterms.includes(d.constructor),
+          rolls: d.results.map((r) => {
+            return {
+              result: cls.getResultLabel(r.result),
+            };
+          }),
+        };
+      }),
+      hasFFG: this.hasFFG,
+      hasStandard: this.hasStandard,
+      diceresults: CONFIG.FFG.diceresults,
     };
 
     // Render the roll display template
@@ -699,9 +714,6 @@ export class RollFFG extends Roll {
         type: CONST.CHAT_MESSAGE_TYPES.ROLL,
         content: this.total,
         sound: CONFIG.sounds.dice,
-        ffg: this.ffg,
-        hasFFG: this.hasFFG,
-        hasStandard: this.hasStandard,
       },
       messageData
     );
@@ -712,6 +724,24 @@ export class RollFFG extends Roll {
 
     // Either create the message or just return the chat data
     return create ? CONFIG.ChatMessage.entityClass.create(messageData, messageOptions) : messageData;
+  }
+
+  /** @override */
+  toJSON() {
+    const json = super.toJSON();
+    json.ffg = this.ffg;
+    json.hasFFG = this.hasFFG;
+    json.hasStandard = this.hasStandard;
+    return json;
+  }
+
+  /** @override */
+  static fromData(data) {
+    const roll = super.fromData(data);
+    roll.ffg = data.ffg;
+    roll.hasFFG = data.hasFFG;
+    roll.hasStandard = data.hasStandard;
+    return roll;
   }
 }
 

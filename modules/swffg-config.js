@@ -399,3 +399,14 @@ FFG.vehicle_consumable_range = {
     label: "SWFFG.Years",
   },
 };
+
+FFG.diceresults = {
+  success: "Successes",
+  failure: "Failures",
+  advantage: "Advantages",
+  threat: "Threats",
+  triumph: "Triumphs",
+  despair: "Despairs",
+  light: "Force",
+  dark: "Dark Force",
+};

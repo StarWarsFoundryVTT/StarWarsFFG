@@ -3718,6 +3718,34 @@ span.dietype.triumph {
   margin: 10px;
 }
 
+.starwarsffg .ffgDiceArray {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.starwarsffg .ffgDiceArray .dice-rolls {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.starwarsffg .ffgDiceArray .dice-rolls .roll {
+  position: relative;
+  width: 40px;
+  line-height: 40px;
+  float: left;
+  font-size: 16px;
+  color: #000;
+  font-weight: bold;
+}
+
+.starwarsffg .ffgDiceArray .dice-rolls .roll img {
+  border: none;
+}
+
 .starwarsffg .item-sheet-species .characteristics {
   width: 100%;
 }

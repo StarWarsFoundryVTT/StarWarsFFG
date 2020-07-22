@@ -29,3 +29,28 @@
     margin: 10px;
   }
 }
+
+.ffgDiceArray {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  .dice-rolls {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    .roll {
+      position: relative;
+      width: 40px;
+      line-height: 40px;
+      float: left;
+      font-size: 16px;
+      color: #000;
+      font-weight: bold;
+      img {
+        border: none;
+      }
+    }
+  }
+}

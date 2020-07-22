@@ -1,12 +1,26 @@
-<div class="dice-roll">
-  {{#if flavor}}
+<div class="starwarsffg dice-roll">
+  {{ log this }} {{#if flavor}}
   <div class="dice-flavor">{{flavor}}</div>
   {{/if}}
   <div class="dice-result">
+    {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
-    {{{tooltip}}} {{#if hasStandard}}
+    {{/if}} {{#if hasFFG}}
+    <div class="ffgDiceArray">
+      <ol class="dice-rolls">
+        {{#each ffgDice}} {{#if this.isFFG}}{{#each this.rolls}}
+        <li class="roll">{{{this.result}}}</li>
+        {{/each}} {{/if}} {{/each}}
+      </ol>
+    </div>
+    {{/if}} {{{tooltip}}} {{#if hasStandard}}
     <h4 class="dice-total">{{total}}</h4>
+    {{/if}} {{#if hasFFG}}
+    <ul>
+      {{#each ffg as | result key|}} {{#if this}}
+      <li>{{lookup ../this.diceresults [key]}}: {{this}}</li>
+      {{/if}} {{/each}}
+    </ul>
     {{/if}}
-    <div><h1>THIS IS NEW</h1></div>
   </div>
 </div>
