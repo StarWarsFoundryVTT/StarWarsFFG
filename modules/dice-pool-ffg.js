@@ -617,6 +617,22 @@ export class RollFFG extends Roll {
           this.ffg.dark += parseInt(term.ffg.dark);
         }
       });
+
+      // Step 6 - Calculate actual results by cancelling out success with failure, advantage with threat etc.
+      if (this.ffg.success < this.ffg.failure) {
+        this.ffg.failure -= parseInt(this.ffg.success);
+        this.ffg.success = 0;
+      } else {
+        this.ffg.success -= parseInt(this.ffg.failure);
+        this.ffg.failure = 0;
+      }
+      if (this.ffg.advantage < this.ffg.threat) {
+        this.ffg.threat -= parseInt(this.ffg.advantage);
+        this.ffg.advantage = 0;
+      } else {
+        this.ffg.advantage -= parseInt(this.ffg.threat);
+        this.ffg.threat = 0;
+      }
     }
 
     // Store final outputs

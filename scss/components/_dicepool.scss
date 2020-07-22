@@ -54,3 +54,12 @@
     }
   }
 }
+
+.dice-result {
+  .roll-success {
+    color: darkgreen;
+  }
+  .roll-failure {
+    color: darkred;
+  }
+}

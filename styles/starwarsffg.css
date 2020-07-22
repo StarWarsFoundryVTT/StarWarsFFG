@@ -3746,6 +3746,14 @@ span.dietype.triumph {
   border: none;
 }
 
+.starwarsffg .dice-result .roll-success {
+  color: darkgreen;
+}
+
+.starwarsffg .dice-result .roll-failure {
+  color: darkred;
+}
+
 .starwarsffg .item-sheet-species .characteristics {
   width: 100%;
 }
