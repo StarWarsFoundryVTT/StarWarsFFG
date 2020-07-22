@@ -272,20 +272,20 @@ export class GroupManager extends FormApplication {
 
 // Catch updates to connected players and update the group manager window if necessary.
 Hooks.on("renderPlayerList", (playerList) => {
-  const groupmanager = canvas.groupmanager.window;
+  const groupmanager = canvas?.groupmanager?.window;
   if (groupmanager) {
     groupmanager.render();
   }
 });
 // Catch updates to actors and update the group manager window if necessary.
 Hooks.on("updateActor", (actor, data, options, id) => {
-  const groupmanager = canvas.groupmanager.window;
+  const groupmanager = canvas?.groupmanager?.window;
   if (groupmanager) {
     groupmanager.render();
   }
 });
 Hooks.on("renderActorSheet", (actor, data, options, id) => {
-  const groupmanager = canvas.groupmanager.window;
+  const groupmanager = canvas?.groupmanager?.window;
   if (groupmanager) {
     groupmanager.render();
   }
