@@ -101,7 +101,7 @@
                   {{localize "SWFFG.Soak"}}
                 </div>
                 <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" {{#if this.settings.enableSoakCalculation}}disabled{{else}}d='1'{{/if}} /></div>
+                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" {{#if this.settings.enableSoakCalculation}}disabled{{/if}} /></div>
                 </div>
               </div>
               <div class="block-background-shadow"></div>
@@ -166,79 +166,7 @@
         {{/each}}
       </div>
 
-      <div class="grid grid-2col skillsGrid">
-        <div class="skillTable" data-type="General">
-          <div class="pure-g skillsHeader">
-            <div class="pure-u-12-24">{{localize "SWFFG.SkillsGeneral"}}</div>
-            <div class="pure-u-3-24 hover">
-              {{localize "SWFFG.SkillsCS"}}
-              <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-            </div>
-            <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-            <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
-          </div>
-          {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'General'}}
-          <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-            <div class="pure-u-12-24">
-              {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-              <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-              ) {{/with}}
-            </div>
-            <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-            <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
-            <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-          </div>
-          {{/iff}} {{/each}}
-        </div>
-        <div>
-          <div class="skillTable" data-type="Combat">
-            <div class="pure-g skillsHeader">
-              <div class="pure-u-12-24">{{localize "SWFFG.SkillsCombat"}}</div>
-              <div class="pure-u-3-24 hover">
-                {{localize "SWFFG.SkillsCS"}}
-                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-              </div>
-              <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-              <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
-            </div>
-            {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
-            <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-              <div class="pure-u-12-24">
-                {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-                <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-                ) {{/with}}
-              </div>
-              <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-              <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
-              <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-            </div>
-            {{/iff}} {{/each}}
-          </div>
-          <div class="skillTable" data-type="Knowledge">
-            <div class="pure-g skillsHeader">
-              <div class="pure-u-12-24">{{localize "SWFFG.SkillsKnowledge"}}</div>
-              <div class="pure-u-3-24 hover">
-                {{localize "SWFFG.SkillsCS"}}
-                <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-              </div>
-              <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-              <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
-            </div>
-            {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Knowledge'}}
-            <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-              <div class="pure-u-12-24">
-                {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-                <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-                ) {{/with}}
-              </div>
-              <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-              <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
-              <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-            </div>
-            {{/iff}} {{/each}}
-          </div>
-        </div>
-      </div>
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-skills.html"}}
     </div>
 
     {{!-- Owned Items Tab --}}
@@ -283,110 +211,7 @@
         </div>
       </div>
 
-      {{!-- Weapons List --}}
-      <table class="items">
-        <thead>
-          <th>{{localize "SWFFG.ItemsWeapons"}}</th>
-          <th>{{localize "SWFFG.Equipped"}}</th>
-          <th>{{localize "SWFFG.ItemsSkill"}}</th>
-          <th>{{localize "SWFFG.ItemsDamage"}}</th>
-          <th>{{localize "SWFFG.ItemsRange"}}</th>
-          <th>{{localize "SWFFG.ItemsCrit"}}</th>
-          <th>{{localize "SWFFG.ItemsEncum"}}</th>
-          <th>{{localize "SWFFG.ItemsSpecial"}}</th>
-          <th></th>
-        </thead>
-        <tbody class="items-list">
-          {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="item-name">{{item.name}}</td>
-            <td>
-              {{#if item.data.equippable.equipped}}
-              <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
-              {{else}}
-              <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
-              {{/if}}
-            </td>
-            <td>{{localize (lookup ../this.FFG.combat_skills_abrev item.data.skill.value)}}</td>
-            <td>{{item.data.damage.value}}</td>
-            <td>{{localize item.data.range.label}}</td>
-            <td>{{item.data.crit.value}}</td>
-            <td>{{item.data.encumbrance.value}}</td>
-            <td>{{{renderDiceTags item.data.special.value}}}</td>
-            <td class="item-controls">
-              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-            </td>
-          </tr>
-          {{/iff}} {{/each}}
-        </tbody>
-      </table>
-
-      {{!-- Armour List --}}
-      <table class="items">
-        <thead>
-          <tr class="items-header">
-            <th>{{localize "SWFFG.ItemsArmor"}}</th>
-            <th>{{localize "SWFFG.Equipped"}}</th>
-            <th>{{localize "SWFFG.ItemsDefense"}}</th>
-            <th>{{localize "SWFFG.ItemsSoak"}}</th>
-            <th>{{localize "SWFFG.ItemsHP"}}</th>
-            <th>{{localize "SWFFG.ItemsEncum"}}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody class="items-list">
-          {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="item-name">{{item.name}}</td>
-            <td>
-              {{#if item.data.equippable.equipped}}
-              <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
-              {{else}}
-              <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
-              {{/if}}
-            </td>
-            <td>{{item.data.defence.value}}</td>
-            <td>{{item.data.soak.value}}</td>
-            <td>{{item.data.hardpoints.value}}</td>
-            <td>{{item.data.encumbrance.value}}</td>
-            <td class="item-controls">
-              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-            </td>
-          </tr>
-          {{/iff}} {{/each}}
-        </tbody>
-      </table>
-
-      {{!-- Gear List --}}
-      <table class="items">
-        <thead>
-          <tr class="items-header">
-            <th>{{localize "SWFFG.ItemsGear"}}</th>
-            <th>{{localize "SWFFG.ItemsPrice"}}</th>
-            <th>{{localize "SWFFG.ItemsRarity"}}</th>
-            <th>{{localize "SWFFG.ItemsQuantity"}}</th>
-            <th>{{localize "SWFFG.ItemsEncum"}}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody class="items-list">
-          {{#each actor.items as |item id|}} {{#iff item.type '==' 'gear'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="item-name">{{item.name}}</td>
-            <td>{{item.data.price.value}}</td>
-            <td>{{item.data.rarity.value}}</td>
-            <td>{{item.data.quantity.value}}</td>
-            <td>{{item.data.encumbrance.value}}</td>
-            <td class="item-controls">
-              <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-              <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-            </td>
-          </tr>
-          {{/iff}} {{/each}}
-        </tbody>
-      </table>
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-weapon-armor-gear.html"}}
     </div>
 
     {{!-- Talents Tab --}}
@@ -419,77 +244,7 @@
         {{/if}}
       </div>
 
-      <table class="talent-list">
-        <thead>
-          <tr>
-            <th>{{localize "SWFFG.Talents"}}</th>
-            <th>{{localize "SWFFG.TalentsActivation"}}</th>
-            <th>{{localize "SWFFG.TalentsRank"}}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each data.talentList as |item id|}}
-          <tr class="item specialization-talent-item" data-item-id="{{item.itemId}}">
-            <td class="item-name hover">
-              {{item.name}}
-              <div class="tooltip">{{{item.safe_desc}}}</div>
-            </td>
-            <td>{{localize item.activationLabel}}</td>
-            <td>{{item.rank}}</td>
-            <td>
-              <div class="item-controls">
-                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                <a class="item-control item-info" title="Item Information"><i class="fas fa-info-circle"></i></a>
-              </div>
-            </td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
-      {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}}
-      <table class="talent-list">
-        <thead>
-          <tr>
-            <th>{{localize "SWFFG.ForcePower"}}</th>
-            <th>{{localize "SWFFG.ForcePowerUpgrades"}}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each actor.items as |item id|}} {{#iff item.type '==' 'forcepower'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="item-name hover">
-              {{item.name}}
-              <div class="tooltip">{{{item.safe_desc}}}</div>
-            </td>
-            <td>
-              <table>
-                <thead>
-                  <th>{{localize "SWFFG.SkillsName"}}</th>
-                  <th>{{localize "SWFFG.SkillsRank"}}</th>
-                </thead>
-                <tbody>
-                  {{#each item.powerUpgrades as |upgrade name|}}
-                  <tr>
-                    <td>{{upgrade.name}}</td>
-                    <td>{{upgrade.rank}}</td>
-                  </tr>
-                  {{/each}}
-                </tbody>
-              </table>
-            </td>
-            <td>
-              <div class="item-controls">
-                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-              </div>
-            </td>
-          </tr>
-          {{/iff}} {{/each}}
-        </tbody>
-      </table>
-      {{/if}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}}
     </div>
 
     {{!-- Biography Tab --}}

@@ -373,7 +373,7 @@ export class ActorFFG extends Actor {
     Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
       let total = 0;
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key);
+      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Characteristic");
       data.characteristics[key].value = total > 7 ? 7 : total;
     });
 
@@ -384,7 +384,7 @@ export class ActorFFG extends Actor {
 
       let total = 0;
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key);
+      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Stat");
 
       if (key === "Soak") {
         data.stats[k].value = total;
@@ -402,7 +402,12 @@ export class ActorFFG extends Actor {
     Object.keys(data.skills).forEach((key) => {
       let total = 0;
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key);
+      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Rank");
+
+      if (!data.skills[key].careerskill) {
+        data.skills[key].careerskill = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill");
+      }
+
       data.skills[key].rank = total > 6 ? 6 : total;
     });
   }

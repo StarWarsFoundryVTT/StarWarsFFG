@@ -6,12 +6,12 @@ export default class ModifierHelpers {
    * @param  {array} items - Items array
    * @returns {number} - Total value of all attribute values
    */
-  static getCalculateValueForAttribute(key, attrs, items) {
+  static getCalculateValueForAttribute(key, attrs, items, modtype) {
     let total = 0;
 
     total += attrs[key].value;
 
-    total += this.getCalculatedValueFromItems(items, key);
+    total += this.getCalculatedValueFromItems(items, key, modtype);
     return total;
   }
 
@@ -20,12 +20,13 @@ export default class ModifierHelpers {
    * @param  {array} items
    * @param  {string} key
    */
-  static getCalculatedValueFromItems(items, key) {
+  static getCalculatedValueFromItems(items, key, modtype) {
     let total = 0;
+    let checked = false;
 
     items.forEach((item) => {
       const attrsToApply = Object.keys(item.data.attributes)
-        .filter((id) => item.data.attributes[id].mod === key)
+        .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
         .map((i) => item.data.attributes[i]);
 
       if (item.type === "armour" || item.type === "weapon") {
@@ -42,7 +43,13 @@ export default class ModifierHelpers {
           }
           if (attrsToApply.length > 0) {
             attrsToApply.forEach((attr) => {
-              total += parseInt(attr.value, 10);
+              if (modtype === "Career Skill") {
+                if (attr.value) {
+                  checked = true;
+                }
+              } else {
+                total += parseInt(attr.value, 10);
+              }
             });
           }
         }
@@ -57,16 +64,30 @@ export default class ModifierHelpers {
               },
             };
           });
-        total += this.getCalculatedValueFromItems(talents, key);
+        if (modtype === "Career Skill") {
+          if (this.getCalculatedValueFromItems(talents, key, modtype)) {
+            checked = true;
+          }
+        } else {
+          total += this.getCalculatedValueFromItems(talents, key, modtype);
+        }
       } else {
         if (attrsToApply.length > 0) {
           attrsToApply.forEach((attr) => {
-            total += parseInt(attr.value, 10);
+            if (modtype === "Career Skill") {
+              if (attr.value) {
+                checked = true;
+              }
+            } else {
+              total += parseInt(attr.value, 10);
+            }
           });
         }
       }
     });
-
+    if (modtype === "Career Skill") {
+      return checked;
+    }
     return total;
   }
 

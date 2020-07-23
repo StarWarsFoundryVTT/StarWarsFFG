@@ -432,7 +432,7 @@ export class ActorSheetFFG extends ActorSheet {
     if (this.object.data.type !== "vehicle") {
       // Handle characteristic updates
       Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
-        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Characteristic");
         let x = parseInt(formData[`data.characteristics.${key}.value`], 10) - total;
         let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
         if (y > 0) {
@@ -445,7 +445,7 @@ export class ActorSheetFFG extends ActorSheet {
       Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
         const key = CONFIG.FFG.character_stats[k].value;
 
-        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Stat");
 
         let statValue = 0;
         if (key === "Soak") {
@@ -468,7 +468,7 @@ export class ActorSheetFFG extends ActorSheet {
       });
       // Handle skill rank updates
       Object.keys(this.object.data.data.skills).forEach((key) => {
-        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items);
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Skill Rank");
         let x = parseInt(formData[`data.skills.${key}.rank`], 10) - total;
         let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
         if (y > 0) {
