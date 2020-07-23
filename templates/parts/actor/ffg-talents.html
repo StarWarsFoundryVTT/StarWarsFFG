@@ -1,0 +1,28 @@
+<table class="talent-list">
+  <thead>
+    <tr>
+      <th>{{localize "SWFFG.Talents"}}</th>
+      <th>{{localize "SWFFG.TalentsActivation"}}</th>
+      <th>{{localize "SWFFG.TalentsRank"}}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each data.talentList as |item id|}}
+    <tr class="item specialization-talent-item" data-item-id="{{item.itemId}}">
+      <td class="item-name hover">
+        {{item.name}}
+        <div class="tooltip">{{{item.safe_desc}}}</div>
+      </td>
+      <td>{{localize item.activationLabel}}</td>
+      <td>{{item.rank}}</td>
+      <td>
+        <div class="item-controls">
+          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+          <a class="item-control item-info" title="Item Information"><i class="fas fa-info-circle"></i></a>
+        </div>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>

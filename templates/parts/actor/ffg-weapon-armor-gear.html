@@ -1,0 +1,104 @@
+{{!-- Weapons List --}}
+<table class="items">
+  <thead>
+    <th>{{localize "SWFFG.ItemsWeapons"}}</th>
+    <th>{{localize "SWFFG.Equipped"}}</th>
+    <th>{{localize "SWFFG.ItemsSkill"}}</th>
+    <th>{{localize "SWFFG.ItemsDamage"}}</th>
+    <th>{{localize "SWFFG.ItemsRange"}}</th>
+    <th>{{localize "SWFFG.ItemsCrit"}}</th>
+    <th>{{localize "SWFFG.ItemsEncum"}}</th>
+    <th>{{localize "SWFFG.ItemsSpecial"}}</th>
+    <th></th>
+  </thead>
+  <tbody class="items-list">
+    {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
+    <tr class="item" data-item-id="{{item._id}}">
+      <td class="item-name">{{item.name}}</td>
+      <td>
+        {{#if item.data.equippable.equipped}}
+        <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
+        {{else}}
+        <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
+        {{/if}}
+      </td>
+      <td>{{localize (lookup ../this.FFG.combat_skills_abrev item.data.skill.value)}}</td>
+      <td>{{item.data.damage.value}}</td>
+      <td>{{localize item.data.range.label}}</td>
+      <td>{{item.data.crit.value}}</td>
+      <td>{{item.data.encumbrance.value}}</td>
+      <td>{{{renderDiceTags item.data.special.value}}}</td>
+      <td class="item-controls">
+        <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      </td>
+    </tr>
+    {{/iff}} {{/each}}
+  </tbody>
+</table>
+
+{{!-- Armour List --}}
+<table class="items">
+  <thead>
+    <tr class="items-header">
+      <th>{{localize "SWFFG.ItemsArmor"}}</th>
+      <th>{{localize "SWFFG.Equipped"}}</th>
+      <th>{{localize "SWFFG.ItemsDefense"}}</th>
+      <th>{{localize "SWFFG.ItemsSoak"}}</th>
+      <th>{{localize "SWFFG.ItemsHP"}}</th>
+      <th>{{localize "SWFFG.ItemsEncum"}}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody class="items-list">
+    {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
+    <tr class="item" data-item-id="{{item._id}}">
+      <td class="item-name">{{item.name}}</td>
+      <td>
+        {{#if item.data.equippable.equipped}}
+        <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
+        {{else}}
+        <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
+        {{/if}}
+      </td>
+      <td>{{item.data.defence.value}}</td>
+      <td>{{item.data.soak.value}}</td>
+      <td>{{item.data.hardpoints.value}}</td>
+      <td>{{item.data.encumbrance.value}}</td>
+      <td class="item-controls">
+        <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      </td>
+    </tr>
+    {{/iff}} {{/each}}
+  </tbody>
+</table>
+
+{{!-- Gear List --}}
+<table class="items">
+  <thead>
+    <tr class="items-header">
+      <th>{{localize "SWFFG.ItemsGear"}}</th>
+      <th>{{localize "SWFFG.ItemsPrice"}}</th>
+      <th>{{localize "SWFFG.ItemsRarity"}}</th>
+      <th>{{localize "SWFFG.ItemsQuantity"}}</th>
+      <th>{{localize "SWFFG.ItemsEncum"}}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody class="items-list">
+    {{#each actor.items as |item id|}} {{#iff item.type '==' 'gear'}}
+    <tr class="item" data-item-id="{{item._id}}">
+      <td class="item-name">{{item.name}}</td>
+      <td>{{item.data.price.value}}</td>
+      <td>{{item.data.rarity.value}}</td>
+      <td>{{item.data.quantity.value}}</td>
+      <td>{{item.data.encumbrance.value}}</td>
+      <td class="item-controls">
+        <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
+        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      </td>
+    </tr>
+    {{/iff}} {{/each}}
+  </tbody>
+</table>

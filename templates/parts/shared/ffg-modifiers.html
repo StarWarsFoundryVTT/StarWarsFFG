@@ -24,7 +24,11 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{/select}}
     </select>
+    {{#if (eq attr.modtype "Career Skill")}}
+    <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" checked />
+    {{else}}
     <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
+    {{/if}}
     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
   </li>
   {{/each}}

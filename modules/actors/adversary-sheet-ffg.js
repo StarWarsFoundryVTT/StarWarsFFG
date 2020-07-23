@@ -6,6 +6,7 @@ import Helpers from "../helpers/common.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 export class AdversarySheetFFG extends ActorSheet {
   constructor(...args) {
@@ -97,6 +98,22 @@ export class AdversarySheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
+    Hooks.on("preCreateOwnedItem", (actor, item, options, userid) => {
+      if (item.type === "species") {
+        if (actor.data.type === "character") {
+          // we only allow one species, find any other species and remove them.
+          const speciesToDelete = actor.items.filter((item) => item.type === "species");
+          speciesToDelete.forEach((species) => {
+            this.actor.deleteOwnedItem(species._id);
+          });
+        } else {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
     new ContextMenu(html, ".skillsGrid .skill", [
       {
         name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
@@ -126,24 +143,9 @@ export class AdversarySheetFFG extends ActorSheet {
 
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);
-      options.register("enableObligation", {
-        name: game.i18n.localize("SWFFG.EnableObligation"),
-        hint: game.i18n.localize("SWFFG.EnableObligationHint"),
-        default: true,
-      });
-      options.register("enableDuty", {
-        name: game.i18n.localize("SWFFG.EnableDuty"),
-        hint: game.i18n.localize("SWFFG.EnableDutyHint"),
-        default: true,
-      });
-      options.register("enableMorality", {
-        name: game.i18n.localize("SWFFG.EnableMorality"),
-        hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
-        default: true,
-      });
-      options.register("enableConflict", {
-        name: game.i18n.localize("SWFFG.EnableConflict"),
-        hint: game.i18n.localize("SWFFG.EnableConflictHint"),
+      options.register("enableAutoSoakCalculation", {
+        name: game.i18n.localize("SWFFG.EnableSoakCalc"),
+        hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         default: true,
       });
       options.register("enableForcePool", {
@@ -414,11 +416,60 @@ export class AdversarySheetFFG extends ActorSheet {
 
   /** @override */
   _updateObject(event, formData) {
+    if (this.object.data.type !== "vehicle") {
+      // Handle characteristic updates
+      Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Characteristic");
+        let x = parseInt(formData[`data.characteristics.${key}.value`], 10) - total;
+        let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+        if (y > 0) {
+          formData[`data.attributes.${key}.value`] = y;
+        } else {
+          formData[`data.attributes.${key}.value`] = 0;
+        }
+      });
+      // Handle stat updates
+      Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
+        const key = CONFIG.FFG.character_stats[k].value;
+
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Stat");
+
+        let statValue = 0;
+        if (key === "Soak") {
+          statValue = parseInt(formData[`data.stats.${k}.value`], 10);
+        } else if (key === "Defence-Melee") {
+          statValue = parseInt(formData[`data.stats.defence.melee`], 10);
+        } else if (key === "Defence-Ranged") {
+          statValue = parseInt(formData[`data.stats.defence.ranged`], 10);
+        } else {
+          statValue = parseInt(formData[`data.stats.${k}.max`], 10);
+        }
+
+        let x = statValue - total;
+        let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+        if (y > 0) {
+          formData[`data.attributes.${key}.value`] = y;
+        } else {
+          formData[`data.attributes.${key}.value`] = 0;
+        }
+      });
+      // Handle skill rank updates
+      Object.keys(this.object.data.data.skills).forEach((key) => {
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Skill Rank");
+        let x = parseInt(formData[`data.skills.${key}.rank`], 10) - total;
+        let y = parseInt(formData[`data.attributes.${key}.value`], 10) + x;
+        if (y > 0) {
+          formData[`data.attributes.${key}.value`] = y;
+        } else {
+          formData[`data.attributes.${key}.value`] = 0;
+        }
+      });
+    }
+
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
-      if (/[\s\.]/.test(k)) return ui.notifications.error("Attribute keys may not contain spaces or periods");
       delete v["key"];
       obj[k] = v;
       return obj;
