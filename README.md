@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 22/07/2020 - Cstadther - Refactored minion sheet to use skills partial, updated skills partial to handle groupskills
 - 22/07/2020 - Cstadther - Added sheet options for Adversary for removing auto soak calculation (but only unlocks the soak field)
 - 22/07/2020 - Cstadther - Refactored character sheets using handlebar partials for skill, items, talents and force powers (shared with character and adversary sheets)
 - 22/07/2020 - Cstadther - Added modifiers for Career Skills

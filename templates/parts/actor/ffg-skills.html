@@ -16,7 +16,11 @@
         <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
         ) {{/with}}
       </div>
+      {{#if (eq ../actor.type "minion")}}
+      <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
+      {{else}}
       <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
+      {{/if}}
       <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
       <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
     </div>
@@ -40,7 +44,11 @@
           <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
           ) {{/with}}
         </div>
+        {{#if (eq ../actor.type "minion")}}
+        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
+        {{else}}
         <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
+        {{/if}}
         <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
         <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
       </div>
@@ -63,7 +71,11 @@
           <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
           ) {{/with}}
         </div>
+        {{#if (eq ../actor.type "minion")}}
+        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
+        {{else}}
         <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
+        {{/if}}
         <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
         <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
       </div>
