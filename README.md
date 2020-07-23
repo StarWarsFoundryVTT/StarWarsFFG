@@ -39,6 +39,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 23/07/2020 - Cstadther - Bug Fix #255 - Clicking on critical injuries was not bringing up sheet.
 - 23/07/2020 - Cstadther - Added Skill Boost and Skill Setback modifiers, refactored dice pool display to include boost and setback.
 - 22/07/2020 - Cstadther - Refactored minion sheet to use skills partial, updated skills partial to handle groupskills
 - 22/07/2020 - Cstadther - Added sheet options for Adversary for removing auto soak calculation (but only unlocks the soak field)
