@@ -177,7 +177,7 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     // Update Inventory Item - By clicking entire line
-    html.find("table.items .item, .header-description-block .item").click((ev) => {
+    html.find("table.items .item, .header-description-block .item, .injuries .item").click((ev) => {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas")) {
         const li = $(ev.currentTarget);
         const item = this.actor.getOwnedItem(li.data("itemId"));
