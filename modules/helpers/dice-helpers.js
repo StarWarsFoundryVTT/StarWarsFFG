@@ -8,6 +8,8 @@ export default class DiceHelpers {
 
     const dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
+      boost: skill.boost,
+      setback: skill.setback,
       difficulty: 2, // default to average difficulty
     });
 
@@ -62,5 +64,22 @@ export default class DiceHelpers {
         classes: ["dialog", "starwarsffg"],
       }
     ).render(true);
+  }
+
+  static async addSkillDicePool(obj, elem) {
+    const data = obj.getData();
+    const skillName = elem.dataset["ability"];
+    const skill = data.data.skills[skillName];
+    const characteristic = data.data.characteristics[skill.characteristic];
+
+    const dicePool = new DicePoolFFG({
+      ability: Math.max(characteristic.value, skill.rank),
+      boost: skill.boost,
+      setback: skill.setback,
+    });
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+
+    const rollButton = elem.querySelector(".roll-button");
+    dicePool.renderPreview(rollButton);
   }
 }

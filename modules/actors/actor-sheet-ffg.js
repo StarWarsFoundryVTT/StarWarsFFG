@@ -262,7 +262,8 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Setup dice pool image and hide filtered skills
     html.find(".skill").each((_, elem) => {
-      this._addSkillDicePool(elem);
+      DiceHelpers.addSkillDicePool(this, elem);
+      //this._addSkillDicePool(elem);
       const filters = this._filters.skills;
     });
 
@@ -509,21 +510,6 @@ export class ActorSheetFFG extends ActorSheet {
     // Update the Actor
     this.actor.data.flags.loaded = false;
     return this.object.update(formData);
-  }
-
-  _addSkillDicePool(elem) {
-    const data = this.getData();
-    const skillName = elem.dataset["ability"];
-    const skill = data.data.skills[skillName];
-    const characteristic = data.data.characteristics[skill.characteristic];
-
-    const dicePool = new DicePoolFFG({
-      ability: Math.max(characteristic.value, skill.rank),
-    });
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
-
-    const rollButton = elem.querySelector(".roll-button");
-    dicePool.renderPreview(rollButton);
   }
 
   /**

@@ -404,9 +404,13 @@ export class ActorFFG extends Actor {
       total += data.attributes[key].value;
       total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Rank");
 
+      /* Career Skills */
       if (!data.skills[key].careerskill) {
         data.skills[key].careerskill = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill");
       }
+
+      data.skills[key].boost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost");
+      data.skills[key].setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback");
 
       data.skills[key].rank = total > 6 ? 6 : total;
     });
