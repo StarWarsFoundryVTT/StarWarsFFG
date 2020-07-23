@@ -39,6 +39,9 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 22/07/2020 - Cstadther - Added sheet options for Adversary for removing auto soak calculation (but only unlocks the soak field)
+- 22/07/2020 - Cstadther - Refactored character sheets using handlebar partials for skill, items, talents and force powers (shared with character and adversary sheets)
+- 22/07/2020 - Cstadther - Added modifiers for Career Skills
 - 22/07/2020 - Cstadther - Minor GroupManager fix to remove instance where groupmanager is undefined
 - 21/07/2020 - Cstadther - Specialization Talents now apply stat/skill rank/characteristic modifiers.  Importer was updated to apply stat/skill rank/characteristic modifiers for weapons/armor/gear.
 - 20/07/2020 - Cstadther - Refactored modifier part 2, fixed issue with weapon mods, added new mod (setback and career skill), updated importer to correctly populate talent and specialization characteristic and stat modifiers.
