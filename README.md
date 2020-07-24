@@ -5,9 +5,7 @@ This is an implementation of the [Fantasy Flight Games Star Wars](https://www.fa
 - For support on this game system : Discord [The Foundry](https://discord.gg/bNyxuk9) #starwars-ffg
 - Read this document in another language : [Français](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/master/README-fr.md)
 
-# Installing
-
-## Installing Star Wars FFG game system
+# Installing Star Wars FFG game system
 
 1. Open Foundry VTT
 2. Go to the "Game Systems" Tab
