@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 24/07/2020 - Esrin - System is now compatible with Foundry VTT 0.7.0 and upwards only. Previous Foundry versions are not supported.
 - 24/07/2020 - Esrin - Implemented new Roll / Dice system using the expanded Foundry VTT 0.7.x dice API. The requirement for Special-Dice-Roller module has now been removed.
 - 23/07/2020 - Cstadther - Added Career item type, sheet and integration on character sheet.
 - 23/07/2020 - Cstadther - Bug Fix #255 - Clicking on critical injuries was not bringing up sheet.
