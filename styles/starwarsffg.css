@@ -472,6 +472,17 @@ span.dietype.triumph {
   cursor: pointer;
 }
 
+.starwarsffg .header-fields .row .row-input .career-pill {
+  padding: 3px 9px;
+  background-color: #aaa;
+  border: 1px solid black;
+  border-radius: 20px;
+}
+
+.starwarsffg .header-fields .row .row-input .career-pill .item-delete {
+  cursor: pointer;
+}
+
 .starwarsffg .header-fields .row input {
   width: 100%;
   border: 0;
@@ -3922,4 +3933,13 @@ span.dietype.triumph {
   color: black;
   font-weight: bold;
   text-transform: uppercase;
+}
+
+.starwarsffg .item-sheet-career .tabs {
+  height: 20px;
+  border: 0;
+}
+
+.starwarsffg .item-sheet-career .tabs .item {
+  line-height: 15px;
 }

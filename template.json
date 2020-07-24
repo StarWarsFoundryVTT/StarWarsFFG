@@ -516,7 +516,8 @@
     }
   },
   "Item": {
-    "types": ["gear", "weapon", "armour", "talent", "shipweapon", "shipattachment", "criticalinjury", "criticaldamage", "forcepower", "specialization", "species"],
+    "types": [
+      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "talent", "shipattachment", "shipweapon", "specialization", "species", "weapon"],
     "templates": {
       "core": {
         "description": "",
@@ -719,6 +720,9 @@
         "talent18": {},
         "talent19": {}
       }
+    },
+    "career" : {
+      "templates": ["core"]
     }
   }
 }

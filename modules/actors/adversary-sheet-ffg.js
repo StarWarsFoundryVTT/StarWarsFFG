@@ -99,12 +99,12 @@ export class AdversarySheetFFG extends ActorSheet {
     if (!this.options.editable) return;
 
     Hooks.on("preCreateOwnedItem", (actor, item, options, userid) => {
-      if (item.type === "species") {
+      if (item.type === "species" || item.type === "career") {
         if (actor.data.type === "character") {
-          // we only allow one species, find any other species and remove them.
-          const speciesToDelete = actor.items.filter((item) => item.type === "species");
-          speciesToDelete.forEach((species) => {
-            this.actor.deleteOwnedItem(species._id);
+          // we only allow one species and one career, find any other species and remove them.
+          const itemToDelete = actor.items.filter((i) => i.type === item.type);
+          itemToDelete.forEach((i) => {
+            this.actor.deleteOwnedItem(i._id);
           });
         } else {
           return false;
