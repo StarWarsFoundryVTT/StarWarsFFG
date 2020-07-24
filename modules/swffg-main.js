@@ -43,13 +43,6 @@ Hooks.once("init", async function () {
     diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
   };
 
-  // Check required module is active and store result to game.requirements_installed
-  const moduletest = game.data.modules.reduce(function (arr, mod, index) {
-    return { ...arr, [mod.id]: mod };
-  }, {});
-  game.requirements_installed = moduletest["special-dice-roller"].active;
-
-  game.ffg.StarWars = game.specialDiceRoller.starWars.parsers[0];
   game.ffg.DestinyPool = {
     "Light": 0,
     "Dark": 0,
@@ -114,56 +107,35 @@ Hooks.once("init", async function () {
   /** @override */
   Combat.prototype._getInitiativeRoll = function (combatant, formula) {
     const cData = combatant.actor.data.data;
-    const origFormula = formula;
 
     if (combatant.actor.data.type === "vehicle") {
-      return new Roll("0");
+      return new RollFFG("0");
     }
 
     if (formula === "Vigilance") {
-      formula = _getInitiativeFormula(cData.skills.Vigilance.rank, cData.characteristics.Willpower.value, 0);
+      formula = _getInitiativeFormula(cData.skills.Vigilance.rank, cData.characteristics.Willpower.value);
     } else if (formula === "Cool") {
-      formula = _getInitiativeFormula(cData.skills.Cool.rank, cData.characteristics.Presence.value, 0);
+      formula = _getInitiativeFormula(cData.skills.Cool.rank, cData.characteristics.Presence.value);
     }
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
-    const letters = formula.split("");
-    const rolls = [];
-    const getSuc = new RegExp("Successes: ([0-9]+)", "g");
-    const getAdv = new RegExp("Advantages: ([0-9]+)", "g");
+    console.log(formula);
+    let roll = new game.ffg.RollFFG(formula, rollData).roll();
 
-    for (const letter of letters) {
-      rolls.push(game.ffg.StarWars.letterToRolls(letter, 1));
-    }
-
-    let newformula = combineAll(rolls, game.ffg.StarWars.rollValuesMonoid);
-
-    let rolling = game.specialDiceRoller.starWars.roll(newformula);
-
-    let results = game.specialDiceRoller.starWars.formatRolls(rolling);
-
-    let success = 0;
-    let advantage = 0;
-
-    success = getSuc.exec(results);
-    if (success) {
-      success = success[1];
-    }
-    advantage = getAdv.exec(results);
-    if (advantage) {
-      advantage = advantage[1];
-    }
-
-    let total = +success + advantage * 0.01;
-
-    CONFIG.logger.log(`Total is: ${total}`);
-
-    let roll = new Roll(`0d6 ${origFormula}`, rollData).roll();
+    const total = roll.ffg.success + roll.ffg.advantage * 0.01;
     roll._result = total;
     roll._total = total;
 
     return roll;
   };
+
+  function _getInitiativeFormula(skill, ability) {
+    const dicePool = new DicePoolFFG({
+      ability: ability,
+    });
+    dicePool.upgrade(skill);
+    return dicePool.renderDiceExpression();
+  }
 
   /**
    * Set an initiative formula for the system
@@ -320,19 +292,6 @@ Hooks.once("init", async function () {
     type: Boolean,
     onChange: (rule) => window.location.reload(),
   });
-
-  function combineAll(values, monoid) {
-    return values.reduce((prev, curr) => monoid.combine(prev, curr), monoid.identity);
-  }
-
-  function _getInitiativeFormula(skill, ability, difficulty) {
-    const dicePool = new DicePoolFFG({
-      ability: ability,
-      difficulty: difficulty,
-    });
-    dicePool.upgrade(skill);
-    return dicePool.renderDiceExpression();
-  }
 
   // Set up dice with dynamic dice theme
   const dicetheme = game.settings.get("starwarsffg", "dicetheme");
@@ -527,12 +486,6 @@ Hooks.on("getSceneControlButtons", (controls) => {
 
 Hooks.once("canvasInit", (canvas) => {
   canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), 8);
-
-  // Check for required modules and throw error notice if missing.
-  if (!game.requirements_installed) {
-    ui.notifications.error("ERROR: You must install and activate the 'Special-Dice-Roller' module in order for this system to function correctly.");
-    console.error("ERROR: You must install and activate the 'Special-Dice-Roller' module in order for this system to function correctly.");
-  }
 });
 
 Hooks.on("renderJournalSheet", (journal, obj, data) => {
