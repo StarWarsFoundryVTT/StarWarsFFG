@@ -1,11 +1,3 @@
-const PROFICIENCY_ICON = "systems/starwarsffg/images/dice/starwars/yellow.png";
-const ABILITY_ICON = "systems/starwarsffg/images/dice/starwars/green.png";
-const CHALLENGE_ICON = "systems/starwarsffg/images/dice/starwars/red.png";
-const DIFFICULTY_ICON = "systems/starwarsffg/images/dice/starwars/purple.png";
-const BOOST_ICON = "systems/starwarsffg/images/dice/starwars/blue.png";
-const SETBACK_ICON = "systems/starwarsffg/images/dice/starwars/black.png";
-const FORCE_ICON = "systems/starwarsffg/images/dice/starwars/whiteHex.png";
-
 /**
  * Establish each FFG dice type here as extensions of DiceTerm.
  * @extends {DiceTerm}
@@ -738,7 +730,12 @@ export class DicePoolFFG {
    * @returns {string} a dice expression that can be used to roll the dice pool
    */
   renderDiceExpression() {
-    return ["p".repeat(this.proficiency), "a".repeat(this.ability), "c".repeat(this.challenge), "d".repeat(this.difficulty), "b".repeat(this.boost), "s".repeat(this.setback), "f".repeat(this.force)].join("");
+    let dicePool = [this.proficiency + "dp", this.ability + "da", this.challenge + "dc", this.difficulty + "dd", this.boost + "db", this.setback + "ds", this.force + "df"];
+    let finalPool = dicePool.filter((d) => {
+      const test = d.split(/([0-9]+)/);
+      return test[1] > 0;
+    });
+    return finalPool.join("+");
   }
 
   /**
@@ -751,13 +748,13 @@ export class DicePoolFFG {
       container = document.createElement("div");
       container.classList.add("dice-pool");
     }
-    this._addIcons(container, PROFICIENCY_ICON, this.proficiency);
-    this._addIcons(container, ABILITY_ICON, this.ability);
-    this._addIcons(container, CHALLENGE_ICON, this.challenge);
-    this._addIcons(container, DIFFICULTY_ICON, this.difficulty);
-    this._addIcons(container, BOOST_ICON, this.boost);
-    this._addIcons(container, SETBACK_ICON, this.setback);
-    this._addIcons(container, FORCE_ICON, this.force);
+    this._addIcons(container, CONFIG.FFG.PROFICIENCY_ICON, this.proficiency);
+    this._addIcons(container, CONFIG.FFG.ABILITY_ICON, this.ability);
+    this._addIcons(container, CONFIG.FFG.CHALLENGE_ICON, this.challenge);
+    this._addIcons(container, CONFIG.FFG.DIFFICULTY_ICON, this.difficulty);
+    this._addIcons(container, CONFIG.FFG.BOOST_ICON, this.boost);
+    this._addIcons(container, CONFIG.FFG.SETBACK_ICON, this.setback);
+    this._addIcons(container, CONFIG.FFG.FORCE_ICON, this.force);
     return container;
   }
 

@@ -44,13 +44,12 @@ export default class DiceHelpers {
               const container = document.getElementById(id);
               const finalPool = DicePoolFFG.fromContainer(container);
 
-              const message = game.specialDiceRoller.starWars.rollFormula(finalPool.renderDiceExpression());
-              ChatMessage.create({
+              const roll = new game.ffg.RollFFG(finalPool.renderDiceExpression());
+              console.log(finalPool.renderDiceExpression());
+              roll.toMessage({
                 user: game.user._id,
                 speaker: data,
                 flavor: `${game.i18n.localize("SWFFG.Rolling")} ${skillName}...`,
-                sound: CONFIG.sounds.dice,
-                content: message,
               });
             },
           },
