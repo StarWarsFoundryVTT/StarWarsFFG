@@ -85,6 +85,17 @@
           cursor: pointer;
         }
       }
+
+      .career-pill {
+        padding: 3px 9px;
+        background-color: #aaa;
+        border: 1px solid black;
+        border-radius: 20px;
+
+        .item-delete {
+          cursor: pointer;
+        }
+      }
     }
 
     input {

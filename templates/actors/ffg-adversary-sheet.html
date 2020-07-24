@@ -27,7 +27,9 @@
               </div>
               <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Career"}}:</div>
-                <div class="row-input"><input name="data.career.value" type="text" value="{{data.career.value}}" data-dtype="String" /></div>
+                {{#each actor.items as |item id|}} {{#if (eq item.type 'career')}}
+                <div class="career-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
+                {{/if}}{{/each}}
               </div>
               <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Specializations"}}:</div>
