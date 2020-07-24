@@ -26,12 +26,13 @@ export class CombatFFG extends Combat {
     roll._total = total;
 
     return roll;
-  };
+  }
 
-  function _getInitiativeFormula(skill, ability) {
+  _getInitiativeFormula(skill, ability) {
     const dicePool = new DicePoolFFG({
       ability: ability,
     });
     dicePool.upgrade(skill);
     return dicePool.renderDiceExpression();
   }
+}

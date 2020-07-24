@@ -45,7 +45,6 @@ export default class DiceHelpers {
               const finalPool = DicePoolFFG.fromContainer(container);
 
               const roll = new game.ffg.RollFFG(finalPool.renderDiceExpression());
-              console.log(finalPool.renderDiceExpression());
               roll.toMessage({
                 user: game.user._id,
                 speaker: data,
