@@ -854,6 +854,7 @@ export default class DataImporter extends FormApplication {
               importid: specData.Specialization.Key,
             },
             data: {
+              attributes: {},
               description: specData.Specialization.Description,
               talents: {},
               careerskills: {},
@@ -898,6 +899,13 @@ export default class DataImporter extends FormApplication {
               });
 
               if (skill) {
+                const nk = Object.keys(specialization.data.attributes).length + 1;
+
+                specialization.data.attributes[`attr${nk}`] = {
+                  mod: skill.skillName,
+                  modtype: "Career Skill",
+                  value: false,
+                };
                 specialization.data.careerskills[Object.keys(specialization.data.careerskills).length] = skill.skillName;
               }
             });

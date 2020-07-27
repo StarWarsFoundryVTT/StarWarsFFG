@@ -25,9 +25,11 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 27/07/2020 - Cstadther - Added specialization modifiers via popout modifiers window (new cog icon on specialization screen)
 - 24/07/2020 - Esrin - System is now compatible with Foundry VTT 0.7.0 and upwards only. Previous Foundry versions are not supported.
 - 24/07/2020 - Esrin - Implemented new Roll / Dice system using the expanded Foundry VTT 0.7.x dice API. The requirement for Special-Dice-Roller module has now been removed.
 - 23/07/2020 - Cstadther - Added Career item type, sheet and integration on character sheet.
+- 23/07/2020 - Cstadther - Added Career item type, sheet and integration on character/adversary sheet.
 - 23/07/2020 - Cstadther - Bug Fix #255 - Clicking on critical injuries was not bringing up sheet.
 - 23/07/2020 - Cstadther - Added Skill Boost and Skill Setback modifiers, refactored dice pool display to include boost and setback.
 - 22/07/2020 - Cstadther - Refactored minion sheet to use skills partial, updated skills partial to handle groupskills
@@ -35,14 +37,14 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 22/07/2020 - Cstadther - Refactored character sheets using handlebar partials for skill, items, talents and force powers (shared with character and adversary sheets)
 - 22/07/2020 - Cstadther - Added modifiers for Career Skills
 - 22/07/2020 - Cstadther - Minor GroupManager fix to remove instance where groupmanager is undefined
-- 21/07/2020 - Cstadther - Specialization Talents now apply stat/skill rank/characteristic modifiers. Importer was updated to apply stat/skill rank/characteristic modifiers for weapons/armor/gear.
+- 21/07/2020 - Cstadther - Specialization Talents now apply stat/skill rank/characteristic modifiers.  Importer was updated to apply stat/skill rank/characteristic modifiers for weapons/armor/gear.
 - 20/07/2020 - Cstadther - Refactored modifier part 2, fixed issue with weapon mods, added new mod (setback and career skill), updated importer to correctly populate talent and specialization characteristic and stat modifiers.
 - 20/07/2020 - Cstadther - Bug Fix #243 - Updated english localization to used knowledge stripped values and updated skill grid layout.
-- 20/07/2020 - Cstadther - Refactored modifier display to a partial. Refactored applying logic.
+- 20/07/2020 - Cstadther - Refactored modifier display to a partial.  Refactored applying logic.
 - 20/07/2020 - Cstadther - Added skill rank modifiers, works for current skills and any new added skills correctly.
 - 20/07/2020 - Cstadther - Stat modifiers save on update of actor and store value of difference in attribute.
 - 19/07/2020 - Cstadther - Bug Fix #212 - Vehicle weapons are now imported correctly as Vehicle Weapons.
-- 19/07/2020 - Cstadther - Enhancement #213 - When weapon skill is changed to `Melee` or `Brawl` damage field is disabled, as base damage for those weapon types is autocalculated using brawl when owned by an actor. Specify damage as a modifier to damage (ie +3, etc)
+- 19/07/2020 - Cstadther - Enhancement #213 - When weapon skill is changed to `Melee` or `Brawl` damage field is disabled, as base damage for those weapon types is autocalculated using brawl when owned by an actor.  Specify damage as a modifier to damage (ie +3, etc)
 - 19/07/2020 - Cstadther - Bug Fix #227 - Fixed issue with critical injuries and damage description areas not big enough.
 - 19/07/2020 - Cstadther - Bug Fix #232 - Fixed issue with minion groupskill calculations
 - 19/07/2020 - Cstadther - Bug Fix #222 - Fixed issue where soak options were not being used on Adversary Sheet.

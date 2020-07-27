@@ -236,6 +236,8 @@ export class ItemSheetFFG extends ItemSheet {
       });
 
       dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
+
+      html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
     }
 
     // hidden here instead of css to prevent non-editable display of edit button
