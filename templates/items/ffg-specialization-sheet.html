@@ -11,9 +11,12 @@
             <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
             {{{renderDiceTags data.description}}}
           </div>
-          <!-- {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}} -->
         </div>
         <div class="talent-actions {{#if data.isReadOnly}}talent-hidden{{/if}}">
+          <a class="talent-action hover" data-itemid="{{item._id}}"
+            ><i class="fas fa-cog"></i>
+            <div class="tooltip">Modifiers</div>
+          </a>
           <a class="talent-action" data-action="edit"><i class="fas fa-edit"></i></a>
           <input class="talent-hidden" name="data.isEditing" type="text" value="{{data.isEditing}}" data-dtype="Boolean" />
         </div>

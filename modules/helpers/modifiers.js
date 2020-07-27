@@ -1,3 +1,5 @@
+import PopoutModifiers from "../popout-modifiers.js";
+
 export default class ModifierHelpers {
   /**
    * Calculate a total attribute value for a key from a list of attributes and items
@@ -113,5 +115,16 @@ export default class ModifierHelpers {
       li.parentElement.removeChild(li);
       await this._onSubmit(event);
     }
+  }
+
+  static async popoutModiferWindow(event) {
+    event.preventDefault();
+    const a = event.currentTarget.parentElement;
+
+    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.name}`;
+
+    new PopoutModifiers(this.object, {
+      title,
+    }).render(true);
   }
 }
