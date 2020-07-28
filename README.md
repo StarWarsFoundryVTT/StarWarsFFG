@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 28/07/2020 - Cstadther - Added ranked talents to multiply modifier value correctly.
 - 28/07/2020 - Cstadther - Updated importer to import career skills, skill ranks, and skill boosts on talents.
 - 27/07/2020 - Cstadther - Added specialization modifiers via popout modifiers window (new cog icon on specialization screen)
 - 24/07/2020 - Esrin - System is now compatible with Foundry VTT 0.7.0 and upwards only. Previous Foundry versions are not supported.

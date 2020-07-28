@@ -81,7 +81,15 @@ export default class ModifierHelpers {
                 checked = true;
               }
             } else {
-              total += parseInt(attr.value, 10);
+              if (item.type === "talent") {
+                let multiplier = 1;
+                if (item.data.ranks.ranked) {
+                  multiplier = item.data.ranks.current;
+                }
+                total += parseInt(attr.value, 10) * multiplier;
+              } else {
+                total += parseInt(attr.value, 10);
+              }
             }
           });
         }
