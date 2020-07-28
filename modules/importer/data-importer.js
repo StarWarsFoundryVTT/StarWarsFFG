@@ -272,6 +272,66 @@ export default class DataImporter extends FormApplication {
             item.data.attributes = Object.assign(item.data.attributes, ImportHelpers.getAttributeObject(attributes));
           }
 
+          const careerskills = talent.getElementsByTagName("ChooseCareerSkills")[0];
+          if (careerskills) {
+            const cs = JXON.xmlToJs(careerskills);
+
+            const funcAddCareerSkill = (s) => {
+              if (Object.keys(CONFIG.temporary.skills).includes(s)) {
+                const skill = CONFIG.temporary.skills[s];
+                const careerKey = Object.keys(item.data.attributes).length + 1;
+                item.data.attributes[`attr${careerKey}`] = {
+                  mod: skill,
+                  modtype: "Career Skill",
+                  value: true,
+                };
+              }
+            };
+
+            if (cs?.NewSkills?.Key) {
+              if (Array.isArray(cs.NewSkills.Key)) {
+                cs.NewSkills.Key.forEach((s) => {
+                  funcAddCareerSkill(s);
+                });
+              } else {
+                funcAddCareerSkill(cs.NewSkills.Key);
+              }
+            }
+          }
+
+          const diemodifiers = talent.getElementsByTagName("DieModifiers")[0];
+          if (diemodifiers) {
+            const diemod = JXON.xmlToJs(diemodifiers);
+
+            const funcAddDieModifier = (mod) => {
+              if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
+                // only handling boosts initially
+                if (mod.BoostCount) {
+                  const skill = CONFIG.temporary.skills[mod.SkillKey];
+                  const modKey = Object.keys(item.data.attributes).length + 1;
+
+                  item.data.attributes[`attr${modKey}`] = {
+                    mod: skill,
+                    modtype: "Skill Boost",
+                    value: mod.BoostCount,
+                  };
+                }
+              }
+            };
+
+            if (diemod.DieModifier) {
+              if (Array.isArray(diemod.DieModifier)) {
+                diemod.DieModifier.forEach((mod) => {
+                  funcAddDieModifier(mod);
+                });
+              } else {
+                if (Object.keys(CONFIG.temporary.skills).includes(diemod.DieModifier.SkillKey)) {
+                  funcAddDieModifier(diemod.DieModifier);
+                }
+              }
+            }
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find((e) => e.name === item.name);
