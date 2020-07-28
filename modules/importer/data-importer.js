@@ -899,14 +899,21 @@ export default class DataImporter extends FormApplication {
               });
 
               if (skill) {
-                const nk = Object.keys(specialization.data.attributes).length + 1;
-
-                specialization.data.attributes[`attr${nk}`] = {
+                // add career skill
+                const careerKey = Object.keys(specialization.data.attributes).length + 1;
+                specialization.data.attributes[`attr${careerKey}`] = {
                   mod: skill.skillName,
                   modtype: "Career Skill",
-                  value: false,
+                  value: true,
                 };
-                specialization.data.careerskills[Object.keys(specialization.data.careerskills).length] = skill.skillName;
+
+                // most specialization give players choice were to put points, create modifier but put value of 0
+                const skillKey = Object.keys(specialization.data.attributes).length + 1;
+                specialization.data.attributes[`attr${skillKey}`] = {
+                  mod: skill.skillName,
+                  modtype: "Skill Rank",
+                  value: "0",
+                };
               }
             });
           } catch (err) {

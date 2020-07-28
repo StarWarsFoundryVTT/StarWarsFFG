@@ -7,6 +7,10 @@
   }
 }
 
+.hidden-content {
+  @include hide;
+}
+
 .rollable {
   &:hover,
   &:focus {
