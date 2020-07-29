@@ -165,7 +165,7 @@ export class AdversarySheetFFG extends ActorSheet {
     });
 
     // Update Inventory Item - By clicking entire line
-    html.find("table.items .item, .header-description-block .item").click((ev) => {
+    html.find("table.items .item, .header-description-block .item, .injuries .item").click((ev) => {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fa-times")) {
         const li = $(ev.currentTarget);
         const item = this.actor.getOwnedItem(li.data("itemId"));
@@ -411,7 +411,6 @@ export class AdversarySheetFFG extends ActorSheet {
     filters.filter = filter;
     await this._onSubmit(event);
   }
-
   /* -------------------------------------------- */
 
   /** @override */

@@ -3357,6 +3357,15 @@ span.dietype.triumph {
   position: relative;
 }
 
+.starwarsffg .item-sheet-criticalinjury .tabs {
+  height: 20px;
+  border: 0;
+}
+
+.starwarsffg .item-sheet-criticalinjury .tabs .item {
+  line-height: 15px;
+}
+
 .starwarsffg .injuries div.item {
   cursor: pointer;
 }

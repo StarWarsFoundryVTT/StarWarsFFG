@@ -263,7 +263,6 @@ export class ActorSheetFFG extends ActorSheet {
     // Setup dice pool image and hide filtered skills
     html.find(".skill").each((_, elem) => {
       DiceHelpers.addSkillDicePool(this, elem);
-      //this._addSkillDicePool(elem);
       const filters = this._filters.skills;
     });
 
@@ -409,8 +408,6 @@ export class ActorSheetFFG extends ActorSheet {
     const ability = $(a).data("ability");
     this.object.update({ "data.skills": { ["-=" + ability]: null } });
   }
-
-  /* -------------------------------------------- */
 
   /**
    * Listen for click events on a filter control to modify the selected filter option.

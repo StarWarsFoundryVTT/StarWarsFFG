@@ -7,60 +7,74 @@
       <div class="container flex-group-center item-name">
         <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
       </div>
-    </div>
-  </header>
-
-  {{!-- Sheet Body --}}
-  <section class="sheet-body">
-    <div class="container flex-group-center items">
-      <div class="resource split">
-        <div class="attribute flex-group-center">
-          <div class="block-background">
-            <div class="block-title">
-              d100 Roll
+      <div class="container flex-group-center items">
+        <div class="resource split">
+          <div class="attribute flex-group-center">
+            <div class="block-background">
+              <div class="block-title">
+                d100 Roll
+              </div>
+              <div class="block-attribute">
+                <div class="block-value"><input type="text" name="data.min" value="{{data.min}}" data-dtype="Number" /></div>
+                <div class="block-value"><input type="text" name="data.max" value="{{data.max}}" data-dtype="Number" /></div>
+              </div>
             </div>
-            <div class="block-attribute">
-              <div class="block-value"><input type="text" name="data.min" value="{{data.min}}" data-dtype="Number" /></div>
-              <div class="block-value"><input type="text" name="data.max" value="{{data.max}}" data-dtype="Number" /></div>
-            </div>
-          </div>
-          <div class="block-background-shadow">
-            <div class="shadow-left">
-              <div class="shadow-text">{{localize "SWFFG.RollLow"}}</div>
-            </div>
-            <div class="shadow-right">
-              <div class="shadow-text">{{localize "SWFFG.RollHigh"}}</div>
+            <div class="block-background-shadow">
+              <div class="shadow-left">
+                <div class="shadow-text">{{localize "SWFFG.RollLow"}}</div>
+              </div>
+              <div class="shadow-right">
+                <div class="shadow-text">{{localize "SWFFG.RollHigh"}}</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="container flex-group-center">
-      <div class="resource single">
-        <div class="attribute flex-group-center severity-block">
-          <div class="block-background">
-            <div class="block-title">
-              {{localize "SWFFG.Severity"}}
-            </div>
-            <div class="block-attribute">
-              <div class="severity">
-                <select name="data.severity" class="severity-select" id="criticaldamage-{{item._id}}">
-                  {{#select data.severity}} {{#each this.FFG.difficulty as |t|}}
-                  <option value="{{t.value}}">{{localize t.label}} {{t.image}}</option>
-                  {{/each}} {{/select}}
-                </select>
-                <div class="severity-display"></div>
+      <div class="container flex-group-center">
+        <div class="resource single">
+          <div class="attribute flex-group-center severity-block">
+            <div class="block-background">
+              <div class="block-title">
+                {{localize "SWFFG.Severity"}}
+              </div>
+              <div class="block-attribute">
+                <div class="severity">
+                  <select name="data.severity" class="severity-select" id="criticaldamage-{{item._id}}">
+                    {{#select data.severity}} {{#each this.FFG.difficulty as |t|}}
+                    <option value="{{t.value}}">{{localize t.label}} {{t.image}}</option>
+                    {{/each}} {{/select}}
+                  </select>
+                  <div class="severity-display"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="editor-wrapper">
-      <div class="block-background block-editor">
-        {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
+  </header>
+
+  {{!-- Sheet Tab Navigation --}}
+  <nav class="sheet-tabs tabs" data-group="primary">
+    <a class="item" data-tab="description">{{localize "SWFFG.TabDescription"}}</a>
+    <a class="item" data-tab="attributes">{{localize "SWFFG.TabModifiers"}}</a>
+  </nav>
+
+  {{!-- Sheet Body --}}
+  <section class="sheet-body">
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      <div class="editor-wrapper">
+        <div class="block-background block-editor">
+          {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
+        </div>
       </div>
+    </div>
+
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
   </section>
 </form>

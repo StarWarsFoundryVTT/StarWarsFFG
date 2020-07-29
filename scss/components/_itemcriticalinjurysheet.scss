@@ -87,4 +87,13 @@
   .severity-block {
     position: relative;
   }
+
+  .tabs {
+    height : 20px;
+    border: 0;
+
+    .item {
+      line-height: 15px;
+    }
+  }
 }
