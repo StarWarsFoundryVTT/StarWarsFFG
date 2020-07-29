@@ -112,11 +112,14 @@ export class ItemSheetFFG extends ItemSheet {
               modtype: "Characteristic",
               mod: key,
               value: 0,
+              exclude: true,
             };
             attr = {
               key: `${key}`,
               value: 0,
             };
+          } else {
+            data.data.attributes[`${key}`].exclude = true;
           }
 
           return {
@@ -134,25 +137,21 @@ export class ItemSheetFFG extends ItemSheet {
             modtype: "Stat",
             mod: "Wounds",
             value: 0,
+            exclude: true,
           };
+        } else {
+          data.data.attributes.Wounds.exclude = true;
         }
         if (!data.data.attributes?.Strain) {
           data.data.attributes.Strain = {
             modtype: "Stat",
             mod: "Strain",
             value: 0,
+            exclude: true,
           };
+        } else {
+          data.data.attributes.Strain.exclude = true;
         }
-
-        const attributesToDisplay = Object.keys(data.data.attributes).filter((key) => {
-          return key.startsWith("attr");
-        });
-
-        data.attributes = {};
-
-        attributesToDisplay.forEach((key) => {
-          data.attributes[key] = data.data.attributes[key];
-        });
 
         break;
       default:

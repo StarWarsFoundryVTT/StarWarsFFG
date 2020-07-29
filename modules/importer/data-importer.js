@@ -89,6 +89,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Armor");
         this._enableImportSelection(zip.files, "Specializations", true);
         this._enableImportSelection(zip.files, "Careers", true);
+        this._enableImportSelection(zip.files, "Species", true);
       } catch (err) {
         console.error(err);
       }
@@ -147,7 +148,10 @@ export default class DataImporter extends FormApplication {
             isSpecialization = true;
           }
           if (file.file.includes("/Careers/")) {
-            promises.push(this._handlerCareers(zip));
+            promises.push(this._handleCareers(zip));
+          }
+          if (file.file.includes("/Species/")) {
+            promises.push(this._handleSpecies(zip));
           }
         }
       });
@@ -1028,7 +1032,7 @@ export default class DataImporter extends FormApplication {
     this._importLogger(`Completed Specialization Import`);
   }
 
-  async _handlerCareers(zip) {
+  async _handleCareers(zip) {
     this._importLogger(`Starting Career Import`);
 
     const careerFiles = Object.values(zip.files).filter((file) => {
@@ -1101,6 +1105,103 @@ export default class DataImporter extends FormApplication {
             .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing Career ${career.name}`);
+        } catch (err) {
+          this._importLogger(`Error importing record : `, err);
+          CONFIG.logger.error(`Error importing record : `, err);
+        }
+      });
+    }
+  }
+
+  async _handleSpecies(zip) {
+    this._importLogger(`Starting Species Import`);
+
+    const speciesFiles = Object.values(zip.files).filter((file) => {
+      return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/Species/");
+    });
+
+    let totalCount = speciesFiles.length;
+    let currentCount = 0;
+
+    if (speciesFiles.length > 0) {
+      $(".import-progress.species").toggleClass("import-hidden");
+      let pack = await this._getCompendiumPack("Item", `oggdude.Species`);
+      await this.asyncForEach(speciesFiles, async (file) => {
+        try {
+          const data = await zip.file(file.name).async("text");
+          const domparser = new DOMParser();
+          const xmlDoc = domparser.parseFromString(data, "text/xml");
+          const speciesData = JXON.xmlToJs(xmlDoc);
+
+          let species = {
+            name: speciesData.Species.Name,
+            type: "species",
+            flags: {
+              importid: speciesData.Species.Key,
+            },
+            data: {
+              attributes: {},
+              description: speciesData.Species.Description,
+            },
+          };
+
+          const funcAddAttribute = (modtype, mod, value, hidden) => {
+            const charKey = Object.keys(species.data.attributes).length + 1;
+            species.data.attributes[mod] = {
+              mod,
+              modtype,
+              value: parseInt(value, 10),
+              exclude: hidden,
+            };
+          };
+
+          funcAddAttribute("Characteristic", "Brawn", speciesData.Species.StartingChars.Brawn, true);
+          funcAddAttribute("Characteristic", "Agility", speciesData.Species.StartingChars.Agility, true);
+          funcAddAttribute("Characteristic", "Intellect", speciesData.Species.StartingChars.Intellect, true);
+          funcAddAttribute("Characteristic", "Cunning", speciesData.Species.StartingChars.Cunning, true);
+          funcAddAttribute("Characteristic", "Willpower", speciesData.Species.StartingChars.Willpower, true);
+          funcAddAttribute("Characteristic", "Presence", speciesData.Species.StartingChars.Presence, true);
+
+          funcAddAttribute("Stat", "Wounds", speciesData.Species.StartingAttrs.WoundThreshold, true);
+          funcAddAttribute("Stat", "Strain", speciesData.Species.StartingAttrs.StrainThreshold, true);
+
+          if (speciesData?.Species?.SkillModifiers?.SkillModifier) {
+            if (Array.isArray(speciesData.Species.SkillModifiers.SkillModifier)) {
+              speciesData.Species.SkillModifiers.SkillModifier.forEach((s) => {
+                let skill = CONFIG.temporary.skills[s.Key];
+                if (skill) {
+                  funcAddAttribute("Skill Rank", skill, s.RankStart, false);
+                }
+              });
+            } else {
+              let skill = CONFIG.temporary.skills[speciesData.Species.SkillModifiers.SkillModifier.Key];
+              if (skill) {
+                funcAddAttribute("Skill Rank", skill, speciesData.Species.SkillModifiers.SkillModifier.RankStart, false);
+              }
+            }
+          }
+
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find((e) => e.name === species.name);
+          if (!entry) {
+            CONFIG.logger.debug(`Importing Species - Item`);
+            compendiumItem = new Item(species, { temporary: true });
+            this._importLogger(`New Species ${species.name} : ${JSON.stringify(compendiumItem)}`);
+            pack.importEntity(compendiumItem);
+          } else {
+            CONFIG.logger.debug(`Updating Species - Item`);
+            let updateData = ImportHelpers.buildUpdateData(species);
+            updateData["_id"] = entry._id;
+            this._importLogger(`Updating Species ${species.name} : ${JSON.stringify(updateData)}`);
+            pack.updateEntity(updateData);
+          }
+          currentCount += 1;
+
+          $(".species .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          this._importLogger(`End importing Species ${species.name}`);
         } catch (err) {
           this._importLogger(`Error importing record : `, err);
           CONFIG.logger.error(`Error importing record : `, err);

@@ -5,7 +5,7 @@
   <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
 </header>
 <ol class="attributes-list">
-  {{#each data.attributes as |attr key|}}
+  {{#each data.attributes as |attr key|}} {{#if attr.exclude}} {{else}}
   <li class="attribute flexrow" data-attribute="{{key}}">
     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
     <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
@@ -29,5 +29,5 @@
     {{/if}}
     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
   </li>
-  {{/each}}
+  {{/if}} {{/each}}
 </ol>
