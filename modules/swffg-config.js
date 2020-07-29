@@ -311,6 +311,10 @@ FFG.mod_types = {
     "value": "Skill Rank",
     "label": "SWFFG.ModTypeSkillRank",
   },
+  "Skill Remove Setback": {
+    "value": "Skill Remove Setback",
+    "label": "SWFFG.ModTypeSkillRemoveSetback",
+  },
   "Skill Setback": {
     "value": "Skill Setback",
     "label": "SWFFG.ModTypeSkillSetback",
@@ -338,9 +342,13 @@ FFG.weapon_mod_types = {
     "value": "Career Skill",
     "label": "SWFFG.ModTypeCareerSkill",
   },
+  "Skill Remove Setback": {
+    "value": "Skill Remove Setback",
+    "label": "SWFFG.ModTypeSkillSetback",
+  },
   "Skill Setback": {
     "value": "Skill Setback",
-    "label": "SWFFG.ModTypeSkillSetback",
+    "label": "SWFFG.ModTypeSkillRemoveSetback",
   },
   "Stat": {
     "value": "Stat",

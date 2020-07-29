@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 29/07/2020 - Cstadther - Added Remove Setback modifier, updated dice pool rendering display Remove Setback image, updated dice pool calculation on actor to cancel out setback dice with remove setback dice.
 - 28/07/2020 - Cstadther - Added Species Import from Oggdude dataset.
 - 28/07/2020 - Cstadther - Added Career Import from Oggdude dataset.
 - 28/07/2020 - Cstadther - Added ranked talents to multiply modifier value correctly.
