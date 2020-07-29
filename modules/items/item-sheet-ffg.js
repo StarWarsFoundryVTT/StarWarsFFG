@@ -52,7 +52,7 @@ export class ItemSheetFFG extends ItemSheet {
         break;
       case "criticalinjury":
       case "criticaldamage":
-        this.position.width = 275;
+        this.position.width = 320;
         break;
       case "forcepower":
         this.position.width = 715;
