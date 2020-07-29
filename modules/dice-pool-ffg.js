@@ -685,6 +685,7 @@ export class DicePoolFFG {
     this.difficulty = obj.difficulty || 0;
     this.boost = obj.boost || 0;
     this.setback = obj.setback || 0;
+    this.remsetback = obj.remsetback || 0;
     this.force = obj.force || 0;
   }
 
@@ -754,6 +755,7 @@ export class DicePoolFFG {
     this._addIcons(container, CONFIG.FFG.DIFFICULTY_ICON, this.difficulty);
     this._addIcons(container, CONFIG.FFG.BOOST_ICON, this.boost);
     this._addIcons(container, CONFIG.FFG.SETBACK_ICON, this.setback);
+    this._addIcons(container, CONFIG.FFG.REMOVESETBACK_ICON, this.remsetback);
     this._addIcons(container, CONFIG.FFG.FORCE_ICON, this.force);
     return container;
   }
@@ -781,6 +783,7 @@ export class DicePoolFFG {
       difficulty: container.querySelector('[name="difficulty"]').value,
       boost: container.querySelector('[name="boost"]').value,
       setback: container.querySelector('[name="setback"]').value,
+      remsetback: container.querySelector('[name="remsetback"]').value,
       force: container.querySelector('[name="force"]').value,
     });
   }

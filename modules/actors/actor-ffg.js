@@ -410,7 +410,16 @@ export class ActorFFG extends Actor {
       }
 
       data.skills[key].boost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost");
-      data.skills[key].setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback");
+      const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback");
+      const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback");
+
+      if (remsetback >= setback) {
+        data.skills[key].setback = 0;
+        data.skills[key].remsetback = remsetback - setback;
+      } else {
+        data.skills[key].setback = setback - remsetback;
+        data.skills[key].remsetback = 0;
+      }
 
       data.skills[key].rank = total > 6 ? 6 : total;
     });

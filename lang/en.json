@@ -292,5 +292,6 @@
   "SWFFG.DefenseRangedLabel": "Defense (Ranged)",
   "SWFFG.DefenseMeleeLabel": "Defense (Melee)",
   "SWFFG.ModTypeCareerSkill": "Career Skill",
-  "SWFFG.ModTypeSkillSetback": "Skill Setback"
+  "SWFFG.ModTypeSkillSetback": "Skill Setback",
+  "SWFFG.ModTypeSkillRemoveSetback": "Skill Remove Setback"
 }

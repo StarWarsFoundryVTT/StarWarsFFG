@@ -74,6 +74,7 @@ export default class DiceHelpers {
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
       setback: skill.setback,
+      remsetback: skill.remsetback,
     });
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
