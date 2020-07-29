@@ -364,6 +364,7 @@ export class ActorFFG extends Actor {
    */
   _applyModifiers(actorData) {
     const data = actorData.data;
+    const isPC = this.isPC;
     if (!actorData.modifiers) {
       actorData.modifiers = {};
     }
@@ -421,7 +422,11 @@ export class ActorFFG extends Actor {
         data.skills[key].remsetback = 0;
       }
 
-      data.skills[key].rank = total > 6 ? 6 : total;
+      if (isPC) {
+        data.skills[key].rank = total > 6 ? 6 : total;
+      } else {
+        data.skills[key].rank = total;
+      }
     });
   }
 }
