@@ -18,10 +18,19 @@
   <div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
-        <input type="checkbox" id="importTalents" name="imports" value="/Talents.xml" data-name="Talents" data-type="Item" data-itemtype="talent" disabled />
-        <label for="importTalents"> {{localize "SWFFG.Talents"}}</label><br />
+        <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" data-name="Armor" data-type="Item" data-itemtype="armor" disabled />
+        <label for="importArmor"> {{localize "SWFFG.ItemsArmor"}}</label><br />
       </div>
-      <div class="import-progress talents import-hidden">
+      <div class="import-progress armor import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
+        <input type="checkbox" id="importCareers" name="imports" value="/Careers/" data-name="Careers" data-type="Item" data-itemtype="career" disabled />
+        <label for="importCareers"> {{localize "SWFFG.Career"}}</label><br />
+      </div>
+      <div class="import-progress careers import-hidden">
         <div class="import-progress-bar" style="width: 0%;"></div>
       </div>
     </div>
@@ -45,24 +54,6 @@
     </div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
-        <input type="checkbox" id="importWeapons" name="imports" value="/Weapons.xml" data-name="Weapons" data-type="Item" data-itemtype="weapon" disabled />
-        <label for="importWeapons"> {{localize "SWFFG.ItemsWeapons"}}</label><br />
-      </div>
-      <div class="import-progress weapons import-hidden">
-        <div class="import-progress-bar" style="width: 0%;"></div>
-      </div>
-    </div>
-    <div style="display: flex;">
-      <div style="white-space: nowrap;">
-        <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" data-name="Armor" data-type="Item" data-itemtype="armor" disabled />
-        <label for="importArmor"> {{localize "SWFFG.ItemsArmor"}}</label><br />
-      </div>
-      <div class="import-progress armor import-hidden">
-        <div class="import-progress-bar" style="width: 0%;"></div>
-      </div>
-    </div>
-    <div style="display: flex;">
-      <div style="white-space: nowrap;">
         <input type="checkbox" id="importSpecializations" name="imports" value="/Specializations/" data-name="Specializations" data-type="Item" data-itemtype="specialization" disabled />
         <label for="importSpecializations"> {{localize "SWFFG.Specializations"}}</label><br />
       </div>
@@ -70,8 +61,25 @@
         <div class="import-progress-bar" style="width: 0%;"></div>
       </div>
     </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
+        <input type="checkbox" id="importTalents" name="imports" value="/Talents.xml" data-name="Talents" data-type="Item" data-itemtype="talent" disabled />
+        <label for="importTalents"> {{localize "SWFFG.Talents"}}</label><br />
+      </div>
+      <div class="import-progress talents import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
+        <input type="checkbox" id="importWeapons" name="imports" value="/Weapons.xml" data-name="Weapons" data-type="Item" data-itemtype="weapon" disabled />
+        <label for="importWeapons"> {{localize "SWFFG.ItemsWeapons"}}</label><br />
+      </div>
+      <div class="import-progress weapons import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
   </div>
-
   <div>
     <button class="dialog-button" data-button="import">
       <i class="fas fa-file-import"></i>

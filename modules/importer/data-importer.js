@@ -88,6 +88,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Weapons");
         this._enableImportSelection(zip.files, "Armor");
         this._enableImportSelection(zip.files, "Specializations", true);
+        this._enableImportSelection(zip.files, "Careers", true);
       } catch (err) {
         console.error(err);
       }
@@ -142,7 +143,12 @@ export default class DataImporter extends FormApplication {
           promises.push(this._handleTalents(xmlDoc));
           promises.push(this._handleForcePowers(xmlDoc, zip));
         } else {
-          isSpecialization = true;
+          if (file.file.includes("/Specializations/")) {
+            isSpecialization = true;
+          }
+          if (file.file.includes("/Careers/")) {
+            promises.push(this._handlerCareers(zip));
+          }
         }
       });
 
@@ -925,44 +931,14 @@ export default class DataImporter extends FormApplication {
 
           // assign career skills
           try {
-            if (!CONFIG.temporary.skillsMap) {
-              const skillFile = Object.values(zip.files).find((file) => {
-                if (file.name.includes(`/Skills.xml`)) {
-                  return true;
-                }
-                return false;
-              });
-              const skills = await zip.file(skillFile.name).async("text");
-              const skillsDoc = domparser.parseFromString(skills, "text/xml");
-              const skillsData = JXON.xmlToJs(skillsDoc);
-
-              CONFIG.temporary.skillsMap = skillsData.Skills.Skill.map((skill) => {
-                let item = {
-                  key: skill.Key,
-                  keyName: skill.Name,
-                };
-
-                const swffgskill = Object.values(CONFIG.FFG.skills).find((ffgSkill) => {
-                  return ffgSkill.value.toLowerCase().replace(/[^a-zA-Z]/gim, "") === skill.Name.toLowerCase().replace(/[^a-zA-Z]/gim, "");
-                });
-
-                if (swffgskill) {
-                  item.skillName = swffgskill.value;
-                }
-                return item;
-              });
-            }
-
             specData.Specialization.CareerSkills.Key.forEach((skillKey) => {
-              let skill = CONFIG.temporary.skillsMap.find((item) => {
-                return item.key === skillKey;
-              });
+              let skill = CONFIG.temporary.skills[skillKey];
 
               if (skill) {
                 // add career skill
                 const careerKey = Object.keys(specialization.data.attributes).length + 1;
                 specialization.data.attributes[`attr${careerKey}`] = {
-                  mod: skill.skillName,
+                  mod: skill,
                   modtype: "Career Skill",
                   value: true,
                 };
@@ -970,7 +946,7 @@ export default class DataImporter extends FormApplication {
                 // most specialization give players choice were to put points, create modifier but put value of 0
                 const skillKey = Object.keys(specialization.data.attributes).length + 1;
                 specialization.data.attributes[`attr${skillKey}`] = {
-                  mod: skill.skillName,
+                  mod: skill,
                   modtype: "Skill Rank",
                   value: "0",
                 };
@@ -1028,13 +1004,13 @@ export default class DataImporter extends FormApplication {
           if (!entry) {
             CONFIG.logger.debug(`Importing Specialization - Item`);
             compendiumItem = new Item(specialization, { temporary: true });
-            this._importLogger(`New Specialization ${specialization.Name} : ${JSON.stringify(compendiumItem)}`);
+            this._importLogger(`New Specialization ${specialization.name} : ${JSON.stringify(compendiumItem)}`);
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Specialization - Item`);
             let updateData = ImportHelpers.buildUpdateData(specialization);
             updateData["_id"] = entry._id;
-            this._importLogger(`Updating Specialization ${specialization.Name} : ${JSON.stringify(updateData)}`);
+            this._importLogger(`Updating Specialization ${specialization.name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
           currentCount += 1;
@@ -1042,7 +1018,7 @@ export default class DataImporter extends FormApplication {
           $(".specializations .import-progress-bar")
             .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          this._importLogger(`End importing Specialization ${specialization.Name}`);
+          this._importLogger(`End importing Specialization ${specialization.name}`);
         } catch (err) {
           CONFIG.logger.error(`Error importing record : `, err);
         }
@@ -1050,6 +1026,87 @@ export default class DataImporter extends FormApplication {
     }
 
     this._importLogger(`Completed Specialization Import`);
+  }
+
+  async _handlerCareers(zip) {
+    this._importLogger(`Starting Career Import`);
+
+    const careerFiles = Object.values(zip.files).filter((file) => {
+      return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/Careers/");
+    });
+
+    let totalCount = careerFiles.length;
+    let currentCount = 0;
+
+    if (careerFiles.length > 0) {
+      $(".import-progress.careers").toggleClass("import-hidden");
+      let pack = await this._getCompendiumPack("Item", `oggdude.Careers`);
+
+      await this.asyncForEach(careerFiles, async (file) => {
+        try {
+          const data = await zip.file(file.name).async("text");
+          const domparser = new DOMParser();
+          const xmlDoc = domparser.parseFromString(data, "text/xml");
+          const careerData = JXON.xmlToJs(xmlDoc);
+
+          let career = {
+            name: careerData.Career.Name,
+            type: "career",
+            flags: {
+              importid: careerData.Career.Key,
+            },
+            data: {
+              attributes: {},
+              description: careerData.Career.Description,
+            },
+          };
+          this._importLogger(`Start importing Career ${career.name}`);
+
+          careerData.Career.CareerSkills.Key.forEach((skillKey) => {
+            let skill = CONFIG.temporary.skills[skillKey];
+            if (skill) {
+              const careerKey = Object.keys(career.data.attributes).length + 1;
+              career.data.attributes[`attr${careerKey}`] = {
+                mod: skill,
+                modtype: "Career Skill",
+                value: true,
+              };
+              const skillKey = Object.keys(career.data.attributes).length + 1;
+              career.data.attributes[`attr${skillKey}`] = {
+                mod: skill,
+                modtype: "Skill Rank",
+                value: "0",
+              };
+            }
+          });
+
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find((e) => e.name === career.name);
+          if (!entry) {
+            CONFIG.logger.debug(`Importing Career - Item`);
+            compendiumItem = new Item(career, { temporary: true });
+            this._importLogger(`New Career ${career.name} : ${JSON.stringify(compendiumItem)}`);
+            pack.importEntity(compendiumItem);
+          } else {
+            CONFIG.logger.debug(`Updating Career - Item`);
+            let updateData = ImportHelpers.buildUpdateData(career);
+            updateData["_id"] = entry._id;
+            this._importLogger(`Updating Career ${career.name} : ${JSON.stringify(updateData)}`);
+            pack.updateEntity(updateData);
+          }
+          currentCount += 1;
+
+          $(".careers .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          this._importLogger(`End importing Career ${career.name}`);
+        } catch (err) {
+          this._importLogger(`Error importing record : `, err);
+          CONFIG.logger.error(`Error importing record : `, err);
+        }
+      });
+    }
   }
 
   async _getCompendiumPack(type, name) {
