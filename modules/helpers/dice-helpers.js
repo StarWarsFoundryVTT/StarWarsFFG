@@ -10,6 +10,7 @@ export default class DiceHelpers {
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
       setback: skill.setback,
+      force: skill.force,
       difficulty: 2, // default to average difficulty
     });
 
@@ -75,6 +76,7 @@ export default class DiceHelpers {
       boost: skill.boost,
       setback: skill.setback,
       remsetback: skill.remsetback,
+      force: skill.force,
     });
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 

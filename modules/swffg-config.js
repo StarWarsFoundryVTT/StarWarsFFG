@@ -303,6 +303,10 @@ FFG.mod_types = {
     "value": "Career Skill",
     "label": "SWFFG.ModTypeCareerSkill",
   },
+  "Force Boost": {
+    "value": "Force Boost",
+    "label": "SWFFG.ModTypeSkillForceBoost",
+  },
   "Skill Boost": {
     "value": "Skill Boost",
     "label": "SWFFG.ModTypeSkillBoost",
