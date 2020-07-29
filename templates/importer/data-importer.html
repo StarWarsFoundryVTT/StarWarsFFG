@@ -63,6 +63,15 @@
     </div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
+        <input type="checkbox" id="importSpecies" name="imports" value="/Species/" data-name="Species" data-type="Item" data-itemtype="species" disabled />
+        <label for="importSpecies"> {{localize "SWFFG.Species"}}</label><br />
+      </div>
+      <div class="import-progress species import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
         <input type="checkbox" id="importTalents" name="imports" value="/Talents.xml" data-name="Talents" data-type="Item" data-itemtype="talent" disabled />
         <label for="importTalents"> {{localize "SWFFG.Talents"}}</label><br />
       </div>
