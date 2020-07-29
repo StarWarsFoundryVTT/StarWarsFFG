@@ -20,11 +20,11 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/iff}} {{#iff attr.modtype '==' 'Characteristic' }} {{#each ../this.FFG.characteristics as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/iff}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") )}} {{#each ../this.FFG.skills as |t|}}
+      {{/each}} {{/iff}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") )}} {{#each ../this.FFG.skills as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{/select}}
     </select>
-    {{#if (eq attr.modtype "Career Skill")}} <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} /> {{else}}
+    {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}} <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} /> {{else}}
     <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
     {{/if}}
     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>

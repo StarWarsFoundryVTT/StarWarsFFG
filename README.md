@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 29/07/2020 - Cstadther - Added Force Boost modifier.  When added to an item, if checked, it will add the max force pool to the rendered dice pool, and include that number of force die in the roll.
 - 29/07/2020 - Cstadther - Bug Fix #270 - Fix which allows no PC characters to go above the max, however all NPCs no longer adhere to any maximum for skill rank.
 - 29/07/2020 - Cstadther - Updated data importer to populate skill boost/skill setback/skill remove setback modifiers for armor, gear, talents, and weapons.
 - 29/07/2020 - Cstadther - Added Remove Setback modifier, updated dice pool rendering display Remove Setback image, updated dice pool calculation on actor to cancel out setback dice with remove setback dice.

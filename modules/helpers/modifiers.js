@@ -45,7 +45,7 @@ export default class ModifierHelpers {
           }
           if (attrsToApply.length > 0) {
             attrsToApply.forEach((attr) => {
-              if (modtype === "Career Skill") {
+              if (modtype === "Career Skill" || modtype === "Force Boost") {
                 if (attr.value) {
                   checked = true;
                 }
@@ -70,7 +70,7 @@ export default class ModifierHelpers {
               },
             };
           });
-        if (modtype === "Career Skill") {
+        if (modtype === "Career Skill" || modtype === "Force Boost") {
           if (this.getCalculatedValueFromItems(talents, key, modtype)) {
             checked = true;
           }
@@ -80,7 +80,7 @@ export default class ModifierHelpers {
       } else {
         if (attrsToApply.length > 0) {
           attrsToApply.forEach((attr) => {
-            if (modtype === "Career Skill") {
+            if (modtype === "Career Skill" || modtype === "Force Boost") {
               if (attr.value) {
                 checked = true;
               }
@@ -99,7 +99,7 @@ export default class ModifierHelpers {
         }
       }
     });
-    if (modtype === "Career Skill") {
+    if (modtype === "Career Skill" || modtype === "Force Boost") {
       return checked;
     }
     return total;

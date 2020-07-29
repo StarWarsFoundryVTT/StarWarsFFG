@@ -293,5 +293,6 @@
   "SWFFG.DefenseMeleeLabel": "Defense (Melee)",
   "SWFFG.ModTypeCareerSkill": "Career Skill",
   "SWFFG.ModTypeSkillSetback": "Skill Setback",
-  "SWFFG.ModTypeSkillRemoveSetback": "Skill Remove Setback"
+  "SWFFG.ModTypeSkillRemoveSetback": "Skill Remove Setback",
+  "SWFFG.ModTypeSkillForceBoost": "Skill Force Boost"
 }
