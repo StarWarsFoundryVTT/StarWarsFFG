@@ -98,7 +98,7 @@ export default class ImportHelpers {
         recursiveObject(key, newItem.data[key]);
       } else {
         const datakey = `data.${key}`;
-        updateData[datakey] = `${newItem.data[key]}`;
+        updateData[datakey] = newItem.data[key];
       }
     }
     CONFIG.logger.debug(`Completed BuildUpdateData for item - ${newItem.name}`);
@@ -201,7 +201,7 @@ export default class ImportHelpers {
   static getBaseModAttributeObject(mod) {
     let type;
     let modtype;
-    let value = parseInt(mod.Count, 10);
+    let value = mod?.count ? parseInt(mod.Count, 10) : 0;
 
     if (["BR", "AG", "INT", "CUN", "WIL", "PR"].includes(mod.Key)) {
       modtype = "Characteristic";
@@ -230,6 +230,20 @@ export default class ImportHelpers {
     if (Object.keys(CONFIG.temporary.skills).includes(mod.Key)) {
       if (mod.SkillIsCareer) {
         modtype = "Career Skill";
+      } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount) {
+        modtype = "Skill Boost";
+
+        if (mod.AddSetbackCount) {
+          modtype = "Skill Setback";
+          value = parseInt(mod.AddSetbackCount, 10);
+        }
+        if (mod.SetbackCount) {
+          modtype = "Skill Remove Setback";
+          value = parseInt(mod.SetbackCount, 10);
+        }
+        if (mod.BoostCount) {
+          value = parseInt(mod.BoostCount, 10);
+        }
       } else {
         modtype = "Skill Rank";
       }
@@ -255,6 +269,26 @@ export default class ImportHelpers {
           if (attr) {
             itemAttributes[attr.type] = attr.value;
           }
+        } else if (mod.DieModifiers?.DieModifier) {
+          if (Array.isArray(mod.DieModifiers.DieModifier)) {
+            mod.DieModifiers.DieModifier.forEach((diemod) => {
+              const attr = this.getBaseModAttributeObject({
+                Key: diemod.SkillKey,
+                ...diemod,
+              });
+              if (attr) {
+                itemAttributes[attr.type] = attr.value;
+              }
+            });
+          } else {
+            const attr = this.getBaseModAttributeObject({
+              Key: mod.DieModifiers.DieModifier.SkillKey,
+              ...mod.DieModifiers.DieModifier,
+            });
+            if (attr) {
+              itemAttributes[attr.type] = attr.value;
+            }
+          }
         }
       });
     }
@@ -263,6 +297,26 @@ export default class ImportHelpers {
       const attr = this.getBaseModAttributeObject(attrs.Mod);
       if (attr) {
         itemAttributes[attr.type] = attr.value;
+      }
+    } else if (attrs?.Mod?.DieModifiers?.DieModifier) {
+      if (Array.isArray(attrs.Mod.DieModifiers.DieModifier)) {
+        attrs.Mod.DieModifiers.DieModifier.forEach((mod) => {
+          const attr = this.getBaseModAttributeObject({
+            Key: mod.SkillKey,
+            ...mod,
+          });
+          if (attr) {
+            itemAttributes[attr.type] = attr.value;
+          }
+        });
+      } else {
+        const attr = this.getBaseModAttributeObject({
+          Key: attrs.Mod.DieModifiers.DieModifier.SkillKey,
+          ...attrs.Mod.DieModifiers.DieModifier,
+        });
+        if (attr) {
+          itemAttributes[attr.type] = attr.value;
+        }
       }
     }
 

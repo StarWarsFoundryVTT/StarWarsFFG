@@ -63,6 +63,10 @@ export default class ModifierHelpers {
               type: "talent",
               data: {
                 attributes: item.data.talents[k].attributes,
+                ranks: {
+                  ranked: item.data.talents[k].isRanked,
+                  current: 1,
+                },
               },
             };
           });
