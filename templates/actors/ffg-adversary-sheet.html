@@ -174,7 +174,7 @@
           <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
             <div class="pure-u-12-24">{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (<div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>) {{/with}}</div>
             <div class="pure-u-4-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-            <div class="pure-u-4-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
+            <div class="pure-u-4-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
             <div class="pure-u-4-24"><div class="roll-button dice-pool"></div></div>
           </div>
           {{/iff}} {{/each}}
@@ -191,7 +191,7 @@
             <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
               <div class="pure-u-12-24">{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (<div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>) {{/with}}</div>
               <div class="pure-u-4-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-              <div class="pure-u-4-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
+              <div class="pure-u-4-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0"data-dtype="Number" placeholder="0" /></div>
               <div class="pure-u-4-24"><div class="roll-button dice-pool"></div></div>
             </div>
             {{/iff}} {{/each}}
@@ -207,7 +207,7 @@
             <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
               <div class="pure-u-15-24">{{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (<div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>) {{/with}}</div>
               <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-              <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" max="6" data-dtype="Number" placeholder="0" /></div>
+              <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
               <div class="pure-u-3-24"><div class="roll-button dice-pool"></div></div>
             </div>
             {{/iff}} {{/each}}
