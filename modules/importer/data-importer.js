@@ -316,14 +316,27 @@ export default class DataImporter extends FormApplication {
             const funcAddDieModifier = (mod) => {
               if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
                 // only handling boosts initially
-                if (mod.BoostCount) {
+                if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount) {
                   const skill = CONFIG.temporary.skills[mod.SkillKey];
                   const modKey = Object.keys(item.data.attributes).length + 1;
+                  let modtype = "Skill Boost";
+                  let count = 0;
+                  if (mod.AddSetbackCount) {
+                    modtype = "Skill Setback";
+                    count = mod.AddSetbackCount;
+                  }
+                  if (mod.SetbackCount) {
+                    modtype = "Skill Remove Setback";
+                    count = mod.SetbackCount;
+                  }
+                  if (mod.BoostCount) {
+                    count = mod.BoostCount;
+                  }
 
                   item.data.attributes[`attr${modKey}`] = {
                     mod: skill,
-                    modtype: "Skill Boost",
-                    value: mod.BoostCount,
+                    modtype,
+                    value: count,
                   };
                 }
               }
