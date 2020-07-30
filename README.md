@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 29/07/2020 - Cstadther - Fixes issue where Strain, Wounds, and Soak default values were not being calculated correctly.
 - 29/07/2020 - Cstadther - Updated Critical Damage and Injury sheets to allow modifiers.  Fixed Adversary sheet to allow clicking on Criticals.  Refactored criticals to a partial.
 - 29/07/2020 - Cstadther - Updated data importer to populate Force Boost modifiers on talents
 - 29/07/2020 - Cstadther - Added Force Boost modifier.  When added to an item, if checked, it will add the max force pool to the rendered dice pool, and include that number of force die in the roll.
