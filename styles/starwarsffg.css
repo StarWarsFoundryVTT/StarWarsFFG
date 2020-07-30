@@ -3457,6 +3457,13 @@ span.dietype.triumph {
   background: rgba(0, 0, 0, 0);
 }
 
+.starwarsffg .item-sheet-forcepower .talent-modifiers {
+  position: absolute;
+  right: 5px;
+  bottom: 2px;
+  z-index: 10;
+}
+
 .starwarsffg span.dietype {
   font-family: "EotESymbol", sans-serif;
   position: relative;

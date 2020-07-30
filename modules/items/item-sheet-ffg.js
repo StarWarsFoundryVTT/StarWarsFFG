@@ -224,6 +224,8 @@ export class ItemSheetFFG extends ItemSheet {
 
     if (["forcepower", "specialization"].includes(this.object.data.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
+      html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
+      html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
     }
 
     if (this.object.data.type === "specialization") {
@@ -235,8 +237,6 @@ export class ItemSheetFFG extends ItemSheet {
       });
 
       dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
-
-      html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
     }
 
     // hidden here instead of css to prevent non-editable display of edit button

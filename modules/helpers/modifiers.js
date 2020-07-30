@@ -55,27 +55,59 @@ export default class ModifierHelpers {
             });
           }
         }
-      } else if (item.type === "specialization") {
-        const talents = Object.keys(item.data.talents)
-          .filter((k) => item.data.talents[k].islearned)
-          .map((k) => {
-            return {
-              type: "talent",
-              data: {
-                attributes: item.data.talents[k].attributes,
-                ranks: {
-                  ranked: item.data.talents[k].isRanked,
-                  current: 1,
-                },
-              },
-            };
+      } else if (item.type === "forcepower" || item.type === "specialization") {
+        // apply basic force power/specialization modifiers
+        if (attrsToApply.length > 0) {
+          attrsToApply.forEach((attr) => {
+            if (modtype === "Career Skill" || modtype === "Force Boost") {
+              if (attr.value) {
+                checked = true;
+              }
+            } else {
+              total += parseInt(attr.value, 10);
+            }
           });
+        }
+        let upgrades;
+        if (item.type === "forcepower") {
+          // apply force power upgrades
+          upgrades = Object.keys(item.data.upgrades)
+            .filter((k) => item.data.upgrades[k].islearned)
+            .map((k) => {
+              return {
+                type: "talent",
+                data: {
+                  attributes: item.data.upgrades[k]?.attributes ? item.data.upgrades[k]?.attributes : {},
+                  ranks: {
+                    ranked: false,
+                    current: 1,
+                  },
+                },
+              };
+            });
+        } else if (item.type === "specialization") {
+          // apply specialization talent modifiers
+          upgrades = Object.keys(item.data.talents)
+            .filter((k) => item.data.talents[k].islearned)
+            .map((k) => {
+              return {
+                type: "talent",
+                data: {
+                  attributes: item.data.talents[k].attributes,
+                  ranks: {
+                    ranked: item.data.talents[k].isRanked,
+                    current: 1,
+                  },
+                },
+              };
+            });
+        }
         if (modtype === "Career Skill" || modtype === "Force Boost") {
-          if (this.getCalculatedValueFromItems(talents, key, modtype)) {
+          if (this.getCalculatedValueFromItems(upgrades, key, modtype)) {
             checked = true;
           }
         } else {
-          total += this.getCalculatedValueFromItems(talents, key, modtype);
+          total += this.getCalculatedValueFromItems(upgrades, key, modtype);
         }
       } else {
         if (attrsToApply.length > 0) {
@@ -164,6 +196,29 @@ export default class ModifierHelpers {
     const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.name}`;
 
     new PopoutModifiers(this.object, {
+      title,
+    }).render(true);
+  }
+
+  static async popoutModiferWindowUpgrade(event) {
+    event.preventDefault();
+    const a = event.currentTarget.parentElement;
+    const keyname = a.dataset.itemid;
+
+    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.data.data.upgrades[keyname].name}`;
+
+    const data = {
+      parent: this.object,
+      keyname,
+      data: {
+        data: {
+          ...this.object.data.data.upgrades[keyname],
+        },
+      },
+      isUpgrade: true,
+    };
+
+    new PopoutModifiers(data, {
       title,
     }).render(true);
   }

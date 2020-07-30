@@ -424,6 +424,7 @@ export default class DataImporter extends FormApplication {
               importid: fp.ForcePower.Key,
             },
             data: {
+              attributes: {},
               upgrades: {},
             },
           };
@@ -438,6 +439,51 @@ export default class DataImporter extends FormApplication {
           });
 
           power.data.description = forceAbility.Description;
+
+          const funcAddDieModifier = (mod) => {
+            if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
+              // only handling boosts initially
+              if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
+                const skill = CONFIG.temporary.skills[mod.SkillKey];
+                const modKey = Object.keys(power.data.attributes).length + 1;
+                let modtype = "Skill Boost";
+                let count = 0;
+                if (mod.AddSetbackCount) {
+                  modtype = "Skill Setback";
+                  count = mod.AddSetbackCount;
+                }
+                if (mod.SetbackCount) {
+                  modtype = "Skill Remove Setback";
+                  count = mod.SetbackCount;
+                }
+                if (mod.ForceCount) {
+                  modtype = "Force Boost";
+                  count = true;
+                }
+                if (mod.BoostCount) {
+                  count = mod.BoostCount;
+                }
+
+                power.data.attributes[`attr${modKey}`] = {
+                  mod: skill,
+                  modtype,
+                  value: count,
+                };
+              }
+            }
+          };
+
+          if (forceAbility?.DieModifiers?.DieModifier) {
+            if (Array.isArray(forceAbility.DieModifiers.DieModifier)) {
+              forceAbility.DieModifiers.DieModifier.forEach((mod) => {
+                funcAddDieModifier(mod);
+              });
+            } else {
+              if (Object.keys(CONFIG.temporary.skills).includes(forceAbility.DieModifiers.DieModifier.SkillKey)) {
+                funcAddDieModifier(forceAbility.DieModifiers.DieModifier);
+              }
+            }
+          }
 
           // next we will parse the rows
 
@@ -455,6 +501,7 @@ export default class DataImporter extends FormApplication {
                 rowAbility.description = rowAbilityData.Description;
                 rowAbility.cost = row.Costs.Cost[index];
                 rowAbility.visible = true;
+                rowAbility.attributes = {};
 
                 if (row.Directions.Direction[index].Up) {
                   rowAbility["links-top-1"] = true;
@@ -498,6 +545,51 @@ export default class DataImporter extends FormApplication {
 
                 if (row.Directions.Direction[index].Right) {
                   rowAbility["links-right"] = true;
+                }
+
+                const funcAddUpgradeDieModifier = (mod) => {
+                  if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
+                    // only handling boosts initially
+                    if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
+                      const skill = CONFIG.temporary.skills[mod.SkillKey];
+                      const modKey = Object.keys(rowAbility.attributes).length + 1;
+                      let modtype = "Skill Boost";
+                      let count = 0;
+                      if (mod.AddSetbackCount) {
+                        modtype = "Skill Setback";
+                        count = mod.AddSetbackCount;
+                      }
+                      if (mod.SetbackCount) {
+                        modtype = "Skill Remove Setback";
+                        count = mod.SetbackCount;
+                      }
+                      if (mod.ForceCount) {
+                        modtype = "Force Boost";
+                        count = true;
+                      }
+                      if (mod.BoostCount) {
+                        count = mod.BoostCount;
+                      }
+
+                      rowAbility.attributes[`attr${keyName}${modKey}`] = {
+                        mod: skill,
+                        modtype,
+                        value: count,
+                      };
+                    }
+                  }
+                };
+
+                if (rowAbilityData?.DieModifiers?.DieModifier) {
+                  if (Array.isArray(rowAbilityData.DieModifiers.DieModifier)) {
+                    rowAbilityData.DieModifiers.DieModifier.forEach((mod) => {
+                      funcAddUpgradeDieModifier(mod);
+                    });
+                  } else {
+                    if (Object.keys(CONFIG.temporary.skills).includes(rowAbilityData.DieModifiers.DieModifier.SkillKey)) {
+                      funcAddUpgradeDieModifier(rowAbilityData.DieModifiers.DieModifier);
+                    }
+                  }
                 }
 
                 const talentKey = `upgrade${(i - 1) * 4 + index}`;

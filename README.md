@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 30/07/2020 - Cstadther - Added ability to add modifiers to Force Powers and the Force Power Upgrades.  Updated imported to populate force power modifiers.
 - 29/07/2020 - Cstadther - Fixes issue where Strain, Wounds, and Soak default values were not being calculated correctly.
 - 29/07/2020 - Cstadther - Updated Critical Damage and Injury sheets to allow modifiers.  Fixed Adversary sheet to allow clicking on Criticals.  Refactored criticals to a partial.
 - 29/07/2020 - Cstadther - Updated data importer to populate Force Boost modifiers on talents
