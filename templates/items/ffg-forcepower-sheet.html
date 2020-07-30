@@ -14,6 +14,10 @@
           </div>
         </div>
         <div class="talent-actions">
+          <a class="talent-action hover" data-itemid="{{item._id}}"
+            ><i class="fas fa-cog"></i>
+            <div class="tooltip">Modifiers</div>
+          </a>
           <a class="talent-action" data-action="edit"><i class="fas fa-edit"></i></a>
           <input class="talent-hidden" name="data.isEditing" type="text" value="{{data.isEditing}}" data-dtype="Boolean" />
         </div>
@@ -25,7 +29,6 @@
   <section class="sheet-body">
     <div class="talent-grid {{#if data.isEditing}}{{else}}talent-disable-edit{{/if}}">
       {{#each data.upgrades as |upgrade key|}}
-
       <div class="talent-block talent-upgrade talent-{{#if upgrade.size}}{{upgrade.size}}{{else}}single{{/if}} {{#if upgrade.visible}}{{else}}talent-hidden{{/if}}" id="{{key}}">
         <div class="talent-background">
           <div class="talent-header">
@@ -42,6 +45,11 @@
           </div>
         </div>
         <div class="talent-cost">{{ localize "SWFFG.Cost"}}<input name="data.upgrades.{{key}}.cost" type="text" value="{{upgrade.cost}}" data-dtype="String" /></div>
+        <div class="talent-modifiers">
+          <a class="talent-action" data-itemid="{{key}}">
+            <i class="fas fa-cog"></i>
+          </a>
+        </div>
         <div class="talent-actions {{#if upgrade.canCombine}}talent-canCombine{{/if}} {{#if upgrade.canSplit}}talent-canSplit{{/if}}">
           <div class="talent-action combine hover" data-action="combine" data-key="{{key}}">
             <i class="fas fa-compress-alt"></i>
@@ -126,6 +134,9 @@
       </div>
 
       {{/each}}
+    </div>
+    <div class="hidden-content">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
   </section>
 </form>

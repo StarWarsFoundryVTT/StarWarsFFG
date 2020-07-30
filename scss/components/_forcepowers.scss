@@ -53,4 +53,10 @@
       background: rgba(0,0,0,0);
     }
   }
+  .talent-modifiers {
+    position: absolute;
+    right:5px; 
+    bottom:2px; 
+    z-index: 10;
+  }
 }

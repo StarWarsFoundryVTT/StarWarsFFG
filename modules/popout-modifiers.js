@@ -84,8 +84,18 @@ export default class PopoutModifiers extends FormApplication {
         { _id: this.object._id, "data.attributes": attributes }
       );
 
-    // Update the Item
-    await this.object.update(formData);
+    if (this.object.isUpgrade) {
+      let data = formData["data.attributes"];
+
+      let upgradeFormData = {
+        [`data.upgrades.${this.object.keyname}.attributes`]: data,
+      };
+
+      await this.object.parent.update(upgradeFormData);
+    } else {
+      // Update the Item
+      await this.object.update(formData);
+    }
     this.render();
   }
 }
