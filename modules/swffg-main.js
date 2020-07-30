@@ -499,7 +499,11 @@ Hooks.on("renderSidebarTab", (app, html, data) => {
   html.find(".roll-type-select label").click(async (event) => {
     const dicePool = new DicePoolFFG();
 
-    await DiceHelpers.displayRollDialog(game.user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+    let user = {
+      data: game.user.data,
+    };
+
+    await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
   });
 });
 
