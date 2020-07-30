@@ -384,6 +384,21 @@ export class ActorFFG extends Actor {
       const key = CONFIG.FFG.character_stats[k].value;
 
       let total = 0;
+
+      if (key === "Soak") {
+        total = data.characteristics.Brawn.value;
+      }
+      if (key === "Wounds") {
+        if (data.attributes.Wounds.value === 0) {
+          total = data.attributes.Brawn.value + ModifierHelpers.getBaseValue(actorData.items, "Brawn", "Characteristic");
+        }
+      }
+      if (key === "Strain") {
+        if (data.attributes.Strain.value === 0) {
+          total = data.attributes.Willpower.value + ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
+        }
+      }
+
       total += data.attributes[key].value;
       total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Stat");
 

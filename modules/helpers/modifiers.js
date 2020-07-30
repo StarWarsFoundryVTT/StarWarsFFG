@@ -105,6 +105,30 @@ export default class ModifierHelpers {
     return total;
   }
 
+  static getBaseValue(items, key, modtype) {
+    let total = 0;
+
+    items.forEach((item) => {
+      if (item.type === "species") {
+        const attrsToApply = Object.keys(item.data.attributes)
+          .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
+          .map((i) => item.data.attributes[i]);
+
+        if (attrsToApply.length > 0) {
+          attrsToApply.forEach((attr) => {
+            total += parseInt(attr.value, 10);
+          });
+        }
+      }
+    });
+
+    return total;
+  }
+
+  /**
+   * DOM event
+   * @param  {object} event
+   */
   static async onClickAttributeControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
@@ -129,6 +153,10 @@ export default class ModifierHelpers {
     }
   }
 
+  /**
+   * Create popout Modifiers Window
+   * @param  {object} event
+   */
   static async popoutModiferWindow(event) {
     event.preventDefault();
     const a = event.currentTarget.parentElement;
