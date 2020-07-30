@@ -783,7 +783,6 @@ export class DicePoolFFG {
       difficulty: container.querySelector('[name="difficulty"]').value,
       boost: container.querySelector('[name="boost"]').value,
       setback: container.querySelector('[name="setback"]').value,
-      remsetback: container.querySelector('[name="remsetback"]').value,
       force: container.querySelector('[name="force"]').value,
     });
   }
