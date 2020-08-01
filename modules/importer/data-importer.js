@@ -121,6 +121,7 @@ export default class DataImporter extends FormApplication {
 
       const promises = [];
       let isSpecialization = false;
+      let isVehicle = false;
 
       const skillsFileName = await this._enableImportSelection(zip.files, "Skills", false, true);
 
@@ -155,7 +156,7 @@ export default class DataImporter extends FormApplication {
             promises.push(this._handleSpecies(zip));
           }
           if (file.file.includes("/Vehicles/")) {
-            promises.push(this._handleVehicles(zip));
+            isVehicle = true;
           }
         }
       });
@@ -163,6 +164,9 @@ export default class DataImporter extends FormApplication {
       await Promise.all(promises);
       if (isSpecialization) {
         await this._handleSpecializations(zip);
+      }
+      if (isVehicle) {
+        await this._handleVehicles(zip);
       }
 
       if ($(".debug input:checked").length > 0) {
