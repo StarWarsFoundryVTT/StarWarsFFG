@@ -22,7 +22,7 @@
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
         {{/if}}
       </td>
-      <td>{{localize (lookup ../this.FFG.combat_skills_abrev item.data.skill.value)}}</td>
+      <td>{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</td>
       <td>{{item.data.damage.value}}</td>
       <td>{{localize item.data.range.label}}</td>
       <td>{{item.data.crit.value}}</td>
