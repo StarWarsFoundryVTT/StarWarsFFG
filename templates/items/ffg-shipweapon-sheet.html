@@ -63,18 +63,39 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            <div class="resource single">
+            <div class="resource double">
               <div class="attribute flex-group-center">
                 <div class="block-background">
                   <div class="block-title">
                     {{localize "SWFFG.VehicleTabFiringArc"}}
                   </div>
                   <div class="block-attribute">
-                    <select style="text-align: center;" name="data.firingarc.value">
-                      {{#select data.firingarc.value}} {{#each this.FFG.fire_arcs as |t|}}
-                      <option value="{{t.value}}">{{localize t.label}}</option>
-                      {{/each}} {{/select}}
-                    </select>
+                    <div class="grid grid-2col firing-arcs">
+                      <div>
+                        <input type="checkbox" id="data.firingarc.fore" name="data.firingarc.fore" {{checked data.firingarc.fore}} />
+                        <label for="data.firingarc.fore"> {{localize "SWFFG.VehicleFiringArcForward"}}</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="data.firingarc.aft" name="data.firingarc.aft" {{checked data.firingarc.aft}} />
+                        <label for="data.firingarc.aft"> {{localize "SWFFG.VehicleFiringArcAft"}}</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="data.firingarc.port" name="data.firingarc.port" {{checked data.firingarc.port}} />
+                        <label for="data.firingarc.port"> {{localize "SWFFG.VehicleFiringArcPort"}}</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="data.firingarc.starboard" name="data.firingarc.starboard" {{checked data.firingarc.starboard}} />
+                        <label for="data.firingarc.starboard"> {{localize "SWFFG.VehicleFiringArcStarboard"}}</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="data.firingarc.dorsal" name="data.firingarc.dorsal" {{checked data.firingarc.dorsal}} />
+                        <label for="data.firingarc.dorsal"> {{localize "SWFFG.VehicleFiringArcDorsal"}}</label>
+                      </div>
+                      <div>
+                        <input type="checkbox" id="data.firingarc.ventral" name="data.firingarc.ventral" {{checked data.firingarc.ventral}} />
+                        <label for="data.firingarc.ventral"> {{localize "SWFFG.VehicleFiringArcVentral"}}</label>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

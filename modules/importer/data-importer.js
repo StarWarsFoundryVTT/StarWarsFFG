@@ -90,6 +90,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Specializations", true);
         this._enableImportSelection(zip.files, "Careers", true);
         this._enableImportSelection(zip.files, "Species", true);
+        this._enableImportSelection(zip.files, "Vehicles", true);
       } catch (err) {
         console.error(err);
       }
@@ -152,6 +153,9 @@ export default class DataImporter extends FormApplication {
           }
           if (file.file.includes("/Species/")) {
             promises.push(this._handleSpecies(zip));
+          }
+          if (file.file.includes("/Vehicles/")) {
+            promises.push(this._handleVehicles(zip));
           }
         }
       });
@@ -357,6 +361,12 @@ export default class DataImporter extends FormApplication {
                 }
               }
             }
+          }
+
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", item.flags.importid);
+          if (imgPath) {
+            item.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
 
           let compendiumItem;
@@ -612,6 +622,12 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", power.flags.importid);
+          if (imgPath) {
+            power.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find((e) => e.name === power.name);
@@ -698,7 +714,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", importkey);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", newItem.flags.importid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -850,10 +866,7 @@ export default class DataImporter extends FormApplication {
             }
           }
 
-          if (damageAdd) {
-            if (!newItem.data.attributes) {
-              newItem.data.attributes = {};
-            }
+          if (damageAdd && parseInt(damageAdd, 10) > 0 && newItem.type === "weapon") {
             const nk = Object.keys(newItem.data.attributes).length + 1;
 
             newItem.data.attributes[`attr${nk}`] = {
@@ -865,7 +878,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", importkey);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", newItem.flags.importid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -969,7 +982,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", importkey);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", newItem.flags.importid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1111,6 +1124,12 @@ export default class DataImporter extends FormApplication {
             });
           }
 
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", specialization.flags.importid);
+          if (imgPath) {
+            specialization.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find((e) => e.name === specialization.name);
@@ -1192,6 +1211,12 @@ export default class DataImporter extends FormApplication {
               };
             }
           });
+
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", career.flags.importid);
+          if (imgPath) {
+            career.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          }
 
           let compendiumItem;
           await pack.getIndex();
@@ -1290,6 +1315,12 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          // does an image exist?
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", species.flags.importid);
+          if (imgPath) {
+            species.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          }
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find((e) => e.name === species.name);
@@ -1311,6 +1342,215 @@ export default class DataImporter extends FormApplication {
             .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing Species ${species.name}`);
+        } catch (err) {
+          this._importLogger(`Error importing record : `, err);
+          CONFIG.logger.error(`Error importing record : `, err);
+        }
+      });
+    }
+  }
+
+  async _handleVehicles(zip) {
+    this._importLogger(`Starting Vehicles Import`);
+
+    const vehicleFiles = Object.values(zip.files).filter((file) => {
+      return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/Vehicles/");
+    });
+
+    let totalCount = vehicleFiles.length;
+    let currentCount = 0;
+
+    if (vehicleFiles.length > 0) {
+      $(".import-progress.vehicles").toggleClass("import-hidden");
+      let packSpace = await this._getCompendiumPack("Actor", `oggdude.Vehicles.Space`);
+      let packPlanetary = await this._getCompendiumPack("Actor", `oggdude.Vehicles.Planetary`);
+
+      const isSpace = (vehicle) => {
+        let result = false;
+
+        const spacecategories = ["Starship", "Non-Fighter Starship", "Capital Ship", "Bulk Transport", "Station", "Medium Transport"];
+
+        const spacetypes = ["Space-dwelling Creature", "Hyperdrive Sled", "Hyperdrive Docking Ring"];
+
+        if (vehicle?.Vehicle?.Categories?.Category) {
+          if (Array.isArray(vehicle.Vehicle.Categories.Category)) {
+            vehicle.Vehicle.Categories.Category.forEach((cat) => {
+              if (spacecategories.includes(cat)) {
+                result = true;
+              }
+            });
+          } else {
+            if (spacecategories.includes(vehicle.Vehicle.Categories.Category)) {
+              result = true;
+            }
+          }
+        } else {
+          if (vehicle.Vehicle.Type) {
+            if (spacetypes.includes(vehicle.Vehicle.Type)) {
+              result = true;
+            }
+          }
+        }
+
+        return result;
+      };
+
+      await this.asyncForEach(vehicleFiles, async (file) => {
+        try {
+          const data = await zip.file(file.name).async("text");
+          const domparser = new DOMParser();
+          const xmlDoc = domparser.parseFromString(data, "text/xml");
+          const vehicleData = JXON.xmlToJs(xmlDoc);
+
+          let sensorRange;
+
+          switch (vehicleData.Vehicle.SensorRangeValue) {
+            case "srClose":
+              sensorRange = "Close";
+              break;
+            case "srShort":
+              sensorRange = "Short";
+              break;
+            case "srMedium":
+              sensorRange = "Medium";
+              break;
+            case "srLong":
+              sensorRange = "Long";
+              break;
+            case "srExtreme":
+              sensorRange = "Extreme";
+              break;
+            default:
+              sensorRange = "None";
+          }
+
+          let vehicle = {
+            name: vehicleData.Vehicle.Name,
+            type: "vehicle",
+            flags: {
+              importid: vehicleData.Vehicle.Key,
+            },
+            data: {
+              biography: vehicleData.Vehicle.Description,
+              stats: {
+                silhouette: {
+                  value: parseInt(vehicleData.Vehicle.Silhouette, 10),
+                },
+                speed: {
+                  max: parseInt(vehicleData.Vehicle.Speed, 10),
+                },
+                handling: {
+                  value: parseInt(vehicleData.Vehicle.Handling, 10),
+                },
+                hullTrauma: {
+                  max: parseInt(vehicleData.Vehicle.HullTrauma, 10),
+                },
+                systemStrain: {
+                  max: parseInt(vehicleData.Vehicle.SystemStrain, 10),
+                },
+                shields: {
+                  fore: parseInt(vehicleData.Vehicle.DefFore, 10),
+                  port: parseInt(vehicleData.Vehicle.DefPort, 10),
+                  starboard: parseInt(vehicleData.Vehicle.DefStarboard, 10),
+                  aft: parseInt(vehicleData.Vehicle.DefAft, 10),
+                },
+                armour: {
+                  value: parseInt(vehicleData.Vehicle.Armor, 10),
+                },
+                sensorRange: {
+                  value: sensorRange,
+                },
+                crew: {},
+                passengerCapacity: {
+                  value: parseInt(vehicleData.Vehicle.Passengers, 10),
+                },
+                encumbrance: {
+                  max: parseInt(vehicleData.Vehicle.Encumbrance, 10),
+                },
+                cost: {
+                  value: parseInt(vehicleData.Vehicle.Price, 10),
+                },
+                rarity: {
+                  value: parseInt(vehicleData.Vehicle.Rarity, 10),
+                },
+                customizationHardPoints: {
+                  value: parseInt(vehicleData.Vehicle.HP, 10),
+                },
+                hyperdrive: {
+                  value: parseInt(vehicleData.Vehicle.HyperdrivePrimary, 10),
+                },
+                consumables: {
+                  value: 1,
+                  duration: "months",
+                },
+              },
+            },
+            items: [],
+          };
+
+          const funcAddWeapon = async (weapon) => {
+            try {
+              let weaponData = JSON.parse(JSON.stringify(await ImportHelpers.findCompendiumEntityByImportId("Item", weapon.Key)));
+
+              for (let i = 0; i < parseInt(weapon.Count, 10); i += 1) {
+                if (!weaponData.data.firingarc) {
+                  weaponData.data.firingarc = {};
+                }
+                weaponData.data.firingarc.fore = weapon.FiringArcs.Fore === "true" ? true : false;
+                weaponData.data.firingarc.aft = weapon.FiringArcs.Aft === "true" ? true : false;
+                weaponData.data.firingarc.port = weapon.FiringArcs.Port === "true" ? true : false;
+                weaponData.data.firingarc.starboard = weapon.FiringArcs.Starboard === "true" ? true : false;
+                weaponData.data.firingarc.dorsal = weapon.FiringArcs.Dorsal === "true" ? true : false;
+                weaponData.data.firingarc.ventral = weapon.FiringArcs.Ventral === "true" ? true : false;
+              }
+            } catch (err) {
+              CONFIG.logger.warn(`Unable to locate weapon ${weapon.Key} while import ${vehicle.name}`);
+              this._importLogger(`Unable to locate weapon ${weapon.Key} for ${vehicle.name}`);
+            }
+          };
+
+          if (vehicleData.Vehicle.VehicleWeapons?.VehicleWeapon) {
+            const temp = new Actor(vehicle, { temporary: true });
+            if (Array.isArray(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon)) {
+              await this.asyncForEach(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon, async (weapon) => {
+                await funcAddWeapon(weapon);
+              });
+            } else {
+              await funcAddWeapon(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon);
+            }
+          }
+
+          let pack;
+          if (isSpace(vehicleData)) {
+            pack = packSpace;
+          } else {
+            pack = packPlanetary;
+          }
+
+          let compendiumItem;
+          let actor;
+          await pack.getIndex();
+          let entry = pack.index.find((e) => e.name === vehicle.name);
+          if (!entry) {
+            CONFIG.logger.debug(`Importing Vehicles - Actor`);
+            compendiumItem = new Actor(vehicle, { temporary: true });
+            this._importLogger(`New Vehicles ${vehicle.name} : ${JSON.stringify(compendiumItem)}`);
+            actor = await pack.importEntity(compendiumItem);
+          } else {
+            CONFIG.logger.debug(`Updating Vehicles - Actor`);
+            let updateData = ImportHelpers.buildUpdateData(vehicle);
+            updateData["_id"] = entry._id;
+            this._importLogger(`Updating Vehicles ${vehicle.name} : ${JSON.stringify(updateData)}`);
+            await pack.updateEntity(updateData);
+            actor = await game.actors.get(entry._id);
+          }
+
+          currentCount += 1;
+
+          $(".vehicles .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          this._importLogger(`End importing Vehicles ${vehicle.name}`);
         } catch (err) {
           this._importLogger(`Error importing record : `, err);
           CONFIG.logger.error(`Error importing record : `, err);

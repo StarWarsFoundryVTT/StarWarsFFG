@@ -179,7 +179,9 @@
               {{item.name}}
               <div class="tooltip">{{{item.safe_desc}}}</div>
             </td>
-            <td>{{localize item.data.firingarc.label}}</td>
+            <td>
+              {{#if (eq item.data.firingarc.fore true)}}{{localize "SWFFG.VehicleFiringArcForward"}}{{/if}} {{#if (eq item.data.firingarc.aft true)}}{{localize "SWFFG.VehicleFiringArcAft"}}{{/if}} {{#if (eq item.data.firingarc.port true)}}{{localize "SWFFG.VehicleFiringArcPort"}}{{/if}} {{#if (eq item.data.firingarc.starboard true)}}{{localize "SWFFG.VehicleFiringArcStarboard"}}{{/if}} {{#if (eq item.data.firingarc.dorsal true)}}{{localize "SWFFG.VehicleFiringArcDorsal"}}{{/if}} {{#if (eq item.data.firingarc.ventral true)}}{{localize "SWFFG.VehicleFiringArcVentral"}}{{/if}}
+            </td>
             <td>{{item.data.damage.value}}</td>
             <td>{{localize item.data.range.label}}</td>
             <td>{{item.data.crit.value}}</td>
@@ -264,6 +266,7 @@
               <div class="block-attribute">
                 <select style="text-align: center;" name="data.stats.hyperdrive.value">
                   {{#select data.stats.hyperdrive.value}}
+                  <option value="0">0</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>

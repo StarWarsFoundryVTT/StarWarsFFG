@@ -294,5 +294,6 @@
   "SWFFG.ModTypeCareerSkill": "Career Skill",
   "SWFFG.ModTypeSkillSetback": "Skill Setback",
   "SWFFG.ModTypeSkillRemoveSetback": "Skill Remove Setback",
-  "SWFFG.ModTypeSkillForceBoost": "Skill Force Boost"
+  "SWFFG.ModTypeSkillForceBoost": "Skill Force Boost",
+  "SWFFG.ItemsVehicles": "Vehicles"
 }

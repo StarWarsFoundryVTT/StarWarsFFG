@@ -399,15 +399,15 @@ FFG.difficulty = {
 
 FFG.vehicle_consumable_range = {
   "days": {
-    value: 0,
+    value: "days",
     label: "SWFFG.Days",
   },
   "months": {
-    value: 0,
+    value: "months",
     label: "SWFFG.Months",
   },
   "years": {
-    value: 0,
+    value: "years",
     label: "SWFFG.Years",
   },
 };

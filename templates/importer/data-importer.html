@@ -81,6 +81,15 @@
     </div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
+        <input type="checkbox" id="importVehicles" name="imports" value="/Vehicles/" data-name="Vehicles" data-type="Actor" data-itemtype="vehicle" disabled />
+        <label for="importVehicles"> {{localize "SWFFG.ItemsVehicles"}}</label><br />
+      </div>
+      <div class="import-progress vehicles import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
         <input type="checkbox" id="importWeapons" name="imports" value="/Weapons.xml" data-name="Weapons" data-type="Item" data-itemtype="weapon" disabled />
         <label for="importWeapons"> {{localize "SWFFG.ItemsWeapons"}}</label><br />
       </div>
