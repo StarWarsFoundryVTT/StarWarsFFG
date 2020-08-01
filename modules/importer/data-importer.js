@@ -142,7 +142,7 @@ export default class DataImporter extends FormApplication {
           promises.push(this._handleGear(xmlDoc, zip));
           promises.push(this._handleWeapons(xmlDoc, zip));
           promises.push(this._handleArmor(xmlDoc, zip));
-          promises.push(this._handleTalents(xmlDoc));
+          promises.push(this._handleTalents(xmlDoc, zip));
           promises.push(this._handleForcePowers(xmlDoc, zip));
         } else {
           if (file.file.includes("/Specializations/")) {
@@ -220,7 +220,7 @@ export default class DataImporter extends FormApplication {
     }
   }
 
-  async _handleTalents(xmlDoc) {
+  async _handleTalents(xmlDoc, zip) {
     this._importLogger(`Starting Talent Import`);
     const talents = xmlDoc.getElementsByTagName("Talent");
     if (talents.length > 0) {
