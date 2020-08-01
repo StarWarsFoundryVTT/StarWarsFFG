@@ -124,11 +124,11 @@ export default class ImportHelpers {
    * @returns {object} - Entity Object Data
    */
   static async findCompendiumEntityById(type, id) {
-    let packs = await game.packs.keys();
-
     let entity;
 
-    for (let packId of packs) {
+    let packs = Array.from(await game.packs.keys());
+    for (let i = 0; i < packs.length; i += 1) {
+      let packId = packs[i];
       const pack = await game.packs.get(packId);
       if (pack.entity === type) {
         await pack.getIndex();
@@ -146,27 +146,45 @@ export default class ImportHelpers {
    * @param  {string} id - Entity Id
    * @returns {object} - Entity Object Data
    */
-  static async findCompendiumEntityByImportId(type, id) {
-    let packs = await game.packs.keys();
-
-    for (let packId of packs) {
-      if (!CONFIG.temporary[packId]) {
-        const pack = await game.packs.get(packId);
+  static async findCompendiumEntityByImportId(type, id, packId) {
+    const cachePack = async (packid) => {
+      if (!CONFIG.temporary[packid]) {
+        const pack = await game.packs.get(packid);
         if (pack.entity === type && !pack.locked) {
-          CONFIG.logger.debug(`Caching pack content ${packId}`);
-          CONFIG.temporary[packId] = {};
+          CONFIG.logger.debug(`Caching pack content ${packid}`);
+          CONFIG.temporary[packid] = {};
 
           const content = await pack.getContent();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packId][content[i].data.flags.importid] = content[i];
+            CONFIG.temporary[packid][content[i].data.flags.importid] = content[i];
           }
         }
       } else {
-        CONFIG.logger.debug(`Using cached content for ${packId}`);
+        CONFIG.logger.debug(`Using cached content for ${packid}`);
       }
-      if (CONFIG.temporary?.[packId]?.[id]) {
-        return CONFIG.temporary[packId][id];
+
+      if (CONFIG.temporary?.[packid]?.[id]) {
+        return packid;
       }
+      return undefined;
+    };
+
+    let packname;
+    if (!packId) {
+      let packs = Array.from(await game.packs.keys());
+
+      await this.asyncForEach(packs, async (packid) => {
+        const temppackname = await cachePack(packid);
+        if (temppackname) {
+          packname = temppackname;
+        }
+      });
+    } else {
+      packname = await cachePack(packId);
+    }
+
+    if (packname) {
+      return CONFIG.temporary[packname][id];
     }
 
     return undefined;
@@ -322,4 +340,10 @@ export default class ImportHelpers {
 
     return itemAttributes;
   }
+
+  static asyncForEach = async (array, callback) => {
+    for (let index = 0; index < array.length; index += 1) {
+      await callback(array[index], index, array);
+    }
+  };
 }

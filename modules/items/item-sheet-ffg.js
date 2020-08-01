@@ -253,6 +253,9 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
+    if (this.object.isOwned && this.object.actor?.compendium?.metadata) {
+      return;
+    }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
     if (this.object.data.type === "weapon" && (formData["data.skill.value"] === "Melee" || formData["data.skill.value"] === "Brawl")) {

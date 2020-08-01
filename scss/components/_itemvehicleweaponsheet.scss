@@ -236,4 +236,28 @@
     }
   }
   
+  .firing-arcs {
+    gap: 0px;
+    text-align: left;
+    padding: 0 10px;
+    line-height: 20px;
+
+    label {
+      display: inline-block;
+      padding-left: 15px;
+      text-indent: -15px;
+      font-size: .675rem;
+    }
+    
+    input[type="checkbox"] {
+    
+      position: relative;
+      padding: 0;
+      margin: 0;
+      width: 13px;
+      height: 13px;
+    }
+
+  }
+  
 }

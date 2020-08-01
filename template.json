@@ -629,9 +629,12 @@
       "templates": ["core", "basic", "hardpoints", "equippable"],
       "label": "Ship Weapon",
       "firingarc": {
-        "value": "Fore",
-        "type": "String",
-        "label": "Skill"
+        "fore": false,
+        "aft": false,
+        "port": false,
+        "starboard": false,
+        "dorsal": false,
+        "ventral": false
       },
       "damage": {
         "value": 0,
