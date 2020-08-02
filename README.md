@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 01/08/2020 - Cstadther - Bug Fix #283 - Updated code to add custom skills to list, and sort them properly by abbreviation.
 - 01/08/2020 - Cstadther - Added oggdude dataset import for vehicles.
 - 30/07/2020 - Cstadther - Fix for issue where Remove Setback was incorrectly trying to be added to the dice pool.
 - 30/07/2020 - Cstadther - Added ability to add modifiers to Force Powers and the Force Power Upgrades.  Updated imported to populate force power modifiers.
