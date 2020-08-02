@@ -3985,3 +3985,17 @@ span.dietype.triumph {
 .starwarsffg .item-sheet-career .tabs .item {
   line-height: 15px;
 }
+
+.og-character-import {
+  min-width: 96%;
+}
+
+.og-character-import h4 {
+  min-width: 70%;
+  text-align: center;
+}
+
+.og-character-import button {
+  min-width: 48%;
+  margin: 5px 2px;
+}

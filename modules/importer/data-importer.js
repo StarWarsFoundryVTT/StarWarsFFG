@@ -1506,6 +1506,8 @@ export default class DataImporter extends FormApplication {
                 weaponData.data.firingarc.starboard = weapon.FiringArcs.Starboard === "true" ? true : false;
                 weaponData.data.firingarc.dorsal = weapon.FiringArcs.Dorsal === "true" ? true : false;
                 weaponData.data.firingarc.ventral = weapon.FiringArcs.Ventral === "true" ? true : false;
+
+                vehicle.items.push(weaponData);
               }
             } catch (err) {
               CONFIG.logger.warn(`Unable to locate weapon ${weapon.Key} while import ${vehicle.name}`);
