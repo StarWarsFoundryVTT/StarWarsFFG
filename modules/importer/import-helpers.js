@@ -680,6 +680,63 @@ export default class ImportHelpers {
     character.items.push(species);
     character.items.push(career);
 
+    if (characterData.Character?.Weapons?.CharWeapon) {
+      if (Array.isArray(characterData.Character.Weapons.CharWeapon)) {
+        await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
+          const weapon = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
+          if (weapon) {
+            character.items.push(weapon);
+          }
+        });
+      } else {
+        const weapon = await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey);
+        if (weapon) {
+          character.items.push(weapon);
+        }
+      }
+    }
+
+    if (characterData.Character?.Armor?.CharArmor) {
+      if (Array.isArray(characterData.Character.Armor.CharArmor)) {
+        await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
+          const armor = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
+          if (armor) {
+            character.items.push(armor);
+          }
+        });
+      } else {
+        const armor = await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey);
+        if (armor) {
+          character.items.push(armor);
+        }
+      }
+    }
+
+    if (characterData.Character?.Gear?.CharGear) {
+      if (Array.isArray(characterData.Character.Gear.CharGear)) {
+        await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
+          const gear = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
+          if (gear) {
+            character.items.push(gear);
+          }
+        });
+      } else {
+        const gear = await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey);
+        if (gear) {
+          character.items.push(gear);
+        }
+      }
+    }
+
+    const serverPath = `worlds/${game.world.id}/images/characters`;
+    await ImportHelpers.verifyPath("data", serverPath);
+
+    const imge = characterData.Character.Portrait;
+    const img = this.b64toBlob(imge);
+    const i = new File([img], `${characterData.Character.Key}.png`);
+    await FilePicker.upload("data", serverPath, i, { bucket: null });
+    character.img = `${serverPath}/${characterData.Character.Key}.png`;
+
     const exists = game.data.actors.find((actor) => actor.flags.importid === characterData.Character.Key);
     if (exists) {
       let updateData = ImportHelpers.buildUpdateData(vehicle);
@@ -722,4 +779,28 @@ export default class ImportHelpers {
       }
     ).render(true);
   }
+
+  static b64toBlob = (b64Data, contentType, sliceSize) => {
+    contentType = contentType || "";
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      var byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  };
 }
