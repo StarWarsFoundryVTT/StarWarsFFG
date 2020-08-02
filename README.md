@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 02/08/2020 - Cstadther - OggDude Character Import.  You can now import characters from an OggDude export.  The button is located on the Actor tab on the right.
 - 01/08/2020 - Cstadther - Bug Fix #283 - Updated code to add custom skills to list, and sort them properly by abbreviation.
 - 01/08/2020 - Cstadther - Added oggdude dataset import for vehicles.
 - 30/07/2020 - Cstadther - Fix for issue where Remove Setback was incorrectly trying to be added to the dice pool.
