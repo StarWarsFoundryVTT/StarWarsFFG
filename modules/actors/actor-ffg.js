@@ -19,6 +19,40 @@ export class ActorFFG extends Actor {
     // Make separate methods for each Actor type (character, minion, etc.) to keep
     // things organized.
 
+    // if the actor has skills, add custom skills and sort by abbreviation
+    if (data.skills) {
+      const actorSkills = {};
+      Object.keys(data.skills)
+        .filter((skill) => {
+          return data.skills[skill].custom;
+        })
+        .forEach((skill) => {
+          actorSkills[skill] = {
+            value: skill,
+            abrev: data.skills[skill].label,
+            label: data.skills[skill].label,
+            custom: data.skills[skill].custom,
+          };
+        });
+
+      const skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
+      mergeObject(skills, actorSkills);
+
+      const sorted = Object.keys(skills).sort(function (a, b) {
+        const x = game.i18n.localize(skills[a].abrev);
+        const y = game.i18n.localize(skills[b].abrev);
+
+        return x < y ? -1 : x > y ? 1 : 0;
+      });
+
+      let ordered = {};
+      sorted.forEach((skill) => {
+        ordered[skill] = skills[skill];
+      });
+
+      CONFIG.FFG.skills = ordered;
+    }
+
     this._prepareSharedData(actorData);
     if (actorData.type === "minion") this._prepareMinionData(actorData);
     if (actorData.type === "character") this._prepareCharacterData(actorData);
