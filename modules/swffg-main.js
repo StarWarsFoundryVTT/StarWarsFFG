@@ -23,6 +23,7 @@ import TemplateHelpers from "./helpers/partial-templates.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
+import ImportHelpers from "./importer/import-helpers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -504,6 +505,21 @@ Hooks.on("renderSidebarTab", (app, html, data) => {
     };
 
     await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+  });
+});
+
+Hooks.on("renderActorDirectory", (app, html, data) => {
+  // add character import button
+  const div = $(`<div class="og-character-import"></div>`);
+  const divider = $("<hr><h4>OggDude Import</h4>");
+  const characterImportButton = $('<button class="og-character">Character</button>');
+  div.append(divider, characterImportButton);
+
+  html.find(".directory-footer").append(div);
+
+  html.find(".og-character").click(async (event) => {
+    event.preventDefault();
+    await ImportHelpers.characterImportDialog();
   });
 });
 

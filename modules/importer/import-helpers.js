@@ -169,6 +169,12 @@ export default class ImportHelpers {
       return undefined;
     };
 
+    // first try finding item by import id in normal items
+    const item = this.findEntityByImportId("items", id);
+    if (item) {
+      return item;
+    }
+
     let packname;
     if (!packId) {
       let packs = Array.from(await game.packs.keys());
@@ -345,5 +351,456 @@ export default class ImportHelpers {
     for (let index = 0; index < array.length; index += 1) {
       await callback(array[index], index, array);
     }
+  };
+
+  static async characterImport(data) {
+    const domparser = new DOMParser();
+    const xmlDoc = domparser.parseFromString(data, "text/xml");
+    const characterData = JXON.xmlToJs(xmlDoc);
+
+    if (!CONFIG.temporary) {
+      CONFIG.temporary = {};
+    }
+
+    console.log(characterData);
+
+    let character = {
+      name: characterData.Character.Description.CharName,
+      type: "character",
+      flags: {
+        importid: characterData.Character.Key,
+      },
+      data: {
+        characteristics: {
+          "Brawn": {
+            "value": 0,
+          },
+          "Agility": {
+            "value": 0,
+          },
+          "Intellect": {
+            "value": 0,
+          },
+          "Cunning": {
+            "value": 0,
+          },
+          "Willpower": {
+            "value": 0,
+          },
+          "Presence": {
+            "value": 0,
+          },
+        },
+        skills: {
+          "Astrogation": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "ASTRO",
+          },
+          "Athletics": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "ATHL",
+          },
+          "Brawl": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "BRAWL",
+          },
+          "Charm": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "CHARM",
+          },
+          "Coercion": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "COERC",
+          },
+          "Computers": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "COMP",
+          },
+          "Cool": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "COOL",
+          },
+          "Coordination": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "COORD",
+          },
+          "Deception": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "DECEP",
+          },
+          "Discipline": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "DISC",
+          },
+          "Gunnery": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "GUNN",
+          },
+          "Leadership": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "LEAD",
+          },
+          "Lightsaber": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "LTSABER",
+          },
+          "Mechanics": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "MECH",
+          },
+          "Medicine": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "MED",
+          },
+          "Melee": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "MELEE",
+          },
+          "Negotiation": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "NEG",
+          },
+          "Perception": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "PERC",
+          },
+          "Piloting: Planetary": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "PILOTPL",
+          },
+          "Piloting: Space": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "PILOTSP",
+          },
+          "Ranged: Heavy": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "RANGHVY",
+          },
+          "Ranged: Light": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "RANGLT",
+          },
+          "Resilience": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "RESIL",
+          },
+          "Skulduggery": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "SKUL",
+          },
+          "Stealth": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "STEAL",
+          },
+          "Streetwise": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "SW",
+          },
+          "Survival": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "SURV",
+          },
+          "Vigilance": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "VIGIL",
+          },
+          "Knowledge: Core Worlds": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "CORE",
+          },
+          "Knowledge: Education": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "EDU",
+          },
+          "Knowledge: Lore": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "LORE",
+          },
+          "Knowledge: Outer Rim": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "OUT",
+          },
+          "Knowledge: Underworld": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "UND",
+          },
+          "Knowledge: Warfare": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "WARF",
+          },
+          "Knowledge: Xenology": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "XEN",
+          },
+          "Cybernetics": {
+            "rank": 0,
+            "careerskill": false,
+            "Key": "CYBERNETICS",
+            "custom": true,
+          },
+        },
+        stats: {
+          forcePool: {
+            max: 0,
+          },
+          credits: {
+            value: parseInt(characterData.Character.Credits, 10),
+          },
+        },
+        experience: {
+          total: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks, 10),
+          available: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks, 10) - parseInt(characterData.Character.Experience.ExperienceRanks.UsedExperience, 10),
+        },
+      },
+      items: [],
+    };
+
+    characterData.Character.Characteristics.CharCharacteristic.forEach((char) => {
+      if (char.Rank?.PurchasedRanks) {
+        character.data.characteristics[char.Name].value = parseInt(char.Rank.PurchasedRanks, 10);
+      }
+    });
+
+    const skills = characterData.Character.Skills.CharSkill.filter((skill) => skill.Rank?.PurchasedRanks || skill.isCareer === "true");
+
+    skills.forEach((skill) => {
+      let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === skill.Key);
+
+      if (skill.isCareer) {
+        character.data.skills[charSkill].careerskill = true;
+      }
+      if (skill.Rank?.PurchasedRanks) {
+        character.data.skills[charSkill].rank = parseInt(skill.Rank.PurchasedRanks, 10);
+      }
+    });
+
+    const forcepowers = characterData.Character.ForcePowers.CharForcePower.filter((power) => {
+      if (power.ForceAbilities.CharForceAbility.find((fa) => fa.Purchased === "true")) {
+        return true;
+      }
+      return false;
+    });
+
+    const species = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey)));
+    const career = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.CareerKey)));
+    const specialization = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.StartingSpecKey)));
+
+    characterData.Character.Career.CareerSkills.Key.forEach((key) => {
+      let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
+      let attrId = Object.keys(career.data.attributes).find((attr) => career.data.attributes[attr].modtype === "Skill Rank" && career.data.attributes[attr].mod === charSkill);
+
+      career.data.attributes[attrId].value += 1;
+    });
+
+    characterData.Character.Career.CareerSpecSkills.Key.forEach((key) => {
+      let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
+      let attrId = Object.keys(specialization.data.attributes).find((attr) => specialization.data.attributes[attr].modtype === "Skill Rank" && specialization.data.attributes[attr].mod === charSkill);
+
+      specialization.data.attributes[attrId].value += 1;
+    });
+
+    if (Array.isArray(characterData.Character.Specializations.CharSpecialization)) {
+      await this.asyncForEach(characterData.Character.Specializations.CharSpecialization, async (spec) => {
+        if (spec.isStartingSpec && spec.isStartingSpec === "true") {
+          for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
+            if (spec.Talents.CharTalent[i].Purchased) {
+              specialization.data.talents[`talent${i}`].islearned = true;
+            }
+          }
+          character.items.push(specialization);
+        } else {
+          const newspec = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", spec.Key)));
+          if (newspec) {
+            for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
+              if (spec.Talents.CharTalent[i].Purchased) {
+                newspec.data.talents[`talent${i}`].islearned = true;
+              }
+            }
+
+            character.items.push(newspec);
+          }
+        }
+      });
+    } else {
+      for (let i = 0; i < characterData.Character.Specializations.CharSpecialization.Talents.CharTalent.length; i += 1) {
+        if (characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].Purchased) {
+          specialization.data.talents[`talent${i}`].islearned = true;
+        }
+      }
+      character.items.push(specialization);
+    }
+
+    await this.asyncForEach(forcepowers, async (power) => {
+      const force = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", power.Key)));
+
+      for (let i = 4; i < power.ForceAbilities.CharForceAbility.length; i += 1) {
+        if (power.ForceAbilities.CharForceAbility[i].Purchased) {
+          force.data.upgrades[`upgrade${i - 4}`].islearned = true;
+        }
+      }
+
+      character.items.push(force);
+    });
+
+    character.items.push(species);
+    character.items.push(career);
+
+    if (characterData.Character?.Weapons?.CharWeapon) {
+      if (Array.isArray(characterData.Character.Weapons.CharWeapon)) {
+        await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
+          const weapon = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
+          if (weapon) {
+            character.items.push(weapon);
+          }
+        });
+      } else {
+        const weapon = await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey);
+        if (weapon) {
+          character.items.push(weapon);
+        }
+      }
+    }
+
+    if (characterData.Character?.Armor?.CharArmor) {
+      if (Array.isArray(characterData.Character.Armor.CharArmor)) {
+        await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
+          const armor = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
+          if (armor) {
+            character.items.push(armor);
+          }
+        });
+      } else {
+        const armor = await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey);
+        if (armor) {
+          character.items.push(armor);
+        }
+      }
+    }
+
+    if (characterData.Character?.Gear?.CharGear) {
+      if (Array.isArray(characterData.Character.Gear.CharGear)) {
+        await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
+          const gear = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
+          if (gear) {
+            character.items.push(gear);
+          }
+        });
+      } else {
+        const gear = await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey);
+        if (gear) {
+          character.items.push(gear);
+        }
+      }
+    }
+
+    const serverPath = `worlds/${game.world.id}/images/characters`;
+    await ImportHelpers.verifyPath("data", serverPath);
+
+    const imge = characterData.Character.Portrait;
+    const img = this.b64toBlob(imge);
+    const i = new File([img], `${characterData.Character.Key}.png`);
+    await FilePicker.upload("data", serverPath, i, { bucket: null });
+    character.img = `${serverPath}/${characterData.Character.Key}.png`;
+
+    const exists = game.data.actors.find((actor) => actor.flags.importid === characterData.Character.Key);
+    if (exists) {
+      let updateData = ImportHelpers.buildUpdateData(vehicle);
+      updateData["_id"] = exists._id;
+      await Actor.update(updateData);
+    } else {
+      await Actor.create(character);
+    }
+
+    delete CONFIG.temporary;
+
+    console.log(character);
+  }
+
+  static async characterImportDialog() {
+    new Dialog(
+      {
+        title: `Import Character`,
+        content: await renderTemplate("systems/starwarsffg/templates/actors/dialogs/ffg-import-data.html", { entity: this.entity, name: this.name }),
+        buttons: {
+          import: {
+            icon: '<i class="fas fa-file-import"></i>',
+            label: "Import",
+            callback: async (html) => {
+              const form = html.find("form")[0];
+              if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
+              const text = await readTextFromFile(form.data.files[0]);
+              await this.characterImport(text);
+            },
+          },
+          no: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel",
+          },
+        },
+        default: "import",
+      },
+      {
+        width: 400,
+      }
+    ).render(true);
+  }
+
+  static b64toBlob = (b64Data, contentType, sliceSize) => {
+    contentType = contentType || "";
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      var byteNumbers = new Array(slice.length);
+      for (var i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      var byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    var blob = new Blob(byteArrays, { type: contentType });
+    return blob;
   };
 }
