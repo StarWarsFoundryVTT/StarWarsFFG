@@ -246,13 +246,17 @@ span.dietype.triumph {
 .starwarsffg.sheet .sheet-body {
   border: 0;
   min-height: 100px;
-  height: calc(100% - 19em);
+  height: calc(100% - 17em);
   overflow: auto;
 }
 
 .starwarsffg.sheet .sheet-body.vehicle {
   height: calc(100% - 29rem);
   overflow: auto;
+}
+
+.starwarsffg.sheet .sheet-body.minion {
+  height: calc(100% - 17.5em);
 }
 
 .starwarsffg.sheet .sheet-body .tab {

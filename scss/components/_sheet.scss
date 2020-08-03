@@ -11,11 +11,14 @@
   .sheet-body {
     border: 0;
     min-height: 100px;
-    height: calc(100% - 19em);
+    height: calc(100% - 17em);
     overflow: auto;
     &.vehicle {
       height: calc(100% - 29rem);
       overflow: auto;
+    }
+    &.minion {
+      height: calc(100% - 17.5em);
     }
     // &.small {
     //   height: calc(100% - 25rem);

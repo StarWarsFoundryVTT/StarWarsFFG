@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 03/08/2020 - Esrin - Reduced dead space at the bottom of the character and minion sheet-body area.
 - 03/08/2020 - Esrin - Added left click / right click instruction text to roll dialog.
 - 03/08/2020 - Esrin - Added item description tooltip to critical injuries on character sheets.
 - 02/08/2020 - Cstadther - OggDude Character Import. You can now import characters from an OggDude export. The button is located on the Actor tab on the right.
