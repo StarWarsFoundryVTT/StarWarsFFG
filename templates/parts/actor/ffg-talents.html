@@ -12,7 +12,7 @@
     <tr class="item specialization-talent-item" data-item-id="{{item.itemId}}">
       <td class="item-name hover">
         {{item.name}}
-        <div class="tooltip">{{{item.safe_desc}}}</div>
+        <div class="tooltip">{{{renderDiceTags item.description}}}</div>
       </td>
       <td>{{localize item.activationLabel}}</td>
       <td>{{item.rank}}</td>
