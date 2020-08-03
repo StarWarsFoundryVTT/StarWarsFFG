@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 03/08/2020 - Esrin - Added left click / right click instruction text to roll dialog.
 - 03/08/2020 - Esrin - Added item description tooltip to critical injuries on character sheets.
 - 02/08/2020 - Cstadther - OggDude Character Import. You can now import characters from an OggDude export. The button is located on the Actor tab on the right.
 - 01/08/2020 - Cstadther - Bug Fix #283 - Updated code to add custom skills to list, and sort them properly by abbreviation.

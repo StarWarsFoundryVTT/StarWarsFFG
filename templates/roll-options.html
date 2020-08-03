@@ -4,11 +4,14 @@
     <button id="upgrade-ability">{{localize "SWFFG.UpgradeAbility"}}</button>
     <button id="upgrade-difficulty">{{localize "SWFFG.UpgradeDifficulty"}}</button>
   </div>
+  <div style="text-align: center;"><span>Left click to increase dice, right click to decrease.</span></div>
   <table>
     <tr class="pool-container flex-group-center">
       <td><img src="systems/starwarsffg/images/dice/starwars/yellow.png" width="40" height="40" /></td>
       <td>
-        <div class="pool-value"><input type="button" name="proficiency" min="0" /></div>
+        <div class="pool-value">
+          <input type="button" name="proficiency" min="0" />
+        </div>
       </td>
       <td>{{localize "SWFFG.DiceProficiency"}}</td>
     </tr>
