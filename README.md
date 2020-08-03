@@ -25,15 +25,16 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
-- 02/08/2020 - Cstadther - OggDude Character Import.  You can now import characters from an OggDude export.  The button is located on the Actor tab on the right.
+- 03/08/2020 - Esrin - Added item description tooltip to critical injuries on character sheets.
+- 02/08/2020 - Cstadther - OggDude Character Import. You can now import characters from an OggDude export. The button is located on the Actor tab on the right.
 - 01/08/2020 - Cstadther - Bug Fix #283 - Updated code to add custom skills to list, and sort them properly by abbreviation.
 - 01/08/2020 - Cstadther - Added oggdude dataset import for vehicles.
 - 30/07/2020 - Cstadther - Fix for issue where Remove Setback was incorrectly trying to be added to the dice pool.
-- 30/07/2020 - Cstadther - Added ability to add modifiers to Force Powers and the Force Power Upgrades.  Updated imported to populate force power modifiers.
+- 30/07/2020 - Cstadther - Added ability to add modifiers to Force Powers and the Force Power Upgrades. Updated imported to populate force power modifiers.
 - 29/07/2020 - Cstadther - Fixes issue where Strain, Wounds, and Soak default values were not being calculated correctly.
-- 29/07/2020 - Cstadther - Updated Critical Damage and Injury sheets to allow modifiers.  Fixed Adversary sheet to allow clicking on Criticals.  Refactored criticals to a partial.
+- 29/07/2020 - Cstadther - Updated Critical Damage and Injury sheets to allow modifiers. Fixed Adversary sheet to allow clicking on Criticals. Refactored criticals to a partial.
 - 29/07/2020 - Cstadther - Updated data importer to populate Force Boost modifiers on talents
-- 29/07/2020 - Cstadther - Added Force Boost modifier.  When added to an item, if checked, it will add the max force pool to the rendered dice pool, and include that number of force die in the roll.
+- 29/07/2020 - Cstadther - Added Force Boost modifier. When added to an item, if checked, it will add the max force pool to the rendered dice pool, and include that number of force die in the roll.
 - 29/07/2020 - Cstadther - Bug Fix #270 - Fix which allows no PC characters to go above the max, however all NPCs no longer adhere to any maximum for skill rank.
 - 29/07/2020 - Cstadther - Updated data importer to populate skill boost/skill setback/skill remove setback modifiers for armor, gear, talents, and weapons.
 - 29/07/2020 - Cstadther - Added Remove Setback modifier, updated dice pool rendering display Remove Setback image, updated dice pool calculation on actor to cancel out setback dice with remove setback dice.
@@ -53,14 +54,14 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 22/07/2020 - Cstadther - Refactored character sheets using handlebar partials for skill, items, talents and force powers (shared with character and adversary sheets)
 - 22/07/2020 - Cstadther - Added modifiers for Career Skills
 - 22/07/2020 - Cstadther - Minor GroupManager fix to remove instance where groupmanager is undefined
-- 21/07/2020 - Cstadther - Specialization Talents now apply stat/skill rank/characteristic modifiers.  Importer was updated to apply stat/skill rank/characteristic modifiers for weapons/armor/gear.
+- 21/07/2020 - Cstadther - Specialization Talents now apply stat/skill rank/characteristic modifiers. Importer was updated to apply stat/skill rank/characteristic modifiers for weapons/armor/gear.
 - 20/07/2020 - Cstadther - Refactored modifier part 2, fixed issue with weapon mods, added new mod (setback and career skill), updated importer to correctly populate talent and specialization characteristic and stat modifiers.
 - 20/07/2020 - Cstadther - Bug Fix #243 - Updated english localization to used knowledge stripped values and updated skill grid layout.
-- 20/07/2020 - Cstadther - Refactored modifier display to a partial.  Refactored applying logic.
+- 20/07/2020 - Cstadther - Refactored modifier display to a partial. Refactored applying logic.
 - 20/07/2020 - Cstadther - Added skill rank modifiers, works for current skills and any new added skills correctly.
 - 20/07/2020 - Cstadther - Stat modifiers save on update of actor and store value of difference in attribute.
 - 19/07/2020 - Cstadther - Bug Fix #212 - Vehicle weapons are now imported correctly as Vehicle Weapons.
-- 19/07/2020 - Cstadther - Enhancement #213 - When weapon skill is changed to `Melee` or `Brawl` damage field is disabled, as base damage for those weapon types is autocalculated using brawl when owned by an actor.  Specify damage as a modifier to damage (ie +3, etc)
+- 19/07/2020 - Cstadther - Enhancement #213 - When weapon skill is changed to `Melee` or `Brawl` damage field is disabled, as base damage for those weapon types is autocalculated using brawl when owned by an actor. Specify damage as a modifier to damage (ie +3, etc)
 - 19/07/2020 - Cstadther - Bug Fix #227 - Fixed issue with critical injuries and damage description areas not big enough.
 - 19/07/2020 - Cstadther - Bug Fix #232 - Fixed issue with minion groupskill calculations
 - 19/07/2020 - Cstadther - Bug Fix #222 - Fixed issue where soak options were not being used on Adversary Sheet.
