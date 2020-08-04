@@ -2,7 +2,7 @@
   <div class="dice-result">
     {{log this}} {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
-    {{/if}} {{#if hasFFG}} {{#if data}}
+    {{/if}} {{#if hasFFG}} {{#if data._id}}
     <div class="item-display">
       <img class="item-image" src="{{data.img}}" />
       <h2 class="item-name">{{data.name}}</h2>
