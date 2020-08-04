@@ -113,4 +113,19 @@ export default class DiceHelpers {
 
     this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item);
   }
+
+  // Takes a skill object, characteristic object, difficulty number and ActorSheetFFG.getData() object and creates the appropriate roll dialog.
+  static async rollSkillDirect(skill, characteristic, difficulty, sheet) {
+    const dicePool = new DicePoolFFG({
+      ability: Math.max(characteristic.value, skill.rank),
+      boost: skill.boost,
+      setback: skill.setback,
+      force: skill.force,
+      difficulty: difficulty,
+    });
+
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+
+    this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, null);
+  }
 }

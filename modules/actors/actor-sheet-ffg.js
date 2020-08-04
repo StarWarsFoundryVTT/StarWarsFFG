@@ -280,6 +280,18 @@ export class ActorSheetFFG extends ActorSheet {
         await DiceHelpers.rollSkill(this, event, upgradeType);
       });
 
+    // Roll from [ROLL][/ROLL] tag.
+    html.find(".rollSkillDirect").on("click", async (event) => {
+      let data = event.currentTarget.dataset;
+      if (data) {
+        let sheet = this.getData();
+        let skill = sheet.data.skills[data["skill"]];
+        let characteristic = sheet.data.characteristics[skill.characteristic];
+        let difficulty = data["difficulty"];
+        await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+      }
+    });
+
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 

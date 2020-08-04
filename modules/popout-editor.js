@@ -216,4 +216,40 @@ export default class PopoutEditor extends FormApplication {
 
     return html;
   }
+
+  static replaceRollTags(html, actorData) {
+    const rollTag = /(\[ROLL\])(.[^\[]*)\[\/ROLL\]/gm;
+    const formula = html.replace(rollTag, function (content) {
+      content = content.replace(rollTag, `$2`);
+      const args = content.split(",").map(function (arg) {
+        return arg.trim();
+      });
+      const di = "[DI]";
+      let difficulty = "";
+      switch (args[1]) {
+        case "0":
+          difficulty = "Simple";
+          break;
+        case "1":
+          difficulty = "Easy";
+          break;
+        case "2":
+          difficulty = "Average";
+          break;
+        case "3":
+          difficulty = "Hard";
+          break;
+        case "4":
+          difficulty = "Daunting";
+          break;
+        case "5":
+          difficulty = "Formidable";
+          break;
+      }
+      let formula = `<span class="rollable rollSkillDirect" data-skill="${args[0]}" data-difficulty="${args[1]}" data-actor-id="${actorData._id}"><strong>${difficulty} (${di.repeat(args[1])}) ${args[0]}</strong></span>`;
+      return formula;
+    });
+
+    return formula;
+  }
 }

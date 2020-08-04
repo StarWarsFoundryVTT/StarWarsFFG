@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 03/08/2020 - Esrin - Work in progress on [ROLL][/roll] tag, currently only parsed for testing in actor biography. Can be used to create a rollable skill button, for example: [ROLL]Brawl, 2[/ROLL] will result in the creation of an Average Brawl check button within the biography. Not certain if this functionality is going to be useful yet so limiting to actor bios while I work on it.
 - 03/08/2020 - Esrin - Added functionality for hotbar drag-drop weapon roll macro creation.
 - 03/08/2020 - Esrin - Minor bugfix to Brawl abbreviation localisation tag in `swffg-config.js`.
 - 03/08/2020 - Esrin - Added ability to roll with `weapon` items directly from inventory window by clicking on the associated `Skill` field. Subsequent roll chat message includes item info such as calculated damage and critical rating along with item name and icon.
