@@ -6,6 +6,14 @@ export default class DiceHelpers {
     const skill = data.data.skills[skillName];
     const characteristic = data.data.characteristics[skill.characteristic];
 
+    // Determine if this roll is triggered by an item.
+    let item = {};
+    if ($(row.parentElement).hasClass("item")) {
+      let itemID = row.parentElement.dataset["itemId"];
+      item = Object.entries(data.items).filter((item) => item[1]._id === itemID);
+      item = item[0][1];
+    }
+
     const dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
@@ -22,10 +30,10 @@ export default class DiceHelpers {
       dicePool.upgradeDifficulty();
     }
 
-    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label);
+    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item);
   }
 
-  static async displayRollDialog(data, dicePool, description, skillName) {
+  static async displayRollDialog(data, dicePool, description, skillName, item) {
     const id = randomID();
 
     const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
@@ -45,7 +53,7 @@ export default class DiceHelpers {
               const container = document.getElementById(id);
               const finalPool = DicePoolFFG.fromContainer(container);
 
-              const roll = new game.ffg.RollFFG(finalPool.renderDiceExpression());
+              const roll = new game.ffg.RollFFG(finalPool.renderDiceExpression(), item);
               roll.toMessage({
                 user: game.user._id,
                 speaker: data,

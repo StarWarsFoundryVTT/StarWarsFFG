@@ -618,6 +618,7 @@ export class RollFFG extends Roll {
       hasFFG: this.hasFFG,
       hasStandard: this.hasStandard,
       diceresults: CONFIG.FFG.diceresults,
+      data: this.data,
     };
 
     // Render the roll display template
@@ -655,6 +656,7 @@ export class RollFFG extends Roll {
     json.ffg = this.ffg;
     json.hasFFG = this.hasFFG;
     json.hasStandard = this.hasStandard;
+    json.data = this.data;
     return json;
   }
 
@@ -664,6 +666,7 @@ export class RollFFG extends Roll {
     roll.ffg = data.ffg;
     roll.hasFFG = data.hasFFG;
     roll.hasStandard = data.hasStandard;
+    roll.data = data.data;
     return roll;
   }
 }

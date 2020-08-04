@@ -38,6 +38,14 @@
   cursor: pointer;
 }
 
+#chat-log .message {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+#chat-form textarea {
+  background: rgba(255, 255, 255, 0.9);
+}
+
 span.dietype {
   font-family: "EotESymbol", sans-serif;
 }
@@ -3808,6 +3816,51 @@ span.dietype.triumph {
 }
 
 .starwarsffg .dice-result .roll-failure {
+  color: darkred;
+}
+
+.starwarsffg .item-display {
+  margin: 0.5rem 0 0.8rem 0;
+  padding: 0.5rem;
+  border: 1px solid #782e22;
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.starwarsffg .item-display img {
+  height: 50px;
+  width: auto;
+  border: none;
+}
+
+.starwarsffg .item-display .item-damage {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.starwarsffg .item-display .item-damage input {
+  width: 70%;
+}
+
+.starwarsffg .item-display .item-critical {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.starwarsffg .item-display .item-critical input {
+  width: 70%;
+}
+
+.starwarsffg .item-display .item-miss {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+  font-style: italic;
   color: darkred;
 }
 

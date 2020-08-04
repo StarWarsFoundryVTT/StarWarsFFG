@@ -20,6 +20,17 @@
   }
 }
 
+#chat-log {
+  .message {
+    background: rgba(255, 255, 255, 0.9);
+  }
+}
+
+#chat-form {
+  textarea {
+    background: rgba(255, 255, 255, 0.9);
+  }
+}
 
 span.dietype {
   font-family: $font-dice;

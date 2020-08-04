@@ -86,7 +86,7 @@ FFG.character_stats = {
 FFG.skills = {
   "Astrogation": { value: "Astrogation", label: "SWFFG.SkillsNameAstrogation", abrev: "SWFFG.SkillsNameAstrogation" },
   "Athletics": { value: "Athletics", label: "SWFFG.SkillsNameAthletics", abrev: "SWFFG.SkillsNameAthletics" },
-  "Brawl": { value: "Brawl", label: "SWFFG.SkillsNameBrawl", abrev: "SWFFG.SkillsNameAthleticsAbbreviation" },
+  "Brawl": { value: "Brawl", label: "SWFFG.SkillsNameBrawl", abrev: "SWFFG.SkillsNameBrawlAbbreviation" },
   "Charm": { value: "Charm", label: "SWFFG.SkillsNameCharm", abrev: "SWFFG.SkillsNameCharm" },
   "Coercion": { value: "Coercion", label: "SWFFG.SkillsNameCoercion", abrev: "SWFFG.SkillsNameCoercion" },
   "Computers": { value: "Computers", label: "SWFFG.SkillsNameComputers", abrev: "SWFFG.SkillsNameComputers" },

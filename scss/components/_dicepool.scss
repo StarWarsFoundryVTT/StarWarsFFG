@@ -63,3 +63,42 @@
     color: darkred;
   }
 }
+
+.item-display {
+  margin: 0.5rem 0 0.8rem 0;
+  padding: 0.5rem;
+  border: 1px solid #782e22;
+  background: rgba(255, 255, 255, 0.75);
+  img {
+    height: 50px;
+    width: auto;
+    border: none;
+  }
+  .item-damage {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    input {
+      width: 70%;
+    }
+  }
+  .item-critical {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    input {
+      width: 70%;
+    }
+  }
+  .item-miss {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    text-align: center;
+    font-style: italic;
+    color: darkred;
+  }
+}

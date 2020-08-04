@@ -25,6 +25,9 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 03/08/2020 - Esrin - Minor bugfix to Brawl abbreviation localisation tag in `swffg-config.js`.
+- 03/08/2020 - Esrin - Added ability to roll with `weapon` items directly from inventory window by clicking on the associated `Skill` field. Subsequent roll chat message includes item info such as calculated damage and critical rating along with item name and icon.
+- 03/08/2020 - Esrin - Restyled #chat-log messages and #chat-form text area to match system styling.
 - 03/08/2020 - Esrin - Reduced dead space at the bottom of the character and minion sheet-body area.
 - 03/08/2020 - Esrin - Added left click / right click instruction text to roll dialog.
 - 03/08/2020 - Esrin - Added item description tooltip to critical injuries on character sheets.

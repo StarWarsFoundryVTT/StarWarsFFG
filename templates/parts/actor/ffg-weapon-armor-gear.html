@@ -13,7 +13,7 @@
   </thead>
   <tbody class="items-list">
     {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
-    <tr class="item" data-item-id="{{item._id}}">
+    <tr class="item" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
       <td class="item-name">{{item.name}}</td>
       <td>
         {{#if item.data.equippable.equipped}}
@@ -22,7 +22,9 @@
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
         {{/if}}
       </td>
-      <td>{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</td>
+      <td class="skill-roll">
+        <div class="roll-button"><div class="skill-label rollable">{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</div></div>
+      </td>
       <td>{{item.data.damage.value}}</td>
       <td>{{localize item.data.range.label}}</td>
       <td>{{item.data.crit.value}}</td>
