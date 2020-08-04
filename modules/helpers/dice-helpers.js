@@ -91,4 +91,26 @@ export default class DiceHelpers {
     const rollButton = elem.querySelector(".roll-button");
     dicePool.renderPreview(rollButton);
   }
+
+  static async rollItem(itemId, actorId) {
+    const actor = game.actors.get(actorId);
+    const actorSheet = actor.sheet.getData();
+
+    const item = actor.getOwnedItem(itemId).data;
+
+    const skill = actor.data.data.skills[item.data.skill.value];
+    const characteristic = actor.data.data.characteristics[skill.characteristic];
+
+    const dicePool = new DicePoolFFG({
+      ability: Math.max(characteristic.value, skill.rank),
+      boost: skill.boost,
+      setback: skill.setback,
+      force: skill.force,
+      difficulty: 2, // default to average difficulty
+    });
+
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+
+    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item);
+  }
 }

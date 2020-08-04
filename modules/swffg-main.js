@@ -24,6 +24,7 @@ import TemplateHelpers from "./helpers/partial-templates.js";
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
 import ImportHelpers from "./importer/import-helpers.js";
+import { createFFGMacro } from "./helpers/macros.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -38,6 +39,7 @@ Hooks.once("init", async function () {
     ItemFFG,
     CombatFFG,
     RollFFG,
+    DiceHelpers,
     addons: {
       PopoutEditor,
     },
@@ -556,4 +558,7 @@ Hooks.once("ready", () => {
       }
     }
   });
+
+  // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
+  Hooks.on("hotbarDrop", (bar, data, slot) => createFFGMacro(data, slot));
 });
