@@ -361,7 +361,7 @@
               </div>
               <div class="block-attribute">
                 <div class="block-value block-double">
-                  <input type="text" name="data.stats.consumables.value" value="{{data.stats.consumables.value}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.consumables.value" value="{{data.stats.consumables.value}}" data-dtype="String" />
                   <select style="text-align: center;" name="data.stats.consumables.duration">
                     {{#select data.stats.consumables.duration}} {{#each this.FFG.vehicle_consumable_range as |t|}}
                     <option value="{{t.value}}">{{localize t.label}}</option>
