@@ -198,8 +198,7 @@ export class ItemSheetFFG extends ItemSheet {
           return item.text;
         }
 
-        // TODO: This will need to be replaced when the dependency on special-dice-roller is removed.
-        const imgUrl = "/modules/special-dice-roller/public/images/sw/purple.png";
+        const imgUrl = "/systems/starwarsffg/images/dice/starwars/purple.png";
 
         let images = [];
         for (let i = 0; i < item.id; i += 1) {
