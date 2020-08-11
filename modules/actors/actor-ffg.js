@@ -9,8 +9,7 @@ export class ActorFFG extends Actor {
   /**
    * Augment the basic actor data with additional dynamic data.
    */
-  prepareData() {
-    super.prepareData();
+  prepareDerivedData() {
     CONFIG.logger.debug(`Preparing Actor Data ${this.data.type}`);
     const actorData = this.data;
     const data = actorData.data;

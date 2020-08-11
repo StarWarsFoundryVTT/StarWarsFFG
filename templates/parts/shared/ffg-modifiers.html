@@ -25,7 +25,7 @@
       {{/each}} {{/if}} {{/select}}
     </select>
     {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}} <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} /> {{else}}
-    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="{{attr.dtype}}" placeholder="0" />
+    <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" placeholder="0" />
     {{/if}}
     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
   </li>
