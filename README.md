@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 11/08/2020 - Esrin - Update to declare the default Roll method as per 0.7.1 Foundry changes.
 - 03/08/2020 - Esrin - Work in progress on [ROLL][/roll] tag, currently only parsed for testing in actor biography. Can be used to create a rollable skill button, for example: [ROLL]Brawl, 2[/ROLL] will result in the creation of an Average Brawl check button within the biography. Not certain if this functionality is going to be useful yet so limiting to actor bios while I work on it.
 - 03/08/2020 - Esrin - Added functionality for hotbar drag-drop weapon roll macro creation.
 - 03/08/2020 - Esrin - Minor bugfix to Brawl abbreviation localisation tag in `swffg-config.js`.

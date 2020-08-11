@@ -62,7 +62,8 @@ Hooks.once("init", async function () {
   CONFIG.Combat.entityClass = CombatFFG;
 
   // Define custom Roll class
-  CONFIG.Dice.rolls["RollFFG"] = RollFFG;
+  CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
+  CONFIG.Dice.rolls[0] = RollFFG;
 
   // Define DiceTerms
   CONFIG.Dice.terms["a"] = AbilityDie;
