@@ -25,7 +25,6 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
-<<<<<<< HEAD
 - 11/08/2020 - Esrin - Bugfix to the modifiers template to ensure all modifiers are stored as data-dtype="Number" to avoid type errors such as string concatenation instead of Math() addition.
 - 11/08/2020 - Esrin - Changed ActorFFG prepareData() method to prepareDerivedData() to match the new 0.7.1 best practice workflow.
 - 11/08/2020 - Esrin - Update to declare the default Roll method as per 0.7.1 Foundry changes.
@@ -82,9 +81,6 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 17/07/2020 - Cstadther - Add stat modifiers, and reworked Soak/Defence calculation to allow for modifiers of just Melee or Ranged Defense
 - 17/07/2020 - Cstadther - Add characteristic modifiers to character/adversary/minion sheets, add drag/drop of species onto character/adversaries (not minion)
 - 16/07/2020 - Cstadther - Added species item type, values stored in modifiers, preparing for characteristic modifiers.
-=======
-- 17/07/2020 - Cstadther - Bug Fix #218 - Fixed the Minion Sheet's scrolling issue
->>>>>>> master
 - 16/07/2020 - Cstadther - Fix for specialization and talent combined talent list for adversaries and characters.
 - 15/07/2020 - Cstadther - Import fix for specializations, prepopulate data that is not being populated through item-ffg.js load routine.
 - 15/07/2020 - Cstadther - CSS Fix, set flex to `auto` on character sheet to resolve issue with different form height between FF and Chrome
