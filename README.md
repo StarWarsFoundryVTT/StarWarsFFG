@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/08/2020 - Cstadther - Refactored _updateObject function into new item helper class, and update all formData references to new object structure.
 - 12/08/2020 - Cstadther - Refactored _updateObject function into new actor helper class
 - 11/08/2020 - Esrin - Bugfix to the modifiers template to ensure all modifiers are stored as data-dtype="Number" to avoid type errors such as string concatenation instead of Math() addition.
 - 11/08/2020 - Esrin - Changed ActorFFG prepareData() method to prepareDerivedData() to match the new 0.7.1 best practice workflow.

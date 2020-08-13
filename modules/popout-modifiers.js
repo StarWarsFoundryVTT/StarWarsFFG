@@ -73,23 +73,26 @@ export default class PopoutModifiers extends FormApplication {
       }
     }
 
-    // Re-combine formData
-    formData = Object.entries(formData)
-      .filter((e) => !e[0].startsWith("data.attributes"))
-      .reduce(
-        (obj, e) => {
-          obj[e[0]] = e[1];
-          return obj;
-        },
-        { _id: this.object._id, "data.attributes": attributes }
-      );
+    // // Re-combine formData
+    // formData = Object.entries(formData)
+    //   .filter((e) => !e[0].startsWith("data.attributes"))
+    //   .reduce(
+    //     (obj, e) => {
+    //       obj[e[0]] = e[1];
+    //       return obj;
+    //     },
+    //     { _id: this.object._id, "data.attributes": attributes }
+    //   );
 
     if (this.object.isUpgrade) {
-      let data = formData["data.attributes"];
+      let data = formData.data.attributes;
 
-      let upgradeFormData = {
-        [`data.upgrades.${this.object.keyname}.attributes`]: data,
-      };
+      let upgradeFormData;
+      setProperty(upgradeFormData, `data.upgrades.${this.object.keyname}.attributes`, data);
+
+      // let upgradeFormData = {
+      //   [`data.upgrades.${this.object.keyname}.attributes`]: data,
+      // };
 
       await this.object.parent.update(upgradeFormData);
     } else {
