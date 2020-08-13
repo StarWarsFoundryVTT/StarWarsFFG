@@ -384,7 +384,8 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Update Talent - Item`);
-            let updateData = ImportHelpers.buildUpdateData(item);
+            //let updateData = ImportHelpers.buildUpdateData(item);
+            let updateData = item;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -643,7 +644,8 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Force Power - Item`);
-            let updateData = ImportHelpers.buildUpdateData(power);
+            //let updateData = ImportHelpers.buildUpdateData(power);
+            let updateData = power;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating force power ${fp.ForcePower.Name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -734,7 +736,8 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Gear - Item`);
-            let updateData = ImportHelpers.buildUpdateData(newItem);
+            //let updateData = ImportHelpers.buildUpdateData(newItem);
+            let updateData = newItem;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating gear ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -898,7 +901,8 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Weapon - Item`);
-            let updateData = ImportHelpers.buildUpdateData(newItem);
+            //let updateData = ImportHelpers.buildUpdateData(newItem);
+            let updateData = newItem;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating weapon ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -1002,7 +1006,8 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Armor - Item`);
-            let updateData = ImportHelpers.buildUpdateData(newItem);
+            //let updateData = ImportHelpers.buildUpdateData(newItem);
+            let updateData = newItem;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating armor ${name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -1144,7 +1149,8 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Specialization - Item`);
-            let updateData = ImportHelpers.buildUpdateData(specialization);
+            //let updateData = ImportHelpers.buildUpdateData(specialization);
+            let updateData = specialization;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating Specialization ${specialization.name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -1232,7 +1238,8 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Career - Item`);
-            let updateData = ImportHelpers.buildUpdateData(career);
+            //let updateData = ImportHelpers.buildUpdateData(career);
+            let updateData = career;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating Career ${career.name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -1335,7 +1342,9 @@ export default class DataImporter extends FormApplication {
             pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Species - Item`);
-            let updateData = ImportHelpers.buildUpdateData(species);
+            //let updateData = ImportHelpers.buildUpdateData(species);
+            let updateData = species;
+
             updateData["_id"] = entry._id;
             this._importLogger(`Updating Species ${species.name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
@@ -1544,7 +1553,8 @@ export default class DataImporter extends FormApplication {
             actor = await pack.importEntity(compendiumItem);
           } else {
             CONFIG.logger.debug(`Updating Vehicles - Actor`);
-            let updateData = ImportHelpers.buildUpdateData(vehicle);
+            //let updateData = ImportHelpers.buildUpdateData(vehicle);
+            let updateData = vehicle;
             updateData["_id"] = entry._id;
             this._importLogger(`Updating Vehicles ${vehicle.name} : ${JSON.stringify(updateData)}`);
             await pack.updateEntity(updateData);

@@ -739,7 +739,8 @@ export default class ImportHelpers {
 
     const exists = game.data.actors.find((actor) => actor.flags.importid === characterData.Character.Key);
     if (exists) {
-      let updateData = ImportHelpers.buildUpdateData(vehicle);
+      //let updateData = ImportHelpers.buildUpdateData(character);
+      let updateData = character;
       updateData["_id"] = exists._id;
       await Actor.update(updateData);
     } else {
