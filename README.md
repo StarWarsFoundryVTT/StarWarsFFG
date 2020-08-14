@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 13/08/2020 - Cstadther - Bugfix - Fixed character import error for no force powers.  Fixed error for no max property on character data.
 - 12/08/2020 - Cstadther - Refactored _updateObject function into new item helper class, and update all formData references to new object structure.
 - 12/08/2020 - Cstadther - Refactored _updateObject function into new actor helper class
 - 11/08/2020 - Esrin - Bugfix to the modifiers template to ensure all modifiers are stored as data-dtype="Number" to avoid type errors such as string concatenation instead of Math() addition.
