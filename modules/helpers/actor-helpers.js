@@ -32,7 +32,11 @@ export default class ActorHelpers {
         } else if (key === "Defence-Ranged") {
           statValue = parseInt(formData.data.stats.defence.ranged, 10);
         } else {
-          statValue = parseInt(formData.data.stats[k].max, 10);
+          if (formData.data?.stats[k]?.max) {
+            statValue = parseInt(formData.data.stats[k].max, 10);
+          } else {
+            statValue = 0;
+          }
         }
 
         let x = statValue - total;

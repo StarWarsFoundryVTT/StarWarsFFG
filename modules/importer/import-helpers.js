@@ -609,12 +609,19 @@ export default class ImportHelpers {
       }
     });
 
-    const forcepowers = characterData.Character.ForcePowers.CharForcePower.filter((power) => {
-      if (power.ForceAbilities.CharForceAbility.find((fa) => fa.Purchased === "true")) {
-        return true;
+    let forcepowers = [];
+    if (characterData?.Character?.ForcePowers?.CharForcePower) {
+      if (Array.isArray(characterData.Character.ForcePowers.CharForcePower)) {
+        forcepowers = characterData.Character.ForcePowers.CharForcePower.filter((power) => {
+          if (power.ForceAbilities.CharForceAbility.find((fa) => fa.Purchased === "true")) {
+            return true;
+          }
+          return false;
+        });
+      } else {
+        forcepowers.push(characterData.Character.ForcePowers.CharForcePower);
       }
-      return false;
-    });
+    }
 
     const species = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey)));
     const career = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.CareerKey)));
