@@ -631,7 +631,7 @@ export default class ImportHelpers {
       let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
       let attrId = Object.keys(career.data.attributes).find((attr) => career.data.attributes[attr].modtype === "Skill Rank" && career.data.attributes[attr].mod === charSkill);
 
-      if (career.data.attributes?.[attrId].value) {
+      if (career.data.attributes?.[attrId]?.value) {
         career.data.attributes[attrId].value += 1;
       } else {
         career.data.attributes[attrId] = {
@@ -644,7 +644,7 @@ export default class ImportHelpers {
       let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
       let attrId = Object.keys(specialization.data.attributes).find((attr) => specialization.data.attributes[attr].modtype === "Skill Rank" && specialization.data.attributes[attr].mod === charSkill);
 
-      if (specialization.data.attributes?.[attrId].value) {
+      if (specialization.data.attributes?.[attrId]?.value) {
         specialization.data.attributes[attrId].value += 1;
       } else {
         specialization.data.attributes[attrId] = {
