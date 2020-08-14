@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/08/2020 - Cstadther - Updated character import to handle cases where modifiers on career and specializations were not initialized at 0;
 - 13/08/2020 - Cstadther - Bugfix - Fixed character import error for no force powers.  Fixed error for no max property on character data.
 - 12/08/2020 - Cstadther - Refactored _updateObject function into new item helper class, and update all formData references to new object structure.
 - 12/08/2020 - Cstadther - Refactored _updateObject function into new actor helper class
