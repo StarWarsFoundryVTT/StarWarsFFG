@@ -14,9 +14,9 @@ export class CombatFFG extends Combat {
     }
 
     if (formula === "Vigilance") {
-      formula = _getInitiativeFormula(cData.skills.Vigilance.rank, cData.characteristics.Willpower.value);
+      formula = this._getInitiativeFormula(cData.skills.Vigilance.rank, cData.characteristics.Willpower.value);
     } else if (formula === "Cool") {
-      formula = _getInitiativeFormula(cData.skills.Cool.rank, cData.characteristics.Presence.value);
+      formula = this._getInitiativeFormula(cData.skills.Cool.rank, cData.characteristics.Presence.value);
     }
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
