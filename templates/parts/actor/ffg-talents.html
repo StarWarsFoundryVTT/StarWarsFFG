@@ -1,28 +1,24 @@
-<table class="talent-list">
-  <thead>
-    <tr>
-      <th>{{localize "SWFFG.Talents"}}</th>
-      <th>{{localize "SWFFG.TalentsActivation"}}</th>
-      <th>{{localize "SWFFG.TalentsRank"}}</th>
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
+<ul class="talent-list">
+  <li class="talents-header flexrow">
+    <div class="header-name">{{localize "SWFFG.Talents"}}</div>
+    <div>{{localize "SWFFG.TalentsActivation"}}</div>
+    <div>{{localize "SWFFG.TalentsRank"}}</div>
+    <div></div>
+  </li>
+
+  <ul class="items-list">
     {{#each data.talentList as |item id|}}
-    <tr class="item specialization-talent-item" data-item-id="{{item.itemId}}">
-      <td class="item-name hover">
+    <li class="item specialization-talent-item flexrow" data-item-id="{{item.itemId}}">
+      <div class="item-name">
         {{item.name}}
-        <div class="tooltip">{{{renderDiceTags item.description}}}</div>
-      </td>
-      <td>{{localize item.activationLabel}}</td>
-      <td>{{item.rank}}</td>
-      <td>
-        <div class="item-controls">
-          <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-          <a class="item-control item-info" title="Item Information"><i class="fas fa-info-circle"></i></a>
-        </div>
-      </td>
-    </tr>
+      </div>
+      <div>{{localize item.activationLabel}}</div>
+      <div>{{item.rank}}</div>
+      <div class="item-controls">
+        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-info" title="Item Information"><i class="fas fa-info-circle"></i></a>
+      </div>
+    </li>
     {{/each}}
-  </tbody>
-</table>
+  </ul>
+</ul>

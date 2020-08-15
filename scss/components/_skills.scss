@@ -65,8 +65,8 @@
 
 .skillsGrid {
   overflow-y: auto;
-  height: calc(100% - 6.5rem);
-  
+  height: calc(100% - 5.5rem);
+
   .pure-g {
     letter-spacing: initial;
   }
@@ -108,27 +108,26 @@
     }
 
     .careerskill-toggle {
-      margin: 0; 
+      margin: 0;
       padding: 0;
     }
 
     .careerskill-rank {
-      margin-top:2px;
+      margin-top: 2px;
       width: 30px;
       text-align: center;
     }
-
   }
 
   .dice-pool {
-    margin: .5em 0;
+    margin: 0.5em 0;
     img {
       width: 1em;
       height: 1em;
       border: 0;
     }
   }
-    
+
   table {
     th {
       text-align: left;
@@ -163,7 +162,6 @@
     }
   }
 }
-
 
 table {
   &.items {

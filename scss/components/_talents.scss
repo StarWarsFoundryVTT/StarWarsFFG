@@ -3,14 +3,8 @@
 }
 
 table {
-  &.talent-list {
+  &.force-powers {
     border: 0;
-    margin: 1em 0 0 0;
-
-    .item:hover {
-      background: rgba(25, 24, 19, 0.12);
-      margin: +2px;
-    }
 
     th {
       text-align: left;
@@ -37,11 +31,46 @@ table {
   }
 }
 
-.talent-body {
-  height : 100px;
-  overflow: auto;
+.talent-list {
+  border: 0;
+  padding: 0;
+  margin: 1em 0 0 0;
+
+  .item:hover {
+    background: rgba(25, 24, 19, 0.12);
+  }
+
+  .talents-header {
+    text-align: center;
+    padding: 3px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    background-color: rgb(73, 12, 11);
+    color: white;
+    font-size: 12px;
+    font-weight: normal;
+    .header-name {
+      flex: 1 0 100px;
+      text-align: left;
+    }
+  }
+  .force-powers {
+    flex: 1 0 150px;
+  }
+  .item-controls {
+    z-index: 500;
+    width: 20px;
+    text-align: end;
+    margin: auto;
+    .item-control {
+      padding: 5px;
+    }
+  }
 }
 
+.talent-body {
+  height: 100px;
+  overflow: auto;
+}
 
 .talent-hidden {
   display: none;
@@ -57,9 +86,10 @@ table {
   position: relative;
   margin: 10px 10px 0 10px;
   .talent-actions {
-    display:none;
+    display: none;
 
-    .split, .combine {
+    .split,
+    .combine {
       display: none;
     }
 
@@ -98,16 +128,16 @@ table {
   }
 
   &.talent-single {
-    flex: 1 0 21%
+    flex: 1 0 21%;
   }
   &.talent-double {
-    flex: 1 0 46%
+    flex: 1 0 46%;
   }
   &.talent-triple {
-    flex: 1 0 71%
+    flex: 1 0 71%;
   }
   &.talent-full {
-    flex: 1 0 97%
+    flex: 1 0 97%;
   }
 }
 
@@ -119,7 +149,7 @@ table {
   --notchSize: 9px;
 
   clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-  
+
   .talent-header {
     position: relative;
     background-color: rgb(0, 5, 68);
@@ -149,19 +179,16 @@ table {
         color: white;
       }
     }
-
-    
-  
   }
 
   &.talent-active {
     .talent-header {
-      background-color: #490c0b
+      background-color: #490c0b;
     }
   }
   &.talent-passive {
     .talent-header {
-      background-color: rgb(70,72,85)
+      background-color: rgb(70, 72, 85);
     }
   }
 }
@@ -175,7 +202,7 @@ table {
 }
 
 .talent-connections {
-  font-size: 15px;;
+  font-size: 15px;
 }
 
 .talent-single {
@@ -265,10 +292,11 @@ table {
 
 .talent-connector {
   i {
-    display:none;
+    display: none;
   }
 
-  .talent-connector-up, .talent-connector-side {
+  .talent-connector-up,
+  .talent-connector-side {
     display: inline-block;
     width: 20px;
     height: 12px;
@@ -284,7 +312,7 @@ table {
 
   .talent-connector-up {
     height: 100px;
-    top : -50px;
+    top: -50px;
     z-index: 5;
 
     i {
@@ -293,7 +321,6 @@ table {
       left: 3px;
     }
   }
-
 
   .talent-connector-side {
     right: -15px;

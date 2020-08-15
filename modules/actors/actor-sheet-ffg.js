@@ -57,7 +57,7 @@ export class ActorSheetFFG extends ActorSheet {
 
     switch (this.actor.data.type) {
       case "character":
-        this.position.width = 595;
+        this.position.width = 630;
         this.position.height = 783;
 
         // we need to update all specialization talents with the latest talent information
@@ -169,7 +169,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     // Toggle item equipped
-    html.find("table.items .item a.toggle-equipped").click((ev) => {
+    html.find(".items .item a.toggle-equipped").click((ev) => {
       const li = $(ev.currentTarget);
       const item = this.actor.getOwnedItem(li.data("itemId"));
       if (item) {
@@ -177,35 +177,22 @@ export class ActorSheetFFG extends ActorSheet {
       }
     });
 
-    // Update Inventory Item - By clicking entire line
-    html.find("table.items .item, .header-description-block .item, .injuries .item").click((ev) => {
+    // Toggle item details
+    html.find(".items .item, .header-description-block .item, .injuries .item").click(async (ev) => {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
         const li = $(ev.currentTarget);
-        const item = this.actor.getOwnedItem(li.data("itemId"));
-        if (item?.sheet) {
-          item.sheet.render(true);
-        }
-      }
-    });
-    // Update Talent - By clicking entire line
-    html.find(".talents .item").click(async (ev) => {
-      if (!$(ev.target).hasClass("fa-trash")) {
-        const li = $(ev.currentTarget);
-        const row = $(li).parents("tr")[0];
-
         let itemId = li.data("itemId");
-
         let item = this.actor.getOwnedItem(itemId);
+
         if (!item) {
           item = game.items.get(itemId);
-
-          if (!item) {
-            item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
-          }
         }
-
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
         if (item?.sheet) {
-          item.sheet.render(true);
+          if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
+          else this._itemDisplayDetails(item, ev);
         }
       }
     });
@@ -215,6 +202,23 @@ export class ActorSheetFFG extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       this.actor.deleteOwnedItem(li.data("itemId"));
       li.slideUp(200, () => this.render(false));
+    });
+
+    // Edit Inventory Item
+    html.find(".item-edit").click(async (ev) => {
+      const li = $(ev.currentTarget).parents(".item");
+      let itemId = li.data("itemId");
+      let item = this.actor.getOwnedItem(itemId);
+      if (!item) {
+        item = game.items.get(itemId);
+
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+      }
+      if (item?.sheet) {
+        item.sheet.render(true);
+      }
     });
 
     html.find(".item-info").click((ev) => {
@@ -326,6 +330,30 @@ export class ActorSheetFFG extends ActorSheet {
         $(a).val("2");
       }
     });
+  }
+
+  /**
+   * Display details of an item.
+   * @private
+   */
+  _itemDisplayDetails(item, event) {
+    event.preventDefault();
+    let li = $(event.currentTarget),
+      itemDetails = item.getItemDetails();
+
+    // Toggle summary
+    if (li.hasClass("expanded")) {
+      let details = li.children(".item-details");
+      details.slideUp(200, () => details.remove());
+    } else {
+      let div = $(`<div class="item-details">${itemDetails.prettyDesc}</div>`);
+      let props = $(`<div class="item-properties"></div>`);
+      itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
+      div.append(props);
+      li.append(div.hide());
+      div.slideDown(200);
+    }
+    li.toggleClass("expanded");
   }
 
   _onChangeSkillCharacteristic(a) {

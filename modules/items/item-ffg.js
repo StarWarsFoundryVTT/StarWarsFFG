@@ -21,6 +21,7 @@ export class ItemFFG extends Item {
 
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description);
     itemData.safe_desc = PopoutEditor.renderDiceImages(data.description.replace(/(<([^>]+)>)/gi, ""));
+    data.safe_spec = PopoutEditor.renderDiceImages(data.special?.value.replace(/(<([^>]+)>)/gi, ""));
 
     // perform localisation of dynamic values
     switch (this.type) {
@@ -196,5 +197,45 @@ export class ItemFFG extends Item {
     specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
     specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
     specializationTalentItem.attributes = talentItem.data.attributes;
+  }
+
+  /**
+   * Prepare and return details of the item for display in inventory or chat.
+   */
+  getItemDetails() {
+    const data = duplicate(this.data.data);
+
+    // Item type specific properties
+    const props = [];
+
+    data.prettyDesc = PopoutEditor.renderDiceImages(data.description);
+
+    // General equipment properties
+    if (this.type !== "talent") {
+      if (data.hasOwnProperty("special")) {
+        if (data.safe_spec) props.push("Special qualities: " + data.safe_spec);
+      }
+      if (data.hasOwnProperty("equippable")) {
+        props.push(game.i18n.localize(data.equippable.equipped ? "SWFFG.Equipped" : "SWFFG.Unequipped"));
+      }
+      if (data.hasOwnProperty("encumbrance")) {
+        props.push("Encumbrance: " + data.encumbrance.value);
+      }
+      if (data.hasOwnProperty("price")) {
+        props.push("Price: " + data.price.value);
+      }
+      if (data.hasOwnProperty("rarity")) {
+        props.push("Rarity: " + data.rarity.value);
+      }
+    }
+
+    // Talent properties
+    if (data.hasOwnProperty("isForceTalent")) {
+      if (data.isForceTalent) props.push(game.i18n.localize("SWFFG.ForceTalent"));
+    }
+
+    // Filter properties and return
+    data.properties = props.filter((p) => !!p);
+    return data;
   }
 }

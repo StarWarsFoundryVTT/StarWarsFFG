@@ -254,7 +254,7 @@ span.dietype.triumph {
 .starwarsffg.sheet .sheet-body {
   border: 0;
   min-height: 100px;
-  height: calc(100% - 17em);
+  height: calc(100% - 14rem);
   overflow: auto;
 }
 
@@ -734,7 +734,7 @@ span.dietype.triumph {
 
 .starwarsffg .skillsGrid {
   overflow-y: auto;
-  height: calc(100% - 6.5rem);
+  height: calc(100% - 5.5rem);
 }
 
 .starwarsffg .skillsGrid .pure-g {
@@ -788,7 +788,7 @@ span.dietype.triumph {
 }
 
 .starwarsffg .skillsGrid .dice-pool {
-  margin: .5em 0;
+  margin: 0.5em 0;
 }
 
 .starwarsffg .skillsGrid .dice-pool img {
@@ -835,11 +835,12 @@ span.dietype.triumph {
 
 .starwarsffg .items {
   margin: 0;
+  padding: 0;
   border: 0;
 }
 
-.starwarsffg .items table th {
-  text-align: left;
+.starwarsffg .items .items-header {
+  text-align: center;
   padding: 3px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
   background-color: #490c0b;
@@ -848,7 +849,12 @@ span.dietype.triumph {
   font-weight: normal;
 }
 
-.starwarsffg .items table td {
+.starwarsffg .items .items-header .header-name {
+  flex: 1 0 100px;
+  text-align: left;
+}
+
+.starwarsffg .items li {
   padding: 3px;
 }
 
@@ -962,19 +968,18 @@ span.dietype.triumph {
 }
 
 .starwarsffg .items .items-list {
-  overflow-y: auto;
+  padding: 0;
 }
 
 .starwarsffg .items .items-list .item {
-  height: 30px;
   line-height: 24px;
   padding: 3px 0;
   border-bottom: 1px solid #bbb;
+  text-align: center;
 }
 
 .starwarsffg .items .items-list .item:hover {
   background: rgba(25, 24, 19, 0.12);
-  margin: +2px;
 }
 
 .starwarsffg .items .items-list .item img {
@@ -992,29 +997,59 @@ span.dietype.triumph {
 
 .starwarsffg .items .items-list .item-name {
   margin: 0;
+  cursor: pointer;
+  flex: 1 0 100px;
+  text-align: left;
 }
 
 .starwarsffg .items .items-list .item-controls {
   z-index: 500;
   width: 20px;
   text-align: end;
+  margin: auto;
+}
+
+.starwarsffg .items .items-list .item-controls .item-control {
+  padding: 5px;
+}
+
+.starwarsffg .item-details {
+  flex: 0 0 100%;
+  text-align: left;
+  line-height: 16px;
+  padding: 0.25em 0.5em;
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px groove rgba(0, 0, 0, 0.2);
+  grid-area: inherit;
+}
+
+.starwarsffg .item-details .item-properties {
+  flex: 0 0 120px;
+  margin: 5px 5px 5px 0;
+  padding-right: 5px;
+  font-weight: bold;
+}
+
+.starwarsffg .item-details .item-properties .tag {
+  display: inline-block;
+  margin: 0 2px 0 0;
+  padding: 0 3px;
+  font-size: 10px;
+  line-height: 16px;
+  border: 1px solid #646464;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .starwarsffg .talents {
   margin: 0;
 }
 
-.starwarsffg table.talent-list {
+.starwarsffg table.force-powers {
   border: 0;
-  margin: 1em 0 0 0;
 }
 
-.starwarsffg table.talent-list .item:hover {
-  background: rgba(25, 24, 19, 0.12);
-  margin: +2px;
-}
-
-.starwarsffg table.talent-list th {
+.starwarsffg table.force-powers th {
   text-align: left;
   padding: 3px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
@@ -1024,17 +1059,57 @@ span.dietype.triumph {
   font-weight: normal;
 }
 
-.starwarsffg table.talent-list td {
+.starwarsffg table.force-powers td {
   height: 30px;
   line-height: 24px;
   padding: 3px;
   position: relative;
 }
 
-.starwarsffg table.talent-list td .item-controls {
+.starwarsffg table.force-powers td .item-controls {
   text-align: right;
   width: auto;
   z-index: auto;
+}
+
+.starwarsffg .talent-list {
+  border: 0;
+  padding: 0;
+  margin: 1em 0 0 0;
+}
+
+.starwarsffg .talent-list .item:hover {
+  background: rgba(25, 24, 19, 0.12);
+}
+
+.starwarsffg .talent-list .talents-header {
+  text-align: center;
+  padding: 3px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  background-color: #490c0b;
+  color: white;
+  font-size: 12px;
+  font-weight: normal;
+}
+
+.starwarsffg .talent-list .talents-header .header-name {
+  flex: 1 0 100px;
+  text-align: left;
+}
+
+.starwarsffg .talent-list .force-powers {
+  flex: 1 0 150px;
+}
+
+.starwarsffg .talent-list .item-controls {
+  z-index: 500;
+  width: 20px;
+  text-align: end;
+  margin: auto;
+}
+
+.starwarsffg .talent-list .item-controls .item-control {
+  padding: 5px;
 }
 
 .starwarsffg .talent-body {
@@ -1061,7 +1136,8 @@ span.dietype.triumph {
   display: none;
 }
 
-.starwarsffg .talent-upgrade .talent-actions .split, .starwarsffg .talent-upgrade .talent-actions .combine {
+.starwarsffg .talent-upgrade .talent-actions .split,
+.starwarsffg .talent-upgrade .talent-actions .combine {
   display: none;
 }
 
@@ -1253,7 +1329,8 @@ span.dietype.triumph {
   display: none;
 }
 
-.starwarsffg .talent-connector .talent-connector-up, .starwarsffg .talent-connector .talent-connector-side {
+.starwarsffg .talent-connector .talent-connector-up,
+.starwarsffg .talent-connector .talent-connector-side {
   display: inline-block;
   width: 20px;
   height: 12px;
@@ -1262,7 +1339,8 @@ span.dietype.triumph {
   top: -3px;
 }
 
-.starwarsffg .talent-connector .talent-connector-up i, .starwarsffg .talent-connector .talent-connector-side i {
+.starwarsffg .talent-connector .talent-connector-up i,
+.starwarsffg .talent-connector .talent-connector-side i {
   display: initial;
   color: white;
 }
@@ -1423,6 +1501,11 @@ span.dietype.triumph {
 
 .starwarsffg .biography .biography-editor {
   height: 85%;
+}
+
+.starwarsffg .biography .bio-grid {
+  grid-column: span 5 / span 5;
+  grid-template-columns: auto auto auto auto auto;
 }
 
 .starwarsffg .item-sheet-weapon .popout-editor {
@@ -3400,6 +3483,10 @@ span.dietype.triumph {
   line-height: 15px;
 }
 
+.starwarsffg .injuries {
+  width: 100%;
+}
+
 .starwarsffg .injuries div.item {
   cursor: pointer;
 }
@@ -3415,7 +3502,7 @@ span.dietype.triumph {
 }
 
 .starwarsffg .injuries .resource.full {
-  width: 225px;
+  width: 400px;
 }
 
 .starwarsffg .injuries .block-header {
@@ -3431,9 +3518,13 @@ span.dietype.triumph {
 }
 
 .starwarsffg .injuries .item-controls {
-  position: absolute;
-  right: 0;
-  top: 0;
+  z-index: 500;
+  text-align: end;
+  margin: auto;
+}
+
+.starwarsffg .injuries .item-controls .item-control {
+  padding: 5px;
 }
 
 .starwarsffg .damage .injuries .resource.full {

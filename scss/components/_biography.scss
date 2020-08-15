@@ -119,4 +119,9 @@
   .biography-editor {
     height: 85%;
   }
+
+  .bio-grid {
+    grid-column: span 5 / span 5;
+    grid-template-columns: auto auto auto auto auto;
+  }
 }
