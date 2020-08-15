@@ -25,10 +25,11 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 15/08/2020 - Esrin - Reworked inventory, talent and critical injury displays in order to replace old tooltips with an item details fold-out on click.
 - 14/08/2020 - Cstadther - Updated character import to handle cases where modifiers on career and specializations were not initialized at 0;
-- 13/08/2020 - Cstadther - Bugfix - Fixed character import error for no force powers.  Fixed error for no max property on character data.
-- 12/08/2020 - Cstadther - Refactored _updateObject function into new item helper class, and update all formData references to new object structure.
-- 12/08/2020 - Cstadther - Refactored _updateObject function into new actor helper class
+- 13/08/2020 - Cstadther - Bugfix - Fixed character import error for no force powers. Fixed error for no max property on character data.
+- 12/08/2020 - Cstadther - Refactored \_updateObject function into new item helper class, and update all formData references to new object structure.
+- 12/08/2020 - Cstadther - Refactored \_updateObject function into new actor helper class
 - 11/08/2020 - Esrin - Bugfix to the modifiers template to ensure all modifiers are stored as data-dtype="Number" to avoid type errors such as string concatenation instead of Math() addition.
 - 11/08/2020 - Esrin - Changed ActorFFG prepareData() method to prepareDerivedData() to match the new 0.7.1 best practice workflow.
 - 11/08/2020 - Esrin - Update to declare the default Roll method as per 0.7.1 Foundry changes.
