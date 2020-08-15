@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 15/08/2020 - Esrin - Added Special Qualities display to item rolls where applicable.
 - 15/08/2020 - Esrin - Reworked inventory, talent and critical injury displays in order to replace old tooltips with an item details fold-out on click.
 - 14/08/2020 - Cstadther - Updated character import to handle cases where modifiers on career and specializations were not initialized at 0;
 - 13/08/2020 - Cstadther - Bugfix - Fixed character import error for no force powers. Fixed error for no max property on character data.
