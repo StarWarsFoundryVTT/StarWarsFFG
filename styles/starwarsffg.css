@@ -3955,6 +3955,13 @@ span.dietype.triumph {
   color: darkred;
 }
 
+.starwarsffg .item-display textarea {
+  min-height: 27px;
+  padding: 0;
+  background: rgba(200, 200, 200, 0.1);
+  border: 0;
+}
+
 .starwarsffg .item-sheet-species .characteristics {
   width: 100%;
 }
