@@ -7,20 +7,20 @@ import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
 export class CombatFFG extends Combat {
   /** @override */
   _getInitiativeRoll(combatant, formula) {
-    const cData = combatant.actor.data.data;
+    const cData = duplicate(combatant.actor.data.data);
 
     if (combatant.actor.data.type === "vehicle") {
       return new RollFFG("0");
     }
 
     if (formula === "Vigilance") {
-      formula = this._getInitiativeFormula(cData.skills.Vigilance.rank, cData.characteristics.Willpower.value);
+      formula = _getInitiativeFormula(parseInt(cData.skills.Vigilance.rank), parseInt(cData.characteristics.Willpower.value));
     } else if (formula === "Cool") {
-      formula = this._getInitiativeFormula(cData.skills.Cool.rank, cData.characteristics.Presence.value);
+      formula = _getInitiativeFormula(parseInt(cData.skills.Cool.rank), parseInt(cData.characteristics.Presence.value));
     }
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
-    console.log(formula);
+
     let roll = new RollFFG(formula, rollData).roll();
 
     const total = roll.ffg.success + roll.ffg.advantage * 0.01;
@@ -29,12 +29,12 @@ export class CombatFFG extends Combat {
 
     return roll;
   }
+}
 
-  _getInitiativeFormula(skill, ability) {
-    const dicePool = new DicePoolFFG({
-      ability: ability,
-    });
-    dicePool.upgrade(skill);
-    return dicePool.renderDiceExpression();
-  }
+function _getInitiativeFormula(skill, ability) {
+  const dicePool = new DicePoolFFG({
+    ability: ability,
+  });
+  dicePool.upgrade(skill);
+  return dicePool.renderDiceExpression();
 }
