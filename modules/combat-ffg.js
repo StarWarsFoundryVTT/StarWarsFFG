@@ -1,3 +1,5 @@
+import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
+
 /**
  * Extend the base Combat entity.
  * @extends {Combat}
@@ -19,7 +21,7 @@ export class CombatFFG extends Combat {
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
     console.log(formula);
-    let roll = new game.ffg.RollFFG(formula, rollData).roll();
+    let roll = new RollFFG(formula, rollData).roll();
 
     const total = roll.ffg.success + roll.ffg.advantage * 0.01;
     roll._result = total;

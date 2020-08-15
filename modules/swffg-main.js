@@ -123,8 +123,8 @@ Hooks.once("init", async function () {
     }
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
-    console.log(formula);
-    let roll = new game.ffg.RollFFG(formula, rollData).roll();
+
+    let roll = new RollFFG(formula, rollData).roll();
 
     const total = roll.ffg.success + roll.ffg.advantage * 0.01;
     roll._result = total;
