@@ -82,6 +82,7 @@
   "SWFFG.ItemWeaponSpecial": "Special",
   "SWFFG.ItemArmorDefense": "Def",
   "SWFFG.ItemTalentRanked": "Ranked?",
+  "SWFFG.Ranked": "Ranked",
   "SWFFG.MinionName": "Minion Name",
   "SWFFG.MinionQuantity": "Quantity",
   "SWFFG.MinionQuantityMax": "Total",

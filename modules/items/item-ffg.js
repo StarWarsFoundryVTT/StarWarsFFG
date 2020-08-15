@@ -233,6 +233,9 @@ export class ItemFFG extends Item {
     if (data.hasOwnProperty("isForceTalent")) {
       if (data.isForceTalent) props.push(game.i18n.localize("SWFFG.ForceTalent"));
     }
+    if (data.hasOwnProperty("ranks")) {
+      if (data.ranks.ranked) props.push(game.i18n.localize("SWFFG.Ranked"));
+    }
 
     // Filter properties and return
     data.properties = props.filter((p) => !!p);
