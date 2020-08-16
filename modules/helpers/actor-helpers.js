@@ -50,8 +50,8 @@ export default class ActorHelpers {
       // Handle skill rank updates
       Object.keys(this.object.data.data.skills).forEach((key) => {
         let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Skill Rank");
-        let x = parseInt(formData.data.skills[key].rank, 10) - total;
-        let y = parseInt(formData.data.attributes[key].value, 10) + x;
+        let x = parseInt(formData.data.skills[key]?.rank, 10) - total;
+        let y = parseInt(formData.data.attributes[key]?.value, 10) + x;
         if (y > 0) {
           formData.data.attributes[key].value = y;
         } else {
