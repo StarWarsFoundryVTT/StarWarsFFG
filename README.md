@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/08/2020 - Cstadther - Fixed import of force spec to add force pool modifier.
 - 17/08/2020 - Cstadther - Fixed issue with `cybernetics` in character import.
 - 15/08/2020 - Esrin - Added Special Qualities display to item rolls where applicable.
 - 15/08/2020 - Esrin - Reworked inventory, talent and critical injury displays in order to replace old tooltips with an item details fold-out on click.

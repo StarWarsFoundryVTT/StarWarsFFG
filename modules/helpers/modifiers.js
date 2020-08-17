@@ -64,7 +64,9 @@ export default class ModifierHelpers {
                 checked = true;
               }
             } else {
-              total += parseInt(attr.value, 10);
+              if (modtype === "ForcePool" && total === 0) {
+                total += parseInt(attr.value, 10);
+              }
             }
           });
         }
