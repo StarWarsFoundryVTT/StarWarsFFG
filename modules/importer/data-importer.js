@@ -1091,6 +1091,14 @@ export default class DataImporter extends FormApplication {
             // skipping career skills
           }
 
+          if (specData.Specialization?.Attributes?.ForceRating) {
+            specialization.data.attributes[`attrForceRating`] = {
+              mod: "ForcePool",
+              modtype: "Stat",
+              value: 1,
+            };
+          }
+
           for (let i = 0; i < specData.Specialization.TalentRows.TalentRow.length; i += 1) {
             const row = specData.Specialization.TalentRows.TalentRow[i];
 
