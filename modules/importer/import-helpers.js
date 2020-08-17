@@ -362,8 +362,6 @@ export default class ImportHelpers {
       CONFIG.temporary = {};
     }
 
-    console.log(characterData);
-
     let character = {
       name: characterData.Character.Description.CharName,
       type: "character",
@@ -572,6 +570,9 @@ export default class ImportHelpers {
             "careerskill": false,
             "Key": "CYBERNETICS",
             "custom": true,
+            "type": "General",
+            "characteristic": "Intellect",
+            "label": "Cybernetics",
           },
         },
         stats: {
@@ -767,8 +768,6 @@ export default class ImportHelpers {
     }
 
     delete CONFIG.temporary;
-
-    console.log(character);
   }
 
   static async characterImportDialog() {
