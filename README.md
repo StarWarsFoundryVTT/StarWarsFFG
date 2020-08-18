@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 18/08/2020 - Cstadther - Updated import to refactor xml parsing into helper function that handles BOM removal.
 - 17/08/2020 - Cstadther - Fixed import of force spec to add force pool modifier.
 - 17/08/2020 - Cstadther - Fixed issue with `cybernetics` in character import.
 - 15/08/2020 - Esrin - Added Special Qualities display to item rolls where applicable.
