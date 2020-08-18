@@ -174,4 +174,12 @@ export default class ImportHelpers {
 
     return undefined;
   }
+
+  static stringToXml = (s) => {
+    let data = s.replace(/^\uFEFF/, "");
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(data, "text/xml");
+
+    return xmlDoc;
+  };
 }

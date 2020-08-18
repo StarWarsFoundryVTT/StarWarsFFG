@@ -120,8 +120,7 @@ export default class DataImporter extends FormApplication {
         if(!zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
 
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data,"text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
   
           promises.push(this._handleGear(xmlDoc, zip));
           promises.push(this._handleWeapons(xmlDoc, zip));
@@ -287,8 +286,7 @@ export default class DataImporter extends FormApplication {
       await this.asyncForEach(forcePowersFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
-          const domparser = new DOMParser();
-          const xmlDoc1 = domparser.parseFromString(data,"text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
           const fp = JXON.xmlToJs(xmlDoc1);
   
           // setup the base information
@@ -773,8 +771,7 @@ export default class DataImporter extends FormApplication {
       await this.asyncForEach(specializationFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
-          const domparser = new DOMParser();
-          const xmlDoc = domparser.parseFromString(data,"text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
           const specData = JXON.xmlToJs(xmlDoc);
 
           let specialization = {
@@ -802,7 +799,7 @@ export default class DataImporter extends FormApplication {
                 return false;
               })
               const skills = await zip.file(skillFile.name).async("text");
-              const skillsDoc = domparser.parseFromString(skills,"text/xml");
+              const skillsDoc = ImportHelpers.stringToXml(skills);
               const skillsData = JXON.xmlToJs(skillsDoc);
             
               CONFIG.temporary.skillsMap = skillsData.Skills.Skill.map(skill => {

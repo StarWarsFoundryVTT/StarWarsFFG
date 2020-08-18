@@ -39,8 +39,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
-- 29/07/2020 - Cstadther - Bug Fix #270
-- 19/07/2020 - Cstadther - Buf Fix #227 - 
+- 18/08/2020 - Cstadther - Import Fix - Added ability to parse BOM encoded files.
+- 19/07/2020 - Cstadther - Bug Fix #227 - Fixed critical injuries issue.
 - 19/07/2020 - Cstadther - Bug Fix #232 - Fixed issue with minion groupskill calculations
 - 19/07/2020 - Cstadther - Bug Fix #222 - Fixed issue where soak options were not being used on Adversary Sheet.
 - 17/07/2020 - Cstadther - Bug Fix #218 - Fixed the Minion Sheet's scrolling issue
