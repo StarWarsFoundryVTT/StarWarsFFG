@@ -127,18 +127,15 @@ export default class DataImporter extends FormApplication {
 
       if (skillsFileName) {
         // load skills for reference
-        const data = await zip.file(skillsFileName).async("text");
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(data, "text/xml");
+        let data = await zip.file(skillsFileName).async("text");
+        const xmlDoc = ImportHelpers.stringToXml(data);
         await this._loadSkillsList(xmlDoc);
       }
 
       await this.asyncForEach(importFiles, async (file) => {
         if (!zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
-
-          const parser = new DOMParser();
-          const xmlDoc = parser.parseFromString(data, "text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
 
           promises.push(this._handleGear(xmlDoc, zip));
           promises.push(this._handleWeapons(xmlDoc, zip));
@@ -426,8 +423,7 @@ export default class DataImporter extends FormApplication {
       await this.asyncForEach(forcePowersFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
-          const domparser = new DOMParser();
-          const xmlDoc1 = domparser.parseFromString(data, "text/xml");
+          const xmlDoc1 = ImportHelpers.stringToXml(data);
           const fp = JXON.xmlToJs(xmlDoc1);
 
           // setup the base information
@@ -924,6 +920,9 @@ export default class DataImporter extends FormApplication {
 
   async _handleArmor(xmlDoc, zip) {
     this._importLogger(`Starting Armor Import`);
+
+    const fa = JXON.xmlToJs(xmlDoc);
+
     const armors = xmlDoc.getElementsByTagName("Armor");
 
     if (armors.length > 0) {
@@ -1044,8 +1043,7 @@ export default class DataImporter extends FormApplication {
       await this.asyncForEach(specializationFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
-          const domparser = new DOMParser();
-          const xmlDoc = domparser.parseFromString(data, "text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
           const specData = JXON.xmlToJs(xmlDoc);
 
           let specialization = {
@@ -1195,8 +1193,7 @@ export default class DataImporter extends FormApplication {
       await this.asyncForEach(careerFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
-          const domparser = new DOMParser();
-          const xmlDoc = domparser.parseFromString(data, "text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
           const careerData = JXON.xmlToJs(xmlDoc);
 
           let career = {
@@ -1282,8 +1279,7 @@ export default class DataImporter extends FormApplication {
       await this.asyncForEach(speciesFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
-          const domparser = new DOMParser();
-          const xmlDoc = domparser.parseFromString(data, "text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
           const speciesData = JXON.xmlToJs(xmlDoc);
 
           let species = {
@@ -1419,8 +1415,7 @@ export default class DataImporter extends FormApplication {
       await this.asyncForEach(vehicleFiles, async (file) => {
         try {
           const data = await zip.file(file.name).async("text");
-          const domparser = new DOMParser();
-          const xmlDoc = domparser.parseFromString(data, "text/xml");
+          const xmlDoc = ImportHelpers.stringToXml(data);
           const vehicleData = JXON.xmlToJs(xmlDoc);
 
           let sensorRange;
