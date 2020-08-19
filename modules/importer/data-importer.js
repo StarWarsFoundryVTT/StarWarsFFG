@@ -781,7 +781,7 @@ export default class DataImporter extends FormApplication {
           const crit = weapon.getElementsByTagName("Crit")[0]?.textContent;
 
           const skillkey = weapon.getElementsByTagName("SkillKey")[0]?.textContent;
-          const range = weapon.getElementsByTagName("Range")[0]?.textContent;
+          const range = weapon.getElementsByTagName("RangeValue")[0]?.textContent.replace("wr", "");
           const hardpoints = weapon.getElementsByTagName("HP")[0]?.textContent;
 
           const weaponType = weapon.getElementsByTagName("Type")[0]?.textContent;

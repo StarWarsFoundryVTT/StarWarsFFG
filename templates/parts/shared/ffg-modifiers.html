@@ -22,6 +22,8 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/iff}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") )}} {{#each ../this.FFG.skills as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
+      {{/each}} {{/if}} {{#if (eq attr.modtype "Weapon Stat") }} {{#each ../this.FFG.weapon_stats as |t|}}
+      <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{/select}}
     </select>
     {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}} <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} /> {{else}}
