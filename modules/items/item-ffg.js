@@ -213,7 +213,7 @@ export class ItemFFG extends Item {
     // General equipment properties
     if (this.type !== "talent") {
       if (data.hasOwnProperty("special")) {
-        if (data.safe_spec) props.push("Special qualities: " + data.safe_spec);
+        if (data.safe_spec) props.push("<div>Special qualities: " + data.special.value + "</div");
       }
       if (data.hasOwnProperty("equippable")) {
         props.push(game.i18n.localize(data.equippable.equipped ? "SWFFG.Equipped" : "SWFFG.Unequipped"));

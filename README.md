@@ -25,8 +25,9 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 19/08/2020 - Esrin - Updated Roll template and ItemDetails methods to correctly display the new embedded Item Qualities.
 - 18/08/2020 - Cstadther - Fixed actor sheet updates as they were broken with the new formData deep object.
-- 18/08/2020 - Cstadther - Added Item Qualities to Oggdude Import.  Will import qualities as Journal Entries and attach them to weapons in specials area.
+- 18/08/2020 - Cstadther - Added Item Qualities to Oggdude Import. Will import qualities as Journal Entries and attach them to weapons in specials area.
 - 18/08/2020 - Cstadther - Fixed Weapon Import ranges which was using a none standard field, fixed item sheet updates as they were broken with the new formData deep object, fixed issue with weapon stat modifiers.
 - 18/08/2020 - Cstadther - Updated import to refactor xml parsing into helper function that handles BOM removal.
 - 17/08/2020 - Cstadther - Fixed import of force spec to add force pool modifier.
