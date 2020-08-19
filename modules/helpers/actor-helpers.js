@@ -2,6 +2,8 @@ import ModifierHelpers from "./modifiers.js";
 
 export default class ActorHelpers {
   static updateActor(event, formData) {
+    formData = expandObject(formData);
+
     if (this.object.data.type !== "vehicle") {
       // Handle characteristic updates
       Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
