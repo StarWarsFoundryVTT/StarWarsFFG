@@ -91,6 +91,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Careers", true);
         this._enableImportSelection(zip.files, "Species", true);
         this._enableImportSelection(zip.files, "Vehicles", true);
+        this._enableImportSelection(zip.files, "ItemDescriptors");
       } catch (err) {
         console.error(err);
       }
@@ -130,6 +131,14 @@ export default class DataImporter extends FormApplication {
         let data = await zip.file(skillsFileName).async("text");
         const xmlDoc = ImportHelpers.stringToXml(data);
         await this._loadSkillsList(xmlDoc);
+      }
+
+      const itemDescriptors = importFiles.find((item) => item.file.includes("ItemDescriptors.xml"));
+
+      if (itemDescriptors) {
+        let data = await zip.file(itemDescriptors.file).async("text");
+        const xmlDoc = ImportHelpers.stringToXml(data);
+        await this._loadItemDescriptors(xmlDoc);
       }
 
       await this.asyncForEach(importFiles, async (file) => {
@@ -219,6 +228,63 @@ export default class DataImporter extends FormApplication {
         CONFIG.temporary.skills[importkey] = name;
       }
     }
+  }
+
+  async _loadItemDescriptors(xmlDoc) {
+    this._importLogger(`Starting Item Qualities Import`);
+    const descriptors = xmlDoc.getElementsByTagName("ItemDescriptor");
+    if (descriptors.length > 0) {
+      let totalCount = descriptors.length;
+      let currentCount = 0;
+      $(".import-progress.itemdescriptors").toggleClass("import-hidden");
+      let pack = await this._getCompendiumPack("JournalEntry", `oggdude.ItemQualities`);
+      CONFIG.temporary["descriptors"] = {};
+
+      await this.asyncForEach(descriptors, async (descriptor) => {
+        try {
+          const d = JXON.xmlToJs(descriptor);
+
+          if (d.Type && d?.Description?.length && d.Description.length > 0) {
+            let itemDescriptor = {
+              name: d.Name,
+              flags: {
+                importid: d.Key,
+              },
+              content: d.Description,
+            };
+
+            let compendiumItem;
+            await pack.getIndex();
+            let entry = pack.index.find((e) => e.name === itemDescriptor.name);
+
+            if (!entry) {
+              CONFIG.logger.debug(`Importing Item Quality - JournalEntry`);
+              compendiumItem = new JournalEntry(itemDescriptor, { temporary: true });
+              this._importLogger(`New item quality ${d.Name} : ${JSON.stringify(compendiumItem)}`);
+              let id = await pack.importEntity(compendiumItem);
+              CONFIG.temporary["descriptors"][d.Key] = id.id;
+            } else {
+              CONFIG.logger.debug(`Updating Item Quality - JournalEntry`);
+              //let updateData = ImportHelpers.buildUpdateData(itemDescriptor);
+              let updateData = itemDescriptor;
+              updateData["_id"] = entry._id;
+              CONFIG.temporary["descriptors"][d.Key] = entry._id;
+              this._importLogger(`Updating item quality ${d.Name} : ${JSON.stringify(updateData)}`);
+              pack.updateEntity(updateData);
+            }
+          }
+          currentCount += 1;
+
+          $(".itemdescriptors .import-progress-bar")
+            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+          this._importLogger(`End importing item quality ${d.Name}`);
+        } catch (err) {
+          CONFIG.logger.error(`Error importing record : `, err);
+        }
+      });
+    }
+    this._importLogger(`Completed Item Qualities Import`);
   }
 
   async _handleTalents(xmlDoc, zip) {
@@ -818,7 +884,11 @@ export default class DataImporter extends FormApplication {
 
           if (fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
             fp.Qualities.Quality.forEach((quality) => {
-              qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
+              if (CONFIG.temporary?.descriptors && CONFIG.temporary?.descriptors?.[quality.Key]) {
+                qualities.push(`<a class="entity-link" draggable="true" data-pack="world.oggdudeitemqualities" data-id="${CONFIG.temporary.descriptors[quality.Key]}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
+              } else {
+                qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
+              }
             });
           }
 
