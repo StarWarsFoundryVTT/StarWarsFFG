@@ -1,12 +1,17 @@
 export default class ItemHelpers {
   static itemUpdate(event, formData) {
+    formData = expandObject(formData);
+
     if (this.object.isOwned && this.object.actor?.compendium?.metadata) {
       return;
     }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
-    if (this.object.data.type === "weapon" && (formData.data.skill.value === "Melee" || formData.data.skill.value === "Brawl")) {
-      formData.data.damage.value = 0;
+    const isMelee = formData?.data?.skill?.value ? formData.data.skill.value === "Melee" : formData[`data.skill.value`] === "Melee";
+    const isBrawl = formData?.data?.skill?.value ? formData.data.skill.value === "Brawl" : formData[`data.skill.value`] === "Brawl";
+
+    if (this.object.data.type === "weapon" && (isMelee || isBrawl)) {
+      setProperty(formData, `data.damage.value`, 0);
     }
 
     // Handle the free-form attributes list
