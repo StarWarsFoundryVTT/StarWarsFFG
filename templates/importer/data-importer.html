@@ -54,6 +54,15 @@
     </div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
+        <input type="checkbox" id="importItemDescriptors" name="imports" value="/ItemDescriptors.xml" data-name="ItemDescriptors" data-type="JournalEntry" data-itemtype="itemdescriptors" disabled />
+        <label for="importItemDescriptors"> {{localize "SWFFG.ItemDescriptors"}}</label><br />
+      </div>
+      <div class="import-progress itemdescriptors import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
         <input type="checkbox" id="importSpecializations" name="imports" value="/Specializations/" data-name="Specializations" data-type="Item" data-itemtype="specialization" disabled />
         <label for="importSpecializations"> {{localize "SWFFG.Specializations"}}</label><br />
       </div>
