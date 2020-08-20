@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 20/08/2020 - Cstadther - Applied same code from Character to Adversary sheet.  Updated minions, so that skills can be upgraded as non-squad minions.
 - 20/08/2020 - Cstadther - Fixed issue where minion Soak was always increasing.
 - 19/08/2020 - Esrin - Updated Roll template and ItemDetails methods to correctly display the new embedded Item Qualities.
 - 18/08/2020 - Cstadther - Fixed actor sheet updates as they were broken with the new formData deep object.
