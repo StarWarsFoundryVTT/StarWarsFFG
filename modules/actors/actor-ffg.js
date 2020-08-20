@@ -119,7 +119,7 @@ export class ActorFFG extends Actor {
           skill.rank = 0;
         }
       } else if (!skill.groupskill) {
-        skill.rank = 0;
+        skill.rank = data.attributes[key].value;
       }
     }
   }

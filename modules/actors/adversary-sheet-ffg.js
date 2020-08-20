@@ -157,7 +157,7 @@ export class AdversarySheetFFG extends ActorSheet {
     }
 
     // Toggle item equipped
-    html.find("table.items .item a.toggle-equipped").click((ev) => {
+    html.find(".items .item a.toggle-equipped").click((ev) => {
       const li = $(ev.currentTarget);
       const item = this.actor.getOwnedItem(li.data("itemId"));
       if (item) {
@@ -165,35 +165,22 @@ export class AdversarySheetFFG extends ActorSheet {
       }
     });
 
-    // Update Inventory Item - By clicking entire line
-    html.find("table.items .item, .header-description-block .item, .injuries .item").click((ev) => {
-      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fa-times")) {
+    // Toggle item details
+    html.find(".items .item, .header-description-block .item, .injuries .item").click(async (ev) => {
+      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
         const li = $(ev.currentTarget);
-        const item = this.actor.getOwnedItem(li.data("itemId"));
-        if (item?.sheet) {
-          item.sheet.render(true);
-        }
-      }
-    });
-    // Update Talent - By clicking entire line
-    html.find(".talents .item").click(async (ev) => {
-      if (!$(ev.target).hasClass("fa-trash")) {
-        const li = $(ev.currentTarget);
-        const row = $(li).parents("tr")[0];
-
         let itemId = li.data("itemId");
-
         let item = this.actor.getOwnedItem(itemId);
+
         if (!item) {
           item = game.items.get(itemId);
-
-          if (!item) {
-            item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
-          }
         }
-
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
         if (item?.sheet) {
-          item.sheet.render(true);
+          if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
+          else this._itemDisplayDetails(item, ev);
         }
       }
     });
@@ -203,6 +190,23 @@ export class AdversarySheetFFG extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       this.actor.deleteOwnedItem(li.data("itemId"));
       li.slideUp(200, () => this.render(false));
+    });
+
+    // Edit Inventory Item
+    html.find(".item-edit").click(async (ev) => {
+      const li = $(ev.currentTarget).parents(".item");
+      let itemId = li.data("itemId");
+      let item = this.actor.getOwnedItem(itemId);
+      if (!item) {
+        item = game.items.get(itemId);
+
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+      }
+      if (item?.sheet) {
+        item.sheet.render(true);
+      }
     });
 
     html.find(".item-info").click((ev) => {
@@ -269,6 +273,18 @@ export class AdversarySheetFFG extends ActorSheet {
         await DiceHelpers.rollSkill(this, event, upgradeType);
       });
 
+    // Roll from [ROLL][/ROLL] tag.
+    html.find(".rollSkillDirect").on("click", async (event) => {
+      let data = event.currentTarget.dataset;
+      if (data) {
+        let sheet = this.getData();
+        let skill = sheet.data.skills[data["skill"]];
+        let characteristic = sheet.data.characteristics[skill.characteristic];
+        let difficulty = data["difficulty"];
+        await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+      }
+    });
+
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
@@ -304,6 +320,30 @@ export class AdversarySheetFFG extends ActorSheet {
     });
   }
 
+  /**
+   * Display details of an item.
+   * @private
+   */
+  _itemDisplayDetails(item, event) {
+    event.preventDefault();
+    let li = $(event.currentTarget),
+      itemDetails = item.getItemDetails();
+
+    // Toggle summary
+    if (li.hasClass("expanded")) {
+      let details = li.children(".item-details");
+      details.slideUp(200, () => details.remove());
+    } else {
+      let div = $(`<div class="item-details">${itemDetails.prettyDesc}</div>`);
+      let props = $(`<div class="item-properties"></div>`);
+      itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
+      div.append(props);
+      li.append(div.hide());
+      div.slideDown(200);
+    }
+    li.toggleClass("expanded");
+  }
+
   _onChangeSkillCharacteristic(a) {
     //const a = event.currentTarget;
     const characteristic = $(a).data("characteristic");
@@ -329,7 +369,10 @@ export class AdversarySheetFFG extends ActorSheet {
 
               CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
-              this.object.update({ [`data.skills.${ability}.characteristic`]: newCharacteristic });
+              let updateData;
+              setProperty(updateData, `data.skills.${ability}.characteristic`, newCharacteristic);
+
+              this.object.update(updateData);
             },
           },
           two: {
@@ -375,8 +418,10 @@ export class AdversarySheetFFG extends ActorSheet {
 
               if (name.trim().length > 0) {
                 CONFIG.logger.debug(`Creating new skill ${name} (${characteristic})`);
+                let updateData;
+                setProperty(updateData, `data.skills.${name}`, newSkill);
 
-                this.object.update({ [`data.skills.${name}`]: newSkill });
+                this.object.update(updateData);
               }
             },
           },
