@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 20/08/2020 - Cstadther - Fixed import issue where weapon count was not listed in XML file, default to count 1.
 - 20/08/2020 - Cstadther - Fixed display and functionality for vehichle sheets, switched to using partial for items/weapons.
 - 20/08/2020 - Cstadther - Applied same code from Character to Adversary sheet.  Updated minions, so that skills can be upgraded as non-squad minions.
 - 20/08/2020 - Cstadther - Fixed issue where minion Soak was always increasing.
