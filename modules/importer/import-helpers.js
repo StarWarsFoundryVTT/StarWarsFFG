@@ -830,4 +830,23 @@ export default class ImportHelpers {
 
     return xmlDoc;
   };
+
+  /**
+   * Read data from a user provided File object
+   * @param {File} file           A File object
+   * @return {Promise.<String>}   A Promise which resolves to the loaded text data
+   */
+  static readBlobFromFile(file) {
+    const reader = new FileReader();
+    return new Promise((resolve, reject) => {
+      reader.onload = (ev) => {
+        resolve(reader.result);
+      };
+      reader.onerror = (ev) => {
+        reader.abort();
+        reject();
+      };
+      reader.readAsBinaryString(file);
+    });
+  }
 }
