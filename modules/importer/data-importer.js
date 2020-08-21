@@ -1578,7 +1578,12 @@ export default class DataImporter extends FormApplication {
             try {
               let weaponData = JSON.parse(JSON.stringify(await ImportHelpers.findCompendiumEntityByImportId("Item", weapon.Key)));
 
-              for (let i = 0; i < parseInt(weapon.Count, 10); i += 1) {
+              let weapons = 1;
+              if (weapon.Count) {
+                weapons = weapon.Count;
+              }
+
+              for (let i = 0; i < weapons; i += 1) {
                 if (!weaponData.data.firingarc) {
                   weaponData.data.firingarc = {};
                 }
