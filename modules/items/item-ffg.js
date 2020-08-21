@@ -29,7 +29,7 @@ export class ItemFFG extends Item {
         const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.value)}`;
         data.range.label = rangeId;
 
-        if (this.isOwned && this.actor) {
+        if (this.isOwned && this.actor && this.actor.type !== "vehicle") {
           if (data.skill.value === "Melee" || data.skill.value === "Brawl") {
             let damageAdd = 0;
             for (let attr in data.attributes) {
