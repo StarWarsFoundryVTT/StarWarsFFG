@@ -72,15 +72,26 @@ export default class DataImporter extends FormApplication {
     if (action === "load") {
       try {
         const selectedFile = $("#import-file").val();
-        const zip = await fetch(`/${selectedFile}`)
-          .then(function (response) {
-            if (response.status === 200 || response.status === 0) {
-              return Promise.resolve(response.blob());
-            } else {
-              return Promise.reject(new Error(response.statusText));
-            }
-          })
-          .then(JSZip.loadAsync);
+
+        let zip;
+
+        if (selectedFile) {
+          zip = await fetch(`/${selectedFile}`)
+            .then(function (response) {
+              if (response.status === 200 || response.status === 0) {
+                return Promise.resolve(response.blob());
+              } else {
+                return Promise.reject(new Error(response.statusText));
+              }
+            })
+            .then(JSZip.loadAsync);
+        } else {
+          const form = $("form.data-importer-window")[0];
+
+          if (form.data.files.length) {
+            zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+          }
+        }
 
         this._enableImportSelection(zip.files, "Talents");
         this._enableImportSelection(zip.files, "Force Abilities");
@@ -93,6 +104,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Vehicles", true);
         this._enableImportSelection(zip.files, "ItemDescriptors");
       } catch (err) {
+        ui.notifications.warn("There was an error trying to load the import file, check the console log for more information.");
         console.error(err);
       }
     }
@@ -110,15 +122,25 @@ export default class DataImporter extends FormApplication {
       const selectedFile = $("#import-file").val();
       this._importLogger(`Using ${selectedFile} for import source`);
 
-      const zip = await fetch(`/${selectedFile}`)
-        .then(function (response) {
-          if (response.status === 200 || response.status === 0) {
-            return Promise.resolve(response.blob());
-          } else {
-            return Promise.reject(new Error(response.statusText));
-          }
-        })
-        .then(JSZip.loadAsync);
+      let zip;
+
+      if (selectedFile) {
+        zip = await fetch(`/${selectedFile}`)
+          .then(function (response) {
+            if (response.status === 200 || response.status === 0) {
+              return Promise.resolve(response.blob());
+            } else {
+              return Promise.reject(new Error(response.statusText));
+            }
+          })
+          .then(JSZip.loadAsync);
+      } else {
+        const form = $("form.data-importer-window")[0];
+
+        if (form.data.files.length) {
+          zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+        }
+      }
 
       const promises = [];
       let isSpecialization = false;
@@ -182,33 +204,6 @@ export default class DataImporter extends FormApplication {
       CONFIG.temporary = {};
       this.close();
     }
-
-    /** Future functionality to allow users to select files to import */
-
-    // const dataFiles = Object.values(zip.files).filter(file => {
-    //   return !file.dir && file.name.split('.').pop() === 'xml';
-    // })
-
-    // const allProgress = (proms, progress_cb) => {
-    //   let d = 0;
-    //   progress_cb(0);
-    //   for (const p of proms) {
-    //     p.then(()=> {
-    //       d ++;
-    //       progress_cb( (d * 100) / proms.length );
-    //     });
-    //   }
-    //   return Promise.all(proms);
-    // }
-
-    // const promises = [];
-    // const filesData = dataFiles.map(file => {
-    //   promises.push(zip.file(file.name).async("text"));
-    // })
-
-    // const data = await allProgress(promises, (p) => {
-    //   console.log(`% Done = ${p.toFixed(2)}`);
-    // });
   }
 
   async _loadSkillsList(xmlDoc) {
