@@ -659,6 +659,12 @@ export default class ImportHelpers {
         if (spec.isStartingSpec && spec.isStartingSpec === "true") {
           for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
             if (spec.Talents.CharTalent[i].Purchased) {
+              const talent = await this.findCompendiumEntityById("Item", specialization.data.talents[`talent${i}`].itemId);
+              if (talent) {
+                specialization.data.talents[`talent${i}`].isRanked = talent.data.data.ranks.ranked;
+                specialization.data.talents[`talent${i}`].rank = talent.data.data.ranks.current;
+                specialization.data.talents[`talent${i}`].activation = talent.data.data.activation.value;
+              }
               specialization.data.talents[`talent${i}`].islearned = true;
             }
           }
@@ -668,10 +674,16 @@ export default class ImportHelpers {
           if (newspec) {
             for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
               if (spec.Talents.CharTalent[i].Purchased) {
+                const talent = await this.findCompendiumEntityById("Item", newspec.data.talents[`talent${i}`].itemId);
+
+                if (talent) {
+                  newspec.data.talents[`talent${i}`].isRanked = talent.data.data.ranks.ranked;
+                  newspec.data.talents[`talent${i}`].rank = talent.data.data.ranks.current;
+                  newspec.data.talents[`talent${i}`].activation = talent.data.data.activation.value;
+                }
                 newspec.data.talents[`talent${i}`].islearned = true;
               }
             }
-
             character.items.push(newspec);
           }
         }
@@ -679,6 +691,12 @@ export default class ImportHelpers {
     } else {
       for (let i = 0; i < characterData.Character.Specializations.CharSpecialization.Talents.CharTalent.length; i += 1) {
         if (characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].Purchased) {
+          const talent = await this.findCompendiumEntityById("Item", newspec.data.talents[`talent${i}`].itemId);
+          if (talent) {
+            newspec.data.talents[`talent${i}`].isRanked = talent.data.data.ranks.ranked;
+            newspec.data.talents[`talent${i}`].rank = talent.data.data.ranks.current;
+            newspec.data.talents[`talent${i}`].activation = talent.data.data.activation.value;
+          }
           specialization.data.talents[`talent${i}`].islearned = true;
         }
       }
@@ -767,7 +785,7 @@ export default class ImportHelpers {
       await Actor.create(character);
     }
 
-    delete CONFIG.temporary;
+    CONFIG.temporary = {};
   }
 
   static async characterImportDialog() {

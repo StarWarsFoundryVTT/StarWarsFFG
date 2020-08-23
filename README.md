@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 21/08/2020 - Cstadther - Fixed issue with imported characters displaying talents incorrectly.  Allowed import of qualities with no description to be imported.
 - 21/08/2020 - Cstadther - Added ability to select OggDude import file from local client, so uploading to server is not needed.
 - 20/08/2020 - Cstadther - Fixed import issue where weapon count was not listed in XML file, default to count 1.
 - 20/08/2020 - Cstadther - Fixed display and functionality for vehichle sheets, switched to using partial for items/weapons.

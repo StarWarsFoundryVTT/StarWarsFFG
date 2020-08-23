@@ -239,13 +239,13 @@ export default class DataImporter extends FormApplication {
         try {
           const d = JXON.xmlToJs(descriptor);
 
-          if (d.Type && d?.Description?.length && d.Description.length > 0) {
+          if (d.Type) {
             let itemDescriptor = {
               name: d.Name,
               flags: {
                 importid: d.Key,
               },
-              content: d.Description,
+              content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
             };
 
             let compendiumItem;
