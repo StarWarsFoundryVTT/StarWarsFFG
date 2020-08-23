@@ -46,8 +46,8 @@ export class ItemFFG extends Item {
       case "shipweapon":
         const vehiclerangeId = `SWFFG.VehicleRange${this._capitalize(data.range.value)}`;
         data.range.label = vehiclerangeId;
-        const firingarcId = `SWFFG.VehicleFiringArc${this._capitalize(data.firingarc.value)}`;
-        data.firingarc.label = firingarcId;
+        // const firingarcId = `SWFFG.VehicleFiringArc${this._capitalize(data.firingarc.value)}`;
+        // data.firingarc.label = firingarcId;
         break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
