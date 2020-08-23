@@ -83,6 +83,9 @@ export default class ActorHelpers {
       }
     }
 
+    // recombine attributes to formData
+    formData.data.attributes = attributes;
+
     // Update the Actor
     this.actor.data.flags.loaded = false;
     return this.object.update(formData);
