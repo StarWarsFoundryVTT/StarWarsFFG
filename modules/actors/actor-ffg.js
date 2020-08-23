@@ -336,7 +336,13 @@ export class ActorFFG extends Actor {
     const attributes = Object.keys(data.attributes)
       .filter((key) =>
         Object.keys(properties)
-          .map((item) => item.toLowerCase())
+          .map((item) => {
+            if (properties[item]?.value) {
+              return properties[item].value.toLowerCase();
+            } else {
+              return item.toLowerCase();
+            }
+          })
           .includes(key.toLowerCase())
       )
       .map((key) => Object.assign(data.attributes[key], { key }));
