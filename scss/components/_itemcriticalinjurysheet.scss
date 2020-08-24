@@ -1,4 +1,8 @@
 .item-sheet-criticalinjury {
+  .sheet-header {
+    overflow: visible;
+  }
+
   .sheet-body {
     height: calc(100% - 12rem);
   }

@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 23/08/2020 - Cstadther - Bug Fix #306 - Updated styles for critical injury/damage to allow enhanced dropdown to render correctly.
 - 23/08/2020 - Cstadther - Bug Fix #305 Defense autocalc was incorrectly adding upon save.  Fix issue with removing modifiers.
 - 21/08/2020 - Cstadther - Fixed issue with imported characters displaying talents incorrectly.  Allowed import of qualities with no description to be imported.
 - 21/08/2020 - Cstadther - Added ability to select OggDude import file from local client, so uploading to server is not needed.

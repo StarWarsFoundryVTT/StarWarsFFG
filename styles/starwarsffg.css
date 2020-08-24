@@ -3387,6 +3387,10 @@ span.dietype.triumph {
   text-align: center;
 }
 
+.starwarsffg .item-sheet-criticalinjury .sheet-header {
+  overflow: visible;
+}
+
 .starwarsffg .item-sheet-criticalinjury .sheet-body {
   height: calc(100% - 12rem);
 }
