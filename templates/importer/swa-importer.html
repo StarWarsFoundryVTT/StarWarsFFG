@@ -1,0 +1,21 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <div class="import-file-selector">
+    <div>
+      <input type="file" name="data" accept=".zip" />
+    </div>
+  </div>
+  <div>
+    <div class="import-progress current import-hidden">
+      <div class="import-progress-bar" style="width: 0%;"></div>
+    </div>
+    <div class="import-progress overall import-hidden">
+      <div class="import-progress-bar" style="width: 0%;"></div>
+    </div>
+  </div>
+  <div>
+    <button class="dialog-button" data-button="import">
+      <i class="fas fa-file-import"></i>
+      {{localize "SWFFG.ImportFile"}}
+    </button>
+  </div>
+</form>

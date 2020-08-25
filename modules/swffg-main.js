@@ -17,6 +17,7 @@ import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 import DataImporter from "./importer/data-importer.js";
+import SWAImporter from "./importer/swa-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
@@ -280,6 +281,24 @@ Hooks.once("init", async function () {
 
   game.settings.register("starwarsffg", "odImporter", {
     name: "Item Importer",
+    scope: "world",
+    default: {},
+    config: false,
+    default: {},
+    type: Object,
+  });
+
+  game.settings.registerMenu("starwarsffg", "swaImporter", {
+    name: "Adversaries Import",
+    label: "SW Adversaries Importer",
+    hint: "Import data from an SW Adversaries into Foundry",
+    icon: "fas fa-file-import",
+    type: SWAImporter,
+    restricted: true,
+  });
+
+  game.settings.register("starwarsffg", "swaImporter", {
+    name: "Adversaries Importer",
     scope: "world",
     default: {},
     config: false,
