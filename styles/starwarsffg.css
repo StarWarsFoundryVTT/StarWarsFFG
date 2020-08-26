@@ -3819,6 +3819,14 @@ span.dietype.triumph {
   width: 100%;
 }
 
+.starwarsffg.data-import .import-progress.current {
+  width: inherit;
+}
+
+.starwarsffg.data-import .import-progress.overall {
+  width: inherit;
+}
+
 .starwarsffg.data-import .import-progress .import-progress-bar {
   height: 24px;
   background-color: green;

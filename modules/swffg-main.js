@@ -18,6 +18,7 @@ import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 import DataImporter from "./importer/data-importer.js";
 import SWAImporter from "./importer/swa-importer.js";
+import CharacterImporter from "./importer/character-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
@@ -554,7 +555,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 
   html.find(".og-character").click(async (event) => {
     event.preventDefault();
-    await ImportHelpers.characterImportDialog();
+    new CharacterImporter().render(true);
   });
 });
 

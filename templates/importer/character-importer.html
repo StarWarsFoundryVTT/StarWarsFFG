@@ -1,0 +1,19 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <p class="notes">You may import character data from an exported OggDude XML file.</p>
+  <p class="notes">This operation will update the data for a previously imported version.</p>
+  <div class="form-group">
+    <label for="data">Source Data</label>
+    <input type="file" name="data" />
+  </div>
+  <div>
+    <div class="import-progress current import-hidden">
+      <div class="import-progress-bar" style="width: 0%;"></div>
+    </div>
+  </div>
+  <div>
+    <button class="dialog-button" data-button="import">
+      <i class="fas fa-file-import"></i>
+      {{localize "SWFFG.ImportFile"}}
+    </button>
+  </div>
+</form>
