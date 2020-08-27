@@ -2,6 +2,7 @@ import PopoutEditor from "../popout-editor.js";
 import Helpers from "../helpers/common.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
+import ImportHelpers from "../importer/import-helpers.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -183,7 +184,25 @@ export class ItemSheetFFG extends ItemSheet {
       const parent = $(li).parents(".specialization-talent")[0];
       const itemId = parent.dataset.itemid;
 
-      const item = await Helpers.getSpecializationTalent(itemId);
+      let item = await Helpers.getSpecializationTalent(itemId);
+      if (!item) {
+        const packName = $(parent).find(`input[name='data.talents.${parent.id}.pack']`).val();
+        const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
+        if (packName) {
+          const pack = await game.packs.get(packName);
+          await pack.getIndex();
+          const entity = await pack.index.find((e) => e.name === talentName);
+          if (entity) {
+            item = await pack.getEntity(entity._id);
+
+            let updateData = {};
+            // build dataset if needed
+            setProperty(updateData, `data.talents.${parent.id}.itemId`, entity._id);
+            this.object.update(updateData);
+          }
+        }
+      }
+
       item.sheet.render(true);
     });
 
