@@ -378,6 +378,7 @@ export default class ImportHelpers {
           importid: characterData.Character.Key,
         },
         data: {
+          attributes: {},
           characteristics: {
             "Brawn": {
               "value": 0,
@@ -603,6 +604,15 @@ export default class ImportHelpers {
       characterData.Character.Characteristics.CharCharacteristic.forEach((char) => {
         if (char.Rank?.PurchasedRanks) {
           character.data.characteristics[char.Name].value = parseInt(char.Rank.PurchasedRanks, 10);
+          if (!character.data.attributes?.[char.name]) {
+            character.data.attributes[char.Name] = {
+              key: char.name,
+              mod: char.name,
+              modtype: "Characteristic",
+              value: 0,
+            };
+          }
+          character.data.attributes[char.Name].value = parseInt(char.Rank.PurchasedRanks, 10);
         }
       });
 
@@ -616,6 +626,16 @@ export default class ImportHelpers {
         }
         if (skill.Rank?.PurchasedRanks) {
           character.data.skills[charSkill].rank = parseInt(skill.Rank.PurchasedRanks, 10);
+
+          if (!character.data.attributes?.[charSkill]) {
+            character.data.attributes[charSkill] = {
+              key: charSkill,
+              mod: charSkill,
+              modtype: "Skill Rank",
+              value: 0,
+            };
+          }
+          character.data.attributes[charSkill].value = parseInt(skill.Rank.PurchasedRanks, 10);
         }
       });
 

@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 27/08/2020 - Cstadther - Updated Character Import to fix issue with updating characteristics and skills (they use attributes to define purchased ranks)
 - 26/08/2020 - Cstadther - Enhanced Specialization Display, if specialization talent is not found by id, search for it based on name and update id as needed.
 - 26/08/2020 - Cstadther - Enhanced OggDude Character Import, moved to FormApplication, added progress bar, added additional error handling and logging.
 - 25/08/2020 - Cstadther - Fixed issue with Character Import with single specialization.
