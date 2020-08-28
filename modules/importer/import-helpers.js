@@ -616,7 +616,7 @@ export default class ImportHelpers {
         }
       });
 
-      const skills = characterData.Character.Skills.CharSkill.filter((skill) => skill.Rank?.PurchasedRanks || skill.isCareer === "true");
+      const skills = characterData.Character.Skills.CharSkill;
 
       skills.forEach((skill) => {
         let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === skill.Key);
@@ -637,6 +637,9 @@ export default class ImportHelpers {
         if (skill.Rank?.PurchasedRanks) {
           character.data.skills[charSkill].rank = parseInt(skill.Rank.PurchasedRanks, 10);
           character.data.attributes[charSkill].value = parseInt(skill.Rank.PurchasedRanks, 10);
+        } else {
+          character.data.skills[charSkill].rank = 0;
+          character.data.attributes[charSkill].value = 0;
         }
       });
 
