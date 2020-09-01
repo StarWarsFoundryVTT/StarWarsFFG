@@ -90,6 +90,8 @@ export class ActorFFG extends Actor {
       if (game.settings.get("starwarsffg", "enableSoakCalc")) {
         this._calculateDerivedValues(actorData);
       }
+    } else if (actorData.type === "vehicle") {
+      this._applyVehicelModifiers(actorData);
     }
   }
 
@@ -360,16 +362,20 @@ export class ActorFFG extends Actor {
       if (!attr) {
         let value = 0;
 
-        if (data[name][k]?.max && name !== "characteristics" && name !== "skills") {
-          value = data[name][k].max;
-        } else if (key === "Defence-Melee") {
+        if (key === "Defence-Melee") {
           value = data.stats.defence.melee;
         } else if (key === "Defence-Ranged") {
           value = data.stats.defence.ranged;
         } else if (name === "skills") {
           value = data[name][k].rank;
+        } else if (key === "Shields") {
+          value = [data[name][k].fore, data[name][k].port, data[name][k].starboard, data[name][k].aft];
         } else {
-          value = data[name][k].value;
+          if (data[name][k]?.max) {
+            value = data[name][k].max;
+          } else {
+            value = data[name][k].value;
+          }
         }
 
         // the expected attrbute for the characteristic doesn't exist, this is an older or new character, we need to migrate the current value to an attribute
@@ -482,6 +488,39 @@ export class ActorFFG extends Actor {
         data.skills[key].rank = total > 6 ? 6 : total;
       } else {
         data.skills[key].rank = total;
+      }
+    });
+  }
+
+  _applyVehicelModifiers(actorData) {
+    const data = actorData.data;
+    const isPC = this.isPC;
+    if (!actorData.modifiers) {
+      actorData.modifiers = {};
+    }
+
+    this._setModifiers(actorData, CONFIG.FFG.vehicle_stats, "stats", "Stat");
+    Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
+      const key = CONFIG.FFG.vehicle_stats[k].value;
+
+      let total = 0;
+      if (k === "shields") {
+      } else {
+        total += data.attributes[key].value;
+      }
+      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Stat");
+
+      if (k === "shields") {
+        data.stats[k].fore = data.attributes[key].value[0] + total > 0 ? data.attributes[key].value[0] + total : 0;
+        data.stats[k].port = data.attributes[key].value[1] + total > 0 ? data.attributes[key].value[1] + total : 0;
+        data.stats[k].starboard = data.attributes[key].value[2] + total > 0 ? data.attributes[key].value[2] + total : 0;
+        data.stats[k].aft = data.attributes[key].value[3] + total > 0 ? data.attributes[key].value[3] + total : 0;
+      } else {
+        if (data.stats?.[k].max) {
+          data.stats[k].max = total;
+        } else {
+          data.stats[k].value = total;
+        }
       }
     });
   }
