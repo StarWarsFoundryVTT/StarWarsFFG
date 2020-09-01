@@ -491,7 +491,7 @@ export class ItemSheetFFG extends ItemSheet {
         tree.push(specialization.id);
 
         if (!data.pack) {
-          let formData;
+          let formData = {};
           setProperty(formData, `data.trees`, tree);
           itemObject.update(formData);
           //itemObject.update({ [`data.trees`]: tree });
