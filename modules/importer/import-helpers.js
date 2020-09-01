@@ -828,6 +828,11 @@ export default class ImportHelpers {
           await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
             const weapon = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
             if (weapon) {
+              if (w?.Count) {
+                weapon.data.data.quantity = {
+                  value: parseInt(w.Count, 10),
+                };
+              }
               character.items.push(weapon);
             } else {
               CONFIG.logger.error(`Unable to add weapon ${w.ItemKey} to character.`);
@@ -836,6 +841,11 @@ export default class ImportHelpers {
         } else {
           const weapon = await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey);
           if (weapon) {
+            if (characterData.Character.Weapons.CharWeapon?.Count) {
+              weapon.data.data.quantity = {
+                value: parseInt(characterData.Character.Weapons.CharWeapon.Count, 10),
+              };
+            }
             character.items.push(weapon);
           } else {
             CONFIG.logger.error(`Unable to add weapon ${characterData.Character.Weapons.CharWeapon.ItemKey} to character.`);
@@ -850,6 +860,11 @@ export default class ImportHelpers {
           await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
             const armor = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
             if (armor) {
+              if (w?.Count) {
+                armor.data.data.quantity = {
+                  value: parseInt(w.Count, 10),
+                };
+              }
               character.items.push(armor);
             } else {
               CONFIG.logger.error(`Unable to add armor ${w.ItemKey} to character.`);
@@ -858,6 +873,11 @@ export default class ImportHelpers {
         } else {
           const armor = await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey);
           if (armor) {
+            if (characterData.Character.Armor.CharArmor?.Count) {
+              armor.data.data.quantity = {
+                value: parseInt(characterData.Character.Armor.CharArmor.Count, 10),
+              };
+            }
             character.items.push(armor);
           } else {
             CONFIG.logger.error(`Unable to add armor ${characterData.Character.Armor.CharArmor.ItemKey} to character.`);
@@ -872,6 +892,11 @@ export default class ImportHelpers {
           await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
             const gear = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
             if (gear) {
+              if (w?.Count) {
+                gear.data.data.quantity = {
+                  value: parseInt(w.Count, 10),
+                };
+              }
               character.items.push(gear);
             } else {
               CONFIG.logger.error(`Unable to add gear ${w.ItemKey} to character.`);
@@ -880,6 +905,11 @@ export default class ImportHelpers {
         } else {
           const gear = await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey);
           if (gear) {
+            if (characterData.Character.Gear.CharGear?.Count) {
+              gear.data.data.quantity = {
+                value: parseInt(characterData.Character.Gear.CharGear.Count, 10),
+              };
+            }
             character.items.push(gear);
           } else {
             CONFIG.logger.error(`Unable to add armor ${characterData.Character.Gear.CharGear.ItemKey} to character.`);

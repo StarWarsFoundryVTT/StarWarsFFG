@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 31/08/2020 - Cstadther - Fixed issue with character importing incorrect quantities for items.
 - 29/08/2020 - Cstadther - Fixed issue when character import does not include career skills.
 - 28/08/2020 - Cstadther - Fixed issue when there are no skill ranks purchased by looping through all skills, instead of just ones with purchased ranks.
 - 28/08/2020 - Cstadther - Updated Character Import to fix issue where updating character with no purchased ranks does not update value back to zero.
