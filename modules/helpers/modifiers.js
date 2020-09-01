@@ -26,113 +26,120 @@ export default class ModifierHelpers {
     let total = 0;
     let checked = false;
 
-    items.forEach((item) => {
-      const attrsToApply = Object.keys(item.data.attributes)
-        .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
-        .map((i) => item.data.attributes[i]);
+    try {
+      items.forEach((item) => {
+        if (item.data.attributes) {
+          const attrsToApply = Object.keys(item.data.attributes)
+            .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
+            .map((i) => item.data.attributes[i]);
 
-      if (item.type === "armour" || item.type === "weapon") {
-        if (item?.data?.equippable?.equipped) {
-          if (key === "Soak" && item.data?.soak) {
-            total += parseInt(item.data.soak.value, 10);
-          }
-          if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
-            // get the highest defense item
-            const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
-            if (shouldUse) {
-              total += parseInt(item.data.defence.value, 10);
-            }
-          }
-          if (attrsToApply.length > 0) {
-            attrsToApply.forEach((attr) => {
-              if (modtype === "Career Skill" || modtype === "Force Boost") {
-                if (attr.value) {
-                  checked = true;
-                }
-              } else {
-                total += parseInt(attr.value, 10);
+          if (item.type === "armour" || item.type === "weapon") {
+            if (item?.data?.equippable?.equipped) {
+              if (key === "Soak" && item.data?.soak) {
+                total += parseInt(item.data.soak.value, 10);
               }
-            });
-          }
-        }
-      } else if (item.type === "forcepower" || item.type === "specialization") {
-        // apply basic force power/specialization modifiers
-        if (attrsToApply.length > 0) {
-          attrsToApply.forEach((attr) => {
+              if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
+                // get the highest defense item
+                const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
+                if (shouldUse) {
+                  total += parseInt(item.data.defence.value, 10);
+                }
+              }
+              if (attrsToApply.length > 0) {
+                attrsToApply.forEach((attr) => {
+                  if (modtype === "Career Skill" || modtype === "Force Boost") {
+                    if (attr.value) {
+                      checked = true;
+                    }
+                  } else {
+                    total += parseInt(attr.value, 10);
+                  }
+                });
+              }
+            }
+          } else if (item.type === "forcepower" || item.type === "specialization") {
+            // apply basic force power/specialization modifiers
+            if (attrsToApply.length > 0) {
+              attrsToApply.forEach((attr) => {
+                if (modtype === "Career Skill" || modtype === "Force Boost") {
+                  if (attr.value) {
+                    checked = true;
+                  }
+                } else {
+                  if (modtype === "ForcePool" && total === 0) {
+                    total += parseInt(attr.value, 10);
+                  }
+                }
+              });
+            }
+            let upgrades;
+            if (item.type === "forcepower") {
+              // apply force power upgrades
+              upgrades = Object.keys(item.data.upgrades)
+                .filter((k) => item.data.upgrades[k].islearned)
+                .map((k) => {
+                  return {
+                    type: "talent",
+                    data: {
+                      attributes: item.data.upgrades[k]?.attributes ? item.data.upgrades[k]?.attributes : {},
+                      ranks: {
+                        ranked: false,
+                        current: 1,
+                      },
+                    },
+                  };
+                });
+            } else if (item.type === "specialization") {
+              // apply specialization talent modifiers
+              upgrades = Object.keys(item.data.talents)
+                .filter((k) => item.data.talents[k].islearned)
+                .map((k) => {
+                  return {
+                    type: "talent",
+                    data: {
+                      attributes: item.data.talents[k].attributes,
+                      ranks: {
+                        ranked: item.data.talents[k].isRanked,
+                        current: 1,
+                      },
+                    },
+                  };
+                });
+            }
             if (modtype === "Career Skill" || modtype === "Force Boost") {
-              if (attr.value) {
+              if (this.getCalculatedValueFromItems(upgrades, key, modtype)) {
                 checked = true;
               }
             } else {
-              if (modtype === "ForcePool" && total === 0) {
-                total += parseInt(attr.value, 10);
-              }
+              total += this.getCalculatedValueFromItems(upgrades, key, modtype);
             }
-          });
-        }
-        let upgrades;
-        if (item.type === "forcepower") {
-          // apply force power upgrades
-          upgrades = Object.keys(item.data.upgrades)
-            .filter((k) => item.data.upgrades[k].islearned)
-            .map((k) => {
-              return {
-                type: "talent",
-                data: {
-                  attributes: item.data.upgrades[k]?.attributes ? item.data.upgrades[k]?.attributes : {},
-                  ranks: {
-                    ranked: false,
-                    current: 1,
-                  },
-                },
-              };
-            });
-        } else if (item.type === "specialization") {
-          // apply specialization talent modifiers
-          upgrades = Object.keys(item.data.talents)
-            .filter((k) => item.data.talents[k].islearned)
-            .map((k) => {
-              return {
-                type: "talent",
-                data: {
-                  attributes: item.data.talents[k].attributes,
-                  ranks: {
-                    ranked: item.data.talents[k].isRanked,
-                    current: 1,
-                  },
-                },
-              };
-            });
-        }
-        if (modtype === "Career Skill" || modtype === "Force Boost") {
-          if (this.getCalculatedValueFromItems(upgrades, key, modtype)) {
-            checked = true;
-          }
-        } else {
-          total += this.getCalculatedValueFromItems(upgrades, key, modtype);
-        }
-      } else {
-        if (attrsToApply.length > 0) {
-          attrsToApply.forEach((attr) => {
-            if (modtype === "Career Skill" || modtype === "Force Boost") {
-              if (attr.value) {
-                checked = true;
-              }
-            } else {
-              if (item.type === "talent") {
-                let multiplier = 1;
-                if (item.data.ranks.ranked) {
-                  multiplier = item.data.ranks.current;
+          } else {
+            if (attrsToApply.length > 0) {
+              attrsToApply.forEach((attr) => {
+                if (modtype === "Career Skill" || modtype === "Force Boost") {
+                  if (attr.value) {
+                    checked = true;
+                  }
+                } else {
+                  if (item.type === "talent") {
+                    let multiplier = 1;
+                    if (item.data.ranks.ranked) {
+                      multiplier = item.data.ranks.current;
+                    }
+                    total += parseInt(attr.value, 10) * multiplier;
+                  } else {
+                    total += parseInt(attr.value, 10);
+                  }
                 }
-                total += parseInt(attr.value, 10) * multiplier;
-              } else {
-                total += parseInt(attr.value, 10);
-              }
+              });
             }
-          });
+          }
         }
-      }
-    });
+      });
+    } catch (err) {
+      CONFIG.logger.warn(`Error occured while trying to calculate modifiers from item list`, err);
+    }
+
     if (modtype === "Career Skill" || modtype === "Force Boost") {
       return checked;
     }
