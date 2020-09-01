@@ -65,6 +65,30 @@ export default class ActorHelpers {
           formData.data.attributes[key].value = 0;
         }
       });
+    } else {
+      // Handle stat updates
+      Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
+        const key = CONFIG.FFG.vehicle_stats[k].value;
+
+        let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, this.actor.data.items, "Stat");
+
+        let statValue = 0;
+        let isFormValueVisible = true;
+        if (formData.data?.stats[k]?.max) {
+          statValue = parseInt(formData.data.stats[k].max, 10);
+        } else {
+          statValue = 0;
+          isFormValueVisible = false;
+        }
+
+        let x = statValue - (isFormValueVisible ? total : 0);
+        let y = parseInt(formData.data.attributes[key].value, 10) + x;
+        if (y > 0) {
+          formData.data.attributes[key].value = y;
+        } else {
+          formData.data.attributes[key].value = 0;
+        }
+      });
     }
 
     // Handle the free-form attributes list

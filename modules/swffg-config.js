@@ -83,6 +83,37 @@ FFG.character_stats = {
   },
 };
 
+FFG.vehicle_stats = {
+  "armour": {
+    value: "Armour",
+    label: "SWFFG.ItemsArmor",
+  },
+  "handling": {
+    value: "Handling",
+    label: "SWFFG.VehicleHandling",
+  },
+  "hullTrauma": {
+    value: "Hulltrauma",
+    label: "SWFFG.VehicleHullTrama",
+  },
+  "shields": {
+    value: "Shields",
+    label: "SWFFG.ItemsDefense",
+  },
+  "silhouette": {
+    value: "Silhouette",
+    label: "SWFFG.VehicleSilhouette",
+  },
+  "speed": {
+    value: "Speed",
+    label: "SWFFG.VehicleSpeed",
+  },
+  "systemStrain": {
+    value: "Systemstrain",
+    label: "SWFFG.VehicleHullStrain",
+  },
+};
+
 FFG.skills = {
   "Astrogation": { value: "Astrogation", label: "SWFFG.SkillsNameAstrogation", abrev: "SWFFG.SkillsNameAstrogation" },
   "Athletics": { value: "Athletics", label: "SWFFG.SkillsNameAthletics", abrev: "SWFFG.SkillsNameAthletics" },
@@ -330,21 +361,21 @@ FFG.mod_types = {
 };
 
 FFG.weapon_mod_types = {
+  "Career Skill": {
+    "value": "Career Skill",
+    "label": "SWFFG.ModTypeCareerSkill",
+  },
   "Characteristic": {
     "value": "Characteristic",
     "label": "SWFFG.ModTypeCharacteristic",
-  },
-  "Skill Rank": {
-    "value": "Skill Rank",
-    "label": "SWFFG.ModTypeSkillRank",
   },
   "Skill Boost": {
     "value": "Skill Boost",
     "label": "SWFFG.ModTypeSkillBoost",
   },
-  "Career Skill": {
-    "value": "Career Skill",
-    "label": "SWFFG.ModTypeCareerSkill",
+  "Skill Rank": {
+    "value": "Skill Rank",
+    "label": "SWFFG.ModTypeSkillRank",
   },
   "Skill Remove Setback": {
     "value": "Skill Remove Setback",
@@ -361,6 +392,13 @@ FFG.weapon_mod_types = {
   "Weapon Stat": {
     "value": "Weapon Stat",
     "label": "SWFFG.ModTypeStatWeapon",
+  },
+};
+
+FFG.vehicle_mod_types = {
+  "Stat": {
+    "value": "Stat",
+    "label": "SWFFG.ModTypeStat",
   },
 };
 

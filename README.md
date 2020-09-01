@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 01/09/2020 - Cstadther - Added Vehicle Modifiers (Only covers vehicle stats no pilot)
 - 01/09/2020 - Cstadther - Added additional error handling for modifier calculation.
 - 31/08/2020 - Cstadther - Fixed issue with character importing incorrect quantities for items.
 - 29/08/2020 - Cstadther - Fixed issue when character import does not include career skills.
