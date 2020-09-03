@@ -1,3 +1,5 @@
+import Helpers from "../helpers/common.js";
+
 export default class SkillListImporter extends FormApplication {
   /** @override */
   static get defaultOptions() {
@@ -55,18 +57,7 @@ export default class SkillListImporter extends FormApplication {
       });
       const i = new File([defaultBlob], "skills.json");
 
-      const fd = new FormData();
-      fd.set("source", "data");
-      fd.set("target", `worlds/${game.world.id}/`);
-      fd.set("upload", i);
-      Object.entries({ bucket: null }).forEach((o) => fd.set(...o));
-
-      const request = await fetch(FilePicker.uploadURL, { method: "POST", body: fd });
-      if (request.status === 413) {
-        return ui.notifications.error(game.i18n.localize("FILES.ErrorTooLarge"));
-      } else if (request.status !== 200) {
-        return ui.notifications.error(game.i18n.localize("FILES.ErrorSomethingWrong"));
-      }
+      await Helpers.UploadFile("data", `worlds/${game.world.id}/`, i, { bucket: null });
 
       window.location.reload();
 
