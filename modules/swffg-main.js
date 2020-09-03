@@ -22,6 +22,7 @@ import CharacterImporter from "./importer/character-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
+import SkillListImporter from "./importer/skills-list-importer.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
@@ -143,6 +144,9 @@ Hooks.once("init", async function () {
     return dicePool.renderDiceExpression();
   }
 
+  // Load character templates so that dynamic skills lists work correctly
+  loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
+
   /**
    * Set an initiative formula for the system
    * @type {String}
@@ -200,6 +204,390 @@ Hooks.once("init", async function () {
       genesys: "genesys",
     },
   });
+
+  async function gameSkillsList() {
+    let skillList = [];
+
+    let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
+    if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
+      const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
+      skillList = fileData;
+    } else {
+      try {
+        const defaultString = JSON.stringify([
+          {
+            id: "starwars",
+            skills: {
+              "Brawl": {
+                "rank": 0,
+                "characteristic": "Brawn",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Combat",
+                "max": 6,
+              },
+              "Gunnery": {
+                "rank": 0,
+                "characteristic": "Agility",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Combat",
+                "max": 6,
+              },
+              "Lightsaber": {
+                "rank": 0,
+                "characteristic": "Brawn",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Combat",
+                "max": 6,
+              },
+              "Melee": {
+                "rank": 0,
+                "characteristic": "Brawn",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Combat",
+                "max": 6,
+              },
+              "Ranged: Light": {
+                "rank": 0,
+                "characteristic": "Agility",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Combat",
+                "max": 6,
+              },
+              "Ranged: Heavy": {
+                "rank": 0,
+                "characteristic": "Agility",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Combat",
+                "max": 6,
+              },
+              "Astrogation": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Athletics": {
+                "rank": 0,
+                "characteristic": "Brawn",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Charm": {
+                "rank": 0,
+                "characteristic": "Presence",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Coercion": {
+                "rank": 0,
+                "characteristic": "Willpower",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Computers": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Cool": {
+                "rank": 0,
+                "characteristic": "Presence",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Coordination": {
+                "rank": 0,
+                "characteristic": "Agility",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Deception": {
+                "rank": 0,
+                "characteristic": "Cunning",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Discipline": {
+                "rank": 0,
+                "characteristic": "Willpower",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Leadership": {
+                "rank": 0,
+                "characteristic": "Presence",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Mechanics": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Medicine": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Negotiation": {
+                "rank": 0,
+                "characteristic": "Presence",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Perception": {
+                "rank": 0,
+                "characteristic": "Cunning",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Piloting: Planetary": {
+                "rank": 0,
+                "characteristic": "Agility",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Piloting: Space": {
+                "rank": 0,
+                "characteristic": "Agility",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Resilience": {
+                "rank": 0,
+                "characteristic": "Brawn",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Skulduggery": {
+                "rank": 0,
+                "characteristic": "Cunning",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Stealth": {
+                "rank": 0,
+                "characteristic": "Agility",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Streetwise": {
+                "rank": 0,
+                "characteristic": "Cunning",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Survival": {
+                "rank": 0,
+                "characteristic": "Cunning",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Vigilance": {
+                "rank": 0,
+                "characteristic": "Willpower",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "General",
+                "max": 6,
+              },
+              "Knowledge: Core Worlds": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Knowledge",
+                "max": 6,
+              },
+              "Knowledge: Education": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Knowledge",
+                "max": 6,
+              },
+              "Knowledge: Lore": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Knowledge",
+                "max": 6,
+              },
+              "Knowledge: Outer Rim": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Knowledge",
+                "max": 6,
+              },
+              "Knowledge: Underworld": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Knowledge",
+                "max": 6,
+              },
+              "Knowledge: Warfare": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Knowledge",
+                "max": 6,
+              },
+              "Knowledge: Xenology": {
+                "rank": 0,
+                "characteristic": "Intellect",
+                "groupskill": false,
+                "careerskill": false,
+                "type": "Knowledge",
+                "max": 6,
+              },
+            },
+          },
+        ]);
+        const defaultBlob = new Blob([defaultString], {
+          type: "text/plain",
+        });
+        const i = new File([defaultBlob], "skills.json");
+        FilePicker.upload("data", `worlds/${game.world.id}/`, i, { bucket: null });
+        skillList = JSON.parse(defaultString);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+
+    CONFIG.FFG.alternateskilllists = skillList;
+
+    let skillChoices = {};
+
+    skillList.forEach((list) => {
+      skillChoices[list.id] = list.id;
+    });
+
+    game.settings.register("starwarsffg", "skilltheme", {
+      name: game.i18n.localize("SWFFG.SettingsSkillTheme"),
+      hint: game.i18n.localize("SWFFG.SettingsSkillThemeHint"),
+      scope: "world",
+      config: true,
+      default: "starwars",
+      type: String,
+      onChange: (rule) => {
+        window.location.reload();
+      },
+      choices: skillChoices,
+    });
+
+    if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+      const skills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+      const sorted = Object.keys(skills).sort(function (a, b) {
+        const x = game.i18n.localize(skills[a].abrev);
+        const y = game.i18n.localize(skills[b].abrev);
+
+        return x < y ? -1 : x > y ? 1 : 0;
+      });
+
+      let ordered = {};
+      sorted.forEach((skill) => {
+        ordered[skill] = skills[skill];
+      });
+
+      CONFIG.FFG.skills = ordered;
+
+      Hooks.on("createActor", (actor) => {
+        let skilllist = game.settings.get("starwarsffg", "skilltheme");
+        let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
+        CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
+
+        Object.keys(actor.data.data.skills).forEach((skill) => {
+          if (!skills.skills[skill]) {
+            skills.skills[`-=${skill}`] = null;
+          }
+        });
+
+        actor.update({
+          data: {
+            skills: skills.skills,
+          },
+        });
+      });
+    }
+
+    game.settings.registerMenu("starwarsffg", "addskilltheme", {
+      name: game.i18n.localize("SWFFG.SettingsSkillListImporter"),
+      label: game.i18n.localize("SWFFG.SettingsSkillListImporterLabel"),
+      hint: game.i18n.localize("SWFFG.SettingsSkillListImporterHint"),
+      icon: "fas fa-file-import",
+      type: SkillListImporter,
+      restricted: true,
+    });
+
+    game.settings.register("starwarsffg", "addskilltheme", {
+      name: "Item Importer",
+      scope: "world",
+      default: {},
+      config: false,
+      default: {},
+      type: Object,
+    });
+  }
+
+  gameSkillsList();
 
   game.settings.register("starwarsffg", "enableSoakCalc", {
     name: game.i18n.localize("SWFFG.EnableSoakCalc"),
@@ -272,9 +660,9 @@ Hooks.once("init", async function () {
 
   // Importer Control Menu
   game.settings.registerMenu("starwarsffg", "odImporter", {
-    name: "Data Import",
-    label: "OggDude Dataset Importer",
-    hint: "Import data from an OggDude Dataset into Foundry",
+    name: game.i18n.localize("SWFFG.SettingsOggDudeImporter"),
+    hint: game.i18n.localize("SWFFG.SettingsOggDudeImporterHint"),
+    label: game.i18n.localize("SWFFG.SettingsOggDudeImporterLabel"),
     icon: "fas fa-file-import",
     type: DataImporter,
     restricted: true,
@@ -290,9 +678,9 @@ Hooks.once("init", async function () {
   });
 
   game.settings.registerMenu("starwarsffg", "swaImporter", {
-    name: "Adversaries Import",
-    label: "SW Adversaries Importer",
-    hint: "Import data from an SW Adversaries into Foundry",
+    name: game.i18n.localize("SWFFG.SettingsSWAdversariesImporter"),
+    hint: game.i18n.localize("SWFFG.SettingsSWAdversariesImporterHint"),
+    label: game.i18n.localize("SWFFG.SettingsSWAdversariesImporterLabel"),
     icon: "fas fa-file-import",
     type: SWAImporter,
     restricted: true,
@@ -493,6 +881,25 @@ Hooks.once("init", async function () {
       "/": lvalue / rvalue,
       "%": lvalue % rvalue,
     }[operator];
+  });
+
+  Handlebars.registerHelper("contains", function (obj1, property, value, opts) {
+    let bool = false;
+    if (Array.isArray(obj1)) {
+      bool = obj1.some((e) => e[property] === value);
+    } else if (typeof obj1 === "object") {
+      bool = Object.keys(obj1).some(function (k) {
+        return obj1[k][property] === value;
+      });
+    } else if (typeof obj1 === "string") {
+      bool = obj1.includes(property);
+    }
+
+    if (bool) {
+      return opts.fn(this);
+    } else {
+      return opts.inverse(this);
+    }
   });
 
   TemplateHelpers.preload();

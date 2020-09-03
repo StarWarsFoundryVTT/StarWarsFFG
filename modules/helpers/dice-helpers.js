@@ -76,20 +76,22 @@ export default class DiceHelpers {
   static async addSkillDicePool(obj, elem) {
     const data = obj.getData();
     const skillName = elem.dataset["ability"];
-    const skill = data.data.skills[skillName];
-    const characteristic = data.data.characteristics[skill.characteristic];
+    if (data.data.skills[skillName]) {
+      const skill = data.data.skills[skillName];
+      const characteristic = data.data.characteristics[skill.characteristic];
 
-    const dicePool = new DicePoolFFG({
-      ability: Math.max(characteristic.value, skill.rank),
-      boost: skill.boost,
-      setback: skill.setback,
-      remsetback: skill.remsetback,
-      force: skill.force,
-    });
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+      const dicePool = new DicePoolFFG({
+        ability: Math.max(characteristic.value, skill.rank),
+        boost: skill.boost,
+        setback: skill.setback,
+        remsetback: skill.remsetback,
+        force: skill.force,
+      });
+      dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
-    const rollButton = elem.querySelector(".roll-button");
-    dicePool.renderPreview(rollButton);
+      const rollButton = elem.querySelector(".roll-button");
+      dicePool.renderPreview(rollButton);
+    }
   }
 
   static async rollItem(itemId, actorId) {
