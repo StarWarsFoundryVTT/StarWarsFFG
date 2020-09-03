@@ -880,7 +880,7 @@ Hooks.once("init", async function () {
           type: "text/plain",
         });
         const i = new File([defaultBlob], "skills.json");
-        FilePicker.upload("data", `worlds/${game.world.id}/`, i, { bucket: null });
+        await Helpers.UploadFile("data", `worlds/${game.world.id}/`, i, { bucket: null });
         skillList = JSON.parse(defaultString);
       } catch (err) {
         console.log(err);

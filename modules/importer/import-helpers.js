@@ -1,3 +1,5 @@
+import Helpers from "../helpers/common.js";
+
 export default class ImportHelpers {
   /**
    * Verifies server path exists, and if it doesn't creates it.
@@ -43,7 +45,7 @@ export default class ImportHelpers {
       await ImportHelpers.verifyPath("data", serverPath);
       const img = await zip.file(path).async("uint8array");
       const i = new File([img], filename);
-      await FilePicker.upload("data", `${serverPath}`, i, { bucket: null });
+      await Helpers.UploadFile("data", `${serverPath}`, i, { bucket: null });
       return `${serverPath}/${filename}`;
     }
   }
@@ -925,7 +927,7 @@ export default class ImportHelpers {
       const imge = characterData.Character.Portrait;
       const img = this.b64toBlob(imge);
       const i = new File([img], `${characterData.Character.Key}.png`);
-      await FilePicker.upload("data", serverPath, i, { bucket: null });
+      await Helpers.UploadFile("data", serverPath, i, { bucket: null });
       character.img = `${serverPath}/${characterData.Character.Key}.png`;
 
       updateDialog(90);
