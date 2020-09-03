@@ -381,7 +381,7 @@ export class ActorSheetFFG extends ActorSheet {
 
               CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
-              let updateData;
+              let updateData = {};
               setProperty(updateData, `data.skills.${ability}.characteristic`, newCharacteristic);
 
               this.object.update(updateData);

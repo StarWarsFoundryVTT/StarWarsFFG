@@ -1,0 +1,19 @@
+<form class="{{cssClass}}" autocomplete="off">
+  <p class="notes">You may import a skill list JSON data file to add a new skill theme to the system.</p>
+  <p class="notes">Please see documentation for skill list schema <a href="https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki">https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki</a>.</p>
+  <div class="form-group">
+    <label for="data">Source Data</label>
+    <input type="file" name="data" accept=".json" />
+  </div>
+  <div>
+    <div class="import-progress current import-hidden">
+      <div class="import-progress-bar" style="width: 0%;"></div>
+    </div>
+  </div>
+  <div>
+    <button class="dialog-button" data-button="import">
+      <i class="fas fa-file-import"></i>
+      {{localize "SWFFG.ImportFile"}}
+    </button>
+  </div>
+</form>
