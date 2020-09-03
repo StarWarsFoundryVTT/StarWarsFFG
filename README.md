@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 02/09/2020 - Cstadther - Refactored Upload code to use straight fetch which bypasses UI Notification.
 - 02/09/2020 - Cstadther - Added Skill Themes (alternate default skill lists) and skill list uploading.  Added new `genesys` vanilla skill list.
 - 01/09/2020 - Cstadther - Added Vehicle Modifiers (Only covers vehicle stats no pilot)
 - 01/09/2020 - Cstadther - Added additional error handling for modifier calculation.
