@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 04/09/2020 - Cstadther - Bug fixed where Foundry link matched Dice Display regex, causing link to not display.
 - 02/09/2020 - Cstadther - Refactored Upload code to use straight fetch which bypasses UI Notification.
 - 02/09/2020 - Cstadther - Added Skill Themes (alternate default skill lists) and skill list uploading.  Added new `genesys` vanilla skill list.
 - 01/09/2020 - Cstadther - Added Vehicle Modifiers (Only covers vehicle stats no pilot)
