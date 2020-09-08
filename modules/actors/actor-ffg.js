@@ -410,7 +410,7 @@ export class ActorFFG extends Actor {
    */
   _applyModifiers(actorData) {
     const data = actorData.data;
-    const isPC = this.isPC;
+    const isPC = this.hasPlayerOwner;
     if (!actorData.modifiers) {
       actorData.modifiers = {};
     }
@@ -494,7 +494,7 @@ export class ActorFFG extends Actor {
 
   _applyVehicelModifiers(actorData) {
     const data = actorData.data;
-    const isPC = this.isPC;
+    const isPC = this.hasPlayerOwner;
     if (!actorData.modifiers) {
       actorData.modifiers = {};
     }
