@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 08/09/2020 - Cstadther - Fixed issue with imported compendium specialization not able to find talent, will now search by name if id is not found. Fixed issue with dice images.
 - 08/09/2020 - Cstadther - 0.7.2 Update (obj.isPC replaced with obj.hasPlayerOwner).  Fix for "handling" on vehicles.
 - 04/09/2020 - Cstadther - Bug fixed where Foundry link matched Dice Display regex, causing link to not display.
 - 02/09/2020 - Cstadther - Refactored Upload code to use straight fetch which bypasses UI Notification.
