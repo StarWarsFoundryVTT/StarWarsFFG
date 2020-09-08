@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 08/09/2020 - Cstadther - 0.7.2 Update (obj.isPC replaced with obj.hasPlayerOwner).  Fix for "handling" on vehicles.
 - 04/09/2020 - Cstadther - Bug fixed where Foundry link matched Dice Display regex, causing link to not display.
 - 02/09/2020 - Cstadther - Refactored Upload code to use straight fetch which bypasses UI Notification.
 - 02/09/2020 - Cstadther - Added Skill Themes (alternate default skill lists) and skill list uploading.  Added new `genesys` vanilla skill list.
