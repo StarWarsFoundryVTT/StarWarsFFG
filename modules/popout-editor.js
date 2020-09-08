@@ -59,37 +59,37 @@ export default class PopoutEditor extends FormApplication {
       {
         type: "ability",
         character: "d",
-        pattern: /\[(AB)[ILITY]\]/gim,
+        pattern: /\[(AB)[ILITY]?\]/gim,
       },
       {
         type: "advantage",
         character: "a",
-        pattern: /\[(AD)[VANTAGE]\]/gim,
+        pattern: /\[(AD)[VANTAGE]?\]/gim,
       },
       {
         type: "boost",
         character: "b",
-        pattern: /\[(BO)[OST]\]/gim,
+        pattern: /\[(BO)[OST]?\]/gim,
       },
       {
         type: "challenge",
         character: "c",
-        pattern: /\[(CH)[ALLENGE]\]/gim,
+        pattern: /\[(CH)[ALLENGE]?\]/gim,
       },
       {
         type: "dark",
         character: "z",
-        pattern: /\[(DA)[RK]\]/gim,
+        pattern: /\[(DA)[RK]?\]/gim,
       },
       {
         type: "despair",
         character: "y",
-        pattern: /\[(DE)[SPAIR]\]/gim,
+        pattern: /\[(DE)[SPAIR]?\]/gim,
       },
       {
         type: "difficulty",
         character: "d",
-        pattern: /\[(DI)[FFICULTY]\]/gim,
+        pattern: /\[(DI)[FFICULTY]?\]/gim,
       },
       {
         type: "forcepoint",
@@ -99,22 +99,22 @@ export default class PopoutEditor extends FormApplication {
       {
         type: "failure",
         character: "f",
-        pattern: /\[(FA)[ILURE]\]/gim,
+        pattern: /\[(FA)[ILURE]?\]/gim,
       },
       {
         type: "force",
         character: "C",
-        pattern: /\[(FO)[RCE]\]/gim,
+        pattern: /\[(FO)[RCE]?\]/gim,
       },
       {
         type: "light",
         character: "Z",
-        pattern: /\[(LI)[GHT]\]/gim,
+        pattern: /\[(LI)[GHT]?\]/gim,
       },
       {
         type: "proficiency",
         character: "c",
-        pattern: /\[(PR)[OFICIENCY]\]/gim,
+        pattern: /\[(PR)[OFICIENCY]?\]/gim,
       },
       {
         type: "remsetback",
@@ -124,27 +124,27 @@ export default class PopoutEditor extends FormApplication {
       {
         type: "restricted",
         character: "z",
-        pattern: /\[(RE)[STRICTED]\]/gim,
+        pattern: /\[(RE)[STRICTED]?\]/gim,
       },
       {
         type: "setback",
         character: "b",
-        pattern: /\[(SE)[TBACK]\]/gim,
+        pattern: /\[(SE)[TBACK]?\]/gim,
       },
       {
         type: "success",
         character: "s",
-        pattern: /\[(SU)[CCESS]\]/gim,
+        pattern: /\[(SU)[CCESS]?\]/gim,
       },
       {
         type: "threat",
         character: "t",
-        pattern: /\[(TH)[REAT]\]/gim,
+        pattern: /\[(TH)[REAT]?\]/gim,
       },
       {
         type: "triumph",
         character: "x",
-        pattern: /\[(TR)[IUMPH]\]/gim,
+        pattern: /\[(TR)[IUMPH]?\]/gim,
       },
       {
         type: "adddifficulty",
