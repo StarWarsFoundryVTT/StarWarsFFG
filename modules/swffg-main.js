@@ -1315,7 +1315,7 @@ Hooks.on("renderJournalSheet", (journal, obj, data) => {
 });
 
 Hooks.on("renderSidebarTab", (app, html, data) => {
-  html.find(".roll-type-select label").click(async (event) => {
+  html.find(".chat-control-icon").click(async (event) => {
     const dicePool = new DicePoolFFG();
 
     let user = {
