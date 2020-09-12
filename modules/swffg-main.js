@@ -1364,4 +1364,8 @@ Hooks.once("ready", () => {
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createFFGMacro(data, slot));
+
+  Hooks.on("closeItemSheetFFG", (item) => {
+    Hooks.call(`closeAssociatedTalent_${item.object.data._id}`, item);
+  });
 });
