@@ -1,5 +1,7 @@
 import PopoutEditor from "../popout-editor.js";
 import ActorOptions from "../actors/actor-ffg-options.js";
+import ImportHelpers from "../importer/import-helpers.js";
+import Helpers from "../helpers/common.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -154,30 +156,6 @@ export class ItemFFG extends Item {
   }
 
   async _prepareSpecializations() {
-    // We need to update the specialization talents information with the linked item.
-    const specializationTalents = this.data.data.talents;
-    for (let talent in specializationTalents) {
-      let gameItem;
-      if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
-        try {
-          const pack = game.packs.get(specializationTalents[talent].pack);
-          await pack.getIndex();
-          const entry = pack.index.find((e) => e._id === specializationTalents[talent].itemId);
-          gameItem = (await pack.getEntity(entry._id)).data;
-        } catch {
-          CONFIG.logger.debug("Pack Item, deferring load.");
-        }
-      } else {
-        gameItem = game.data.items.find((item) => {
-          return item._id === specializationTalents[talent].itemId;
-        });
-      }
-
-      if (gameItem && !this.isOwned) {
-        this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
-      }
-    }
-
     this._prepareTalentTrees("talents", "talent", "talentList");
   }
 

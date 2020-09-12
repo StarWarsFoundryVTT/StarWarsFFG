@@ -30,7 +30,7 @@ export class ItemSheetFFG extends ItemSheet {
   async getData() {
     const data = super.getData();
 
-    CONFIG.logger.debug(`Getting Item Data`);
+    CONFIG.logger.debug(`Getting Item Data ${this.object.name}`);
 
     data.dtypes = ["String", "Number", "Boolean"];
     if (data?.data?.attributes) {
@@ -78,24 +78,28 @@ export class ItemSheetFFG extends ItemSheet {
 
           const specializationTalents = data.data.talents;
 
-          for (let talent in specializationTalents) {
+          await ImportHelpers.asyncForEach(Object.keys(specializationTalents), async (talent) => {
             let gameItem;
-            if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
-              const pack = game.packs.get(specializationTalents[talent].pack);
-              await pack.getIndex();
-              const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+            if (specializationTalents?.[talent]?.pack?.length) {
+              try {
+                const pack = await game.packs.get(specializationTalents[talent].pack);
+                await pack.getIndex();
+                const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
 
-              if (entry) {
-                gameItem = await pack.getEntity(entry._id);
+                if (entry) {
+                  gameItem = await pack.getEntity(entry._id);
+                }
+              } catch (err) {
+                CONFIG.logger.warn(`Unable to load ${specializationTalents[talent].pack}`, err);
               }
             } else {
-              gameItem = game.items.get(specializationTalents[talent].itemId);
+              gameItem = await game.items.get(specializationTalents[talent].itemId);
             }
 
             if (gameItem) {
               this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
             }
-          }
+          });
         }
         break;
       case "species":
@@ -183,12 +187,13 @@ export class ItemSheetFFG extends ItemSheet {
       const li = event.currentTarget;
       const parent = $(li).parents(".specialization-talent")[0];
       const itemId = parent.dataset.itemid;
+      const packName = $(parent).find(`input[name='data.talents.${parent.id}.pack']`).val();
+      const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
 
-      let item = await Helpers.getSpecializationTalent(itemId);
+      let item = await Helpers.getSpecializationTalent(itemId, packName);
       if (!item) {
-        const packName = $(parent).find(`input[name='data.talents.${parent.id}.pack']`).val();
-        const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
         if (packName) {
+          // if we can't find the item by itemid, try by name
           const pack = await game.packs.get(packName);
           await pack.getIndex();
           const entity = await pack.index.find((e) => e.name === talentName);
@@ -197,14 +202,28 @@ export class ItemSheetFFG extends ItemSheet {
 
             let updateData = {};
             // build dataset if needed
-            setProperty(updateData, `data.talents.${parent.id}.itemId`, entity._id);
-            this.object.update(updateData);
+            if (!pack.locked) {
+              setProperty(updateData, `data.talents.${parent.id}.itemId`, entity._id);
+              this.object.update(updateData);
+            }
           }
         }
       }
-
+      if (!item.data.flags["clickfromparent"]) {
+        item.data.flags["clickfromparent"] = [];
+      }
+      item.data.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
       item.sheet.render(true);
     });
+
+    if (this.object.data.type === "talent") {
+      if (!Hooks?._hooks[`closeAssociatedTalent_${this.object.data._id}`]?.length && typeof this._submitting === "undefined") {
+        Hooks.once(`closeAssociatedTalent_${this.object.data._id}`, (item) => {
+          item.object.data.flags.clickfromparent = [];
+          delete Hooks._hooks[`closeAssociatedTalent_${item.object.data._id}`];
+        });
+      }
+    }
 
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
@@ -248,14 +267,18 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     if (this.object.data.type === "specialization") {
-      const dragDrop = new DragDrop({
-        dragSelector: ".item",
-        dropSelector: ".specialization-talent",
-        permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
-        callbacks: { drop: this._onDropTalentToSpecialization.bind(this) },
-      });
+      try {
+        const dragDrop = new DragDrop({
+          dragSelector: ".item",
+          dropSelector: ".specialization-talent",
+          permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+          callbacks: { drop: this._onDropTalentToSpecialization.bind(this) },
+        });
 
-      dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
+        dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
+      } catch (err) {
+        CONFIG.logger.debug(err);
+      }
     }
 
     // hidden here instead of css to prevent non-editable display of edit button

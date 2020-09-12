@@ -16,25 +16,17 @@ export default class Helpers {
     },
   };
 
-  static async getSpecializationTalent(itemId) {
+  static async getSpecializationTalent(itemId, packName) {
     let item = game.items.get(itemId);
 
     if (item) {
       return item;
     } else {
-      Helpers.logger.debug(`Specialization Talent not found in item, checking compendiums`);
-      let packs = Array.from(await game.packs.keys());
-      for (let i = 0; i < packs.length; i += 1) {
-        let packId = packs[i];
-        const pack = await game.packs.get(packId);
-        if (pack.entity === "Item" && !pack.locked) {
-          await pack.getIndex();
-          const entry = await pack.index.find((e) => e._id === itemId);
-
-          if (entry) {
-            return await pack.getEntity(entry._id);
-          }
-        }
+      const pack = await game.packs.get(packName);
+      await pack.getIndex();
+      const entry = await pack.index.find((e) => e._id === itemId);
+      if (entry) {
+        return await pack.getEntity(entry._id);
       }
     }
   }
@@ -59,5 +51,21 @@ export default class Helpers {
     } else if (request.status !== 200) {
       return ui.notifications.error(game.i18n.localize("FILES.ErrorSomethingWrong"));
     }
+  }
+
+  /**
+   * Returns the difference between object 1 and 2
+   * @param  {object} obj1
+   * @param  {object} obj2
+   * @returns {object}
+   */
+  static diff(obj1, obj2) {
+    var result = {};
+    for (const key in obj1) {
+      if (obj2[key] != obj1[key]) result[key] = obj2[key];
+      if (typeof obj2[key] == "array" && typeof obj1[key] == "array") result[key] = this.diff(obj1[key], obj2[key]);
+      if (typeof obj2[key] == "object" && typeof obj1[key] == "object") result[key] = this.diff(obj1[key], obj2[key]);
+    }
+    return result;
   }
 }

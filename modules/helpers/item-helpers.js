@@ -1,5 +1,7 @@
+import ImportHelpers from "../importer/import-helpers.js";
+
 export default class ItemHelpers {
-  static itemUpdate(event, formData) {
+  static async itemUpdate(event, formData) {
     formData = expandObject(formData);
 
     if (this.object.isOwned && this.object.actor?.compendium?.metadata) {
@@ -35,38 +37,37 @@ export default class ItemHelpers {
 
     // Update the Item
     this.item.data.flags.loaded = false;
-    return this.object.update(formData);
+    this.object.update(formData);
 
     if (this.object.data.type === "talent") {
-      let data = this.object.data.data;
-      if (data.trees.length > 0) {
-        CONFIG.logger.debug("Using Talent Tree property for update");
-        data.trees.forEach((spec) => {
-          const specializations = game.data.items.filter((item) => {
-            return item.id === spec;
-          });
+      if (this.object.data.flags?.clickfromparent?.length) {
+        let listofparents = JSON.parse(JSON.stringify(this.object.data.flags.clickfromparent));
+        while (listofparents.length > 0) {
+          const parent = listofparents.shift();
+          const spec = await fromUuid(parent.id);
+          if (spec) {
+            let updateData = {};
+            setProperty(updateData, `data.talents.${parent.talent}.name`, formData.name);
+            setProperty(updateData, `data.talents.${parent.talent}.description`, formData.data.description);
+            setProperty(updateData, `data.talents.${parent.talent}.activation`, formData.data.activation.value);
+            setProperty(updateData, `data.talents.${parent.talent}.isRanked`, formData.data.ranks.ranked);
+            setProperty(updateData, `data.talents.${parent.talent}.isForceTalent`, formData.data.isForceTalent);
+            setProperty(updateData, `data.talents.${parent.talent}.attributes`, formData.data.attributes);
 
-          specializations.forEach((item) => {
-            CONFIG.logger.debug(`Updating Specialization`);
-            for (let talentData in item.data.talents) {
-              this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
-            }
-          });
-        });
-      } else {
-        CONFIG.logger.debug("Legacy item, updating all specializations");
-        game.data.items.forEach((item) => {
-          if (item.type === "specialization") {
-            for (let talentData in item.data.talents) {
-              if (item.data.talents[talentData].itemId === this.object.data._id) {
-                if (!data.trees.includes(item._id)) {
-                  data.trees.push(item._id);
-                }
-                this._updateSpecializationTalentReference(item.data.talents[talentData], itemData);
-              }
+            if (parent.id.includes(".OwnedItem.")) {
+              const ids = parent.id.split(".OwnedItem.");
+              const actor = await fromUuid(ids[0]);
+              const item = await actor.getOwnedItem(ids[1]);
+              spec.flags.loaded = false;
+              await item.update(updateData);
+              await item.sheet.render(true);
+            } else {
+              spec.data.flags.loaded = false;
+              await spec.update(updateData);
+              await spec.sheet.render(true);
             }
           }
-        });
+        }
       }
     }
   }
