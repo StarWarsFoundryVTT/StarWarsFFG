@@ -154,7 +154,6 @@ export class ActorFFG extends Actor {
         } else {
           item.rank = "N/A";
         }
-
         let index = globalTalentList.findIndex((obj) => {
           return obj.name === item.name;
         });
@@ -190,6 +189,10 @@ export class ActorFFG extends Actor {
         item.rank = "N/A";
       }
 
+      if (CONFIG.FFG.theme !== "starwars") {
+        item.tier = element.data.tier;
+      }
+
       let index = globalTalentList.findIndex((obj) => {
         return obj.name === item.name;
       });
@@ -199,6 +202,9 @@ export class ActorFFG extends Actor {
       } else {
         globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id });
         globalTalentList[index].rank += element.data.ranks.current;
+        if (CONFIG.FFG.theme !== "starwars") {
+          globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));
+        }
       }
     });
 

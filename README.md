@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/09/2020 - Cstadther - Added code driven by dice theme, if not starwars, enables Talent Tiers.
 - 11/09/2020 - Cstadther - Fixed issue where modifying a talent by clicking on the specialization box was not updating the talent item in the specialization correctly.
 - 09/09/2020 - Esrin - Updated minimum compatibility to 0.7.2 due to breaking changes.
 - 09/09/2020 - Esrin - Fixed roll dialog button in chat sidebar after 0.7.2 changes to element classes.
