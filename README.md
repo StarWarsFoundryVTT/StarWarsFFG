@@ -25,15 +25,16 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/09/2020 - Esrin - Corrected order of Encumbrance Threshold / Current values for consistency.
 - 14/09/2020 - Cstadther - Added code driven by dice theme, if not starwars, enables Talent Tiers.
 - 11/09/2020 - Cstadther - Fixed issue where modifying a talent by clicking on the specialization box was not updating the talent item in the specialization correctly.
 - 09/09/2020 - Esrin - Updated minimum compatibility to 0.7.2 due to breaking changes.
 - 09/09/2020 - Esrin - Fixed roll dialog button in chat sidebar after 0.7.2 changes to element classes.
 - 08/09/2020 - Cstadther - Fixed issue with imported compendium specialization not able to find talent, will now search by name if id is not found. Fixed issue with dice images.
-- 08/09/2020 - Cstadther - 0.7.2 Update (obj.isPC replaced with obj.hasPlayerOwner).  Fix for "handling" on vehicles.
+- 08/09/2020 - Cstadther - 0.7.2 Update (obj.isPC replaced with obj.hasPlayerOwner). Fix for "handling" on vehicles.
 - 04/09/2020 - Cstadther - Bug fixed where Foundry link matched Dice Display regex, causing link to not display.
 - 02/09/2020 - Cstadther - Refactored Upload code to use straight fetch which bypasses UI Notification.
-- 02/09/2020 - Cstadther - Added Skill Themes (alternate default skill lists) and skill list uploading.  Added new `genesys` vanilla skill list.
+- 02/09/2020 - Cstadther - Added Skill Themes (alternate default skill lists) and skill list uploading. Added new `genesys` vanilla skill list.
 - 01/09/2020 - Cstadther - Added Vehicle Modifiers (Only covers vehicle stats no pilot)
 - 01/09/2020 - Cstadther - Added additional error handling for modifier calculation.
 - 31/08/2020 - Cstadther - Fixed issue with character importing incorrect quantities for items.
@@ -46,12 +47,12 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 25/08/2020 - Cstadther - Fixed issue with Character Import with single specialization.
 - 24/08/2020 - Cstadther - Enhancement #189 - sw-adversaries importer added, no way to connect to OggDude data, data has typos, no modifiers, minimal descriptions.
 - 23/08/2020 - Cstadther - Bug Fix #306 - Updated styles for critical injury/damage to allow enhanced dropdown to render correctly.
-- 23/08/2020 - Cstadther - Bug Fix #305 Defense autocalc was incorrectly adding upon save.  Fix issue with removing modifiers.
-- 21/08/2020 - Cstadther - Fixed issue with imported characters displaying talents incorrectly.  Allowed import of qualities with no description to be imported.
+- 23/08/2020 - Cstadther - Bug Fix #305 Defense autocalc was incorrectly adding upon save. Fix issue with removing modifiers.
+- 21/08/2020 - Cstadther - Fixed issue with imported characters displaying talents incorrectly. Allowed import of qualities with no description to be imported.
 - 21/08/2020 - Cstadther - Added ability to select OggDude import file from local client, so uploading to server is not needed.
 - 20/08/2020 - Cstadther - Fixed import issue where weapon count was not listed in XML file, default to count 1.
 - 20/08/2020 - Cstadther - Fixed display and functionality for vehichle sheets, switched to using partial for items/weapons.
-- 20/08/2020 - Cstadther - Applied same code from Character to Adversary sheet.  Updated minions, so that skills can be upgraded as non-squad minions.
+- 20/08/2020 - Cstadther - Applied same code from Character to Adversary sheet. Updated minions, so that skills can be upgraded as non-squad minions.
 - 20/08/2020 - Cstadther - Fixed issue where minion Soak was always increasing.
 - 19/08/2020 - Esrin - Updated Roll template and ItemDetails methods to correctly display the new embedded Item Qualities.
 - 18/08/2020 - Cstadther - Fixed actor sheet updates as they were broken with the new formData deep object.
