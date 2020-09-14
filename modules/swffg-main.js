@@ -1082,6 +1082,7 @@ Hooks.once("init", async function () {
 
   // Set up dice with dynamic dice theme
   const dicetheme = game.settings.get("starwarsffg", "dicetheme");
+  CONFIG.FFG.theme = dicetheme;
 
   CONFIG.FFG.PROFICIENCY_ICON = `systems/starwarsffg/images/dice/${dicetheme}/yellow.png`;
   CONFIG.FFG.ABILITY_ICON = `systems/starwarsffg/images/dice/${dicetheme}/green.png`;

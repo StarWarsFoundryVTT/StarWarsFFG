@@ -623,6 +623,7 @@
         "min": 0
       },
       "isForceTalent": false,
+      "tier": 1,
       "trees": []
     },
     "shipweapon": {
