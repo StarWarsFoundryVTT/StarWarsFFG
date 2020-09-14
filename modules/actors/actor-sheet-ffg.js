@@ -55,24 +55,17 @@ export class ActorSheetFFG extends ActorSheet {
       enableSoakCalculation: game.settings.get("starwarsffg", "enableSoakCalc"),
     };
 
+    // Establish sheet width and height using either saved persistent values or default values defined in swffg-config.js
+    this.position.width = this.sheetWidth || CONFIG.FFG.sheets.defaultWidth[this.actor.data.type];
+    this.position.height = this.sheetHeight || CONFIG.FFG.sheets.defaultHeight[this.actor.data.type];
+
     switch (this.actor.data.type) {
       case "character":
-        this.position.width = 630;
-        this.position.height = 783;
-
         // we need to update all specialization talents with the latest talent information
         if (!this.actor.data.flags.loaded) {
           this._updateSpecialization(data);
         }
-
         break;
-      case "minion":
-        this.position.width = 595;
-        this.position.height = 644;
-        break;
-      case "vehicle":
-        this.position.width = 595;
-        this.position.height = 824;
       default:
     }
     return data;
@@ -474,6 +467,10 @@ export class ActorSheetFFG extends ActorSheet {
   /** @override */
   _updateObject(event, formData) {
     const actorUpdate = ActorHelpers.updateActor.bind(this);
+    // Save persistent sheet height and width for future use.
+    this.sheetWidth = this.position.width;
+    this.sheetHeight = this.position.height;
+
     actorUpdate(event, formData);
   }
 

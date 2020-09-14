@@ -460,3 +460,16 @@ FFG.diceresults = {
   light: "Force",
   dark: "Dark Force",
 };
+
+FFG.sheets = {
+  defaultWidth: {
+    character: 630,
+    minion: 595,
+    vehicle: 595,
+  },
+  defaultHeight: {
+    character: 783,
+    minion: 644,
+    vehicle: 824,
+  },
+};
