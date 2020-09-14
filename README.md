@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 14/09/2020 - Esrin - Added SWFFG.TalentsCurrentTier to en.json lang file.
 - 14/09/2020 - Esrin - Corrected order of Encumbrance Threshold / Current values for consistency.
 - 14/09/2020 - Cstadther - Added code driven by dice theme, if not starwars, enables Talent Tiers.
 - 11/09/2020 - Cstadther - Fixed issue where modifying a talent by clicking on the specialization box was not updating the talent item in the specialization correctly.

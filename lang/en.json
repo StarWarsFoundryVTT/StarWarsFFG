@@ -62,6 +62,7 @@
   "SWFFG.TalentsName": "Name",
   "SWFFG.TalentsActivation": "Activation",
   "SWFFG.TalentsRank": "Rank",
+  "SWFFG.TalentsCurrentTier": "Current Tier",
   "SWFFG.DescriptionXP": "XP",
   "SWFFG.DescriptionXPAvailable": "Available",
   "SWFFG.DescriptionXPTotal": "Total",
