@@ -90,6 +90,10 @@ export class ActorSheetFFG extends ActorSheet {
     if (!this.options.editable) return;
 
     Hooks.on("preCreateOwnedItem", (actor, item, options, userid) => {
+      // Save persistent sheet height and width for future use.
+      this.sheetWidth = this.position.width;
+      this.sheetHeight = this.position.height;
+
       if (item.type === "species" || item.type === "career") {
         if (actor.data.type === "character") {
           // we only allow one species and one career, find any other species and remove them.
@@ -103,6 +107,12 @@ export class ActorSheetFFG extends ActorSheet {
       }
 
       return true;
+    });
+
+    Hooks.on("preDeleteOwnedItem", (actor, item, options, userid) => {
+      // Save persistent sheet height and width for future use.
+      this.sheetWidth = this.position.width;
+      this.sheetHeight = this.position.height;
     });
 
     new ContextMenu(html, ".skillsGrid .skill", [
