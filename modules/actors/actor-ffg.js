@@ -397,12 +397,26 @@ export class ActorFFG extends Actor {
       } else {
         data.attributes[`${key}`].modtype = modifierType;
         data.attributes[`${key}`].mod = key;
-        data.attributes[`${key}`].value = attr.value;
+
+        if (key === "Shields" && !Array.isArray(attr.value)) {
+          data.attributes[`${key}`].value = [attr.value, attr.value, attr.value, attr.value];
+        } else {
+          data.attributes[`${key}`].value = attr.value;
+        }
+      }
+
+      let outValue = 0;
+      if (attr?.value) {
+        if (Array.isArray(attr.value)) {
+          outValue = attr.value;
+        } else {
+          outValue = parseInt(attr.value, 10);
+        }
       }
 
       return {
         key,
-        value: attr?.value ? parseInt(attr.value, 10) : 0,
+        value: outValue,
         modtype: modifierType,
         mod: key,
       };
