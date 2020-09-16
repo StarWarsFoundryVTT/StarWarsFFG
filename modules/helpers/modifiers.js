@@ -11,9 +11,15 @@ export default class ModifierHelpers {
   static getCalculateValueForAttribute(key, attrs, items, modtype) {
     let total = 0;
 
-    total += attrs[key].value;
+    if (key === "Shields") {
+      total += this.getCalculatedValueFromItems(items, key, modtype);
 
-    total += this.getCalculatedValueFromItems(items, key, modtype);
+      return attrs[key].value.map((v) => v + total);
+    } else {
+      total += attrs[key].value;
+      total += this.getCalculatedValueFromItems(items, key, modtype);
+    }
+
     return total;
   }
 

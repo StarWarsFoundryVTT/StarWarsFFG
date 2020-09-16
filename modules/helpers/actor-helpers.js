@@ -74,7 +74,8 @@ export default class ActorHelpers {
 
         let statValue = 0;
         let isFormValueVisible = true;
-        if (formData.data?.stats[k]?.max) {
+        if (k === "shields") {
+        } else if (formData.data?.stats[k]?.max) {
           statValue = parseInt(formData.data.stats[k].max, 10);
         } else {
           if (formData.data.stats[k]?.value) {
@@ -85,16 +86,31 @@ export default class ActorHelpers {
           }
         }
 
-        let allowNegative = false;
-        if (statValue < 0 && k === "handling") {
-          allowNegative = true;
-        }
-        let x = statValue - (isFormValueVisible ? total : 0);
-        let y = parseInt(formData.data.attributes[key].value, 10) + x;
-        if (y > 0 || allowNegative) {
-          formData.data.attributes[key].value = y;
+        if (k === "shields") {
+          let newAttr = formData.data.attributes[key].value.split(",");
+          ["fore", "port", "starboard", "aft"].forEach((position, index) => {
+            let shieldValue = parseInt(formData.data.stats[k][position], 10);
+            let x = shieldValue - (total[index] ? total[index] : 0);
+            let y = parseInt(newAttr[index], 10) + x;
+            if (y > 0) {
+              newAttr[index] = y;
+            } else {
+              newAttr[index] = 0;
+            }
+          });
+          formData.data.attributes[key].value = newAttr;
         } else {
-          formData.data.attributes[key].value = 0;
+          let allowNegative = false;
+          if (statValue < 0 && k === "handling") {
+            allowNegative = true;
+          }
+          let x = statValue - (isFormValueVisible ? total : 0);
+          let y = parseInt(formData.data.attributes[key].value, 10) + x;
+          if (y > 0 || allowNegative) {
+            formData.data.attributes[key].value = y;
+          } else {
+            formData.data.attributes[key].value = 0;
+          }
         }
       });
     }

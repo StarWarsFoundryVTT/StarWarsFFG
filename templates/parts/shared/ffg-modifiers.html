@@ -30,7 +30,7 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{/select}}
     </select>
-    {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}} <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} /> {{else}}
+    {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}} <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} /> {{/if}} {{#if (and (eq attr.modtype "Stat") (eq key "Shields") )}} <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" /> {{/if}} {{#if (and (ne attr.modtype "Career Skill") (ne attr.modtype "Force Boost") (ne key "Shields") )}}
     <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" placeholder="0" />
     {{/if}}
     <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
