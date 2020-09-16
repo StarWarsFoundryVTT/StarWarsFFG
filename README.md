@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 15/09/2020 - Cstadther - Bug Fix #331, added sort by tier
 - 15/09/2020 - Cstadther - Fixed issue where defence was not updating correctly. 
 - 14/09/2020 - Esrin - Hooked the semi-persistent sheet sizes into the createOwnedItem and deleteOwnedItem events to cover those cases where updateObject is not called on the sheet class.
 - 14/09/2020 - Esrin - Added semi-persistent actor sheet width and height to allow for resizing to persist across updates to the sheet. Does not persist through page refreshes and is client-side only so two different users can view the same sheet with different persisting sizes. Probably needs more careful testing / bug finding.

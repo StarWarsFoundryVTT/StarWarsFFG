@@ -208,15 +208,27 @@ export class ActorFFG extends Actor {
       }
     });
 
-    globalTalentList.sort((a, b) => {
-      let comparison = 0;
-      if (a.name > b.name) {
-        comparison = 1;
-      } else if (a.name < b.name) {
-        comparison = -1;
-      }
-      return comparison;
-    });
+    if (CONFIG.FFG.theme !== "starwars") {
+      globalTalentList.sort((a, b) => {
+        let comparison = 0;
+        if (a.tier > b.tier) {
+          comparison = 1;
+        } else if (a.tier < b.tier) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+    } else {
+      globalTalentList.sort((a, b) => {
+        let comparison = 0;
+        if (a.name > b.name) {
+          comparison = 1;
+        } else if (a.name < b.name) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+    }
 
     data.talentList = globalTalentList;
   }
