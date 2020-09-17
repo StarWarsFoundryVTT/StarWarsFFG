@@ -52,6 +52,7 @@ export default class ItemHelpers {
             setProperty(updateData, `data.talents.${parent.talent}.activation`, formData.data.activation.value);
             setProperty(updateData, `data.talents.${parent.talent}.isRanked`, formData.data.ranks.ranked);
             setProperty(updateData, `data.talents.${parent.talent}.isForceTalent`, formData.data.isForceTalent);
+            setProperty(updateData, `data.talents.${parent.talent}.isConflictTalent`, formData.data.isConflictTalent);
             setProperty(updateData, `data.talents.${parent.talent}.attributes`, formData.data.attributes);
 
             if (parent.id.includes(".OwnedItem.")) {

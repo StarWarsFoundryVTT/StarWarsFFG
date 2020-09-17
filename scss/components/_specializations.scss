@@ -5,6 +5,17 @@
   .sheet-body {
     height: calc(100% - 9rem);
   }
+
+  input {
+    &.conflict {
+      opacity: .5;
+
+      &:after {
+        content: "";
+        background-color:red;
+      }
+    }
+  }
 }
 
 .burst-8 {
@@ -26,4 +37,14 @@
   width: 26px;
   background: white;
   transform: rotate(135deg);
+}
+
+div.conflict {
+  height: 23px;
+  width: 22px;
+  position: absolute;
+  background: red;
+  left: 9px;
+  top: 7px;
+  z-index: -1;
 }

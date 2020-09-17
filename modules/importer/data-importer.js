@@ -323,6 +323,7 @@ export default class DataImporter extends FormApplication {
           }
 
           const forcetalent = talent.getElementsByTagName("ForceTalent")[0]?.textContent === "true" ? true : false;
+          const conflicttalent = talent.getElementsByTagName("Conflict")[0]?.textContent?.length > 0 ? true : false;
 
           const item = {
             name,
@@ -340,6 +341,7 @@ export default class DataImporter extends FormApplication {
                 value: activation,
               },
               isForceTalent: forcetalent,
+              isConflictTalent: conflicttalent,
             },
           };
 
@@ -1179,6 +1181,7 @@ export default class DataImporter extends FormApplication {
                 rowTalent.activation = talentItem.data.data.activation.value;
                 rowTalent.activationLabel = talentItem.data.data.activation.label;
                 rowTalent.isForceTalent = talentItem.data.data.isForceTalent === "true" ? true : false;
+                rowTalent.isConflictTalent = talentItem.data.data.isConflictTalent === "true" ? true : false;
                 rowTalent.isRanked = talentItem.data.data.ranks.ranked === "true" ? true : false;
                 rowTalent.size = "single";
                 rowTalent.canLinkTop = true;
