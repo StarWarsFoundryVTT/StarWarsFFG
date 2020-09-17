@@ -115,6 +115,12 @@ export class ActorSheetFFG extends ActorSheet {
       this.sheetHeight = this.position.height;
     });
 
+    Hooks.on("preUpdateOwnedItem", (actor, item, options, userid) => {
+      // Save persistent sheet height and width for future use.
+      this.sheetWidth = this.position.width;
+      this.sheetHeight = this.position.height;
+    });
+
     new ContextMenu(html, ".skillsGrid .skill", [
       {
         name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
