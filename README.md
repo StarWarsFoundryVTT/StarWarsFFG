@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 16/09/2020 - Cstadther - Tiny fix, added object-fit:contain to images to help with stretching.
 - 15/09/2020 - Cstadther - Bug Fix #331, added sort by tier
 - 15/09/2020 - Cstadther - Fixed issue where defence was not updating correctly. 
 - 14/09/2020 - Esrin - Hooked the semi-persistent sheet sizes into the createOwnedItem and deleteOwnedItem events to cover those cases where updateObject is not called on the sheet class.

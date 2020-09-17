@@ -525,6 +525,8 @@ span.dietype.triumph {
   max-width: 124px;
   border: 0;
   margin: auto;
+  -o-object-fit: contain;
+  object-fit: contain;
 }
 
 .starwarsffg .header-fields .attribute {
