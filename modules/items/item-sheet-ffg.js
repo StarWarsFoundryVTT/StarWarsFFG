@@ -504,6 +504,7 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
       $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.ranked);
       $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.data.data.isForceTalent);
+      $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.data.data.isConflictTalent);
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(data.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
 
@@ -533,6 +534,7 @@ export class ItemSheetFFG extends ItemSheet {
     specializationTalentItem.activationLabel = talentItem.data.activation.label;
     specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
     specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
+    specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
     specializationTalentItem.attributes = talentItem.data.attributes;
   }
 }

@@ -3781,6 +3781,15 @@ span.dietype.triumph {
   height: calc(100% - 9rem);
 }
 
+.starwarsffg .item-sheet-specialization input.conflict {
+  opacity: .5;
+}
+
+.starwarsffg .item-sheet-specialization input.conflict:after {
+  content: "";
+  background-color: red;
+}
+
 .starwarsffg .burst-8 {
   z-index: -1;
   left: 7px;
@@ -3801,6 +3810,16 @@ span.dietype.triumph {
   width: 26px;
   background: white;
   transform: rotate(135deg);
+}
+
+.starwarsffg div.conflict {
+  height: 23px;
+  width: 22px;
+  position: absolute;
+  background: red;
+  left: 9px;
+  top: 7px;
+  z-index: -1;
 }
 
 .starwarsffg.data-import .import-file-selector div {

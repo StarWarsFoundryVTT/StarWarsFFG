@@ -617,6 +617,7 @@ export class ActorSheetFFG extends ActorSheet {
     specializationTalentItem.activationLabel = talentItem.data.activation.label;
     specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
     specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
+    specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
     specializationTalentItem.attributes = talentItem.data.attributes;
   }
 }

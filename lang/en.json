@@ -331,5 +331,6 @@
   "SWFFG.SkillsMagic": "Magic Skills",
   "SWFFG.SkillsSocial": "Social",
   "SWFFG.TalentTier": "Tier",
-  "SWFFG.TalentCurrentTier": "Current Tier"
+  "SWFFG.TalentCurrentTier": "Current Tier",
+  "SWFFG.TalentsConflict" : "Conflict?"
 }
