@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/09/2020 - Cstadther - Fixed talent alignment
 - 17/09/2020 - Cstadther - Enhancement #336 - Added conflict talents to talent sheet, specialization display, and oggdude talent importer.
 - 17/09/2020 - Esrin - Fixed display of FFG elements in private rolls.
 - 17/09/2020 - Esrin - Added preUpdateOwnedItem hook to actor-sheet-ffg.js to handle sheet height and width persistence.
