@@ -604,21 +604,24 @@ export class RollFFG extends Roll {
       tooltip: isPrivate ? "" : await this.getTooltip(),
       total: isPrivate ? "?" : Math.round(this.total * 100) / 100,
       ffg: isPrivate ? {} : this.ffg,
-      ffgDice: this.dice.map((d) => {
-        const cls = d.constructor;
-        return {
-          isFFG: game.ffg.diceterms.includes(d.constructor),
-          rolls: d.results.map((r) => {
+      ffgDice: isPrivate
+        ? {}
+        : this.dice.map((d) => {
+            const cls = d.constructor;
             return {
-              result: cls.getResultLabel(r.result),
+              isFFG: game.ffg.diceterms.includes(d.constructor),
+              rolls: d.results.map((r) => {
+                return {
+                  result: cls.getResultLabel(r.result),
+                };
+              }),
             };
           }),
-        };
-      }),
       hasFFG: this.hasFFG,
       hasStandard: this.hasStandard,
       diceresults: CONFIG.FFG.diceresults,
       data: this.data,
+      publicRoll: !chatOptions.isPrivate,
     };
 
     // Render the roll display template

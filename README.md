@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/09/2020 - Esrin - Fixed display of FFG elements in private rolls.
 - 17/09/2020 - Esrin - Added preUpdateOwnedItem hook to actor-sheet-ffg.js to handle sheet height and width persistence.
 - 16/09/2020 - Cstadther - Tiny fix, added object-fit:contain to images to help with stretching.
 - 15/09/2020 - Cstadther - Bug Fix #331, added sort by tier

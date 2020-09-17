@@ -1,4 +1,5 @@
 <div class="starwarsffg dice-roll">
+  {{log this}}
   <div class="dice-result">
     {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
@@ -30,7 +31,7 @@
     </div>
     {{/if}} {{{tooltip}}} {{#if hasStandard}}
     <h4 class="dice-total">{{total}}</h4>
-    {{/if}} {{#if hasFFG}}
+    {{/if}} {{#if publicRoll }} {{#if hasFFG}}
     <ul>
       {{#if ffg.success}}
       <li class="roll-success">Check succeeded!</li>
@@ -40,6 +41,6 @@
       <li>{{lookup ../this.diceresults [key]}}: {{this}}</li>
       {{/if}} {{/each}}
     </ul>
-    {{/if}}
+    {{/if}} {{/if}}
   </div>
 </div>
