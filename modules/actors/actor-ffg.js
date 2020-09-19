@@ -250,7 +250,7 @@ export class ActorFFG extends Actor {
           }
         }
       } catch (err) {
-        CONFIG.logger.error(`Error calculating derived Soak`, err);
+        CONFIG.logger.error(`Error calculating derived Encumbrance`, err);
       }
     }
 
@@ -475,6 +475,9 @@ export class ActorFFG extends Actor {
         if (data.attributes.Strain.value === 0) {
           total = data.attributes.Willpower.value + ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
         }
+      }
+      if (key === "Encumbrance") {
+        total = 5 + data.characteristics.Brawn.value;
       }
 
       total += data.attributes[key].value;

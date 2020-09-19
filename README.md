@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 19/09/2020 - Esrin - Added auto calculation for Encumbrance Threshold based on Brawn + 5 + item modifiers. Existing characters will likely need to have their threshold adjusted due to any manual modifiers previously applied to them before auto calculation existed.
 - 19/09/2020 - Esrin - Fixed disabled encumbrance threshold field on character sheet.
 - 19/09/2020 - Cstadther - Fixed issue with creating new skill.
 - 18/09/2020 - Cstadther - Refactored data blocks html to Handlebars partial.
