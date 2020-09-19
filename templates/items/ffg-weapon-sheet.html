@@ -63,82 +63,11 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponSkill"}}
-                  </div>
-                  <div class="block-attribute">
-                    <select style="text-align: center;" name="data.skill.value">
-                      {{#select data.skill.value}} {{#each this.FFG.skills as |t|}}
-                      <option value="{{t.value}}">{{localize t.label}}</option>
-                      {{/each}} {{/select}}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponRange"}}
-                  </div>
-                  <div class="block-attribute">
-                    <select style="text-align: center;" name="data.range.value">
-                      {{#select data.range.value}} {{#each this.FFG.ranges as |t|}}
-                      <option value="{{t.value}}">{{localize t.label}}</option>
-                      {{/each}} {{/select}}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponPrice"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single"><input type="text" name="data.price.value" value="{{data.price.value}}" data-dtype="Number" /></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.ranges)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}}
           </div>
 
           <div class="container flex-group-center weapon-values">
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponQuantity"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single"><input type="text" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number" /></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource double">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponSpecial"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single">
-                      <div class="popout-editor" data-target="data.special.value" data-label="{{localize 'SWFFG.ItemWeaponSpecial'}}">
-                        <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-                        {{{renderDiceTags data.special.value}}}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.special.value)}}
           </div>
         </div>
       </div>

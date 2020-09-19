@@ -9,102 +9,12 @@
           <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.MinionName'}}" data-dtype="String" /></h1>
           <div class="container">
             <div class="grid grid-3col minion-stats">
-              {{!-- Quantity Box --}}
-              <div class="resource split">
-                <div class="attribute flex-group-center">
-                  <div class="block-background">
-                    <div class="block-title">
-                      {{localize "SWFFG.MinionQuantity"}}
-                    </div>
-                    <div class="block-attribute">
-                      <div class="block-value"><input type="text" name="data.quantity.max" value="{{data.quantity.max}}" data-dtype="Number" /></div>
-                      <div class="block-value"><input type="text" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number" disabled /></div>
-                    </div>
-                  </div>
-                  <div class="block-background-shadow">
-                    <div class="shadow-left">
-                      <div class="shadow-text">{{localize "SWFFG.MinionQuantityMax"}}</div>
-                    </div>
-                    <div class="shadow-right">
-                      <div class="shadow-text">{{localize "SWFFG.MinionQuantityAlive"}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              {{!-- Soak Box --}}
-              <div class="resource single">
-                <div class="attribute flex-group-center">
-                  <div class="block-background">
-                    <div class="block-title">
-                      {{localize "SWFFG.Soak"}}
-                    </div>
-                    <div class="block-attribute">
-                      <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" /></div>
-                    </div>
-                  </div>
-                  <div class="block-background-shadow"></div>
-                </div>
-              </div>
-              {{!-- Defence Box --}}
-              <div class="resource split">
-                <div class="attribute flex-group-center">
-                  <div class="block-background">
-                    <div class="block-title">
-                      {{localize "SWFFG.Defense"}}
-                    </div>
-                    <div class="block-attribute">
-                      <div class="block-value"><input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number" /></div>
-                      <div class="block-value"><input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number" /></div>
-                    </div>
-                  </div>
-                  <div class="block-background-shadow">
-                    <div class="shadow-left">
-                      <div class="shadow-text">{{localize "SWFFG.DefenseRanged"}}</div>
-                    </div>
-                    <div class="shadow-right">
-                      <div class="shadow-text">{{localize "SWFFG.DefenseMelee"}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {{!-- Quantity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.MinionQuantity" fields=(array (object name="data.quantity.max" value=data.quantity.max type="Number" label="SWFFG.MinionQuantityMax") (object name="data.quantity.value" value=data.quantity.value type="Number" label="SWFFG.MinionQuantityAlive" disabled=true) ))}} {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value )}} {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
             </div>
           </div>
           <div class="container">
             <div class="grid grid-3col minion-stats">
-              <div class="resource split">
-                <div class="attribute flex-group-center">
-                  <div class="block-background">
-                    <div class="block-title">
-                      {{localize "SWFFG.Wounds"}}
-                    </div>
-                    <div class="block-attribute">
-                      <div class="block-value"><input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number" disabled /></div>
-                      <div class="block-value"><input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number" /></div>
-                    </div>
-                  </div>
-                  <div class="block-background-shadow">
-                    <div class="shadow-left">
-                      <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
-                    </div>
-                    <div class="shadow-right">
-                      <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="resource single">
-                <div class="attribute flex-group-center">
-                  <div class="block-background">
-                    <div class="block-title">
-                      {{localize "SWFFG.MinionUnitWounds"}}
-                    </div>
-                    <div class="block-attribute">
-                      <div class="block-value block-single"><input type="text" name="data.unit_wounds.value" value="{{data.unit_wounds.value}}" data-dtype="Number" /></div>
-                    </div>
-                  </div>
-                  <div class="block-background-shadow"></div>
-                </div>
-              </div>
+              {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.MinionUnitWounds" type="Number" name="data.unit_wounds.value" value=data.unit_wounds.value )}}
             </div>
           </div>
         </div>

@@ -1278,6 +1278,13 @@ Hooks.once("init", async function () {
     }
   });
 
+  Handlebars.registerHelper("object", function ({ hash }) {
+    return hash;
+  });
+  Handlebars.registerHelper("array", function () {
+    return Array.from(arguments).slice(0, arguments.length - 1);
+  });
+
   TemplateHelpers.preload();
 });
 

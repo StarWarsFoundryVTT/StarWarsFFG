@@ -63,30 +63,7 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponPrice"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single"><input type="text" name="data.price.value" value="{{data.price.value}}" data-dtype="Number" /></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponQuantity"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single"><input type="text" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number" /></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
           </div>
         </div>
       </div>

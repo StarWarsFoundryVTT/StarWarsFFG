@@ -51,89 +51,7 @@
 
       <div class="container" style="flex-wrap: nowrap;">
         <div class="container flex-group-center">
-          {{!-- Wounds Box --}}
-          <div class="resource split">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.Wounds"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value"><input type="text" name="data.stats.wounds.max" value="{{data.stats.wounds.max}}" data-dtype="Number" /></div>
-                  <div class="block-value"><input type="text" name="data.stats.wounds.value" value="{{data.stats.wounds.value}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow">
-                <div class="shadow-left">
-                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
-                </div>
-                <div class="shadow-right">
-                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {{!-- Strain Box --}}
-          <div class="resource split">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.Strain"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value"><input type="text" name="data.stats.strain.max" value="{{data.stats.strain.max}}" data-dtype="Number" /></div>
-                  <div class="block-value"><input type="text" name="data.stats.strain.value" value="{{data.stats.strain.value}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow">
-                <div class="shadow-left">
-                  <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
-                </div>
-                <div class="shadow-right">
-                  <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {{!-- Soak Box --}}
-          <div class="resource single">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.Soak"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.stats.soak.value" value="{{data.stats.soak.value}}" data-dtype="Number" {{#if this.settings.enableSoakCalculation}}disabled{{/if}} /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow"></div>
-            </div>
-          </div>
-
-          {{!-- Defence Box --}}
-          <div class="resource split">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.Defense"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value"><input type="text" name="data.stats.defence.ranged" value="{{data.stats.defence.ranged}}" data-dtype="Number" /></div>
-                  <div class="block-value"><input type="text" name="data.stats.defence.melee" value="{{data.stats.defence.melee}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow">
-                <div class="shadow-left">
-                  <div class="shadow-text">{{localize "SWFFG.DefenseRanged"}}</div>
-                </div>
-                <div class="shadow-right">
-                  <div class="shadow-text">{{localize "SWFFG.DefenseMelee"}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}} {{!-- Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}} {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}} {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
         </div>
       </div>
     </div>
@@ -176,43 +94,7 @@
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
       <div class="container flex-group-center item-values">
-        {{!-- Encumbrance Box --}}
-        <div class="resource split">
-          <div class="attribute flex-group-center">
-            <div class="block-background">
-              <div class="block-title">
-                {{localize "SWFFG.Encumbrance"}}
-              </div>
-              <div class="block-attribute">
-                <div class="block-value"><input type="text" name="data.stats.encumbrance.max" value="{{data.stats.encumbrance.max}}" data-dtype="Number" disabled /></div>
-                <div class="block-value"><input type="text" name="data.stats.encumbrance.value" value="{{data.stats.encumbrance.value}}" data-dtype="Number" /></div>
-              </div>
-            </div>
-            <div class="block-background-shadow">
-              <div class="shadow-left">
-                <div class="shadow-text">{{localize "SWFFG.Threshold"}}</div>
-              </div>
-              <div class="shadow-right">
-                <div class="shadow-text">{{localize "SWFFG.Current"}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {{!-- Credits Box --}}
-        <div class="resource double">
-          <div class="attribute flex-group-center">
-            <div class="block-background">
-              <div class="block-title">
-                {{localize "SWFFG.DescriptionCredits"}}
-              </div>
-              <div class="block-attribute">
-                <div class="block-value block-single"><input type="text" name="data.stats.credits.value" value="{{data.stats.credits.value}}" data-dtype="Number" /></div>
-              </div>
-            </div>
-            <div class="block-background-shadow"></div>
-          </div>
-        </div>
+        {{!-- Encumbrance Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Encumbrance" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold" disabled=true) (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}} {{!-- Credits Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.DescriptionCredits" type="Number" name="data.stats.credits.value" value=data.stats.credits.value disabled=this.settings.enableSoakCalculation)}}
       </div>
 
       {{> "systems/starwarsffg/templates/parts/actor/ffg-weapon-armor-gear.html"}}
@@ -223,29 +105,7 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
-        {{!-- Force Box --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}}
-        <div class="resource split">
-          <div class="attribute flex-group-center">
-            <div class="block-background">
-              <div class="block-title">
-                {{localize "SWFFG.ForcePool"}}
-              </div>
-              <div class="block-attribute">
-                <div class="block-value"><input type="text" name="data.stats.forcePool.value" value="{{data.stats.forcePool.value}}" data-dtype="Number" disabled /></div>
-                <div class="block-value"><input type="text" name="data.stats.forcePool.max" value="{{data.stats.forcePool.max}}" data-dtype="Number" /></div>
-              </div>
-            </div>
-            <div class="block-background-shadow">
-              <div class="shadow-left">
-                <div class="shadow-text">{{localize "SWFFG.ForcePoolCommitted"}}</div>
-              </div>
-              <div class="shadow-right">
-                <div class="shadow-text">{{localize "SWFFG.ForcePoolAvailable"}}</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        {{/if}}
+        {{!-- Force Box --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
       </div>
 
       {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}}
@@ -261,85 +121,7 @@
         {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html"}} {{!-- Experience Box --}}
 
         <div class="grid bio-grid">
-          {{!-- Experience Box --}}
-          <div class="resource split">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.DescriptionXP"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value"><input type="text" name="data.experience.available" value="{{data.experience.available}}" data-dtype="Number" /></div>
-                  <div class="block-value"><input type="text" name="data.experience.total" value="{{data.experience.total}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow">
-                <div class="shadow-left">
-                  <div class="shadow-text">{{localize "SWFFG.DescriptionXPAvailable"}}</div>
-                </div>
-                <div class="shadow-right">
-                  <div class="shadow-text">{{localize "SWFFG.DescriptionXPTotal"}}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          {{!-- Obligation Box --}} {{#if (or (eq actor.flags.config.enableObligation undefined) (eq actor.flags.config.enableObligation true) )}}
-          <div class="resource single">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.DescriptionObligation"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.obligation.value" value="{{data.obligation.value}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow"></div>
-            </div>
-          </div>
-          {{/if}} {{!-- Duty Box --}} {{#if (or (eq actor.flags.config.enableDuty undefined) (eq actor.flags.config.enableDuty true) )}}
-          <div class="resource single">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.DescriptionDuty"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.duty.value" value="{{data.duty.value}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow"></div>
-            </div>
-          </div>
-          {{/if}} {{!-- Morality Box --}} {{#if (or (eq actor.flags.config.enableMorality undefined) (eq actor.flags.config.enableMorality true) )}}
-          <div class="resource single">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.DescriptionMorality"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.morality.value" value="{{data.morality.value}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow"></div>
-            </div>
-          </div>
-          {{/if}} {{!-- Conflict Box --}} {{#if (or (eq actor.flags.config.enableConflict undefined) (eq actor.flags.config.enableConflict true) )}}
-          <div class="resource single">
-            <div class="attribute flex-group-center">
-              <div class="block-background">
-                <div class="block-title">
-                  {{localize "SWFFG.DescriptionConflict"}}
-                </div>
-                <div class="block-attribute">
-                  <div class="block-value block-single"><input type="text" name="data.conflict.value" value="{{data.conflict.value}}" data-dtype="Number" /></div>
-                </div>
-              </div>
-              <div class="block-background-shadow"></div>
-            </div>
-          </div>
-          {{/if}}
+          {{!-- Experience Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}} {{!-- Obligation Box --}} {{#if (or (eq actor.flags.config.enableObligation undefined) (eq actor.flags.config.enableObligation true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" type="Number" name="data.obligation.value" value=data.obligation.value )}} {{/if}} {{!-- Duty Box --}} {{#if (or (eq actor.flags.config.enableDuty undefined) (eq actor.flags.config.enableDuty true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value )}} {{/if}} {{!-- Morality Box --}} {{#if (or (eq actor.flags.config.enableMorality undefined) (eq actor.flags.config.enableMorality true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value )}} {{/if}} {{!-- Conflict Box --}} {{#if (or (eq actor.flags.config.enableConflict undefined) (eq actor.flags.config.enableConflict true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value )}} {{/if}}
         </div>
       </div>
     </div>
