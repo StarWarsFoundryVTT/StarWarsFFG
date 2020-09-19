@@ -63,103 +63,14 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            <div class="resource double">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.VehicleTabFiringArc"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="grid grid-2col firing-arcs">
-                      <div>
-                        <input type="checkbox" id="data.firingarc.fore" name="data.firingarc.fore" {{checked data.firingarc.fore}} />
-                        <label for="data.firingarc.fore"> {{localize "SWFFG.VehicleFiringArcForward"}}</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="data.firingarc.aft" name="data.firingarc.aft" {{checked data.firingarc.aft}} />
-                        <label for="data.firingarc.aft"> {{localize "SWFFG.VehicleFiringArcAft"}}</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="data.firingarc.port" name="data.firingarc.port" {{checked data.firingarc.port}} />
-                        <label for="data.firingarc.port"> {{localize "SWFFG.VehicleFiringArcPort"}}</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="data.firingarc.starboard" name="data.firingarc.starboard" {{checked data.firingarc.starboard}} />
-                        <label for="data.firingarc.starboard"> {{localize "SWFFG.VehicleFiringArcStarboard"}}</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="data.firingarc.dorsal" name="data.firingarc.dorsal" {{checked data.firingarc.dorsal}} />
-                        <label for="data.firingarc.dorsal"> {{localize "SWFFG.VehicleFiringArcDorsal"}}</label>
-                      </div>
-                      <div>
-                        <input type="checkbox" id="data.firingarc.ventral" name="data.firingarc.ventral" {{checked data.firingarc.ventral}} />
-                        <label for="data.firingarc.ventral"> {{localize "SWFFG.VehicleFiringArcVentral"}}</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponRange"}}
-                  </div>
-                  <div class="block-attribute">
-                    <select style="text-align: center;" name="data.range.value">
-                      {{#select data.range.value}} {{#each this.FFG.vehicle_ranges as |t|}}
-                      <option value="{{t.value}}">{{localize t.label}}</option>
-                      {{/each}} {{/select}}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponPrice"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single"><input type="text" name="data.price.value" value="{{data.price.value}}" data-dtype="Number" /></div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.VehicleTabFiringArc" type="Multicheckbox" fields=(array (object name="data.firingarc.fore" value=data.firingarc.fore label="SWFFG.VehicleFiringArcForward") (object name="data.firingarc.aft" value=data.firingarc.aft label="SWFFG.VehicleFiringArcAft") (object name="data.firingarc.foportre" value=data.firingarc.port label="SWFFG.VehicleFiringArcPort") (object name="data.firingarc.starboard" value=data.firingarc.starboard label="SWFFG.VehicleFiringArcStarboard") (object name="data.firingarc.dorsal" value=data.firingarc.dorsal label="SWFFG.VehicleFiringArcDorsal") (object name="data.firingarc.ventral" value=data.firingarc.ventral label="SWFFG.VehicleFiringArcVentral") )) }} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.vehicle_ranges)}}
+          </div>
+          <div class="container flex-group-center weapon-values">
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
           </div>
 
           <div class="container flex-group-center weapon-values">
-            <div class="resource single">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponQuantity"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single"><input type="text" name="data.quantity.value" value="{{data.quantity.value}}" data-dtype="Number" /></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="resource double">
-              <div class="attribute flex-group-center">
-                <div class="block-background">
-                  <div class="block-title">
-                    {{localize "SWFFG.ItemWeaponSpecial"}}
-                  </div>
-                  <div class="block-attribute">
-                    <div class="block-value block-single">
-                      <div class="popout-editor" data-target="data.special.value" data-label="{{localize 'SWFFG.ItemWeaponSpecial'}}">
-                        <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-                        {{{renderDiceTags data.special.value}}}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.special.value)}}
           </div>
         </div>
       </div>

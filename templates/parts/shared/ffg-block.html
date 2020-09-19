@@ -1,0 +1,50 @@
+<div class="resource {{blocktype}}">
+  <div class="attribute flex-group-center">
+    <div class="block-background">
+      <div class="block-title">
+        {{localize title}}
+      </div>
+      <div class="block-attribute">
+        {{#if (or (eq blocktype "single") (eq blocktype "double")) }} {{#if (eq type "Boolean")}}
+        <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="{{name}}" data-dtype="{{type}}" {{checked value}} />
+        {{/if}} {{#if (eq type "Dropdown")}}
+        <select style="text-align: center;" name="{{name}}">
+          {{#select value}} {{#each options as |t|}}
+          <option value="{{t.value}}">{{localize t.label}}</option>
+          {{/each}} {{/select}}
+        </select>
+        {{/if}} {{#if (eq type "Multicheckbox")}}
+        <div class="grid grid-2col firing-arcs">
+          {{#each fields as |t|}}
+          <div>
+            <input type="checkbox" id="{{t.name}}" name="{{t.name}}" {{checked t.value}} />
+            <label for="{{t.name}}"> {{localize t.label}}</label>
+          </div>
+          {{/each}}
+        </div>
+        {{/if}} {{#if (eq type "PopoutEditor")}}
+        <div class="block-value block-single">
+          <div class="popout-editor" data-target="{{name}}" data-label="{{localize title}}">
+            <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
+            {{{renderDiceTags value}}}
+          </div>
+        </div>
+        {{/if}} {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor"))}}
+        <div class="block-value block-single"><input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
+        {{/if}} {{/if}} {{#if (eq blocktype "split")}} {{#each fields as |t|}}
+        <div class="block-value"><input type="text" name="{{name}}" value="{{value}}" data-dtype="type" {{#if disabled}}disabled{{/if}} /></div>
+        {{/each}} {{/if}}
+      </div>
+    </div>
+    {{#if (or (eq hasShadow true) (eq blocktype "split"))}}
+    <div class="block-background-shadow">
+      <div class="shadow-left">
+        <div class="shadow-text">{{localize fields.[0].label}}</div>
+      </div>
+      <div class="shadow-right">
+        <div class="shadow-text">{{localize fields.[1].label}}</div>
+      </div>
+    </div>
+    {{/if}}
+  </div>
+</div>
