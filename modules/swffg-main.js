@@ -909,7 +909,17 @@ Hooks.once("init", async function () {
     });
 
     if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-      const skills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+      const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+
+      let skills = {};
+      Object.keys(altSkills).forEach((skillKey) => {
+        if (altSkills?.[skillKey]?.value) {
+          skills[skillKey] = { ...altSkills[skillKey] };
+        } else {
+          skills[skillKey] = { value: skillKey, ...altSkills[skillKey] };
+        }
+      });
+
       const sorted = Object.keys(skills).sort(function (a, b) {
         const x = game.i18n.localize(skills[a].abrev);
         const y = game.i18n.localize(skills[b].abrev);
