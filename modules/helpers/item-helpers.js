@@ -12,7 +12,7 @@ export default class ItemHelpers {
     const isMelee = formData?.data?.skill?.value ? formData.data.skill.value === "Melee" : formData[`data.skill.value`] === "Melee";
     const isBrawl = formData?.data?.skill?.value ? formData.data.skill.value === "Brawl" : formData[`data.skill.value`] === "Brawl";
 
-    if (this.object.data.type === "weapon" && (isMelee || isBrawl)) {
+    if (this.object.data.type === "weapon" && ((isMelee && formData?.data?.useBrawn) || isBrawl)) {
       setProperty(formData, `data.damage.value`, 0);
     }
 

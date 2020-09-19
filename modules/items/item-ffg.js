@@ -32,7 +32,7 @@ export class ItemFFG extends Item {
         data.range.label = rangeId;
 
         if (this.isOwned && this.actor && this.actor.type !== "vehicle") {
-          if (data.skill.value === "Melee" || data.skill.value === "Brawl") {
+          if ((data.skill.value === "Melee" && data.skill.useBrawn) || data.skill.value === "Brawl") {
             let damageAdd = 0;
             for (let attr in data.attributes) {
               if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {

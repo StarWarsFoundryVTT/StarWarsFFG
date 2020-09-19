@@ -334,5 +334,6 @@
   "SWFFG.TalentCurrentTier": "Current Tier",
   "SWFFG.TalentsConflict" : "Conflict?",
   "SWFFG.ConsumablesAmount": "Amount",
-  "SWFFG.ConsumablesDuration": "Duration"
+  "SWFFG.ConsumablesDuration": "Duration",
+  "SWFFG.UseBrawnBaseDamage" : "Brawn?"
 }
