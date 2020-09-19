@@ -42,7 +42,7 @@ export class ItemSheetFFG extends ItemSheet {
     switch (this.object.data.type) {
       case "weapon":
       case "shipweapon":
-        this.position.width = 450;
+        this.position.width = 530;
         break;
       case "armour":
       case "gear":

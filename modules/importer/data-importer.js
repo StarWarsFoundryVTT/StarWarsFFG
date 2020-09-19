@@ -928,6 +928,10 @@ export default class DataImporter extends FormApplication {
             },
           };
 
+          if (skill === "Melee" && damage === "0") {
+            newItem.data.skill.useBrawn = true;
+          }
+
           const baseMods = weapon.getElementsByTagName("BaseMods")[0];
           if (baseMods) {
             const mods = await ImportHelpers.getBaseModObject(baseMods);
