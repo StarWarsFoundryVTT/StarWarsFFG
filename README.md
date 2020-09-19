@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 19/09/2020 - Esrin - Fixed disabled encumbrance threshold field on character sheet.
 - 19/09/2020 - Cstadther - Fixed issue with creating new skill.
 - 18/09/2020 - Cstadther - Refactored data blocks html to Handlebars partial.
 - 17/09/2020 - Cstadther - Fixed talent alignment
