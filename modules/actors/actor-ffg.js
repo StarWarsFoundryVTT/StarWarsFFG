@@ -476,9 +476,12 @@ export class ActorFFG extends Actor {
           total = data.attributes.Willpower.value + ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
         }
       }
-      if (key === "Encumbrance") {
-        total = 5 + data.characteristics.Brawn.value;
-      }
+      // TODO: Disabled while I figure out what I did wrong.
+      // if (key === "Encumbrance") {
+      //   if (data.attributes.Encumbrance.value === 0) {
+      //     total = 5 + data.characteristics.Brawn.value + ModifierHelpers.getBaseValue(actorData.items, "Brawn", "Characteristic");
+      //   }
+      // }
 
       total += data.attributes[key].value;
       total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Stat");
