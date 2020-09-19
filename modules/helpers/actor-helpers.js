@@ -33,6 +33,16 @@ export default class ActorHelpers {
             statValue = 0;
             isFormValueVisible = false;
           }
+        }
+        if (key === "Encumbrance") {
+          if (formData.data.stats[k]?.value) {
+            statValue = parseInt(formData.data.stats[k].value, 10);
+            // the encumbrance value is autocalculated we need to account for 5 + Brawn
+            statValue = statValue - parseInt(formData.data.characteristics.Brawn.value + 5, 10);
+          } else {
+            statValue = 0;
+            isFormValueVisible = false;
+          }
         } else if (key === "Defence-Melee") {
           statValue = parseInt(formData.data.stats.defence.melee, 10);
         } else if (key === "Defence-Ranged") {
