@@ -206,753 +206,6 @@ Hooks.once("init", async function () {
   });
 
   async function gameSkillsList() {
-    let skillList = [];
-
-    let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
-    if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
-      const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
-      skillList = fileData;
-    } else {
-      try {
-        const defaultString = JSON.stringify([
-          {
-            "id": "starwars",
-            "skills": {
-              "Brawl": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-              },
-              "Gunnery": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-              },
-              "Lightsaber": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-              },
-              "Melee": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-              },
-              "Ranged: Light": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-              },
-              "Ranged: Heavy": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-              },
-              "Astrogation": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Athletics": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Charm": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Coercion": {
-                "rank": 0,
-                "characteristic": "Willpower",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Computers": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Cool": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Coordination": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Deception": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Discipline": {
-                "rank": 0,
-                "characteristic": "Willpower",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Leadership": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Mechanics": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Medicine": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Negotiation": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Perception": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Piloting: Planetary": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Piloting: Space": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Resilience": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Skulduggery": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Stealth": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Streetwise": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Survival": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Vigilance": {
-                "rank": 0,
-                "characteristic": "Willpower",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-              },
-              "Knowledge: Core Worlds": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-              },
-              "Knowledge: Education": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-              },
-              "Knowledge: Lore": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-              },
-              "Knowledge: Outer Rim": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-              },
-              "Knowledge: Underworld": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-              },
-              "Knowledge: Warfare": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-              },
-              "Knowledge: Xenology": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-              },
-            },
-          },
-          {
-            "id": "genesys",
-            "skills": {
-              "Brawl": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameBrawl",
-                "abrev": "SWFFG.SkillsNameBrawlAbbreviation",
-              },
-              "Gunnery": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameGunnery",
-                "abrev": "SWFFG.SkillsNameGunneryAbbreviation",
-              },
-              "Melee": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameMelee",
-                "abrev": "SWFFG.SkillsNameMeleeAbbreviation",
-              },
-              "Melee-Heavy": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameMeleeHeavy",
-                "abrev": "SWFFG.SkillsNameMeleeHeavyAbbreviation",
-              },
-              "Melee-Light": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameMeleeLight",
-                "abrev": "SWFFG.SkillsNameMeleeLightAbbreviation",
-              },
-              "Ranged": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameRanged",
-                "abrev": "SWFFG.SkillsNameRangedAbbreviation",
-              },
-              "Ranged-Light": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameRangedLight",
-                "abrev": "SWFFG.SkillsNameRangedLightAbbreviation",
-              },
-              "Ranged-Heavy": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Combat",
-                "max": 6,
-                "label": "SWFFG.SkillsNameRangedHeavy",
-                "abrev": "SWFFG.SkillsNameRangedHeavyAbbreviation",
-              },
-              "Alchemy": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameAlchemy",
-                "abrev": "SWFFG.SkillsNameAlchemy",
-              },
-              "Astrocartography": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameAstrocartography",
-                "abrev": "SWFFG.SkillsNameAstrocartography",
-              },
-              "Athletics": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameAthletics",
-                "abrev": "SWFFG.SkillsNameAthletics",
-              },
-              "Charm": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Social",
-                "max": 6,
-                "label": "SWFFG.SkillsNameCharm",
-                "abrev": "SWFFG.SkillsNameCharm",
-              },
-              "Coercion": {
-                "rank": 0,
-                "characteristic": "Willpower",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Social",
-                "max": 6,
-                "label": "SWFFG.SkillsNameCoercion",
-                "abrev": "SWFFG.SkillsNameCoercion",
-              },
-              "Computers": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameComputers",
-                "abrev": "SWFFG.SkillsNameComputers",
-              },
-              "Cool": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameCool",
-                "abrev": "SWFFG.SkillsNameCool",
-              },
-              "Coordination": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameCoordination",
-                "abrev": "SWFFG.SkillsNameCoordination",
-              },
-              "Deception": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Social",
-                "max": 6,
-                "label": "SWFFG.SkillsNameDeception",
-                "abrev": "SWFFG.SkillsNameDeception",
-              },
-              "Discipline": {
-                "rank": 0,
-                "characteristic": "Willpower",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameDiscipline",
-                "abrev": "SWFFG.SkillsNameDiscipline",
-              },
-              "Driving": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameDriving",
-                "abrev": "SWFFG.SkillsNameDriving",
-              },
-              "Leadership": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Social",
-                "max": 6,
-                "label": "SWFFG.SkillsNameLeadership",
-                "abrev": "SWFFG.SkillsNameLeadership",
-              },
-              "Mechanics": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameMechanics",
-                "abrev": "SWFFG.SkillsNameMechanics",
-              },
-              "Medicine": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameMedicine",
-                "abrev": "SWFFG.SkillsNameMedicine",
-              },
-              "Negotiation": {
-                "rank": 0,
-                "characteristic": "Presence",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Social",
-                "max": 6,
-                "label": "SWFFG.SkillsNameNegotiation",
-                "abrev": "SWFFG.SkillsNameNegotiation",
-              },
-              "Operating": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameOperating",
-                "abrev": "SWFFG.SkillsNameOperating",
-              },
-              "Perception": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNamePerception",
-                "abrev": "SWFFG.SkillsNamePerception",
-              },
-              "Piloting": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNamePiloting",
-                "abrev": "SWFFG.SkillsNamePiloting",
-              },
-              "Resilience": {
-                "rank": 0,
-                "characteristic": "Brawn",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameResilience",
-                "abrev": "SWFFG.SkillsNameResilience",
-              },
-              "Riding": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameRiding",
-                "abrev": "SWFFG.SkillsNameRiding",
-              },
-              "Skulduggery": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameSkulduggery",
-                "abrev": "SWFFG.SkillsNameSkulduggery",
-              },
-              "Stealth": {
-                "rank": 0,
-                "characteristic": "Agility",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameStealth",
-                "abrev": "SWFFG.SkillsNameStealth",
-              },
-              "Streetwise": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameStreetwise",
-                "abrev": "SWFFG.SkillsNameStreetwise",
-              },
-              "Survival": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameSurvival",
-                "abrev": "SWFFG.SkillsNameSurvival",
-              },
-              "Vigilance": {
-                "rank": 0,
-                "characteristic": "Willpower",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "General",
-                "max": 6,
-                "label": "SWFFG.SkillsNameVigilance",
-                "abrev": "SWFFG.SkillsNameVigilance",
-              },
-              "Knowledge": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Knowledge",
-                "max": 6,
-                "label": "SWFFG.SkillsNameKnowledge",
-                "abrev": "SWFFG.SkillsNameKnowledge",
-              },
-              "Arcana": {
-                "rank": 0,
-                "characteristic": "Intellect",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Magic",
-                "max": 6,
-                "label": "SWFFG.SkillsNameArcana",
-                "abrev": "SWFFG.SkillsNameArcana",
-              },
-              "Divine": {
-                "rank": 0,
-                "characteristic": "Willpower",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Magic",
-                "max": 6,
-                "label": "SWFFG.SkillsNameDivine",
-                "abrev": "SWFFG.SkillsNameDivine",
-              },
-              "Primal": {
-                "rank": 0,
-                "characteristic": "Cunning",
-                "groupskill": false,
-                "careerskill": false,
-                "type": "Magic",
-                "max": 6,
-                "label": "SWFFG.SkillsNamePrimal",
-                "abrev": "SWFFG.SkillsNamePrimal",
-              },
-            },
-          },
-        ]);
-        const defaultBlob = new Blob([defaultString], {
-          type: "text/plain",
-        });
-        const i = new File([defaultBlob], "skills.json");
-        await Helpers.UploadFile("data", `worlds/${game.world.id}/`, i, { bucket: null });
-        skillList = JSON.parse(defaultString);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-    CONFIG.FFG.alternateskilllists = skillList;
-
-    let skillChoices = {};
-
-    skillList.forEach((list) => {
-      skillChoices[list.id] = list.id;
-    });
-
-    game.settings.register("starwarsffg", "skilltheme", {
-      name: game.i18n.localize("SWFFG.SettingsSkillTheme"),
-      hint: game.i18n.localize("SWFFG.SettingsSkillThemeHint"),
-      scope: "world",
-      config: true,
-      default: "starwars",
-      type: String,
-      onChange: (rule) => {
-        window.location.reload();
-      },
-      choices: skillChoices,
-    });
-
-    if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-      const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
-
-      let skills = {};
-      Object.keys(altSkills).forEach((skillKey) => {
-        if (altSkills?.[skillKey]?.value) {
-          skills[skillKey] = { ...altSkills[skillKey] };
-        } else {
-          skills[skillKey] = { value: skillKey, ...altSkills[skillKey] };
-        }
-      });
-
-      const sorted = Object.keys(skills).sort(function (a, b) {
-        const x = game.i18n.localize(skills[a].abrev);
-        const y = game.i18n.localize(skills[b].abrev);
-
-        return x < y ? -1 : x > y ? 1 : 0;
-      });
-
-      let ordered = {};
-      sorted.forEach((skill) => {
-        ordered[skill] = skills[skill];
-      });
-
-      CONFIG.FFG.skills = ordered;
-
-      Hooks.on("createActor", (actor) => {
-        let skilllist = game.settings.get("starwarsffg", "skilltheme");
-        let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
-        CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
-
-        Object.keys(actor.data.data.skills).forEach((skill) => {
-          if (!skills.skills[skill]) {
-            skills.skills[`-=${skill}`] = null;
-          }
-        });
-
-        actor.update({
-          data: {
-            skills: skills.skills,
-          },
-        });
-      });
-    }
-
     game.settings.registerMenu("starwarsffg", "addskilltheme", {
       name: game.i18n.localize("SWFFG.SettingsSkillListImporter"),
       label: game.i18n.localize("SWFFG.SettingsSkillListImporterLabel"),
@@ -969,6 +222,757 @@ Hooks.once("init", async function () {
       config: false,
       default: {},
       type: Object,
+    });
+
+    try {
+      let skillList = [];
+
+      let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
+      if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
+        const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
+        skillList = fileData;
+      } else {
+        try {
+          const defaultString = JSON.stringify([
+            {
+              "id": "starwars",
+              "skills": {
+                "Brawl": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                },
+                "Gunnery": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                },
+                "Lightsaber": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                },
+                "Melee": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                },
+                "Ranged: Light": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                },
+                "Ranged: Heavy": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                },
+                "Astrogation": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Athletics": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Charm": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Coercion": {
+                  "rank": 0,
+                  "characteristic": "Willpower",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Computers": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Cool": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Coordination": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Deception": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Discipline": {
+                  "rank": 0,
+                  "characteristic": "Willpower",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Leadership": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Mechanics": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Medicine": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Negotiation": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Perception": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Piloting: Planetary": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Piloting: Space": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Resilience": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Skulduggery": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Stealth": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Streetwise": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Survival": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Vigilance": {
+                  "rank": 0,
+                  "characteristic": "Willpower",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                },
+                "Knowledge: Core Worlds": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                },
+                "Knowledge: Education": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                },
+                "Knowledge: Lore": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                },
+                "Knowledge: Outer Rim": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                },
+                "Knowledge: Underworld": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                },
+                "Knowledge: Warfare": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                },
+                "Knowledge: Xenology": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                },
+              },
+            },
+            {
+              "id": "genesys",
+              "skills": {
+                "Brawl": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameBrawl",
+                  "abrev": "SWFFG.SkillsNameBrawlAbbreviation",
+                },
+                "Gunnery": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameGunnery",
+                  "abrev": "SWFFG.SkillsNameGunneryAbbreviation",
+                },
+                "Melee": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameMelee",
+                  "abrev": "SWFFG.SkillsNameMeleeAbbreviation",
+                },
+                "Melee-Heavy": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameMeleeHeavy",
+                  "abrev": "SWFFG.SkillsNameMeleeHeavyAbbreviation",
+                },
+                "Melee-Light": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameMeleeLight",
+                  "abrev": "SWFFG.SkillsNameMeleeLightAbbreviation",
+                },
+                "Ranged": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameRanged",
+                  "abrev": "SWFFG.SkillsNameRangedAbbreviation",
+                },
+                "Ranged-Light": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameRangedLight",
+                  "abrev": "SWFFG.SkillsNameRangedLightAbbreviation",
+                },
+                "Ranged-Heavy": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Combat",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameRangedHeavy",
+                  "abrev": "SWFFG.SkillsNameRangedHeavyAbbreviation",
+                },
+                "Alchemy": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameAlchemy",
+                  "abrev": "SWFFG.SkillsNameAlchemy",
+                },
+                "Astrocartography": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameAstrocartography",
+                  "abrev": "SWFFG.SkillsNameAstrocartography",
+                },
+                "Athletics": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameAthletics",
+                  "abrev": "SWFFG.SkillsNameAthletics",
+                },
+                "Charm": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Social",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameCharm",
+                  "abrev": "SWFFG.SkillsNameCharm",
+                },
+                "Coercion": {
+                  "rank": 0,
+                  "characteristic": "Willpower",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Social",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameCoercion",
+                  "abrev": "SWFFG.SkillsNameCoercion",
+                },
+                "Computers": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameComputers",
+                  "abrev": "SWFFG.SkillsNameComputers",
+                },
+                "Cool": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameCool",
+                  "abrev": "SWFFG.SkillsNameCool",
+                },
+                "Coordination": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameCoordination",
+                  "abrev": "SWFFG.SkillsNameCoordination",
+                },
+                "Deception": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Social",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameDeception",
+                  "abrev": "SWFFG.SkillsNameDeception",
+                },
+                "Discipline": {
+                  "rank": 0,
+                  "characteristic": "Willpower",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameDiscipline",
+                  "abrev": "SWFFG.SkillsNameDiscipline",
+                },
+                "Driving": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameDriving",
+                  "abrev": "SWFFG.SkillsNameDriving",
+                },
+                "Leadership": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Social",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameLeadership",
+                  "abrev": "SWFFG.SkillsNameLeadership",
+                },
+                "Mechanics": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameMechanics",
+                  "abrev": "SWFFG.SkillsNameMechanics",
+                },
+                "Medicine": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameMedicine",
+                  "abrev": "SWFFG.SkillsNameMedicine",
+                },
+                "Negotiation": {
+                  "rank": 0,
+                  "characteristic": "Presence",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Social",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameNegotiation",
+                  "abrev": "SWFFG.SkillsNameNegotiation",
+                },
+                "Operating": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameOperating",
+                  "abrev": "SWFFG.SkillsNameOperating",
+                },
+                "Perception": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNamePerception",
+                  "abrev": "SWFFG.SkillsNamePerception",
+                },
+                "Piloting": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNamePiloting",
+                  "abrev": "SWFFG.SkillsNamePiloting",
+                },
+                "Resilience": {
+                  "rank": 0,
+                  "characteristic": "Brawn",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameResilience",
+                  "abrev": "SWFFG.SkillsNameResilience",
+                },
+                "Riding": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameRiding",
+                  "abrev": "SWFFG.SkillsNameRiding",
+                },
+                "Skulduggery": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameSkulduggery",
+                  "abrev": "SWFFG.SkillsNameSkulduggery",
+                },
+                "Stealth": {
+                  "rank": 0,
+                  "characteristic": "Agility",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameStealth",
+                  "abrev": "SWFFG.SkillsNameStealth",
+                },
+                "Streetwise": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameStreetwise",
+                  "abrev": "SWFFG.SkillsNameStreetwise",
+                },
+                "Survival": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameSurvival",
+                  "abrev": "SWFFG.SkillsNameSurvival",
+                },
+                "Vigilance": {
+                  "rank": 0,
+                  "characteristic": "Willpower",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "General",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameVigilance",
+                  "abrev": "SWFFG.SkillsNameVigilance",
+                },
+                "Knowledge": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Knowledge",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameKnowledge",
+                  "abrev": "SWFFG.SkillsNameKnowledge",
+                },
+                "Arcana": {
+                  "rank": 0,
+                  "characteristic": "Intellect",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Magic",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameArcana",
+                  "abrev": "SWFFG.SkillsNameArcana",
+                },
+                "Divine": {
+                  "rank": 0,
+                  "characteristic": "Willpower",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Magic",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNameDivine",
+                  "abrev": "SWFFG.SkillsNameDivine",
+                },
+                "Primal": {
+                  "rank": 0,
+                  "characteristic": "Cunning",
+                  "groupskill": false,
+                  "careerskill": false,
+                  "type": "Magic",
+                  "max": 6,
+                  "label": "SWFFG.SkillsNamePrimal",
+                  "abrev": "SWFFG.SkillsNamePrimal",
+                },
+              },
+            },
+          ]);
+          const defaultBlob = new Blob([defaultString], {
+            type: "text/plain",
+          });
+          const i = new File([defaultBlob], "skills.json");
+          await Helpers.UploadFile("data", `worlds/${game.world.id}/`, i, { bucket: null });
+          skillList = JSON.parse(defaultString);
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      CONFIG.FFG.alternateskilllists = skillList;
+
+      let skillChoices = {};
+
+      skillList.forEach((list) => {
+        skillChoices[list.id] = list.id;
+      });
+
+      game.settings.register("starwarsffg", "skilltheme", {
+        name: game.i18n.localize("SWFFG.SettingsSkillTheme"),
+        hint: game.i18n.localize("SWFFG.SettingsSkillThemeHint"),
+        scope: "world",
+        config: true,
+        default: "starwars",
+        type: String,
+        onChange: (rule) => {
+          window.location.reload();
+        },
+        choices: skillChoices,
+      });
+
+      if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+        const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+
+        let skills = {};
+        Object.keys(altSkills).forEach((skillKey) => {
+          if (altSkills?.[skillKey]?.value) {
+            skills[skillKey] = { ...altSkills[skillKey] };
+          } else {
+            skills[skillKey] = { value: skillKey, ...altSkills[skillKey] };
+          }
+        });
+
+        const sorted = Object.keys(skills).sort(function (a, b) {
+          const x = game.i18n.localize(skills[a].abrev);
+          const y = game.i18n.localize(skills[b].abrev);
+
+          return x < y ? -1 : x > y ? 1 : 0;
+        });
+
+        let ordered = {};
+        sorted.forEach((skill) => {
+          ordered[skill] = skills[skill];
+        });
+
+        CONFIG.FFG.skills = ordered;
+      }
+    } catch (err) {
+      CONFIG.logger.error(`Error loading alternate skill list, to hard reset, delete skill.json from the world folder.`, err);
+    }
+
+    Hooks.on("createActor", (actor) => {
+      let skilllist = game.settings.get("starwarsffg", "skilltheme");
+      let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
+      CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
+
+      Object.keys(actor.data.data.skills).forEach((skill) => {
+        if (!skills.skills[skill]) {
+          skills.skills[`-=${skill}`] = null;
+        }
+      });
+
+      actor.update({
+        data: {
+          skills: skills.skills,
+        },
+      });
     });
   }
 

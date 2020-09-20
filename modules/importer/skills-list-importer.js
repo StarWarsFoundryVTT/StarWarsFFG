@@ -49,6 +49,12 @@ export default class SkillListImporter extends FormApplication {
       let currentSkillList = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
       const newSkillList = JSON.parse(text);
 
+      Object.keys(newSkillList.skills).forEach((skill) => {
+        if (!newSkillList[skill].custom) {
+          newSkillList[skill].custom = true;
+        }
+      });
+
       currentSkillList.push(newSkillList);
       const newMasterSkillListData = JSON.stringify(currentSkillList);
 
