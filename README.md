@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 20/09/2020 - Cstadther - Fixed issue with character import failing on items, added object duplication and try..catch for error handling.
 - 19/09/2020 - Cstadther - Fixed issue where modifiers for alternate skills lists were not working correctly.
 - 19/09/2020 - Cstadther - Added ability to mark a melee weapon to not use Brawn which will cause weapon to follow not damage rules.
 - 19/09/2020 - Esrin - Small bugfix, removed disabled flag from Credits input.

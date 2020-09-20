@@ -828,29 +828,29 @@ export default class ImportHelpers {
       if (characterData.Character?.Weapons?.CharWeapon) {
         if (Array.isArray(characterData.Character.Weapons.CharWeapon)) {
           await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
-            const weapon = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
-            if (weapon) {
+            try {
+              const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey)));
               if (w?.Count) {
-                weapon.data.data.quantity = {
+                weapon.data.quantity = {
                   value: parseInt(w.Count, 10),
                 };
               }
               character.items.push(weapon);
-            } else {
-              CONFIG.logger.error(`Unable to add weapon ${w.ItemKey} to character.`);
+            } catch (err) {
+              CONFIG.logger.error(`Unable to add weapon (${w.ItemKey}) to character.`, err);
             }
           });
         } else {
-          const weapon = await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey);
-          if (weapon) {
+          try {
+            const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey)));
             if (characterData.Character.Weapons.CharWeapon?.Count) {
-              weapon.data.data.quantity = {
+              weapon.data.quantity = {
                 value: parseInt(characterData.Character.Weapons.CharWeapon.Count, 10),
               };
             }
             character.items.push(weapon);
-          } else {
-            CONFIG.logger.error(`Unable to add weapon ${characterData.Character.Weapons.CharWeapon.ItemKey} to character.`);
+          } catch (err) {
+            CONFIG.logger.error(`Unable to add weapon (${characterData.Character.Weapons.CharWeapon.ItemKey}) to character.`, err);
           }
         }
       }
@@ -860,29 +860,30 @@ export default class ImportHelpers {
       if (characterData.Character?.Armor?.CharArmor) {
         if (Array.isArray(characterData.Character.Armor.CharArmor)) {
           await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
-            const armor = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
-            if (armor) {
+            try {
+              const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey)));
               if (w?.Count) {
-                armor.data.data.quantity = {
+                armor.data.quantity = {
                   value: parseInt(w.Count, 10),
                 };
               }
               character.items.push(armor);
-            } else {
-              CONFIG.logger.error(`Unable to add armor ${w.ItemKey} to character.`);
+            } catch (err) {
+              CONFIG.logger.error(`Unable to add armor (${w.ItemKey}) to character.`, err);
             }
           });
         } else {
-          const armor = await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey);
-          if (armor) {
+          try {
+            const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey)));
+
             if (characterData.Character.Armor.CharArmor?.Count) {
-              armor.data.data.quantity = {
+              armor.data.quantity = {
                 value: parseInt(characterData.Character.Armor.CharArmor.Count, 10),
               };
             }
             character.items.push(armor);
-          } else {
-            CONFIG.logger.error(`Unable to add armor ${characterData.Character.Armor.CharArmor.ItemKey} to character.`);
+          } catch (err) {
+            CONFIG.logger.error(`Unable to add armor (${characterData.Character.Armor.CharArmor.ItemKey}) to character.`, err);
           }
         }
       }
@@ -892,29 +893,31 @@ export default class ImportHelpers {
       if (characterData.Character?.Gear?.CharGear) {
         if (Array.isArray(characterData.Character.Gear.CharGear)) {
           await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
-            const gear = await this.findCompendiumEntityByImportId("Item", w.ItemKey);
-            if (gear) {
+            try {
+              const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey)));
+
               if (w?.Count) {
-                gear.data.data.quantity = {
+                gear.data.quantity = {
                   value: parseInt(w.Count, 10),
                 };
               }
               character.items.push(gear);
-            } else {
-              CONFIG.logger.error(`Unable to add gear ${w.ItemKey} to character.`);
+            } catch (err) {
+              CONFIG.logger.error(`Unable to add gear (${w.ItemKey}) to character.`, err);
             }
           });
         } else {
-          const gear = await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey);
-          if (gear) {
+          try {
+            const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey)));
+
             if (characterData.Character.Gear.CharGear?.Count) {
-              gear.data.data.quantity = {
+              gear.data.quantity = {
                 value: parseInt(characterData.Character.Gear.CharGear.Count, 10),
               };
             }
             character.items.push(gear);
-          } else {
-            CONFIG.logger.error(`Unable to add armor ${characterData.Character.Gear.CharGear.ItemKey} to character.`);
+          } catch (err) {
+            CONFIG.logger.error(`Unable to add armor (${characterData.Character.Gear.CharGear.ItemKey}) to character.`, err);
           }
         }
       }
