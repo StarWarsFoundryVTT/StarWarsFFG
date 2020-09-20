@@ -735,8 +735,18 @@ span.dietype.triumph {
 }
 
 .starwarsffg .skillsGrid {
-  overflow-y: auto;
-  height: calc(100% - 5.5rem);
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  max-height: 800px;
+  width: 100%;
+  padding: 0 5px;
+}
+
+.starwarsffg .skillsGrid .skillTypeGrid {
+  flex: 0 1 auto;
+  flex-direction: column;
 }
 
 .starwarsffg .skillsGrid .pure-g {

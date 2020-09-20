@@ -1,144 +1,37 @@
-<div class="grid grid-2col skillsGrid">
-  <div class="skillTable" data-type="General">
-    <div class="pure-g skillsHeader">
-      <div class="pure-u-12-24">{{localize "SWFFG.SkillsGeneral"}}</div>
-      <div class="pure-u-3-24 hover">
-        {{localize "SWFFG.SkillsCS"}}
-        <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+<div style="position: relative; overflow: auto; height: calc(100% - 5.5rem); float: left; width: 100%;">
+  <div class="pure-g skillsGrid">
+    {{#each data.skilltypes as |skilltype|}}
+    <div class="pure-u-12-24 skillTypeGrid">
+      <div class="skillTable" data-type="{{skilltype.type}}">
+        <div class="pure-g skillsHeader">
+          <div class="pure-u-12-24">{{skilltype.label}}</div>
+          <div class="pure-u-3-24 hover">
+            {{localize "SWFFG.SkillsCS"}}
+            <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+          </div>
+          <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
+          <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
+        </div>
+
+        {{#each ../data.skills as |skill id|}} {{#if (eq skill.type skilltype.type) }}
+        <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
+          <div class="pure-u-12-24">
+            {{skill.label}} {{#with (lookup ../../this.FFG.characteristics [characteristic])~}} (
+            <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
+            ) {{/with}}
+          </div>
+          {{#if (eq ../actor.type "minion")}}
+          <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
+          {{else}}
+          <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
+          {{/if}}
+          <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
+          <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
+        </div>
+        {{/if}} {{/each}}
       </div>
-      <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-      <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
     </div>
-    {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'General'}}
-    <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-      <div class="pure-u-12-24">
-        {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-        <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-        ) {{/with}}
-      </div>
-      {{#if (eq ../actor.type "minion")}}
-      <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
-      {{else}}
-      <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-      {{/if}}
-      <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
-      <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-    </div>
-    {{/iff}} {{/each}}
-  </div>
-  <div>
-    {{#contains data.skills "type" "Magic"}}
-    <div class="skillTable" data-type="Magic">
-      <div class="pure-g skillsHeader">
-        <div class="pure-u-12-24">{{localize "SWFFG.SkillsMagic"}}</div>
-        <div class="pure-u-3-24 hover">
-          {{localize "SWFFG.SkillsCS"}}
-          <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-        </div>
-        <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-        <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
-      </div>
-      {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Magic'}}
-      <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-        <div class="pure-u-12-24">
-          {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-          <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-          ) {{/with}}
-        </div>
-        {{#if (eq ../actor.type "minion")}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
-        {{else}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-        {{/if}}
-        <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
-        <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-      </div>
-      {{/iff}} {{/each}}
-    </div>
-    {{/contains}} {{#contains data.skills "type" "Combat"}}
-    <div class="skillTable" data-type="Combat">
-      <div class="pure-g skillsHeader">
-        <div class="pure-u-12-24">{{localize "SWFFG.SkillsCombat"}}</div>
-        <div class="pure-u-3-24 hover">
-          {{localize "SWFFG.SkillsCS"}}
-          <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-        </div>
-        <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-        <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
-      </div>
-      {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Combat'}}
-      <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-        <div class="pure-u-12-24">
-          {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-          <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-          ) {{/with}}
-        </div>
-        {{#if (eq ../actor.type "minion")}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
-        {{else}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-        {{/if}}
-        <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
-        <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-      </div>
-      {{/iff}} {{/each}}
-    </div>
-    {{/contains}} {{#contains data.skills "type" "Social"}}
-    <div class="skillTable" data-type="Social">
-      <div class="pure-g skillsHeader">
-        <div class="pure-u-12-24">{{localize "SWFFG.SkillsSocial"}}</div>
-        <div class="pure-u-3-24 hover">
-          {{localize "SWFFG.SkillsCS"}}
-          <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-        </div>
-        <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-        <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
-      </div>
-      {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Social'}}
-      <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-        <div class="pure-u-12-24">
-          {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-          <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-          ) {{/with}}
-        </div>
-        {{#if (eq ../actor.type "minion")}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
-        {{else}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-        {{/if}}
-        <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
-        <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-      </div>
-      {{/iff}} {{/each}}
-    </div>
-    {{/contains}} {{#contains data.skills "type" "Knowledge"}}
-    <div class="skillTable" data-type="Knowledge">
-      <div class="pure-g skillsHeader">
-        <div class="pure-u-12-24">{{localize "SWFFG.SkillsKnowledge"}}</div>
-        <div class="pure-u-3-24 hover">
-          {{localize "SWFFG.SkillsCS"}}
-          <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
-        </div>
-        <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
-        <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
-      </div>
-      {{#each data.skills as |skill id|}} {{#iff skill.type '==' 'Knowledge'}}
-      <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
-        <div class="pure-u-12-24">
-          {{skill.label}} {{#with (lookup ../this.FFG.characteristics [characteristic])~}} (
-          <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
-          ) {{/with}}
-        </div>
-        {{#if (eq ../actor.type "minion")}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
-        {{else}}
-        <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
-        {{/if}}
-        <div class="pure-u-3-24"><input class="careerskill-rank" name="data.skills.{{id}}.rank" value="{{skill.rank}}" type="text" min="0" data-dtype="Number" placeholder="0" /></div>
-        <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
-      </div>
-      {{/iff}} {{/each}}
-    </div>
-    {{/contains}}
+
+    {{/each}}
   </div>
 </div>
