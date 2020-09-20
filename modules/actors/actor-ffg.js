@@ -52,7 +52,7 @@ export class ActorFFG extends Actor {
       CONFIG.FFG.skills = ordered;
 
       let unique = [...new Set(Object.values(data.skills).map((item) => item.type))];
-      if (unique.indexOf("General") !== 0) {
+      if (unique.indexOf("General") > 0) {
         const generalIndex = unique.indexOf("General");
         unique[generalIndex] = unique[0];
         unique[0] = "General";
