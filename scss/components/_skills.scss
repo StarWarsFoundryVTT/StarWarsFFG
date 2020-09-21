@@ -63,6 +63,13 @@
   }
 }
 
+.skillsTablesGrid {
+  position: relative; 
+  overflow: auto; 
+  height: calc(100% - 5.5rem); 
+  float: left; width: 100%;
+}
+
 .skillsGrid {
   display: flex;
   flex-direction: column;
