@@ -43,13 +43,7 @@
   }
 
   .sheet-body {
-    height: calc(100% - 33.4375rem);
+    height: calc(100% - 31.875rem);
   }
 
-  .resource {
-    width : 160px;
-    &.single {
-      width: 110px;
-    }
-  }
 }

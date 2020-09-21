@@ -204,6 +204,11 @@
 .resource {
   line-height: 30px;
   width: 110px;
+  height: 40px;
+  padding-bottom: 4px;
+  padding-left: 2px;
+  margin: 0;
+  display: inline-table;
   
   &.split {
     width: 130px;

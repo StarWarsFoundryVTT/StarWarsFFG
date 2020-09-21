@@ -19,6 +19,10 @@
 }
 
 /* Global styles */
+div, section {
+  scrollbar-width: thin;
+}
+
 .window-app {
   font-family: "Roboto", sans-serif;
 }
@@ -248,10 +252,6 @@ img {
   padding: 0 5px 5px 5px;
 }
 
-.starwarsffg.sheet {
-  height: 600px;
-}
-
 .starwarsffg.sheet.item .tabs {
   height: 20px;
   border: 0;
@@ -442,6 +442,11 @@ img {
 .starwarsffg .resource {
   line-height: 30px;
   width: 110px;
+  height: 40px;
+  padding-bottom: 4px;
+  padding-left: 2px;
+  margin: 0;
+  display: inline-table;
 }
 
 .starwarsffg .resource.split {
@@ -799,15 +804,7 @@ img {
 }
 
 .starwarsffg .item-sheet-weapon .sheet-body {
-  height: calc(100% - 33.4375rem);
-}
-
-.starwarsffg .item-sheet-weapon .resource {
-  width: 160px;
-}
-
-.starwarsffg .item-sheet-weapon .resource.single {
-  width: 110px;
+  height: calc(100% - 31.875rem);
 }
 
 .starwarsffg .item-sheet-armor .charname input {
