@@ -44,8 +44,8 @@
       }
 
       input:focus {
-        box-shadow: 0 0 5px rgb(125, 169, 194);
-        background-color: rgb(125, 169, 194);
+        box-shadow: 0 0 5px $swffg-input-background;
+        background-color: $swffg-input-background;
         border-radius: 5px;
       }
     }
@@ -163,8 +163,8 @@
         text-align: center;
 
         &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
+          box-shadow: 0 0 5px $swffg-input-background;
+          background-color: $swffg-input-background;
           border-radius: 5px;
         }
       }
@@ -206,8 +206,8 @@
           text-align: center;
         }
         input:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
+          box-shadow: 0 0 5px $swffg-input-background;
+          background-color: $swffg-input-background;
           border-radius: 5px;
         }
       }
@@ -249,8 +249,8 @@
     .block-attribute {
       select {
         &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
+          box-shadow: 0 0 5px $swffg-input-background;
+          background-color: $swffg-input-background;
         }
       }
 
@@ -266,8 +266,8 @@
         border: 0;
 
         &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
+          box-shadow: 0 0 5px $swffg-input-background;
+          background-color: $swffg-input-background;
           outline: none;
         }
       }
@@ -291,8 +291,8 @@
         font-size: 14px;
 
         &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
+          box-shadow: 0 0 5px $swffg-input-background;
+          background-color: $swffg-input-background;
         }
       }
     }
@@ -320,7 +320,7 @@
     }
 
     .shadow-right {
-      background-color: rgb(125, 169, 194);
+      background-color: $swffg-input-background;
       width: 50%;
       height: 100%;
       float: right;

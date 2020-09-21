@@ -62,16 +62,5 @@
       }
     }
   }
-  div {
-    &.container {
-      width: 100%;
-      height: auto;
-      display: flex;
-      flex-wrap: wrap;
-      font-size: 11pt;
-      .attributes {
-        margin-top: 5px;
-      }
-    }
-  }
+  
 }

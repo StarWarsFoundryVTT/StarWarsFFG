@@ -6,11 +6,11 @@
     top: 36px;
   }
 
-  .container.flex-group-center {
-    border: 0;
-    margin-bottom: 5px;
-    padding: 0 5px 5px 5px;
-  }
+  // .container.flex-group-center {
+  //   border: 0;
+  //   margin-bottom: 5px;
+  //   padding: 0 5px 5px 5px;
+  // }
 
   h1 {
     margin: 0;
@@ -29,8 +29,8 @@
       background-color: rgba(0, 0, 0, 0);
 
       &:focus {
-        box-shadow: 0 0 5px rgb(125, 169, 194);
-        background-color: rgb(125, 169, 194);
+        box-shadow: 0 0 5px $swffg-input-background;
+        background-color: $swffg-input-background;
       }
     }
   }
@@ -105,8 +105,8 @@
       border-radius: 0;
 
       &:focus {
-        box-shadow: 0 0 5px rgb(125, 169, 194);
-        background-color: rgb(125, 169, 194);
+        box-shadow: 0 0 5px $swffg-input-background;
+        background-color: $swffg-input-background;
       }
     }
   }
@@ -169,8 +169,8 @@
         font-size: 14px;
 
         &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
+          box-shadow: 0 0 5px $swffg-input-background;
+          background-color: $swffg-input-background;
         }
       }
     }
@@ -198,7 +198,7 @@
     }
 
     .shadow-right {
-      background-color: rgb(125, 169, 194);
+      background-color: $swffg-input-background;
       width: 50%;
       height: 100%;
       float: right;

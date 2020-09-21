@@ -6,28 +6,28 @@ form {
   font-family: $font-primary;
 }
 
-.block-background {
-  background-color: #ddd;
-  padding: 5px;
+// .block-background {
+//   background-color: #ddd;
+//   padding: 5px;
 
-  --notchSize: 9px;
+//   --notchSize: 9px;
 
-  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-}
+//   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+// }
 
-.block-background-shadow {
-  position: absolute;
-  width: 100%;
-  top: 30px;
-  height: 30px;
-  background-color: rgb(125, 169, 194);
-  padding: 5px;
-  z-index: -1;
+// .block-background-shadow {
+//   position: absolute;
+//   width: 100%;
+//   top: 30px;
+//   height: 30px;
+//   background-color: $swffg-input-background;
+//   padding: 5px;
+//   z-index: -1;
 
-  --notchSize: 9px;
+//   --notchSize: 9px;
 
-  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-}
+//   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+// }
 
 .character {
   min-width: 575px;

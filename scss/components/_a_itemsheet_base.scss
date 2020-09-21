@@ -1,0 +1,23 @@
+&.sheet {
+  height: 600px;
+
+  &.item {
+    .tabs {
+      height : 20px;
+      border: 0;
+      
+      .item {
+        line-height: 15px;
+      }
+    }
+  }
+
+  .window-content {
+    overflow-y: hidden;
+  }
+
+  .sheet-body {
+    margin: 10px 5px;
+    overflow: auto;
+  }
+}
