@@ -8,39 +8,42 @@
 @import "global/window";
 @import "global/grid";
 @import "global/flex";
+@import 'global/image';
 
 .starwarsffg {
-  @import "components/forms";
-  @import "components/sheet";
-  @import "components/resource";
-  @import "components/tabs";
-  @import "components/header";
-  @import "components/characteristics";
-  @import "components/skills";
-  @import "components/items";
-  @import "components/talents";
-  @import "components/biography";
-  @import "components/itemweaponsheet";
-  @import "components/itemarmorsheet";
-  @import "components/itemgearsheet";
-  @import "components/talentsheet";
-  @import "components/minionsheet";
-  @import "components/vehiclesheet";
-  @import "components/itemvehicleweaponsheet";
-  @import "components/itemvehicleattachmentsheet";
-  @import "components/groupmanager";
-  @import "components/tooltip";
-  @import "components/attributes";
-  @import 'components/itemcriticalinjurysheet';
-  @import 'components/injuries';
-  @import 'components/damage';
-  @import 'components/forcepowers';
-  @import 'components/editor';
-  @import 'components/specializations';
-  @import 'components/dataimporter';
   @import 'components/dicepool';
-  @import 'components/species';
-  @import 'components/career';
+
+  // @import "components/forms";
+  // @import "components/sheet";
+  // @import "components/resource";
+  // @import "components/tabs";
+  // @import "components/header";
+  // @import "components/characteristics";
+  // @import "components/skills";
+  // @import "components/items";
+  // @import "components/talents";
+  // @import "components/biography";
+  // @import "components/itemweaponsheet";
+  // @import "components/itemarmorsheet";
+  // @import "components/itemgearsheet";
+  // @import "components/talentsheet";
+  // @import "components/minionsheet";
+  // @import "components/vehiclesheet";
+  // @import "components/itemvehicleweaponsheet";
+  // @import "components/itemvehicleattachmentsheet";
+  // @import "components/groupmanager";
+  // @import "components/tooltip";
+  // @import "components/attributes";
+  // @import 'components/itemcriticalinjurysheet';
+  // @import 'components/injuries';
+  // @import 'components/damage';
+  // @import 'components/forcepowers';
+  // @import 'components/editor';
+  // @import 'components/specializations';
+  // @import 'components/dataimporter';
+  
+  // @import 'components/species';
+  // @import 'components/career';
 }
 
 @import "components/ogimport";
