@@ -50,8 +50,8 @@ export default class SkillListImporter extends FormApplication {
       const newSkillList = JSON.parse(text);
 
       Object.keys(newSkillList.skills).forEach((skill) => {
-        if (!newSkillList[skill].custom) {
-          newSkillList[skill].custom = true;
+        if (!newSkillList.skills[skill].custom && !newSkillList.skills[skill].label.includes("SWFFG.")) {
+          newSkillList.skills[skill].custom = true;
         }
       });
 
