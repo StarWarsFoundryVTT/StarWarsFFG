@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 22/09/2020 - Cstadther - Refactor CSS did not change styles, but remove duplicates and cleaned up unused styles.
 - 20/09/2020 - Cstadther - Fix skill import, was setting `custom:true` incorrectly.
 - 20/09/2020 - Cstadther - Added the functionality to grab new skill types (Combat/General/etc) that are included with alternate skill sets and display them.
 - 20/09/2020 - Cstadther - Fixed issue with alt skill list import, now auto sets `custom:true` for all skills in import file.  Added try..catch in initialization, so that if error occurs option still shows in configuration settings.
