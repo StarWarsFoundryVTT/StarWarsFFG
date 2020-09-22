@@ -11,6 +11,7 @@
 @import 'global/image';
 
 .starwarsffg {
+  @import "components/forms";
   @import "components/actorsheet_base";
   @import "components/block_base";
   @import "components/charactersheet";
