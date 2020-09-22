@@ -1205,35 +1205,6 @@ img {
   height: 100% !important;
 }
 
-.starwarsffg .tabs {
-  height: 40px;
-  border-top: 1px solid #aaa;
-  border-bottom: 1px solid #aaa;
-}
-
-.starwarsffg .tabs .item {
-  line-height: 15px;
-  font-weight: bold;
-  background-color: #aaa;
-  padding: 3px;
-  margin: 0 5px;
-  --notchSize: 10px;
-  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-}
-
-.starwarsffg .tabs .item:hover {
-  text-shadow: 0 0 8px white;
-}
-
-.starwarsffg .tabs .item.active {
-  text-decoration: underline;
-  text-shadow: none;
-  background-color: #490c0b;
-  color: white;
-  font-weight: normal;
-}
-
 .starwarsffg .skill-characteristic {
   display: inline;
 }
@@ -1956,6 +1927,27 @@ img {
   height: calc(100% - 21.3125rem);
 }
 
+.starwarsffg .group-manager {
+  font-family: Roboto, sans-serif;
+  color: #222222;
+  height: 100%;
+  width: auto;
+  text-align: center;
+}
+
+.starwarsffg .group-manager .PC-list {
+  margin: 20px 0;
+}
+
+.starwarsffg .group-manager .initiative-mode {
+  width: 100%;
+}
+
+.starwarsffg .group-manager .player-character:hover {
+  background: rgba(25, 24, 19, 0.03);
+  margin: +2px;
+}
+
 .starwarsffg .item:hover .hover {
   text-decoration: underline;
 }
@@ -2180,6 +2172,56 @@ img {
   left: 9px;
   top: 7px;
   z-index: -1;
+}
+
+.starwarsffg.data-import .import-file-selector div {
+  display: inline-block;
+}
+
+.starwarsffg.data-import .import-invalid {
+  display: none;
+}
+
+.starwarsffg.data-import .import-hidden {
+  visibility: hidden;
+}
+
+.starwarsffg.data-import .import-progress {
+  background-color: #f1f1f1;
+  margin: 5px 5px;
+  width: 100%;
+}
+
+.starwarsffg.data-import .import-progress.current {
+  width: inherit;
+}
+
+.starwarsffg.data-import .import-progress.overall {
+  width: inherit;
+}
+
+.starwarsffg.data-import .import-progress .import-progress-bar {
+  height: 24px;
+  background-color: green;
+  text-align: center;
+}
+
+.starwarsffg.data-import .import-progress .import-progress-bar span {
+  line-height: 24px;
+}
+
+.starwarsffg .debug label {
+  display: block;
+  padding-left: 15px;
+  text-indent: -15px;
+}
+
+.starwarsffg .debug input[type="checkbox"] {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  width: 13px;
+  height: 13px;
 }
 
 .starwarsffg .item-sheet-species .sheet-header img.profile-img {

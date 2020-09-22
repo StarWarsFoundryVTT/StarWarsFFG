@@ -11,23 +11,16 @@
 @import 'global/image';
 
 .starwarsffg {
-  @import "components/a_actorsheet_base";
-  @import "components/a_block_base";
-  @import "components/a_charactersheet";
-  @import "components/a_container_base";
-  @import "components/a_itemsheet_base";
-  @import "components/a_sheet_base";
-  @import "components/a_talent_blocks";
+  @import "components/actorsheet_base";
+  @import "components/block_base";
+  @import "components/charactersheet";
+  @import "components/container_base";
+  @import "components/itemsheet_base";
+  @import "components/sheet_base";
+  @import "components/talent_blocks";
   @import 'components/dicepool';
   @import 'components/editor';
-
-  
-  // @import "components/forms";
-  //@import "components/sheet";
-  // @import "components/resource";
   @import "components/tabs";
-  // @import "components/header";
-  // @import "components/characteristics";
   @import "components/skills";
   @import "components/items";
   @import "components/talents";
@@ -40,17 +33,13 @@
   @import "components/vehiclesheet";
   @import "components/itemvehicleweaponsheet";
   @import "components/itemvehicleattachmentsheet";
-  // @import "components/groupmanager";
+  @import "components/groupmanager";
   @import "components/tooltip";
-  // @import "components/attributes";
   @import 'components/itemcriticalinjurysheet';
   @import 'components/injuries';
-  // @import 'components/damage';
   @import 'components/forcepowers';
-  
   @import 'components/specializations';
-  // @import 'components/dataimporter';
-  
+  @import 'components/dataimporter';
   @import 'components/species';
   @import 'components/career';
 }

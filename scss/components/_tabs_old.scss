@@ -1,0 +1,28 @@
+.tabs {
+  height: 40px;
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+
+  .item {
+    line-height: 15px;
+    font-weight: bold;
+    background-color: #aaa;
+    padding: 3px;
+    margin: 0 5px;
+    --notchSize: 10px;
+
+    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+
+    &:hover {
+      text-shadow: 0 0 8px white;
+    }
+  }
+
+  .item.active {
+    text-decoration: underline;
+    text-shadow: none;
+    background-color: rgb(73, 12, 11);
+    color: white;
+    font-weight: normal;
+  }
+}
