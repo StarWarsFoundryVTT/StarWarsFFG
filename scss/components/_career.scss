@@ -1,10 +1,6 @@
 .item-sheet-career {
-  .tabs {
-    height : 20px;
-    border: 0;
 
-    .item {
-      line-height: 15px;
-    }
+  .sheet-body {
+    height: calc(100% - 11.75rem);
   }
 }

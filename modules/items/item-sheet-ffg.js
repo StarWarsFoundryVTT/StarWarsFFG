@@ -58,6 +58,7 @@ export class ItemSheetFFG extends ItemSheet {
       case "criticalinjury":
       case "criticaldamage":
         this.position.width = 320;
+        this.position.height = 500;
         break;
       case "forcepower":
         this.position.width = 715;
@@ -107,6 +108,7 @@ export class ItemSheetFFG extends ItemSheet {
         break;
       case "species":
         this.position.width = 550;
+        this.position.height = 650;
 
         const attributesForCharacteristics = Object.keys(data.data.attributes).filter((key) => {
           return Object.keys(CONFIG.FFG.characteristics).includes(key);
@@ -162,6 +164,10 @@ export class ItemSheetFFG extends ItemSheet {
           data.data.attributes.Strain.exclude = true;
         }
 
+        break;
+      case "career":
+        this.position.width = 500;
+        this.position.height = 600;
         break;
       default:
     }

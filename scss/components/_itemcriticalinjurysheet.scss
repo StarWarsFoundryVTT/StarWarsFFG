@@ -2,20 +2,6 @@
   $swffg-injury-color: rgb(131, 7, 7);
   $swffg-injury-color-light:rgb(218, 151, 151);
 
-
-
-  // .sheet-header {
-  //   overflow: visible;
-  // }
-
-  // .sheet-body {
-  //   height: calc(100% - 12rem);
-  // }
-
-  // .flex-group-center {
-  //   border: 0;
-  // }
-
   .charname {
     input {
       color: $swffg-injury-color;
@@ -54,7 +40,7 @@
   .block-background.block-editor {
     padding: 10px;
     background-color:$swffg-injury-color-light;
-    height: 10rem;
+    height: 8rem;
   }
 
   .severity-block {

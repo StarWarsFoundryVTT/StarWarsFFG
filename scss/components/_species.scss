@@ -1,35 +1,26 @@
 .item-sheet-species {
-  .characteristics {
-    width: 100%;
-    .characteristic-item {
-      border: 0;
-      position: relative;
-
-      .characteristic-label {
-        margin-top: 5px;
-        width: 100%;
-        text-align: center;
-        background-color: rgb(73, 12, 11);
-        color: white;
-        text-transform: uppercase;
-        font-size: 10px;
-        --notchSize: 7px;
-
-        clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  $swffg-species-color: rgb(73, 12, 11);
+  
+  .sheet-header {
+    img {
+      &.profile-img {
+        flex: 0 0 100px;
+        height: 124px;
+        width: auto;
+        max-width: 124px;
+        border: 0;
+        margin: auto;
+        object-fit: contain;
       }
-    }
-
-    .grid {
-      margin: 0;
     }
   }
 
-  .tabs {
-    height : 20px;
-    border: 0;
-
-    .item {
-      line-height: 15px;
+  .characteristics {
+    width: 100%;
+    .characteristic-item {
+      .characteristic-label {
+        background-color:$swffg-species-color;
+      }
     }
   }
 
@@ -49,144 +40,18 @@
         text-align: center;
       }
       input:focus {
-        box-shadow: 0 0 5px $swffg-input-background;
-        background-color: $swffg-input-background;
         border-radius: 50%;
       }
     }
   }
-
-  .resource {
-    line-height: 30px;
-    width: 110px;
-    
-    &.single {
-      width: 100px;
-    }
-   
-    input {
-      width: 45px;
+  
+  .attribute {
+    .block-title {
+      background-color: $swffg-species-color;  
     }
   }
 
-  
-  .attribute {
-    position: relative;
-    padding: 0;
-    z-index: 1;
-    border:0;
-    
-    .block-background-shadow {
-      top: 36px;
-    }
-
-    .block-background {
-      padding: 5px 5px;
-    }
-
-    .block-title {
-      line-height: initial;
-      background-color: rgb(73, 12, 11);
-      color: white;
-      font-size: 13px;
-      text-transform: uppercase;
-      margin:auto;
-      
-      --notchSize: 8px;
-      clip-path: 
-        polygon(
-          0% var(--notchSize), 
-          var(--notchSize) 0%, 
-          calc(100% - var(--notchSize)) 0%, 
-          100% var(--notchSize), 
-          100% calc(100% - var(--notchSize)), 
-          calc(100% - var(--notchSize)) 100%, 
-          var(--notchSize) 100%, 
-          0% calc(100% - var(--notchSize))
-      );
-    }
-
-    .block-attribute {
-
-      select {
-        &:focus {
-          box-shadow: 0 0 5px $swffg-input-background;
-          background-color: $swffg-input-background;
-        }
-      }
-
-      .block-value {
-        display: inline-block;
-      }
-    }
-
-    .block-value {
-
-      textarea {
-        resize:none;
-        font-family: 'Roboto';
-        border : 0;
-
-        &:focus {
-          box-shadow: 0 0 5px $swffg-input-background;
-          background-color: $swffg-input-background;
-          outline: none;
-        }
-      }
-
-      &.block-single {
-        input {
-          width: 100%;
-          padding: 6px;
-        }
-      }
-
-      input {
-        border:0;
-        font-size:14px;
-
-        &:focus {
-          box-shadow: 0 0 5px $swffg-input-background;
-          background-color: $swffg-input-background;
-        }
-      }
-    }
-
-    .shadow-text {
-      position: absolute;
-      top: 5px;
-      font-size: 9px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .shadow-left {
-      background-color: rgb(73, 12, 11);
-      width: 50%;
-      height: 100%;
-      float:left;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: white;
-        text-transform: uppercase;
-      }
-    }
-
-    .shadow-right {
-      background-color: $swffg-input-background;
-      width: 50%;
-      height: 100%;
-      float:right;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: black;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
-    }
+  .sheet-body {
+    height: calc(100% - 25.25rem);
   }
 }

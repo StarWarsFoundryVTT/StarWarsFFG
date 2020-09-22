@@ -340,10 +340,6 @@ img {
   margin-top: 0;
 }
 
-.starwarsffg .block-background {
-  background-color: #e9c6fd;
-}
-
 .starwarsffg .attribute {
   position: relative;
   padding: 0;
@@ -975,7 +971,7 @@ img {
 .starwarsffg .item-sheet-criticalinjury .block-background.block-editor {
   padding: 10px;
   background-color: #da9797;
-  height: 10rem;
+  height: 8rem;
 }
 
 .starwarsffg .item-sheet-criticalinjury .severity-block {
@@ -984,6 +980,57 @@ img {
 
 .starwarsffg .item-sheet-criticalinjury .sheet-body {
   height: calc(100% - 19.375rem);
+}
+
+.starwarsffg .item-sheet-species .sheet-header img.profile-img {
+  flex: 0 0 100px;
+  height: 124px;
+  width: auto;
+  max-width: 124px;
+  border: 0;
+  margin: auto;
+  -o-object-fit: contain;
+  object-fit: contain;
+}
+
+.starwarsffg .item-sheet-species .characteristics {
+  width: 100%;
+}
+
+.starwarsffg .item-sheet-species .characteristics .characteristic-item .characteristic-label {
+  background-color: #490c0b;
+}
+
+.starwarsffg .item-sheet-species .characteristic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 5px double black;
+  margin: auto;
+  position: relative;
+}
+
+.starwarsffg .item-sheet-species .characteristic .characteristic-value input {
+  height: 40px;
+  border: 0;
+  font-size: 30px;
+  text-align: center;
+}
+
+.starwarsffg .item-sheet-species .characteristic .characteristic-value input:focus {
+  border-radius: 50%;
+}
+
+.starwarsffg .item-sheet-species .attribute .block-title {
+  background-color: #490c0b;
+}
+
+.starwarsffg .item-sheet-species .sheet-body {
+  height: calc(100% - 25.25rem);
+}
+
+.starwarsffg .item-sheet-career .sheet-body {
+  height: calc(100% - 11.75rem);
 }
 
 .og-character-import {
