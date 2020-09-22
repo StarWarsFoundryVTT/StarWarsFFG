@@ -43,21 +43,26 @@ export class ItemSheetFFG extends ItemSheet {
       case "weapon":
       case "shipweapon":
         this.position.width = 530;
+        this.position.height = 750;
         break;
       case "armour":
       case "gear":
       case "shipattachment":
         this.position.width = 385;
+        this.position.height = 515;
         break;
       case "talent":
         this.position.width = 405;
+        this.position.height = 535;
         break;
       case "criticalinjury":
       case "criticaldamage":
         this.position.width = 320;
+        this.position.height = 500;
         break;
       case "forcepower":
-        this.position.width = 715;
+        this.position.width = 720;
+        this.position.height = 840;
         data.data.isReadOnly = false;
         if (!this.options.editable) {
           data.data.isEditing = false;
@@ -104,6 +109,7 @@ export class ItemSheetFFG extends ItemSheet {
         break;
       case "species":
         this.position.width = 550;
+        this.position.height = 650;
 
         const attributesForCharacteristics = Object.keys(data.data.attributes).filter((key) => {
           return Object.keys(CONFIG.FFG.characteristics).includes(key);
@@ -159,6 +165,10 @@ export class ItemSheetFFG extends ItemSheet {
           data.data.attributes.Strain.exclude = true;
         }
 
+        break;
+      case "career":
+        this.position.width = 500;
+        this.position.height = 600;
         break;
       default:
     }

@@ -1,405 +1,223 @@
-.vehicle {
-  .header-fields {
-    .container {
-      &.flex-group-center {
-        padding: 0;
-        margin-bottom: 0;
-      }
-    }
+&.sheet {
+  &.actor {
+    .vehicle {
+      $swffg-vehicle-color: rgb(31, 28, 57);
+      $swffg-vehicle-characteristic-color: rgb(34, 108, 197);
+      $swffg-vehicle-defense-color1: rgb(199, 121, 75);
+      $swffg-vehicle-defense-color2: rgb(219, 196, 142);
 
-    .grid {
-      margin: 5px;
-
-      &.grid-4col {
-        margin: 10px;
-      }
-    }
-
-    .block-background {
-      position: relative;
-    }
-
-    .flex-group-right {
-      border: 0;
-      padding: 0 5px;
-    }
-
-    .profile-block {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      max-width: 200px;
-
-      .profile-img {
-        height: 190px;
-        max-width: 200px;
-      }
-    }
-
-    .charname {
-      input {
-        width: 100%;
-        margin: 5px;
-        border: 0;
-      }
-
-      input:focus {
-        box-shadow: 0 0 5px rgb(125, 169, 194);
-        background-color: rgb(125, 169, 194);
-        border-radius: 5px;
-      }
-    }
-  }
-
-  .defense-group {
-    width: 100%;
-
-    .defense-decoration {
-      position: absolute;
-      width: 175px;
-      height: 175px;
-      border-radius: 50%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(45deg);
-      background: conic-gradient(rgb(199, 121, 75) 0% 25%, rgb(219, 196, 142) 25% 50%, rgb(199, 121, 75) 50% 75%, rgb(219, 196, 142) 75% 100%);
-
-      img {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) rotate(-45deg);
-        border: 0;
-      }
-    }
-  }
-
-  .defense-block {
-    height: 200px;
-    width: 100%;
-    position: relative;
-
-    .defense-block-title {
-      position: absolute;
-      top: 0;
-      left: 0;
-      text-transform: uppercase;
-      background-color: rgb(33, 25, 46);
-      color: white;
-      width: 90px;
-      text-align: center;
-
-      --notchSize: 9px;
-
-      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-    }
-
-    .defense-value {
-      border-radius: 10px;
-      border: 5px double rgb(31, 28, 57);
-      margin: auto;
-      position: absolute;
-      background-color: white;
-
-      .defense-value-label {
-        position: absolute;
-        text-transform: uppercase;
-        background-color: rgb(73, 12, 11);
-        width: 100%;
-        text-align: center;
-        color: white;
-        font-size: 10px;
-        left: 50%;
-        transform: translateX(-50%);
-        --notchSize: 7px;
-
-        clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-      }
-
-      &.fore {
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-
-        .defense-value-label {
-          bottom: -20px;
+      .header-fields {
+        .container {
+          &.flex-group-center {
+            padding: 0;
+            margin-bottom: 0;
+          }
         }
-      }
-      &.aft {
-        bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
-
-        .defense-value-label {
-          top: -20px;
+    
+        .grid {
+          margin: 5px;
+    
+          &.grid-4col {
+            margin: 10px;
+          }
         }
-      }
-      &.port {
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        .defense-value-label {
-          left: 50px;
-          top: 50%;
-          transform: translateY(-50%);
+    
+        .block-background {
+          position: relative;
         }
-      }
-      &.starboard {
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        .defense-value-label {
-          left: -50px;
-          top: 50%;
-          transform: translateY(-50%);
-        }
-      }
-
-      input {
-        height: 40px;
-        width: 40px;
-        border: 0;
-        font-size: 30px;
-        text-align: center;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-          border-radius: 5px;
-        }
-      }
-    }
-  }
-
-  .characteristic-item {
-    border: 0;
-    position: relative;
-    padding: 0;
-    margin: 0 5px;
-
-    .characteristic-label {
-      margin-top: 5px;
-      width: 100%;
-      text-align: center;
-      background-color: rgb(34, 108, 197);
-      color: white;
-      text-transform: uppercase;
-      font-size: 10px;
-      --notchSize: 7px;
-
-      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-    }
-
-    .characteristic {
-      width: 80px;
-      height: 50px;
-      border-radius: 10px;
-      border: 5px double rgb(31, 28, 57);
-      margin: auto;
-      position: relative;
-
-      .characteristic-value {
-        input {
-          height: 40px;
+    
+        .flex-group-right {
           border: 0;
-          font-size: 30px;
-          text-align: center;
+          padding: 0 5px;
         }
-        input:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-          border-radius: 5px;
-        }
-      }
-    }
-  }
-
-  .attribute {
-    position: relative;
-    padding: 0;
-    z-index: 1;
-    border: 0;
-
-    .block-background-shadow {
-      top: 36px;
-    }
-
-    .block-border {
-      background-color: black;
-      --notchSize: 12px;
-      padding: 4px 4px;
-    }
-
-    .block-background {
-      padding: 5px 5px;
-    }
-
-    .block-title {
-      line-height: initial;
-      background-color: rgb(33, 25, 46);
-      color: white;
-      font-size: 13px;
-      text-transform: uppercase;
-      margin: auto;
-
-      --notchSize: 8px;
-      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-    }
-
-    .block-attribute {
-      select {
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-        }
-      }
-
-      .block-value {
-        display: inline-block;
-      }
-    }
-
-    .block-value {
-      textarea {
-        resize: none;
-        font-family: "Roboto";
-        border: 0;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-          outline: none;
-        }
-      }
-
-      &.block-characteristic {
-        input {
-          height: 45px;
-          font-size: 30px;
-        }
-      }
-
-      &.block-single {
-        input {
-          width: 100%;
-          padding: 6px;
-        }
-      }
-
-      input {
-        border: 0;
-        font-size: 14px;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-        }
-      }
-    }
-
-    .shadow-text {
-      position: absolute;
-      top: 5px;
-      font-size: 9px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .shadow-left {
-      background-color: rgb(73, 12, 11);
-      width: 50%;
-      height: 100%;
-      float: left;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: white;
-        text-transform: uppercase;
-      }
-    }
-
-    .shadow-right {
-      background-color: rgb(125, 169, 194);
-      width: 50%;
-      height: 100%;
-      float: right;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: black;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
-    }
-  }
-
-  .resource {
-    line-height: 30px;
-    width: 110px;
-
-    &.split {
-      width: 130px;
-    }
-    &.single {
-      width: 115px;
-
-      &.characteristic {
-        width: 65px;
-        position: relative;
-
-        .block-title-bottom {
+    
+        .profile-block {
           position: absolute;
-          top: 70px;
+          left: 50%;
+          transform: translateX(-50%);
           width: 100%;
-          line-height: initial;
-          background-color: rgb(34, 108, 197);
-          color: white;
-          font-size: 13px;
-          text-transform: uppercase;
-          margin: auto;
-
-          --notchSize: 8px;
-          clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-        }
-      }
-    }
-    &.double {
-      width: 235px;
-    }
-
-    input {
-      width: 45px;
-    }
-  }
-
-  .biography-values {
-    border: 0;
-  }
-
-  table {
-    &.items {
-      margin: 0.5em 0;
-      .items-list {
-        td {
-          &.item-controls {
-            text-align: right;
-            width: auto;
-            z-index: auto;
+    
+          .profile-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
           }
         }
       }
-    }
-
-    tr {
-      &.item {
+    
+      .defense-group {
+        width: 100%;
+    
+        .defense-decoration {
+          position: absolute;
+          width: 175px;
+          height: 175px;
+          border-radius: 50%;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) rotate(45deg);
+          background: conic-gradient($swffg-vehicle-defense-color1 0% 25%, $swffg-vehicle-defense-color2 25% 50%, $swffg-vehicle-defense-color1 50% 75%, $swffg-vehicle-defense-color2 75% 100%);
+    
+          img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            border: 0;
+          }
+        }
+      }
+    
+      .defense-block {
+        height: 200px;
+        width: 100%;
         position: relative;
+    
+        .defense-block-title {
+          position: absolute;
+          top: 0;
+          left: 0;
+          text-transform: uppercase;
+          background-color: rgb(33, 25, 46);
+          color: white;
+          width: 90px;
+          text-align: center;
+    
+          --notchSize: 9px;
+    
+          clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+        }
+    
+        .defense-value {
+          border-radius: 10px;
+          border: 5px double rgb(31, 28, 57);
+          margin: auto;
+          position: absolute;
+          background-color: white;
+    
+          .defense-value-label {
+            position: absolute;
+            text-transform: uppercase;
+            background-color: rgb(73, 12, 11);
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            --notchSize: 7px;
+    
+            clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+          }
+    
+          &.fore {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+    
+            .defense-value-label {
+              bottom: -20px;
+            }
+          }
+          &.aft {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+    
+            .defense-value-label {
+              top: -20px;
+            }
+          }
+          &.port {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            .defense-value-label {
+              left: 50px;
+              top: 50%;
+              transform: translateY(-50%);
+            }
+          }
+          &.starboard {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            .defense-value-label {
+              left: -50px;
+              top: 50%;
+              transform: translateY(-50%);
+            }
+          }
+    
+          input {
+            height: 40px;
+            width: 40px;
+            border: 0;
+            font-size: 30px;
+            text-align: center;
+    
+            &:focus {
+              box-shadow: 0 0 5px $swffg-input-background;
+              background-color: $swffg-input-background;
+              border-radius: 5px;
+            }
+          }
+        }
+      }
+    
+      .characteristic-item {
+        width: 100%;
+    
+        .characteristic-label {
+          background-color: $swffg-vehicle-characteristic-color;
+        }
+    
+        .characteristic {
+          border-radius: 10px;
+          border: 5px double $swffg-vehicle-color;
 
-        td {
-          position: relative;
+          .characteristic-value {
+            input:focus {
+              border-radius: 5px;
+            }
+          }
+        }
+      }
+    
+      .attribute {
+        .block-title {
+          background-color: $swffg-vehicle-color;
+        }
+      }
+    
+      .resource {
+        &.single {
+          width: 115px;
+        }
+      }
+    
+      .biography-values {
+        border: 0;
+      }
+
+      .sheet-body {
+        height: calc(100% - 28.875rem);
+        overflow:auto;
+
+        .biography {
+          height: calc(100% - 6.5rem);
+          overflow:auto;
+        }
+      }
+
+      .injuries {
+        .resource {
+          &.full {
+            width: 100%;
+          }
         }
       }
     }
   }
 }
+

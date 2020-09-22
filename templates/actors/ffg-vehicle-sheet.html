@@ -100,7 +100,7 @@
     </div>
 
     {{!-- Biography Tab --}}
-    <div class="tab biography active" style="height: 77%;" data-group="primary" data-tab="description">
+    <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
         {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Obligations Section --}}
       </div>
@@ -110,34 +110,7 @@
     </div>
 
     <div class="tab damage" data-group="primary" data-tab="damage">
-      <div class="injuries">
-        <div class="resource full">
-          <div class="attribute flex-group-center">
-            <div class="block-background">
-              <div class="block-header">
-                <div>{{localize "SWFFG.CriticalDamage"}}</div>
-                <div class="grid grid-2col">
-                  <div>{{localize "SWFFG.Result"}}</div>
-                  <div>{{localize "SWFFG.Severity"}}</div>
-                </div>
-              </div>
-              <div class="block-attribute">
-                {{#each actor.items as |item id|}} {{#iff item.type '==' 'criticaldamage'}}
-                <div class="grid grid-2col item" data-item-id="{{item._id}}">
-                  <div>{{item.name}}</div>
-                  <div class="severity">
-                    {{renderMultiple item.data.severity '<img class="severity-img" src="/systems/starwarsffg/images/dice/starwars/purple.png" />'}}
-                    <div class="item-controls">
-                      <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-                    </div>
-                  </div>
-                </div>
-                {{/iff}} {{/each}}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticaldamage"}}
     </div>
 
     {{!-- Modifiers Tab --}}

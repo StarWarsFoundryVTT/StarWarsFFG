@@ -1,14 +1,31 @@
+&.sheet {
+  &.item {
+    .item-sheet-forcepower {
+      .popout-editor {
+        height: 100%;
+        width: 100%;
+        min-height: 2rem;
+        position: relative;
+      }
+    }
+  }
+}
+
+
 .item-sheet-forcepower {
+  $swffg-force-background: rgb(14, 68, 0);
+  $swffg-force-input-background: #1a8200;
+  
   min-width: 700px;
   min-height: 600px;
 
   .talent-background {
     .talent-header {
-      background-color: rgb(14, 68, 0);
+      background-color: $swffg-force-background;
 
       div {
         input[type="text"] {
-          background-color: #1a8200;
+          background-color:$swffg-force-input-background;
         }
       }
     }
@@ -37,6 +54,7 @@
   }
 
   .sheet-body {
+    margin: 0;
     height: calc(100% - 10rem);
   }
 

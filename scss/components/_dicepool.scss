@@ -1,28 +1,16 @@
 .dice-pool-dialog {
-  .dice-pool img {
-    border: 0;
-  }
   .dice-pool {
     min-height: 51px;
-    margin: auto;
-  }
-  .pool-container img {
-    border: 0;
   }
   .pool-value {
-    height: 42px;
     border: 1px solid black;
-    margin: auto;
-    position: relative;
     background-color: #ddd;
-  }
-  .pool-value input {
-    width: 100%;
-    height: 100%;
-    border: 0;
-    font-size: 30px;
-    text-align: center;
-    background: none;
+    & input {
+      border: 0;
+      font-size: 30px;
+      text-align: center;
+      background: none;
+    }
   }
   .upgrade-buttons {
     display: flex;
@@ -41,16 +29,8 @@
     padding: 0;
     overflow: hidden;
     .roll {
-      position: relative;
       width: 40px;
-      line-height: 40px;
       float: left;
-      font-size: 16px;
-      color: #000;
-      font-weight: bold;
-      img {
-        border: none;
-      }
     }
   }
 }
@@ -72,39 +52,22 @@
   img {
     height: 50px;
     width: auto;
-    border: none;
   }
-  .item-damage {
+
+  & h4 {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
-    input {
+
+    & input {
       width: 70%;
     }
   }
-  .item-critical {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    input {
-      width: 70%;
-    }
-  }
+  
   .item-miss {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
     text-align: center;
     font-style: italic;
     color: darkred;
-  }
-  textarea {
-    min-height: 27px;
-    padding: 0;
-    background: rgba(200, 200, 200, 0.1);
-    border: 0;
   }
 }

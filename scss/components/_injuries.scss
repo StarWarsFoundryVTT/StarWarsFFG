@@ -20,18 +20,6 @@
     }
   }
 
-  .block-header {
-    line-height: initial;
-    background-color: rgb(73, 12, 11);
-    color: white;
-    font-size: 13px;
-    text-transform: uppercase;
-    margin: auto;
-
-    --notchSize: 8px;
-    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-  }
-
   .item-controls {
     z-index: 500;
     text-align: end;

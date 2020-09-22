@@ -3,7 +3,9 @@
     <div class="attribute flex-group-center">
       <div class="block-background">
         <div class="block-header">
-          <div>{{localize "SWFFG.CriticalInjuries"}}</div>
+          <div>
+            {{#if (eq type "criticaldamage")}} {{localize "SWFFG.CriticalDamage"}} {{else}} {{localize "SWFFG.CriticalInjuries"}} {{/if}}
+          </div>
           <div class="grid grid-3col">
             <div>{{localize "SWFFG.Result"}}</div>
             <div>{{localize "SWFFG.Severity"}}</div>
@@ -11,7 +13,7 @@
           </div>
         </div>
         <div class="block-attribute">
-          {{#each actor.items as |item id|}} {{#iff item.type '==' 'criticalinjury'}}
+          {{#each actor.items as |item id|}} {{#if (eq item.type ../type)}}
           <div class="grid grid-3col item" data-item-id="{{item._id}}">
             <div class="item-name">
               {{item.name}}
@@ -22,7 +24,7 @@
               <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
             </div>
           </div>
-          {{/iff}} {{/each}}
+          {{/if}} {{/each}}
         </div>
       </div>
     </div>

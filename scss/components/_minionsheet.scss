@@ -9,8 +9,8 @@
       border: 0;
 
       &:focus {
-        box-shadow: 0 0 5px rgb(125, 169, 194);
-        background-color: rgb(125, 169, 194);
+        box-shadow: 0 0 5px $swffg-input-background;
+        background-color: $swffg-input-background;
       }
     }
   }
@@ -20,147 +20,52 @@
     margin: 0 0 1em;
   }
 
-  .attribute {
-    position: relative;
-    padding: 0;
-    z-index: 1;
-    border: 0;
-
-    .block-background-shadow {
-      top: 36px;
-    }
-
-    .block-background {
-      padding: 5px 5px;
-    }
-
-    .block-title {
-      line-height: initial;
-      background-color: #490c0b;
-      color: white;
-      font-size: 13px;
-      text-transform: uppercase;
-      margin: auto;
-
-      --notchSize: 8px;
-      clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
-    }
-
-    .block-attribute {
-      select {
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-        }
-      }
-
-      .block-value {
-        display: inline-block;
-      }
-    }
-
-    .block-value {
-      textarea {
-        resize: none;
-        font-family: "Roboto";
-        border: 0;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-          outline: none;
-        }
-      }
-
-      &.block-single {
-        input {
-          width: 100%;
-          padding: 6px;
-        }
-      }
-
-      input {
-        border: 0;
-        font-size: 14px;
-
-        &:focus {
-          box-shadow: 0 0 5px rgb(125, 169, 194);
-          background-color: rgb(125, 169, 194);
-        }
-      }
-    }
-
-    .shadow-text {
-      position: absolute;
-      top: 5px;
-      font-size: 9px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .shadow-left {
-      background-color: rgb(73, 12, 11);
-      width: 50%;
-      height: 100%;
-      float: left;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: white;
-        text-transform: uppercase;
-      }
-    }
-
-    .shadow-right {
-      background-color: rgb(125, 169, 194);
-      width: 50%;
-      height: 100%;
-      float: right;
-      position: relative;
-      padding-top: 25px;
-
-      .shadow-text {
-        color: black;
-        font-weight: bold;
-        text-transform: uppercase;
-      }
-    }
-  }
-
-  .resource {
-    line-height: 30px;
-    width: 110px;
-
-    &.split {
-      width: 120px;
-    }
-    &.single {
-      width: 115px;
-    }
-    &.double {
-      width: 235px;
-    }
-
-    input {
-      width: 50px;
-      height: 25px;
-    }
-  }
-
-  .tabs {
-    height: 10px;
-    border: 0;
-
-    .item {
-      line-height: 13px;
-    }
-  }
-
   table.items {
     margin: 1em 0;
   }
   .biography-editor {
     height: 100%;
+  }
+
+  .profile-block {
+    margin-right: 5px;
+    margin-left: 5px;
+    height: 130px;
+    max-width: 130px;
+  }
+
+  .profile-img {
+    flex: 0 0 100px;
+    height: 124px;
+    width: auto;
+    border: 0;
+    margin: auto;
+    object-fit: contain;
+  }
+
+  .resource {
+    &.single {
+      width: 8.125rem;
+    }
+  }
+
+  .sheet-body {
+    height: calc(100% - 14.6875rem);
+    overflow:hidden;
+
+    .biography {
+      height: calc(100% - 4.6875rem);
+      overflow:auto;
+    }
+
+    .characteristics {
+      overflow: hidden;
+      height: calc(100% + 26.25rem);
+    }
+
+    .skillsTablesGrid {
+      height: calc(100% - 32.1875rem);
+      overflow:auto;
+    }
   }
 }

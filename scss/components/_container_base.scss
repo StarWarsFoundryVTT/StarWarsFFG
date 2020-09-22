@@ -1,0 +1,17 @@
+.container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 11pt;
+  .attributes {
+    margin-top: 5px;
+  }
+
+  &.flex-group-center {
+    border: 0;
+    margin-bottom: 5px;
+    padding: 0 5px 5px 5px;
+  }
+}
+

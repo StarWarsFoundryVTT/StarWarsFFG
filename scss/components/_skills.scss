@@ -27,40 +27,13 @@
     margin: 2px;
     position: relative;
   }
+}
 
-  table {
-    th {
-      text-align: left;
-      padding: 3px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-      background-color: rgb(73, 12, 11);
-      color: white;
-      font-size: 12px;
-      font-weight: normal;
-    }
-
-    td {
-      padding: 0 0 0 3px;
-
-      .dice-pool {
-        img {
-          width: 1em;
-          height: 1em;
-          border: 0;
-        }
-      }
-    }
-
-    .careerskill-toggle {
-      margin: 0;
-      padding: 0;
-    }
-
-    .careerskill-rank {
-      width: 30px;
-      text-align: center;
-    }
-  }
+.skillsTablesGrid {
+  position: relative; 
+  overflow: auto; 
+  height: calc(100% - 5.5rem); 
+  float: left; width: 100%;
 }
 
 .skillsGrid {
@@ -90,7 +63,7 @@
         text-align: center;
         padding: 3px;
         border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-        background-color: rgb(73, 12, 11);
+        background-color: $swffg-tableheader-background;
         color: white;
         font-size: 12px;
         font-weight: normal;
@@ -135,54 +108,6 @@
       width: 1em;
       height: 1em;
       border: 0;
-    }
-  }
-
-  table {
-    th {
-      text-align: left;
-      padding: 3px;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-      background-color: rgb(73, 12, 11);
-      color: white;
-      font-size: 12px;
-      font-weight: normal;
-    }
-
-    td {
-      padding: 0 0 0 3px;
-
-      .dice-pool {
-        img {
-          width: 1em;
-          height: 1em;
-          border: 0;
-        }
-      }
-    }
-
-    .careerskill-toggle {
-      margin: 0;
-      padding: 0;
-    }
-
-    .careerskill-rank {
-      width: 30px;
-      text-align: center;
-    }
-  }
-}
-
-table {
-  &.items {
-    .items-list {
-      td {
-        &.item-controls {
-          text-align: right;
-          width: auto;
-          z-index: auto;
-        }
-      }
     }
   }
 }

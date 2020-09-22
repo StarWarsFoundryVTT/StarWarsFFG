@@ -4,7 +4,9 @@
     <div class="dice-formula">{{formula}}</div>
     {{/if}} {{#if hasFFG}} {{#if data._id}}
     <div class="item-display">
+      {{#if (ne data.img "icons/svg/mystery-man.svg")}}
       <img class="item-image" src="{{data.img}}" />
+      {{/if}}
       <h2 class="item-name">{{data.name}}</h2>
       {{#if ffg.success}}
       <h4 class="item-damage">Damage: <input class="damage-value" type="text" value="{{data.data.damage.value}} + {{ffg.success}} = {{math data.data.damage.value '+' ffg.success}}" disabled /></h4>
