@@ -1343,6 +1343,68 @@ img {
   z-index: 10;
 }
 
+.starwarsffg.sheet.item .item-sheet-specialization .popout-editor {
+  height: 100%;
+  width: 100%;
+  min-height: 2rem;
+  position: relative;
+}
+
+.starwarsffg .item-sheet-specialization {
+  min-width: 700px;
+  min-height: 600px;
+}
+
+.starwarsffg .item-sheet-specialization .talent-upgrade {
+  margin: 1px 10px 4px 10px;
+}
+
+.starwarsffg .item-sheet-specialization .sheet-body {
+  margin: 0;
+  height: calc(100% - 9rem);
+}
+
+.starwarsffg .item-sheet-specialization input.conflict {
+  opacity: .5;
+}
+
+.starwarsffg .item-sheet-specialization input.conflict:after {
+  content: "";
+  background-color: red;
+}
+
+.starwarsffg .burst-8 {
+  z-index: -1;
+  left: 7px;
+  background: white;
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  text-align: center;
+  transform: rotate(20deg);
+}
+
+.starwarsffg .burst-8:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 26px;
+  width: 26px;
+  background: white;
+  transform: rotate(135deg);
+}
+
+.starwarsffg div.conflict {
+  height: 23px;
+  width: 22px;
+  position: absolute;
+  background: red;
+  left: 9px;
+  top: 7px;
+  z-index: -1;
+}
+
 .starwarsffg .item-sheet-species .sheet-header img.profile-img {
   flex: 0 0 100px;
   height: 124px;
