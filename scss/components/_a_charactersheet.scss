@@ -1,0 +1,266 @@
+&.sheet {
+  &.actor {
+
+    .character {
+      .header-fields {
+        flex: 1;
+        height: auto;
+      
+        .block-background-shadow {
+          top: 36px;
+        }
+      
+        // .container.flex-group-center {
+        //   border: 0;
+        //   margin-bottom: 5px;
+        //   padding: 0 5px 5px 5px;
+        // }
+      
+        h1 {
+          margin: 0;
+          width: 100%;
+        }
+      
+        .header-name {
+          margin: 0;
+          position: relative;
+          width: 100%;
+      
+          input {
+            margin: 0;
+            width: 100%;
+            border: 0;
+            background-color: rgba(0, 0, 0, 0);
+      
+            &:focus {
+              box-shadow: 0 0 5px $swffg-input-background;
+              background-color: $swffg-input-background;
+            }
+          }
+        }
+      
+        .header-description-block {
+          margin-bottom: 5px;
+          margin-top: 5px;
+        }
+      
+        .header-description {
+          background-color: rgb(196, 219, 233);
+          --notchSize: 10px;
+          padding: 3px;
+      
+          clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+        }
+      
+        .table {
+          display: table;
+          width: 100%;
+        }
+      
+        .row {
+          display: table-row;
+          width: 100%;
+      
+          div {
+            display: table-cell;
+          }
+      
+          .row-input {
+            padding: 1px 5px;
+      
+            .specialization-pill, .species-pill, .career-pill {
+              padding: 3px 9px;
+              background-color: #aaa;
+              border: 1px solid black;
+              border-radius: 20px;
+      
+              .item-delete {
+                cursor: pointer;
+              }
+            }
+          
+          }
+      
+          input {
+            width: 100%;
+            border: 0;
+            border-bottom: 1px solid black;
+            border-radius: 0;
+      
+            &:focus {
+              box-shadow: 0 0 5px $swffg-input-background;
+              background-color: $swffg-input-background;
+            }
+          }
+        }
+      
+        .profile-block {
+          margin-right: 5px;
+          margin-left: 5px;
+          height: 130px;
+          max-width: 130px;
+        }
+      
+        .profile-img {
+          flex: 0 0 100px;
+          height: 124px;
+          width: auto;
+          max-width: 124px;
+          border: 0;
+          margin: auto;
+          object-fit: contain;
+        }
+      
+        // .attribute {
+        //   position: relative;
+        //   padding: 0;
+        //   z-index: 1;
+        //   border: 0;
+      
+        //   .block-background {
+        //     padding: 5px 5px;
+        //   }
+      
+        //   .block-title {
+        //     line-height: initial;
+        //     background-color: rgb(73, 12, 11);
+        //     color: white;
+        //     font-size: 13px;
+        //     text-transform: uppercase;
+        //     margin: auto;
+        //     // width: 160px;
+        //     --notchSize: 8px;
+        //     clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+        //   }
+      
+        //   .block-attribute {
+        //     .block-value {
+        //       display: inline-block;
+        //     }
+        //   }
+      
+        //   .block-value {
+        //     &.block-single {
+        //       input {
+        //         width: 100%;
+        //         padding: 6px;
+        //       }
+        //     }
+      
+        //     input {
+        //       border: 0;
+        //       font-size: 14px;
+      
+        //       &:focus {
+        //         box-shadow: 0 0 5px $swffg-input-background;
+        //         background-color: $swffg-input-background;
+        //       }
+        //     }
+        //   }
+      
+        //   .shadow-text {
+        //     position: absolute;
+        //     top: 5px;
+        //     font-size: 9px;
+        //     left: 50%;
+        //     transform: translateX(-50%);
+        //   }
+      
+        //   .shadow-left {
+        //     background-color: rgb(73, 12, 11);
+        //     width: 50%;
+        //     height: 100%;
+        //     float: left;
+        //     position: relative;
+        //     padding-top: 25px;
+      
+        //     .shadow-text {
+        //       color: white;
+        //       text-transform: uppercase;
+        //     }
+        //   }
+      
+        //   .shadow-right {
+        //     background-color: $swffg-input-background;
+        //     width: 50%;
+        //     height: 100%;
+        //     float: right;
+        //     position: relative;
+        //     padding-top: 25px;
+      
+        //     .shadow-text {
+        //       color: black;
+        //       font-weight: bold;
+        //       text-transform: uppercase;
+        //     }
+        //   }
+        // }
+      
+        // .resource {
+        //   line-height: 30px;
+        //   width: 110px;
+      
+        //   &.split {
+        //     width: 130px;
+        //   }
+        //   &.single {
+        //     width: 65px;
+        //   }
+      
+        //   input {
+        //     width: 45px;
+        //   }
+        // }
+      }
+      
+      .sheet-body {
+        height: calc(100% - 13.75rem);
+        overflow:hidden;
+
+        .biography {
+          height: calc(100% - 4.6875rem);
+          overflow:auto;
+        }
+
+        .characteristics {
+          overflow: hidden;
+          height: calc(100% + 26.25rem);
+        }
+
+        .skillsTablesGrid {
+          height: calc(100% - 32.1875rem);
+          overflow:auto;
+        }
+      
+        table {
+          &.force-powers {
+            border: 0;
+
+            th {
+              text-align: left;
+              padding: 3px;
+              border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+              background-color: rgb(73, 12, 11);
+              color: white;
+              font-size: 12px;
+              font-weight: normal;
+            }
+
+            td {
+              height: 30px;
+              line-height: 24px;
+              padding: 3px;
+              position: relative;
+
+              .item-controls {
+                text-align: right;
+                width: auto;
+                z-index: auto;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

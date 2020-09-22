@@ -11,7 +11,9 @@
 @import 'global/image';
 
 .starwarsffg {
+  @import "components/a_actorsheet_base";
   @import "components/a_block_base";
+  @import "components/a_charactersheet";
   @import "components/a_container_base";
   @import "components/a_itemsheet_base";
   @import "components/a_sheet_base";
@@ -26,23 +28,23 @@
   @import "components/tabs";
   // @import "components/header";
   // @import "components/characteristics";
-  // @import "components/skills";
-  // @import "components/items";
-  //@import "components/talents";
-  // @import "components/biography";
+  @import "components/skills";
+  @import "components/items";
+  @import "components/talents";
+  @import "components/biography";
   @import "components/itemweaponsheet";
   @import "components/itemarmorsheet";
   @import "components/itemgearsheet";
   @import "components/talentsheet";
-  // @import "components/minionsheet";
-  // @import "components/vehiclesheet";
+  @import "components/minionsheet";
+  @import "components/vehiclesheet";
   @import "components/itemvehicleweaponsheet";
   @import "components/itemvehicleattachmentsheet";
   // @import "components/groupmanager";
   @import "components/tooltip";
   // @import "components/attributes";
   @import 'components/itemcriticalinjurysheet';
-  // @import 'components/injuries';
+  @import 'components/injuries';
   // @import 'components/damage';
   @import 'components/forcepowers';
   

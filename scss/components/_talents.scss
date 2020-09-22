@@ -1,68 +1,39 @@
-// .talents {
-//   margin: 0;
-// }
+.talents {
+  margin: 0;
+}
 
-// table {
-//   &.force-powers {
-//     border: 0;
+.talent-list {
+  border: 0;
+  padding: 0;
+  margin: 1em 0 0 0;
 
-//     th {
-//       text-align: left;
-//       padding: 3px;
-//       border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-//       background-color: rgb(73, 12, 11);
-//       color: white;
-//       font-size: 12px;
-//       font-weight: normal;
-//     }
+  .item:hover {
+    background: rgba(25, 24, 19, 0.12);
+  }
 
-//     td {
-//       height: 30px;
-//       line-height: 24px;
-//       padding: 3px;
-//       position: relative;
-
-//       .item-controls {
-//         text-align: right;
-//         width: auto;
-//         z-index: auto;
-//       }
-//     }
-//   }
-// }
-
-// .talent-list {
-//   border: 0;
-//   padding: 0;
-//   margin: 1em 0 0 0;
-
-//   .item:hover {
-//     background: rgba(25, 24, 19, 0.12);
-//   }
-
-//   .talents-header {
-//     text-align: center;
-//     padding: 3px;
-//     border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-//     background-color: rgb(73, 12, 11);
-//     color: white;
-//     font-size: 12px;
-//     font-weight: normal;
-//     .header-name {
-//       flex: 1 0 100px;
-//       text-align: left;
-//     }
-//   }
-//   .force-powers {
-//     flex: 1 0 150px;
-//   }
-//   .item-controls {
-//     z-index: 500;
-//     width: 20px;
-//     text-align: end;
-//     margin: auto;
-//     .item-control {
-//       padding: 5px;
-//     }
-//   }
-// }
+  .talents-header {
+    text-align: center;
+    padding: 3px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+    background-color: rgb(73, 12, 11);
+    color: white;
+    font-size: 12px;
+    font-weight: normal;
+    .header-name {
+      flex: 1 0 100px;
+      text-align: left;
+    }
+  }
+  .force-powers {
+    flex: 1 0 150px;
+  }
+  .item-controls {
+    z-index: 500;
+    width: 20px;
+    text-align: end;
+    margin: auto;
+    .item-control {
+      padding: 5px;
+    }
+  }
+}
