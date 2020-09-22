@@ -15,6 +15,7 @@
   @import "components/a_container_base";
   @import "components/a_itemsheet_base";
   @import "components/a_sheet_base";
+  @import "components/a_talent_blocks";
   @import 'components/dicepool';
   @import 'components/editor';
 
@@ -27,7 +28,7 @@
   // @import "components/characteristics";
   // @import "components/skills";
   // @import "components/items";
-  // @import "components/talents";
+  //@import "components/talents";
   // @import "components/biography";
   @import "components/itemweaponsheet";
   @import "components/itemarmorsheet";
@@ -38,12 +39,12 @@
   @import "components/itemvehicleweaponsheet";
   @import "components/itemvehicleattachmentsheet";
   // @import "components/groupmanager";
-  // @import "components/tooltip";
+  @import "components/tooltip";
   // @import "components/attributes";
   @import 'components/itemcriticalinjurysheet';
   // @import 'components/injuries';
   // @import 'components/damage';
-  // @import 'components/forcepowers';
+  @import 'components/forcepowers';
   
   // @import 'components/specializations';
   // @import 'components/dataimporter';
