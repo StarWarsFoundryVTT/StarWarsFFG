@@ -1,5 +1,10 @@
 &.sheet {
   &.item {
+    .popout-editor {
+      height: 50px;
+      width: 215px;
+    }
+
     .tabs {
       height : 20px;
       border: 0;

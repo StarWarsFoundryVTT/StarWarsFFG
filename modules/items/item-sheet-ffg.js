@@ -49,10 +49,11 @@ export class ItemSheetFFG extends ItemSheet {
       case "gear":
       case "shipattachment":
         this.position.width = 385;
-        this.position.height = 600;
+        this.position.height = 515;
         break;
       case "talent":
         this.position.width = 405;
+        this.position.height = 535;
         break;
       case "criticalinjury":
       case "criticaldamage":

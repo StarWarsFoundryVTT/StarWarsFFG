@@ -2,11 +2,6 @@
   $swffg-weapon-color: rgb(19, 65, 3);
   $swffg-weapon-color-light:rgb(191,254,191);
 
-  .popout-editor {
-    height: 50px;
-    width: 215px;
-  }
-
   .charname {
     input {
       color: $swffg-weapon-color;
@@ -21,15 +16,6 @@
     .characteristic {
       border: 5px double $swffg-weapon-color;
     }
-  }
-
-  .item-name {
-    margin:0;
-    padding-bottom:0 !important;
-  }
-
-  .grid {
-    margin-top: 0;
   }
 
   .block-background {

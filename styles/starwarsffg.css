@@ -252,6 +252,11 @@ img {
   padding: 0 5px 5px 5px;
 }
 
+.starwarsffg.sheet.item .popout-editor {
+  height: 50px;
+  width: 215px;
+}
+
 .starwarsffg.sheet.item .tabs {
   height: 20px;
   border: 0;
@@ -769,11 +774,6 @@ img {
   font-weight: normal;
 }
 
-.starwarsffg .item-sheet-weapon .popout-editor {
-  height: 50px;
-  width: 215px;
-}
-
 .starwarsffg .item-sheet-weapon .charname input {
   color: #134103;
 }
@@ -784,15 +784,6 @@ img {
 
 .starwarsffg .item-sheet-weapon .characteristic-item .characteristic {
   border: 5px double #134103;
-}
-
-.starwarsffg .item-sheet-weapon .item-name {
-  margin: 0;
-  padding-bottom: 0 !important;
-}
-
-.starwarsffg .item-sheet-weapon .grid {
-  margin-top: 0;
 }
 
 .starwarsffg .item-sheet-weapon .block-background {
@@ -854,6 +845,76 @@ img {
 .starwarsffg .item-sheet-gear .sheet-body {
   height: calc(100% - 21.3125rem);
   overflow: auto;
+}
+
+.starwarsffg .item-sheet-talent .charname input {
+  color: #821517;
+}
+
+.starwarsffg .item-sheet-talent .characteristic-item .characteristic-label {
+  background-color: #821517;
+}
+
+.starwarsffg .item-sheet-talent .characteristic-item .characteristic {
+  border: 5px double #821517;
+}
+
+.starwarsffg .item-sheet-talent .block-background {
+  background-color: #f2ebde;
+}
+
+.starwarsffg .item-sheet-talent .attribute .block-title {
+  background-color: #821517;
+}
+
+.starwarsffg .item-sheet-talent .sheet-body {
+  height: calc(100% - 20.3125rem);
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .charname input {
+  color: #1f1c37;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic-label {
+  background-color: #1f1c37;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic {
+  border: 5px double #1f1c37;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .block-background {
+  background-color: #cccae3;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .attribute .block-title {
+  background-color: #1f1c37;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .firing-arcs {
+  gap: 0px;
+  text-align: left;
+  padding: 0 10px;
+  line-height: 20px;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .firing-arcs label {
+  display: inline-block;
+  padding-left: 15px;
+  text-indent: -15px;
+  font-size: .675rem;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .firing-arcs input[type="checkbox"] {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  width: 13px;
+  height: 13px;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .sheet-body {
+  height: calc(100% - 34.6875rem);
 }
 
 .og-character-import {
