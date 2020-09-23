@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 23/09/2020 - Cstadther - Re-added missing modifier display css for sheets.
 - 22/09/2020 - Cstadther - Refactor CSS did not change styles, but remove duplicates and cleaned up unused styles.
 - 20/09/2020 - Cstadther - Fix skill import, was setting `custom:true` incorrectly.
 - 20/09/2020 - Cstadther - Added the functionality to grab new skill types (Combat/General/etc) that are included with alternate skill sets and display them.
