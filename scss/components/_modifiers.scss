@@ -1,0 +1,48 @@
+.attributes {
+  margin: 0;
+  border: 0;
+
+  .attributes-header {
+    padding: 5px;
+    margin: 0 0 5px 0;
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid #aaa;
+    border-radius: 2px;
+    font-weight: bold;
+  }
+  .attribute-label {
+    flex: 1.5;
+  }
+  .attribute-control {
+    flex: 0 0 20px;
+  }
+
+  .attributes-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    tr > * {
+      margin: 0 3px;
+      height: 28px;
+      line-height: 24px;
+      background: transparent;
+      border: none;
+      border-radius: 0;
+      border-bottom: 1px solid #aaa;
+      overflow: auto;
+    }
+    .attribute.item {
+      position: relative;
+      &:hover {
+        background: rgba(25, 24, 19, 0.12);
+        margin: +2px;
+      }
+    }
+  }
+
+  .attribute-value {
+    &.checkbox {
+      text-align: center;
+    }
+  }
+}
