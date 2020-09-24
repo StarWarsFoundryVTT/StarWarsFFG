@@ -4,7 +4,9 @@
       height: 50px;
       width: 215px;
     }
-
+    .tab[data-tab].active {
+      height:100%;
+    }
     .tabs {
       height : 20px;
       border: 0;
