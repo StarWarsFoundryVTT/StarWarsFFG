@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 24/09/2020 - Cstadther - Updated padding on block-title css so that long translations will fit correctly.
 - 24/09/2020 - Cstadther - Fix #162 and editor not displaying text in items.
 - 24/09/2020 - Cstadther - Moved dice pool rendering so `Observer` players can see the rendered dice pool on sheets.
 - 23/09/2020 - Cstadther - Re-added missing modifier display css for sheets.

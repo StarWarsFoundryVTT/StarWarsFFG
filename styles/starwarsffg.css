@@ -547,6 +547,7 @@ img {
   background-color: #553113;
   color: white;
   font-size: 13px;
+  padding: 0 10px;
   text-transform: uppercase;
   margin: auto;
   --notchSize: 8px;
