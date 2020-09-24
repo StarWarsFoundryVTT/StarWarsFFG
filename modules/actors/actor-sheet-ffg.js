@@ -86,6 +86,12 @@ export class ActorSheetFFG extends ActorSheet {
       callback: (clicked) => (this._sheetTab = clicked.data("tab")),
     });
 
+    // Setup dice pool image and hide filtered skills
+    html.find(".skill").each((_, elem) => {
+      DiceHelpers.addSkillDicePool(this, elem);
+      const filters = this._filters.skills;
+    });
+
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
@@ -272,12 +278,6 @@ export class ActorSheetFFG extends ActorSheet {
           template: "systems/starwarsffg/templates/actors/dialogs/ffg-talent-selector.html",
         }
       ).render(true);
-    });
-
-    // Setup dice pool image and hide filtered skills
-    html.find(".skill").each((_, elem) => {
-      DiceHelpers.addSkillDicePool(this, elem);
-      const filters = this._filters.skills;
     });
 
     // Roll Skill
