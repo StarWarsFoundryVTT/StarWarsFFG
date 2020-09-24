@@ -440,6 +440,10 @@ img {
   width: 215px;
 }
 
+.starwarsffg.sheet.item .tab[data-tab].active {
+  height: 100%;
+}
+
 .starwarsffg.sheet.item .tabs {
   height: 20px;
   border: 0;
