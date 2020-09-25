@@ -1,0 +1,69 @@
+&.sheet {
+  &.item {
+    .item-sheet-signatureability {
+      .popout-editor {
+        height: 100%;
+        width: 100%;
+        min-height: 2rem;
+        position: relative;
+      }
+    }
+  }
+}
+
+.item-sheet-signatureability {
+  $swffg-signatureability-background: rgb(99, 0, 0);
+  $swffg-signatureability-input-background: rgb(252, 173, 173);
+  
+  .talent-background {
+    .talent-header {
+      background-color: $swffg-signatureability-background;
+
+      div {
+        input[type="text"] {
+          background-color:$swffg-signatureability-input-background;
+        }
+      }
+    }
+  }
+
+  .header-fields {
+    position: relative;
+
+    .talent-actions {
+      position: absolute;
+      right: 10px;
+      top: 14px;
+      color: white;
+    }
+
+    textarea {
+      max-width: 695px;
+    }
+  }
+
+  .sheet-body {
+    margin:0;
+    overflow: hidden;
+  }
+
+  .talent-cost {
+    bottom: -5px;
+    left: 7px;
+    position: absolute;
+    z-index: 10;
+    width: 60px;
+
+    input {
+      width: 25px;
+      border: 0;
+      background: rgba(0,0,0,0);
+    }
+  }
+  .talent-modifiers {
+    position: absolute;
+    right:5px; 
+    bottom:2px; 
+    z-index: 10;
+  }
+}

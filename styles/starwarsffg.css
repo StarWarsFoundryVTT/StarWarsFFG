@@ -2366,6 +2366,62 @@ img {
   text-align: center;
 }
 
+.starwarsffg.sheet.item .item-sheet-signatureability .popout-editor {
+  height: 100%;
+  width: 100%;
+  min-height: 2rem;
+  position: relative;
+}
+
+.starwarsffg .item-sheet-signatureability .talent-background .talent-header {
+  background-color: #630000;
+}
+
+.starwarsffg .item-sheet-signatureability .talent-background .talent-header div input[type="text"] {
+  background-color: #fcadad;
+}
+
+.starwarsffg .item-sheet-signatureability .header-fields {
+  position: relative;
+}
+
+.starwarsffg .item-sheet-signatureability .header-fields .talent-actions {
+  position: absolute;
+  right: 10px;
+  top: 14px;
+  color: white;
+}
+
+.starwarsffg .item-sheet-signatureability .header-fields textarea {
+  max-width: 695px;
+}
+
+.starwarsffg .item-sheet-signatureability .sheet-body {
+  margin: 0;
+  overflow: hidden;
+}
+
+.starwarsffg .item-sheet-signatureability .talent-cost {
+  bottom: -5px;
+  left: 7px;
+  position: absolute;
+  z-index: 10;
+  width: 60px;
+}
+
+.starwarsffg .item-sheet-signatureability .talent-cost input {
+  width: 25px;
+  border: 0;
+  background: rgba(0, 0, 0, 0);
+}
+
+.starwarsffg .item-sheet-signatureability .talent-modifiers {
+  position: absolute;
+  right: 5px;
+  bottom: 2px;
+  z-index: 10;
+}
+
 .og-character-import {
   min-width: 96%;
 }

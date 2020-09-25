@@ -517,7 +517,7 @@
   },
   "Item": {
     "types": [
-      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "talent", "shipattachment", "shipweapon", "specialization", "species", "weapon"],
+      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "talent", "shipattachment", "shipweapon", "specialization", "species", "weapon", "signatureability"],
     "templates": {
       "core": {
         "description": "",
@@ -728,6 +728,19 @@
     },
     "career" : {
       "templates": ["core"]
+    },
+    "signatureability": {
+      "templates": ["core"],
+      "upgrades": {
+        "upgrade0": {},
+        "upgrade1": {},
+        "upgrade2": {},
+        "upgrade3": {},
+        "upgrade4": {},
+        "upgrade5": {},
+        "upgrade6": {},
+        "upgrade7": {}
+      }
     }
   }
 }

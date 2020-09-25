@@ -170,6 +170,16 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.width = 500;
         this.position.height = 600;
         break;
+      case "signatureability": {
+        this.position.width = 720;
+        this.position.height = 515;
+        data.data.isReadOnly = false;
+        if (!this.options.editable) {
+          data.data.isEditing = false;
+          data.data.isReadOnly = true;
+        }
+        break;
+      }
       default:
     }
 
@@ -270,7 +280,7 @@ export class ItemSheetFFG extends ItemSheet {
       });
     }
 
-    if (["forcepower", "specialization"].includes(this.object.data.type)) {
+    if (["forcepower", "specialization", "signatureability"].includes(this.object.data.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
