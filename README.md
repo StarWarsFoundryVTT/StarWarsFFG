@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 25/09/2020 - Cstadther - Added OggDude Import for Signature Abilities.
 - 25/09/2020 - Cstadther - Enhancement #88 - Added Signature Abilities item type, added new item sheet and css, added to character sheets.  Updated Force Powers and Signature Abilities to only display table headers when there is at least one of those types of items on the character.
 - 24/09/2020 - Cstadther - Updated padding on block-title css so that long translations will fit correctly.
 - 24/09/2020 - Cstadther - Fix #162 and editor not displaying text in items.
