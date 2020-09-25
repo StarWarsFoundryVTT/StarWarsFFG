@@ -1260,6 +1260,14 @@ Hooks.once("init", async function () {
     return cost;
   });
 
+  Handlebars.registerHelper("calculateSignatureAbilityCost", function (idString) {
+    const id = parseInt(idString.replace("upgrade", ""), 10);
+
+    const cost = (Math.trunc(id / 4) + 2) * 5;
+
+    return cost;
+  });
+
   Handlebars.registerHelper("math", function (lvalue, operator, rvalue, options) {
     lvalue = parseFloat(lvalue);
     rvalue = parseFloat(rvalue);

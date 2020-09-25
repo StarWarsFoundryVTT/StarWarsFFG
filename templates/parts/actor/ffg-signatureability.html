@@ -1,13 +1,13 @@
-{{#contains actor.items "type" "forcepower"}}
+{{#contains actor.items "type" "signatureability"}}
 <ul class="talent-list">
   <li class="talents-header flexrow">
-    <div class="header-name">{{localize "SWFFG.ForcePower"}}</div>
-    <div>{{localize "SWFFG.ForcePowerUpgrades"}}</div>
+    <div class="header-name">{{localize "SWFFG.SignatureAbility"}}</div>
+    <div>{{localize "SWFFG.SignatureAbilityUpgrades"}}</div>
     <div></div>
   </li>
 
   <ul class="talent-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'forcepower'}}
+    {{#each actor.items as |item id|}} {{#iff item.type '==' 'signatureability'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">
         {{item.name}}

@@ -67,6 +67,10 @@ export class ItemFFG extends Item {
     if (this.type === "specialization") {
       this._prepareSpecializations();
     }
+
+    if (this.type === "signatureability") {
+      this._prepareSignatureAbilities();
+    }
   }
   /**
    * Capitalize string
@@ -163,6 +167,10 @@ export class ItemFFG extends Item {
    * Prepare Force Power Item Data
    */
   _prepareForcePowers() {
+    this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
+  }
+
+  _prepareSignatureAbilities() {
     this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
   }
 

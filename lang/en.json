@@ -335,5 +335,10 @@
   "SWFFG.TalentsConflict" : "Conflict?",
   "SWFFG.ConsumablesAmount": "Amount",
   "SWFFG.ConsumablesDuration": "Duration",
-  "SWFFG.UseBrawnBaseDamage" : "Brawn?"
+  "SWFFG.UseBrawnBaseDamage" : "Brawn?",
+  "SWFFG.SignatureAbilityName": "Signature Ability Name",
+  "SWFFG.SignatureAbilityBaseAbility": "Base Ability",
+  "SWFFG.SignatureAbilityUpgradeName": "Ability Upgrade Name",
+  "SWFFG.SignatureAbility": "Signature Ability",
+  "SWFFG.SignatureAbilityUpgrades": "Signature Ability Upgrades"
 }
