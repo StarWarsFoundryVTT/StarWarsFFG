@@ -42,11 +42,29 @@ export default class ImportHelpers {
     if (path) {
       const serverPath = `worlds/${game.world.id}/images/packs/${pack.metadata.name}`;
       const filename = path.replace(/^.*[\\\/]/, "");
-      await ImportHelpers.verifyPath("data", serverPath);
-      const img = await zip.file(path).async("uint8array");
-      const i = new File([img], filename);
-      await Helpers.UploadFile("data", `${serverPath}`, i, { bucket: null });
-      return `${serverPath}/${filename}`;
+      if (!CONFIG.temporary.images) {
+        CONFIG.temporary.images = [];
+      }
+      try {
+        if (!CONFIG.temporary.images.includes(`${serverPath}/${filename}`)) {
+          CONFIG.temporary.images.push(`${serverPath}/${filename}`);
+          await ImportHelpers.verifyPath("data", serverPath);
+          const img = await zip.file(path).async("uint8array");
+          var arr = img.subarray(0, 4);
+          var header = "";
+          for (var a = 0; a < arr.length; a++) {
+            header += arr[a].toString(16);
+          }
+          const type = Helpers.getMimeType(header);
+
+          const i = new File([img], filename, { type });
+          await Helpers.UploadFile("data", `${serverPath}`, i, { bucket: null });
+        }
+
+        return `${serverPath}/${filename}`;
+      } catch (err) {
+        CONFIG.logger.error(`Error Uploading File: ${path} to ${serverPath}`);
+      }
     }
   }
 
