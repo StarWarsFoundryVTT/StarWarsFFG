@@ -19,17 +19,15 @@
 }
 
 @font-face {
-  font-family: 'SWRPG-Symbol-Regular';
-  src: url('../fonts/swrpg_symbol-regular_v1-webfont.woff2') format('woff2'),
-       url('../fonts/swrpg_symbol-regular_v1-webfont.woff') format('woff');
+  font-family: "SWRPG-Symbol-Regular";
+  src: url("../fonts/swrpg_symbol-regular_v1-webfont.woff2") format("woff2"), url("../fonts/swrpg_symbol-regular_v1-webfont.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'Genesys';
-  src: url('../fonts/genesysglyphsanddice.woff2') format('woff2'),
-       url('../fonts/genesysglyphsanddice.woff') format('woff');
+  font-family: "Genesys";
+  src: url("../fonts/genesysglyphsanddice.woff2") format("woff2"), url("../fonts/genesysglyphsanddice.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
@@ -594,7 +592,7 @@ img {
 
 .starwarsffg .attribute .block-value textarea {
   resize: none;
-  font-family: 'Roboto';
+  font-family: "Roboto";
   border: 0;
 }
 
@@ -697,6 +695,11 @@ img {
 .starwarsffg .tabs .item.active {
   text-decoration: underline;
   text-shadow: none;
+}
+
+.starwarsffg .tab {
+  height: 100%;
+  overflow: auto;
 }
 
 .starwarsffg form {

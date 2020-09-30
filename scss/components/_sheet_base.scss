@@ -1,6 +1,6 @@
 .charname {
   width: 100%;
-  
+
   input {
     color: rgb(0, 0, 0);
     border: 0;
@@ -13,9 +13,9 @@
 }
 
 .characteristic-item {
-  border:0;
+  border: 0;
   position: relative;
-  padding:0;
+  padding: 0;
   margin: 0 5px;
 
   .characteristic-label {
@@ -23,22 +23,12 @@
     width: 100%;
     text-align: center;
     background-color: rgb(0, 0, 0);
-    color:white;
+    color: white;
     text-transform: uppercase;
-    font-size : 10px;
+    font-size: 10px;
     --notchSize: 7px;
-    
-    clip-path: 
-      polygon(
-        0% var(--notchSize), 
-        var(--notchSize) 0%, 
-        calc(100% - var(--notchSize)) 0%, 
-        100% var(--notchSize), 
-        100% calc(100% - var(--notchSize)), 
-        calc(100% - var(--notchSize)) 100%, 
-        var(--notchSize) 100%, 
-        0% calc(100% - var(--notchSize))
-      );
+
+    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   }
 
   .characteristic {
@@ -63,14 +53,12 @@
         }
       }
     }
-
-    
   }
 }
 
 .item-name {
-  margin:0;
-  padding-bottom:0;
+  margin: 0;
+  padding-bottom: 0;
 }
 
 .grid {
@@ -81,8 +69,8 @@
   position: relative;
   padding: 0;
   z-index: 1;
-  border:0;
-  
+  border: 0;
+
   .block-background-shadow {
     top: 36px;
   }
@@ -98,20 +86,10 @@
     font-size: 13px;
     padding: 0 10px;
     text-transform: uppercase;
-    margin:auto;
-    
+    margin: auto;
+
     --notchSize: 8px;
-    clip-path: 
-      polygon(
-        0% var(--notchSize), 
-        var(--notchSize) 0%, 
-        calc(100% - var(--notchSize)) 0%, 
-        100% var(--notchSize), 
-        100% calc(100% - var(--notchSize)), 
-        calc(100% - var(--notchSize)) 100%, 
-        var(--notchSize) 100%, 
-        0% calc(100% - var(--notchSize))
-    );
+    clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   }
 
   .block-header {
@@ -127,7 +105,6 @@
   }
 
   .block-attribute {
-
     select {
       &:focus {
         box-shadow: 0 0 5px $swffg-input-background;
@@ -141,11 +118,10 @@
   }
 
   .block-value {
-
     textarea {
-      resize:none;
-      font-family: 'Roboto';
-      border : 0;
+      resize: none;
+      font-family: "Roboto";
+      border: 0;
 
       &:focus {
         box-shadow: 0 0 5px $swffg-input-background;
@@ -162,8 +138,8 @@
     }
 
     input {
-      border:0;
-      font-size:14px;
+      border: 0;
+      font-size: 14px;
 
       &:focus {
         box-shadow: 0 0 5px $swffg-input-background;
@@ -184,7 +160,7 @@
     background-color: $swffg-shadow-left;
     width: 50%;
     height: 100%;
-    float:left;
+    float: left;
     position: relative;
     padding-top: 25px;
 
@@ -198,7 +174,7 @@
     background-color: $swffg-input-background;
     width: 50%;
     height: 100%;
-    float:right;
+    float: right;
     position: relative;
     padding-top: 25px;
 
@@ -218,7 +194,7 @@
   padding-left: 2px;
   margin: 0;
   display: inline-table;
-  
+
   &.split {
     width: 130px;
   }
@@ -236,18 +212,22 @@
 
 .tabs {
   flex: 0 0 40px;
-    border-top: 1px solid #aaa;
-    border-bottom: 1px solid #aaa;
-    margin-top: 3px;
-    .item {
-      line-height: 40px;
-      font-weight: bold;
-      &.active {
-        text-decoration: underline;
-        text-shadow: none;
-      }
+  border-top: 1px solid #aaa;
+  border-bottom: 1px solid #aaa;
+  margin-top: 3px;
+  .item {
+    line-height: 40px;
+    font-weight: bold;
+    &.active {
+      text-decoration: underline;
+      text-shadow: none;
     }
- 
+  }
+}
+
+.tab {
+  height: 100%;
+  overflow: auto;
 }
 
 form {
