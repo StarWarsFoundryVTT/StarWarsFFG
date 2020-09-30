@@ -1399,3 +1399,178 @@ Hooks.once("ready", () => {
     Hooks.call(`closeAssociatedTalent_${item.object.data._id}`, item);
   });
 });
+
+Hooks.once('diceSoNiceReady', (dice3d) => {
+  let dicetheme = game.settings.get("starwarsffg", "dicetheme");
+  if(!dicetheme || dicetheme == "starwars"){
+    dice3d.addSystem({id:"swffg",name:"Star Wars FFG"},true);
+
+    //swffg dice 
+    dice3d.addDicePreset({
+      type:"da",
+      labels:['','s',"s","s\ns",'a','s',"s\na",'a\na'],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"green",
+      system:"swffg"
+    },"d8");
+
+    dice3d.addDicePreset({
+      type:"dd",
+      labels:['','f',"f\nf",'t','t',"t", "t\nt", 'f\nt'],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"purple",
+      system:"swffg"
+    },"d8");
+
+    dice3d.addDicePreset({
+      type:"dp",
+      labels:["","s","s","s\ns","s\ns","a","s\na","s\na","s\na","a\na","a\na","x"],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"yellow",
+      system:"swffg"
+    },"d12");
+
+    dice3d.addDicePreset({
+      type:"dc",
+      labels:["","f","f","f\nf","f\nf","t","t","f\nt","f\nt","t\nt","t\nt","y"],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"red",
+      system:"swffg"
+    },"d12");
+
+    dice3d.addDicePreset({
+      type:"df",
+      labels:['\nz','\nz','\nz','\nz','\nz','\nz','z\nz','\nZ','\nZ','Z\nZ','Z\nZ','Z\nZ'],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"white",
+      system:"swffg"
+    },"d12");
+
+    dice3d.addDicePreset({
+      type:"db",
+      labels:['','',"s","s  \n  a","a  \n  a",'a'],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"blue",
+      system:"swffg"
+    },"d6");
+
+    dice3d.addDicePreset({
+      type:"ds",
+      labels:['','','f','f','t','t'],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"black",
+      system:"swffg"
+    },"d6"); 
+  } else { //genesys
+    dice3d.addSystem({id:"genesys",name:"Genesys"},true);
+
+    dice3d.addDicePreset({
+      type:"da",
+      labels:['','s',"s","s\ns",'a','s',"s\na",'a\na'],
+      font:"Genesys",
+      colorset:"green",
+      system:"genesys"
+    },"d8");
+
+    dice3d.addDicePreset({
+      type:"dd",
+      labels:['','f',"f\nf",'h','h',"h", "h\nh", 'f\nh'],
+      font:"Genesys",
+      colorset:"purple",
+      system:"genesys"
+    },"d8");
+
+    dice3d.addDicePreset({
+      type:"dp",
+      labels:["","s","s","s\ns","s\ns","a","s\na","s\na","s\na","a\na","a\na","t"],
+      font:"Genesys",
+      colorset:"yellow",
+      system:"genesys"
+    },"d12");
+
+    dice3d.addDicePreset({
+      type:"dc",
+      labels:["","f","f","f\nf","f\nf","h","h","f\nh","f\nh","h\nh","h\nh","d"],
+      font:"Genesys",
+      colorset:"red",
+      system:"genesys"
+    },"d12");
+
+    dice3d.addDicePreset({
+      type:"df",
+      labels:['\nz','\nz','\nz','\nz','\nz','\nz','z\nz','\nZ','\nZ','Z\nZ','Z\nZ','Z\nZ'],
+      font:"SWRPG-Symbol-Regular",
+      colorset:"white",
+      system:"genesys"
+    },"d12");
+
+    dice3d.addDicePreset({
+      type:"db",
+      labels:['','',"s","s  \n  a","a  \n  a",'a'],
+      font:"Genesys",
+      colorset:"blue",
+      system:"genesys"
+    },"d6");
+
+    dice3d.addDicePreset({
+      type:"ds",
+      labels:['','','f','f','h','h'],
+      font:"Genesys",
+      colorset:"black",
+      system:"genesys"
+    },"d6"); 
+  }
+
+
+  //sw dice colors
+  dice3d.addColorset({
+    name: 'yellow',
+    description: 'SWFFG Yellow',
+    category: 'Colors',
+    foreground: "#000000",
+    background: "#e1aa12",
+    outline: 'none',
+    texture: 'none'
+  });
+
+  dice3d.addColorset({
+    name: 'blue',
+    description: 'SWFFG Blue',
+    category: 'Colors',
+    foreground: "#000000",
+    background: "#5789aa",
+    outline: 'none',
+    texture: 'none'
+  });
+
+  dice3d.addColorset({
+    name: 'red',
+    description: 'SWFFG Red',
+    category: 'Colors',
+    foreground: "#ffffff",
+    background: "#7c151e",
+    outline: 'none',
+    texture: 'none'
+  });
+
+  dice3d.addColorset({
+    name: 'green',
+    description: 'SWFFG Green',
+    category: 'Colors',
+    foreground: "#000000",
+    background: "#127e12",
+    outline: 'none',
+    texture: 'none'
+  });
+
+  dice3d.addColorset({
+    name: 'purple',
+    description: 'SWFFG purple',
+    category: 'Colors',
+    foreground: "#ffffff",
+    background: "#6d1287",
+    outline: 'none',
+    texture: 'none'
+  });
+});
+

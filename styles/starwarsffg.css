@@ -18,6 +18,22 @@
   src: url("../fonts/EotESymbol-Regular-PLUS.otf") format("opentype");
 }
 
+@font-face {
+  font-family: 'SWRPG-Symbol-Regular';
+  src: url('../fonts/swrpg_symbol-regular_v1-webfont.woff2') format('woff2'),
+       url('../fonts/swrpg_symbol-regular_v1-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Genesys';
+  src: url('../fonts/genesysglyphsanddice.woff2') format('woff2'),
+       url('../fonts/genesysglyphsanddice.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* Global styles */
 div, section {
   scrollbar-width: thin;
