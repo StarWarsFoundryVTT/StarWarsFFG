@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 30/09/2020 - Esrin - Updated Spanish language file provided by ForjaSalvaje.
 - 30/09/2020 - Esrin - Merged in the DsN support and added the required SASS to coincide with their alpha release.
 - 26/09/2020 - Cstadther - Added additional error handling and logging for signature ability import.
 - 25/09/2020 - Cstadther - Added OggDude Import for Signature Abilities.
