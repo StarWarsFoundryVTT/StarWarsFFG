@@ -25,9 +25,10 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 30/09/2020 - Esrin - Merged in the DsN support and added the required SASS to coincide with their alpha release.
 - 26/09/2020 - Cstadther - Added additional error handling and logging for signature ability import.
 - 25/09/2020 - Cstadther - Added OggDude Import for Signature Abilities.
-- 25/09/2020 - Cstadther - Enhancement #88 - Added Signature Abilities item type, added new item sheet and css, added to character sheets.  Updated Force Powers and Signature Abilities to only display table headers when there is at least one of those types of items on the character.
+- 25/09/2020 - Cstadther - Enhancement #88 - Added Signature Abilities item type, added new item sheet and css, added to character sheets. Updated Force Powers and Signature Abilities to only display table headers when there is at least one of those types of items on the character.
 - 24/09/2020 - Cstadther - Updated padding on block-title css so that long translations will fit correctly.
 - 24/09/2020 - Cstadther - Fix #162 and editor not displaying text in items.
 - 24/09/2020 - Cstadther - Moved dice pool rendering so `Observer` players can see the rendered dice pool on sheets.
@@ -35,7 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 - 22/09/2020 - Cstadther - Refactor CSS did not change styles, but remove duplicates and cleaned up unused styles.
 - 20/09/2020 - Cstadther - Fix skill import, was setting `custom:true` incorrectly.
 - 20/09/2020 - Cstadther - Added the functionality to grab new skill types (Combat/General/etc) that are included with alternate skill sets and display them.
-- 20/09/2020 - Cstadther - Fixed issue with alt skill list import, now auto sets `custom:true` for all skills in import file.  Added try..catch in initialization, so that if error occurs option still shows in configuration settings.
+- 20/09/2020 - Cstadther - Fixed issue with alt skill list import, now auto sets `custom:true` for all skills in import file. Added try..catch in initialization, so that if error occurs option still shows in configuration settings.
 - 20/09/2020 - Cstadther - Fixed issue with character import failing on items, added object duplication and try..catch for error handling.
 - 19/09/2020 - Cstadther - Fixed issue where modifiers for alternate skills lists were not working correctly.
 - 19/09/2020 - Cstadther - Added ability to mark a melee weapon to not use Brawn which will cause weapon to follow not damage rules.
