@@ -229,141 +229,145 @@ export default class DataImporter extends FormApplication {
 
   async _handleSignatureAbilties(xmlDoc, zip) {
     try {
-      const signatureAbilityUpgrades = JXON.xmlToJs(xmlDoc);
+      const sigAbilityNode = xmlDoc.getElementsByTagName("SigAbilityNode");
 
-      const signatureAbilityFiles = Object.values(zip.files).filter((file) => {
-        return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/SigAbilities/");
-      });
+      if (sigAbilityNode.length > 0) {
+        const signatureAbilityUpgrades = JXON.xmlToJs(xmlDoc);
 
-      if (signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length > 0 && signatureAbilityFiles.length > 0) {
-        $(".import-progress.signatureabilities").toggleClass("import-hidden");
-        let pack = await this._getCompendiumPack("Item", `oggdude.SignatureAbilities`);
-        let totalCount = signatureAbilityFiles.length;
-        let currentCount = 0;
-        this._importLogger(`Beginning import of ${signatureAbilityFiles.length} signature abilities`);
-
-        await this.asyncForEach(signatureAbilityFiles, async (file) => {
-          try {
-            const data = await zip.file(file.name).async("text");
-            const xmlDoc1 = ImportHelpers.stringToXml(data);
-            const sa = JXON.xmlToJs(xmlDoc1);
-
-            let signatureAbility = {
-              name: sa.SigAbility.Name,
-              type: "signatureability",
-              flags: {
-                importid: sa.SigAbility.Key,
-              },
-              data: {
-                description: sa.SigAbility.Description,
-                attributes: {},
-                upgrades: {},
-              },
-            };
-
-            for (let i = 1; i < sa.SigAbility.AbilityRows.AbilityRow.length; i += 1) {
-              try {
-                const row = sa.SigAbility.AbilityRows.AbilityRow[i];
-                row.Abilities.Key.forEach((keyName, index) => {
-                  let rowAbility = {};
-
-                  let rowAbilityData = signatureAbilityUpgrades.SigAbilityNodes.SigAbilityNode.find((a) => {
-                    return a.Key === keyName;
-                  });
-
-                  rowAbility.name = rowAbilityData.Name;
-                  rowAbility.description = rowAbilityData.Description;
-                  rowAbility.visible = true;
-                  rowAbility.attributes = {};
-
-                  if (row.Directions.Direction[index].Up) {
-                    rowAbility["links-top-1"] = true;
-                  }
-
-                  switch (row.AbilitySpan.Span[index]) {
-                    case "1":
-                      rowAbility.size = "single";
-                      break;
-                    case "2":
-                      rowAbility.size = "double";
-                      if (index < 3 && row.Directions.Direction[index + 1].Up) {
-                        rowAbility["links-top-2"] = true;
-                      }
-                      break;
-                    case "3":
-                      rowAbility.size = "triple";
-                      if (index < 2 && row.Directions.Direction[index + 1].Up) {
-                        rowAbility["links-top-2"] = true;
-                      }
-                      if (index < 2 && row.Directions.Direction[index + 2].Up) {
-                        rowAbility["links-top-3"] = true;
-                      }
-                      break;
-                    case "4":
-                      rowAbility.size = "full";
-                      if (index < 1 && row.Directions.Direction[index + 1].Up) {
-                        rowAbility["links-top-2"] = true;
-                      }
-                      if (index < 1 && row.Directions.Direction[index + 2].Up) {
-                        rowAbility["links-top-3"] = true;
-                      }
-                      if (index < 1 && row.Directions.Direction[index + 3].Up) {
-                        rowAbility["links-top-4"] = true;
-                      }
-                      break;
-                    default:
-                      rowAbility.size = "single";
-                      rowAbility.visible = false;
-                  }
-
-                  if (row.Directions.Direction[index].Right) {
-                    rowAbility["links-right"] = true;
-                  }
-
-                  const talentKey = `upgrade${(i - 1) * 4 + index}`;
-                  signatureAbility.data.upgrades[talentKey] = rowAbility;
-                });
-              } catch (err) {
-                CONFIG.logger.error(`Error importing record : `, err);
-              }
-            }
-
-            let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", signatureAbility.flags.importid);
-            if (imgPath) {
-              signatureAbility.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
-            }
-
-            let compendiumItem;
-            await pack.getIndex();
-            let entry = pack.index.find((e) => e.name === signatureAbility.name);
-
-            if (!entry) {
-              CONFIG.logger.debug(`Importing Signature Ability - Item`);
-              compendiumItem = new Item(signatureAbility, { temporary: true });
-              this._importLogger(`New Signature Ability ${signatureAbility.name} : ${JSON.stringify(compendiumItem)}`);
-              pack.importEntity(compendiumItem);
-            } else {
-              CONFIG.logger.debug(`Updating Signature Ability - Item`);
-              //let updateData = ImportHelpers.buildUpdateData(power);
-              let updateData = signatureAbility;
-              updateData["_id"] = entry._id;
-              this._importLogger(`Updating Signature Ability ${signatureAbility.name} : ${JSON.stringify(updateData)}`);
-              pack.updateEntity(updateData);
-            }
-            currentCount += 1;
-
-            $(".signatureabilities .import-progress-bar")
-              .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-              .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-            this._importLogger(`End importing Signature Ability ${sa.SigAbility.Name}`);
-          } catch (err) {
-            CONFIG.logger.error(`Error importing record : `, err);
-          }
+        const signatureAbilityFiles = Object.values(zip.files).filter((file) => {
+          return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/SigAbilities/");
         });
-        this._importLogger(`Completed Signature Ability Import`);
-      } else {
-        CONFIG.logger.error(`Error importing signature abilities, found ${signatureAbilityFiles.length} signature ability files and ${signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length} upgrades in data set`);
-        this._importLogger(`Error importing signature abilities, found ${signatureAbilityFiles.length} signature ability files and ${signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length} upgrades in data set`);
+
+        if (signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length > 0 && signatureAbilityFiles.length > 0) {
+          $(".import-progress.signatureabilities").toggleClass("import-hidden");
+          let pack = await this._getCompendiumPack("Item", `oggdude.SignatureAbilities`);
+          let totalCount = signatureAbilityFiles.length;
+          let currentCount = 0;
+          this._importLogger(`Beginning import of ${signatureAbilityFiles.length} signature abilities`);
+
+          await this.asyncForEach(signatureAbilityFiles, async (file) => {
+            try {
+              const data = await zip.file(file.name).async("text");
+              const xmlDoc1 = ImportHelpers.stringToXml(data);
+              const sa = JXON.xmlToJs(xmlDoc1);
+
+              let signatureAbility = {
+                name: sa.SigAbility.Name,
+                type: "signatureability",
+                flags: {
+                  importid: sa.SigAbility.Key,
+                },
+                data: {
+                  description: sa.SigAbility.Description,
+                  attributes: {},
+                  upgrades: {},
+                },
+              };
+
+              for (let i = 1; i < sa.SigAbility.AbilityRows.AbilityRow.length; i += 1) {
+                try {
+                  const row = sa.SigAbility.AbilityRows.AbilityRow[i];
+                  row.Abilities.Key.forEach((keyName, index) => {
+                    let rowAbility = {};
+
+                    let rowAbilityData = signatureAbilityUpgrades.SigAbilityNodes.SigAbilityNode.find((a) => {
+                      return a.Key === keyName;
+                    });
+
+                    rowAbility.name = rowAbilityData.Name;
+                    rowAbility.description = rowAbilityData.Description;
+                    rowAbility.visible = true;
+                    rowAbility.attributes = {};
+
+                    if (row.Directions.Direction[index].Up) {
+                      rowAbility["links-top-1"] = true;
+                    }
+
+                    switch (row.AbilitySpan.Span[index]) {
+                      case "1":
+                        rowAbility.size = "single";
+                        break;
+                      case "2":
+                        rowAbility.size = "double";
+                        if (index < 3 && row.Directions.Direction[index + 1].Up) {
+                          rowAbility["links-top-2"] = true;
+                        }
+                        break;
+                      case "3":
+                        rowAbility.size = "triple";
+                        if (index < 2 && row.Directions.Direction[index + 1].Up) {
+                          rowAbility["links-top-2"] = true;
+                        }
+                        if (index < 2 && row.Directions.Direction[index + 2].Up) {
+                          rowAbility["links-top-3"] = true;
+                        }
+                        break;
+                      case "4":
+                        rowAbility.size = "full";
+                        if (index < 1 && row.Directions.Direction[index + 1].Up) {
+                          rowAbility["links-top-2"] = true;
+                        }
+                        if (index < 1 && row.Directions.Direction[index + 2].Up) {
+                          rowAbility["links-top-3"] = true;
+                        }
+                        if (index < 1 && row.Directions.Direction[index + 3].Up) {
+                          rowAbility["links-top-4"] = true;
+                        }
+                        break;
+                      default:
+                        rowAbility.size = "single";
+                        rowAbility.visible = false;
+                    }
+
+                    if (row.Directions.Direction[index].Right) {
+                      rowAbility["links-right"] = true;
+                    }
+
+                    const talentKey = `upgrade${(i - 1) * 4 + index}`;
+                    signatureAbility.data.upgrades[talentKey] = rowAbility;
+                  });
+                } catch (err) {
+                  CONFIG.logger.error(`Error importing record : `, err);
+                }
+              }
+
+              let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", signatureAbility.flags.importid);
+              if (imgPath) {
+                signatureAbility.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+              }
+
+              let compendiumItem;
+              await pack.getIndex();
+              let entry = pack.index.find((e) => e.name === signatureAbility.name);
+
+              if (!entry) {
+                CONFIG.logger.debug(`Importing Signature Ability - Item`);
+                compendiumItem = new Item(signatureAbility, { temporary: true });
+                this._importLogger(`New Signature Ability ${signatureAbility.name} : ${JSON.stringify(compendiumItem)}`);
+                pack.importEntity(compendiumItem);
+              } else {
+                CONFIG.logger.debug(`Updating Signature Ability - Item`);
+                //let updateData = ImportHelpers.buildUpdateData(power);
+                let updateData = signatureAbility;
+                updateData["_id"] = entry._id;
+                this._importLogger(`Updating Signature Ability ${signatureAbility.name} : ${JSON.stringify(updateData)}`);
+                pack.updateEntity(updateData);
+              }
+              currentCount += 1;
+
+              $(".signatureabilities .import-progress-bar")
+                .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+                .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+              this._importLogger(`End importing Signature Ability ${sa.SigAbility.Name}`);
+            } catch (err) {
+              CONFIG.logger.error(`Error importing record : `, err);
+            }
+          });
+          this._importLogger(`Completed Signature Ability Import`);
+        } else {
+          CONFIG.logger.error(`Error importing signature abilities, found ${signatureAbilityFiles.length} signature ability files and ${signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length} upgrades in data set`);
+          this._importLogger(`Error importing signature abilities, found ${signatureAbilityFiles.length} signature ability files and ${signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length} upgrades in data set`);
+        }
       }
     } catch (err) {
       CONFIG.logger.error(`Failed to import signature abilities`, err);

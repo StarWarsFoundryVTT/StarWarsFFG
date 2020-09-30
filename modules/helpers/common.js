@@ -39,7 +39,7 @@ export default class Helpers {
    * @param  {object} options
    */
   static async UploadFile(source, path, file, options) {
-    const fd = new FormData();
+    let fd = new FormData();
     fd.set("source", source);
     fd.set("target", path);
     fd.set("upload", file);
@@ -48,7 +48,15 @@ export default class Helpers {
     const request = await fetch(FilePicker.uploadURL, { method: "POST", body: fd });
     if (request.status === 413) {
       return ui.notifications.error(game.i18n.localize("FILES.ErrorTooLarge"));
-    } else if (request.status !== 200) {
+    }
+
+    const response = await request.json().catch((err) => {
+      return {};
+    });
+    if (response.error) {
+      ui.notifications.error(response.error);
+      return false;
+    } else if (!response.path) {
       return ui.notifications.error(game.i18n.localize("FILES.ErrorSomethingWrong"));
     }
   }
@@ -67,5 +75,32 @@ export default class Helpers {
       if (typeof obj2[key] == "object" && typeof obj1[key] == "object") result[key] = this.diff(obj1[key], obj2[key]);
     }
     return result;
+  }
+
+  /**
+   * Returns the MIME type for a media file
+   * @param  {string} header - Hex header for file.
+   */
+  static getMimeType(header) {
+    let type = "";
+    switch (header) {
+      case "89504e47":
+        type = "image/png";
+        break;
+      case "47494638":
+        type = "image/gif";
+        break;
+      case "ffd8ffe0":
+      case "ffd8ffe1":
+      case "ffd8ffe2":
+      case "ffd8ffe3":
+      case "ffd8ffe8":
+        type = "image/jpeg";
+        break;
+      default:
+        type = "unknown"; // Or you can use the blob.type as fallback
+    }
+
+    return type;
   }
 }
