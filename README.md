@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 30/09/2020 - Cstadther - Fixed issue with Minion group skills.
 - 30/09/2020 - Cstadther - Fixed issues with 0.7.3 and importer functionality, media type is now required in order to overwrite files.
 - 30/09/2020 - Esrin - Fixed missing tab overflows for sheets.
 - 30/09/2020 - Esrin - Updated Spanish language file provided by ForjaSalvaje.

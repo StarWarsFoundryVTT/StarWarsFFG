@@ -20,7 +20,7 @@
             <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>
             ) {{/with}}
           </div>
-          {{#if (eq ../actor.type "minion")}}
+          {{#if (eq ../../actor.type "minion")}}
           <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.groupskill" data-dtype="Boolean" {{checked skill.groupskill}} /></div>
           {{else}}
           <div class="pure-u-3-24 hover"><input class="careerskill-toggle" type="checkbox" name="data.skills.{{id}}.careerskill" data-dtype="Boolean" {{checked skill.careerskill}} /></div>
