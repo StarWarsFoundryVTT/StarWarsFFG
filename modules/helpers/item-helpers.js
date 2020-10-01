@@ -53,6 +53,14 @@ export default class ItemHelpers {
             setProperty(updateData, `data.talents.${parent.talent}.isRanked`, formData.data.ranks.ranked);
             setProperty(updateData, `data.talents.${parent.talent}.isForceTalent`, formData.data.isForceTalent);
             setProperty(updateData, `data.talents.${parent.talent}.isConflictTalent`, formData.data.isConflictTalent);
+
+            // Remove attributes which are no longer used
+            if (spec?.data?.data?.talents?.[parent.talent]?.attributes) {
+              for (let k of Object.keys(spec.data.data.talents[parent.talent].attributes)) {
+                if (!formData.data.attributes.hasOwnProperty(k)) formData.data.attributes[`-=${k}`] = null;
+              }
+            }
+
             setProperty(updateData, `data.talents.${parent.talent}.attributes`, formData.data.attributes);
 
             if (parent.id.includes(".OwnedItem.")) {
