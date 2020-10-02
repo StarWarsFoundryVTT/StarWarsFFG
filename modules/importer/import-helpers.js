@@ -947,7 +947,7 @@ export default class ImportHelpers {
 
       const imge = characterData.Character.Portrait;
       const img = this.b64toBlob(imge);
-      const i = new File([img], `${characterData.Character.Key}.png`);
+      const i = new File([img], `${characterData.Character.Key}.png`, { type: "image/png" });
       await Helpers.UploadFile("data", serverPath, i, { bucket: null });
       character.img = `${serverPath}/${characterData.Character.Key}.png`;
 
