@@ -61,7 +61,7 @@ export default class SkillListImporter extends FormApplication {
       const defaultBlob = new Blob([newMasterSkillListData], {
         type: "text/plain",
       });
-      const i = new File([defaultBlob], "skills.json");
+      const i = new File([defaultBlob], "skills.json", { type: "application/json" });
 
       await Helpers.UploadFile("data", `worlds/${game.world.id}/`, i, { bucket: null });
 
