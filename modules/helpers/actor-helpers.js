@@ -33,8 +33,7 @@ export default class ActorHelpers {
             statValue = 0;
             isFormValueVisible = false;
           }
-        }
-        if (key === "Encumbrance") {
+        } else if (key === "Encumbrance") {
           if (formData.data.stats[k]?.value) {
             statValue = parseInt(formData.data.stats[k].value, 10);
             // the encumbrance value is autocalculated we need to account for 5 + Brawn
@@ -57,7 +56,12 @@ export default class ActorHelpers {
         }
 
         let x = statValue - (isFormValueVisible ? total : 0);
+
         let y = parseInt(formData.data.attributes[key].value, 10) + x;
+        if (key === "Soak" && (this.actor.data.flags.config.enableAutoSoakCalculation || game.settings.get("starwarsffg", "enableSoakCalc"))) {
+          y = 0;
+        }
+
         if (y > 0) {
           formData.data.attributes[key].value = y;
         } else {
