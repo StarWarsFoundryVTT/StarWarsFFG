@@ -52,7 +52,7 @@ export class AdversarySheetFFG extends ActorSheet {
     }
     data.FFG = CONFIG.FFG;
     data.settings = {
-      enableSoakCalculation: game.settings.get("starwarsffg", "enableSoakCalc"),
+      enableSoakCalculation: this.actor.data.flags.enableAutoSoakCalculation || game.settings.get("starwarsffg", "enableSoakCalc"),
     };
 
     switch (this.actor.data.type) {
