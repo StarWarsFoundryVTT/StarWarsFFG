@@ -379,11 +379,11 @@ FFG.weapon_mod_types = {
   },
   "Skill Remove Setback": {
     "value": "Skill Remove Setback",
-    "label": "SWFFG.ModTypeSkillSetback",
+    "label": "SWFFG.ModTypeSkillRemoveSetback",
   },
   "Skill Setback": {
     "value": "Skill Setback",
-    "label": "SWFFG.ModTypeSkillRemoveSetback",
+    "label": "SWFFG.ModTypeSkillSetback",
   },
   "Stat": {
     "value": "Stat",

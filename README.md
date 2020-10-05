@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 05/10/2020 - Cstadther - Fixed issue where modifier display for weapons was swapped for setback and remove setback
 - 04/10/2020 - Cstadther - Fixed issue with minion sheet erroring.
 - 03/10/2020 - Cstadther - Fixed issue with migrating soak from 0.5 to 1.0 schema, fixed issue with soak calculation if auto calculation is turned off then on, removed adding willpower or brawn modifiers to Wound and Strain calculations.
 - 02/10/2020 - Cstadther - Fix File Uploads, 0.7.3 now requires mime type defined for overwriting files.
