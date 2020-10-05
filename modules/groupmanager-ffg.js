@@ -77,8 +77,9 @@ export class GroupManager extends FormApplication {
     const dPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
     const initiative = CONFIG.Combat.initiative.formula;
     const isGM = game.user.isGM;
+    const theme = CONFIG.FFG.theme;
     if (!isGM) this.position.height = 470;
-    return { dPool, players, initiative, isGM, pcListMode, characters };
+    return { dPool, players, initiative, isGM, pcListMode, characters, theme };
   }
 
   /* -------------------------------------------- */
