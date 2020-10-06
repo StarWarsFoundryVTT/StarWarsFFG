@@ -1455,7 +1455,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "df",
         labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
         font: "SWRPG-Symbol-Regular",
-        colorset: "white",
+        colorset: "white-sw",
         system: "swffg",
       },
       "d12"
@@ -1477,7 +1477,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "ds",
         labels: ["", "", "f", "f", "t", "t"],
         font: "SWRPG-Symbol-Regular",
-        colorset: "black",
+        colorset: "black-sw",
         system: "swffg",
       },
       "d6"
@@ -1535,7 +1535,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "df",
         labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
         font: "SWRPG-Symbol-Regular",
-        colorset: "white",
+        colorset: "white-sw",
         system: "genesys",
       },
       "d12"
@@ -1557,7 +1557,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "ds",
         labels: ["", "", "f", "f", "h", "h"],
         font: "Genesys",
-        colorset: "black",
+        colorset: "black-sw",
         system: "genesys",
       },
       "d6"
@@ -1603,5 +1603,21 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     category: "Colors",
     foreground: "#ffffff",
     background: "#6d1287"
+  });
+
+  dice3d.addColorset({
+    name: "black-sw",
+    description: "SWFFG black",
+    category: "Colors",
+    foreground: "#ffffff",
+    background: "#000000"
+  });
+
+  dice3d.addColorset({
+    name: "white-sw",
+    description: "SWFFG white",
+    category: "Colors",
+    foreground: "#000000",
+    background: "#ffffff"
   });
 });
