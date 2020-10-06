@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 06/10/2020 - Cstadther - Updated force dice for dice pool by subtracting max and committed.
 - 05/10/2020 - Cstadther - Found by Alerion, fix for firingarcs
 - 05/10/2020 - Cstadther - Updated groupmanager to correctly display theme based light/dark destiny image.
 - 05/10/2020 - Cstadther - Fixed issue where modifier display for weapons was swapped for setback and remove setback

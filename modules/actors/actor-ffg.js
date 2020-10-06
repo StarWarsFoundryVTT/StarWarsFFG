@@ -531,7 +531,15 @@ export class ActorFFG extends Actor {
       data.skills[key].boost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost");
       const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback");
       const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback");
-      data.skills[key].force = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost") > 0 ? data.stats.forcePool.max : 0;
+
+      const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost");
+      data.skills[key].force = 0;
+      if (forceboost > 0) {
+        const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
+        if (forcedice > 0) {
+          data.skills[key].force = forcedice;
+        }
+      }
 
       if (remsetback >= setback) {
         data.skills[key].setback = 0;
