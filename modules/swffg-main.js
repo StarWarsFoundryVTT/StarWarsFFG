@@ -1570,9 +1570,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Yellow",
     category: "Colors",
     foreground: "#000000",
-    background: "#e1aa12",
-    outline: "none",
-    texture: "none",
+    background: "#e1aa12"
   });
 
   dice3d.addColorset({
@@ -1580,9 +1578,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Blue",
     category: "Colors",
     foreground: "#000000",
-    background: "#5789aa",
-    outline: "none",
-    texture: "none",
+    background: "#5789aa"
   });
 
   dice3d.addColorset({
@@ -1590,9 +1586,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Red",
     category: "Colors",
     foreground: "#ffffff",
-    background: "#7c151e",
-    outline: "none",
-    texture: "none",
+    background: "#7c151e"
   });
 
   dice3d.addColorset({
@@ -1600,9 +1594,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Green",
     category: "Colors",
     foreground: "#000000",
-    background: "#127e12",
-    outline: "none",
-    texture: "none",
+    background: "#127e12"
   });
 
   dice3d.addColorset({
@@ -1610,8 +1602,6 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG purple",
     category: "Colors",
     foreground: "#ffffff",
-    background: "#6d1287",
-    outline: "none",
-    texture: "none",
+    background: "#6d1287"
   });
 });
