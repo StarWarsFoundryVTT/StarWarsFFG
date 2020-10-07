@@ -1455,7 +1455,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "df",
         labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
         font: "SWRPG-Symbol-Regular",
-        colorset: "white",
+        colorset: "white-sw",
         system: "swffg",
       },
       "d12"
@@ -1477,7 +1477,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "ds",
         labels: ["", "", "f", "f", "t", "t"],
         font: "SWRPG-Symbol-Regular",
-        colorset: "black",
+        colorset: "black-sw",
         system: "swffg",
       },
       "d6"
@@ -1535,7 +1535,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "df",
         labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
         font: "SWRPG-Symbol-Regular",
-        colorset: "white",
+        colorset: "white-sw",
         system: "genesys",
       },
       "d12"
@@ -1557,7 +1557,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
         type: "ds",
         labels: ["", "", "f", "f", "h", "h"],
         font: "Genesys",
-        colorset: "black",
+        colorset: "black-sw",
         system: "genesys",
       },
       "d6"
@@ -1570,9 +1570,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Yellow",
     category: "Colors",
     foreground: "#000000",
-    background: "#e1aa12",
-    outline: "none",
-    texture: "none",
+    background: "#e1aa12"
   });
 
   dice3d.addColorset({
@@ -1580,9 +1578,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Blue",
     category: "Colors",
     foreground: "#000000",
-    background: "#5789aa",
-    outline: "none",
-    texture: "none",
+    background: "#5789aa"
   });
 
   dice3d.addColorset({
@@ -1590,9 +1586,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Red",
     category: "Colors",
     foreground: "#ffffff",
-    background: "#7c151e",
-    outline: "none",
-    texture: "none",
+    background: "#7c151e"
   });
 
   dice3d.addColorset({
@@ -1600,9 +1594,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Green",
     category: "Colors",
     foreground: "#000000",
-    background: "#127e12",
-    outline: "none",
-    texture: "none",
+    background: "#127e12"
   });
 
   dice3d.addColorset({
@@ -1610,8 +1602,22 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG purple",
     category: "Colors",
     foreground: "#ffffff",
-    background: "#6d1287",
-    outline: "none",
-    texture: "none",
+    background: "#6d1287"
+  });
+
+  dice3d.addColorset({
+    name: "black-sw",
+    description: "SWFFG black",
+    category: "Colors",
+    foreground: "#ffffff",
+    background: "#000000"
+  });
+
+  dice3d.addColorset({
+    name: "white-sw",
+    description: "SWFFG white",
+    category: "Colors",
+    foreground: "#000000",
+    background: "#ffffff"
   });
 });
