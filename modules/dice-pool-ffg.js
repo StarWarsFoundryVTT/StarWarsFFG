@@ -749,7 +749,7 @@ export class DicePoolFFG {
         if (this.proficiency > 0) {
           this.challenge--;
           this.difficulty++;
-        } else if (this.ability > 0) {
+        } else if (this.difficulty > 0) {
           this.difficulty--;
         }
       } else {
