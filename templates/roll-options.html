@@ -1,8 +1,10 @@
 <div id="{{id}}" class="dice-pool-dialog">
   <div class="dice-pool"></div>
   <div class="upgrade-buttons">
-    <button id="upgrade-ability">{{localize "SWFFG.UpgradeAbility"}}</button>
-    <button id="upgrade-difficulty">{{localize "SWFFG.UpgradeDifficulty"}}</button>
+    <button id="{{id}}_upgrade-ability">{{localize "SWFFG.UpgradeAbility"}}</button>
+    <button id="{{id}}_downgrade-ability">{{localize "SWFFG.DowngradeAbility"}}</button>
+    <button id="{{id}}_upgrade-difficulty">{{localize "SWFFG.UpgradeDifficulty"}}</button>
+    <button id="{{id}}_downgrade-difficulty">{{localize "SWFFG.DowngradeDifficulty"}}</button>
   </div>
   <div style="text-align: center;"><span>Left click to increase dice, right click to decrease.</span></div>
   <table>
@@ -93,8 +95,10 @@
   (function() {
       const scope = document.getElementById("{{{id}}}");
       const pool = new DicePoolFFG({{{json dicePool}}});
-      const upgradeAbButton = document.getElementById("upgrade-ability");
-      const upgradeDiButton = document.getElementById("upgrade-difficulty");
+      const upgradeAbButton = document.getElementById("{{{id}}}_upgrade-ability");
+      const downgradeAbButton = document.getElementById("{{{id}}}_downgrade-ability");
+      const upgradeDiButton = document.getElementById("{{{id}}}_upgrade-difficulty");
+      const downgradeDiButton = document.getElementById("{{{id}}}_downgrade-difficulty");
 
       upgradeAbButton.addEventListener("click", (event) => {
         pool.upgrade(1);
@@ -102,8 +106,23 @@
         updateInput(scope, pool, "ability");
         updatePreview(scope, pool);
       });
+
+      downgradeAbButton.addEventListener("click", (event) => {
+        pool.upgrade(-1);
+        updateInput(scope, pool, "proficiency");
+        updateInput(scope, pool, "ability");
+        updatePreview(scope, pool);
+      });
+
       upgradeDiButton.addEventListener("click", (event) => {
         pool.upgradeDifficulty(1);
+        updateInput(scope, pool, "challenge");
+        updateInput(scope, pool, "difficulty");
+        updatePreview(scope, pool);
+      });
+
+      downgradeDiButton.addEventListener("click", (event) => {
+        pool.upgradeDifficulty(-1);
         updateInput(scope, pool, "challenge");
         updateInput(scope, pool, "difficulty");
         updatePreview(scope, pool);

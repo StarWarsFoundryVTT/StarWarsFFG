@@ -15,6 +15,9 @@
   .upgrade-buttons {
     display: flex;
     margin: 10px;
+    button {
+      line-height: 20px;
+    }
   }
 }
 
