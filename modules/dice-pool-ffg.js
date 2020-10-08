@@ -786,23 +786,37 @@ export class DicePoolFFG {
       container = document.createElement("div");
       container.classList.add("dice-pool");
     }
-    this._addIcons(container, CONFIG.FFG.PROFICIENCY_ICON, this.proficiency);
-    this._addIcons(container, CONFIG.FFG.ABILITY_ICON, this.ability);
-    this._addIcons(container, CONFIG.FFG.CHALLENGE_ICON, this.challenge);
-    this._addIcons(container, CONFIG.FFG.DIFFICULTY_ICON, this.difficulty);
-    this._addIcons(container, CONFIG.FFG.BOOST_ICON, this.boost);
-    this._addIcons(container, CONFIG.FFG.SETBACK_ICON, this.setback);
-    this._addIcons(container, CONFIG.FFG.REMOVESETBACK_ICON, this.remsetback);
-    this._addIcons(container, CONFIG.FFG.FORCE_ICON, this.force);
+
+    const totalDice = this.proficiency + this.ability + this.challenge + this.difficulty + this.boost + this.setback + this.force;
+
+    let height = 36;
+    let width = 36;
+    if (totalDice > 10) {
+      height = 24;
+      width = 24;
+    }
+    if (totalDice > 32) {
+      height = 12;
+      width = 12;
+    }
+
+    this._addIcons(container, CONFIG.FFG.PROFICIENCY_ICON, this.proficiency, height, width);
+    this._addIcons(container, CONFIG.FFG.ABILITY_ICON, this.ability, height, width);
+    this._addIcons(container, CONFIG.FFG.CHALLENGE_ICON, this.challenge, height, width);
+    this._addIcons(container, CONFIG.FFG.DIFFICULTY_ICON, this.difficulty, height, width);
+    this._addIcons(container, CONFIG.FFG.BOOST_ICON, this.boost, height, width);
+    this._addIcons(container, CONFIG.FFG.SETBACK_ICON, this.setback, height, width);
+    this._addIcons(container, CONFIG.FFG.REMOVESETBACK_ICON, this.remsetback, height, width);
+    this._addIcons(container, CONFIG.FFG.FORCE_ICON, this.force, height, width);
     return container;
   }
 
-  _addIcons(container, icon, times) {
+  _addIcons(container, icon, times, height = 36, width = 36) {
     for (let i = 0; i < times; i++) {
       const img = document.createElement("img");
       img.src = icon;
-      img.width = 48;
-      img.height = 48;
+      img.width = width;
+      img.height = height;
       container.appendChild(img);
     }
   }
