@@ -340,5 +340,7 @@
   "SWFFG.SignatureAbilityBaseAbility": "Habilidad Base",
   "SWFFG.SignatureAbilityUpgradeName": "Nombre Incremento Habilidad",
   "SWFFG.SignatureAbility": "Habilidad Emblemática",
-  "SWFFG.SignatureAbilityUpgrades": "Incremento Habilidad Emblemática"
+  "SWFFG.SignatureAbilityUpgrades": "Incremento Habilidad Emblemática",
+  "SWFFG.DowngradeAbility": "Reducir Capacidad",
+  "SWFFG.DowngradeDifficulty": "Reducir Dificultad"
 }
