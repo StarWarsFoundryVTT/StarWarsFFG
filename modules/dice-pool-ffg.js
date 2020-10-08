@@ -704,12 +704,28 @@ export class DicePoolFFG {
     if (times === undefined) {
       times = 1;
     }
+
+    let downgrade = false;
+    if (times < 0) {
+      downgrade = true;
+      times = Math.abs(times);
+    }
+
     for (let i = 0; i < times; i++) {
-      if (this.ability > 0) {
-        this.ability--;
-        this.proficiency++;
+      if (downgrade) {
+        if (this.proficiency > 0) {
+          this.proficiency--;
+          this.ability++;
+        } else if (this.ability > 0) {
+          this.ability--;
+        }
       } else {
-        this.ability++;
+        if (this.ability > 0) {
+          this.ability--;
+          this.proficiency++;
+        } else {
+          this.ability++;
+        }
       }
     }
   }
@@ -722,12 +738,27 @@ export class DicePoolFFG {
     if (times === undefined) {
       times = 1;
     }
+    let downgrade = false;
+    if (times < 0) {
+      downgrade = true;
+      times = Math.abs(times);
+    }
+
     for (let i = 0; i < times; i++) {
-      if (this.difficulty > 0) {
-        this.difficulty--;
-        this.challenge++;
+      if (downgrade) {
+        if (this.proficiency > 0) {
+          this.challenge--;
+          this.difficulty++;
+        } else if (this.ability > 0) {
+          this.difficulty--;
+        }
       } else {
-        this.difficulty++;
+        if (this.difficulty > 0) {
+          this.difficulty--;
+          this.challenge++;
+        } else {
+          this.difficulty++;
+        }
       }
     }
   }

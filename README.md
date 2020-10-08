@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 08/10/2020 - Cstadther - Fixed issue #376 with Upgrade Buttons not working correctly when multiple dialog are open. Added Downgrade Buttons.
 - 06/10/2020 - Cstadther - Updated force dice for dice pool by subtracting max and committed.
 - 05/10/2020 - Cstadther - Found by Alerion, fix for firingarcs
 - 05/10/2020 - Cstadther - Updated groupmanager to correctly display theme based light/dark destiny image.

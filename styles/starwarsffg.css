@@ -1001,6 +1001,10 @@ img {
   margin: 10px;
 }
 
+.starwarsffg .dice-pool-dialog .upgrade-buttons button {
+  line-height: 20px;
+}
+
 .starwarsffg .ffgDiceArray {
   display: flex;
   flex-direction: row;
