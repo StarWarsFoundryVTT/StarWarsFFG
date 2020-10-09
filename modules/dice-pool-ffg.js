@@ -746,7 +746,7 @@ export class DicePoolFFG {
 
     for (let i = 0; i < times; i++) {
       if (downgrade) {
-        if (this.proficiency > 0) {
+        if (this.challenge > 0) {
           this.challenge--;
           this.difficulty++;
         } else if (this.difficulty > 0) {
