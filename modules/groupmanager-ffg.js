@@ -224,8 +224,8 @@ export class GroupManager extends FormApplication {
           callback: () => {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
-            character.update({ ["data.experience.total"]: character.data.data.experience.total + +amount.value });
-            character.update({ ["data.experience.available"]: character.data.data.experience.available + +amount.value });
+            character.update({ ["data.experience.total"]: +character.data.data.experience.total + +amount.value });
+            character.update({ ["data.experience.available"]: +character.data.data.experience.available + +amount.value });
             ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
           },
         },
@@ -256,8 +256,8 @@ export class GroupManager extends FormApplication {
             const amount = container.querySelector('input[name="amount"]');
             characters.forEach((c) => {
               const character = game.actors.get(c);
-              character.update({ ["data.experience.total"]: character.data.data.experience.total + +amount.value });
-              character.update({ ["data.experience.available"]: character.data.data.experience.available + +amount.value });
+              character.update({ ["data.experience.total"]: +character.data.data.experience.total + +amount.value });
+              character.update({ ["data.experience.available"]: +character.data.data.experience.available + +amount.value });
               ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
             });
           },

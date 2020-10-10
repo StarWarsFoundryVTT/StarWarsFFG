@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 10/10/2020 - Cstadther - Fixed issue with granting XP.
 - 10/10/2020 - Cstadther - Fixed issue with Brawl weapons that don't use Brawn (extended Melee code for the same)
 - 10/10/2020 - Cstadther - Fixed issue where adding Brawn-based weapon to vehicle caused error.
 - 08/10/2020 - Cstadther - Fixed issue #377, increased size of area for dice pool, also added functionality to reduce image size the larger the pool gets.
