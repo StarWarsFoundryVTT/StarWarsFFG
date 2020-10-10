@@ -31,7 +31,7 @@ export class ItemFFG extends Item {
         const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.value)}`;
         data.range.label = rangeId;
 
-        if (this.isOwned && this.actor && this.actor.type !== "vehicle") {
+        if (this.isOwned && this.actor && this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
           if ((data.skill.value === "Melee" && data.skill.useBrawn) || data.skill.value === "Brawl") {
             let damageAdd = 0;
             for (let attr in data.attributes) {
@@ -48,13 +48,10 @@ export class ItemFFG extends Item {
       case "shipweapon":
         const vehiclerangeId = `SWFFG.VehicleRange${this._capitalize(data.range.value)}`;
         data.range.label = vehiclerangeId;
-        // const firingarcId = `SWFFG.VehicleFiringArc${this._capitalize(data.firingarc.value)}`;
-        // data.firingarc.label = firingarcId;
         break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
-
         data.activation.label = activationId;
         break;
       default:
