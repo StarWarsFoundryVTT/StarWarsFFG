@@ -1078,7 +1078,7 @@ export default class DataImporter extends FormApplication {
             },
           };
 
-          if (skill === "Melee" && damage === "0") {
+          if ((skill === "Melee" || skill === "Brawl") && damage === "0") {
             newItem.data.skill.useBrawn = true;
           }
 
