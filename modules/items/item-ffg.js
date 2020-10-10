@@ -32,15 +32,17 @@ export class ItemFFG extends Item {
         data.range.label = rangeId;
 
         if (this.isOwned && this.actor && this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
-          if ((data.skill.value === "Melee" && data.skill.useBrawn) || data.skill.value === "Brawl") {
-            let damageAdd = 0;
-            for (let attr in data.attributes) {
-              if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
-                damageAdd += parseInt(data.attributes[attr].value, 10);
-              }
+          let damageAdd = 0;
+          for (let attr in data.attributes) {
+            if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
+              damageAdd += parseInt(data.attributes[attr].value, 10);
             }
-
+          }
+          if ((data.skill.value === "Melee" || data.skill.value === "Brawl") && data.skill.useBrawn) {
             data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
+            data.damage.adjusted = data.damage.value;
+          } else {
+            data.damage.adjusted = data.damage.value + damageAdd;
           }
         }
 
