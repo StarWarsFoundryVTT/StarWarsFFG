@@ -254,9 +254,10 @@ export class ActorFFG extends Actor {
       try {
         // Calculate encumbrance, only if encumbrance value exists
         if (item.data?.encumbrance?.value) {
-          if (item.type === "armour" && !item?.data?.equippable?.equipped) {
-            encum += +item.data.encumbrance.value;
-          } else if (item.type !== "armour") {
+          if (item.type === "armour" && item?.data?.equippable?.equipped) {
+            const equippedEncumbrance = +item.data.encumbrance.value - 3;
+            encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
+          } else {
             encum += +item.data.encumbrance.value;
           }
         }
