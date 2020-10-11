@@ -40,9 +40,10 @@ export class ItemFFG extends Item {
           }
           if ((data.skill.value === "Melee" || data.skill.value === "Brawl") && data.skill.useBrawn) {
             data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
-            data.damage.adjusted = data.damage.value;
+            data.damage.adjusted = +data.damage.value;
           } else {
-            data.damage.adjusted = data.damage.value + damageAdd;
+            data.damage.value = parseInt(data.damage.value, 10);
+            data.damage.adjusted = +data.damage.value + damageAdd;
           }
         }
 

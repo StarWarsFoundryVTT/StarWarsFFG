@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 11/10/2020 - Cstadther - Fixed issue where sometimes damage value comes in as a string.
 - 11/10/2020 - Cstadther - Fixed issue #383, encumbrance calculation for worn armor.
 - 11/10/2020 - Cstadther - Fixed issue #375, weapon damage with modifiers and brawn (if applicable)
 - 10/10/2020 - Cstadther - Fixed issue with granting XP.
