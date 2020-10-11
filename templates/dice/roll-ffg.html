@@ -9,7 +9,7 @@
       {{/if}}
       <h2 class="item-name">{{data.name}}</h2>
       {{#if ffg.success}}
-      <h4 class="item-damage">Damage: <input class="damage-value" type="text" value="{{data.data.damage.value}} + {{ffg.success}} = {{math data.data.damage.value '+' ffg.success}}" disabled /></h4>
+      <h4 class="item-damage">Damage: <input class="damage-value" type="text" value="{{data.data.damage.adjusted}} + {{ffg.success}} = {{math data.data.damage.adjusted '+' ffg.success}}" disabled /></h4>
       <h4 class="item-critical">Critical: <input class="damage-value" type="text" value="{{data.data.crit.value}}" disabled /></h4>
       {{else}}
       <h4 class="item-miss">Miss!</h4>
