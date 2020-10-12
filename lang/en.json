@@ -332,15 +332,16 @@
   "SWFFG.SkillsSocial": "Social",
   "SWFFG.TalentTier": "Tier",
   "SWFFG.TalentCurrentTier": "Current Tier",
-  "SWFFG.TalentsConflict" : "Conflict?",
+  "SWFFG.TalentsConflict": "Conflict?",
   "SWFFG.ConsumablesAmount": "Amount",
   "SWFFG.ConsumablesDuration": "Duration",
-  "SWFFG.UseBrawnBaseDamage" : "Brawn?",
+  "SWFFG.UseBrawnBaseDamage": "Brawn?",
   "SWFFG.SignatureAbilityName": "Signature Ability Name",
   "SWFFG.SignatureAbilityBaseAbility": "Base Ability",
   "SWFFG.SignatureAbilityUpgradeName": "Ability Upgrade Name",
   "SWFFG.SignatureAbility": "Signature Ability",
   "SWFFG.SignatureAbilityUpgrades": "Signature Ability Upgrades",
   "SWFFG.DowngradeAbility": "Downgrade Ability",
-  "SWFFG.DowngradeDifficulty": "Downgrade Difficulty"
+  "SWFFG.DowngradeDifficulty": "Downgrade Difficulty",
+  "SWFFG.SendToChat": "Send to Chat"
 }

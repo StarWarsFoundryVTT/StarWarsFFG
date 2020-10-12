@@ -154,6 +154,28 @@ export class ActorSheetFFG extends ActorSheet {
       },
     ]);
 
+    // Send Item Details to chat.
+    new ContextMenu(html, "li.item", [
+      {
+        name: game.i18n.localize("SWFFG.SendToChat"),
+        icon: '<i class="far fa-comment"></i>',
+        callback: (li) => {
+          let itemId = li.data("itemId");
+          this._itemDetailsToChat(itemId);
+        },
+      },
+    ]);
+    new ContextMenu(html, "div.item", [
+      {
+        name: game.i18n.localize("SWFFG.SendToChat"),
+        icon: '<i class="far fa-comment"></i>',
+        callback: (li) => {
+          let itemId = li.data("itemId");
+          this._itemDetailsToChat(itemId);
+        },
+      },
+    ]);
+
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);
       options.register("enableObligation", {
@@ -363,6 +385,36 @@ export class ActorSheetFFG extends ActorSheet {
       div.slideDown(200);
     }
     li.toggleClass("expanded");
+  }
+
+  /**
+   * Send details of an item to chat.
+   * @private
+   */
+  async _itemDetailsToChat(itemId) {
+    let item = this.actor.getOwnedItem(itemId);
+    if (!item) {
+      item = game.items.get(itemId);
+    }
+    if (!item) {
+      item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+    }
+
+    const itemDetails = item?.getItemDetails();
+    const template = "systems/starwarsffg/templates/chat/item-card.html";
+    const html = await renderTemplate(template, { itemDetails, item });
+
+    const messageData = {
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: {
+        actor: this.actor._id,
+        token: this.actor.token,
+        alias: this.actor.name,
+      },
+    };
+    ChatMessage.create(messageData);
   }
 
   _onChangeSkillCharacteristic(a) {

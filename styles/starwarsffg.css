@@ -1486,6 +1486,11 @@ img {
   background: rgba(0, 0, 0, 0.1);
 }
 
+.starwarsffg .item-card img {
+  height: 50px;
+  width: auto;
+}
+
 .starwarsffg .talents {
   margin: 0;
 }
