@@ -25,6 +25,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/10/2020 - Esrin - Removed Group Manager from non-GM users as it is no longer necessary with the new Destiny Pool UI.
+- 12/10/2020 - Esrin - Finalised new Destiny Pool UI, added localisation, socket functionality for non-GMs to replace unintended behaviour in FoundryVTT which will be patched out in next update.
 - 12/10/2020 - Esrin - Further tweaks to new Destiny Pool UI functionality, allows non-GMs to flip but only GMs to add or remove.
 - 12/10/2020 - Esrin - Merged Destiny Pool display UI from Terraism. Followed up by adding styles to SASS to avoid compile overrides and cleaned up functionality to avoid errors for non-GMs and undefined point values on load.
 - 12/10/2020 - Esrin - Added "Send to Chat" context menu for all items displayed on ActorSheetFFG.

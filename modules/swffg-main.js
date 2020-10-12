@@ -1436,7 +1436,15 @@ Hooks.once("ready", async () => {
             game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
             game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
           } else {
-            await game.socket.emit("starwarsffg.DestinyPool", { "pool": { flipType, pointType } });
+            let pool = { light: 0, dark: 0 };
+            if (flipType == "dPoolLight") {
+              pool.light = game.settings.get("starwarsffg", flipType) + 1;
+              pool.dark = game.settings.get("starwarsffg", pointType) - 1;
+            } else if (flipType == "dPoolDark") {
+              pool.dark = game.settings.get("starwarsffg", flipType) + 1;
+              pool.light = game.settings.get("starwarsffg", pointType) - 1;
+            }
+            await game.socket.emit("userActivity", game.user.id, { pool });
           }
           messageText = `Flipped a ${typeName} point.`;
         }
@@ -1465,10 +1473,13 @@ Hooks.once("ready", async () => {
     });
 
   if (game.user.isGM) {
-    game.socket.on("starwarsffg.DestinyPool", (pool) => {
-      console.log("Received DestinyPool socket", pool);
-      game.settings.set("starwarsffg", "dPoolLight", pool.light);
-      game.settings.set("starwarsffg", "dPoolDark", pool.dark);
+    game.socket.on("userActivity", async (...args) => {
+      if (args[1]?.pool) {
+        CONFIG.logger.log("Received DestinyPool socket");
+        CONFIG.logger.log(args[1].pool);
+        game.settings.set("starwarsffg", "dPoolLight", args[1].pool.light);
+        game.settings.set("starwarsffg", "dPoolDark", args[1].pool.dark);
+      }
     });
   }
 });
