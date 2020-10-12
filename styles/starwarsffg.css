@@ -2489,7 +2489,7 @@ img {
   pointer-events: auto;
 }
 
-.swffg-destiny .destiny-points::after {
+.swffg-destiny .destiny-points span {
   bottom: 2px;
   font-family: "mason-serif", "Nodesto", "Signika", "Palatino Linotype", serif;
   font-size: 12px;
@@ -2498,12 +2498,4 @@ img {
   position: absolute;
   transform: translateX(-50%);
   width: 80px;
-}
-
-.swffg-destiny #destinyLight.destiny-points::after {
-  content: "Light";
-}
-
-.swffg-destiny #destinyDark.destiny-points::after {
-  content: "Dark";
 }

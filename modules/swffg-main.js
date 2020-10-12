@@ -1028,7 +1028,7 @@ Hooks.once("init", async function () {
       }
       let destinyLight = game.settings.get("starwarsffg", "dPoolLight");
       document.getElementById("destinyLight").setAttribute("data-value", destinyLight);
-      document.getElementById("destinyLight").innerHTML = destinyLight;
+      document.getElementById("destinyLight").innerHTML = destinyLight + `<span>${game.i18n.localize("SWFFG.Lightside")}</span>`;
     },
   });
   game.settings.register("starwarsffg", "dPoolDark", {
@@ -1044,7 +1044,7 @@ Hooks.once("init", async function () {
       }
       let destinyDark = game.settings.get("starwarsffg", "dPoolDark");
       document.getElementById("destinyDark").setAttribute("data-value", destinyDark);
-      document.getElementById("destinyDark").innerHTML = destinyDark;
+      document.getElementById("destinyDark").innerHTML = destinyDark + `<span>${game.i18n.localize("SWFFG.Darkside")}</span>`;
     },
   });
 
@@ -1405,7 +1405,7 @@ Hooks.once("ready", async () => {
   */
 
   let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
-  $("body").append(`<div class="swffg-destiny" title="Left click to flip, SHIFT+left click to add, CTRL+left click to remove."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.light}" data-group="dPoolLight">${destinyPool.light}</section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">${destinyPool.dark}</section></div>`);
+  $("body").append(`<div class="swffg-destiny" title="Left click to flip, SHIFT+left click to add, CTRL+left click to remove."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.light}" data-group="dPoolLight">${destinyPool.light}<span>${game.i18n.localize("SWFFG.Lightside")}</span></section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">${destinyPool.dark}<span>${game.i18n.localize("SWFFG.Darkside")}</span></section></div>`);
 
   // Updating Destiny Points
   $("html")
@@ -1465,8 +1465,8 @@ Hooks.once("ready", async () => {
   if (game.user.isGM) {
     game.socket.on("starwarsffg.DestinyPool", (pool) => {
       console.log("Received DestinyPool socket", pool);
-      game.settings.set("starwarsffg", pool.flipType, game.settings.get("starwarsffg", pool.flipType) + 1);
-      game.settings.set("starwarsffg", pool.pointType, game.settings.get("starwarsffg", pool.pointType) - 1);
+      game.settings.set("starwarsffg", "dPoolLight", pool.light);
+      game.settings.set("starwarsffg", "dPoolDark", pool.dark);
     });
   }
 });

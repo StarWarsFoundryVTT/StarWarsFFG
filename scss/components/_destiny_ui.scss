@@ -25,23 +25,17 @@
     position: relative;
     padding: 6px 0 12px 0;
     pointer-events: auto;
-  }
-  .destiny-points::after {
-    bottom: 2px;
-    font-family: "mason-serif", "Nodesto", "Signika", "Palatino Linotype", serif;
-    font-size: 12px;
-    left: 50%;
-    line-height: 1;
-    position: absolute;
-    -webkit-transform: translateX(-50%);
-    -ms-transform: translateX(-50%);
-    transform: translateX(-50%);
-    width: 80px;
-  }
-  #destinyLight.destiny-points::after {
-    content: "Light";
-  }
-  #destinyDark.destiny-points::after {
-    content: "Dark";
+    span {
+      bottom: 2px;
+      font-family: "mason-serif", "Nodesto", "Signika", "Palatino Linotype", serif;
+      font-size: 12px;
+      left: 50%;
+      line-height: 1;
+      position: absolute;
+      -webkit-transform: translateX(-50%);
+      -ms-transform: translateX(-50%);
+      transform: translateX(-50%);
+      width: 80px;
+    }
   }
 }
