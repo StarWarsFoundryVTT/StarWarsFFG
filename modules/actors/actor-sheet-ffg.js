@@ -625,7 +625,7 @@ export class ActorSheetFFG extends ActorSheet {
           }
           gameItem = await pack.getEntity(entry._id);
         } else {
-          gameItem = game.items.get(specializationTalents[talent].itemId);
+          gameItem = await game.items.get(specializationTalents[talent].itemId);
         }
 
         if (gameItem) {
