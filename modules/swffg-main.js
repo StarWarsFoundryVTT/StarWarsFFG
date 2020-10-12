@@ -1395,7 +1395,8 @@ Hooks.once("ready", async () => {
 
       if (!add && !remove) {
         if (game.settings.get("starwarsffg", pointType) == 0) {
-          messageText = `Cannot flip a ${typeName} point; 0 remaining.`;
+          ui.notifications.warn(`Cannot flip a ${typeName} point; 0 remaining.`);
+          return;
         } else {
           if (game.user.isGM) {
             game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
