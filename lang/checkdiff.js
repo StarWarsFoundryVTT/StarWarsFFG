@@ -4,10 +4,32 @@
 
 const enlang = require("./en.json");
 
-const checklang = require("./fr.json");
+const frlang = require("./fr.json");
+const eslang = require("./es.json");
+const delang = require("./de.json");
 
+const checklang = [frlang, eslang, delang];
+
+console.log("Localisation hooks missing from fr.json:\n");
 Object.keys(enlang).forEach((key, index) => {
-  if (!(key in checklang)) {
+  if (!(key in checklang[0])) {
     console.log(`\"${key}\": \"${enlang[key]}\",`);
   }
 });
+console.log("\n");
+
+console.log("Localisation hooks missing from es.json:\n");
+Object.keys(enlang).forEach((key, index) => {
+  if (!(key in checklang[1])) {
+    console.log(`\"${key}\": \"${enlang[key]}\",`);
+  }
+});
+console.log("\n");
+
+console.log("Localisation hooks missing from de.json:\n");
+Object.keys(enlang).forEach((key, index) => {
+  if (!(key in checklang[2])) {
+    console.log(`\"${key}\": \"${enlang[key]}\",`);
+  }
+});
+console.log("\n");
