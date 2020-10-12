@@ -1031,6 +1031,9 @@ Hooks.once("init", async function () {
       if (groupmanager) {
         groupmanager.render();
       }
+	  let destinyLight = game.settings.get('starwarsffg','dPoolLight');
+	  document.getElementById('destinyLight').setAttribute('data-value',destinyLight);
+	  document.getElementById('destinyLight').innerHTML = destinyLight;
     },
   });
   game.settings.register("starwarsffg", "dPoolDark", {
@@ -1044,6 +1047,9 @@ Hooks.once("init", async function () {
       if (groupmanager) {
         groupmanager.render();
       }
+	  let destinyDark = game.settings.get('starwarsffg','dPoolDark');
+	  document.getElementById('destinyDark').setAttribute('data-value',destinyDark);
+	  document.getElementById('destinyDark').innerHTML = destinyDark;
     },
   });
 
@@ -1398,6 +1404,73 @@ Hooks.once("ready", () => {
   Hooks.on("closeItemSheetFFG", (item) => {
     Hooks.call(`closeAssociatedTalent_${item.object.data._id}`, item);
   });
+
+  /*
+    Changes for displayed destiny points
+  */
+
+  let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
+  $('body').append(`<div class="swffg-destiny" title="Left click to flip, right click to spend, shift+left click to add."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.dPoolLight}" data-group="dPoolLight">${destinyPool.dPoolLight}</section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dPoolDark}" data-group="dPoolDark">${destinyPool.dPoolDark}</section></div>`);
+  
+  // Updating Destiny Points
+	$('html').find('.destiny-points').click(async (event) => {
+		const pointType = event.target.dataset.group;
+		var typeName = null;
+		const refresh = (event.shiftKey || event.altKey);
+		var flipType = null;
+		var actionType = null;
+			if (pointType == "dPoolLight") {
+				flipType = "dPoolDark";
+				typeName = "Light Side point";
+			} else {
+				flipType = "dPoolLight";
+				typeName = "Dark Side point";
+			}
+		var messageText;
+		
+		if (!refresh) {
+			if(game.settings.get('starwarsffg',pointType) == 0) {
+				messageText = "Cannot spend a point; 0 remaining.";
+			} else {
+				game.settings.set('starwarsffg',flipType,game.settings.get('starwarsffg',flipType)+1);
+				game.settings.set('starwarsffg', pointType, game.settings.get('starwarsffg',pointType)-1);
+				messageText = "Flipped a "+typeName+" point.";
+			}
+		} else {
+			game.settings.set('starwarsffg', pointType, game.settings.get('starwarsffg',pointType)+1);
+			messageText = "Added a "+typeName+" point.";
+		}
+		
+		ChatMessage.create({
+			user: game.user._id,
+			content: messageText
+		});
+    });
+
+	$('html').find('.destiny-points').contextmenu(async (event) => {
+		const pointType = event.target.dataset.group;
+		var typeName = null;
+		if (pointType == "dPoolLight") {
+			typeName = "Light Side point";
+		} else {
+			typeName = "Dark Side point";
+		}
+		var messageText;
+
+		if(game.settings.get('starwarsffg',pointType) == 0) {
+			messageText = "Cannot spend a point; 0 remaining.";
+		} else {
+			let pointValue = game.settings.get('starwarsffg',pointType)-1;
+			game.settings.set('starwarsffg', pointType, pointValue);
+			messageText = "Spent a "+typeName+" point.";
+		}
+
+		ChatMessage.create({
+			user: game.user._id,
+			content: messageText
+		});
+	});
+
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
