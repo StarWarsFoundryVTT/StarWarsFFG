@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/10/2020 - Esrin - Merged Destiny Pool display UI from Terraism. Followed up by adding styles to SASS to avoid compile overrides and cleaned up functionality to avoid errors for non-GMs and undefined point values on load.
 - 12/10/2020 - Esrin - Added "Send to Chat" context menu for all items displayed on ActorSheetFFG.
 - 12/10/2020 - Esrin - Removed transparency from global \_window.scss styles for `.window-content`, `#chat-form` and `#chat-log`.
 - 12/10/2020 - Esrin - Preparing system.json for the first dev branch alpha release.

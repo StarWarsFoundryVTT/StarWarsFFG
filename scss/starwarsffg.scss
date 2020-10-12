@@ -8,7 +8,7 @@
 @import "global/window";
 @import "global/grid";
 @import "global/flex";
-@import 'global/image';
+@import "global/image";
 
 .starwarsffg {
   @import "components/forms";
@@ -19,8 +19,8 @@
   @import "components/itemsheet_base";
   @import "components/sheet_base";
   @import "components/talent_blocks";
-  @import 'components/dicepool';
-  @import 'components/editor';
+  @import "components/dicepool";
+  @import "components/editor";
   @import "components/tabs";
   @import "components/skills";
   @import "components/items";
@@ -36,15 +36,16 @@
   @import "components/itemvehicleattachmentsheet";
   @import "components/groupmanager";
   @import "components/tooltip";
-  @import 'components/itemcriticalinjurysheet';
-  @import 'components/injuries';
-  @import 'components/forcepowers';
-  @import 'components/specializations';
-  @import 'components/dataimporter';
-  @import 'components/species';
-  @import 'components/career';
+  @import "components/itemcriticalinjurysheet";
+  @import "components/injuries";
+  @import "components/forcepowers";
+  @import "components/specializations";
+  @import "components/dataimporter";
+  @import "components/species";
+  @import "components/career";
   @import "components/modifiers";
   @import "components/signatureability";
 }
 
 @import "components/ogimport";
+@import "components/destiny_ui";

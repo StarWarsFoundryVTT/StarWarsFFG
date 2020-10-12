@@ -1,0 +1,47 @@
+.swffg-destiny {
+  background: url(../../../ui/denim075.png) repeat;
+  border: 1px solid #000;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 0 10px #000;
+  box-shadow: 0 0 10px #000;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  color: #fff;
+  font-family: "warnock-pro", "sans-serif";
+  font-size: 30px;
+  height: auto;
+  right: 305px;
+  bottom: 0px;
+  line-height: 1.2;
+  margin: 8px 8px 6px 0;
+  pointer-events: none;
+  position: fixed;
+  text-align: center;
+  width: 84px;
+  display: flex;
+  z-index: 70;
+  .destiny-points {
+    flex: 1;
+    position: relative;
+    padding: 6px 0 12px 0;
+    pointer-events: auto;
+  }
+  .destiny-points::after {
+    bottom: 2px;
+    font-family: "mason-serif", "Nodesto", "Signika", "Palatino Linotype", serif;
+    font-size: 12px;
+    left: 50%;
+    line-height: 1;
+    position: absolute;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+    width: 80px;
+  }
+  #destinyLight.destiny-points::after {
+    content: "Light";
+  }
+  #destinyDark.destiny-points::after {
+    content: "Dark";
+  }
+}

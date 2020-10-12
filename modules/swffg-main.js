@@ -49,11 +49,6 @@ Hooks.once("init", async function () {
     diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
   };
 
-  game.ffg.DestinyPool = {
-    "Light": 0,
-    "Dark": 0,
-  };
-
   // Define custom log prefix and logger
   CONFIG.module = "Starwars FFG";
   CONFIG.logger = Helpers.logger;
@@ -1031,9 +1026,9 @@ Hooks.once("init", async function () {
       if (groupmanager) {
         groupmanager.render();
       }
-	  let destinyLight = game.settings.get('starwarsffg','dPoolLight');
-	  document.getElementById('destinyLight').setAttribute('data-value',destinyLight);
-	  document.getElementById('destinyLight').innerHTML = destinyLight;
+      let destinyLight = game.settings.get("starwarsffg", "dPoolLight");
+      document.getElementById("destinyLight").setAttribute("data-value", destinyLight);
+      document.getElementById("destinyLight").innerHTML = destinyLight;
     },
   });
   game.settings.register("starwarsffg", "dPoolDark", {
@@ -1047,9 +1042,9 @@ Hooks.once("init", async function () {
       if (groupmanager) {
         groupmanager.render();
       }
-	  let destinyDark = game.settings.get('starwarsffg','dPoolDark');
-	  document.getElementById('destinyDark').setAttribute('data-value',destinyDark);
-	  document.getElementById('destinyDark').innerHTML = destinyDark;
+      let destinyDark = game.settings.get("starwarsffg", "dPoolDark");
+      document.getElementById("destinyDark").setAttribute("data-value", destinyDark);
+      document.getElementById("destinyDark").innerHTML = destinyDark;
     },
   });
 
@@ -1410,67 +1405,70 @@ Hooks.once("ready", () => {
   */
 
   let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
-  $('body').append(`<div class="swffg-destiny" title="Left click to flip, right click to spend, shift+left click to add."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.dPoolLight}" data-group="dPoolLight">${destinyPool.dPoolLight}</section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dPoolDark}" data-group="dPoolDark">${destinyPool.dPoolDark}</section></div>`);
-  
+  $("body").append(`<div class="swffg-destiny" title="Left click to flip, right click to spend, shift+left click to add."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.light}" data-group="dPoolLight">${destinyPool.light}</section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">${destinyPool.dark}</section></div>`);
+
   // Updating Destiny Points
-	$('html').find('.destiny-points').click(async (event) => {
-		const pointType = event.target.dataset.group;
-		var typeName = null;
-		const refresh = (event.shiftKey || event.altKey);
-		var flipType = null;
-		var actionType = null;
-			if (pointType == "dPoolLight") {
-				flipType = "dPoolDark";
-				typeName = "Light Side point";
-			} else {
-				flipType = "dPoolLight";
-				typeName = "Dark Side point";
-			}
-		var messageText;
-		
-		if (!refresh) {
-			if(game.settings.get('starwarsffg',pointType) == 0) {
-				messageText = "Cannot spend a point; 0 remaining.";
-			} else {
-				game.settings.set('starwarsffg',flipType,game.settings.get('starwarsffg',flipType)+1);
-				game.settings.set('starwarsffg', pointType, game.settings.get('starwarsffg',pointType)-1);
-				messageText = "Flipped a "+typeName+" point.";
-			}
-		} else {
-			game.settings.set('starwarsffg', pointType, game.settings.get('starwarsffg',pointType)+1);
-			messageText = "Added a "+typeName+" point.";
-		}
-		
-		ChatMessage.create({
-			user: game.user._id,
-			content: messageText
-		});
+  $("html")
+    .find(".destiny-points")
+    .click(async (event) => {
+      const pointType = event.target.dataset.group;
+      var typeName = null;
+      const refresh = event.shiftKey || event.altKey;
+      var flipType = null;
+      var actionType = null;
+      if (pointType == "dPoolLight") {
+        flipType = "dPoolDark";
+        typeName = "Light Side point";
+      } else {
+        flipType = "dPoolLight";
+        typeName = "Dark Side point";
+      }
+      var messageText;
+
+      if (!refresh) {
+        if (game.settings.get("starwarsffg", pointType) == 0) {
+          messageText = "Cannot spend a point; 0 remaining.";
+        } else {
+          game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
+          game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
+          messageText = "Flipped a " + typeName + " point.";
+        }
+      } else {
+        game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) + 1);
+        messageText = "Added a " + typeName + " point.";
+      }
+
+      ChatMessage.create({
+        user: game.user._id,
+        content: messageText,
+      });
     });
 
-	$('html').find('.destiny-points').contextmenu(async (event) => {
-		const pointType = event.target.dataset.group;
-		var typeName = null;
-		if (pointType == "dPoolLight") {
-			typeName = "Light Side point";
-		} else {
-			typeName = "Dark Side point";
-		}
-		var messageText;
+  $("html")
+    .find(".destiny-points")
+    .contextmenu(async (event) => {
+      const pointType = event.target.dataset.group;
+      var typeName = null;
+      if (pointType == "dPoolLight") {
+        typeName = "Light Side point";
+      } else {
+        typeName = "Dark Side point";
+      }
+      var messageText;
 
-		if(game.settings.get('starwarsffg',pointType) == 0) {
-			messageText = "Cannot spend a point; 0 remaining.";
-		} else {
-			let pointValue = game.settings.get('starwarsffg',pointType)-1;
-			game.settings.set('starwarsffg', pointType, pointValue);
-			messageText = "Spent a "+typeName+" point.";
-		}
+      if (game.settings.get("starwarsffg", pointType) == 0) {
+        messageText = "Cannot spend a point; 0 remaining.";
+      } else {
+        let pointValue = game.settings.get("starwarsffg", pointType) - 1;
+        game.settings.set("starwarsffg", pointType, pointValue);
+        messageText = "Spent a " + typeName + " point.";
+      }
 
-		ChatMessage.create({
-			user: game.user._id,
-			content: messageText
-		});
-	});
-
+      ChatMessage.create({
+        user: game.user._id,
+        content: messageText,
+      });
+    });
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
@@ -1643,7 +1641,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Yellow",
     category: "Colors",
     foreground: "#000000",
-    background: "#e1aa12"
+    background: "#e1aa12",
   });
 
   dice3d.addColorset({
@@ -1651,7 +1649,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Blue",
     category: "Colors",
     foreground: "#000000",
-    background: "#5789aa"
+    background: "#5789aa",
   });
 
   dice3d.addColorset({
@@ -1659,7 +1657,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Red",
     category: "Colors",
     foreground: "#ffffff",
-    background: "#7c151e"
+    background: "#7c151e",
   });
 
   dice3d.addColorset({
@@ -1667,7 +1665,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG Green",
     category: "Colors",
     foreground: "#000000",
-    background: "#127e12"
+    background: "#127e12",
   });
 
   dice3d.addColorset({
@@ -1675,7 +1673,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG purple",
     category: "Colors",
     foreground: "#ffffff",
-    background: "#6d1287"
+    background: "#6d1287",
   });
 
   dice3d.addColorset({
@@ -1683,7 +1681,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG black",
     category: "Colors",
     foreground: "#ffffff",
-    background: "#000000"
+    background: "#000000",
   });
 
   dice3d.addColorset({
@@ -1691,6 +1689,6 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     description: "SWFFG white",
     category: "Colors",
     foreground: "#000000",
-    background: "#ffffff"
+    background: "#ffffff",
   });
 });
