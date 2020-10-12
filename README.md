@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/10/2020 - Esrin - Removed transparency from global \_window.scss styles for `.window-content`, `#chat-form` and `#chat-log`.
 - 12/10/2020 - Esrin - Preparing system.json for the first dev branch alpha release.
 - 11/10/2020 - Cstadther - Fixed issue where sometimes damage value comes in as a string.
 - 11/10/2020 - Cstadther - Fixed issue #383, encumbrance calculation for worn armor.
