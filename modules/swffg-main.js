@@ -104,41 +104,6 @@ Hooks.once("init", async function () {
     bar.position.set(0, posY);
   };
 
-  // A very hacky temporary workaround to override how initiative functions and provide the results of a FFG roll to the initiative tracker.
-  // Currently overriding the prototype due to a bug with overriding the core Combat entity which resets to default after page refresh.
-  /** @override */
-  Combat.prototype._getInitiativeRoll = function (combatant, formula) {
-    const cData = combatant.actor.data.data;
-
-    if (combatant.actor.data.type === "vehicle") {
-      return new RollFFG("0");
-    }
-
-    if (formula === "Vigilance") {
-      formula = _getInitiativeFormula(cData.skills.Vigilance.rank, cData.characteristics.Willpower.value);
-    } else if (formula === "Cool") {
-      formula = _getInitiativeFormula(cData.skills.Cool.rank, cData.characteristics.Presence.value);
-    }
-
-    const rollData = combatant.actor ? combatant.actor.getRollData() : {};
-
-    let roll = new RollFFG(formula, rollData).roll();
-
-    const total = roll.ffg.success + roll.ffg.advantage * 0.01;
-    roll._result = total;
-    roll._total = total;
-
-    return roll;
-  };
-
-  function _getInitiativeFormula(skill, ability) {
-    const dicePool = new DicePoolFFG({
-      ability: ability,
-    });
-    dicePool.upgrade(skill);
-    return dicePool.renderDiceExpression();
-  }
-
   // Load character templates so that dynamic skills lists work correctly
   loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
 

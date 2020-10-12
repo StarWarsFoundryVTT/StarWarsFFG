@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/10/2020 - Esrin - Removed old Combat.prototype override as the workaround is no longer needed in Foundry VTT 0.7.3.
 - 12/10/2020 - Esrin - Removed Group Manager from non-GM users as it is no longer necessary with the new Destiny Pool UI.
 - 12/10/2020 - Esrin - Finalised new Destiny Pool UI, added localisation, socket functionality for non-GMs to replace unintended behaviour in FoundryVTT which will be patched out in next update.
 - 12/10/2020 - Esrin - Further tweaks to new Destiny Pool UI functionality, allows non-GMs to flip but only GMs to add or remove.
