@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/10/2020 - Esrin - Preparing system.json for the first dev branch alpha release.
 - 11/10/2020 - Cstadther - Fixed issue where sometimes damage value comes in as a string.
 - 11/10/2020 - Cstadther - Fixed issue #383, encumbrance calculation for worn armor.
 - 11/10/2020 - Cstadther - Fixed issue #375, weapon damage with modifiers and brawn (if applicable)
