@@ -343,5 +343,6 @@
   "SWFFG.SignatureAbilityUpgrades": "Signature Ability Upgrades",
   "SWFFG.DowngradeAbility": "Downgrade Ability",
   "SWFFG.DowngradeDifficulty": "Downgrade Difficulty",
-  "SWFFG.SendToChat": "Send to Chat"
+  "SWFFG.SendToChat": "Send to Chat",
+  "SWFFG.ChooseInitiative": "Choose your Initiative method"
 }

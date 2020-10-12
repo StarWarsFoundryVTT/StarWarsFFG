@@ -14,9 +14,9 @@ export class CombatFFG extends Combat {
     }
 
     if (formula === "Vigilance") {
-      formula = _getInitiativeFormula(parseInt(cData.skills.Vigilance.rank), parseInt(cData.characteristics.Willpower.value));
+      formula = _getInitiativeFormula(cData.skills.Vigilance, parseInt(cData.characteristics.Willpower.value));
     } else if (formula === "Cool") {
-      formula = _getInitiativeFormula(parseInt(cData.skills.Cool.rank), parseInt(cData.characteristics.Presence.value));
+      formula = _getInitiativeFormula(cData.skills.Cool, parseInt(cData.characteristics.Presence.value));
     }
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
@@ -34,7 +34,10 @@ export class CombatFFG extends Combat {
 function _getInitiativeFormula(skill, ability) {
   const dicePool = new DicePoolFFG({
     ability: ability,
+    boost: parseInt(skill.boost),
+    setback: parseInt(skill.setback),
+    force: parseInt(skill.force),
   });
-  dicePool.upgrade(skill);
+  dicePool.upgrade(parseInt(skill.rank));
   return dicePool.renderDiceExpression();
 }
