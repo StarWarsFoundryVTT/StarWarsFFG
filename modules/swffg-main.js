@@ -1373,7 +1373,7 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 });
 
 // Handle migration duties
-Hooks.once("ready", () => {
+Hooks.once("ready", async () => {
   // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
   // This is a temporary migration check to transfer existing actors .real_value back into the correct .value location.
   game.actors.forEach((actor) => {
@@ -1430,12 +1430,12 @@ Hooks.once("ready", () => {
         if (game.settings.get("starwarsffg", pointType) == 0) {
           messageText = `Cannot flip a ${typeName} point; 0 remaining.`;
         } else {
-          let setting = game.settings.settings.get(`starwarsffg.${flipType}`);
-          game.settings._update(setting, `starwarsffg.${flipType}`, game.settings.get("starwarsffg", flipType) + 1);
-
-          setting = game.settings.settings.get(`starwarsffg.${pointType}`);
-          game.settings._update(setting, `starwarsffg.${pointType}`, game.settings.get("starwarsffg", pointType) - 1);
-
+          if (game.user.isGM) {
+            game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
+            game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
+          } else {
+            await game.socket.emit("starwarsffg.DestinyPool", { "pool": { flipType, pointType } });
+          }
           messageText = `Flipped a ${typeName} point.`;
         }
       } else if (add) {
@@ -1461,6 +1461,14 @@ Hooks.once("ready", () => {
         content: messageText,
       });
     });
+
+  if (game.user.isGM) {
+    game.socket.on("starwarsffg.DestinyPool", (pool) => {
+      console.log("Received DestinyPool socket", pool);
+      game.settings.set("starwarsffg", pool.flipType, game.settings.get("starwarsffg", pool.flipType) + 1);
+      game.settings.set("starwarsffg", pool.pointType, game.settings.get("starwarsffg", pool.pointType) - 1);
+    });
+  }
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
