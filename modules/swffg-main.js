@@ -1316,23 +1316,25 @@ Hooks.once("init", async function () {
 /* -------------------------------------------- */
 
 Hooks.on("getSceneControlButtons", (controls) => {
-  controls.push({
-    name: "groupmanager",
-    title: "Group Manager",
-    icon: "fas fa-users",
-    layer: "GroupManagerLayer",
-    tools: [
-      {
-        name: "groupsheet",
-        title: "Open Group Sheet",
-        icon: "fas fa-users",
-        onClick: () => {
-          canvas.groupmanager.window = new GroupManager().render(true);
+  if (game.user.isGM) {
+    controls.push({
+      name: "groupmanager",
+      title: "Group Manager",
+      icon: "fas fa-users",
+      layer: "GroupManagerLayer",
+      tools: [
+        {
+          name: "groupsheet",
+          title: "Open Group Sheet",
+          icon: "fas fa-users",
+          onClick: () => {
+            canvas.groupmanager.window = new GroupManager().render(true);
+          },
+          button: true,
         },
-        button: true,
-      },
-    ],
-  });
+      ],
+    });
+  }
 });
 
 Hooks.once("canvasInit", (canvas) => {
@@ -1411,7 +1413,7 @@ Hooks.once("ready", async () => {
   $("html")
     .find(".destiny-points")
     .click(async (event) => {
-      const pointType = event.target.dataset.group;
+      const pointType = event.currentTarget.dataset.group;
       var typeName = null;
       const add = event.shiftKey;
       const remove = event.ctrlKey;
