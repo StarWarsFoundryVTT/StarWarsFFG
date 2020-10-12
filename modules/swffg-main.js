@@ -1405,7 +1405,7 @@ Hooks.once("ready", () => {
   */
 
   let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
-  $("body").append(`<div class="swffg-destiny" title="Left click to flip, right click to spend, shift+left click to add."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.light}" data-group="dPoolLight">${destinyPool.light}</section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">${destinyPool.dark}</section></div>`);
+  $("body").append(`<div class="swffg-destiny" title="Left click to flip, SHIFT+left click to add, CTRL+left click to remove."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.light}" data-group="dPoolLight">${destinyPool.light}</section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">${destinyPool.dark}</section></div>`);
 
   // Updating Destiny Points
   $("html")
@@ -1413,7 +1413,8 @@ Hooks.once("ready", () => {
     .click(async (event) => {
       const pointType = event.target.dataset.group;
       var typeName = null;
-      const refresh = event.shiftKey || event.altKey;
+      const add = event.shiftKey;
+      const remove = event.ctrlKey;
       var flipType = null;
       var actionType = null;
       if (pointType == "dPoolLight") {
@@ -1425,43 +1426,34 @@ Hooks.once("ready", () => {
       }
       var messageText;
 
-      if (!refresh) {
+      if (!add && !remove) {
         if (game.settings.get("starwarsffg", pointType) == 0) {
-          messageText = "Cannot spend a point; 0 remaining.";
+          messageText = `Cannot flip a ${typeName} point; 0 remaining.`;
         } else {
-          game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
-          game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
-          messageText = "Flipped a " + typeName + " point.";
+          let setting = game.settings.settings.get(`starwarsffg.${flipType}`);
+          game.settings._update(setting, `starwarsffg.${flipType}`, game.settings.get("starwarsffg", flipType) + 1);
+
+          setting = game.settings.settings.get(`starwarsffg.${pointType}`);
+          game.settings._update(setting, `starwarsffg.${pointType}`, game.settings.get("starwarsffg", pointType) - 1);
+
+          messageText = `Flipped a ${typeName} point.`;
         }
-      } else {
+      } else if (add) {
+        if (!game.user.isGM) {
+          ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
+          return;
+        }
+        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
         game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) + 1);
         messageText = "Added a " + typeName + " point.";
-      }
-
-      ChatMessage.create({
-        user: game.user._id,
-        content: messageText,
-      });
-    });
-
-  $("html")
-    .find(".destiny-points")
-    .contextmenu(async (event) => {
-      const pointType = event.target.dataset.group;
-      var typeName = null;
-      if (pointType == "dPoolLight") {
-        typeName = "Light Side point";
-      } else {
-        typeName = "Dark Side point";
-      }
-      var messageText;
-
-      if (game.settings.get("starwarsffg", pointType) == 0) {
-        messageText = "Cannot spend a point; 0 remaining.";
-      } else {
-        let pointValue = game.settings.get("starwarsffg", pointType) - 1;
-        game.settings.set("starwarsffg", pointType, pointValue);
-        messageText = "Spent a " + typeName + " point.";
+      } else if (remove) {
+        if (!game.user.isGM) {
+          ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
+          return;
+        }
+        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
+        game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
+        messageText = "Removed a " + typeName + " point.";
       }
 
       ChatMessage.create({
