@@ -25,9 +25,10 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/13/2020 - Cstadther - Enhancement - Restricted character data is user has `limited` permissions.
+- 12/12/2020 - Cstadther - Fixed issue with hand made specializations not reflecting learned talents when more than one specialization added.
 - 12/10/2020 - Esrin - Rolling out the v1.0-alpha2 release to the dev branch.
 - 12/10/2020 - Esrin - New Destiny UI now creates a `ui.notifications.warn` instead of a chat message if there are 0 points remaining when attempting to flip.
-- 12/12/2020 - Cstadther - Fixed issue with hand made specializations not reflecting learned talents when more than one specialization added.
 - 12/10/2020 - Esrin - Fixed Initiative roll method to include any relevant boost, setback or force die.
 - 12/10/2020 - Esrin - Removed old Combat.prototype override as the workaround is no longer needed in Foundry VTT 0.7.3.
 - 12/10/2020 - Esrin - Removed Group Manager from non-GM users as it is no longer necessary with the new Destiny Pool UI.

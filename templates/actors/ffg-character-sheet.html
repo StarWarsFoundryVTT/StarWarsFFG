@@ -25,7 +25,7 @@
                   {{/iff}}{{/each}}
                 </div>
               </div>
-              <div class="row">
+              <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Career"}}:</div>
                 <div class="row-input">
                   {{#each actor.items as |item id|}} {{#if (eq item.type 'career')}}
@@ -33,7 +33,7 @@
                   {{/if}}{{/each}}
                 </div>
               </div>
-              <div class="row">
+              <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Specializations"}}:</div>
                 <!-- <div class="row-input"><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" data-dtype="String" /></div> -->
                 <div class="row-input">
@@ -48,8 +48,7 @@
       </div>
 
       {{!-- Primary Stats Container --}}
-
-      <div class="container" style="flex-wrap: nowrap;">
+      <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
         <div class="container flex-group-center">
           {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}} {{!-- Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}} {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}} {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
         </div>
@@ -58,7 +57,7 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}}
-  <nav class="sheet-tabs tabs" data-group="primary">
+  <nav class="sheet-tabs tabs" data-group="primary" style="{{#if limited}}display:none;{{/if}}">
     <a class="item" data-tab="characteristics">{{localize "SWFFG.TabCharacteristics"}}</a>
     <a class="item" data-tab="items">{{localize "SWFFG.TabGear"}}</a>
     <a class="item" data-tab="talents">{{localize "SWFFG.TabTalents"}}</a>
@@ -68,7 +67,7 @@
   </nav>
 
   {{!-- Sheet Body --}}
-  <section class="sheet-body">
+  <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}
     <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
       {{!-- Characteristics Scores --}}
