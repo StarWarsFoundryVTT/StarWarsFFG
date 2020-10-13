@@ -342,5 +342,7 @@
   "SWFFG.SignatureAbility": "Habilidad Emblemática",
   "SWFFG.SignatureAbilityUpgrades": "Incremento Habilidad Emblemática",
   "SWFFG.DowngradeAbility": "Reducir Capacidad",
-  "SWFFG.DowngradeDifficulty": "Reducir Dificultad"
+  "SWFFG.DowngradeDifficulty": "Reducir Dificultad",
+  "SWFFG.SendToChat": "Enviar al Chat",
+  "SWFFG.ChooseInitiative": "Escoger Método Iniciativa"
 }
