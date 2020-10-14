@@ -37,9 +37,14 @@ section {
   }
 }
 
-span.dietype {
+span.dietype.starwars {
   font-family: $font-dice;
+}
+span.dietype.genesys {
+  font-family: $font-dice2;
+}
 
+span.dietype {
   &.ability {
     color: green;
 

@@ -18,10 +18,6 @@
   src: url("../fonts/EotESymbol-Regular-PLUS.otf") format("opentype");
 }
 
-$font-primary: "Roboto", sans-serif;
-$font-secondary: "StarJedi", sans-serif;
-$font-dice: "EotESymbol", sans-serif;
-
 @font-face {
   font-family: "SWRPG-Symbol-Regular";
   src: url("../fonts/swrpg_symbol-regular_v1-webfont.woff2") format("woff2"), url("../fonts/swrpg_symbol-regular_v1-webfont.woff") format("woff");
@@ -35,3 +31,13 @@ $font-dice: "EotESymbol", sans-serif;
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+  font-family: "GenesysSymbol";
+  src: url("../fonts/Genesys.ttf") format("truetype");
+}
+
+$font-primary: "Roboto", sans-serif;
+$font-secondary: "StarJedi", sans-serif;
+$font-dice: "EotESymbol", sans-serif;
+$font-dice2: "GenesysSymbol", sans-serif;
