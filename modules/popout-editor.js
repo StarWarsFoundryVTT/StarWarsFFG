@@ -55,116 +55,139 @@ export default class PopoutEditor extends FormApplication {
   static renderDiceImages(str) {
     let html = str || "";
 
+    const dicetheme = game.settings.get("starwarsffg", "dicetheme");
+
     const replaceValues = [
       {
         type: "ability",
         character: "d",
+        class: "starwars",
         pattern: /\[(AB)[ILITY]?\]/gim,
       },
       {
         type: "advantage",
         character: "a",
+        class: dicetheme,
         pattern: /\[(AD)[VANTAGE]?\]/gim,
       },
       {
         type: "boost",
         character: "b",
+        class: "starwars",
         pattern: /\[(BO)[OST]?\]/gim,
       },
       {
         type: "challenge",
         character: "c",
+        class: "starwars",
         pattern: /\[(CH)[ALLENGE]?\]/gim,
       },
       {
         type: "dark",
         character: "z",
+        class: "starwars",
         pattern: /\[(DA)[RK]?\]/gim,
       },
       {
         type: "despair",
-        character: "y",
+        character: dicetheme === "starwars" ? "y" : "d",
+        class: dicetheme,
         pattern: /\[(DE)[SPAIR]?\]/gim,
       },
       {
         type: "difficulty",
         character: "d",
+        class: "starwars",
         pattern: /\[(DI)[FFICULTY]?\]/gim,
       },
       {
         type: "forcepoint",
         character: "Y",
+        class: "starwars",
         pattern: /\[(FP|FORCEPOINT)\]/gim,
       },
       {
         type: "failure",
         character: "f",
+        class: dicetheme,
         pattern: /\[(FA)[ILURE]?\]/gim,
       },
       {
         type: "force",
         character: "C",
+        class: "starwars",
         pattern: /\[(FO)[RCE]?\]/gim,
       },
       {
         type: "light",
         character: "Z",
+        class: "starwars",
         pattern: /\[(LI)[GHT]?\]/gim,
       },
       {
         type: "proficiency",
         character: "c",
+        class: "starwars",
         pattern: /\[(PR)[OFICIENCY]?\]/gim,
       },
       {
         type: "remsetback",
         character: "b",
+        class: "starwars",
         pattern: /\[(RS*|REMSETBACK)\]/gim,
       },
       {
         type: "restricted",
         character: "z",
+        class: "starwars",
         pattern: /\[(RE)[STRICTED]?\]/gim,
       },
       {
         type: "setback",
         character: "b",
+        class: "starwars",
         pattern: /\[(SE)[TBACK]?\]/gim,
       },
       {
         type: "success",
         character: "s",
+        class: dicetheme,
         pattern: /\[(SU)[CCESS]?\]/gim,
       },
       {
         type: "threat",
-        character: "t",
+        character: dicetheme === "starwars" ? "t" : "h",
+        class: dicetheme,
         pattern: /\[(TH)[REAT]?\]/gim,
       },
       {
         type: "triumph",
-        character: "x",
+        character: dicetheme === "starwars" ? "x" : "t",
+        class: dicetheme,
         pattern: /\[(TR)[IUMPH]?\]/gim,
       },
       {
         type: "adddifficulty",
         character: "d",
+        class: "starwars",
         pattern: /\[(DD|ADDDIFFICULTY)\]/gim,
       },
       {
         type: "updifficulty",
         character: "d",
+        class: "starwars",
         pattern: /\[(UD|UPDIFFICULTY)\]/gim,
       },
       {
         type: "cancelthreat",
         character: "t",
+        class: dicetheme,
         pattern: /\[(CT|CANCELTHREAT)\]/gim,
       },
     ];
 
     replaceValues.forEach((item) => {
-      html = html.replace(item.pattern, `<span class='dietype ${item.type}'>${item.character}</span>`);
+      html = html.replace(item.pattern, `<span class='dietype ${item.class} ${item.type}'>${item.character}</span>`);
     });
 
     const oggdudeTags = [

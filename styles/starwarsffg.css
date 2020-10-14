@@ -32,6 +32,11 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "GenesysSymbol";
+  src: url("../fonts/Genesys.ttf") format("truetype");
+}
+
 /* Global styles */
 div,
 section {
@@ -65,8 +70,12 @@ section {
   background: whitesmoke;
 }
 
-span.dietype {
+span.dietype.starwars {
   font-family: "EotESymbol", sans-serif;
+}
+
+span.dietype.genesys {
+  font-family: "GenesysSymbol", sans-serif;
 }
 
 span.dietype.ability {
@@ -1063,7 +1072,6 @@ img {
 }
 
 .starwarsffg span.dietype {
-  font-family: "EotESymbol", sans-serif;
   position: relative;
 }
 
