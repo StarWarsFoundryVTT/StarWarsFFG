@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 12/14/2020 - Cstadther - Added correct Genesys dice symbols in editor areas (uses the same OggDude bbcode)
 - 12/13/2020 - Cstadther - Enhancement - Restricted character data is user has `limited` permissions.
 - 12/12/2020 - Cstadther - Fixed issue with hand made specializations not reflecting learned talents when more than one specialization added.
 - 12/10/2020 - Esrin - Rolling out the v1.0-alpha2 release to the dev branch.
