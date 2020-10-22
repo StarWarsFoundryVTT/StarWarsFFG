@@ -1,6 +1,16 @@
 # StarWarsFFG
 
-This is an implementation of the [Fantasy Flight Games Star Wars](https://www.fantasyflightgames.com/en/starwarsrpg/) roleplaying system for [Foundry Virtual Tabletop](https://foundryvtt.com/).
+# StarWarsFFG
+
+This is an unoffical implementation of the [Fantasy Flight Games Star Wars](https://www.fantasyflightgames.com/en/starwarsrpg/) series of Star Wars RPGs systems for Foundry VTT.
+
+Full support for other Genesys-based systems is also included.
+
+This system is made by fans, for fans, and is not associated with Fantasy Flight Games or their partners in any way.
+
+The system for Foundry VTT contains no rules or proprietary content from the various official RPG sourcebooks by Fantasy Flight Games. It is intended to make the process of enjoying the Star Wars and Genesys RPG systems via an online tabletop experience as easy as possible but you will still need to purchase any and all official sourcebooks you desire in order to enjoy this system as intended.
+
+For more info and documentation including various "How-To" guides, please check out the Wiki section of our GitHub repo.
 
 - For support on this game system : Discord [The Foundry](https://discord.gg/bNyxuk9) #starwars-ffg
 - Read this document in another language : [Français](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/master/README-fr.md)
