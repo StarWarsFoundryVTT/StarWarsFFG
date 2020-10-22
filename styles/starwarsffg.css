@@ -2454,6 +2454,17 @@ img {
   z-index: 10;
 }
 
+.starwarsffg .item-card img.profile-img {
+  flex: 0 0 100px;
+  height: 124px;
+  width: auto;
+  max-width: 124px;
+  border: 0;
+  margin: auto;
+  -o-object-fit: contain;
+  object-fit: contain;
+}
+
 .og-character-import {
   min-width: 96%;
 }
