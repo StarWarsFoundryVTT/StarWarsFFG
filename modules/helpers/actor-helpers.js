@@ -81,8 +81,11 @@ export default class ActorHelpers {
       });
 
       // Handle credits
-      const rawCredits = formData.data.stats.credits.value?.toString().replace(/[^0-9]+|(?<=\.)[^.]*$/g, "");
-      formData.data.stats.credits.value = parseInt(rawCredits, 10);
+
+      if (formData.data.stats?.credits?.value) {
+        const rawCredits = formData.data.stats?.credits.value?.toString().replace(/[^0-9]+|(?<=\.)[^.]*$/g, "");
+        formData.data.stats.credits.value = parseInt(rawCredits, 10);
+      }
     } else {
       // Handle stat updates
       Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
