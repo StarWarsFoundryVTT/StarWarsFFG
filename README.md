@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 22/10/2020 - Cstadther - Enhancement 405 - Added item images (if not default mystery-man) to chat message.
 - 22/10/2020 - Cstadther - Renamed `Hull Strain` to `Sys Strain`
 - 14/10/2020 - Cstadther - Added correct Genesys dice symbols in editor areas (uses the same OggDude bbcode)
 - 13/10/2020 - Cstadther - Enhancement - Restricted character data is user has `limited` permissions.
