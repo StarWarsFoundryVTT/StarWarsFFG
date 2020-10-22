@@ -71,6 +71,11 @@ export class ActorSheetFFG extends ActorSheet {
         break;
       default:
     }
+
+    if (data.data.stats.credits.value > 999) {
+      data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
     return data;
   }
 

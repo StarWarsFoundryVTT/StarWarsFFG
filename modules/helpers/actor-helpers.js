@@ -79,6 +79,10 @@ export default class ActorHelpers {
           formData.data.attributes[key].value = 0;
         }
       });
+
+      // Handle credits
+      const rawCredits = formData.data.stats.credits.value.replace(/[^0-9]+|(?<=\.)[^.]*$/g, "");
+      formData.data.stats.credits.value = parseInt(rawCredits, 10);
     } else {
       // Handle stat updates
       Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
