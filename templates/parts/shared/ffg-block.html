@@ -30,7 +30,7 @@
           </div>
         </div>
         {{/if}} {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor"))}}
-        <div class="block-value block-single"><input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
+        <div class="block-value block-single">{{#if prefix}}{{{prefix}}}{{/if}}<input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
         {{/if}} {{/if}} {{#if (eq blocktype "split")}} {{#each fields as |t|}}
         <div class="block-value"><input type="text" name="{{name}}" value="{{value}}" data-dtype="type" {{#if disabled}}disabled{{/if}} /></div>
         {{/each}} {{/if}}
