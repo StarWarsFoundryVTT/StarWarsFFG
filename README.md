@@ -25,6 +25,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 22/10/2020 - Cstadther - Fixed issue with credits for non-characters.
 - 22/10/2020 - Esrin - Updated `system.json` with version, compatibility, manifest and download fields for v1.0 release!
 - 22/10/2020 - Cstadther - Enhancement 402 - Added comma display for credits.
 - 22/10/2020 - Cstadther - Enhancement 405 - Added item images (if not default mystery-man) to chat message.
