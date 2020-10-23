@@ -491,12 +491,14 @@ export class ActorFFG extends Actor {
       }
       if (key === "Wounds") {
         if (data.attributes.Wounds.value === 0) {
-          total = data.attributes.Brawn.value; // + ModifierHelpers.getBaseValue(actorData.items, "Brawn", "Characteristic");
+          const speciesBrawn = ModifierHelpers.getBaseValue(actorData.items, "Brawn", "Characteristic");
+          total = data.attributes.Brawn.value + speciesBrawn;
         }
       }
       if (key === "Strain") {
         if (data.attributes.Strain.value === 0) {
-          total = data.attributes.Willpower.value; // + ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
+          const speciesWillpower = ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
+          total = data.attributes.Willpower.value + speciesWillpower;
         }
       }
       if (key === "Encumbrance") {
