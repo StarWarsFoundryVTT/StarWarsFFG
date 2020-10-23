@@ -245,7 +245,7 @@ export default class ImportHelpers {
   static getBaseModAttributeObject(mod) {
     let type;
     let modtype;
-    let value = mod?.count ? parseInt(mod.Count, 10) : 0;
+    let value = mod?.Count ? parseInt(mod.Count, 10) : 0;
 
     if (["BR", "AG", "INT", "CUN", "WIL", "PR"].includes(mod.Key)) {
       modtype = "Characteristic";
@@ -292,6 +292,12 @@ export default class ImportHelpers {
         modtype = "Skill Rank";
       }
       type = CONFIG.temporary.skills[mod.Key];
+    }
+
+    if (mod.Key === "ENCTADD") {
+      modtype = "Stat";
+      type = "Encumbrance";
+      value = value;
     }
 
     if (type) {

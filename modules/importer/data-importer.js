@@ -1027,18 +1027,6 @@ export default class DataImporter extends FormApplication {
 
           const fp = JXON.xmlToJs(weapon);
 
-          const qualities = [];
-
-          if (fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
-            fp.Qualities.Quality.forEach((quality) => {
-              if (CONFIG.temporary?.descriptors && CONFIG.temporary?.descriptors?.[quality.Key]) {
-                qualities.push(`<a class="entity-link" draggable="true" data-pack="world.oggdudeitemqualities" data-id="${CONFIG.temporary.descriptors[quality.Key]}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
-              } else {
-                qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
-              }
-            });
-          }
-
           let newItem = {
             name,
             type: weaponType === "Vehicle" ? "shipweapon" : "weapon",
@@ -1064,7 +1052,7 @@ export default class DataImporter extends FormApplication {
                 value: crit,
               },
               special: {
-                value: qualities.join(","),
+                value: "",
               },
               skill: {
                 value: skill,
@@ -1077,6 +1065,31 @@ export default class DataImporter extends FormApplication {
               },
             },
           };
+
+          const qualities = [];
+
+          if (fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
+            fp.Qualities.Quality.forEach((quality) => {
+              if (CONFIG.temporary?.descriptors && CONFIG.temporary?.descriptors?.[quality.Key]) {
+                qualities.push(`<a class="entity-link" draggable="true" data-pack="world.oggdudeitemqualities" data-id="${CONFIG.temporary.descriptors[quality.Key]}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
+              } else {
+                qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
+              }
+              if (quality.Key === "DEFENSIVE") {
+                const nk = Object.keys(newItem.data.attributes).length + 1;
+                const count = quality.Count ? parseInt(quality.Count) : 0;
+
+                newItem.data.attributes[`attr${nk}`] = {
+                  isCheckbox: false,
+                  mod: "Defence-Melee",
+                  modtype: "Stat",
+                  value: count,
+                };
+              }
+            });
+          }
+
+          newItem.data.special.value = qualities.join(",");
 
           if ((skill === "Melee" || skill === "Brawl") && damage === "0") {
             newItem.data.skill.useBrawn = true;
