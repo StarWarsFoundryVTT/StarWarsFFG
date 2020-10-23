@@ -72,7 +72,7 @@ export default class ModifierHelpers {
                     checked = true;
                   }
                 } else {
-                  if (modtype === "ForcePool" && total === 0) {
+                  if ((modtype === "ForcePool" && total === 0) || modtype !== "ForcePool") {
                     total += parseInt(attr.value, 10);
                   }
                 }

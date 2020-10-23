@@ -397,8 +397,10 @@ export default class ImportHelpers {
         CONFIG.temporary = {};
       }
 
+      const characterName = characterData.Character.Description.CharName;
+
       let character = {
-        name: characterData.Character.Description.CharName,
+        name: characterName ? characterName : "No Name",
         type: "character",
         flags: {
           importid: characterData.Character.Key,
@@ -705,9 +707,16 @@ export default class ImportHelpers {
               let attrId = Object.keys(career.data.attributes).find((attr) => career.data.attributes[attr].modtype === "Skill Rank" && career.data.attributes[attr].mod === charSkill);
 
               if (career.data.attributes?.[attrId]?.value) {
-                career.data.attributes[attrId].value += 1;
+                const careerValue = parseInt(career.data.attributes[attrId].value, 10);
+                career.data.attributes[attrId].value = careerValue + 1;
+                if (!career.data.attributes[attrId].key) {
+                  career.data.attributes[attrId].key = charSkill;
+                }
               } else {
                 career.data.attributes[attrId] = {
+                  key: charSkill,
+                  mod: charSkill,
+                  modtype: "Skill Rank",
                   value: 1,
                 };
               }
@@ -730,9 +739,16 @@ export default class ImportHelpers {
               let attrId = Object.keys(specialization.data.attributes).find((attr) => specialization.data.attributes[attr].modtype === "Skill Rank" && specialization.data.attributes[attr].mod === charSkill);
 
               if (specialization.data.attributes?.[attrId]?.value) {
-                specialization.data.attributes[attrId].value += 1;
+                const specializationValue = parseInt(specialization.data.attributes[attrId].value, 10);
+                specialization.data.attributes[attrId].value = specializationValue + 1;
+                if (!specialization.data.attributes[attrId].key) {
+                  specialization.data.attributes[attrId].key = charSkill;
+                }
               } else {
                 specialization.data.attributes[attrId] = {
+                  key: charSkill,
+                  mod: charSkill,
+                  modtype: "Skill Rank",
                   value: 1,
                 };
               }
@@ -781,6 +797,30 @@ export default class ImportHelpers {
                   const talent = await funcGetTalent(spec.Talents.CharTalent[i], specialization.data.talents[`talent${i}`].itemId);
                   if (talent) {
                     specialization.data.talents[`talent${i}`] = { ...specialization.data.talents[`talent${i}`], ...talent };
+
+                    if (spec.Talents.CharTalent[i]?.BonusChars?.BonusChar) {
+                      if (Array.isArray(spec.Talents.CharTalent[i]?.BonusChars?.BonusChar)) {
+                        await this.asyncForEach(spec.Talents.CharTalent[i].BonusChars.BonusChar, async (char) => {
+                          let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+
+                          specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                            isCheckbox: false,
+                            mod: this.convertOGCharacteristic(char.CharKey),
+                            modtype: "Characteristic",
+                            value: char.Bonus,
+                          };
+                        });
+                      } else {
+                        let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+
+                        specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                          isCheckbox: false,
+                          mod: this.convertOGCharacteristic(spec.Talents.CharTalent[i].BonusChars.BonusChar.CharKey),
+                          modtype: "Characteristic",
+                          value: spec.Talents.CharTalent[i].BonusChars.BonusChar.Bonus,
+                        };
+                      }
+                    }
                   }
                   specCount += 1;
                   updateDialogSpecialization(specCount, specTotal);
@@ -798,6 +838,30 @@ export default class ImportHelpers {
                     const talent = await funcGetTalent(spec.Talents.CharTalent[i], newspec.data.talents[`talent${i}`].itemId);
                     if (talent) {
                       newspec.data.talents[`talent${i}`] = { ...newspec.data.talents[`talent${i}`], ...talent };
+
+                      if (spec.Talents.CharTalent[i]?.BonusChars?.BonusChar) {
+                        if (Array.isArray(spec.Talents.CharTalent[i]?.BonusChars?.BonusChar)) {
+                          await this.asyncForEach(spec.Talents.CharTalent[i].BonusChars.BonusChar, async (char) => {
+                            let attrId = Object.keys(newspec.data.talents[`talent${i}`].attributes).length + 1;
+
+                            newspec.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                              isCheckbox: false,
+                              mod: this.convertOGCharacteristic(char.CharKey),
+                              modtype: "Characteristic",
+                              value: char.Bonus,
+                            };
+                          });
+                        } else {
+                          let attrId = Object.keys(newspec.data.talents[`talent${i}`].attributes).length + 1;
+
+                          newspec.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                            isCheckbox: false,
+                            mod: this.convertOGCharacteristic(spec.Talents.CharTalent[i].BonusChars.BonusChar.CharKey),
+                            modtype: "Characteristic",
+                            value: spec.Talents.CharTalent[i].BonusChars.BonusChar.Bonus,
+                          };
+                        }
+                      }
                     }
                     specCount += 1;
                     updateDialogSpecialization(specCount, specTotal);
@@ -817,6 +881,30 @@ export default class ImportHelpers {
               const talent = await funcGetTalent(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i], specialization.data.talents[`talent${i}`].itemId);
               if (talent) {
                 specialization.data.talents[`talent${i}`] = { ...specialization.data.talents[`talent${i}`], ...talent };
+
+                if (characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i]?.BonusChars?.BonusChar) {
+                  if (Array.isArray(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i]?.BonusChars?.BonusChar)) {
+                    await this.asyncForEach(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].BonusChars.BonusChar, async (char) => {
+                      let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+
+                      specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                        isCheckbox: false,
+                        mod: this.convertOGCharacteristic(char.CharKey),
+                        modtype: "Characteristic",
+                        value: char.Bonus,
+                      };
+                    });
+                  } else {
+                    let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+
+                    specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                      isCheckbox: false,
+                      mod: this.convertOGCharacteristic(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].BonusChars.BonusChar.CharKey),
+                      modtype: "Characteristic",
+                      value: characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].BonusChars.BonusChar.Bonus,
+                    };
+                  }
+                }
               }
               specCount += 1;
               updateDialogSpecialization(specCount, specTotal);
@@ -952,10 +1040,12 @@ export default class ImportHelpers {
       await ImportHelpers.verifyPath("data", serverPath);
 
       const imge = characterData.Character.Portrait;
-      const img = this.b64toBlob(imge);
-      const i = new File([img], `${characterData.Character.Key}.png`, { type: "image/png" });
-      await Helpers.UploadFile("data", serverPath, i, { bucket: null });
-      character.img = `${serverPath}/${characterData.Character.Key}.png`;
+      if (imge) {
+        const img = this.b64toBlob(imge);
+        const i = new File([img], `${characterData.Character.Key}.png`, { type: "image/png" });
+        await Helpers.UploadFile("data", serverPath, i, { bucket: null });
+        character.img = `${serverPath}/${characterData.Character.Key}.png`;
+      }
 
       updateDialog(90);
 
@@ -1027,5 +1117,32 @@ export default class ImportHelpers {
       };
       reader.readAsBinaryString(file);
     });
+  }
+
+  static convertOGCharacteristic(value) {
+    let type;
+
+    switch (value) {
+      case "BR":
+        type = "Brawn";
+        break;
+      case "AG":
+        type = "Agility";
+        break;
+      case "INT":
+        type = "Intellect";
+        break;
+      case "CUN":
+        type = "Cunning";
+        break;
+      case "WIL":
+        type = "Willpower";
+        break;
+      case "PR":
+        type = "Presence";
+        break;
+    }
+
+    return type;
   }
 }
