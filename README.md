@@ -35,6 +35,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 23/10/2020 - Cstadther - Fix 406 - Fixed issue with Blind GM Rolls and Self Rolls.
 - 23/10/2020 - Cstadther - Updated modifiers to correctly apply specialization skill ranks. OggDude Character Import Updates - correctly create Bonus Characteristic choices on talents and add species selected skill ranks
 - 23/10/2020 - Cstadther - Fix 401 - Added Encumbrance modifiers to OggDude importer, added Defensive modifier to OggDude Weapon importer.
 - 23/10/2020 - Cstadther - Fix 419 - Fixed bug where brawn and willpower were not be added correctly to wounds and strain, this will cause issues with 0.5 characters.
