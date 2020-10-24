@@ -634,11 +634,20 @@ export class RollFFG extends Roll {
     // Perform the roll, if it has not yet been rolled
     if (!this._rolled) this.evaluate();
 
+    const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
+
+    let template = CONST.CHAT_MESSAGE_TYPES.ROLL;
+    if (["gmroll", "blindroll"].includes(rMode)) {
+      messageData.whisper = ChatMessage.getWhisperRecipients("GM");
+    }
+    if (rMode === "blindroll") messageData.blind = true;
+    if (rMode === "selfroll") messageData.whisper = [game.user.id];
+
     // Prepare chat data
     messageData = mergeObject(
       {
         user: game.user._id,
-        type: CONST.CHAT_MESSAGE_TYPES.ROLL,
+        type: template,
         content: this.total,
         sound: CONFIG.sounds.dice,
       },
@@ -647,7 +656,7 @@ export class RollFFG extends Roll {
     messageData.roll = this;
 
     // Prepare message options
-    const messageOptions = { rollMode };
+    const messageOptions = { rollMode: rMode };
 
     // Either create the message or just return the chat data
     return create ? CONFIG.ChatMessage.entityClass.create(messageData, messageOptions) : messageData;

@@ -1,4 +1,5 @@
 <div class="starwarsffg dice-roll">
+  {{#if publicRoll }}
   <div class="dice-result">
     {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
@@ -44,4 +45,5 @@
     </ul>
     {{/if}} {{/if}}
   </div>
+  {{/if}}
 </div>
