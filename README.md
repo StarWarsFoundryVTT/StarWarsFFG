@@ -35,6 +35,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 24/10/2020 - Cstadther - Enhancement 394 - Added increase/decrease gear quantity from adversary gear list.
 - 24/10/2020 - Cstadther - Enhancement 394 - Added increase/decrease gear quantity from actor gear list, updated encumbrance calc to account for quantity.
 - 23/10/2020 - Cstadther - Fix 406 - Fixed issue with Blind GM Rolls and Self Rolls.
 - 23/10/2020 - Cstadther - Updated modifiers to correctly apply specialization skill ranks. OggDude Character Import Updates - correctly create Bonus Characteristic choices on talents and add species selected skill ranks
