@@ -310,6 +310,39 @@ export class ActorSheetFFG extends ActorSheet {
       ).render(true);
     });
 
+    // Edit Gear Quantities
+
+    html.find(".item-quantity .quantity.increase").click(async (ev) => {
+      ev.stopPropagation();
+      const li = $(ev.currentTarget).parents(".item");
+      let itemId = li.data("itemId");
+      let item = this.actor.getOwnedItem(itemId);
+      if (!item) {
+        item = game.items.get(itemId);
+
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+      }
+      item.update({ ["data.quantity.value"]: item.data.data.quantity.value + 1 });
+    });
+
+    html.find(".item-quantity .quantity.decrease").click(async (ev) => {
+      ev.stopPropagation();
+      const li = $(ev.currentTarget).parents(".item");
+      let itemId = li.data("itemId");
+      let item = this.actor.getOwnedItem(itemId);
+      if (!item) {
+        item = game.items.get(itemId);
+
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+      }
+      let count = item.data.data.quantity.value - 1 > 0 ? item.data.data.quantity.value - 1 : 0;
+      item.update({ ["data.quantity.value"]: count });
+    });
+
     // Roll Skill
     html
       .find(".roll-button")
