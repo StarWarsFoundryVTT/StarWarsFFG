@@ -258,7 +258,11 @@ export class ActorFFG extends Actor {
             const equippedEncumbrance = +item.data.encumbrance.value - 3;
             encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
           } else {
-            encum += +item.data.encumbrance.value;
+            let count = 1;
+            if (item.data?.quantity?.value) {
+              count = item.data.quantity.value;
+            }
+            encum += +item.data.encumbrance.value * count;
           }
         }
       } catch (err) {

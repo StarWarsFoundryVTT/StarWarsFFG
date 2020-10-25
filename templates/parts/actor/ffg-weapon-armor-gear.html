@@ -93,7 +93,11 @@
       <div class="item-name">{{item.name}}</div>
       <!-- <div>{{item.data.price.value}}</div>
       <div>{{item.data.rarity.value}}</div> -->
-      <div>{{item.data.quantity.value}}</div>
+      <div class="item-quantity">
+        <div class="quantity increase"><i class="far fa-plus-square"></i></div>
+        {{item.data.quantity.value}}
+        <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
+      </div>
       <!-- <div>{{item.data.encumbrance.value}}</div> -->
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

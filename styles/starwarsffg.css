@@ -547,6 +547,10 @@ img {
   padding-bottom: 0;
 }
 
+.starwarsffg .item-quantity {
+  position: relative;
+}
+
 .starwarsffg .grid {
   margin-top: 0;
 }
@@ -714,6 +718,21 @@ img {
 
 .starwarsffg form {
   overflow: hidden;
+}
+
+.starwarsffg .quantity {
+  position: absolute;
+  top: 0;
+}
+
+.starwarsffg .quantity.increase {
+  right: 25%;
+  cursor: pointer;
+}
+
+.starwarsffg .quantity.decrease {
+  left: 25%;
+  cursor: pointer;
 }
 
 .starwarsffg .talent-body {
