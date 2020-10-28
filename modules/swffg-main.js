@@ -856,9 +856,24 @@ Hooks.once("init", async function () {
       type: String,
     });
 
+    let skillList = [];
+
     try {
-      let skillList = [];
-      skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+      let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
+      if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
+        if (game.settings.get("starwarsffg", "arraySkillList") === defaultSkillArrayString) {
+          const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
+          game.settings.set("starwarsffg", "arraySkillList", JSON.stringify(fileData));
+          skillList = fileData;
+        }
+      } else {
+        skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+
+    try {
       CONFIG.FFG.alternateskilllists = skillList;
 
       let skillChoices = {};

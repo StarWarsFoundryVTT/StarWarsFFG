@@ -35,6 +35,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 28/10/2020 - Cstadther - Bug Fix - Migrate existing `skills.json` file to game settings if exists.
 - 28/10/2020 - Cstadther - Bug Fix - Converted Alternate Skill List arrays to use settings instead of file to fix issue where uploading to world folder has been restricted.
 - 24/10/2020 - Cstadther - Enhancement 394 - Added increase/decrease gear quantity from adversary gear list.
 - 24/10/2020 - Cstadther - Enhancement 394 - Added increase/decrease gear quantity from actor gear list, updated encumbrance calc to account for quantity.
