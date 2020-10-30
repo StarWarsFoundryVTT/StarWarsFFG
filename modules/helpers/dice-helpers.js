@@ -86,6 +86,12 @@ export default class DiceHelpers {
         setback: skill.setback,
         remsetback: skill.remsetback,
         force: skill.force,
+        source: {
+          skill: skill?.ranksource?.length ? skill.ranksource : [],
+          boost: skill?.boostsource?.length ? skill.boostsource : [],
+          remsetback: skill?.remsetbacksource?.length ? skill.remsetbacksource : [],
+          setback: skill?.setbacksource?.length ? skill.setbacksource : [],
+        },
       });
       dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
