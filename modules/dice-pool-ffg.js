@@ -702,6 +702,12 @@ export class DicePoolFFG {
     this.setback = obj.setback || 0;
     this.remsetback = obj.remsetback || 0;
     this.force = obj.force || 0;
+
+    this.source = {
+      boost: "",
+      setback: "",
+      remsetback: "",
+    };
   }
 
   /**
@@ -817,6 +823,7 @@ export class DicePoolFFG {
     this._addIcons(container, CONFIG.FFG.SETBACK_ICON, this.setback, height, width);
     this._addIcons(container, CONFIG.FFG.REMOVESETBACK_ICON, this.remsetback, height, width);
     this._addIcons(container, CONFIG.FFG.FORCE_ICON, this.force, height, width);
+
     return container;
   }
 

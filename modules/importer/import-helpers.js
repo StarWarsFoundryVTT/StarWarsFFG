@@ -701,8 +701,14 @@ export default class ImportHelpers {
         const species = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey)));
         if (species) {
           for (let i = 0; i < speciesSkills.length; i += 1) {
-            let attrId = Object.keys(species.data.attributes).length + 1;
-            species.data.attributes[attrId] = speciesSkills[i];
+            // first determine if the modifier exists, oggdudes doesn't differentiate between chosen skills (ie human) vs static skill (ie Nautolan)
+
+            const found = Object.values(species.data.attributes).filter((attr) => attr.mod === speciesSkills[i].mod && attr.modtype === speciesSkills[i].modtype && attr.value === speciesSkills[i].value);
+
+            if (!found?.length) {
+              let attrId = Object.keys(species.data.attributes).length + 1;
+              species.data.attributes[attrId] = speciesSkills[i];
+            }
           }
 
           character.items.push(species);
@@ -964,7 +970,9 @@ export default class ImportHelpers {
               }
               character.items.push(weapon);
             } catch (err) {
-              CONFIG.logger.error(`Unable to add weapon (${w.ItemKey}) to character.`, err);
+              if (w.ItemKey?.length) {
+                CONFIG.logger.error(`Unable to add weapon (${w.ItemKey}) to character.`, err);
+              }
             }
           });
         } else {
@@ -977,7 +985,9 @@ export default class ImportHelpers {
             }
             character.items.push(weapon);
           } catch (err) {
-            CONFIG.logger.error(`Unable to add weapon (${characterData.Character.Weapons.CharWeapon.ItemKey}) to character.`, err);
+            if (characterData.Character.Weapons.CharWeapon?.ItemKey?.length) {
+              CONFIG.logger.warn(`Unable to add weapon (${characterData.Character.Weapons.CharWeapon.ItemKey}) to character.`, err);
+            }
           }
         }
       }
@@ -1044,7 +1054,7 @@ export default class ImportHelpers {
             }
             character.items.push(gear);
           } catch (err) {
-            CONFIG.logger.error(`Unable to add armor (${characterData.Character.Gear.CharGear.ItemKey}) to character.`, err);
+            CONFIG.logger.error(`Unable to add gear (${characterData.Character.Gear.CharGear.ItemKey}) to character.`, err);
           }
         }
       }
