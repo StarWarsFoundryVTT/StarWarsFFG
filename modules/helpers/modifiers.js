@@ -28,9 +28,10 @@ export default class ModifierHelpers {
    * @param  {array} items
    * @param  {string} key
    */
-  static getCalculatedValueFromItems(items, key, modtype) {
+  static getCalculatedValueFromItems(items, key, modtype, includeSource) {
     let total = 0;
     let checked = false;
+    let sources = [];
 
     try {
       items.forEach((item) => {
@@ -42,12 +43,14 @@ export default class ModifierHelpers {
           if (item.type === "armour" || item.type === "weapon") {
             if (item?.data?.equippable?.equipped) {
               if (key === "Soak" && item.data?.soak) {
+                sources.push({ modtype, key, name: item.name, value: item.data.soak.value, type: item.type });
                 total += parseInt(item.data.soak.value, 10);
               }
               if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
                 // get the highest defense item
                 const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
                 if (shouldUse) {
+                  sources.push({ modtype, key, name: item.name, value: item.data.defence.value, type: item.type });
                   total += parseInt(item.data.defence.value, 10);
                 }
               }
@@ -55,9 +58,11 @@ export default class ModifierHelpers {
                 attrsToApply.forEach((attr) => {
                   if (modtype === "Career Skill" || modtype === "Force Boost") {
                     if (attr.value) {
+                      sources.push({ modtype, key, name: item.name, value: true, type: item.type });
                       checked = true;
                     }
                   } else {
+                    sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
                     total += parseInt(attr.value, 10);
                   }
                 });
@@ -69,10 +74,12 @@ export default class ModifierHelpers {
               attrsToApply.forEach((attr) => {
                 if (modtype === "Career Skill" || modtype === "Force Boost") {
                   if (attr.value) {
+                    sources.push({ modtype, key, name: item.name, value: true, type: item.type });
                     checked = true;
                   }
                 } else {
                   if ((modtype === "ForcePool" && total === 0) || modtype !== "ForcePool") {
+                    sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
                     total += parseInt(attr.value, 10);
                   }
                 }
@@ -86,6 +93,7 @@ export default class ModifierHelpers {
                 .map((k) => {
                   return {
                     type: "talent",
+                    name: `${item.name}: ${item.data.upgrades[k].name}`,
                     data: {
                       attributes: item.data.upgrades[k]?.attributes ? item.data.upgrades[k]?.attributes : {},
                       ranks: {
@@ -102,6 +110,7 @@ export default class ModifierHelpers {
                 .map((k) => {
                   return {
                     type: "talent",
+                    name: `${item.name}: ${item.data.talents[k].name}`,
                     data: {
                       attributes: item.data.talents[k].attributes,
                       ranks: {
@@ -114,16 +123,24 @@ export default class ModifierHelpers {
             }
             if (modtype === "Career Skill" || modtype === "Force Boost") {
               if (this.getCalculatedValueFromItems(upgrades, key, modtype)) {
+                sources.push({ modtype, key, name: item.name, value: true, type: item.type });
                 checked = true;
               }
             } else {
-              total += this.getCalculatedValueFromItems(upgrades, key, modtype);
+              if (includeSource) {
+                const subValues = this.getCalculatedValueFromItems(upgrades, key, modtype, includeSource);
+                total += subValues.total;
+                sources = sources.concat(subValues.sources);
+              } else {
+                total += this.getCalculatedValueFromItems(upgrades, key, modtype);
+              }
             }
           } else {
             if (attrsToApply.length > 0) {
               attrsToApply.forEach((attr) => {
                 if (modtype === "Career Skill" || modtype === "Force Boost") {
                   if (attr.value) {
+                    sources.push({ modtype, key, name: item.name, value: true, type: item.type });
                     checked = true;
                   }
                 } else {
@@ -132,8 +149,10 @@ export default class ModifierHelpers {
                     if (item.data.ranks.ranked) {
                       multiplier = item.data.ranks.current;
                     }
+                    sources.push({ modtype, key, name: item.name, value: attr.value * multiplier, type: item.type });
                     total += parseInt(attr.value, 10) * multiplier;
                   } else {
+                    sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
                     total += parseInt(attr.value, 10);
                   }
                 }
@@ -149,7 +168,12 @@ export default class ModifierHelpers {
     if (modtype === "Career Skill" || modtype === "Force Boost") {
       return checked;
     }
-    return total;
+
+    if (includeSource) {
+      return { total, sources };
+    } else {
+      return total;
+    }
   }
 
   static getBaseValue(items, key, modtype) {

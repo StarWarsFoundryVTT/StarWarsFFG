@@ -1372,6 +1372,10 @@ img {
   text-align: left;
 }
 
+.starwarsffg .skillsGrid .skillTable div.skill {
+  position: relative;
+}
+
 .starwarsffg .skillsGrid .skillTable div.skill > div {
   text-align: center;
 }
@@ -2047,6 +2051,11 @@ img {
   z-index: 500;
 }
 
+.starwarsffg .hover:hover .tooltip2 {
+  opacity: 1;
+  z-index: 500;
+}
+
 .starwarsffg .hover .tooltip {
   top: 30px;
   background-color: rgba(25, 24, 19, 0.8);
@@ -2057,6 +2066,29 @@ img {
   transition: opacity 0.5s;
   z-index: -500;
   padding: 0 10px;
+}
+
+.starwarsffg .hover .tooltip2 {
+  width: 100%;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  min-width: 150px;
+  max-width: 360px;
+  position: absolute;
+  transition: opacity 0.5s;
+  left: 0;
+  background: #23221d;
+  border: 1px solid #000;
+  border-radius: 5px;
+  color: #EEE;
+  z-index: -500;
+  opacity: 0;
+  padding: 5px 10px;
+}
+
+.starwarsffg .hover .tooltip2 li {
+  text-align: left;
 }
 
 .starwarsffg .item-sheet-criticalinjury .charname input {

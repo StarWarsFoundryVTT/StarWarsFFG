@@ -702,6 +702,52 @@ export class DicePoolFFG {
     this.setback = obj.setback || 0;
     this.remsetback = obj.remsetback || 0;
     this.force = obj.force || 0;
+
+    this.source = {};
+
+    if (obj?.source?.skill?.length) {
+      this.source.skill = obj.source.skill
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.name === "purchased") {
+            return `Purchased: ${rank.value} rank(s)`;
+          }
+          if (rank.modtype === "Skill Rank") {
+            return `${rank.name} (${rank.type}): ${rank.value} rank(s)`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
+    if (obj?.source?.boost?.length) {
+      this.source.boost = obj.source.boost
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Boost") {
+            return `${rank.name} (${rank.type}): +${rank.value} boost dice`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} boost dice`;
+        });
+    }
+    if (obj?.source?.remsetback?.length) {
+      this.source.remsetback = obj.source.remsetback
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Remove Setback") {
+            return `${rank.name} (${rank.type}): -${rank.value} setback dice`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): -${rank.value} setback dice`;
+        });
+    }
+    if (obj?.source?.setback?.length) {
+      this.source.setback = obj.source.setback
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Setback") {
+            return `${rank.name} (${rank.type}): +${rank.value} setback dice`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} setback dice`;
+        });
+    }
   }
 
   /**
@@ -817,6 +863,9 @@ export class DicePoolFFG {
     this._addIcons(container, CONFIG.FFG.SETBACK_ICON, this.setback, height, width);
     this._addIcons(container, CONFIG.FFG.REMOVESETBACK_ICON, this.remsetback, height, width);
     this._addIcons(container, CONFIG.FFG.FORCE_ICON, this.force, height, width);
+
+    this._addSourceToolTip(container);
+
     return container;
   }
 
@@ -827,6 +876,36 @@ export class DicePoolFFG {
       img.width = width;
       img.height = height;
       container.appendChild(img);
+    }
+  }
+
+  _addSourceToolTip(container) {
+    const createToolTip = this.source?.skill?.length || this.source?.boost?.length || this.source?.remsetback?.length || this.source?.setback?.length;
+
+    if (createToolTip) {
+      const mapDataToString = (values) => {
+        const item = document.createElement("div");
+        item.innerHTML = values.map((i) => `<li class="">${i}</li>`).join("");
+        tooltip.append(item);
+      };
+
+      const tooltip = document.createElement("div");
+      tooltip.classList.add("tooltip2");
+      if (this.source?.skill?.length) {
+        mapDataToString(this.source.skill);
+      }
+      if (this.source?.boost?.length) {
+        mapDataToString(this.source.boost);
+      }
+      if (this.source?.remsetback?.length) {
+        mapDataToString(this.source.remsetback);
+      }
+      if (this.source?.setback?.length) {
+        mapDataToString(this.source.setback);
+      }
+
+      container.classList.add("hover");
+      container.append(tooltip);
     }
   }
 

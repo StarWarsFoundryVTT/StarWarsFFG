@@ -925,20 +925,27 @@ Hooks.once("init", async function () {
 
     Hooks.on("createActor", (actor) => {
       let skilllist = game.settings.get("starwarsffg", "skilltheme");
-      let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
-      CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
-      Object.keys(actor.data.data.skills).forEach((skill) => {
-        if (!skills.skills[skill]) {
-          skills.skills[`-=${skill}`] = null;
+      if (CONFIG.FFG?.alternateskilllists?.length) {
+        try {
+          let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
+          CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
+
+          Object.keys(actor.data.data.skills).forEach((skill) => {
+            if (!skills.skills[skill]) {
+              skills.skills[`-=${skill}`] = null;
+            }
+          });
+
+          actor.update({
+            data: {
+              skills: skills.skills,
+            },
+          });
+        } catch (err) {
+          CONFIG.logger.warn(err);
         }
-      });
-
-      actor.update({
-        data: {
-          skills: skills.skills,
-        },
-      });
+      }
     });
   }
 

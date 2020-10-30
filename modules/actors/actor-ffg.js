@@ -528,39 +528,51 @@ export class ActorFFG extends Actor {
     Object.keys(data.skills).forEach((key) => {
       let total = 0;
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Rank");
+
+      const skillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Rank", true);
+      total += skillValues.total;
+      skillValues.sources.push({ modtype: "purchased", key: "purchased", name: "purchased", value: data.attributes[key].value });
 
       /* Career Skills */
       if (!data.skills[key].careerskill) {
-        data.skills[key].careerskill = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill");
+        const careerSkillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill", true);
+        data.skills[key].careerskill = careerSkillValues.total;
+        data.skills[key].careerskillsource = careerSkillValues.sources;
       }
 
-      data.skills[key].boost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost");
-      const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback");
-      const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback");
+      const boostValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost", true);
+      data.skills[key].boost = boostValues.total;
+      data.skills[key].boostsource = boostValues.sources;
 
-      const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost");
+      const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback", true);
+      const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback", true);
+
+      const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
       data.skills[key].force = 0;
-      if (forceboost > 0) {
+      if (forceboost.total > 0) {
         const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
         if (forcedice > 0) {
           data.skills[key].force = forcedice;
+          data.skills[key].forcesource = forceboost.sources;
         }
       }
 
-      if (remsetback >= setback) {
+      if (remsetback.total >= setback.total) {
         data.skills[key].setback = 0;
-        data.skills[key].remsetback = remsetback - setback;
+        data.skills[key].remsetback = remsetback.total - setback.total;
       } else {
-        data.skills[key].setback = setback - remsetback;
+        data.skills[key].setback = setback.total - remsetback.total;
         data.skills[key].remsetback = 0;
       }
+      data.skills[key].setbacksource = setback.sources;
+      data.skills[key].remsetbacksource = remsetback.sources;
 
       if (isPC) {
         data.skills[key].rank = total > 6 ? 6 : total;
       } else {
         data.skills[key].rank = total;
       }
+      data.skills[key].ranksource = skillValues.sources;
     });
   }
 
