@@ -1034,6 +1034,14 @@ img {
   line-height: 20px;
 }
 
+.starwarsffg .dice-pool-dialog .pool-additional {
+  border: 1px solid #999;
+}
+
+.starwarsffg .dice-pool-dialog .pool-additional input[type="button"] {
+  margin: 0 3px;
+}
+
 .starwarsffg .ffgDiceArray {
   display: flex;
   flex-direction: row;

@@ -1,3 +1,5 @@
+import PopoutEditor from "../popout-editor.js";
+
 export default class DiceHelpers {
   static async rollSkill(obj, event, type) {
     const data = obj.getData();
@@ -36,9 +38,17 @@ export default class DiceHelpers {
   static async displayRollDialog(data, dicePool, description, skillName, item) {
     const id = randomID();
 
+    const dicesymbols = {
+      advantage: PopoutEditor.renderDiceImages("[AD]"),
+      success: PopoutEditor.renderDiceImages("[SU]"),
+      threat: PopoutEditor.renderDiceImages("[TH]"),
+      failure: PopoutEditor.renderDiceImages("[FA]"),
+    };
+
     const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
       dicePool,
       id,
+      dicesymbols,
     });
 
     new Dialog(
@@ -53,7 +63,7 @@ export default class DiceHelpers {
               const container = document.getElementById(id);
               const finalPool = DicePoolFFG.fromContainer(container);
 
-              const roll = new game.ffg.RollFFG(finalPool.renderDiceExpression(), item);
+              const roll = new game.ffg.RollFFG(finalPool.renderDiceExpression(), item, finalPool);
               roll.toMessage({
                 user: game.user._id,
                 speaker: data,

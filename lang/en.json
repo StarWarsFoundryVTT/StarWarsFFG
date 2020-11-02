@@ -345,5 +345,9 @@
   "SWFFG.DowngradeDifficulty": "Downgrade Difficulty",
   "SWFFG.SendToChat": "Send to Chat",
   "SWFFG.ChooseInitiative": "Choose your Initiative method",
-  "SWFFG.ResetSkillList": "Reset Skills List"
+  "SWFFG.ResetSkillList": "Reset Skills List",
+  "SWFFG.Advantage": "Advantage",
+  "SWFFG.Success": "Success",
+  "SWFFG.Threat": "Threat",
+  "SWFFG.Failure": "Failure"
 }

@@ -8,6 +8,14 @@
   </div>
   <div style="text-align: center;"><span>Left click to increase dice, right click to decrease.</span></div>
   <table>
+    <tr>
+      <td class="pool-additional">{{{dicesymbols.advantage}}}<input type="button" name="advantage" min="0" />{{localize "SWFFG.Advantage"}}</td>
+      <td class="pool-additional">{{{dicesymbols.success}}}<input type="button" name="success" min="0" />{{localize "SWFFG.Success"}}</td>
+      <td class="pool-additional">{{{dicesymbols.threat}}}<input type="button" name="threat" min="0" />{{localize "SWFFG.Threat"}}</td>
+      <td class="pool-additional">{{{dicesymbols.failure}}}<input type="button" name="failure" min="0" />{{localize "SWFFG.Failure"}}</td>
+    </tr>
+  </table>
+  <table>
     <tr class="pool-container flex-group-center">
       <td><img src="systems/starwarsffg/images/dice/starwars/yellow.png" width="40" height="40" /></td>
       <td>
@@ -68,7 +76,7 @@
     input.value = pool[type];
   }
 
-  function setupInput(scope, pool, type) {
+  function setupInput(scope, pool, type, allowNegative = false) {
       const input = scope.querySelector(`[name="${type}"`);
       input.value = pool[type];
 
@@ -78,7 +86,7 @@
         updatePreview(scope, pool);
       });
       input.addEventListener("contextmenu", (event) => {
-        if (event.target.value > 0) {
+        if (event.target.value > 0 || allowNegative) {
           event.target.value--;
           pool[type] = parseInt(event.target.value);
           updatePreview(scope, pool);
@@ -136,5 +144,10 @@
       setupInput(scope, pool, "boost");
       setupInput(scope, pool, "setback");
       setupInput(scope, pool, "force");
+
+      setupInput(scope, pool, "advantage", true);
+      setupInput(scope, pool, "success", true);
+      setupInput(scope, pool, "threat", true);
+      setupInput(scope, pool, "failure", true);
   })();
 </script>
