@@ -1034,6 +1034,14 @@ img {
   line-height: 20px;
 }
 
+.starwarsffg .dice-pool-dialog .pool-additional {
+  border: 1px solid #999;
+}
+
+.starwarsffg .dice-pool-dialog .pool-additional input[type="button"] {
+  margin: 0 3px;
+}
+
 .starwarsffg .ffgDiceArray {
   display: flex;
   flex-direction: row;
@@ -2503,17 +2511,6 @@ img {
   right: 5px;
   bottom: 2px;
   z-index: 10;
-}
-
-.starwarsffg .item-card img.profile-img {
-  flex: 0 0 100px;
-  height: 124px;
-  width: auto;
-  max-width: 124px;
-  border: 0;
-  margin: auto;
-  -o-object-fit: contain;
-  object-fit: contain;
 }
 
 .og-character-import {

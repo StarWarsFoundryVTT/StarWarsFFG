@@ -19,6 +19,12 @@
       line-height: 20px;
     }
   }
+  .pool-additional {
+    border: 1px solid #999;
+    input[type="button"] {
+      margin: 0 3px;
+    }
+  }
 }
 
 .ffgDiceArray {
@@ -74,3 +80,4 @@
     color: darkred;
   }
 }
+
