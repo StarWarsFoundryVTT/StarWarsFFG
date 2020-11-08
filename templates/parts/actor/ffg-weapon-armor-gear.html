@@ -26,7 +26,7 @@
       <div class="skill-roll">
         <div class="roll-button"><div class="skill-label rollable">{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</div></div>
       </div>
-      <div>{{item.data.damage.value}} {{#if (ne item.data.damage.value item.data.damage.adjusted)}}({{item.data.damage.adjusted}}){{/if}}</div>
+      <div>{{item.data.damage.value}} {{#if (and (ne item.data.damage.value item.data.damage.adjusted) (or (gt item.data.damage.adjusted.length 0) (gt item.data.damage.adjusted 0)))}}({{item.data.damage.adjusted}}){{/if}}</div>
       <div>{{localize item.data.range.label}}</div>
       <div>{{item.data.crit.value}}</div>
       <!-- <div>{{item.data.encumbrance.value}}</div> -->
