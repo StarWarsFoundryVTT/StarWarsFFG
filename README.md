@@ -35,6 +35,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 08/11/2020 - Cstadther - Fixed issue where safe description was causing error preventing items from loading correctly. Added handlebars helper to allow for rendering dice symbols on templates.
 - 02/11/2020 - Cstadther - Enhancement 374 - Added ability to add Success/Failure/Advantage/Threat to dice rolls.  Refactored dice rolling into seperate files.
 - 30/10/2020 - Cstadther - Enhancement 407 - Added tooltip on dice pool displaying source of dice (ranks, boost, setback, remove setback)
 - 28/10/2020 - Cstadther - Bug Fix - Migrate existing `skills.json` file to game settings if exists.
