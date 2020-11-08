@@ -1279,6 +1279,10 @@ Hooks.once("init", async function () {
     }
   });
 
+  Handlebars.registerHelper("ffgDiceSymbols", function (text) {
+    return PopoutEditor.renderDiceImages(text);
+  });
+
   Handlebars.registerHelper("object", function ({ hash }) {
     return hash;
   });
