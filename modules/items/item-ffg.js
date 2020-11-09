@@ -22,7 +22,6 @@ export class ItemFFG extends Item {
     const data = itemData.data;
 
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description);
-    data.safe_spec = PopoutEditor.renderDiceImages(data.special?.value.replace(/(<([^>]+)>)/gi, ""));
 
     // perform localisation of dynamic values
     switch (this.type) {
@@ -199,7 +198,7 @@ export class ItemFFG extends Item {
     // General equipment properties
     if (this.type !== "talent") {
       if (data.hasOwnProperty("special")) {
-        if (data.safe_spec) props.push("<div>Special qualities: " + data.special.value + "</div");
+        props.push("<div>Special qualities: " + data.special.value + "</div");
       }
       if (data.hasOwnProperty("equippable")) {
         props.push(game.i18n.localize(data.equippable.equipped ? "SWFFG.Equipped" : "SWFFG.Unequipped"));
