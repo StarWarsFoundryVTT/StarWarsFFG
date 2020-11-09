@@ -34,6 +34,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 09/11/2020 - Esrin - Enhancement 395 - Added expanding description for force powers. Known issue: Right click -> Send to Chat context menu on force powers double-calls, causing it to immediately close. A solution for this unwanted event propagation will be in the works, but is not currently supported by Foundry's ContextMenu implementation.
 - 09/11/2020 - Esrin - Updated minions to use the new talentList logic and display.
 - 09/11/2020 - Esrin - Removed old references to safe_desc and safe_spec as these are no longer used.
 - 09/11/2020 - Cstadther - Fixed issue for career when attributes are empty, corrected so use `setProperty`.

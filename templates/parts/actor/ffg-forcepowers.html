@@ -13,22 +13,20 @@
         {{item.name}}
       </div>
       <div class="force-powers">
-        <table class="force-powers">
-          <thead>
-            <tr>
-              <th>{{localize "SWFFG.SkillsName"}}</th>
-              <th>{{localize "SWFFG.SkillsRank"}}</th>
-            </tr>
-          </thead>
-          <tbody>
+        <ul>
+          <li class="talents-header flexrow">
+            <div class="header-name">{{localize "SWFFG.SkillsName"}}</div>
+            <div>{{localize "SWFFG.SkillsRank"}}</div>
+          </li>
+          <ul class="items-list">
             {{#each item.powerUpgrades as |upgrade name|}}
-            <tr>
-              <td>{{upgrade.name}}</td>
-              <td>{{upgrade.rank}}</td>
-            </tr>
+            <li class="force-power flexrow" data-item-id="{{item._id}}" data-desc="{{upgrade.description}}" data-upgrade-name="{{upgrade.name}}">
+              <div class="item-name">{{upgrade.name}}</div>
+              <div>{{upgrade.rank}}</div>
+            </li>
             {{/each}}
-          </tbody>
-        </table>
+          </ul>
+        </ul>
       </div>
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
