@@ -2,7 +2,7 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
-import Helpers from "../helpers/common.js";
+import PopoutEditor from "../popout-editor.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
@@ -183,6 +183,19 @@ export class ActorSheetFFG extends ActorSheet {
         },
       },
     ]);
+    // TODO: Figure out how to prevent event propagation on this ContextMenu to allow for proper behaviour
+    new ContextMenu(html, "li.force-power", [
+      {
+        name: game.i18n.localize("SWFFG.SendToChat"),
+        icon: '<i class="far fa-comment"></i>',
+        callback: (li) => {
+          const itemId = li.data("itemId");
+          const desc = li.data("desc");
+          const name = li.data("upgradeName");
+          this._forcePowerDetailsToChat(itemId, desc, name);
+        },
+      },
+    ]);
 
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);
@@ -238,6 +251,23 @@ export class ActorSheetFFG extends ActorSheet {
         if (item?.sheet) {
           if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
           else this._itemDisplayDetails(item, ev);
+        }
+      }
+    });
+
+    // Toggle Force Power details
+    html.find(".force-power").click(async (ev) => {
+      ev.stopPropagation();
+      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
+        const li = $(ev.currentTarget);
+        const itemId = li.data("itemId");
+        const item = this.actor.getOwnedItem(itemId);
+        const desc = li.data("desc");
+
+        if (item?.sheet) {
+          if (item?.type == "forcepower") {
+            this._forcePowerDisplayDetails(desc, ev);
+          }
         }
       }
     });
@@ -310,6 +340,39 @@ export class ActorSheetFFG extends ActorSheet {
       ).render(true);
     });
 
+    // Edit Gear Quantities
+
+    html.find(".item-quantity .quantity.increase").click(async (ev) => {
+      ev.stopPropagation();
+      const li = $(ev.currentTarget).parents(".item");
+      let itemId = li.data("itemId");
+      let item = this.actor.getOwnedItem(itemId);
+      if (!item) {
+        item = game.items.get(itemId);
+
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+      }
+      item.update({ ["data.quantity.value"]: item.data.data.quantity.value + 1 });
+    });
+
+    html.find(".item-quantity .quantity.decrease").click(async (ev) => {
+      ev.stopPropagation();
+      const li = $(ev.currentTarget).parents(".item");
+      let itemId = li.data("itemId");
+      let item = this.actor.getOwnedItem(itemId);
+      if (!item) {
+        item = game.items.get(itemId);
+
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+      }
+      let count = item.data.data.quantity.value - 1 > 0 ? item.data.data.quantity.value - 1 : 0;
+      item.update({ ["data.quantity.value"]: count });
+    });
+
     // Roll Skill
     html
       .find(".roll-button")
@@ -348,6 +411,15 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
+
+    const dragDrop1 = new DragDrop({
+      dragSelector: ".skill",
+      dropSelector: ".macro",
+      permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+      callbacks: { dragstart: this._onSkillDragStart.bind(this) },
+    });
+
+    dragDrop1.bind($(`form.editable.${this.actor.data.type}`)[0]);
 
     $("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
       const a = event.currentTarget;
@@ -396,6 +468,26 @@ export class ActorSheetFFG extends ActorSheet {
   }
 
   /**
+   * Display details of a Force Power.
+   * @private
+   */
+  _forcePowerDisplayDetails(desc, event) {
+    event.preventDefault();
+    let li = $(event.currentTarget);
+
+    // Toggle summary
+    if (li.hasClass("expanded")) {
+      let details = li.children(".item-details");
+      details.slideUp(200, () => details.remove());
+    } else {
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc)}</div>`);
+      li.append(div.hide());
+      div.slideDown(200);
+    }
+    li.toggleClass("expanded");
+  }
+
+  /**
    * Send details of an item to chat.
    * @private
    */
@@ -410,6 +502,36 @@ export class ActorSheetFFG extends ActorSheet {
 
     const itemDetails = item?.getItemDetails();
     const template = "systems/starwarsffg/templates/chat/item-card.html";
+    const html = await renderTemplate(template, { itemDetails, item });
+
+    const messageData = {
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: {
+        actor: this.actor._id,
+        token: this.actor.token,
+        alias: this.actor.name,
+      },
+    };
+    ChatMessage.create(messageData);
+  }
+
+  /**
+   * Send details of a force power to chat.
+   * @private
+   */
+  async _forcePowerDetailsToChat(itemId, desc, name) {
+    let item = this.actor.getOwnedItem(itemId);
+    if (!item) {
+      item = game.items.get(itemId);
+    }
+    if (!item) {
+      item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+    }
+
+    const itemDetails = { "desc": desc, "name": name };
+    const template = "systems/starwarsffg/templates/chat/force-power-card.html";
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
@@ -548,6 +670,29 @@ export class ActorSheetFFG extends ActorSheet {
     this.sheetHeight = this.position.height;
 
     actorUpdate(event, formData);
+  }
+
+  _onSkillDragStart(event) {
+    const li = event.currentTarget;
+
+    $(event.currentTarget).attr("data-item-actorid", this.actor.id);
+    const skill = li.dataset.ability;
+    const characteristic = li.dataset.characteristic;
+
+    if (skill && characteristic) {
+      const dragData = {
+        type: "CreateMacro",
+        actorId: this.actor.id,
+        data: {
+          skill,
+          characteristic,
+          type: "skill",
+        },
+      };
+      event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+      return true;
+    }
+    return false;
   }
 
   /**

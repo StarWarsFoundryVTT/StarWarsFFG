@@ -1,21 +1,46 @@
+const createMacroItem = async (macro) => {
+  const macroExists = game.macros.entities.find((m) => m.name === macro.name && m.command === macro.command);
+  if (!macroExists) {
+    return await Macro.create(macro);
+  }
+
+  return false;
+};
+
 // Simple function for handling the creation of rollable weapon macros on hotbarDrop event.
 export async function createFFGMacro(data, slot) {
-  if (data.type !== "Transfer") return;
-  if (data.data.type !== "weapon") return;
+  if (data.type !== "Transfer" && data.type !== "CreateMacro") return;
+  if (data.data.type !== "weapon" && data.data.type !== "skill") return;
 
-  if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned weapon items.");
-  const item = data.data;
-  // Create the macro command
-  const command = `game.ffg.DiceHelpers.rollItem(\"${item._id}\", \"${data.actorId}\");`;
-  let macro = game.macros.entities.find((m) => m.name === item.name && m.command === command);
-  if (!macro) {
-    macro = await Macro.create({
+  let macro;
+  if (data.data.type === "weapon") {
+    if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned weapon items.");
+    const item = data.data;
+    // Create the macro command
+    const command = `game.ffg.DiceHelpers.rollItem(\"${item._id}\", \"${data.actorId}\");`;
+    macro = await createMacroItem({
       name: item.name,
       type: "script",
       img: item.img,
       command: command,
     });
+  } else if (data.data.type === "skill") {
+    const actor = game.actors.get(data.actorId);
+    const command = `const actor = game.actors.get("${data.actorId}");
+    const skill = actor.data.data.skills["${data.data.skill}"];
+    const characteristic = actor.data.data.characteristics["${data.data.characteristic}"];
+    const actorSheet = actor.sheet.getData();
+    game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, 2, actorSheet);`;
+    macro = await createMacroItem({
+      name: `${actor.name}-${data.data.skill}`,
+      type: "script",
+      command: command,
+    });
   }
-  game.user.assignHotbarMacro(macro, slot);
+
+  if (macro) {
+    game.user.assignHotbarMacro(macro, slot);
+  }
+
   return false;
 }

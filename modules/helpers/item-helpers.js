@@ -33,7 +33,9 @@ export default class ItemHelpers {
     }
 
     // recombine attributes to formData
-    formData.data.attributes = attributes;
+    if (Object.keys(attributes).length > 0) {
+      setProperty(formData, `data.attributes`, attributes);
+    }
 
     // Update the Item
     this.item.data.flags.loaded = false;

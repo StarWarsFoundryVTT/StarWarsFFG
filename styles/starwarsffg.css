@@ -547,6 +547,10 @@ img {
   padding-bottom: 0;
 }
 
+.starwarsffg .item-quantity {
+  position: relative;
+}
+
 .starwarsffg .grid {
   margin-top: 0;
 }
@@ -714,6 +718,21 @@ img {
 
 .starwarsffg form {
   overflow: hidden;
+}
+
+.starwarsffg .quantity {
+  position: absolute;
+  top: 0;
+}
+
+.starwarsffg .quantity.increase {
+  right: 25%;
+  cursor: pointer;
+}
+
+.starwarsffg .quantity.decrease {
+  left: 25%;
+  cursor: pointer;
 }
 
 .starwarsffg .talent-body {
@@ -1013,6 +1032,14 @@ img {
 
 .starwarsffg .dice-pool-dialog .upgrade-buttons button {
   line-height: 20px;
+}
+
+.starwarsffg .dice-pool-dialog .pool-additional {
+  border: 1px solid #999;
+}
+
+.starwarsffg .dice-pool-dialog .pool-additional input[type="button"] {
+  margin: 0 3px;
 }
 
 .starwarsffg .ffgDiceArray {
@@ -1353,6 +1380,10 @@ img {
   text-align: left;
 }
 
+.starwarsffg .skillsGrid .skillTable div.skill {
+  position: relative;
+}
+
 .starwarsffg .skillsGrid .skillTable div.skill > div {
   text-align: center;
 }
@@ -1446,6 +1477,22 @@ img {
 
 .starwarsffg .items .items-list .item .toggle-equipped.active {
   color: #191813;
+}
+
+.starwarsffg .items .items-list .force-power {
+  line-height: 24px;
+  padding: 3px 0;
+  border-bottom: 1px solid #bbb;
+  text-align: center;
+}
+
+.starwarsffg .items .items-list .force-power:hover {
+  background: rgba(25, 24, 19, 0.12);
+}
+
+.starwarsffg .items .items-list .force-power img {
+  flex: 0 0 24px;
+  margin-right: 5px;
 }
 
 .starwarsffg .items .items-list .item-name {
@@ -2028,6 +2075,11 @@ img {
   z-index: 500;
 }
 
+.starwarsffg .hover:hover .tooltip2 {
+  opacity: 1;
+  z-index: 500;
+}
+
 .starwarsffg .hover .tooltip {
   top: 30px;
   background-color: rgba(25, 24, 19, 0.8);
@@ -2038,6 +2090,29 @@ img {
   transition: opacity 0.5s;
   z-index: -500;
   padding: 0 10px;
+}
+
+.starwarsffg .hover .tooltip2 {
+  width: 100%;
+  height: -webkit-max-content;
+  height: -moz-max-content;
+  height: max-content;
+  min-width: 150px;
+  max-width: 360px;
+  position: absolute;
+  transition: opacity 0.5s;
+  left: 0;
+  background: #23221d;
+  border: 1px solid #000;
+  border-radius: 5px;
+  color: #EEE;
+  z-index: -500;
+  opacity: 0;
+  padding: 5px 10px;
+}
+
+.starwarsffg .hover .tooltip2 li {
+  text-align: left;
 }
 
 .starwarsffg .item-sheet-criticalinjury .charname input {
@@ -2452,17 +2527,6 @@ img {
   right: 5px;
   bottom: 2px;
   z-index: 10;
-}
-
-.starwarsffg .item-card img.profile-img {
-  flex: 0 0 100px;
-  height: 124px;
-  width: auto;
-  max-width: 124px;
-  border: 0;
-  margin: auto;
-  -o-object-fit: contain;
-  object-fit: contain;
 }
 
 .og-character-import {

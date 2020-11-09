@@ -1,4 +1,5 @@
 <div class="starwarsffg dice-roll">
+  {{#if publicRoll }}
   <div class="dice-result">
     {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
@@ -17,7 +18,7 @@
       <div class="specials">
         <h5>
           Special Qualities:
-          <div class="damage-value">{{{data.data.special.value}}}</div>
+          <div class="damage-value">{{{ffgDiceSymbols data.data.special.value}}}</div>
         </h5>
       </div>
       {{/if}}
@@ -29,6 +30,11 @@
         <li class="roll">{{{this.result}}}</li>
         {{/each}} {{/if}} {{/each}}
       </ol>
+    </div>
+    <div>
+      {{#each addedResults}} {{#if (ne this.value 0)}}
+      <div>{{#if this.negative}}-{{else}}+{{/if}}{{this.value}}{{{this.symbol}}}</div>
+      {{/if}} {{/each}}
     </div>
     {{/if}} {{{tooltip}}} {{#if hasStandard}}
     <h4 class="dice-total">{{total}}</h4>
@@ -44,4 +50,5 @@
     </ul>
     {{/if}} {{/if}}
   </div>
+  {{/if}}
 </div>

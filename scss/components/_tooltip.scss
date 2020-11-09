@@ -10,6 +10,10 @@
       opacity: 1;
       z-index: 500;
     }
+    .tooltip2 {
+      opacity: 1;
+      z-index: 500;
+    }
   }
   .tooltip {
     top: 30px;
@@ -26,4 +30,28 @@
     z-index: -500;
     padding: 0 10px;
   }
+  .tooltip2 {
+    li {
+      text-align: left;
+    }
+    width: 100%;
+    height: max-content;
+    min-width: 150px;
+    max-width: 360px;
+    position: absolute;
+    -webkit-transition: opacity 0.5s;
+    -moz-transition: opacity 0.5s;
+    -ms-transition: opacity 0.5s;
+    -o-transition: opacity 0.5s;
+    transition: opacity 0.5s;
+    left: 0;
+    background: #23221d;
+    border: 1px solid #000;
+    border-radius: 5px;
+    color: #EEE;
+    z-index: -500;
+    opacity: 0;
+    padding: 5px 10px;
+  }
 }
+

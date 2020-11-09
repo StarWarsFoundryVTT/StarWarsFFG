@@ -68,38 +68,10 @@
     </div>
 
     {{!-- Talents Tab --}}
-    <div class="tab talents" data-group="primary" data-tab="talents">
+    <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
-      <table class="talent-list">
-        <thead>
-          <tr>
-            <th>{{localize "SWFFG.Talents"}}</th>
-            <th>{{localize "SWFFG.TalentsActivation"}}</th>
-            <th>{{localize "SWFFG.TalentsRank"}}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each actor.items as |item id|}} {{#iff item.type '==' 'talent'}}
-          <tr class="item" data-item-id="{{item._id}}">
-            <td class="item-name hover">
-              {{item.name}}
-              <div class="tooltip">{{{item.safe_desc}}}</div>
-            </td>
-            <td>{{localize item.data.activation.label}}</td>
-            <td>
-              {{#if item.data.ranks.ranked}} {{item.data.ranks.current}} {{else}} N/A {{/if}}
-            </td>
-            <td>
-              <div class="item-controls">
-                <!-- <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a> -->
-                <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-              </div>
-            </td>
-          </tr>
-          {{/iff}} {{/each}}
-        </tbody>
-      </table>
+      <!-- New talent list snippet -->
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}

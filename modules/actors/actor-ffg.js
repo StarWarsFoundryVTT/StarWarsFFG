@@ -135,6 +135,68 @@ export class ActorFFG extends Actor {
         skill.rank = data.attributes[key].value;
       }
     }
+
+    // Loop through owned talent items and create the data.talentList object
+    const globalTalentList = [];
+    const talents = actorData.items.filter((item) => {
+      return item.type === "talent";
+    });
+    talents.forEach((element) => {
+      const item = {
+        name: element.name,
+        itemId: element._id,
+        description: element.data.description,
+        activation: element.data.activation.value,
+        activationLabel: element.data.activation.label,
+        isRanked: element.data.ranks.ranked,
+        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
+      };
+      if (item.isRanked) {
+        item.rank = element.data.ranks.current;
+      } else {
+        item.rank = "N/A";
+      }
+
+      if (CONFIG.FFG.theme !== "starwars") {
+        item.tier = element.data.tier;
+      }
+
+      let index = globalTalentList.findIndex((obj) => {
+        return obj.name === item.name;
+      });
+
+      if (index < 0 || !item.isRanked) {
+        globalTalentList.push(item);
+      } else {
+        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id });
+        globalTalentList[index].rank += element.data.ranks.current;
+        if (CONFIG.FFG.theme !== "starwars") {
+          globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));
+        }
+      }
+    });
+    if (CONFIG.FFG.theme !== "starwars") {
+      globalTalentList.sort((a, b) => {
+        let comparison = 0;
+        if (a.tier > b.tier) {
+          comparison = 1;
+        } else if (a.tier < b.tier) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+    } else {
+      globalTalentList.sort((a, b) => {
+        let comparison = 0;
+        if (a.name > b.name) {
+          comparison = 1;
+        } else if (a.name < b.name) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+    }
+    data.talentList = globalTalentList;
   }
 
   /**
@@ -159,7 +221,6 @@ export class ActorFFG extends Actor {
         const item = JSON.parse(JSON.stringify(element.data.talents[talent]));
         item.firstSpecialization = element._id;
         item.source = [{ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
-        item.safe_desc = PopoutEditor.renderDiceImages(item.description.replace(/(<([^>]+)>)/gi, ""));
         if (item.isRanked) {
           item.rank = element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
         } else {
@@ -190,7 +251,6 @@ export class ActorFFG extends Actor {
         activation: element.data.activation.value,
         activationLabel: element.data.activation.label,
         isRanked: element.data.ranks.ranked,
-        safe_desc: PopoutEditor.renderDiceImages(element.data.description.replace(/(<([^>]+)>)/gi, "")),
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
       };
 
@@ -258,7 +318,11 @@ export class ActorFFG extends Actor {
             const equippedEncumbrance = +item.data.encumbrance.value - 3;
             encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
           } else {
-            encum += +item.data.encumbrance.value;
+            let count = 1;
+            if (item.data?.quantity?.value) {
+              count = item.data.quantity.value;
+            }
+            encum += +item.data.encumbrance.value * count;
           }
         }
       } catch (err) {
@@ -491,12 +555,14 @@ export class ActorFFG extends Actor {
       }
       if (key === "Wounds") {
         if (data.attributes.Wounds.value === 0) {
-          total = data.attributes.Brawn.value; // + ModifierHelpers.getBaseValue(actorData.items, "Brawn", "Characteristic");
+          const speciesBrawn = ModifierHelpers.getBaseValue(actorData.items, "Brawn", "Characteristic");
+          total = data.attributes.Brawn.value + speciesBrawn;
         }
       }
       if (key === "Strain") {
         if (data.attributes.Strain.value === 0) {
-          total = data.attributes.Willpower.value; // + ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
+          const speciesWillpower = ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
+          total = data.attributes.Willpower.value + speciesWillpower;
         }
       }
       if (key === "Encumbrance") {
@@ -522,39 +588,51 @@ export class ActorFFG extends Actor {
     Object.keys(data.skills).forEach((key) => {
       let total = 0;
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Rank");
+
+      const skillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Rank", true);
+      total += skillValues.total;
+      skillValues.sources.push({ modtype: "purchased", key: "purchased", name: "purchased", value: data.attributes[key].value });
 
       /* Career Skills */
       if (!data.skills[key].careerskill) {
-        data.skills[key].careerskill = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill");
+        const careerSkillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill", true);
+        data.skills[key].careerskill = careerSkillValues.total;
+        data.skills[key].careerskillsource = careerSkillValues.sources;
       }
 
-      data.skills[key].boost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost");
-      const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback");
-      const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback");
+      const boostValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost", true);
+      data.skills[key].boost = boostValues.total;
+      data.skills[key].boostsource = boostValues.sources;
 
-      const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost");
+      const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback", true);
+      const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback", true);
+
+      const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
       data.skills[key].force = 0;
-      if (forceboost > 0) {
+      if (forceboost.total > 0) {
         const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
         if (forcedice > 0) {
           data.skills[key].force = forcedice;
+          data.skills[key].forcesource = forceboost.sources;
         }
       }
 
-      if (remsetback >= setback) {
+      if (remsetback.total >= setback.total) {
         data.skills[key].setback = 0;
-        data.skills[key].remsetback = remsetback - setback;
+        data.skills[key].remsetback = remsetback.total - setback.total;
       } else {
-        data.skills[key].setback = setback - remsetback;
+        data.skills[key].setback = setback.total - remsetback.total;
         data.skills[key].remsetback = 0;
       }
+      data.skills[key].setbacksource = setback.sources;
+      data.skills[key].remsetbacksource = remsetback.sources;
 
       if (isPC) {
         data.skills[key].rank = total > 6 ? 6 : total;
       } else {
         data.skills[key].rank = total;
       }
+      data.skills[key].ranksource = skillValues.sources;
     });
   }
 
