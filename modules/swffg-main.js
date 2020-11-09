@@ -144,7 +144,7 @@ Hooks.once("init", async function () {
       decimals: 2,
     };
     if (canvas) {
-      if (canvas.groupmanager.window) {
+      if (canvas?.groupmanager?.window) {
         canvas.groupmanager.window.render(true);
       }
     }
@@ -985,7 +985,7 @@ Hooks.once("init", async function () {
       owned: game.i18n.localize("SWFFG.SettingsPCListModeOwned"),
     },
     onChange: (rule) => {
-      const groupmanager = canvas.groupmanager.window;
+      const groupmanager = canvas?.groupmanager?.window;
       if (groupmanager) {
         groupmanager.render();
       }
@@ -1000,7 +1000,7 @@ Hooks.once("init", async function () {
     config: false,
     type: Number,
     onChange: (rule) => {
-      const groupmanager = canvas.groupmanager.window;
+      const groupmanager = canvas?.groupmanager?.window;
       if (groupmanager) {
         groupmanager.render();
       }
@@ -1016,7 +1016,7 @@ Hooks.once("init", async function () {
     config: false,
     type: Number,
     onChange: (rule) => {
-      const groupmanager = canvas.groupmanager.window;
+      const groupmanager = canvas?.groupmanager?.window;
       if (groupmanager) {
         groupmanager.render();
       }
