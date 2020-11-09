@@ -14,7 +14,7 @@
         </div>
 
         {{#each ../data.skills as |skill id|}} {{#if (eq skill.type skilltype.type) }}
-        <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill">
+        <div data-ability="{{id}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill" draggable="true">
           <div class="pure-u-12-24">
             {{skill.label}} {{#with (lookup ../../this.FFG.characteristics [characteristic])~}} (
             <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">{{localize abrev}}</div>

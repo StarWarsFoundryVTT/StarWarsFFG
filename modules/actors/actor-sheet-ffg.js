@@ -382,6 +382,15 @@ export class ActorSheetFFG extends ActorSheet {
 
     dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
 
+    const dragDrop1 = new DragDrop({
+      dragSelector: ".skill",
+      dropSelector: ".macro",
+      permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+      callbacks: { dragstart: this._onSkillDragStart.bind(this) },
+    });
+
+    dragDrop1.bind($(`form.editable.${this.actor.data.type}`)[0]);
+
     $("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
       const a = event.currentTarget;
       const min = parseInt($(a).attr("min"), 10);
@@ -581,6 +590,29 @@ export class ActorSheetFFG extends ActorSheet {
     this.sheetHeight = this.position.height;
 
     actorUpdate(event, formData);
+  }
+
+  _onSkillDragStart(event) {
+    const li = event.currentTarget;
+
+    $(event.currentTarget).attr("data-item-actorid", this.actor.id);
+    const skill = li.dataset.ability;
+    const characteristic = li.dataset.characteristic;
+
+    if (skill && characteristic) {
+      const dragData = {
+        type: "CreateMacro",
+        actorId: this.actor.id,
+        data: {
+          skill,
+          characteristic,
+          type: "skill",
+        },
+      };
+      event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+      return true;
+    }
+    return false;
   }
 
   /**
