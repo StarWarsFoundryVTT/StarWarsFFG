@@ -23,7 +23,6 @@ For more info and documentation including various "How-To" guides, please check 
 4. Copy the Following link into the "Manifest URL" section:
    https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/master/system.json
 5. Click Install, after a few seconds the system should be installed.
-6. Install (if not already done) "Special Dice Roller" module, see below for details.
 
 # Contributing
 
@@ -31,14 +30,15 @@ Please see [CONTRIBUTING.md](https://github.com/StarWarsFoundryVTT/StarWarsFFG/b
 
 # To-do
 
-See our current production goals and progress [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/projects/1).
+See our current production goals and progress [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/projects/).
 
 # Changelog
 
+- 09/11/2020 - Esrin - Removed legacy mention of Special-Dice-Roller from README.md and fixed link to current projects.
 - 09/11/2020 - Cstadther - Fix 437 - Fixed issue with Destiny Pool update when Group Manager is not active yet.
 - 08/11/2020 - Cstadther - Enhancement 434 - Added drag-drop skills to macro bar.
 - 08/11/2020 - Cstadther - Fixed issue where safe description was causing error preventing items from loading correctly. Added handlebars helper to allow for rendering dice symbols on templates.
-- 02/11/2020 - Cstadther - Enhancement 374 - Added ability to add Success/Failure/Advantage/Threat to dice rolls.  Refactored dice rolling into seperate files.
+- 02/11/2020 - Cstadther - Enhancement 374 - Added ability to add Success/Failure/Advantage/Threat to dice rolls. Refactored dice rolling into seperate files.
 - 30/10/2020 - Cstadther - Enhancement 407 - Added tooltip on dice pool displaying source of dice (ranks, boost, setback, remove setback)
 - 28/10/2020 - Cstadther - Bug Fix - Migrate existing `skills.json` file to game settings if exists.
 - 28/10/2020 - Cstadther - Bug Fix - Converted Alternate Skill List arrays to use settings instead of file to fix issue where uploading to world folder has been restricted.
