@@ -4,7 +4,7 @@
   "description": "A system for playing Star Wars FFG games.",
   "version": "1.01",
   "minimumCoreVersion": "0.7.3",
-  "compatibleCoreVersion": "0.7.5",
+  "compatibleCoreVersion": "0.7.6",
   "templateVersion": 1,
   "author": "Esrin, CStadther and Jaxxa",
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
