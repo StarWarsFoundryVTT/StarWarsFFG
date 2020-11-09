@@ -34,6 +34,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 09/11/2020 - Esrin - Updated minions to use the new talentList logic and display.
 - 09/11/2020 - Esrin - Removed old references to safe_desc and safe_spec as these are no longer used.
 - 09/11/2020 - Cstadther - Fixed issue for career when attributes are empty, corrected so use `setProperty`.
 - 09/11/2020 - Esrin - Removed legacy mention of Special-Dice-Roller from README.md and fixed link to current projects.

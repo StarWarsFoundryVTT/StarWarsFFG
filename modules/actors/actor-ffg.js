@@ -135,6 +135,68 @@ export class ActorFFG extends Actor {
         skill.rank = data.attributes[key].value;
       }
     }
+
+    // Loop through owned talent items and create the data.talentList object
+    const globalTalentList = [];
+    const talents = actorData.items.filter((item) => {
+      return item.type === "talent";
+    });
+    talents.forEach((element) => {
+      const item = {
+        name: element.name,
+        itemId: element._id,
+        description: element.data.description,
+        activation: element.data.activation.value,
+        activationLabel: element.data.activation.label,
+        isRanked: element.data.ranks.ranked,
+        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
+      };
+      if (item.isRanked) {
+        item.rank = element.data.ranks.current;
+      } else {
+        item.rank = "N/A";
+      }
+
+      if (CONFIG.FFG.theme !== "starwars") {
+        item.tier = element.data.tier;
+      }
+
+      let index = globalTalentList.findIndex((obj) => {
+        return obj.name === item.name;
+      });
+
+      if (index < 0 || !item.isRanked) {
+        globalTalentList.push(item);
+      } else {
+        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id });
+        globalTalentList[index].rank += element.data.ranks.current;
+        if (CONFIG.FFG.theme !== "starwars") {
+          globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));
+        }
+      }
+    });
+    if (CONFIG.FFG.theme !== "starwars") {
+      globalTalentList.sort((a, b) => {
+        let comparison = 0;
+        if (a.tier > b.tier) {
+          comparison = 1;
+        } else if (a.tier < b.tier) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+    } else {
+      globalTalentList.sort((a, b) => {
+        let comparison = 0;
+        if (a.name > b.name) {
+          comparison = 1;
+        } else if (a.name < b.name) {
+          comparison = -1;
+        }
+        return comparison;
+      });
+    }
+    data.talentList = globalTalentList;
   }
 
   /**
