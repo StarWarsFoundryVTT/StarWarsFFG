@@ -159,7 +159,9 @@ export class ActorFFG extends Actor {
         const item = JSON.parse(JSON.stringify(element.data.talents[talent]));
         item.firstSpecialization = element._id;
         item.source = [{ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
-        item.safe_desc = PopoutEditor.renderDiceImages(item.description.replace(/(<([^>]+)>)/gi, ""));
+        if (item?.description) {
+          item.safe_desc = PopoutEditor.renderDiceImages(item.description.replace(/(<([^>]+)>)/gi, ""));
+        }
         if (item.isRanked) {
           item.rank = element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
         } else {
@@ -190,7 +192,7 @@ export class ActorFFG extends Actor {
         activation: element.data.activation.value,
         activationLabel: element.data.activation.label,
         isRanked: element.data.ranks.ranked,
-        safe_desc: PopoutEditor.renderDiceImages(element.data.description.replace(/(<([^>]+)>)/gi, "")),
+        safe_desc: element?.data?.description ? PopoutEditor.renderDiceImages(element.data.description.replace(/(<([^>]+)>)/gi, "")) : "",
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
       };
 
