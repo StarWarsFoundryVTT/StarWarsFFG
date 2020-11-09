@@ -34,6 +34,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 09/11/2020 - Esrin - Updated version and download link to release v1.1.
+- 09/11/2020 - Esrin - Confirmed Foundry VTT 0.7.6 compatibility.
 - 09/11/2020 - Esrin - Enhancement 395 - Added expanding description for force powers. Known issue: Right click -> Send to Chat context menu on force powers double-calls, causing it to immediately close. A solution for this unwanted event propagation will be in the works, but is not currently supported by Foundry's ContextMenu implementation.
 - 09/11/2020 - Esrin - Updated minions to use the new talentList logic and display.
 - 09/11/2020 - Esrin - Removed old references to safe_desc and safe_spec as these are no longer used.
