@@ -596,7 +596,7 @@ export class ActorFFG extends Actor {
       /* Career Skills */
       if (!data.skills[key].careerskill) {
         const careerSkillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill", true);
-        data.skills[key].careerskill = careerSkillValues.total;
+        data.skills[key].careerskill = careerSkillValues.checked;
         data.skills[key].careerskillsource = careerSkillValues.sources;
       }
 

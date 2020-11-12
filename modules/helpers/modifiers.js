@@ -166,6 +166,9 @@ export default class ModifierHelpers {
     }
 
     if (modtype === "Career Skill" || modtype === "Force Boost") {
+      if (includeSource) {
+        return { checked, sources };
+      }
       return checked;
     }
 
