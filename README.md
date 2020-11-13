@@ -34,6 +34,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 13/11/2020 - Cstadther - Fixed issue with uploading OggDude images to The Forge asset library.
 - 12/11/2020 - Cstadther - Fixed issue where career skills were not being marked correctly.
 - 09/11/2020 - Esrin - Updated version and download link to release v1.1.
 - 09/11/2020 - Esrin - Confirmed Foundry VTT 0.7.6 compatibility.
