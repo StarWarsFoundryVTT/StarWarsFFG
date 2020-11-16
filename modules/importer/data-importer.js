@@ -165,7 +165,7 @@ export default class DataImporter extends FormApplication {
       }
 
       await this.asyncForEach(importFiles, async (file) => {
-        if (!zip.files[file.file].dir) {
+        if (zip.files[file.file] && !zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
           const xmlDoc = ImportHelpers.stringToXml(data);
 
@@ -1839,9 +1839,13 @@ export default class DataImporter extends FormApplication {
     Object.values(files).findIndex((file) => {
       if (file.name.includes(`/${name}.xml`) || (isDirectory && file.name.includes(`/${name}`))) {
         this._importLogger(`Found file ${file.name}`);
+        let filename = file.name;
+        if (file.name.includes(`.xml`) && isDirectory) {
+          filename = `${file.name.substring(0, file.name.lastIndexOf("/"))}/`;
+        }
         $(`#import${name.replace(" ", "")}`)
           .removeAttr("disabled")
-          .val(file.name);
+          .val(filename);
         if (returnFilename) {
           fileName = file.name;
         }

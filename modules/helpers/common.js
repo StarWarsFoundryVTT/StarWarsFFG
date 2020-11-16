@@ -39,7 +39,7 @@ export default class Helpers {
    * @param  {object} options
    */
   static async UploadFile(source, path, file, options) {
-    if (ForgeVTT?.usingTheForge) {
+    if (typeof ForgeVTT !== "undefined" && ForgeVTT?.usingTheForge) {
       return ForgeUploadFile("forgevtt", path, file, options);
     }
 
