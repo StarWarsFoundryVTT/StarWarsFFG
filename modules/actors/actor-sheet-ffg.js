@@ -389,6 +389,9 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Roll from [ROLL][/ROLL] tag.
     html.find(".rollSkillDirect").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
       let data = event.currentTarget.dataset;
       if (data) {
         let sheet = this.getData();
@@ -457,11 +460,27 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${itemDetails.prettyDesc}</div>`);
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(itemDetails.description, this.actor.data)}</div>`);
       let props = $(`<div class="item-properties"></div>`);
       itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
       li.append(div.hide());
+      $(div)
+        .find(".rollSkillDirect")
+        .on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          let data = event.currentTarget.dataset;
+          if (data) {
+            let sheet = this.getData();
+            let skill = sheet.data.skills[data["skill"]];
+            let characteristic = sheet.data.characteristics[skill.characteristic];
+            let difficulty = data["difficulty"];
+            await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+          }
+        });
+
       div.slideDown(200);
     }
     li.toggleClass("expanded");
@@ -480,7 +499,7 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc)}</div>`);
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc, this.actor.data)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }

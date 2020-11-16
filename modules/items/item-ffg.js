@@ -21,7 +21,7 @@ export class ItemFFG extends Item {
     const actorData = this.actor ? this.actor.data : {};
     const data = itemData.data;
 
-    data.renderedDesc = PopoutEditor.renderDiceImages(data.description);
+    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actorData);
 
     // perform localisation of dynamic values
     switch (this.type) {
@@ -193,7 +193,7 @@ export class ItemFFG extends Item {
     // Item type specific properties
     const props = [];
 
-    data.prettyDesc = PopoutEditor.renderDiceImages(data.description);
+    data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor?.data);
 
     // General equipment properties
     if (this.type !== "talent") {

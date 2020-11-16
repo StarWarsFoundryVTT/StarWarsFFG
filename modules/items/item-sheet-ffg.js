@@ -3,6 +3,7 @@ import Helpers from "../helpers/common.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import ImportHelpers from "../importer/import-helpers.js";
+import DiceHelpers from "../helpers/dice-helpers.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -309,6 +310,21 @@ export class ItemSheetFFG extends ItemSheet {
       $(event.currentTarget).find(".popout-editor-button").hide();
     });
     html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
+
+    // Roll from [ROLL][/ROLL] tag.
+    html.find(".rollSkillDirect").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      let data = event.currentTarget.dataset;
+      if (data) {
+        let sheet = this.actor.data;
+        let skill = sheet.data.skills[data["skill"]];
+        let characteristic = sheet.data.characteristics[skill.characteristic];
+        let difficulty = data["difficulty"];
+        await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+      }
+    });
   }
 
   /* -------------------------------------------- */
