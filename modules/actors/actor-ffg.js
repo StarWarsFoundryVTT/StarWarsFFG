@@ -69,8 +69,8 @@ export class ActorFFG extends Actor {
 
   _prepareSharedData(actorData) {
     const data = actorData.data;
-    data.biography = PopoutEditor.replaceRollTags(data.biography, actorData);
-    data.biography = PopoutEditor.renderDiceImages(data.biography);
+    //data.biography = PopoutEditor.replaceRollTags(data.biography, actorData);
+    data.biography = PopoutEditor.renderDiceImages(data.biography, actorData);
 
     // localize characteristic names
     if (actorData.type !== "vehicle") {

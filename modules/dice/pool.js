@@ -162,7 +162,7 @@ export class DicePoolFFG {
       container.classList.add("dice-pool");
     }
 
-    const totalDice = this.proficiency + this.ability + this.challenge + this.difficulty + this.boost + this.setback + this.force;
+    const totalDice = +this.proficiency + +this.ability + +this.challenge + +this.difficulty + +this.boost + +this.setback + +this.force;
 
     let height = 36;
     let width = 36;

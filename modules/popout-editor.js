@@ -52,8 +52,10 @@ export default class PopoutEditor extends FormApplication {
    * Renders the dice symbols based on strings
    * @param  {String} string
    */
-  static renderDiceImages(str) {
+  static renderDiceImages(str, actorData) {
     let html = str || "";
+
+    html = this.replaceRollTags(html, actorData);
 
     const dicetheme = game.settings.get("starwarsffg", "dicetheme");
 
@@ -269,7 +271,9 @@ export default class PopoutEditor extends FormApplication {
           difficulty = "Formidable";
           break;
       }
-      let formula = `<span class="rollable rollSkillDirect" data-skill="${args[0]}" data-difficulty="${args[1]}" data-actor-id="${actorData._id}"><strong>${difficulty} (${di.repeat(args[1])}) ${args[0]}</strong></span>`;
+      const id = actorData?._id ? actorData._id : "";
+
+      let formula = `<span class="rollable rollSkillDirect" data-skill="${args[0]}" data-difficulty="${args[1]}" data-actor-id="${id}"><strong>${difficulty} (${di.repeat(args[1])}) ${args[0]}</strong></span>`;
       return formula;
     });
 
