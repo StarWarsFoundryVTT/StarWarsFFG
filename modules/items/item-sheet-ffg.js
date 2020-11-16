@@ -528,6 +528,15 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(data.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
 
+      const fields = $(li).find(`input[name='data.talents.${talentId}.name']`).parent();
+      Object.keys(itemObject.data.data.attributes).forEach((attr) => {
+        const a = itemObject.data.data.attributes[attr];
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.key" value="${attr}" />`);
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.value" value="${a.value}" />`);
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.modtype" value="${a.modtype}" />`);
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.mod" value="${a.mod}" />`);
+      });
+
       // check to see if the talent already has a reference to the specialization
       if (!itemObject.data.data.trees.includes(specialization.id)) {
         // the talent doesn't already have the reference, add it
