@@ -349,5 +349,12 @@
   "SWFFG.Advantage": "Advantage",
   "SWFFG.Success": "Success",
   "SWFFG.Threat": "Threat",
-  "SWFFG.Failure": "Failure"
+  "SWFFG.Failure": "Failure",
+  "SWFFG.SkillImportInstructions1": "You can <b>IMPORT</b> a skill list JSON data file to add a new skill theme or update an existing one.",
+  "SWFFG.SkillImportInstructions2": "You can <b>RESET</b> the skills lists to system default by clicking the <b>Reset Skills List</b> button.",
+  "SWFFG.SkillImportInstructions3": "Please see documentation for skill list schema",
+  "SWFFG.SkillImportSource": "Skill List JSON Source File",
+  "SWFFG.SkillImportTheme": "Skill Theme",
+  "SWFFG.SkillImportActive": "Active?",
+  "SWFFG.SkillDownload": "Download"
 }

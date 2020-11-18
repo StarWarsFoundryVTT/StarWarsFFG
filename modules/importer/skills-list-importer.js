@@ -8,7 +8,6 @@ export default class SkillListImporter extends FormApplication {
       classes: ["starwarsffg", "data-import"],
       title: "Skill List Importer",
       width: 385,
-      height: 220,
       template: "systems/starwarsffg/templates/importer/skill-list-importer.html",
     });
   }
@@ -29,8 +28,19 @@ export default class SkillListImporter extends FormApplication {
       CONFIG.temporary = {};
     }
 
+    const currentSkillTheme = await game.settings.get("starwarsffg", "skilltheme");
+
+    const themes = CONFIG.FFG.alternateskilllists.map((list) => {
+      return {
+        name: list.id,
+        isactive: currentSkillTheme === list.id,
+        candelete: currentSkillTheme !== list.id && list.id !== "starwars" && list.id !== "genesys",
+      };
+    });
+
     return {
       cssClass: "data-importer-window",
+      themes,
     };
   }
 
@@ -713,6 +723,21 @@ export default class SkillListImporter extends FormApplication {
       this.close();
     });
 
+    html.find(".fa-download").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const target = event.currentTarget;
+      const skilltheme = target.dataset.id;
+      const currentSkillList = await JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+
+      const data = currentSkillList.find((i) => i.id === skilltheme);
+
+      // Trigger file save procedure
+      const filename = `swffg-skilltheme-${skilltheme.replace(/\s/g, "_")}.json`;
+      saveDataToFile(JSON.stringify(data, null, 2), "text/json", filename);
+    });
+
     html.find(".dialog-button").on("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -731,11 +756,16 @@ export default class SkillListImporter extends FormApplication {
         }
       });
 
-      currentSkillList.push(newSkillList);
+      // Check to find if imported skill list id is already in master skilltheme list
+      const skillIndex = currentSkillList.findIndex((i) => i.id === newSkillList.id);
+      if (skillIndex >= 0) {
+        currentSkillList[skillIndex] = newSkillList;
+      } else {
+        currentSkillList.push(newSkillList);
+      }
+
       const newMasterSkillListData = JSON.stringify(currentSkillList);
-
-      game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
-
+      await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
       window.location.reload();
 
       this.close();

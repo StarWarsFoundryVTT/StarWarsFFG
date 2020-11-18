@@ -34,6 +34,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 17/11/2020 - Cstadther - Enhancement 450 - Updated Skill Importer to update imported skill themes if they already exist.  Added ability to download skill theme.  Localized skill importer text.  Verified Skill Reset button worked correctly.
 - 16/11/2020 - Cstadther - Enhancement 453 - Add `[ROLL]` formula to owned item descriptions.
 - 16/11/2020 - Cstadther - Fix 448 - Added code to correctly add talent attributes to the specialization talent.
 - 16/11/2020 - Cstadther - Additional Fixes issue with uploading OggDude images and using OggDude source code zip to The Forge asset library.

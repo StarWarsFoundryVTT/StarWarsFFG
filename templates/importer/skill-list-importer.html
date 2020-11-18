@@ -1,5 +1,46 @@
 <form class="{{cssClass}} dialog" autocomplete="off">
-  <p class="notes">You may import a skill list JSON data file to add a new skill theme to the system.</p>
+  <div class="skilllist">
+    <table>
+      <thead>
+        <th class="skilltheme">{{{localize "SWFFG.SkillImportTheme"}}}</th>
+        <th>{{{localize "SWFFG.SkillImportActive"}}}</th>
+        <th></th>
+      </thead>
+      {{#each themes as |theme|}}
+      <tr>
+        <td class="skilltheme">{{theme.name}}</td>
+        <td class="skillactive">{{#if theme.isactive}}<i class="fas fa-check-circle"></i>{{else}}<i class="fas fa-times-circle"></i>{{/if}}</td>
+        <td><i class="fas fa-download" title="{{localize 'SWFFG.SkillDownload'}}" data-id="{{theme.name}}"></i></td>
+      </tr>
+      {{/each}}
+    </table>
+  </div>
+  <div class="skillimport">
+    <p class="notes">{{{localize "SWFFG.SkillImportInstructions1"}}}</p>
+    <p class="notes">{{{localize "SWFFG.SkillImportInstructions2"}}}</p>
+    <p class="notes">{{{localize "SWFFG.SkillImportInstructions3"}}} <a href="https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki">https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki</a></p>
+    <div class="form-group">
+      <label for="data"><b>{{localize "SWFFG.SkillImportSource"}}</b></label>
+      <input type="file" name="data" accept=".json" />
+    </div>
+    <div>
+      <div class="import-progress current import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+    <div class="dialog-buttons">
+      <button class="dialog-button" data-button="import">
+        <i class="fas fa-file-import"></i>
+        {{localize "SWFFG.ImportFile"}}
+      </button>
+      <button class="reset-button" data-button="reset">
+        <i class="fas fa-undo"></i>
+        {{localize "SWFFG.ResetSkillList"}}
+      </button>
+    </div>
+  </div>
+
+  <!-- <p class="notes">You may import a skill list JSON data file to add a new skill theme to the system.</p>
   <p class="notes">Please see documentation for skill list schema <a href="https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki">https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki</a>.</p>
   <div class="form-group">
     <label for="data">Source Data</label>
@@ -19,5 +60,5 @@
       <i class="fas fa-undo"></i>
       {{localize "SWFFG.ResetSkillList"}}
     </button>
-  </div>
+  </div> -->
 </form>

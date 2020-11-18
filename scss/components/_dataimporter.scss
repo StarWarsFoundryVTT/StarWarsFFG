@@ -36,6 +36,47 @@
       }
     }
   }
+
+  .skilllist {
+    table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.3125rem;
+      text-align: center;
+      width: 7.8125rem;
+    }
+
+    tbody {
+      display:block;
+      overflow:auto;
+      height: 4.5rem;
+      width: 100%;
+    }
+    thead tr {
+      display:block;
+    }
+
+    .skilltheme {
+      text-align: left;
+    }
+
+    .fa-download {
+      cursor: pointer;
+    }
+
+    .skillactive {
+      text-align: center;
+      .fa-check-circle {
+        color: green;
+      }
+      .fa-times-circle {
+        color: red;
+      }
+    }
+  }
 }
 
 .debug label {
