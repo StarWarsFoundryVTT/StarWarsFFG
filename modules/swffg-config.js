@@ -457,8 +457,8 @@ FFG.diceresults = {
   threat: "Threats",
   triumph: "Triumphs",
   despair: "Despairs",
-  light: "Force",
-  dark: "Dark Force",
+  light: "Light",
+  dark: "Dark",
 };
 
 FFG.sheets = {

@@ -43,6 +43,8 @@ export default class DiceHelpers {
       success: PopoutEditor.renderDiceImages("[SU]"),
       threat: PopoutEditor.renderDiceImages("[TH]"),
       failure: PopoutEditor.renderDiceImages("[FA]"),
+      light: PopoutEditor.renderDiceImages("[LI]"),
+      dark: PopoutEditor.renderDiceImages("[DA]"),
     };
 
     const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {

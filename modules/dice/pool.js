@@ -22,6 +22,8 @@ export class DicePoolFFG {
     this.success = obj.success || 0;
     this.threat = obj.threat || 0;
     this.failure = obj.failure || 0;
+    this.light = obj.light || 0;
+    this.dark = obj.dark || 0;
 
     this.source = {};
 
@@ -247,6 +249,8 @@ export class DicePoolFFG {
       success: container.querySelector('[name="success"]').value,
       threat: container.querySelector('[name="threat"]').value,
       failure: container.querySelector('[name="failure"]').value,
+      light: container.querySelector('[name="light"]').value,
+      dark: container.querySelector('[name="dark"]').value,
     });
   }
 }
