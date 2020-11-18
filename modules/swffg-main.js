@@ -1269,7 +1269,7 @@ Hooks.once("init", async function () {
         return obj1[k][property] === value;
       });
     } else if (typeof obj1 === "string") {
-      bool = obj1.includes(property);
+      return obj1.includes(property);
     }
 
     if (bool) {
