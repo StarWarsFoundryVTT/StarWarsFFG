@@ -13,6 +13,8 @@
       <td class="pool-additional">{{{dicesymbols.success}}}<input type="button" name="success" min="0" />{{localize "SWFFG.Success"}}</td>
       <td class="pool-additional">{{{dicesymbols.threat}}}<input type="button" name="threat" min="0" />{{localize "SWFFG.Threat"}}</td>
       <td class="pool-additional">{{{dicesymbols.failure}}}<input type="button" name="failure" min="0" />{{localize "SWFFG.Failure"}}</td>
+      <td class="pool-additional">{{{dicesymbols.light}}}<input type="button" name="light" min="0" />{{localize "SWFFG.Lightside"}}</td>
+      <td class="pool-additional">{{{dicesymbols.dark}}}<input type="button" name="dark" min="0" />{{localize "SWFFG.Darkside"}}</td>
     </tr>
   </table>
   <table>
@@ -149,5 +151,7 @@
       setupInput(scope, pool, "success", true);
       setupInput(scope, pool, "threat", true);
       setupInput(scope, pool, "failure", true);
+      setupInput(scope, pool, "light", true);
+      setupInput(scope, pool, "dark", true);
   })();
 </script>

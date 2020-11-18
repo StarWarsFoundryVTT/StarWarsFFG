@@ -34,6 +34,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 18/11/2020 - Cstadther - Added Light and Dark side additions to rolls. Updated code for Force Die only rolls to exclude success/failure message.
 - 18/11/2020 - Cstadther - Enhancement 449 - Updated code to look for `Melee` or `Brawl` in skill name to determine whether to display `Use Brawn` checkbox.
 - 17/11/2020 - Cstadther - Enhancement 450 - Updated Skill Importer to update imported skill themes if they already exist.  Added ability to download skill theme.  Localized skill importer text.  Verified Skill Reset button worked correctly.
 - 16/11/2020 - Cstadther - Enhancement 453 - Add `[ROLL]` formula to owned item descriptions.
