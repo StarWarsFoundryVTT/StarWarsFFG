@@ -100,6 +100,10 @@ export class AdversarySheetFFG extends ActorSheet {
     if (!this.options.editable) return;
 
     Hooks.on("preCreateOwnedItem", (actor, item, options, userid) => {
+      // Save persistent sheet height and width for future use.
+      this.sheetWidth = this.position.width;
+      this.sheetHeight = this.position.height;
+
       if (item.type === "species" || item.type === "career") {
         if (actor.data.type === "character") {
           // we only allow one species and one career, find any other species and remove them.
@@ -113,6 +117,18 @@ export class AdversarySheetFFG extends ActorSheet {
       }
 
       return true;
+    });
+
+    Hooks.on("preDeleteOwnedItem", (actor, item, options, userid) => {
+      // Save persistent sheet height and width for future use.
+      this.sheetWidth = this.position.width;
+      this.sheetHeight = this.position.height;
+    });
+
+    Hooks.on("preUpdateOwnedItem", (actor, item, options, userid) => {
+      // Save persistent sheet height and width for future use.
+      this.sheetWidth = this.position.width;
+      this.sheetHeight = this.position.height;
     });
 
     new ContextMenu(html, ".skillsGrid .skill", [
@@ -142,6 +158,43 @@ export class AdversarySheetFFG extends ActorSheet {
       },
     ]);
 
+    // Send Item Details to chat.
+
+    const sendToChatContextItem = {
+      name: game.i18n.localize("SWFFG.SendToChat"),
+      icon: '<i class="far fa-comment"></i>',
+      callback: (li) => {
+        let itemId = li.data("itemId");
+        this._itemDetailsToChat(itemId);
+      },
+    };
+
+    const rollForceToChatContextItem = {
+      name: game.i18n.localize("SWFFG.SendForceRollToChat"),
+      icon: '<i class="fas fa-dice-d20"></i>',
+      callback: async (li) => {
+        let itemId = li.data("itemId");
+        let item = this.actor.getOwnedItem(itemId);
+        if (!item) {
+          item = game.items.get(itemId);
+        }
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+        const forcedice = this.actor.data.data.stats.forcePool.max - this.actor.data.data.stats.forcePool.value;
+        if (forcedice > 0) {
+          let sheet = this.getData();
+          const dicePool = new DicePoolFFG({
+            force: forcedice,
+          });
+          DiceHelpers.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${item.name}`, item.name, item);
+        }
+      },
+    };
+
+    new ContextMenu(html, "li.item:not(.forcepower)", [sendToChatContextItem]);
+    new ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
+    new ContextMenu(html, "div.item", [sendToChatContextItem]);
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);
       options.register("enableAutoSoakCalculation", {
@@ -181,6 +234,23 @@ export class AdversarySheetFFG extends ActorSheet {
         if (item?.sheet) {
           if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
           else this._itemDisplayDetails(item, ev);
+        }
+      }
+    });
+
+    // Toggle Force Power details
+    html.find(".force-power").click(async (ev) => {
+      ev.stopPropagation();
+      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
+        const li = $(ev.currentTarget);
+        const itemId = li.data("itemId");
+        const item = this.actor.getOwnedItem(itemId);
+        const desc = li.data("desc");
+
+        if (item?.sheet) {
+          if (item?.type == "forcepower") {
+            this._forcePowerDisplayDetails(desc, ev);
+          }
         }
       }
     });
@@ -308,6 +378,9 @@ export class AdversarySheetFFG extends ActorSheet {
 
     // Roll from [ROLL][/ROLL] tag.
     html.find(".rollSkillDirect").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
       let data = event.currentTarget.dataset;
       if (data) {
         let sheet = this.getData();
@@ -330,6 +403,15 @@ export class AdversarySheetFFG extends ActorSheet {
     });
 
     dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
+
+    const dragDrop1 = new DragDrop({
+      dragSelector: ".skill",
+      dropSelector: ".macro",
+      permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+      callbacks: { dragstart: this._onSkillDragStart.bind(this) },
+    });
+
+    dragDrop1.bind($(`form.editable.${this.actor.data.type}`)[0]);
 
     $("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
       const a = event.currentTarget;
@@ -367,14 +449,110 @@ export class AdversarySheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${itemDetails.prettyDesc}</div>`);
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(itemDetails.description, this.actor.data)}</div>`);
       let props = $(`<div class="item-properties"></div>`);
       itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
       li.append(div.hide());
+      $(div)
+        .find(".rollSkillDirect")
+        .on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          let data = event.currentTarget.dataset;
+          if (data) {
+            let sheet = this.getData();
+            let skill = sheet.data.skills[data["skill"]];
+            let characteristic = sheet.data.characteristics[skill.characteristic];
+            let difficulty = data["difficulty"];
+            await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+          }
+        });
+
       div.slideDown(200);
     }
     li.toggleClass("expanded");
+  }
+
+  /**
+   * Display details of a Force Power.
+   * @private
+   */
+  _forcePowerDisplayDetails(desc, event) {
+    event.preventDefault();
+    let li = $(event.currentTarget);
+
+    // Toggle summary
+    if (li.hasClass("expanded")) {
+      let details = li.children(".item-details");
+      details.slideUp(200, () => details.remove());
+    } else {
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc, this.actor.data)}</div>`);
+      li.append(div.hide());
+      div.slideDown(200);
+    }
+    li.toggleClass("expanded");
+  }
+
+  /**
+   * Send details of an item to chat.
+   * @private
+   */
+  async _itemDetailsToChat(itemId) {
+    let item = this.actor.getOwnedItem(itemId);
+    if (!item) {
+      item = game.items.get(itemId);
+    }
+    if (!item) {
+      item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+    }
+
+    const itemDetails = item?.getItemDetails();
+    const template = "systems/starwarsffg/templates/chat/item-card.html";
+    const html = await renderTemplate(template, { itemDetails, item });
+
+    const messageData = {
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: {
+        actor: this.actor._id,
+        token: this.actor.token,
+        alias: this.actor.name,
+      },
+    };
+    ChatMessage.create(messageData);
+  }
+
+  /**
+   * Send details of a force power to chat.
+   * @private
+   */
+  async _forcePowerDetailsToChat(itemId, desc, name) {
+    let item = this.actor.getOwnedItem(itemId);
+    if (!item) {
+      item = game.items.get(itemId);
+    }
+    if (!item) {
+      item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+    }
+
+    const itemDetails = { "desc": desc, "name": name };
+    const template = "systems/starwarsffg/templates/chat/force-power-card.html";
+    const html = await renderTemplate(template, { itemDetails, item });
+
+    const messageData = {
+      user: game.user._id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+      speaker: {
+        actor: this.actor._id,
+        token: this.actor.token,
+        alias: this.actor.name,
+      },
+    };
+    ChatMessage.create(messageData);
   }
 
   _onChangeSkillCharacteristic(a) {
@@ -495,7 +673,34 @@ export class AdversarySheetFFG extends ActorSheet {
   /** @override */
   _updateObject(event, formData) {
     const actorUpdate = ActorHelpers.updateActor.bind(this);
+    // Save persistent sheet height and width for future use.
+    this.sheetWidth = this.position.width;
+    this.sheetHeight = this.position.height;
+
     actorUpdate(event, formData);
+  }
+
+  _onSkillDragStart(event) {
+    const li = event.currentTarget;
+
+    $(event.currentTarget).attr("data-item-actorid", this.actor.id);
+    const skill = li.dataset.ability;
+    const characteristic = li.dataset.characteristic;
+
+    if (skill && characteristic) {
+      const dragData = {
+        type: "CreateMacro",
+        actorId: this.actor.id,
+        data: {
+          skill,
+          characteristic,
+          type: "skill",
+        },
+      };
+      event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -575,10 +780,13 @@ export class AdversarySheetFFG extends ActorSheet {
         if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
           const pack = await game.packs.get(specializationTalents[talent].pack);
           await pack.getIndex();
-          const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+          let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+          if (!entry) {
+            entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
+          }
           gameItem = await pack.getEntity(entry._id);
         } else {
-          gameItem = game.items.get(specializationTalents[talent].itemId);
+          gameItem = await game.items.get(specializationTalents[talent].itemId);
         }
 
         if (gameItem) {

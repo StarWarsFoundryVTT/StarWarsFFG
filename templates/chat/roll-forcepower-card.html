@@ -1,0 +1,21 @@
+<div class="item-display">
+  {{#if (ne data.img "icons/svg/mystery-man.svg")}}
+  <img class="item-image" src="{{data.img}}" />
+  {{/if}}
+  <h2 class="item-name">{{data.name}}</h2>
+  <div class="item-details">
+    {{{renderDiceTags data.data.description}}}
+    <div class="item-properties">
+      {{#each data.powerUpgrades}}
+      <span class="tag">
+        <div class="ffg-sendtochat hover">
+          {{{this.name}}} {{this.rank}}
+          <div class="tooltip2">
+            {{{renderDiceTags this.description}}}
+          </div>
+        </div>
+      </span>
+      {{/each}}
+    </div>
+  </div>
+</div>

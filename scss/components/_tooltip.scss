@@ -15,6 +15,12 @@
       z-index: 500;
     }
   }
+  &:focus {
+    .tooltip2 {
+      opacity: 1;
+      z-index: 500;
+    }
+  }
   .tooltip {
     top: 30px;
     background-color: rgba(25, 24, 19, 0.8);
@@ -33,6 +39,9 @@
   .tooltip2 {
     li {
       text-align: left;
+    }
+    .dietype {
+      background-color: white;
     }
     width: 100%;
     height: max-content;
@@ -55,3 +64,12 @@
   }
 }
 
+.ffg-sendtochat.hover {
+  &:hover {
+    .tooltip2 {
+      background: #fff;
+      border: 1px solid #23221d;
+      color: #23221d
+    }
+  }
+}
