@@ -21,6 +21,12 @@ export default class DiceHelpers {
       boost: skill.boost,
       setback: skill.setback,
       force: skill.force,
+      advantage: skill.advantage,
+      dark: skill.dark,
+      light: skill.light,
+      failure: skill.failure,
+      threat: skill.threat,
+      success: skill.success,
       difficulty: 2, // default to average difficulty
     });
 
@@ -98,11 +104,23 @@ export default class DiceHelpers {
         setback: skill.setback,
         remsetback: skill.remsetback,
         force: skill.force,
+        advantage: skill.advantage,
+        dark: skill.dark,
+        light: skill.light,
+        failure: skill.failure,
+        threat: skill.threat,
+        success: skill.success,
         source: {
           skill: skill?.ranksource?.length ? skill.ranksource : [],
           boost: skill?.boostsource?.length ? skill.boostsource : [],
           remsetback: skill?.remsetbacksource?.length ? skill.remsetbacksource : [],
           setback: skill?.setbacksource?.length ? skill.setbacksource : [],
+          advantage: skill?.advantagesource?.length ? skill.advantagesource : [],
+          dark: skill?.darksource?.length ? skill.darksource : [],
+          light: skill?.lightsource?.length ? skill.lightsource : [],
+          failure: skill?.failuresource?.length ? skill.failuresource : [],
+          threat: skill?.threatsource?.length ? skill.threatsource : [],
+          success: skill?.successsource?.length ? skill.successsource : [],
         },
       });
       dicePool.upgrade(Math.min(characteristic.value, skill.rank));
@@ -126,6 +144,12 @@ export default class DiceHelpers {
       boost: skill.boost,
       setback: skill.setback,
       force: skill.force,
+      advantage: skill.advantage,
+      dark: skill.dark,
+      light: skill.light,
+      failure: skill.failure,
+      threat: skill.threat,
+      success: skill.success,
       difficulty: 2, // default to average difficulty
     });
 
@@ -142,6 +166,12 @@ export default class DiceHelpers {
       setback: skill.setback,
       force: skill.force,
       difficulty: difficulty,
+      advantage: skill.advantage,
+      dark: skill.dark,
+      light: skill.light,
+      failure: skill.failure,
+      threat: skill.threat,
+      success: skill.success,
     });
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
