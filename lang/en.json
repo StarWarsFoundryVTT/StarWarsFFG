@@ -356,5 +356,11 @@
   "SWFFG.SkillImportSource": "Skill List JSON Source File",
   "SWFFG.SkillImportTheme": "Skill Theme",
   "SWFFG.SkillImportActive": "Active?",
-  "SWFFG.SkillDownload": "Download"
+  "SWFFG.SkillDownload": "Download",
+  "SWFFG.ModTypeSkillAddAdvantage": "Skill Add Advantage",
+  "SWFFG.ModTypeSkillAddDark": "Skill Add Dark",
+  "SWFFG.ModTypeSkillAddFailure": "Skill Add Failure",
+  "SWFFG.ModTypeSkillAddLight": "Skill Add Light",
+  "SWFFG.ModTypeSkillAddSuccess": "Skill Add Success",
+  "SWFFG.ModTypeSkillAddThreat": "Skill Add Threat"
 }

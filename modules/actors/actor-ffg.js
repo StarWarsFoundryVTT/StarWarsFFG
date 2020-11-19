@@ -607,12 +607,34 @@ export class ActorFFG extends Actor {
       const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback", true);
       const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback", true);
 
+      // const advantages = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Advantage", true);
+      // const dark = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Dark", true);
+      // const failures = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Failure", true);
+      // const light = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Light", true);
+      // const successes = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Success", true);
+      // const threats = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Threat" true);
+
+      const setValueAndSources = (modifiername, propertyname) => {
+        const obj = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, modifiername, true);
+        if (obj.total > 0) {
+          data.skills[key][propertyname] = obj.total;
+          data.skills[key][`${propertyname}source`] = obj.sources;
+        }
+      };
+
+      setValueAndSources("Skill Add Advantage", "advantage");
+      setValueAndSources("Skill Add Dark", "dark");
+      setValueAndSources("Skill Add Failure", "failure");
+      setValueAndSources("Skill Add Light", "light");
+      setValueAndSources("Skill Add Success", "advantage");
+      setValueAndSources("Skill Add Threat", "threat");
+
       const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
       data.skills[key].force = 0;
       if (forceboost.total > 0) {
         const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
         if (forcedice > 0) {
-          data.skills[key].force = forcedice;
+          data.skills[key].force = forcedice.total;
           data.skills[key].forcesource = forceboost.sources;
         }
       }

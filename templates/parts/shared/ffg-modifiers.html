@@ -24,7 +24,7 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Characteristic")}} {{#each ../this.FFG.characteristics as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") )}} {{#each ../this.FFG.skills as |t|}}
+      {{/each}} {{/if}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") (eq attr.modtype "Skill Add Advantage") (eq attr.modtype "Skill Add Dark") (eq attr.modtype "Skill Add Failure") (eq attr.modtype "Skill Add Light") (eq attr.modtype "Skill Add Success") (eq attr.modtype "Skill Add Threat") )}} {{#each ../this.FFG.skills as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Weapon Stat") }} {{#each ../this.FFG.weapon_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>

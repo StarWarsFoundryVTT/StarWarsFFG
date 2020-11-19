@@ -338,6 +338,30 @@ FFG.mod_types = {
     "value": "Force Boost",
     "label": "SWFFG.ModTypeSkillForceBoost",
   },
+  "Skill Add Advantage": {
+    "value": "Skill Add Advantage",
+    "label": "SWFFG.ModTypeSkillAddAdvantage",
+  },
+  "Skill Add Dark": {
+    "value": "Skill Add Dark",
+    "label": "SWFFG.ModTypeSkillAddDark",
+  },
+  "Skill Add Failure": {
+    "value": "Skill Add Failure",
+    "label": "SWFFG.ModTypeSkillAddFailure",
+  },
+  "Skill Add Light": {
+    "value": "Skill Add Light",
+    "label": "SWFFG.ModTypeSkillAddLight",
+  },
+  "Skill Add Success": {
+    "value": "Skill Add Success",
+    "label": "SWFFG.ModTypeSkillAddSuccess",
+  },
+  "Skill Add Threat": {
+    "value": "Skill Add Threat",
+    "label": "SWFFG.ModTypeSkillAddThreat",
+  },
   "Skill Boost": {
     "value": "Skill Boost",
     "label": "SWFFG.ModTypeSkillBoost",
@@ -368,6 +392,30 @@ FFG.weapon_mod_types = {
   "Characteristic": {
     "value": "Characteristic",
     "label": "SWFFG.ModTypeCharacteristic",
+  },
+  "Skill Add Advantage": {
+    "value": "Skill Add Advantage",
+    "label": "SWFFG.ModTypeSkillAddAdvantage",
+  },
+  "Skill Add Dark": {
+    "value": "Skill Add Dark",
+    "label": "SWFFG.ModTypeSkillAddDark",
+  },
+  "Skill Add Failure": {
+    "value": "Skill Add Failure",
+    "label": "SWFFG.ModTypeSkillAddFailure",
+  },
+  "Skill Add Light": {
+    "value": "Skill Add Light",
+    "label": "SWFFG.ModTypeSkillAddLight",
+  },
+  "Skill Add Success": {
+    "value": "Skill Add Success",
+    "label": "SWFFG.ModTypeSkillAddSuccess",
+  },
+  "Skill Add Threat": {
+    "value": "Skill Add Threat",
+    "label": "SWFFG.ModTypeSkillAddThreat",
   },
   "Skill Boost": {
     "value": "Skill Boost",
