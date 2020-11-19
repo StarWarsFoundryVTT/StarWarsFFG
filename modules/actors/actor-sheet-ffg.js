@@ -163,39 +163,42 @@ export class ActorSheetFFG extends ActorSheet {
     ]);
 
     // Send Item Details to chat.
-    new ContextMenu(html, "li.item", [
-      {
-        name: game.i18n.localize("SWFFG.SendToChat"),
-        icon: '<i class="far fa-comment"></i>',
-        callback: (li) => {
-          let itemId = li.data("itemId");
-          this._itemDetailsToChat(itemId);
-        },
+
+    const sendToChatContextItem = {
+      name: game.i18n.localize("SWFFG.SendToChat"),
+      icon: '<i class="far fa-comment"></i>',
+      callback: (li) => {
+        let itemId = li.data("itemId");
+        this._itemDetailsToChat(itemId);
       },
-    ]);
-    new ContextMenu(html, "div.item", [
-      {
-        name: game.i18n.localize("SWFFG.SendToChat"),
-        icon: '<i class="far fa-comment"></i>',
-        callback: (li) => {
-          let itemId = li.data("itemId");
-          this._itemDetailsToChat(itemId);
-        },
+    };
+
+    const rollForceToChatContextItem = {
+      name: game.i18n.localize("SWFFG.SendForceRollToChat"),
+      icon: '<i class="fas fa-dice-d20"></i>',
+      callback: async (li) => {
+        let itemId = li.data("itemId");
+        let item = this.actor.getOwnedItem(itemId);
+        if (!item) {
+          item = game.items.get(itemId);
+        }
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+        const forcedice = this.actor.data.data.stats.forcePool.max - this.actor.data.data.stats.forcePool.value;
+        if (forcedice > 0) {
+          let sheet = this.getData();
+          const dicePool = new DicePoolFFG({
+            force: forcedice,
+          });
+          DiceHelpers.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${item.name}`, item.name, item);
+        }
       },
-    ]);
-    // TODO: Figure out how to prevent event propagation on this ContextMenu to allow for proper behaviour
-    new ContextMenu(html, "li.force-power", [
-      {
-        name: game.i18n.localize("SWFFG.SendToChat"),
-        icon: '<i class="far fa-comment"></i>',
-        callback: (li) => {
-          const itemId = li.data("itemId");
-          const desc = li.data("desc");
-          const name = li.data("upgradeName");
-          this._forcePowerDetailsToChat(itemId, desc, name);
-        },
-      },
-    ]);
+    };
+
+    new ContextMenu(html, "li.item:not(.forcepower)", [sendToChatContextItem]);
+    new ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
+    new ContextMenu(html, "div.item", [sendToChatContextItem]);
 
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);

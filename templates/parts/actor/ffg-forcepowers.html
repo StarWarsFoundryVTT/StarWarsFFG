@@ -2,31 +2,14 @@
 <ul class="talent-list">
   <li class="talents-header flexrow">
     <div class="header-name">{{localize "SWFFG.ForcePower"}}</div>
-    <div>{{localize "SWFFG.ForcePowerUpgrades"}}</div>
     <div></div>
   </li>
 
   <ul class="talent-list">
     {{#each actor.items as |item id|}} {{#iff item.type '==' 'forcepower'}}
-    <li class="item flexrow" data-item-id="{{item._id}}">
+    <li class="item flexrow forcepower" data-item-id="{{item._id}}">
       <div class="item-name">
         {{item.name}}
-      </div>
-      <div class="force-powers">
-        <ul>
-          <li class="talents-header flexrow">
-            <div class="header-name">{{localize "SWFFG.SkillsName"}}</div>
-            <div>{{localize "SWFFG.SkillsRank"}}</div>
-          </li>
-          <ul class="items-list">
-            {{#each item.powerUpgrades as |upgrade name|}}
-            <li class="force-power flexrow" data-item-id="{{item._id}}" data-desc="{{upgrade.description}}" data-upgrade-name="{{upgrade.name}}">
-              <div class="item-name">{{upgrade.name}}</div>
-              <div>{{upgrade.rank}}</div>
-            </li>
-            {{/each}}
-          </ul>
-        </ul>
       </div>
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>

@@ -363,4 +363,6 @@
   "SWFFG.ModTypeSkillAddLight": "Skill Add Light",
   "SWFFG.ModTypeSkillAddSuccess": "Skill Add Success",
   "SWFFG.ModTypeSkillAddThreat": "Skill Add Threat"
+  "SWFFG.SkillDownload": "Download",
+  "SWFFG.SendForceRollToChat": "Roll Force Power"
 }

@@ -195,22 +195,54 @@ export class ItemFFG extends Item {
 
     data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor?.data);
 
+    if (this.type === "forcepower") {
+      //Display upgrades
+
+      // Get learned upgrades
+      const upgrades = Object.values(data.upgrades).filter((up) => up.islearned);
+
+      const upgradeDescriptions = [];
+
+      upgrades.forEach((up) => {
+        let index = upgradeDescriptions.findIndex((obj) => {
+          return obj.name === up.name;
+        });
+
+        if (index >= 0) {
+          upgradeDescriptions[index].rank += 1;
+        } else {
+          upgradeDescriptions.push({
+            name: up.name,
+            description: up.description,
+            rank: 1,
+          });
+        }
+      });
+
+      upgradeDescriptions.forEach((upd) => {
+        props.push(`<div class="ffg-sendtochat hover" onclick="">${upd.name} ${upd.rank}
+          <div class="tooltip2">
+            ${PopoutEditor.renderDiceImages(upd.description, this?.actor?.data)}
+          </div>
+        </div>`);
+      });
+    }
     // General equipment properties
-    if (this.type !== "talent") {
+    else if (this.type !== "talent") {
       if (data.hasOwnProperty("special")) {
-        props.push("<div>Special qualities: " + data.special.value + "</div");
+        props.push(`<div>Special qualities: ${data.special.value}</div>`);
       }
       if (data.hasOwnProperty("equippable")) {
         props.push(game.i18n.localize(data.equippable.equipped ? "SWFFG.Equipped" : "SWFFG.Unequipped"));
       }
       if (data.hasOwnProperty("encumbrance")) {
-        props.push("Encumbrance: " + data.encumbrance.value);
+        props.push(`Encumbrance: ${data.encumbrance.value}`);
       }
       if (data.hasOwnProperty("price")) {
-        props.push("Price: " + data.price.value);
+        props.push(`Price: ${data.price.value}`);
       }
       if (data.hasOwnProperty("rarity")) {
-        props.push("Rarity: " + data.rarity.value);
+        props.push(`Rarity: ${data.rarity.value}`);
       }
     }
 
