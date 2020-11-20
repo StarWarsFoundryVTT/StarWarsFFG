@@ -238,19 +238,19 @@ export class DicePoolFFG {
    */
   static fromContainer(container) {
     return new DicePoolFFG({
-      proficiency: container.querySelector('[name="proficiency"]').value,
-      ability: container.querySelector('[name="ability"]').value,
-      challenge: container.querySelector('[name="challenge"]').value,
-      difficulty: container.querySelector('[name="difficulty"]').value,
-      boost: container.querySelector('[name="boost"]').value,
-      setback: container.querySelector('[name="setback"]').value,
-      force: container.querySelector('[name="force"]').value,
-      advantage: container.querySelector('[name="advantage"]').value,
-      success: container.querySelector('[name="success"]').value,
-      threat: container.querySelector('[name="threat"]').value,
-      failure: container.querySelector('[name="failure"]').value,
-      light: container.querySelector('[name="light"]').value,
-      dark: container.querySelector('[name="dark"]').value,
+      proficiency: container.querySelector('[name="proficiency"]')?.value ? container.querySelector('[name="proficiency"]').value : 0,
+      ability: container.querySelector('[name="ability"]')?.value ? container.querySelector('[name="ability"]').value : 0,
+      challenge: container.querySelector('[name="challenge"]')?.value ? container.querySelector('[name="challenge"]').value : 0,
+      difficulty: container.querySelector('[name="difficulty"]')?.value ? container.querySelector('[name="difficulty"]').value : 0,
+      boost: container.querySelector('[name="boost"]')?.value ? container.querySelector('[name="boost"]').value : 0,
+      setback: container.querySelector('[name="setback"]')?.value ? container.querySelector('[name="setback"]').value : 0,
+      force: container.querySelector('[name="force"]')?.value ? container.querySelector('[name="force"]').value : 0,
+      advantage: container.querySelector('[name="advantage"]')?.value ? container.querySelector('[name="advantage"]').value : 0,
+      success: container.querySelector('[name="success"]')?.value ? container.querySelector('[name="success"]').value : 0,
+      threat: container.querySelector('[name="threat"]')?.value ? container.querySelector('[name="threat"]').value : 0,
+      failure: container.querySelector('[name="failure"]')?.value ? container.querySelector('[name="failure"]').value : 0,
+      light: container.querySelector('[name="light"]')?.value ? container.querySelector('[name="light"]').value : 0,
+      dark: container.querySelector('[name="dark"]')?.value ? container.querySelector('[name="dark"]').value : 0,
     });
   }
 }

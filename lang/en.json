@@ -363,5 +363,9 @@
   "SWFFG.ModTypeSkillAddLight": "Skill Add Light",
   "SWFFG.ModTypeSkillAddSuccess": "Skill Add Success",
   "SWFFG.ModTypeSkillAddThreat": "Skill Add Threat",
-  "SWFFG.SendForceRollToChat": "Roll Force Power"
+  "SWFFG.SendForceRollToChat": "Roll Force Power",
+  "SWFFG.InitiativeRoll": "Rolling Initiative",
+  "SWFFG.InitiativeRollResult": "rolls for Initiative!",
+  "SWFFG.InitiativePoolSelectorHint": "Select the base skill to use for Initiative",
+  "SWFFG.InitiativePoolAddsHint": "Add Success/Advantages to Roll.  Left click to increase dice, right click to decrease."
 }
