@@ -57,24 +57,7 @@ export class CombatFFG extends Combat {
         const data = c.actor.data.data;
 
         vigilanceDicePool = _buildInitiativePool(data, "Vigilance");
-
-        // vigilanceDicePool = new DicePoolFFG({
-        //   ability: Math.max(data.characteristics.Willpower.value, data.skills.Vigilance.rank),
-        //   boost: data.skills.Vigilance.boost,
-        //   advantage: data.skills.Vigilance.advantage,
-        //   success: data.skills.Vigilance.success,
-        // });
-        // vigilanceDicePool.upgrade(Math.min(data.characteristics.Willpower.value, data.skills.Vigilance.rank));
-
         coolDicePool = _buildInitiativePool(data, "Cool");
-
-        coolDicePool = new DicePoolFFG({
-          ability: Math.max(data.characteristics.Presence.value, data.skills.Cool.rank),
-          boost: data.skills.Cool.boost,
-          advantage: data.skills.Cool.advantage,
-          success: data.skills.Cool.success,
-        });
-        coolDicePool.upgrade(Math.min(data.characteristics.Presence.value, data.skills.Cool.rank));
       }
 
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
