@@ -1,0 +1,81 @@
+<div id="{{id}}" class="dialog-content initiative-dialog dice-pool-dialog">
+  <div style="text-align: center;"><span>{{localize "SWFFG.InitiativePoolSelectorHint"}}</span></div>
+  <div class="pool-selector">
+    <input type="radio" id="vigilance" name="skill" value="Vigilance" {{#if (eq defaultInitiativeFormula "Vigilance") }}checked{{/if}}>
+    <label for="vigilance">{{localize "SWFFG.SkillsNameVigilance"}}</label>
+    <input type="radio" id="cool" name="skill" value="Cool" {{#if (eq defaultInitiativeFormula "Cool") }}checked{{/if}}>
+    <label for="cool">{{localize "SWFFG.SkillsNameCool"}}</label>
+  </div>
+  <div id="Vigilancepool" class="hidden-content">
+    {{#each vigilanceDicePool as |attr key|}}
+    <input type="button" name="{{key}}" min="0" value="{{attr}}" />
+    {{/each}}
+  </div>
+
+  <div id="Coolpool" class="hidden-content">
+    {{#each coolDicePool as |attr key|}}
+    <input type="button" name="{{key}}" min="0" value="{{attr}}" />
+    {{/each}}
+  </div>
+
+  <div style="text-align: center;"><span>{{localize "SWFFG.InitiativePoolAddsHint"}}</span></div>
+
+  <table class="addDicePool">
+    <tr>
+      <td class="pool-additional">{{{dicesymbols.advantage}}}<input type="button" name="advantage" min="0" />{{localize "SWFFG.Advantage"}}</td>
+      <td class="pool-additional">{{{dicesymbols.success}}}<input type="button" name="success" min="0" />{{localize "SWFFG.Success"}}</td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  function updateInput(scope, pool, type) {
+    const input = scope.querySelector(`[name="${type}"`);
+    input.value = pool[type];
+  }
+
+  function setupInput(scope, pool, type, allowNegative = false) {
+      const input = scope.querySelector(`[name="${type}"`);
+      input.value = pool[type];
+
+      input.addEventListener("click", (event) => {
+        event.target.value++;
+        pool[type] = parseInt(event.target.value);
+        //updatePreview(scope, pool);
+      });
+      input.addEventListener("contextmenu", (event) => {
+        if (event.target.value > 0 || allowNegative) {
+          event.target.value--;
+          pool[type] = parseInt(event.target.value);
+          //updatePreview(scope, pool);
+        }
+      });
+  }
+
+  function updatePreview(scope, pool) {
+      const poolDiv = scope.querySelector(".dice-pool");
+      poolDiv.innerHTML = "";
+      pool.renderPreview(poolDiv);
+  }
+
+  (function() {
+      const container = document.getElementById("{{{id}}}");
+      const scope = container.querySelector('.addDicePool');
+      const pool = new DicePoolFFG({{{json addDicePool}}});
+
+      // setupInput(scope, pool, "proficiency");
+      // setupInput(scope, pool, "ability");
+      // setupInput(scope, pool, "challenge");
+      // setupInput(scope, pool, "difficulty");
+      // setupInput(scope, pool, "boost");
+      // setupInput(scope, pool, "setback");
+      // setupInput(scope, pool, "force");
+
+      setupInput(scope, pool, "advantage", true);
+      setupInput(scope, pool, "success", true);
+      // setupInput(scope, pool, "threat", true);
+      // setupInput(scope, pool, "failure", true);
+      // setupInput(scope, pool, "light", true);
+      // setupInput(scope, pool, "dark", true);
+  })();
+</script>

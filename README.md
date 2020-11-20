@@ -34,6 +34,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 20/11/2020 - Cstadther - Enhancement - Added dialog to Initiative roll to allow for changing base ability and adding success/failure.
 - 19/11/2020 - Cstadther - Enhancement 396 - Added context menu item `Roll Force Power` that rolls available force dice and displays chat message with results.  Modified the Force Power display on the actor sheet to more closely match weapon specials,  new hover on force power upgrade (in chat or on sheet) display upgrade description.
 - 19/11/2020 - Cstadther - Enhancement 432 - Added ability to add additional success/failure/threat/advantage/light side/dark side as modifier to actor/item
 - 18/11/2020 - Cstadther - Added Light and Dark side additions to rolls. Updated code for Force Die only rolls to exclude success/failure message.
