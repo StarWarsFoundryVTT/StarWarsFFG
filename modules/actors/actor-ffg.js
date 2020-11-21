@@ -626,7 +626,7 @@ export class ActorFFG extends Actor {
       setValueAndSources("Skill Add Dark", "dark");
       setValueAndSources("Skill Add Failure", "failure");
       setValueAndSources("Skill Add Light", "light");
-      setValueAndSources("Skill Add Success", "advantage");
+      setValueAndSources("Skill Add Success", "success");
       setValueAndSources("Skill Add Threat", "threat");
 
       const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
