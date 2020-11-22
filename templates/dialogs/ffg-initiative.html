@@ -22,8 +22,16 @@
 
   <table class="addDicePool">
     <tr>
+      <td class="pool-additional"></td>
+      <td class="pool-additional"><img src="systems/starwarsffg/images/dice/starwars/blue.png" width="15" height="15" /><input type="button" name="boost" min="0" />{{localize "SWFFG.DiceBoost"}}</td>
+      <td class="pool-additional"><img src="systems/starwarsffg/images/dice/starwars/black.png" width="15" height="15" /><input type="button" name="setback" min="0" />{{localize "SWFFG.DiceSetback"}}</td>
+      <td class="pool-additional"></td>
+    </tr>
+    <tr>
       <td class="pool-additional">{{{dicesymbols.advantage}}}<input type="button" name="advantage" min="0" />{{localize "SWFFG.Advantage"}}</td>
       <td class="pool-additional">{{{dicesymbols.success}}}<input type="button" name="success" min="0" />{{localize "SWFFG.Success"}}</td>
+      <td class="pool-additional">{{{dicesymbols.threat}}}<input type="button" name="threat" min="0" />{{localize "SWFFG.Threat"}}</td>
+      <td class="pool-additional">{{{dicesymbols.failure}}}<input type="button" name="failure" min="0" />{{localize "SWFFG.Failure"}}</td>
     </tr>
   </table>
 </div>
@@ -67,14 +75,14 @@
       // setupInput(scope, pool, "ability");
       // setupInput(scope, pool, "challenge");
       // setupInput(scope, pool, "difficulty");
-      // setupInput(scope, pool, "boost");
-      // setupInput(scope, pool, "setback");
+      setupInput(scope, pool, "boost");
+      setupInput(scope, pool, "setback");
       // setupInput(scope, pool, "force");
 
       setupInput(scope, pool, "advantage", true);
       setupInput(scope, pool, "success", true);
-      // setupInput(scope, pool, "threat", true);
-      // setupInput(scope, pool, "failure", true);
+      setupInput(scope, pool, "threat", true);
+      setupInput(scope, pool, "failure", true);
       // setupInput(scope, pool, "light", true);
       // setupInput(scope, pool, "dark", true);
   })();
