@@ -66,6 +66,8 @@ export class CombatFFG extends Combat {
         dicesymbols: {
           advantage: PopoutEditor.renderDiceImages("[AD]"),
           success: PopoutEditor.renderDiceImages("[SU]"),
+          failure: PopoutEditor.renderDiceImages("[FA]"),
+          threat: PopoutEditor.renderDiceImages("[TH]"),
         },
         vigilanceDicePool,
         coolDicePool,
@@ -99,11 +101,15 @@ export class CombatFFG extends Combat {
                   let pool = _buildInitiativePool(c.actor.data.data, baseFormulaType);
 
                   const addPool = DicePoolFFG.fromContainer(container.querySelector(`.addDicePool`));
-                  pool.success += addPool.success;
-                  pool.advantage += addPool.advantage;
+                  pool.success += +addPool.success;
+                  pool.advantage += +addPool.advantage;
+                  pool.failure += +addPool.failure;
+                  pool.threat += +addPool.threat;
+                  pool.boost += +addPool.boost;
+                  pool.setback += +addPool.setback;
 
                   const rollData = c.actor ? c.actor.getRollData() : {};
-                  let roll = new RollFFG(pool.renderDiceExpression(), rollData, { success: pool.success, advantage: pool.advantage }).roll();
+                  let roll = new RollFFG(pool.renderDiceExpression(), rollData, { success: pool.success, advantage: pool.advantage, failure: pool.failure, threat: pool.threat }).roll();
                   const total = roll.ffg.success + roll.ffg.advantage * 0.01;
                   roll._result = total;
                   roll._total = total;

@@ -26,5 +26,6 @@
   },
   "lint-staged": {
     "*.{js,html}": "prettier --quote-props=preserve --print-width=5000 --write"
-  }
+  },
+  "dependencies": {}
 }

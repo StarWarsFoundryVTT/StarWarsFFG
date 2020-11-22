@@ -2593,6 +2593,14 @@ img {
   margin-bottom: 1rem;
 }
 
+.initiative-dialog .pool-additional img {
+  vertical-align: middle;
+}
+
+.initiative-dialog .pool-additional input {
+  margin: 0 0.1875rem;
+}
+
 .og-character-import {
   min-width: 96%;
 }
