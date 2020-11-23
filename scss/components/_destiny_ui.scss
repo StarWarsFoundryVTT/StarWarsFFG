@@ -1,3 +1,39 @@
+#destiny-tracker {
+  box-shadow: none;
+  background: transparent;
+
+  position: absolute;
+  right:305px;
+  bottom:0;
+  
+  .window-content {
+    background: transparent;
+  }
+  header.window-header {
+    display: none;
+  }
+  
+}
+
+.swffg-destiny-container {
+  right: 305px;
+  bottom: 0px;
+  position: absolute;
+}
+
+.swffg-destiny-bar {
+  height: 5px;
+  width: 100%;
+  background: url(../../../ui/denim075.png) repeat;
+  -webkit-box-shadow: 0 0 10px #000;
+  box-shadow: 0 0 10px #000;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  padding: 0 1px;
+  margin: -3px 0;
+  
+}
+
 .swffg-destiny {
   background: url(../../../ui/denim075.png) repeat;
   border: 1px solid #000;
@@ -10,14 +46,14 @@
   font-family: "warnock-pro", "sans-serif";
   font-size: 30px;
   height: auto;
-  right: 305px;
-  bottom: 0px;
+  
   line-height: 1.2;
   margin: 8px 8px 6px 0;
   pointer-events: none;
-  position: fixed;
+  
   text-align: center;
-  width: 84px;
+  min-width: 84px;
+  width: 100%;
   display: flex;
   z-index: 70;
   .destiny-points {
