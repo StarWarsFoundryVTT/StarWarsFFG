@@ -34,6 +34,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 # Changelog
 
+- 23/11/2020 - Cstadther - Enhancement - Moved Destiny Pool to its own FormApplication.  Added dragging bars to the top and bottom of the display.
 - 22/11/2020 - Cstadther - Enhancement - Added Boost/Setback/Failure/Threat to initiative dialog.  Updated styling.
 - 20/11/2020 - Cstadther - Enhancement - Added dialog to Initiative roll to allow for changing base ability and adding success/failure.
 - 19/11/2020 - Cstadther - Enhancement 396 - Added context menu item `Roll Force Power` that rolls available force dice and displays chat message with results.  Modified the Force Power display on the actor sheet to more closely match weapon specials,  new hover on force power upgrade (in chat or on sheet) display upgrade description.

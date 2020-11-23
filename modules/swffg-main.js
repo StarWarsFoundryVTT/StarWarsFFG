@@ -23,6 +23,7 @@ import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
 import SkillListImporter from "./importer/skills-list-importer.js";
+import DestinyTracker from "./ffg-destiny-tracker.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
@@ -1384,87 +1385,10 @@ Hooks.once("ready", async () => {
     Hooks.call(`closeAssociatedTalent_${item.object.data._id}`, item);
   });
 
-  /*
-    Changes for displayed destiny points
-  */
-
+  // Display Destiny Pool
   let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
-  $("body").append(`<div class="swffg-destiny" title="Left click to flip, SHIFT+left click to add, CTRL+left click to remove."><section id="destinyLight" class="destiny-points" data-value="${destinyPool.light}" data-group="dPoolLight">${destinyPool.light}<span>${game.i18n.localize("SWFFG.Lightside")}</span></section><section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">${destinyPool.dark}<span>${game.i18n.localize("SWFFG.Darkside")}</span></section></div>`);
-
-  // Updating Destiny Points
-  $("html")
-    .find(".destiny-points")
-    .click(async (event) => {
-      const pointType = event.currentTarget.dataset.group;
-      var typeName = null;
-      const add = event.shiftKey;
-      const remove = event.ctrlKey;
-      var flipType = null;
-      var actionType = null;
-      if (pointType == "dPoolLight") {
-        flipType = "dPoolDark";
-        typeName = "Light Side point";
-      } else {
-        flipType = "dPoolLight";
-        typeName = "Dark Side point";
-      }
-      var messageText;
-
-      if (!add && !remove) {
-        if (game.settings.get("starwarsffg", pointType) == 0) {
-          ui.notifications.warn(`Cannot flip a ${typeName} point; 0 remaining.`);
-          return;
-        } else {
-          if (game.user.isGM) {
-            game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
-            game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
-          } else {
-            let pool = { light: 0, dark: 0 };
-            if (flipType == "dPoolLight") {
-              pool.light = game.settings.get("starwarsffg", flipType) + 1;
-              pool.dark = game.settings.get("starwarsffg", pointType) - 1;
-            } else if (flipType == "dPoolDark") {
-              pool.dark = game.settings.get("starwarsffg", flipType) + 1;
-              pool.light = game.settings.get("starwarsffg", pointType) - 1;
-            }
-            await game.socket.emit("userActivity", game.user.id, { pool });
-          }
-          messageText = `Flipped a ${typeName} point.`;
-        }
-      } else if (add) {
-        if (!game.user.isGM) {
-          ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
-          return;
-        }
-        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
-        game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) + 1);
-        messageText = "Added a " + typeName + " point.";
-      } else if (remove) {
-        if (!game.user.isGM) {
-          ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
-          return;
-        }
-        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
-        game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
-        messageText = "Removed a " + typeName + " point.";
-      }
-
-      ChatMessage.create({
-        user: game.user._id,
-        content: messageText,
-      });
-    });
-
-  if (game.user.isGM) {
-    game.socket.on("userActivity", async (...args) => {
-      if (args[1]?.pool) {
-        CONFIG.logger.log("Received DestinyPool socket");
-        CONFIG.logger.log(args[1].pool);
-        game.settings.set("starwarsffg", "dPoolLight", args[1].pool.light);
-        game.settings.set("starwarsffg", "dPoolDark", args[1].pool.dark);
-      }
-    });
-  }
+  const dTracker = new DestinyTracker();
+  dTracker.render(true);
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
