@@ -846,6 +846,321 @@ Hooks.once("init", async function () {
           },
         },
       },
+      {
+        "id": "android",
+        "skills": {
+          "Athletics": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameAthletics",
+            "abrev": "SWFFG.SkillsNameAthletics"
+          },
+          "Brawl": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6,
+            "label": "SWFFG.SkillsNameBrawl",
+            "abrev": "SWFFG.SkillsNameBrawlAbbreviation"
+          },
+          "Charm": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6,
+            "label": "SWFFG.SkillsNameCharm",
+            "abrev": "SWFFG.SkillsNameCharm"
+          },
+          "Coercion": {
+            "rank": 0,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6,
+            "label": "SWFFG.SkillsNameCoercion",
+            "abrev": "SWFFG.SkillsNameCoercion"
+          },
+          "Computers-Hacking": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameComputersHacking",
+            "abrev": "SWFFG.SkillsNameComputersHacking"
+          },
+          "Computers-Sysops": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameComputersSysops",
+            "abrev": "SWFFG.SkillsNameComputersSysops"
+          },
+          "Cool": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameCool",
+            "abrev": "SWFFG.SkillsNameCool"
+          },
+          "Coordination": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameCoordination",
+            "abrev": "SWFFG.SkillsNameCoordination"
+          },
+          "Deception": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6,
+            "label": "SWFFG.SkillsNameDeception",
+            "abrev": "SWFFG.SkillsNameDeception"
+          },
+          "Discipline": {
+            "rank": 0,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameDiscipline",
+            "abrev": "SWFFG.SkillsNameDiscipline"
+          },
+          "Driving": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameDriving",
+            "abrev": "SWFFG.SkillsNameDriving"
+          },
+          "Gunnery": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6,
+            "label": "SWFFG.SkillsNameGunnery",
+            "abrev": "SWFFG.SkillsNameGunneryAbbreviation"
+          },
+          "Knowledge-Science": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6,
+            "label": "SWFFG.SkillsNameKnowledgeScience",
+            "abrev": "SWFFG.SkillsNameKnowledgeScience"
+          },
+          "Knowledge-Society": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6,
+            "label": "SWFFG.SkillsNameKnowledgeSociety",
+            "abrev": "SWFFG.SkillsNameKnowledgeSociety"
+          },
+          "Knowledge-The-Net": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6,
+            "label": "SWFFG.SkillsNameKnowledgeTheNet",
+            "abrev": "SWFFG.SkillsNameKnowledgeTheNet"
+          },
+          "Leadership": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6,
+            "label": "SWFFG.SkillsNameLeadership",
+            "abrev": "SWFFG.SkillsNameLeadership"
+          },
+          "Mechanics": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameMechanics",
+            "abrev": "SWFFG.SkillsNameMechanics"
+          },
+          "Medicine": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameMedicine",
+            "abrev": "SWFFG.SkillsNameMedicine"
+          },
+          "Melee": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6,
+            "label": "SWFFG.SkillsNameMelee",
+            "abrev": "SWFFG.SkillsNameMeleeAbbreviation"
+          },
+          "Negotiation": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6,
+            "label": "SWFFG.SkillsNameNegotiation",
+            "abrev": "SWFFG.SkillsNameNegotiation"
+          },
+          "Operating": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameOperating",
+            "abrev": "SWFFG.SkillsNameOperating"
+          },
+          "Perception": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNamePerception",
+            "abrev": "SWFFG.SkillsNamePerception"
+          },
+          "Piloting": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNamePiloting",
+            "abrev": "SWFFG.SkillsNamePiloting"
+          },
+          "Ranged-Heavy": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6,
+            "label": "SWFFG.SkillsNameRangedHeavy",
+            "abrev": "SWFFG.SkillsNameRangedHeavyAbbreviation"
+          },
+          "Ranged-Light": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6,
+            "label": "SWFFG.SkillsNameRangedLight",
+            "abrev": "SWFFG.SkillsNameRangedLightAbbreviation"
+          },
+          "Resilience": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameResilience",
+            "abrev": "SWFFG.SkillsNameResilience"
+          },
+          "Skulduggery": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameSkulduggery",
+            "abrev": "SWFFG.SkillsNameSkulduggery"
+          },
+          "Stealth": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameStealth",
+            "abrev": "SWFFG.SkillsNameStealth"
+          },
+          "Streetwise": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameStreetwise",
+            "abrev": "SWFFG.SkillsNameStreetwise"
+          },
+          "Survival": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameSurvival",
+            "abrev": "SWFFG.SkillsNameSurvival"
+          },
+          "Vigilance": {
+            "rank": 0,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6,
+            "label": "SWFFG.SkillsNameVigilance",
+            "abrev": "SWFFG.SkillsNameVigilance"
+          }
+        }
+      }
     ]);
 
     game.settings.register("starwarsffg", "arraySkillList", {
