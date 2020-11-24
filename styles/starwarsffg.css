@@ -2684,3 +2684,11 @@ img {
   transform: translateX(-50%);
   width: 80px;
 }
+
+.swffg-destiny #context-menu {
+  font-size: 0.875rem;
+}
+
+.ffg-destiny-roll {
+  cursor: pointer;
+}
