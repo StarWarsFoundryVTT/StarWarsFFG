@@ -144,6 +144,13 @@ export class ActorSheetFFG extends ActorSheet {
         },
       },
       {
+        name: game.i18n.localize("SWFFG.SkillAddAsInitiative"),
+        icon: '<i class="fas fa-cog"></i>',
+        callback: (li) => {
+          this._onInitiativeSkill(li);
+        },
+      },
+      {
         name: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
         icon: '<i class="fas fa-times"></i>',
         callback: (li) => {
@@ -666,6 +673,19 @@ export class ActorSheetFFG extends ActorSheet {
   _onRemoveSkill(a) {
     const ability = $(a).data("ability");
     this.object.update({ "data.skills": { ["-=" + ability]: null } });
+  }
+
+  _onInitiativeSkill(a) {
+    const skill = $(a).data("ability");
+    let updateData = {};
+
+    let useSkillForInitiative = false;
+    if (!this.object.data.data.skills[skill]?.useForInitiative) {
+      useSkillForInitiative = true;
+    }
+
+    setProperty(updateData, `data.skills.${skill}.useForInitiative`, useSkillForInitiative);
+    this.object.update(updateData);
   }
 
   /**
