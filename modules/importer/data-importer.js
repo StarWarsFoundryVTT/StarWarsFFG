@@ -1074,11 +1074,9 @@ export default class DataImporter extends FormApplication {
 
           if (fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
             await this.asyncForEach(fp.Qualities.Quality, async (quality) => {
-              let descriptor = ImportHelpers.findEntityByImportId("journal", quality.Key);
-              if (!descriptor) {
-                descriptor = await ImportHelpers.findCompendiumEntityByImportId("JournalEntry", quality.Key);
-              }
-              if (descriptor) {
+              let descriptor = await ImportHelpers.findCompendiumEntityByImportId("JournalEntry", quality.Key);
+
+              if (descriptor?.compendium?.metadata) {
                 qualities.push(`<a class="entity-link" draggable="true" data-pack="${descriptor.compendium.metadata.package}.${descriptor.compendium.metadata.name}" data-id="${descriptor.id}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
               } else {
                 qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
@@ -1153,7 +1151,7 @@ export default class DataImporter extends FormApplication {
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing weapon ${name}`);
         } catch (err) {
-          CONFIG.logger.error(`Error importing record : `, err);
+          CONFIG.logger.error(`Error importing record (${weapons[i].getElementsByTagName("Name")[0]?.textContent}) : `, err);
           this._importLogger(`Error importing weapon: ${JSON.stringify(err)}`);
         }
       }
