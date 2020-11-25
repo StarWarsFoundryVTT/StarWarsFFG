@@ -1079,7 +1079,7 @@ export default class DataImporter extends FormApplication {
                 descriptor = await ImportHelpers.findCompendiumEntityByImportId("JournalEntry", quality.Key);
               }
               if (descriptor) {
-                qualities.push(`<a class="entity-link" draggable="true" data-pack="world.oggdudeitemqualities" data-id="${description.id}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
+                qualities.push(`<a class="entity-link" draggable="true" data-pack="${descriptor.compendium.metadata.package}.${descriptor.compendium.metadata.name}" data-id="${descriptor.id}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
               } else {
                 qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
               }
