@@ -252,35 +252,6 @@ export class ItemSheetFFG extends ItemSheet {
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
-    if (this.object.data.type === "criticalinjury" || this.object.data.type === "criticaldamage") {
-      const formatDropdown = (item) => {
-        if (!item.id) {
-          return item.text;
-        }
-
-        const imgUrl = "/systems/starwarsffg/images/dice/starwars/purple.png";
-
-        let images = [];
-        for (let i = 0; i < item.id; i += 1) {
-          images.push(`<img class="severity-img" src="${imgUrl}" />`);
-        }
-        let selections = `<span>${item.text}${images.join("")}</span>`;
-        return $(selections);
-      };
-
-      const id = `#${this.object.data.type}-${this.object.id}`;
-
-      $(id).select2({
-        dropdownParent: $(".severity-block"),
-        dropdownAutoWidth: true,
-        selectionCssClass: "severity-select",
-        width: "resolve",
-        minimumResultsForSearch: Infinity,
-        templateSelection: formatDropdown,
-        templateResult: formatDropdown,
-      });
-    }
-
     if (["forcepower", "specialization", "signatureability"].includes(this.object.data.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
