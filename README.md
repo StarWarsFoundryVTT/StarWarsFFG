@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 25/11/2020 - Cstadther - Fix 458 - Added hook on chat message rendering to handle dice symbol replacement
 - 25/11/2020 - Cstadther - Fix 469 - Updated ffg-criticalinjury.html and item-sheet-ffg.js to correct reference images from relative path to systems.
 - 24/11/2020 - Cstadther - Fix 476 - Fixed issue with Item Qualities not coming in correctly if imported separately.  Fixed issue where weapons with one quality were not importing the quality correctly.
 - 24/11/2020 - Cstadther - Refactored default skill list out of constant into seperate file.
