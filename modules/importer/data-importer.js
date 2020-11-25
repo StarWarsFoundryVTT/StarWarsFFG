@@ -530,48 +530,16 @@ export default class DataImporter extends FormApplication {
           const diemodifiers = talent.getElementsByTagName("DieModifiers")[0];
           if (diemodifiers) {
             const diemod = JXON.xmlToJs(diemodifiers);
-
-            const funcAddDieModifier = (mod) => {
-              if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
-                // only handling boosts initially
-                if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
-                  const skill = CONFIG.temporary.skills[mod.SkillKey];
-                  const modKey = Object.keys(item.data.attributes).length + 1;
-                  let modtype = "Skill Boost";
-                  let count = 0;
-                  if (mod.AddSetbackCount) {
-                    modtype = "Skill Setback";
-                    count = mod.AddSetbackCount;
-                  }
-                  if (mod.SetbackCount) {
-                    modtype = "Skill Remove Setback";
-                    count = mod.SetbackCount;
-                  }
-                  if (mod.ForceCount) {
-                    modtype = "Force Boost";
-                    count = true;
-                  }
-                  if (mod.BoostCount) {
-                    count = mod.BoostCount;
-                  }
-
-                  item.data.attributes[`attr${modKey}`] = {
-                    mod: skill,
-                    modtype,
-                    value: count,
-                  };
-                }
-              }
-            };
-
             if (diemod.DieModifier) {
               if (Array.isArray(diemod.DieModifier)) {
                 diemod.DieModifier.forEach((mod) => {
-                  funcAddDieModifier(mod);
+                  const m = ImportHelpers.getDieModifiers(mod);
+                  item.data.attributes[m.key] = m.data;
                 });
               } else {
                 if (Object.keys(CONFIG.temporary.skills).includes(diemod.DieModifier.SkillKey)) {
-                  funcAddDieModifier(diemod.DieModifier);
+                  const m = ImportHelpers.getDieModifiers(diemod.DieModifier);
+                  item.data.attributes[m.key] = m.data;
                 }
               }
             }
@@ -664,47 +632,16 @@ export default class DataImporter extends FormApplication {
 
           power.data.description = forceAbility.Description;
 
-          const funcAddDieModifier = (mod) => {
-            if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
-              // only handling boosts initially
-              if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
-                const skill = CONFIG.temporary.skills[mod.SkillKey];
-                const modKey = Object.keys(power.data.attributes).length + 1;
-                let modtype = "Skill Boost";
-                let count = 0;
-                if (mod.AddSetbackCount) {
-                  modtype = "Skill Setback";
-                  count = mod.AddSetbackCount;
-                }
-                if (mod.SetbackCount) {
-                  modtype = "Skill Remove Setback";
-                  count = mod.SetbackCount;
-                }
-                if (mod.ForceCount) {
-                  modtype = "Force Boost";
-                  count = true;
-                }
-                if (mod.BoostCount) {
-                  count = mod.BoostCount;
-                }
-
-                power.data.attributes[`attr${modKey}`] = {
-                  mod: skill,
-                  modtype,
-                  value: count,
-                };
-              }
-            }
-          };
-
           if (forceAbility?.DieModifiers?.DieModifier) {
             if (Array.isArray(forceAbility.DieModifiers.DieModifier)) {
               forceAbility.DieModifiers.DieModifier.forEach((mod) => {
-                funcAddDieModifier(mod);
+                const m = ImportHelpers.getDieModifiers(mod);
+                power.data.attributes[m.key] = m.data;
               });
             } else {
               if (Object.keys(CONFIG.temporary.skills).includes(forceAbility.DieModifiers.DieModifier.SkillKey)) {
-                funcAddDieModifier(forceAbility.DieModifiers.DieModifier);
+                const m = ImportHelpers.getDieModifiers(forceAbility.DieModifiers.DieModifier);
+                power.data.attributes[m.key] = m.data;
               }
             }
           }
@@ -1571,6 +1508,26 @@ export default class DataImporter extends FormApplication {
               }
             }
           }
+
+          let abilities = [];
+
+          if (speciesData?.Species?.OptionChoices?.OptionChoice) {
+            let options = speciesData.Species.OptionChoices.OptionChoice;
+
+            if (!Array.isArray(speciesData.Species.OptionChoices.OptionChoice)) {
+              options = [speciesData.Species.OptionChoices.OptionChoice];
+            }
+
+            options.forEach((o) => {
+              let option = o.Options.Option;
+              if (!Array.isArray(o.Options.Option)) {
+                option = [o.Options.Option];
+              }
+              abilities.push(`<p>${option[0].Name} : ${option[0].Description}</p>`);
+            });
+          }
+
+          species.data.description = `<h4>Abilities</h4>` + abilities.join("") + "<p></p>" + species.data.description;
 
           // does an image exist?
           let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", species.flags.importid);

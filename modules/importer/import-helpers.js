@@ -373,6 +373,42 @@ export default class ImportHelpers {
     return itemAttributes;
   }
 
+  static getDieModifiers(mod) {
+    if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
+      // only handling boosts initially
+      if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
+        const skill = CONFIG.temporary.skills[mod.SkillKey];
+        const modKey = randomID();
+        let modtype = "Skill Boost";
+        let count = 0;
+        if (mod.AddSetbackCount) {
+          modtype = "Skill Setback";
+          count = mod.AddSetbackCount;
+        }
+        if (mod.SetbackCount) {
+          modtype = "Skill Remove Setback";
+          count = mod.SetbackCount;
+        }
+        if (mod.ForceCount) {
+          modtype = "Force Boost";
+          count = true;
+        }
+        if (mod.BoostCount) {
+          count = mod.BoostCount;
+        }
+
+        return {
+          key: `attr${modKey}`,
+          data: {
+            mod: skill,
+            modtype,
+            value: count,
+          },
+        };
+      }
+    }
+  }
+
   static asyncForEach = async (array, callback) => {
     for (let index = 0; index < array.length; index += 1) {
       await callback(array[index], index, array);
