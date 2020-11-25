@@ -1068,13 +1068,22 @@ export default class DataImporter extends FormApplication {
 
           const qualities = [];
 
+          if (fp?.Qualities?.Quality && !Array.isArray(fp?.Qualities?.Quality)) {
+            fp.Qualities.Quality = [fp.Qualities.Quality];
+          }
+
           if (fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
-            fp.Qualities.Quality.forEach((quality) => {
-              if (CONFIG.temporary?.descriptors && CONFIG.temporary?.descriptors?.[quality.Key]) {
-                qualities.push(`<a class="entity-link" draggable="true" data-pack="world.oggdudeitemqualities" data-id="${CONFIG.temporary.descriptors[quality.Key]}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
+            await this.asyncForEach(fp.Qualities.Quality, async (quality) => {
+              let descriptor = ImportHelpers.findEntityByImportId("journal", quality.Key);
+              if (!descriptor) {
+                descriptor = await ImportHelpers.findCompendiumEntityByImportId("JournalEntry", quality.Key);
+              }
+              if (descriptor) {
+                qualities.push(`<a class="entity-link" draggable="true" data-pack="world.oggdudeitemqualities" data-id="${description.id}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
               } else {
                 qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
               }
+
               if (quality.Key === "DEFENSIVE") {
                 const nk = Object.keys(newItem.data.attributes).length + 1;
                 const count = quality.Count ? parseInt(quality.Count) : 0;
