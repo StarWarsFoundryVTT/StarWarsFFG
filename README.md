@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 24/11/2020 - Cstadther - Refactored default skill list out of constant into seperate file.
 - 24/11/2020 - Cstadther - Enhancement 404 - Added ability to add additional skills to initiative dialog (Right-Click on skill and select `Toggle skill as initiative`).  Skills will be prefixed with a `*` on the skill list of the character sheet if they had been added as initiative skills (Vigilance and Cool will always be initiative skills).
 - 24/11/2020 - Cstadther - Enhancement 433 - Added rolling for Destiny Pool.  Right click on top/bottom destiny pool bar as GM to send a Roll chat message.  Players can click on roll button in chat to roll destiny.
 - 23/11/2020 - Cstadther - Enhancement - Moved Destiny Pool to its own FormApplication.  Added dragging bars to the top and bottom of the display.
