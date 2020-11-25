@@ -44,9 +44,11 @@ export class CombatFFG extends Combat {
       const id = randomID();
 
       let whosInitiative = initiative.combatant.name;
+      let dicePools = [];
       let vigilanceDicePool = new DicePoolFFG({});
       let coolDicePool = new DicePoolFFG({});
       let addDicePool = new DicePoolFFG({});
+
       const defaultInitiativeFormula = formula || initiative._getInitiativeFormula();
       if (Array.isArray(ids) && ids.length > 1) {
         whosInitiative = "Multiple Combatants";
@@ -58,6 +60,28 @@ export class CombatFFG extends Combat {
 
         vigilanceDicePool = _buildInitiativePool(data, "Vigilance");
         coolDicePool = _buildInitiativePool(data, "Cool");
+
+        const initSkills = Object.keys(data.skills).filter((skill) => data.skills[skill].useForInitiative);
+
+        initSkills.forEach((skill) => {
+          if (dicePools.find((p) => p.name === skill)) return;
+
+          const skillPool = _buildInitiativePool(data, skill);
+          skillPool.label = data.skills[skill].label;
+          skillPool.name = skill;
+          dicePools.push(skillPool);
+        });
+      }
+
+      if (dicePools.findIndex((p) => p.name === "Vigilance") < 0) {
+        vigilanceDicePool.label = "SWFFG.SkillsNameVigilance";
+        vigilanceDicePool.name = "Vigilance";
+        dicePools.push(vigilanceDicePool);
+      }
+      if (dicePools.findIndex((p) => p.name === "Cool") < 0) {
+        coolDicePool.label = "SWFFG.SkillsNameCool";
+        coolDicePool.name = "Cool";
+        dicePools.push(coolDicePool);
       }
 
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
@@ -69,8 +93,7 @@ export class CombatFFG extends Combat {
           failure: PopoutEditor.renderDiceImages("[FA]"),
           threat: PopoutEditor.renderDiceImages("[TH]"),
         },
-        vigilanceDicePool,
-        coolDicePool,
+        dicePools,
         addDicePool,
         defaultInitiativeFormula,
       });
@@ -130,7 +153,7 @@ export class CombatFFG extends Combat {
                         token: c.token._id,
                         alias: c.token.name,
                       },
-                      flavor: `${c.token.name} ${game.i18n.localize("SWFFG.InitiativeRoll")} (${game.i18n.localize(`SWFFG.SkillsName${baseFormulaType}`)})`,
+                      flavor: `${c.token.name} ${game.i18n.localize("SWFFG.InitiativeRoll")} (${game.i18n.localize(`SWFFG.SkillsName${baseFormulaType.replace(/[: ]/g, "")}`)})`,
                       flags: { "core.initiativeRoll": true },
                     },
                     messageOptions
