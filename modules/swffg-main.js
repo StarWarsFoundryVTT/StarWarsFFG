@@ -629,6 +629,12 @@ Hooks.once("init", async function () {
   });
 
   TemplateHelpers.preload();
+
+  // Update chat messages with dice images
+  Hooks.on("renderChatMessage", (app, html, messageData) => {
+    const content = html.find(".message-content");
+    content[0].innerHTML = PopoutEditor.renderDiceImages(content[0].innerHTML);
+  });
 });
 
 /* -------------------------------------------- */
