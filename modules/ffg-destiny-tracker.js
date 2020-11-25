@@ -10,6 +10,7 @@ export default class DestinyTracker extends FormApplication {
       classes: ["starwarsffg"],
       title: "Destiny Tracker",
       template: "systems/starwarsffg/templates/ffg-destiny-tracker.html",
+      width: 100,
     });
   }
 
@@ -21,8 +22,9 @@ export default class DestinyTracker extends FormApplication {
     const x = $(window).width();
     const y = $(window).height();
 
-    this.position.left = x;
+    this.position.left = x - 505;
     this.position.top = y;
+    this.position.width = 100;
 
     // Return data
     return {
@@ -34,6 +36,9 @@ export default class DestinyTracker extends FormApplication {
 
   /** @override */
   _updateObject(event, formData) {}
+
+  /** @override */
+  async close(options = {}) {}
 
   /** @override */
   activateListeners(html) {

@@ -2619,12 +2619,11 @@ img {
   box-shadow: none;
   background: transparent;
   position: absolute;
-  right: 305px;
-  bottom: 0;
 }
 
 #destiny-tracker .window-content {
   background: transparent;
+  width: 100px;
 }
 
 #destiny-tracker header.window-header {
@@ -2632,7 +2631,7 @@ img {
 }
 
 .swffg-destiny-container {
-  right: 305px;
+  right: 0px;
   bottom: 0px;
   position: absolute;
 }

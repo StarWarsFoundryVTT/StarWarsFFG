@@ -1,13 +1,11 @@
 #destiny-tracker {
   box-shadow: none;
   background: transparent;
-
   position: absolute;
-  right:305px;
-  bottom:0;
   
   .window-content {
     background: transparent;
+    width: 100px;
   }
   header.window-header {
     display: none;
@@ -16,7 +14,7 @@
 }
 
 .swffg-destiny-container {
-  right: 305px;
+  right: 0px;
   bottom: 0px;
   position: absolute;
 }
