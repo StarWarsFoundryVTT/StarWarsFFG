@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 27/11/2020 - Cstadther - Fix for migration of alt skill list, restricted use to GMs only.
 - 25/11/2020 - Cstadther - Enhancement 456 - During import of species, added species abilities to the species description.
 - 25/11/2020 - Cstadther - Fix 458 - Added hook on chat message rendering to handle dice symbol replacement
 - 25/11/2020 - Cstadther - Fix 469 - Updated ffg-criticalinjury.html and item-sheet-ffg.js to correct reference images from relative path to systems.
