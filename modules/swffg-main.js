@@ -196,19 +196,24 @@ Hooks.once("init", async function () {
 
     let skillList = [];
 
-    try {
-      let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
-      if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
-        if (game.settings.get("starwarsffg", "arraySkillList") === defaultSkillArrayString) {
-          const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
-          game.settings.set("starwarsffg", "arraySkillList", JSON.stringify(fileData));
-          skillList = fileData;
+    // this code will be deprecated in version 1.3, to make sure old worlds migrate alt skills lists correctly.
+    if (user.isGM) {
+      try {
+        let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
+        if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
+          if (game.settings.get("starwarsffg", "arraySkillList") === defaultSkillArrayString) {
+            const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
+            game.settings.set("starwarsffg", "arraySkillList", JSON.stringify(fileData));
+            skillList = fileData;
+          }
+        } else {
+          skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
         }
-      } else {
-        skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
+    } else {
+      skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
     }
 
     try {
