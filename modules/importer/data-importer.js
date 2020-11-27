@@ -389,35 +389,35 @@ export default class DataImporter extends FormApplication {
         try {
           const d = JXON.xmlToJs(descriptor);
 
-          if (d.Type) {
-            let itemDescriptor = {
-              name: d.Name,
-              flags: {
-                importid: d.Key,
-              },
-              content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
-            };
+          //if (d.Type) {
+          let itemDescriptor = {
+            name: d.Name,
+            flags: {
+              importid: d.Key,
+            },
+            content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
+          };
 
-            let compendiumItem;
-            await pack.getIndex();
-            let entry = pack.index.find((e) => e.name === itemDescriptor.name);
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find((e) => e.name === itemDescriptor.name);
 
-            if (!entry) {
-              CONFIG.logger.debug(`Importing Item Quality - JournalEntry`);
-              compendiumItem = new JournalEntry(itemDescriptor, { temporary: true });
-              this._importLogger(`New item quality ${d.Name} : ${JSON.stringify(compendiumItem)}`);
-              let id = await pack.importEntity(compendiumItem);
-              CONFIG.temporary["descriptors"][d.Key] = id.id;
-            } else {
-              CONFIG.logger.debug(`Updating Item Quality - JournalEntry`);
-              //let updateData = ImportHelpers.buildUpdateData(itemDescriptor);
-              let updateData = itemDescriptor;
-              updateData["_id"] = entry._id;
-              CONFIG.temporary["descriptors"][d.Key] = entry._id;
-              this._importLogger(`Updating item quality ${d.Name} : ${JSON.stringify(updateData)}`);
-              pack.updateEntity(updateData);
-            }
+          if (!entry) {
+            CONFIG.logger.debug(`Importing Item Quality - JournalEntry`);
+            compendiumItem = new JournalEntry(itemDescriptor, { temporary: true });
+            this._importLogger(`New item quality ${d.Name} : ${JSON.stringify(compendiumItem)}`);
+            let id = await pack.importEntity(compendiumItem);
+            CONFIG.temporary["descriptors"][d.Key] = id.id;
+          } else {
+            CONFIG.logger.debug(`Updating Item Quality - JournalEntry`);
+            //let updateData = ImportHelpers.buildUpdateData(itemDescriptor);
+            let updateData = itemDescriptor;
+            updateData["_id"] = entry._id;
+            CONFIG.temporary["descriptors"][d.Key] = entry._id;
+            this._importLogger(`Updating item quality ${d.Name} : ${JSON.stringify(updateData)}`);
+            pack.updateEntity(updateData);
           }
+          //}
           currentCount += 1;
 
           $(".itemdescriptors .import-progress-bar")
