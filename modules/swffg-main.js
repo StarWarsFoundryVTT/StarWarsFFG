@@ -109,6 +109,14 @@ Hooks.once("init", async function () {
   // Load character templates so that dynamic skills lists work correctly
   loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
 
+  game.settings.register("starwarsffg", "systemMigrationVersion", {
+    name: "Current Version",
+    scope: "world",
+    default: null,
+    config: false,
+    type: String,
+  });
+
   /**
    * Set an initiative formula for the system
    * @type {String}
@@ -194,28 +202,7 @@ Hooks.once("init", async function () {
       type: String,
     });
 
-    let skillList = [];
-
-    // this code will be deprecated in version 1.3, to make sure old worlds migrate alt skills lists correctly.
-    if (game.user.isGM) {
-      try {
-        let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
-        if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
-          if (game.settings.get("starwarsffg", "arraySkillList") === defaultSkillArrayString) {
-            const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
-            game.settings.set("starwarsffg", "arraySkillList", JSON.stringify(fileData));
-            skillList = fileData;
-          }
-        } else {
-          skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
-    }
-
+    let skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
     try {
       CONFIG.FFG.alternateskilllists = skillList;
 
@@ -634,12 +621,6 @@ Hooks.once("init", async function () {
   });
 
   TemplateHelpers.preload();
-
-  // Update chat messages with dice images
-  Hooks.on("renderChatMessage", (app, html, messageData) => {
-    const content = html.find(".message-content");
-    content[0].innerHTML = PopoutEditor.renderDiceImages(content[0].innerHTML);
-  });
 });
 
 /* -------------------------------------------- */
@@ -705,26 +686,90 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   });
 });
 
+// Update chat messages with dice images
+Hooks.on("renderChatMessage", (app, html, messageData) => {
+  const content = html.find(".message-content");
+  content[0].innerHTML = PopoutEditor.renderDiceImages(content[0].innerHTML);
+});
+
 // Handle migration duties
 Hooks.once("ready", async () => {
-  // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
-  // This is a temporary migration check to transfer existing actors .real_value back into the correct .value location.
-  game.actors.forEach((actor) => {
-    if (actor.data.type === "character" || actor.data.type === "minion") {
-      if (actor.data.data.stats.wounds.real_value != null) {
-        actor.data.data.stats.wounds.value = actor.data.data.stats.wounds.real_value;
-        game.actors.get(actor._id).update({ ["data.stats.wounds.real_value"]: null });
-        CONFIG.logger.log("Migrated stats.wounds.value from stats.wounds.real_value");
-        CONFIG.logger.log(actor.data.data.stats.wounds);
+  const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
+
+  if ((currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.data.version)) && game.user.isGM) {
+    CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.data.version}`);
+
+    // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
+    // This is a temporary migration check to transfer existing actors .real_value back into the correct .value location.
+    game.actors.forEach((actor) => {
+      if (actor.data.type === "character" || actor.data.type === "minion") {
+        if (actor.data.data.stats.wounds.real_value != null) {
+          actor.data.data.stats.wounds.value = actor.data.data.stats.wounds.real_value;
+          game.actors.get(actor._id).update({ ["data.stats.wounds.real_value"]: null });
+          CONFIG.logger.log("Migrated stats.wounds.value from stats.wounds.real_value");
+          CONFIG.logger.log(actor.data.data.stats.wounds);
+        }
+        if (actor.data.data.stats.strain.real_value != null) {
+          actor.data.data.stats.strain.value = actor.data.data.stats.strain.real_value;
+          game.actors.get(actor._id).update({ ["data.stats.strain.real_value"]: null });
+          CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
+          CONFIG.logger.log(actor.data.data.stats.strain);
+        }
       }
-      if (actor.data.data.stats.strain.real_value != null) {
-        actor.data.data.stats.strain.value = actor.data.data.stats.strain.real_value;
-        game.actors.get(actor._id).update({ ["data.stats.strain.real_value"]: null });
-        CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
-        CONFIG.logger.log(actor.data.data.stats.strain);
+    });
+
+    if (currentVersion === "null" || parseFloat(currentVersion) < 1.1) {
+      // Migrate alternate skill lists from file if found
+      try {
+        let skillList = [];
+
+        let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
+        if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
+          // if the skills.json file is found AND the skillsList in setting is the default skill list then read the data from the file.
+          // This will make sure that the data from the JSON file overwrites the data in the setting.
+          if ((await game.settings.get("starwarsffg", "arraySkillList")) === defaultSkillArrayString) {
+            const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
+            await game.settings.set("starwarsffg", "arraySkillList", JSON.stringify(fileData));
+            skillList = fileData;
+          }
+        } else {
+          skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+        }
+
+        CONFIG.FFG.alternateskilllists = skillList;
+        if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+          const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+
+          let skills = {};
+          Object.keys(altSkills).forEach((skillKey) => {
+            if (altSkills?.[skillKey]?.value) {
+              skills[skillKey] = { ...altSkills[skillKey] };
+            } else {
+              skills[skillKey] = { value: skillKey, ...altSkills[skillKey] };
+            }
+          });
+
+          const sorted = Object.keys(skills).sort(function (a, b) {
+            const x = game.i18n.localize(skills[a].abrev);
+            const y = game.i18n.localize(skills[b].abrev);
+
+            return x < y ? -1 : x > y ? 1 : 0;
+          });
+
+          let ordered = {};
+          sorted.forEach((skill) => {
+            ordered[skill] = skills[skill];
+          });
+
+          CONFIG.FFG.skills = ordered;
+        }
+      } catch (err) {
+        CONFIG.logger.error(err);
       }
     }
-  });
+
+    game.settings.set("starwarsffg", "systemMigrationVersion", game.system.data.version);
+  }
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createFFGMacro(data, slot));
