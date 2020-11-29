@@ -274,7 +274,7 @@ export default class ImportHelpers {
     if (Object.keys(CONFIG.temporary.skills).includes(mod.Key)) {
       if (mod.SkillIsCareer) {
         modtype = "Career Skill";
-      } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount) {
+      } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount || mod.AdvantageCount || mod.ThreatCount || mod.SuccessCount || mod.FailureCount) {
         modtype = "Skill Boost";
 
         if (mod.AddSetbackCount) {
@@ -287,6 +287,22 @@ export default class ImportHelpers {
         }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
+        }
+        if (mod.AdvantageCount) {
+          modtype = "Skill Add Advantage";
+          value = parseInt(mod.AdvantageCount, 10);
+        }
+        if (mod.ThreatCount) {
+          modtype = "Skill Add Threat";
+          value = parseInt(mod.ThreatCount, 10);
+        }
+        if (mod.SuccessCount) {
+          modtype = "Skill Add Success";
+          value = parseInt(mod.SuccessCount, 10);
+        }
+        if (mod.FailureCount) {
+          modtype = "Skill Add Failure";
+          value = parseInt(mod.FailureCount, 10);
         }
       } else {
         modtype = "Skill Rank";
@@ -349,25 +365,18 @@ export default class ImportHelpers {
         itemAttributes[attr.type] = attr.value;
       }
     } else if (attrs?.Mod?.DieModifiers?.DieModifier) {
-      if (Array.isArray(attrs.Mod.DieModifiers.DieModifier)) {
-        attrs.Mod.DieModifiers.DieModifier.forEach((mod) => {
-          const attr = this.getBaseModAttributeObject({
-            Key: mod.SkillKey,
-            ...mod,
-          });
-          if (attr) {
-            itemAttributes[attr.type] = attr.value;
-          }
-        });
-      } else {
+      if (!Array.isArray(attrs.Mod.DieModifiers.DieModifier)) {
+        attrs.Mod.DieModifiers.DieModifier = [attrs.Mod.DieModifiers.DieModifier];
+      }
+      attrs.Mod.DieModifiers.DieModifier.forEach((mod) => {
         const attr = this.getBaseModAttributeObject({
-          Key: attrs.Mod.DieModifiers.DieModifier.SkillKey,
-          ...attrs.Mod.DieModifiers.DieModifier,
+          Key: mod.SkillKey,
+          ...mod,
         });
         if (attr) {
           itemAttributes[attr.type] = attr.value;
         }
-      }
+      });
     }
 
     return itemAttributes;
@@ -376,7 +385,7 @@ export default class ImportHelpers {
   static getDieModifiers(mod) {
     if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
       // only handling boosts initially
-      if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
+      if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount || mod.AdvantageCount || mod.ThreatCount || mod.SuccessCount || mod.FailureCount) {
         const skill = CONFIG.temporary.skills[mod.SkillKey];
         const modKey = randomID();
         let modtype = "Skill Boost";
@@ -395,6 +404,22 @@ export default class ImportHelpers {
         }
         if (mod.BoostCount) {
           count = mod.BoostCount;
+        }
+        if (mod.AdvantageCount) {
+          modtype = "Skill Add Advantage";
+          count = mod.AdvantageCount;
+        }
+        if (mod.ThreatCount) {
+          modtype = "Skill Add Threat";
+          count = mod.ThreatCount;
+        }
+        if (mod.SuccessCount) {
+          modtype = "Skill Add Success";
+          count = mod.SuccessCount;
+        }
+        if (mod.FailureCount) {
+          modtype = "Skill Add Failure";
+          count = mod.FailureCount;
         }
 
         return {
