@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 29/11/2020 - Cstadther - Fix 444 - Fixed issue with Group Manager access being lost.
 - 29/11/2020 - Cstadther - Enhancement 486 - Add quantity management to vehicle cargo hold items.
 - 28/11/2020 - Cstadther - Enhancement 474 - Added Rolling Ability to vehicle weapons, players will still need to enter their Gunnery skill for the pool but it will now display weapon chat card on roll.
 - 28/11/2020 - Cstadther - Enhancement 484 - Updated OggDude importer to import additional die symbol modifiers
