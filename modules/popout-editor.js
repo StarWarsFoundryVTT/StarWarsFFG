@@ -56,6 +56,7 @@ export default class PopoutEditor extends FormApplication {
     let html = str || "";
 
     html = this.replaceRollTags(html, actorData);
+    html = TextEditor.enrichHTML(html, { entities: true });
 
     const dicetheme = game.settings.get("starwarsffg", "dicetheme");
 
