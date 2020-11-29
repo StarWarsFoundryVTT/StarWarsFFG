@@ -5,8 +5,33 @@ export default class DiceHelpers {
     const data = obj.getData();
     const row = event.target.parentElement.parentElement;
     const skillName = row.parentElement.dataset["ability"];
-    const skill = data.data.skills[skillName];
-    const characteristic = data.data.characteristics[skill.characteristic];
+
+    const skills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+
+    let skill = {
+      rank: 0,
+      characteristic: "",
+      boost: 0,
+      setback: 0,
+      force: 0,
+      advantage: 0,
+      dark: 0,
+      light: 0,
+      failure: 0,
+      threat: 0,
+      success: 0,
+      label: skills?.[skillName]?.label ? game.i18n.localize(skills[skillName].label) : game.i18n.localize(CONFIG.FFG.skills[skillName].label),
+    };
+    let characteristic = {
+      value: 0,
+    };
+
+    if (data?.data?.skills?.[skillName]) {
+      skill = data.data.skills[skillName];
+    }
+    if (data?.data?.characteristics?.[skill?.characteristic]) {
+      characteristic = data.data.characteristics[skill.characteristic];
+    }
 
     // Determine if this roll is triggered by an item.
     let item = {};

@@ -1725,6 +1725,13 @@ export default class DataImporter extends FormApplication {
                 weaponData.data.firingarc.dorsal = weapon.FiringArcs.Dorsal === "true" ? true : false;
                 weaponData.data.firingarc.ventral = weapon.FiringArcs.Ventral === "true" ? true : false;
 
+                if (weapon?.Qualities?.Quality) {
+                  const qualities = await ImportHelpers.getQualities(weapon.Qualities.Quality);
+
+                  weaponData.data.special.value = qualities.qualities.join(",");
+                  weaponData.data.attributes = qualities.attributes;
+                }
+
                 vehicle.items.push(weaponData);
               }
             } catch (err) {
@@ -1735,13 +1742,13 @@ export default class DataImporter extends FormApplication {
 
           if (vehicleData.Vehicle.VehicleWeapons?.VehicleWeapon) {
             const temp = new Actor(vehicle, { temporary: true });
-            if (Array.isArray(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon)) {
-              await this.asyncForEach(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon, async (weapon) => {
-                await funcAddWeapon(weapon);
-              });
-            } else {
-              await funcAddWeapon(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon);
+
+            if (!Array.isArray(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon)) {
+              vehicleData.Vehicle.VehicleWeapons.VehicleWeapon = [vehicleData.Vehicle.VehicleWeapons.VehicleWeapon];
             }
+            await this.asyncForEach(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon, async (weapon) => {
+              await funcAddWeapon(weapon);
+            });
           }
 
           let pack;

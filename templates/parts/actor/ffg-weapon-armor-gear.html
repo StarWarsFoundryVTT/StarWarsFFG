@@ -113,6 +113,7 @@
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.VehicleTabShipWeapons"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabFiringArc"}}</div>
+    <div class="">{{localize "SWFFG.ItemsSkill"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabDamage"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabRange"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabCritical"}}</div>
@@ -124,6 +125,9 @@
     <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
       <div class="item-name">{{item.name}}</div>
       <div>{{#if (eq item.data.firingarc.fore true)}}{{localize "SWFFG.VehicleFiringArcForward"}}{{/if}} {{#if (eq item.data.firingarc.aft true)}}{{localize "SWFFG.VehicleFiringArcAft"}}{{/if}} {{#if (eq item.data.firingarc.port true)}}{{localize "SWFFG.VehicleFiringArcPort"}}{{/if}} {{#if (eq item.data.firingarc.starboard true)}}{{localize "SWFFG.VehicleFiringArcStarboard"}}{{/if}} {{#if (eq item.data.firingarc.dorsal true)}}{{localize "SWFFG.VehicleFiringArcDorsal"}}{{/if}} {{#if (eq item.data.firingarc.ventral true)}}{{localize "SWFFG.VehicleFiringArcVentral"}}{{/if}}</div>
+      <div class="skill-roll">
+        <div class="roll-button"><div class="skill-label rollable">{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</div></div>
+      </div>
       <div>{{item.data.damage.value}}</div>
       <div>{{localize item.data.range.label}}</div>
       <div>{{item.data.crit.value}}</div>
