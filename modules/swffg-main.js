@@ -650,7 +650,8 @@ Hooks.on("getSceneControlButtons", (controls) => {
 });
 
 Hooks.once("canvasInit", (canvas) => {
-  canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), 8);
+  const layerct = canvas.stage.children.length;
+  canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), layerct);
 });
 
 Hooks.on("renderJournalSheet", (journal, obj, data) => {

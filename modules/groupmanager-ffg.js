@@ -1,4 +1,4 @@
-export class GroupManagerLayer extends TokenLayer {
+export class GroupManagerLayer extends CanvasLayer {
   constructor() {
     super();
   }
