@@ -132,18 +132,18 @@ export default class DestinyTracker extends FormApplication {
     }
 
     // handle previously created roll destiny chat messages
-    $(".ffg-destiny-roll").on("click", this.OnClickRollDestiny);
+    $(".ffg-destiny-roll").on("click", this.OnClickRollDestiny.bind(this));
 
     // setup chat hook for destiny roll
     Hooks.on("renderChatMessage", (app, html, messageData) => {
-      html.on("click", ".ffg-destiny-roll", this.OnClickRollDestiny);
+      html.on("click", ".ffg-destiny-roll", this.OnClickRollDestiny.bind(this));
     });
 
     // setup socket handler for checking destiny roll
     game.socket.on("userActivity", async (...args) => {
       if (args[1]?.canIRollDestinyResponse === game.user.id && !game.user.isGM) {
         if (!args[1]?.rolled) {
-          const roll = rollDestiny();
+          const roll = this._rollDestiny();
           await game.socket.emit("userActivity", game.user.id, { destiny: game.user.id, light: roll.ffg.light, dark: roll.ffg.dark });
         } else {
           ui.notifications.error(`${game.i18n.localize("SWFFG.DestinyAlreadyRolled")}`);
@@ -163,7 +163,7 @@ export default class DestinyTracker extends FormApplication {
           } catch (err) {
             game.settings.register("starwarsffg", `destinyrollers${args[1].canIRollDestiny}`, {
               name: "DestinyRoll",
-              scope: "world",
+              scope: "client",
               default: false,
               config: false,
               type: Boolean,
@@ -202,23 +202,8 @@ export default class DestinyTracker extends FormApplication {
       await game.socket.emit("userActivity", game.user.id, { canIRollDestiny: game.user.id });
     }
 
-    // function for rolling destiny
-    const rollDestiny = () => {
-      const pool = new DicePoolFFG({
-        force: 1,
-      });
-
-      const roll = new game.ffg.RollFFG(pool.renderDiceExpression());
-      roll.toMessage({
-        user: game.user._id,
-        flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.DestinyPool")}...`,
-      });
-
-      return roll;
-    };
-
     if (game.user.isGM) {
-      const roll = rollDestiny();
+      const roll = this._rollDestiny();
 
       const light = await game.settings.get("starwarsffg", "dPoolLight");
       const dark = await game.settings.get("starwarsffg", "dPoolDark");
@@ -226,5 +211,19 @@ export default class DestinyTracker extends FormApplication {
       await game.settings.set("starwarsffg", "dPoolLight", light + roll.ffg.light);
       await game.settings.set("starwarsffg", "dPoolDark", dark + roll.ffg.dark);
     }
+  }
+
+  _rollDestiny() {
+    const pool = new DicePoolFFG({
+      force: 1,
+    });
+
+    const roll = new game.ffg.RollFFG(pool.renderDiceExpression());
+    roll.toMessage({
+      user: game.user._id,
+      flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.DestinyPool")}...`,
+    });
+
+    return roll;
   }
 }
