@@ -382,58 +382,6 @@ export default class ImportHelpers {
     return itemAttributes;
   }
 
-  static getDieModifiers(mod) {
-    if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
-      // only handling boosts initially
-      if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount || mod.AdvantageCount || mod.ThreatCount || mod.SuccessCount || mod.FailureCount) {
-        const skill = CONFIG.temporary.skills[mod.SkillKey];
-        const modKey = randomID();
-        let modtype = "Skill Boost";
-        let count = 0;
-        if (mod.AddSetbackCount) {
-          modtype = "Skill Setback";
-          count = mod.AddSetbackCount;
-        }
-        if (mod.SetbackCount) {
-          modtype = "Skill Remove Setback";
-          count = mod.SetbackCount;
-        }
-        if (mod.ForceCount) {
-          modtype = "Force Boost";
-          count = true;
-        }
-        if (mod.BoostCount) {
-          count = mod.BoostCount;
-        }
-        if (mod.AdvantageCount) {
-          modtype = "Skill Add Advantage";
-          count = mod.AdvantageCount;
-        }
-        if (mod.ThreatCount) {
-          modtype = "Skill Add Threat";
-          count = mod.ThreatCount;
-        }
-        if (mod.SuccessCount) {
-          modtype = "Skill Add Success";
-          count = mod.SuccessCount;
-        }
-        if (mod.FailureCount) {
-          modtype = "Skill Add Failure";
-          count = mod.FailureCount;
-        }
-
-        return {
-          key: `attr${modKey}`,
-          data: {
-            mod: skill,
-            modtype,
-            value: count,
-          },
-        };
-      }
-    }
-  }
-
   static asyncForEach = async (array, callback) => {
     for (let index = 0; index < array.length; index += 1) {
       await callback(array[index], index, array);
