@@ -49,6 +49,16 @@ export class ItemFFG extends Item {
       case "shipweapon":
         const vehiclerangeId = `SWFFG.VehicleRange${this._capitalize(data.range.value)}`;
         data.range.label = vehiclerangeId;
+
+        let damageAdd = 0;
+        for (let attr in data.attributes) {
+          if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
+            damageAdd += parseInt(data.attributes[attr].value, 10);
+          }
+        }
+
+        data.damage.value = parseInt(data.damage.value, 10);
+        data.damage.adjusted = +data.damage.value + damageAdd;
         break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");

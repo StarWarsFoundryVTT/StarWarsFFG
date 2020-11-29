@@ -382,6 +382,41 @@ export default class ImportHelpers {
     return itemAttributes;
   }
 
+  static async getQualities(qualityList) {
+    let qualities = [];
+    let attributes = {};
+
+    if (qualityList && !Array.isArray(qualityList)) {
+      qualityList = [qualityList];
+    }
+
+    if (qualityList && qualityList.length > 0) {
+      await this.asyncForEach(qualityList, async (quality) => {
+        let descriptor = await ImportHelpers.findCompendiumEntityByImportId("JournalEntry", quality.Key);
+
+        if (descriptor?.compendium?.metadata) {
+          qualities.push(`<a class="entity-link" draggable="true" data-pack="${descriptor.compendium.metadata.package}.${descriptor.compendium.metadata.name}" data-id="${descriptor.id}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
+        } else {
+          qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
+        }
+
+        if (quality.Key === "DEFENSIVE") {
+          const nk = randomId();
+          const count = quality.Count ? parseInt(quality.Count) : 0;
+
+          attributes[`attr${nk}`] = {
+            isCheckbox: false,
+            mod: "Defence-Melee",
+            modtype: "Stat",
+            value: count,
+          };
+        }
+      });
+
+      return { qualities, attributes };
+    }
+  }
+
   static asyncForEach = async (array, callback) => {
     for (let index = 0; index < array.length; index += 1) {
       await callback(array[index], index, array);
