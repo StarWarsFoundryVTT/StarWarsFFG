@@ -531,17 +531,18 @@ export default class DataImporter extends FormApplication {
           if (diemodifiers) {
             const diemod = JXON.xmlToJs(diemodifiers);
             if (diemod.DieModifier) {
-              if (Array.isArray(diemod.DieModifier)) {
-                diemod.DieModifier.forEach((mod) => {
-                  const m = ImportHelpers.getDieModifiers(mod);
-                  item.data.attributes[m.key] = m.data;
-                });
-              } else {
-                if (Object.keys(CONFIG.temporary.skills).includes(diemod.DieModifier.SkillKey)) {
-                  const m = ImportHelpers.getDieModifiers(diemod.DieModifier);
-                  item.data.attributes[m.key] = m.data;
-                }
+              if (!Array.isArray(diemod.DieModifier)) {
+                diemod.DieModifier = [diemod.DieModifier];
               }
+              diemod.DieModifier.forEach((mod) => {
+                const attr = ImportHelpers.getBaseModAttributeObject({
+                  Key: mod.SkillKey,
+                  ...mod,
+                });
+                if (attr) {
+                  item.data.attributes[attr.type] = attr.value;
+                }
+              });
             }
           }
 
@@ -633,17 +634,18 @@ export default class DataImporter extends FormApplication {
           power.data.description = forceAbility.Description;
 
           if (forceAbility?.DieModifiers?.DieModifier) {
-            if (Array.isArray(forceAbility.DieModifiers.DieModifier)) {
-              forceAbility.DieModifiers.DieModifier.forEach((mod) => {
-                const m = ImportHelpers.getDieModifiers(mod);
-                power.data.attributes[m.key] = m.data;
-              });
-            } else {
-              if (Object.keys(CONFIG.temporary.skills).includes(forceAbility.DieModifiers.DieModifier.SkillKey)) {
-                const m = ImportHelpers.getDieModifiers(forceAbility.DieModifiers.DieModifier);
-                power.data.attributes[m.key] = m.data;
-              }
+            if (!Array.isArray(forceAbility.DieModifiers.DieModifier)) {
+              forceAbility.DieModifiers.DieModifier = [forceAbility.DieModifiers.DieModifier];
             }
+            forceAbility.DieModifiers.DieModifier.forEach((mod) => {
+              const attr = ImportHelpers.getBaseModAttributeObject({
+                Key: mod.SkillKey,
+                ...mod,
+              });
+              if (attr) {
+                power.data.attributes[attr.type] = attr.value;
+              }
+            });
           }
 
           // next we will parse the rows
