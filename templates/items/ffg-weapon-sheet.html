@@ -66,7 +66,7 @@
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}} {{#if (or (contains data.skill.value "Melee") (contains data.skill.value "Brawl"))}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.UseBrawnBaseDamage" type="Boolean" name="data.skill.useBrawn" value=data.skill.useBrawn)}} {{/if}}
           </div>
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.ranges)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.ranges)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponStatus" type="Dropdown" name="data.status" value=data.status options=this.FFG.itemstatus)}}
           </div>
 
           <div class="container flex-group-center weapon-values">

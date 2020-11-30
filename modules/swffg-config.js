@@ -1,4 +1,8 @@
+import { itemstatus } from "./config/ffg-itemstatus.js";
+
 export const FFG = {};
+
+FFG.itemstatus = itemstatus;
 
 FFG.characteristics = {
   "Brawn": {
