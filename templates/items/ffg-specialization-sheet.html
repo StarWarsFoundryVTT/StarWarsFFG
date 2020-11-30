@@ -9,7 +9,7 @@
         <div class="talent-body">
           <div class="popout-editor" data-target="data.description" data-label="{{item.name}}">
             <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-            {{{renderDiceTags data.description}}}
+            {{{ffgDiceSymbols data.description}}}
           </div>
         </div>
         <div class="talent-actions {{#if data.isReadOnly}}talent-hidden{{/if}}">
@@ -43,7 +43,7 @@
           </div>
           <div class="talent-body">
             <input type="text" name="data.talents.{{key}}.activationLabel" value="{{localize talent.activationLabel}}" disabled />
-            {{{renderDiceTags talent.description}}}
+            {{{ffgDiceSymbols talent.description}}}
             <div class="talent-hidden">
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.name" value="{{talent.name}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.description" value="{{talent.description}}" />

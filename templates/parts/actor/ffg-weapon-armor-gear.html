@@ -29,8 +29,6 @@
       <div>{{item.data.damage.value}} {{#if (and (ne item.data.damage.value item.data.damage.adjusted) (or (gt item.data.damage.adjusted.length 0) (gt item.data.damage.adjusted 0)))}}({{item.data.damage.adjusted}}){{/if}}</div>
       <div>{{localize item.data.range.label}}</div>
       <div>{{item.data.crit.value}}</div>
-      <!-- <div>{{item.data.encumbrance.value}}</div> -->
-      <!-- <div>{{{renderDiceTags item.data.special.value}}}</div> -->
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
