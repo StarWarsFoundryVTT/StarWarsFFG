@@ -376,5 +376,11 @@
   "SWFFG.RequestDestinyRoll": "Request Roll",
   "SWFFG.DestinyAlreadyRolled": "You have already rolled for the Destiny Pool!",
   "SWFFG.DestinyPoolRoll": "Click here to roll for the Destiny Pool",
-  "SWFFG.SkillAddAsInitiative": "Toggle for use as initiative"
+  "SWFFG.SkillAddAsInitiative": "Toggle for use as initiative",
+  "SWFFG.ItemWeaponStatus" : "Status",
+  "SWFFG.ItemStatusNone" : "No Damage",
+  "SWFFG.ItemStatusMinor" : "Minor Damage",
+  "SWFFG.ItemStatusModerate" : "Moderate Damage",
+  "SWFFG.ItemStatusMajor" : "Major Damage",
+  "SWFFG.ItemTooDamagedToUse": "is too damaged to be used"
 }

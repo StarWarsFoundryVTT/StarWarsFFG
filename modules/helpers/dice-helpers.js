@@ -41,10 +41,23 @@ export default class DiceHelpers {
       item = item[0][1];
     }
 
+    let itemStatusSetback = 0;
+
+    if (item.type === "weapon" && item?.data?.status && item.data.status !== "None") {
+      const status = CONFIG.FFG.itemstatus[item.data.status].attributes.find((i) => i.mod === "Setback");
+
+      if (status.value < 99) {
+        itemStatusSetback = status.value;
+      } else {
+        ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.data.status].label)}).`);
+        return;
+      }
+    }
+
     const dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
-      setback: skill.setback,
+      setback: skill.setback + itemStatusSetback,
       force: skill.force,
       advantage: skill.advantage,
       dark: skill.dark,

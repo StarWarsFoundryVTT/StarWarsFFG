@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 29/11/2020 - Cstadther - Enhancement 400 - Added item status to weapons, will add appropriate number of setback dice to roll, will display a UI error if damage renders weapon unusable.
 - 29/11/2020 - Cstadther - Fix 494 - Updated `Entity Link` rendering on character sheet item details.
 - 29/11/2020 - Cstadther - Fix 496 - Fixed issue where alive tracker on minion sheet was 1 wound off.
 - 29/11/2020 - Cstadther - Fix 444 - Fixed issue with Group Manager access being lost.
