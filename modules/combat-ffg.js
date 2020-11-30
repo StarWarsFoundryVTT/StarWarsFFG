@@ -87,12 +87,6 @@ export class CombatFFG extends Combat {
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
       const content = await renderTemplate("systems/starwarsffg/templates/dialogs/ffg-initiative.html", {
         id,
-        dicesymbols: {
-          advantage: PopoutEditor.renderDiceImages("[AD]"),
-          success: PopoutEditor.renderDiceImages("[SU]"),
-          failure: PopoutEditor.renderDiceImages("[FA]"),
-          threat: PopoutEditor.renderDiceImages("[TH]"),
-        },
         dicePools,
         addDicePool,
         defaultInitiativeFormula,

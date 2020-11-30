@@ -4,14 +4,14 @@
   {{/if}}
   <h2 class="item-name">{{data.name}}</h2>
   <div class="item-details">
-    {{{renderDiceTags data.data.description}}}
+    {{{ffgDiceSymbols data.data.description}}}
     <div class="item-properties">
       {{#each data.powerUpgrades}}
       <span class="tag">
         <div class="ffg-sendtochat hover">
           {{{this.name}}} {{this.rank}}
           <div class="tooltip2">
-            {{{renderDiceTags this.description}}}
+            {{{ffgDiceSymbols this.description}}}
           </div>
         </div>
       </span>

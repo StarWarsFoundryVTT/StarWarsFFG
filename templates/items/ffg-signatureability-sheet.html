@@ -10,7 +10,7 @@
         <div class="talent-body">
           <div class="popout-editor" data-target="data.description" data-label="{{item.name}} {{localize 'SWFFG.SignatureAbilityBaseAbility'}}">
             <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-            {{{renderDiceTags data.description}}}
+            {{{ffgDiceSymbols data.description}}}
           </div>
         </div>
         <div class="talent-actions">
@@ -38,7 +38,7 @@
           <div class="talent-body">
             <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-label="{{upgrade.name}}">
               <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-              {{{renderDiceTags upgrade.description}}}
+              {{{ffgDiceSymbols upgrade.description}}}
             </div>
             <input class="talent-hidden" name="data.upgrades.{{key}}.size" type="text" value="{{upgrade.size}}" data-dtype="String" />
             <input class="talent-hidden" name="data.upgrades.{{key}}.visible" type="text" value="{{upgrade.visible}}" data-dtype="Boolean" />

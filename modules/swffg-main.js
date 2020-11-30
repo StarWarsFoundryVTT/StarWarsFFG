@@ -557,10 +557,6 @@ Hooks.once("init", async function () {
     return new Handlebars.SafeString(items.join(""));
   });
 
-  Handlebars.registerHelper("renderDiceTags", function (string) {
-    return PopoutEditor.renderDiceImages(string);
-  });
-
   Handlebars.registerHelper("calculateSpecializationTalentCost", function (idString) {
     const id = parseInt(idString.replace("talent", ""), 10);
 
