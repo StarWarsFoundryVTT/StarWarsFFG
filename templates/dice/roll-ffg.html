@@ -25,7 +25,7 @@
       {{else}}
       <li class="roll-failure">Check failed!</li>
       {{/if}} {{/if}} {{#each ffg as | result key|}} {{#if this}}
-      <li>{{lookup ../this.diceresults [key]}}: {{this}}</li>
+      <li>{{localize (lookup ../this.diceresults [key])}}: {{this}}</li>
       {{/if}} {{/each}}
     </ul>
     {{/if}} {{/if}}
