@@ -56,7 +56,14 @@ export default class PopoutEditor extends FormApplication {
     let html = str || "";
 
     html = this.replaceRollTags(html, actorData);
-    html = TextEditor.enrichHTML(html, { entities: true });
+    try {
+      html = TextEditor.enrichHTML(html, { entities: true });
+    } catch (err) {
+      // ignore the message below, it means that we already created an entity link (this could be part of an editor text)
+      if (err.message !== "An Entity subclass must configure the EntityCollection it belongs to.") {
+        CONFIG.logger.error(err);
+      }
+    }
 
     const dicetheme = game.settings.get("starwarsffg", "dicetheme");
 

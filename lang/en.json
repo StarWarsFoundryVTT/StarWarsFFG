@@ -382,5 +382,13 @@
   "SWFFG.ItemStatusMinor" : "Minor Damage",
   "SWFFG.ItemStatusModerate" : "Moderate Damage",
   "SWFFG.ItemStatusMajor" : "Major Damage",
-  "SWFFG.ItemTooDamagedToUse": "is too damaged to be used"
+  "SWFFG.ItemTooDamagedToUse": "is too damaged to be used",
+  "SWFFG.RollResultSuccess" : "Successes",
+  "SWFFG.RollResultFailure" :  "Failures",
+  "SWFFG.RollResultAdvantage" : "Advantages",
+  "SWFFG.RollResultThreat" :  "Threats",
+  "SWFFG.RollResultTriumph" :  "Triumphs",
+  "SWFFG.RollResultDespair" :  "Despairs",
+  "SWFFG.RollResultLight" :  "Light",
+  "SWFFG.RollResultDark" :  "Dark"
 }
