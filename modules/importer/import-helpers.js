@@ -996,7 +996,7 @@ export default class ImportHelpers {
 
           character.items.push(force);
         } catch (err) {
-          CONFIG.logger.error(`Unable to add force power ${characterSpecTalent.Key} to character.`);
+          CONFIG.logger.error(`Unable to add force power ${forcepowers.Key} to character.`);
         }
       });
 
