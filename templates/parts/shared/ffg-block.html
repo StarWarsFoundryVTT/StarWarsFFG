@@ -2,7 +2,9 @@
   <div class="attribute flex-group-center">
     <div class="block-background">
       <div class="block-title">
-        {{localize title}}
+        {{#if headerlink}}
+        <a class="{{headerclass}}" {{{headerattributes}}}>{{localize title}}</a>
+        {{else}} {{localize title}} {{/if}}
       </div>
       <div class="block-attribute">
         {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}

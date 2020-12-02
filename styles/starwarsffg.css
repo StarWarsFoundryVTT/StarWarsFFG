@@ -433,6 +433,34 @@ img {
   width: 100%;
 }
 
+.starwarsffg.sheet.actor .character .sheet-body .general .genesys.grid {
+  gap: 0px;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .genesys .resource {
+  min-height: 6rem;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .genesys .resource .attribute {
+  height: 100%;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .genesys .resource .attribute .block-background {
+  height: 100%;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .genesys .resource .attribute .block-background .block-attribute {
+  height: calc(100% - 0.9375rem);
+  overflow: hidden;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .genesys .resource .attribute .block-background .block-attribute .block-value {
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+  max-height: 3.5rem;
+}
+
 .starwarsffg.sheet.actor .character .sheet-body .general .block-editor .resource {
   min-height: 9.375rem;
 }
