@@ -36,7 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
-- 01/12/2020 - Cstadther - Enhancement 506 - Added Enable/Disable Auto Soak Calculation on Actor and Minion sheets.
+- 01/12/2020 - Cstadther - Enhancement 506 - Added Enable/Disable Auto Soak Calculation on Character and Minion sheets.
 - 30/11/2020 - Cstadther - Enhancement 501 - Updated `roll-options` template to not expect passed renderedDice tags.  Instead, they will be rendered when template is processed using custom handlebars function.
 - 29/11/2020 - Cstadther - Enhancement 400 - Added item status to weapons, will add appropriate number of setback dice to roll, will display a UI error if damage renders weapon unusable.
 - 29/11/2020 - Cstadther - Fix 494 - Updated `Entity Link` rendering on character sheet item details.
