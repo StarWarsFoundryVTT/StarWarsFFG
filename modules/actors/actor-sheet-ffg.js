@@ -483,6 +483,44 @@ export class ActorSheetFFG extends ActorSheet {
         $(a).val("2");
       }
     });
+
+    html.find(".add-obligation").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const form = this.form;
+
+      const nk = randomID();
+      let newKey = document.createElement("div");
+      newKey.innerHTML = `<input type="text" name="data.obligationlist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.obligationlist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
+      form.appendChild(newKey);
+      await this._onSubmit(event);
+    });
+
+    html.find(".remove-obligation").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const id = a.dataset["id"];
+      this.object.update({ "data.obligationlist": { ["-=" + id]: null } });
+    });
+
+    html.find(".add-duty").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const form = this.form;
+
+      const nk = randomID();
+      let newKey = document.createElement("div");
+      newKey.innerHTML = `<input type="text" name="data.dutylist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.dutylist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
+      form.appendChild(newKey);
+      await this._onSubmit(event);
+    });
+
+    html.find(".remove-duty").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const id = a.dataset["id"];
+      this.object.update({ "data.dutylist": { ["-=" + id]: null } });
+    });
   }
 
   /**

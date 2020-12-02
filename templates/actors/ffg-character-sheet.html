@@ -154,7 +154,7 @@
           <div class="attribute flex-group-center">
             <div class="block-background">
               <div class="block-title">
-                Motivations
+                {{localize "SWFFG.Motivations"}}
               </div>
               <div class="block-attribute">
                 <table>
@@ -191,7 +191,74 @@
     </div>
 
     <div class="tab obligation" data-group="primary" data-tab="obligation">
-      Obligation
+      {{#if (or (eq actor.flags.config.enableObligation undefined) (eq actor.flags.config.enableObligation true) )}}
+      <div class="resource full">
+        <div class="attribute flex-group-center">
+          <div class="block-background">
+            <div class="block-title">
+              {{localize "SWFFG.DescriptionObligation"}}
+            </div>
+            <div class="block-attribute">
+              <table>
+                <thead>
+                  <th>{{localize "SWFFG.Type"}}</th>
+                  <th>{{localize "SWFFG.Magnitude"}}</th>
+                  <th>
+                    <a class="add-obligation"><i class="far fa-plus-square"></i></a>
+                  </th>
+                </thead>
+                {{#each data.obligationlist as |obligation id|}}
+                <tr>
+                  <td><input type="text" name="data.obligationlist.{{id}}.type" value="{{obligation.type}}" data-dtype="String" /></td>
+                  <td><input type="text" name="data.obligationlist.{{id}}.magnitude" value="{{obligation.magnitude}}" data-dtype="String" /></td>
+                  <td>
+                    <a class="remove-obligation" data-id="{{id}}"><i class="fas fa-trash"></i></a>
+                  </td>
+                </tr>
+                {{/each}}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/if}} {{#if (or (eq actor.flags.config.enableDuty undefined) (eq actor.flags.config.enableDuty true) )}}
+      <div class="resource full">
+        <div class="attribute flex-group-center">
+          <div class="block-background">
+            <div class="block-title">
+              {{localize "SWFFG.DescriptionDuty"}}
+            </div>
+            <div class="block-attribute">
+              <table>
+                <thead>
+                  <th>{{localize "SWFFG.Type"}}</th>
+                  <th>{{localize "SWFFG.Magnitude"}}</th>
+                  <th>
+                    <a class="add-duty"><i class="far fa-plus-square"></i></a>
+                  </th>
+                </thead>
+                {{#each data.dutylist as |duty id|}}
+                <tr>
+                  <td><input type="text" name="data.dutylist.{{id}}.type" value="{{duty.type}}" data-dtype="String" /></td>
+                  <td><input type="text" name="data.dutylist.{{id}}.magnitude" value="{{duty.magnitude}}" data-dtype="String" /></td>
+                  <td>
+                    <a class="remove-duty" data-id="{{id}}"><i class="fas fa-trash"></i></a>
+                  </td>
+                </tr>
+                {{/each}}
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/if}} {{#if (or (eq actor.flags.config.enableMorality undefined) (eq actor.flags.config.enableMorality true) )}}
+      <div class="block-editor">
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="full" title="SWFFG.EmotionalStrength" type="PopoutEditor" name="data.morality.strength" value=data.morality.strength)}}
+      </div>
+      <div class="block-editor">
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="full" title="SWFFG.EmotionalWeakness" type="PopoutEditor" name="data.morality.weakness" value=data.morality.weakness)}}
+      </div>
+      {{/if}}
     </div>
   </section>
 </form>

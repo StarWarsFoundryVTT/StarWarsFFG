@@ -399,7 +399,16 @@
   "SWFFG.Eyes": "Eyes",
   "SWFFG.NotableFeature": "Notable Features",
   "SWFFG.Notes": "Other",
+  "SWFFG.Motivations": "Motivations",
   "SWFFG.MotivationCategory": "Category",
   "SWFFG.MotivationType": "Type",
-  "SWFFG.MotivationDescription": "Description"
+  "SWFFG.MotivationDescription": "Description",
+  "SWFFG.EmotionalStrength": "Emotional Strength",
+  "SWFFG.EmotionalWeakness": "Emotional Weakness",
+  "SWFFG.Strength": "Strength",
+  "SWFFG.Flaw": "Flaw",
+  "SWFFG.Desire": "Desire",
+  "SWFFG.Fear": "Fear",
+  "SWFFG.Type": "Type",
+  "SWFFG.Magnitude": "Magnitude"
 }
