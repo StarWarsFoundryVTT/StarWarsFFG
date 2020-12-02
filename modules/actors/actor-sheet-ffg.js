@@ -209,6 +209,11 @@ export class ActorSheetFFG extends ActorSheet {
 
     if (this.actor.data.type === "character") {
       const options = new ActorOptions(this, html);
+      options.register("enableAutoSoakCalculation", {
+        name: game.i18n.localize("SWFFG.EnableSoakCalc"),
+        hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+        default: true,
+      });
       options.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
         hint: game.i18n.localize("SWFFG.EnableObligationHint"),
@@ -232,6 +237,15 @@ export class ActorSheetFFG extends ActorSheet {
       options.register("enableForcePool", {
         name: game.i18n.localize("SWFFG.EnableForcePool"),
         hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
+        default: true,
+      });
+    }
+
+    if (this.actor.data.type === "minion") {
+      const options = new ActorOptions(this, html);
+      options.register("enableAutoSoakCalculation", {
+        name: game.i18n.localize("SWFFG.EnableSoakCalc"),
+        hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         default: true,
       });
     }
