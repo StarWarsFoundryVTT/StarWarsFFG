@@ -411,11 +411,25 @@ img {
   width: 100%;
 }
 
-.starwarsffg.sheet.actor .character .sheet-body .general .resource.full .grid {
+.starwarsffg.sheet.actor .character .sheet-body .general .resource.full table {
   margin: 0;
+  border-bottom: none;
 }
 
-.starwarsffg.sheet.actor .character .sheet-body .general .resource.full .grid input {
+.starwarsffg.sheet.actor .character .sheet-body .general .resource.full table th {
+  line-height: 0.875rem;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .resource.full table td {
+  vertical-align: top;
+  padding: 0.25em 0.3125rem;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .resource.full table .motivation.description {
+  width: 66%;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .resource.full table input {
   width: 100%;
 }
 

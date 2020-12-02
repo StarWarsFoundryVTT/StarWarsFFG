@@ -155,17 +155,49 @@
                 Motivations
               </div>
               <div class="block-attribute">
-                <div class="grid grid-3col">
-                  <div>{{localize "SWFFG.MotivationCategory"}}</div>
-                  <div>{{localize "SWFFG.MotivationType"}}</div>
-                  <div>{{localize "SWFFG.MotivationDescription"}}</div>
-                  <input type="text" name="data.general.motivation1.category" value="data.general.motivation1.category" data-dtype="String" />
-                  <input type="text" name="data.general.motivation1.type" value="data.general.motivation1.type" data-dtype="String" />
-                  <textarea name="data.general.motivation1.description">{{data.general.motivation1.description}}</textarea>
-                  <input type="text" name="data.general.motivation2.category" value="data.general.motivation2.category" data-dtype="String" />
-                  <input type="text" name="data.general.motivation2.type" value="data.general.motivation2.type" data-dtype="String" />
-                  <textarea name="data.general.motivation2.description">{{data.general.motivation2.description}}</textarea>
-                </div>
+                <table>
+                  <thead>
+                    <th>{{localize "SWFFG.MotivationCategory"}}</th>
+                    <th>{{localize "SWFFG.MotivationType"}}</th>
+                    <th>{{localize "SWFFG.MotivationDescription"}}</th>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input type="text" name="data.general.motivation1.category" value="{{data.general.motivation1.category}}" data-dtype="String" /></td>
+                      <td><input type="text" name="data.general.motivation1.type" value="{{data.general.motivation1.type}}" data-dtype="String" /></td>
+                      <td colspan="2"><textarea name="data.general.motivation1.description">{{data.general.motivation1.description}}</textarea></td>
+                    </tr>
+                    <tr>
+                      <td><input type="text" name="data.general.motivation2.category" value="{{data.general.motivation2.category}}" data-dtype="String" /></td>
+                      <td><input type="text" name="data.general.motivation2.type" value="{{data.general.motivation2.type}}" data-dtype="String" /></td>
+                      <td class="motivation description"><textarea name="data.general.motivation2.description">{{data.general.motivation2.description}}</textarea></td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- <div class="grid grid-2col">
+                  <div>
+                    <div class="grid grid-2col">
+                      <div>{{localize "SWFFG.MotivationCategory"}}</div>
+                      <div>{{localize "SWFFG.MotivationType"}}</div>
+                      <input type="text" name="data.general.motivation1.category" value="{{data.general.motivation1.category}}" data-dtype="String" />
+                      <input type="text" name="data.general.motivation1.type" value="{{data.general.motivation1.type}}" data-dtype="String" />
+                      <input type="text" name="data.general.motivation2.category" value="{{data.general.motivation2.category}}" data-dtype="String" />
+                      <input type="text" name="data.general.motivation2.type" value="{{data.general.motivation2.type}}" data-dtype="String" />
+                    </div>
+                    
+                  </div>
+                  <div>
+                    <div>{{localize "SWFFG.MotivationDescription"}}</div>
+                  
+                    <textarea name="data.general.motivation1.description">{{data.general.motivation1.description}}</textarea>
+                    
+                    <textarea name="data.general.motivation2.description">{{data.general.motivation2.description}}</textarea>
+                  </div>
+
+                  
+                  
+                </div> -->
               </div>
             </div>
           </div>

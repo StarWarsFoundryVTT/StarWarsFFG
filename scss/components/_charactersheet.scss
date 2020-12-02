@@ -122,8 +122,24 @@
             &.full {
               width:100%;
 
-              .grid {
+              table {
                 margin: 0;
+                border-bottom: none;
+                th {
+                  line-height: 0.875rem;
+                }
+
+                td {
+                  vertical-align: top;
+                  padding: 0.25em 0.3125rem;
+                }
+
+                .motivation{
+                  &.description {
+                    width: 66%;
+                  }
+                }
+
                 input {
                   width: 100%;
                 }
