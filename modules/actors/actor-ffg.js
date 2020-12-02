@@ -302,6 +302,29 @@ export class ActorFFG extends Actor {
     }
 
     data.talentList = globalTalentList;
+
+    if (data?.obligationlist && Object.keys(data.obligationlist).length > 0) {
+      let obligation = 0;
+      Object.keys(data.obligationlist).forEach((element) => {
+        const item = data.obligationlist[element];
+
+        if (parseInt(item.magnitude, 10)) {
+          obligation += parseInt(item.magnitude, 10);
+        }
+      });
+      data.obligation.value = obligation;
+    }
+
+    if (data?.dutylist && Object.keys(data.dutylist).length > 0) {
+      let duty = 0;
+      Object.keys(data.dutylist).forEach((element) => {
+        const item = data.dutylist[element];
+        if (parseInt(item.magnitude, 10)) {
+          duty += parseInt(item.magnitude, 10);
+        }
+      });
+      data.duty.value = duty;
+    }
   }
 
   _calculateDerivedValues(actorData) {
