@@ -91,8 +91,23 @@ export class ActorSheetFFG extends ActorSheet {
     let initial = this._sheetTab;
     new TabsV2(tabs, {
       initial: initial,
-      callback: (clicked) => (this._sheetTab = clicked.data("tab")),
+      callback: (clicked) => {
+        this._sheetTab = clicked.data("tab");
+      },
     });
+
+    html.find(".alt-tab").click((ev) => {
+      const item = $(ev.currentTarget);
+      this._tabs[0].activate(item.data("tab"));
+    });
+
+    html.find(".popout-editor").on("mouseover", (event) => {
+      $(event.currentTarget).find(".popout-editor-button").show();
+    });
+    html.find(".popout-editor").on("mouseout", (event) => {
+      $(event.currentTarget).find(".popout-editor-button").hide();
+    });
+    html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
 
     // Setup dice pool image and hide filtered skills
     html.find(".skill").each((_, elem) => {
@@ -880,5 +895,31 @@ export class ActorSheetFFG extends ActorSheet {
     specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
     specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
     specializationTalentItem.attributes = talentItem.data.attributes;
+  }
+
+  _onPopoutEditor(event) {
+    event.preventDefault();
+    const a = event.currentTarget.parentElement;
+    const label = a.dataset.label;
+    const key = a.dataset.target;
+
+    const parent = $(a.parentElement);
+    const parentPosition = $(parent).offset();
+
+    const windowHeight = parseInt($(parent).height(), 10) + 100 < 200 ? 200 : parseInt($(parent).height(), 10) + 100;
+    const windowWidth = parseInt($(parent).width(), 10) < 320 ? 320 : parseInt($(parent).width(), 10);
+    const windowLeft = parseInt(parentPosition.left, 10);
+    const windowTop = parseInt(parentPosition.top, 10);
+
+    const title = a.dataset.label ? `Editor for ${this.object.name}: ${label}` : `Editor for ${this.object.name}`;
+
+    new PopoutEditor(this.object, {
+      name: key,
+      title: title,
+      height: windowHeight,
+      width: windowWidth,
+      left: windowLeft,
+      top: windowTop,
+    }).render(true);
   }
 }

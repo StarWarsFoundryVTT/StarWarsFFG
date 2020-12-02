@@ -390,5 +390,16 @@
   "SWFFG.RollResultTriumph" :  "Triumphs",
   "SWFFG.RollResultDespair" :  "Despairs",
   "SWFFG.RollResultLight" :  "Light",
-  "SWFFG.RollResultDark" :  "Dark"
+  "SWFFG.RollResultDark" :  "Dark",
+  "SWFFG.Gender": "Gender",
+  "SWFFG.Age": "Age",
+  "SWFFG.Height": "Height",
+  "SWFFG.Build": "Build",
+  "SWFFG.Hair": "Hair",
+  "SWFFG.Eyes": "Eyes",
+  "SWFFG.NotableFeature": "Notable Features",
+  "SWFFG.Notes": "Other",
+  "SWFFG.MotivationCategory": "Category",
+  "SWFFG.MotivationType": "Type",
+  "SWFFG.MotivationDescription": "Description"
 }

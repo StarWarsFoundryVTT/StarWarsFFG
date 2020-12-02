@@ -5,7 +5,7 @@
         {{localize title}}
       </div>
       <div class="block-attribute">
-        {{#if (or (eq blocktype "single") (eq blocktype "double")) }} {{#if (eq type "Boolean")}}
+        {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}
         <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="{{name}}" data-dtype="{{type}}" {{checked value}} />
         {{/if}} {{#if (eq type "Dropdown")}}
         <select style="text-align: center;" name="{{name}}">
