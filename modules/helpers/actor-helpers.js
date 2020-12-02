@@ -58,8 +58,12 @@ export default class ActorHelpers {
         let x = statValue - (isFormValueVisible ? total : 0);
 
         let y = parseInt(formData.data.attributes[key].value, 10) + x;
-        if (key === "Soak" && (this.actor.data?.flags?.config?.enableAutoSoakCalculation || game.settings.get("starwarsffg", "enableSoakCalc"))) {
-          y = 0;
+        if (key === "Soak") {
+          const autoSoakCalculation = (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.data.flags.config.enableAutoSoakCalculation;
+
+          if (autoSoakCalculation) {
+            y = 0;
+          }
         }
 
         if (y > 0) {
