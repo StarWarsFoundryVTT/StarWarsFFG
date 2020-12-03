@@ -2377,6 +2377,10 @@ img {
   z-index: 10;
 }
 
+.starwarsffg .talent-list .item.forcepower #context-menu {
+  max-width: none;
+}
+
 .starwarsffg.sheet.item .item-sheet-specialization .popout-editor {
   height: 100%;
   width: 100%;

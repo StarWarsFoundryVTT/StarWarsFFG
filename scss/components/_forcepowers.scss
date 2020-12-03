@@ -78,3 +78,13 @@
     z-index: 10;
   }
 }
+
+.talent-list {
+  .item {
+    &.forcepower {
+      #context-menu {
+        max-width: none;
+      }
+    }
+  }
+}
