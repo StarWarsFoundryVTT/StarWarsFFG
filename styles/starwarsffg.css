@@ -405,6 +405,11 @@ img {
 
 .starwarsffg.sheet.actor .character .sheet-body .general .resource, .starwarsffg.sheet.actor .character .sheet-body .obligation .resource {
   width: 100%;
+  line-height: normal;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .general .resource p, .starwarsffg.sheet.actor .character .sheet-body .obligation .resource p {
+  padding: 0 0.3125rem;
 }
 
 .starwarsffg.sheet.actor .character .sheet-body .general .resource.full, .starwarsffg.sheet.actor .character .sheet-body .obligation .resource.full {
@@ -486,7 +491,6 @@ img {
   overflow: auto;
   width: 100%;
   height: 100%;
-  max-height: 4.6875rem;
 }
 
 .starwarsffg.sheet.actor .character .sheet-body .obligation .resource.full table {
