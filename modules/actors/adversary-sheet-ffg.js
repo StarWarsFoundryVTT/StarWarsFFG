@@ -2,6 +2,7 @@
  * Extend the basic ActorSheet with some very simple modifications
  * @extends {ActorSheet}
  */
+import PopoutEditor from "../popout-editor.js";
 import Helpers from "../helpers/common.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
