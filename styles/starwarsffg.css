@@ -148,7 +148,7 @@ span.dietype.triumph {
   grid-column: span 2 / span 2;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
-  margin: 10px 0;
+  margin: 0px;
   padding: 0;
 }
 
@@ -2285,7 +2285,17 @@ img {
 
 .starwarsffg .injuries div.item {
   cursor: pointer;
+  border-bottom: 1px solid #bbb;
 }
+
+.starwarsffg .injuries div.item:nth-last-of-type(1) {
+  border-bottom: none;
+}
+
+.starwarsffg .injuries div.item:hover {
+  background: rgba(25, 24, 19, 0.12);
+}
+
 
 .starwarsffg .injuries .severity {
   position: relative;
@@ -2298,7 +2308,7 @@ img {
 }
 
 .starwarsffg .injuries .resource.full {
-  width: 400px;
+  width: 95%;
 }
 
 .starwarsffg .injuries .item-controls {
