@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 03/12/2020 - saethone - Updated styling for critical injuries on character sheet.
 - 02/12/2020 - Cstadther - Enhancement 403 - Added general data area (accessed by click id-badge icon underneath Specializations).  The general area has valid general information for a character based on dice theme (genesys has strength/flaw/desire/fear and star wars has motivations).  Obligation/Duty/Morality area can be accessed by clicking on the header of the item on the biography section. 
 - 01/12/2020 - Cstadther - Enhancement 506 - Added Enable/Disable Auto Soak Calculation on Character and Minion sheets.
 - 30/11/2020 - Cstadther - Enhancement 501 - Updated `roll-options` template to not expect passed renderedDice tags.  Instead, they will be rendered when template is processed using custom handlebars function.
