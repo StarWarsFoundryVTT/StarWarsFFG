@@ -199,6 +199,10 @@ span {
   min-height: 2rem;
   position: relative;
 
+  p {
+    line-height: 1.25rem;
+  }
+
   .popout-editor-button {
     display: none;
     position: absolute;
