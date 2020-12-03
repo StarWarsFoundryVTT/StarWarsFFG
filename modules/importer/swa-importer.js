@@ -6,7 +6,7 @@ export default class SWAImporter extends FormApplication {
     return mergeObject(super.defaultOptions, {
       id: "swa-importer",
       classes: ["starwarsffg", "data-import"],
-      title: "SW Adversaries Importer",
+      title: "Adversaries Importer",
       template: "systems/starwarsffg/templates/importer/swa-importer.html",
     });
   }
@@ -40,7 +40,7 @@ export default class SWAImporter extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
 
-    $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#data-importer header a");
+    $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#swa-importer header a");
 
     html.find(".dialog-button").on("click", this._dialogButton.bind(this));
   }
@@ -133,7 +133,15 @@ export default class SWAImporter extends FormApplication {
       $(".import-progress.current").toggleClass("import-hidden");
       $(".import-progress.overall").toggleClass("import-hidden");
 
-      let pack = await this._getCompendiumPack("Actor", `swa.Adversaries`);
+      let compendiumName = `swa.Adversaries`;
+
+      const filename = $("form.data-importer-window")[0].data.files[0].name;
+
+      if (!filename.includes("sw-adversaries")) {
+        compendiumName = filename.replace(/\.[^/.]+$/, "");
+      }
+
+      let pack = await this._getCompendiumPack("Actor", compendiumName);
 
       await ImportHelpers.asyncForEach(adversaryFiles, async (f) => {
         try {
@@ -154,6 +162,199 @@ export default class SWAImporter extends FormApplication {
 
             await ImportHelpers.asyncForEach(fileData, async (item) => {
               try {
+                let skills = {
+                  "Astrogation": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "ASTRO",
+                  },
+                  "Athletics": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "ATHL",
+                  },
+                  "Brawl": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "BRAWL",
+                  },
+                  "Charm": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "CHARM",
+                  },
+                  "Coercion": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "COERC",
+                  },
+                  "Computers": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "COMP",
+                  },
+                  "Cool": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "COOL",
+                  },
+                  "Coordination": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "COORD",
+                  },
+                  "Deception": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "DECEP",
+                  },
+                  "Discipline": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "DISC",
+                  },
+                  "Gunnery": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "GUNN",
+                  },
+                  "Leadership": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "LEAD",
+                  },
+                  "Lightsaber": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "LTSABER",
+                  },
+                  "Mechanics": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "MECH",
+                  },
+                  "Medicine": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "MED",
+                  },
+                  "Melee": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "MELEE",
+                  },
+                  "Negotiation": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "NEG",
+                  },
+                  "Perception": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "PERC",
+                  },
+                  "Piloting: Planetary": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "PILOTPL",
+                  },
+                  "Piloting: Space": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "PILOTSP",
+                  },
+                  "Ranged: Heavy": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "RANGHVY",
+                  },
+                  "Ranged: Light": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "RANGLT",
+                  },
+                  "Resilience": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "RESIL",
+                  },
+                  "Skulduggery": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "SKUL",
+                  },
+                  "Stealth": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "STEAL",
+                  },
+                  "Streetwise": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "SW",
+                  },
+                  "Survival": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "SURV",
+                  },
+                  "Vigilance": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "VIGIL",
+                  },
+                  "Knowledge: Core Worlds": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "CORE",
+                  },
+                  "Knowledge: Education": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "EDU",
+                  },
+                  "Knowledge: Lore": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "LORE",
+                  },
+                  "Knowledge: Outer Rim": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "OUT",
+                  },
+                  "Knowledge: Underworld": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "UND",
+                  },
+                  "Knowledge: Warfare": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "WARF",
+                  },
+                  "Knowledge: Xenology": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "XEN",
+                  },
+                  "Cybernetics": {
+                    "rank": 0,
+                    "careerskill": false,
+                    "Key": "CYBERNETICS",
+                    "custom": true,
+                    "type": "General",
+                    "characteristic": "Intellect",
+                    "label": "Cybernetics",
+                  },
+                };
+
+                const skilltheme = await game.settings.get("starwarsffg", "skilltheme");
+
+                if (skilltheme !== "starwars") {
+                  skills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+                }
+
                 let adversary = {
                   name: item.name,
                   type: item.type === "Nemesis" ? "character" : "minion",
@@ -181,192 +382,7 @@ export default class SWAImporter extends FormApplication {
                         "value": item.characteristics.Presence,
                       },
                     },
-                    skills: {
-                      "Astrogation": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "ASTRO",
-                      },
-                      "Athletics": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "ATHL",
-                      },
-                      "Brawl": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "BRAWL",
-                      },
-                      "Charm": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "CHARM",
-                      },
-                      "Coercion": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "COERC",
-                      },
-                      "Computers": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "COMP",
-                      },
-                      "Cool": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "COOL",
-                      },
-                      "Coordination": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "COORD",
-                      },
-                      "Deception": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "DECEP",
-                      },
-                      "Discipline": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "DISC",
-                      },
-                      "Gunnery": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "GUNN",
-                      },
-                      "Leadership": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "LEAD",
-                      },
-                      "Lightsaber": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "LTSABER",
-                      },
-                      "Mechanics": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "MECH",
-                      },
-                      "Medicine": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "MED",
-                      },
-                      "Melee": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "MELEE",
-                      },
-                      "Negotiation": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "NEG",
-                      },
-                      "Perception": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "PERC",
-                      },
-                      "Piloting: Planetary": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "PILOTPL",
-                      },
-                      "Piloting: Space": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "PILOTSP",
-                      },
-                      "Ranged: Heavy": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "RANGHVY",
-                      },
-                      "Ranged: Light": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "RANGLT",
-                      },
-                      "Resilience": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "RESIL",
-                      },
-                      "Skulduggery": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "SKUL",
-                      },
-                      "Stealth": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "STEAL",
-                      },
-                      "Streetwise": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "SW",
-                      },
-                      "Survival": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "SURV",
-                      },
-                      "Vigilance": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "VIGIL",
-                      },
-                      "Knowledge: Core Worlds": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "CORE",
-                      },
-                      "Knowledge: Education": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "EDU",
-                      },
-                      "Knowledge: Lore": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "LORE",
-                      },
-                      "Knowledge: Outer Rim": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "OUT",
-                      },
-                      "Knowledge: Underworld": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "UND",
-                      },
-                      "Knowledge: Warfare": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "WARF",
-                      },
-                      "Knowledge: Xenology": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "XEN",
-                      },
-                      "Cybernetics": {
-                        "rank": 0,
-                        "careerskill": false,
-                        "Key": "CYBERNETICS",
-                        "custom": true,
-                        "type": "General",
-                        "characteristic": "Intellect",
-                        "label": "Cybernetics",
-                      },
-                    },
+                    skills,
                     stats: {},
                   },
                   items: [],
@@ -412,7 +428,7 @@ export default class SWAImporter extends FormApplication {
 
                 if (item.skills) {
                   Object.keys(item.skills).forEach((skill) => {
-                    const ffgSkill = Object.keys(CONFIG.FFG.skills).find((s) => skill.includes(s));
+                    const ffgSkill = Object.keys(skills).find((s) => skill.toLowerCase() === s.toLowerCase());
 
                     if (ffgSkill) {
                       adversary.data.skills[ffgSkill].rank = item.skills[skill];

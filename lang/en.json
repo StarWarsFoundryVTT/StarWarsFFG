@@ -312,8 +312,8 @@
   "SWFFG.SettingsOggDudeImporterLabel": "OggDude Dataset Importer",
   "SWFFG.SettingsOggDudeImporterHint": "Import data from an OggDude Dataset into Foundry",
   "SWFFG.SettingsSWAdversariesImporter": "Adversaries Import",
-  "SWFFG.SettingsSWAdversariesImporterLabel": "SW Adversaries Importer",
-  "SWFFG.SettingsSWAdversariesImporterHint": "Import data from an SW Adversaries into Foundry",
+  "SWFFG.SettingsSWAdversariesImporterLabel": "Adversaries Importer",
+  "SWFFG.SettingsSWAdversariesImporterHint": "Import data from an SW Adversaries typed data sets into Foundry",
   "SWFFG.SettingsSkillListImporter": "Skill List Import",
   "SWFFG.SettingsSkillListImporterLabel": "Skill List Importer",
   "SWFFG.SettingsSkillListImporterHint": "Import a skill list file to add to skill themes",
@@ -410,5 +410,7 @@
   "SWFFG.Desire": "Desire",
   "SWFFG.Fear": "Fear",
   "SWFFG.Type": "Type",
-  "SWFFG.Magnitude": "Magnitude"
+  "SWFFG.Magnitude": "Magnitude",
+  "SWFFG.AdversariesImportInstructions1" : "Import data based on Stoogoff's data format (http://swa.stoogoff.com/).",
+  "SWFFG.AdversariesImportInstructions2" : "Download the entire source as a zip file to use for import."
 }
