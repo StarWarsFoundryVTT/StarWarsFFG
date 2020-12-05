@@ -238,6 +238,12 @@ $swffg-table-header-color: rgb(145, 145, 145);
           
         }
 
+        .tab {
+          &.items, &.general, &.obligation {
+            height: calc(100% - 2.5rem);
+          }
+        }
+
         .biography {
           height: calc(100% - 4.6875rem);
           overflow:auto;

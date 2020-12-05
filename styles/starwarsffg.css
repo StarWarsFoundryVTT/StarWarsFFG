@@ -506,6 +506,10 @@ img {
   min-height: 4.6875rem;
 }
 
+.starwarsffg.sheet.actor .character .sheet-body .tab.items, .starwarsffg.sheet.actor .character .sheet-body .tab.general, .starwarsffg.sheet.actor .character .sheet-body .tab.obligation {
+  height: calc(100% - 2.5rem);
+}
+
 .starwarsffg.sheet.actor .character .sheet-body .biography {
   height: calc(100% - 4.6875rem);
   overflow: auto;
