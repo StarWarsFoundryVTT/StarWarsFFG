@@ -104,6 +104,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Vehicles", true);
         this._enableImportSelection(zip.files, "ItemDescriptors");
         this._enableImportSelection(zip.files, "SigAbilityNodes");
+        this._enableImportSelection(zip.files, "Skills");
       } catch (err) {
         ui.notifications.warn("There was an error trying to load the import file, check the console log for more information.");
         console.error(err);
@@ -147,13 +148,19 @@ export default class DataImporter extends FormApplication {
       let isSpecialization = false;
       let isVehicle = false;
 
-      const skillsFileName = await this._enableImportSelection(zip.files, "Skills", false, true);
+      let skillsFileName = importFiles.find((item) => item.file.includes("Skills.xml")).file;
+      let createSkillJournalEntries = true;
+
+      if (!skillsFileName) {
+        skillsFileName = await this._enableImportSelection(zip.files, "Skills", false, true);
+        createSkillJournalEntries = false;
+      }
 
       if (skillsFileName) {
         // load skills for reference
         let data = await zip.file(skillsFileName).async("text");
         const xmlDoc = ImportHelpers.stringToXml(data);
-        await this._loadSkillsList(xmlDoc);
+        await this._loadSkillsList(xmlDoc, createSkillJournalEntries);
       }
 
       const itemDescriptors = importFiles.find((item) => item.file.includes("ItemDescriptors.xml"));
@@ -208,10 +215,19 @@ export default class DataImporter extends FormApplication {
     }
   }
 
-  async _loadSkillsList(xmlDoc) {
+  async _loadSkillsList(xmlDoc, create) {
     const skills = xmlDoc.getElementsByTagName("Skill");
     if (skills.length > 0) {
       CONFIG.temporary["skills"] = {};
+
+      let totalCount = skills.length;
+      let currentCount = 0;
+      let pack;
+      if (create) {
+        pack = await this._getCompendiumPack("JournalEntry", `oggdude.SkillDescriptions`);
+        $(".import-progress.skills").toggleClass("import-hidden");
+      }
+
       for (let i = 0; i < skills.length; i += 1) {
         const skill = skills[i];
         const importkey = skill.getElementsByTagName("Key")[0]?.textContent;
@@ -223,6 +239,46 @@ export default class DataImporter extends FormApplication {
         }
 
         CONFIG.temporary.skills[importkey] = name;
+
+        if (create) {
+          try {
+            const d = JXON.xmlToJs(skill);
+
+            let item = {
+              name: d.Name,
+              flags: {
+                importid: d.Key,
+              },
+              content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
+            };
+
+            let compendiumItem;
+            await pack.getIndex();
+            let entry = pack.index.find((e) => e.name === item.name);
+
+            if (!entry) {
+              CONFIG.logger.debug(`Importing Skill Description - JournalEntry`);
+              compendiumItem = new JournalEntry(item, { temporary: true });
+              this._importLogger(`New Skill Description ${d.Name} : ${JSON.stringify(compendiumItem)}`);
+              let id = await pack.importEntity(compendiumItem);
+            } else {
+              CONFIG.logger.debug(`Updating Skill Description - JournalEntry`);
+              let updateData = item;
+              updateData["_id"] = entry._id;
+              this._importLogger(`Updating Skill Description ${d.Name} : ${JSON.stringify(updateData)}`);
+              pack.updateEntity(updateData);
+            }
+            //}
+            currentCount += 1;
+
+            $(".skills .import-progress-bar")
+              .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+              .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+            this._importLogger(`End importing Skill Description ${d.Name}`);
+          } catch (err) {
+            CONFIG.logger.error(`Error importing record : `, err);
+          }
+        }
       }
     }
   }

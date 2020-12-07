@@ -75,6 +75,15 @@
     </div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
+        <input type="checkbox" id="importSkills" name="imports" value="/Skills.xml" data-name="Skills" data-type="Item" data-itemtype="skills" disabled />
+        <label for="importSkills"> {{localize "SWFFG.Skills"}}</label><br />
+      </div>
+      <div class="import-progress skills import-hidden">
+        <div class="import-progress-bar" style="width: 0%;"></div>
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
         <input type="checkbox" id="importSpecializations" name="imports" value="/Specializations/" data-name="Specializations" data-type="Item" data-itemtype="specialization" disabled />
         <label for="importSpecializations"> {{localize "SWFFG.Specializations"}}</label><br />
       </div>
