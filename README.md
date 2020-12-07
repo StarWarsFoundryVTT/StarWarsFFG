@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 07/12/2020 - Cstadther - Enhancement 521 - Added Brawn Option to Lightsaber (per Ancient Sword)
 - 04/12/2020 - Cstadther - Fix 517 - Updated CSS to correctly display items without cutting off last item.
 - 03/12/2020 - Cstadther - Enhanced current SWA Importer to create compendiums for non-starwars files based on filename (http://genesysadversaries.dylanpetrusma.com/).
 - 03/12/2020 - saethone - Updated styling for critical injuries on character sheet.
