@@ -34,8 +34,8 @@ export default class ActorHelpers {
             isFormValueVisible = false;
           }
         } else if (key === "Encumbrance") {
-          if (formData.data.stats[k]?.value) {
-            statValue = parseInt(formData.data.stats[k].value, 10);
+          if (formData.data.stats[k]?.max) {
+            statValue = parseInt(formData.data.stats[k].max, 10);
             // the encumbrance value is autocalculated we need to account for 5 + Brawn
             statValue = statValue - parseInt(formData.data.characteristics.Brawn.value + 5, 10);
           } else {
