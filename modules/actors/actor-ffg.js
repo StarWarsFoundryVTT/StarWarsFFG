@@ -630,13 +630,6 @@ export class ActorFFG extends Actor {
       const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback", true);
       const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback", true);
 
-      // const advantages = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Advantage", true);
-      // const dark = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Dark", true);
-      // const failures = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Failure", true);
-      // const light = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Light", true);
-      // const successes = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Success", true);
-      // const threats = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Add Threat" true);
-
       const setValueAndSources = (modifiername, propertyname) => {
         const obj = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, modifiername, true);
         if (obj.total > 0) {
