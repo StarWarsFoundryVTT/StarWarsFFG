@@ -1,6 +1,12 @@
+import { GroupManager } from "./groupmanager-ffg.js";
+
 /**
  * A specialized form used to pop out the editor.
  * @extends {FormApplication}
+ *
+ * OPTIONS:
+ *
+ *
  */
 export default class DestinyTracker extends FormApplication {
   /** @override */
@@ -10,7 +16,6 @@ export default class DestinyTracker extends FormApplication {
       classes: ["starwarsffg"],
       title: "Destiny Tracker",
       template: "systems/starwarsffg/templates/ffg-destiny-tracker.html",
-      width: 100,
     });
   }
 
@@ -24,11 +29,14 @@ export default class DestinyTracker extends FormApplication {
 
     this.position.left = x - 505;
     this.position.top = y;
-    this.position.width = 100;
+    this.position.width = 150;
+    this.position.height = 105;
 
     // Return data
     return {
       destinyPool,
+      isGM: game.user.isGM,
+      menu: this.object.menu,
     };
   }
 
@@ -48,6 +56,39 @@ export default class DestinyTracker extends FormApplication {
     new Draggable(this, html, bottomHeader, this.options.resizable);
 
     $("#destiny-tracker").css({ bottom: "0px", right: "305px" });
+
+    // future functionality to allow multiple menu items to be passed in
+    // html.find(".dropbtn").click((event) => {
+    //   const id = `#${$(event.target).attr("id")}Content`;
+    //   console.log("clicked");
+
+    //   $(html.find(id)).toggleClass("show");
+    // });
+    // window.onclick = function(event) {
+    //   if (!event.target.matches('.dropbtn')) {
+    //     var dropdowns = document.getElementsByClassName("dropdown-content");
+    //     var i;
+    //     for (i = 0; i < dropdowns.length; i++) {
+    //       var openDropdown = dropdowns[i];
+    //       if (openDropdown.classList.contains('show')) {
+    //         openDropdown.classList.remove('show');
+    //       }
+    //     }
+    //   }
+    // }
+    // html.find(".dropdown-content a").click((event) => {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+
+    //   const index = event.currentTarget.dataset.value;
+    //   this.object.menu[index].callback();
+    //   $(event.currentTarget).parent().toggleClass("show");
+    // })
+    html.find(".group-manager").click((event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      new GroupManager().render(true);
+    });
 
     html.find(".destiny-points").click(async (event) => {
       const pointType = event.currentTarget.dataset.group;

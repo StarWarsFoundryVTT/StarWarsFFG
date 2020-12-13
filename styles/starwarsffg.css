@@ -2748,21 +2748,81 @@ img {
   box-shadow: none;
   background: transparent;
   position: absolute;
+  /* Dropdown Button */
+  /* Dropdown button on hover & focus */
+  /* The container <div> - needed to position the dropdown content */
+  /* Dropdown Content (Hidden by Default) */
+  /* Links inside the dropdown */
+  /* Change color of dropdown links on hover */
+  /* Show the dropdown menu on hover */
+  /* Change the background color of the dropdown button when the dropdown content is shown */
+  /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 }
 
 #destiny-tracker .window-content {
   background: transparent;
-  width: 100px;
 }
 
 #destiny-tracker header.window-header {
   display: none;
 }
 
-.swffg-destiny-container {
-  right: 0px;
-  bottom: 0px;
+#destiny-tracker .dropbtn {
+  background-color: transparent;
+  color: white;
+  font-size: 12px;
+  border: none;
+  cursor: pointer;
+}
+
+#destiny-tracker .dropbtn i {
+  margin: 0;
+}
+
+#destiny-tracker .dropbtn:hover, #destiny-tracker .dropbtn:focus {
+  background-color: black;
+}
+
+#destiny-tracker .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+#destiny-tracker .dropdown-content {
+  display: none;
   position: absolute;
+  background: url(../../../ui/denim075.png) repeat;
+  max-width: 50px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+#destiny-tracker .dropdown-content a {
+  color: white;
+  padding: 12px 5px;
+  text-decoration: none;
+  display: block;
+}
+
+#destiny-tracker .dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+#destiny-tracker .dropdown:hover .dropdown-content {
+  display: block;
+}
+
+#destiny-tracker .dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
+
+#destiny-tracker .show {
+  display: block;
+}
+
+.swffg-destiny-container {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .swffg-destiny-bar {
@@ -2793,6 +2853,24 @@ img {
   width: 100%;
   display: flex;
   z-index: 70;
+}
+
+.swffg-destiny.swffg-groupmanager {
+  min-width: 125px;
+  flex: 1;
+  position: relative;
+  padding: 0 0 5px 0;
+  pointer-events: auto;
+  height: 55px;
+}
+
+.swffg-destiny .group-manager {
+  padding: 5px 0px 0px 5px;
+  position: fixed;
+}
+
+.swffg-destiny #destinyLight {
+  margin-left: 35px;
 }
 
 .swffg-destiny .destiny-points {
