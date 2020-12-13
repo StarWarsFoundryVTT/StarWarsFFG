@@ -412,5 +412,7 @@
   "SWFFG.Type": "Type",
   "SWFFG.Magnitude": "Magnitude",
   "SWFFG.AdversariesImportInstructions1" : "Import data based on Stoogoff's data format (http://swa.stoogoff.com/).",
-  "SWFFG.AdversariesImportInstructions2" : "Download the entire source as a zip file to use for import."
+  "SWFFG.AdversariesImportInstructions2" : "Download the entire source as a zip file to use for import.",
+  "SWFFG.Skills": "Skills",
+  "SWFFG.GroupManager": "Group Manager"
 }

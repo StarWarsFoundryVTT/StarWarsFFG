@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 13/12/2020 - Cstadther - Fix/Enhancement - Move Group Manager launch button to destiny pool display for GMs
 - 10/12/2020 - Cstadther - Fix - Issue where, when you go over max encumbrance it adds to max encumbrance by the amount over. 
 - 07/12/2020 - Cstadther - Enhancement 518 - Added OggDude Import of Skill Descriptions and JournalEntries (NOTE!!! We will be able to link the skill descriptions to the skill on the character sheet.)
 - 07/12/2020 - Cstadther - Enhancement 521 - Added Brawn Option to Lightsaber (per Ancient Sword)

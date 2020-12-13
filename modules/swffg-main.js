@@ -623,32 +623,35 @@ Hooks.once("init", async function () {
 /*  Set up control buttons                      */
 /* -------------------------------------------- */
 
-Hooks.on("getSceneControlButtons", (controls) => {
-  if (game.user.isGM) {
-    controls.push({
-      name: "groupmanager",
-      title: "Group Manager",
-      icon: "fas fa-users",
-      layer: "GroupManagerLayer",
-      tools: [
-        {
-          name: "groupsheet",
-          title: "Open Group Sheet",
-          icon: "fas fa-users",
-          onClick: () => {
-            canvas.groupmanager.window = new GroupManager().render(true);
-          },
-          button: true,
-        },
-      ],
-    });
-  }
-});
+// Hooks.on("getSceneControlButtons", (controls) => {
+//   if (! hasProperty(canvas,'groupmanager')) {
+//     return
+//   }
+//   if (game.user.isGM) {
+//     controls.push({
+//       name: "groupmanager",
+//       title: "Group Manager",
+//       icon: "fas fa-users",
+//       tools: [
+//         {
+//           name: "groupsheet",
+//           title: "Open Group Sheet",
+//           icon: "fas fa-users",
+//           onClick: () => {
+//             canvas.groupmanager.window = new GroupManager().render(true);
+//           },
+//           button: true,
+//         },
+//       ],
+//       activeTool: 'groupsheet',
+//     });
+//   }
+// });
 
-Hooks.once("canvasInit", (canvas) => {
-  const layerct = canvas.stage.children.length;
-  canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), layerct);
-});
+// Hooks.once("canvasInit", (canvas) => {
+//   const layerct = canvas.stage.children.length;
+//   canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), layerct);
+// });
 
 Hooks.on("renderJournalSheet", (journal, obj, data) => {
   let content = $(obj).find(".editor-content").html();
@@ -777,6 +780,19 @@ Hooks.once("ready", async () => {
 
   // Display Destiny Pool
   let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
+
+  // future functionality to allow multiple menu items to be passed to destiny pool
+  // const defaultDestinyMenu = [
+  //   {
+  //     name: game.i18n.localize("SWFFG.GroupManager"),
+  //     icon: '<i class="fas fa-users"></i>',
+  //     callback: () => {
+  //       new GroupManager().render(true);
+  //     }
+  //   }
+  // ]
+  // const dTracker = new DestinyTracker({ menu: defaultDestinyMenu});
+
   const dTracker = new DestinyTracker();
   dTracker.render(true);
 });
