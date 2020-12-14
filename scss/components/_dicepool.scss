@@ -10,6 +10,7 @@
       font-size: 30px;
       text-align: center;
       background: none;
+      width:100%;
     }
   }
   .upgrade-buttons {
@@ -17,14 +18,20 @@
     margin: 10px;
     button {
       line-height: 20px;
+      font-size: 12px;
     }
   }
   .pool-additional {
-    // border: 1px solid #999;
-    text-align: center;
+    text-align: left;
     input[type="button"] {
       margin: 0 3px;
     }
+  }
+
+  table {
+    width: 300px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
