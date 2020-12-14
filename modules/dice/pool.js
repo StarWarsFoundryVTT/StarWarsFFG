@@ -168,11 +168,11 @@ export class DicePoolFFG {
 
     let height = 36;
     let width = 36;
-    if (totalDice > 10) {
+    if (totalDice > 8) {
       height = 24;
       width = 24;
     }
-    if (totalDice > 32) {
+    if (totalDice > 24) {
       height = 12;
       width = 12;
     }

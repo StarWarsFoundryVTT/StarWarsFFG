@@ -1134,6 +1134,7 @@ img {
   font-size: 30px;
   text-align: center;
   background: none;
+  width: 100%;
 }
 
 .starwarsffg .dice-pool-dialog .upgrade-buttons {
@@ -1143,14 +1144,21 @@ img {
 
 .starwarsffg .dice-pool-dialog .upgrade-buttons button {
   line-height: 20px;
+  font-size: 12px;
 }
 
 .starwarsffg .dice-pool-dialog .pool-additional {
-  text-align: center;
+  text-align: left;
 }
 
 .starwarsffg .dice-pool-dialog .pool-additional input[type="button"] {
   margin: 0 3px;
+}
+
+.starwarsffg .dice-pool-dialog table {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .starwarsffg .ffgDiceArray {

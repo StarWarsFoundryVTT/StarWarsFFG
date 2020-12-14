@@ -1,4 +1,5 @@
 import PopoutEditor from "../popout-editor.js";
+import RollBuilderFFG from "../dice/roll-builder.js";
 
 export default class DiceHelpers {
   static async rollSkill(obj, event, type) {
@@ -80,42 +81,7 @@ export default class DiceHelpers {
   }
 
   static async displayRollDialog(data, dicePool, description, skillName, item) {
-    const id = randomID();
-    const content = await renderTemplate("systems/starwarsffg/templates/roll-options.html", {
-      dicePool,
-      id,
-    });
-
-    new Dialog(
-      {
-        title: description || game.i18n.localize("SWFFG.RollingDefaultTitle"),
-        content,
-        buttons: {
-          one: {
-            icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize("SWFFG.ButtonRoll"),
-            callback: () => {
-              const container = document.getElementById(id);
-              const finalPool = DicePoolFFG.fromContainer(container);
-
-              const roll = new game.ffg.RollFFG(finalPool.renderDiceExpression(), item, finalPool);
-              roll.toMessage({
-                user: game.user._id,
-                speaker: data,
-                flavor: `${game.i18n.localize("SWFFG.Rolling")} ${skillName}...`,
-              });
-            },
-          },
-          two: {
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize("SWFFG.Cancel"),
-          },
-        },
-      },
-      {
-        classes: ["dialog", "starwarsffg"],
-      }
-    ).render(true);
+    new RollBuilderFFG(data, dicePool, description, skillName, item).render(true);
   }
 
   static async addSkillDicePool(obj, elem) {
