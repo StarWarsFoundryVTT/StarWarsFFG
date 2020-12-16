@@ -66,6 +66,10 @@ export class RollFFG extends Roll {
         negative: +args[2].dark < 0,
       });
     }
+
+    if (args[3]) {
+      this.flavorText = args[3];
+    }
   }
 
   static CHAT_TEMPLATE = "systems/starwarsffg/templates/dice/roll-ffg.html";
@@ -184,6 +188,7 @@ export class RollFFG extends Roll {
       };
     });
     parts.addedResults = this.addedResults;
+    parts.flavorText = this.flavorText;
     return renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { parts });
   }
 
@@ -205,6 +210,8 @@ export class RollFFG extends Roll {
     if (!this._rolled) this.roll();
 
     // Define chat data
+    this.data.additionalFlavorText = this.flavorText;
+
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : chatOptions.flavor,
@@ -280,6 +287,7 @@ export class RollFFG extends Roll {
     json.hasStandard = this.hasStandard;
     json.data = this.data;
     json.addedResults = this.addedResults;
+    json.flavorText = this.flavorText;
     return json;
   }
 
@@ -291,6 +299,7 @@ export class RollFFG extends Roll {
     roll.hasStandard = data.hasStandard;
     roll.data = data.data;
     roll.addedResults = data.addedResults;
+    roll.flavorText = data.flavorText;
     return roll;
   }
 }

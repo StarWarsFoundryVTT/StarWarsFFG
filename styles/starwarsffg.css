@@ -1131,7 +1131,7 @@ img {
 
 .starwarsffg .dice-pool-dialog .pool-value input {
   border: 0;
-  font-size: 30px;
+  font-size: 25px;
   text-align: center;
   background: none;
   width: 100%;
@@ -1161,6 +1161,19 @@ img {
   margin-right: auto;
 }
 
+.starwarsffg .dice-pool-dialog .hide {
+  display: none;
+}
+
+.starwarsffg .dice-pool-dialog .minimize {
+  max-width: 20%;
+}
+
+.starwarsffg .dice-pool-dialog .maximize {
+  width: 100%;
+  max-width: 78%;
+}
+
 .starwarsffg .ffgDiceArray {
   display: flex;
   flex-direction: row;
@@ -1186,6 +1199,11 @@ img {
 
 .starwarsffg .dice-result .roll-failure {
   color: darkred;
+}
+
+.starwarsffg .dice-additional-flavor {
+  font-style: oblique;
+  font-size: 12px;
 }
 
 .starwarsffg .item-display {

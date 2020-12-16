@@ -17,7 +17,10 @@ export async function createFFGMacro(data, slot) {
     if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned weapon items.");
     const item = data.data;
     // Create the macro command
-    const command = `game.ffg.DiceHelpers.rollItem(\"${item._id}\", \"${data.actorId}\");`;
+    const command = `
+    // game.ffg.DiceHelpers.rollItem(itemid, actorid, flavortext, sound);
+    game.ffg.DiceHelpers.rollItem(\"${item._id}\", \"${data.actorId}\");
+    `;
     macro = await createMacroItem({
       name: item.name,
       type: "script",
@@ -26,7 +29,9 @@ export async function createFFGMacro(data, slot) {
     });
   } else if (data.data.type === "skill") {
     const actor = game.actors.get(data.actorId);
-    const command = `const actor = game.actors.get("${data.actorId}");
+    const command = `
+    // game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, actorSheet, flavortext, sound);
+    const actor = game.actors.get("${data.actorId}");
     const skill = actor.data.data.skills["${data.data.skill}"];
     const characteristic = actor.data.data.characteristics["${data.data.characteristic}"];
     const actorSheet = actor.sheet.getData();

@@ -414,5 +414,11 @@
   "SWFFG.AdversariesImportInstructions1" : "Import data based on Stoogoff's data format (http://swa.stoogoff.com/).",
   "SWFFG.AdversariesImportInstructions2" : "Download the entire source as a zip file to use for import.",
   "SWFFG.Skills": "Skills",
-  "SWFFG.GroupManager": "Group Manager"
+  "SWFFG.GroupManager": "Group Manager",
+  "SWFFG.EnableRollAudio": "Roll - Allow users to add roll audio",
+  "SWFFG.EnableRollAudioHint": "Allow users to add roll audio from the rolling dialog",
+  "SWFFG.EnableRollAudioPlaylist": "Roll - Playlist users use for roll audio",
+  "SWFFG.EnableRollAudioPlaylistHint": "This is the playlist that users are given access to, from which they can add audio to rolls.",
+  "SWFFG.SentDicePoolRoll": "Click here to roll the dice pool.",
+  "SWFFG.SentDicePoolRollHit": "Sent a dice pool for you to roll."
 }

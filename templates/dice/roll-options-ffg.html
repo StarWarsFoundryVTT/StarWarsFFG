@@ -9,6 +9,26 @@
       <button id="upgrade-difficulty">{{localize "SWFFG.UpgradeDifficulty"}}</button>
       <button id="downgrade-difficulty">{{localize "SWFFG.DowngradeDifficulty"}}</button>
     </div>
+    <div>
+      {{#if (or (eq isGM true) (eq canUserAddAudio true)) }}
+      <button id="add-sound" class="extend-button"><i class="fas fa-volume-up"></i></button>
+      <select class="sound-selection hide">
+        <option></option>
+        {{#each sounds}} <option value="{{this.path}}" {{#if this.selected}}selected{{/if}}>{{this.name}} {{/each}}
+      </select>
+      {{/if}}
+      <button id="add-flavor" class="extend-button"><i class="far fa-comment-dots"></i></button>
+      <input type="text" class="flavor-text hide" placeholder="Flavor Text" value="{{flavor}}" />
+      {{#if isGM}}
+      <button id="send-to-player" class="extend-button"><i class="fas fa-share"></i></button>
+      <select class="user-selection hide">
+        <option></option>
+        {{#each users}}
+        <option value="{{this.id}}">{{this.name}}</option>
+        {{/each}}
+      </select>
+      {{/if}}
+    </div>
     <div style="text-align: center;"><span>Left click to increase dice, right click to decrease.</span></div>
     <table class="pool-additional-container">
       <tr>
@@ -24,7 +44,7 @@
     </table>
     <table>
       <tr class="pool-container flex-group-center">
-        <td><img src="systems/starwarsffg/images/dice/starwars/yellow.png" width="40" height="40" /></td>
+        <td><img src="systems/starwarsffg/images/dice/starwars/yellow.png" width="30" height="30" /></td>
         <td>
           <div class="pool-value">
             <input type="button" name="proficiency" min="0" />
@@ -33,42 +53,42 @@
         <td>{{localize "SWFFG.DiceProficiency"}}</td>
       </tr>
       <tr class="pool-container flex-group-center">
-        <td><img src="systems/starwarsffg/images/dice/starwars/green.png" width="40" height="40" /></td>
+        <td><img src="systems/starwarsffg/images/dice/starwars/green.png" width="30" height="30" /></td>
         <td>
           <div class="pool-value"><input type="button" name="ability" min="0" /></div>
         </td>
         <td>{{localize "SWFFG.DiceAbility"}}</td>
       </tr>
       <tr class="pool-container flex-group-center">
-        <td><img src="systems/starwarsffg/images/dice/starwars/red.png" width="40" height="40" /></td>
+        <td><img src="systems/starwarsffg/images/dice/starwars/red.png" width="30" height="30" /></td>
         <td>
           <div class="pool-value"><input type="button" name="challenge" min="0" /></div>
         </td>
         <td>{{localize "SWFFG.DiceChallenge"}}</td>
       </tr>
       <tr class="pool-container flex-group-center">
-        <td><img src="systems/starwarsffg/images/dice/starwars/purple.png" width="40" height="40" /></td>
+        <td><img src="systems/starwarsffg/images/dice/starwars/purple.png" width="30" height="30" /></td>
         <td>
           <div class="pool-value"><input type="button" name="difficulty" min="0" /></div>
         </td>
         <td>{{localize "SWFFG.DiceDifficulty"}}</td>
       </tr>
       <tr class="pool-container flex-group-center">
-        <td><img src="systems/starwarsffg/images/dice/starwars/blue.png" width="40" height="40" /></td>
+        <td><img src="systems/starwarsffg/images/dice/starwars/blue.png" width="30" height="30" /></td>
         <td>
           <div class="pool-value"><input type="button" name="boost" min="0" /></div>
         </td>
         <td>{{localize "SWFFG.DiceBoost"}}</td>
       </tr>
       <tr class="pool-container flex-group-center">
-        <td><img src="systems/starwarsffg/images/dice/starwars/black.png" width="40" height="40" /></td>
+        <td><img src="systems/starwarsffg/images/dice/starwars/black.png" width="30" height="30" /></td>
         <td>
           <div class="pool-value"><input type="button" name="setback" min="0" /></div>
         </td>
         <td>{{localize "SWFFG.DiceSetback"}}</td>
       </tr>
       <tr class="pool-container flex-group-center">
-        <td><img src="systems/starwarsffg/images/dice/starwars/whiteHex.png" width="40" height="40" /></td>
+        <td><img src="systems/starwarsffg/images/dice/starwars/whiteHex.png" width="30" height="30" /></td>
         <td>
           <div class="pool-value"><input type="button" name="force" min="0" /></div>
         </td>
