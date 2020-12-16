@@ -2,7 +2,7 @@ import PopoutEditor from "../popout-editor.js";
 import RollBuilderFFG from "../dice/roll-builder.js";
 
 export default class DiceHelpers {
-  static async rollSkill(obj, event, type) {
+  static async rollSkill(obj, event, type, flavorText, sound) {
     const data = obj.getData();
     const row = event.target.parentElement.parentElement;
     const skillName = row.parentElement.dataset["ability"];
@@ -77,11 +77,11 @@ export default class DiceHelpers {
       dicePool.upgradeDifficulty();
     }
 
-    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item);
+    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
   }
 
-  static async displayRollDialog(data, dicePool, description, skillName, item) {
-    new RollBuilderFFG(data, dicePool, description, skillName, item).render(true);
+  static async displayRollDialog(data, dicePool, description, skillName, item, flavorText, sound) {
+    new RollBuilderFFG(data, dicePool, description, skillName, item, flavorText, sound).render(true);
   }
 
   static async addSkillDicePool(obj, elem) {
@@ -123,7 +123,7 @@ export default class DiceHelpers {
     }
   }
 
-  static async rollItem(itemId, actorId) {
+  static async rollItem(itemId, actorId, flavorText, sound) {
     const actor = game.actors.get(actorId);
     const actorSheet = actor.sheet.getData();
 
@@ -148,11 +148,11 @@ export default class DiceHelpers {
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
-    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item);
+    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
   }
 
   // Takes a skill object, characteristic object, difficulty number and ActorSheetFFG.getData() object and creates the appropriate roll dialog.
-  static async rollSkillDirect(skill, characteristic, difficulty, sheet) {
+  static async rollSkillDirect(skill, characteristic, difficulty, sheet, flavorText, sound) {
     const dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
@@ -169,6 +169,6 @@ export default class DiceHelpers {
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
-    this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, null);
+    this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, null, flavorText, sound);
   }
 }

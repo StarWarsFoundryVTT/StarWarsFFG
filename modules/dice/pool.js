@@ -191,6 +191,49 @@ export class DicePoolFFG {
     return container;
   }
 
+  renderAdvancedPreview(container) {
+    let advanceContainer = this.renderPreview(container);
+
+    let additionalSymbols = [];
+    ["advantage", "success", "threat", "failure", "light", "dark"].forEach((symbol) => {
+      let diceSymbol = "";
+      switch (symbol) {
+        case "advantage": {
+          diceSymbol = "[AD]";
+          break;
+        }
+        case "success": {
+          diceSymbol = "[SU]";
+          break;
+        }
+        case "threat": {
+          diceSymbol = "[TH]";
+          break;
+        }
+        case "failure": {
+          diceSymbol = "[FA]";
+          break;
+        }
+        case "light": {
+          diceSymbol = "[LI]";
+          break;
+        }
+        case "dark": {
+          diceSymbol = "[DA]";
+          break;
+        }
+      }
+
+      if (this[symbol] !== 0) {
+        additionalSymbols.push(`${this[symbol] < 0 ? "-" : "+"} ${this[symbol]} ${diceSymbol}`);
+      }
+    });
+
+    $(advanceContainer).append(`<div>${additionalSymbols.join(", ")}</div>`);
+
+    return advanceContainer;
+  }
+
   _addIcons(container, icon, times, height = 36, width = 36) {
     for (let i = 0; i < times; i++) {
       const img = document.createElement("img");

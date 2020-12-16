@@ -1,5 +1,9 @@
 <div class="starwarsffg dice-roll">
-  {{#if publicRoll }}
+  {{#if data.additionalFlavorText}}
+  <div class="dice-additional-flavor">
+    {{data.additionalFlavorText}}
+  </div>
+  {{/if}} {{#if publicRoll }}
   <div class="dice-result">
     {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>

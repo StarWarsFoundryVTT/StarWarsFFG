@@ -619,40 +619,6 @@ Hooks.once("init", async function () {
   TemplateHelpers.preload();
 });
 
-/* -------------------------------------------- */
-/*  Set up control buttons                      */
-/* -------------------------------------------- */
-
-// Hooks.on("getSceneControlButtons", (controls) => {
-//   if (! hasProperty(canvas,'groupmanager')) {
-//     return
-//   }
-//   if (game.user.isGM) {
-//     controls.push({
-//       name: "groupmanager",
-//       title: "Group Manager",
-//       icon: "fas fa-users",
-//       tools: [
-//         {
-//           name: "groupsheet",
-//           title: "Open Group Sheet",
-//           icon: "fas fa-users",
-//           onClick: () => {
-//             canvas.groupmanager.window = new GroupManager().render(true);
-//           },
-//           button: true,
-//         },
-//       ],
-//       activeTool: 'groupsheet',
-//     });
-//   }
-// });
-
-// Hooks.once("canvasInit", (canvas) => {
-//   const layerct = canvas.stage.children.length;
-//   canvas.groupmanager = canvas.stage.addChildAt(new GroupManagerLayer(canvas), layerct);
-// });
-
 Hooks.on("renderJournalSheet", (journal, obj, data) => {
   let content = $(obj).find(".editor-content").html();
 
@@ -690,10 +656,43 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 Hooks.on("renderChatMessage", (app, html, messageData) => {
   const content = html.find(".message-content");
   content[0].innerHTML = PopoutEditor.renderDiceImages(content[0].innerHTML);
+
+  html.on("click", ".ffg-pool-to-player", () => {
+    const poolData = messageData.message.flags.ffg;
+
+    const dicePool = new DicePoolFFG(poolData.dicePool);
+
+    DiceHelpers.displayRollDialog(poolData.roll.data, dicePool, poolData.description, poolData.roll.skillName, poolData.roll.item, poolData.roll.flavor, poolData.roll.sound);
+  });
 });
 
 // Handle migration duties
 Hooks.once("ready", async () => {
+  game.settings.register("starwarsffg", "allowUsersAddRollAudio", {
+    name: game.i18n.localize("SWFFG.EnableRollAudio"),
+    hint: game.i18n.localize("SWFFG.EnableRollAudioHint"),
+    scope: "world",
+    default: false,
+    config: true,
+    type: Boolean,
+  });
+
+  const playlists = {};
+  playlists["None"] = "";
+  game.playlists.entries.forEach((playlist, index) => {
+    playlists[playlist.id] = `${index}-${playlist.data.name}`;
+  });
+
+  game.settings.register("starwarsffg", "allowUsersAddRollAudioPlaylist", {
+    name: game.i18n.localize("SWFFG.EnableRollAudioPlaylist"),
+    hint: game.i18n.localize("SWFFG.EnableRollAudioPlaylistHint"),
+    scope: "world",
+    default: "None",
+    config: true,
+    type: String,
+    choices: playlists,
+  });
+
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
   if ((currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.data.version)) && game.user.isGM) {

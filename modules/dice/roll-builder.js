@@ -1,10 +1,12 @@
 export default class RollBuilderFFG extends FormApplication {
-  constructor(rollData, rollDicePool, rollDescription, rollSkillName, rollItem) {
+  constructor(rollData, rollDicePool, rollDescription, rollSkillName, rollItem, rollAdditionalFlavor, rollSound) {
     super();
     this.roll = {
       data: rollData,
       skillName: rollSkillName,
       item: rollItem,
+      sound: rollSound,
+      flavor: rollAdditionalFlavor,
     };
     this.dicePool = rollDicePool;
     this.description = rollDescription;
@@ -25,6 +27,60 @@ export default class RollBuilderFFG extends FormApplication {
   }
 
   /** @override */
+  async getData() {
+    //get all possible sounds
+    let sounds = [];
+
+    let canUserAddAudio = await game.settings.get("starwarsffg", "allowUsersAddRollAudio");
+    let canUserAddFlavor = game.user.isGM || !this?.roll?.flavor;
+
+    if (game.user.isGM) {
+      game.playlists.entries.forEach((playlist) => {
+        playlist.sounds.forEach((sound) => {
+          let selected = false;
+          if (this.roll?.sound && this.roll.sound === sound.path) {
+            selected = true;
+          }
+          sounds.push({ name: sound.name, path: sound.path, selected });
+        });
+      });
+    } else if (canUserAddAudio) {
+      const playlistId = await game.settings.get("starwarsffg", "allowUsersAddRollAudioPlaylist");
+      const playlist = await game.playlists.get(playlistId);
+
+      if (playlist) {
+        playlist.sounds.forEach((sound) => {
+          let selected = false;
+          if (this.roll?.sound && this.roll.sound === sound.path) {
+            selected = true;
+          }
+          sounds.push({ name: sound.name, path: sound.path, selected });
+        });
+      } else {
+        CONFIG.logger.warn(`Playlist for players does not exist, disabling audio`);
+        canUserAddAudio = false;
+      }
+    }
+
+    let users = [];
+    if (game.user.isGM) {
+      game.users.entries.forEach((user) => {
+        //if(user.active && user.id !== game.user.id) {
+        users.push({ name: user.data.name, id: user.id });
+        //}
+      });
+    }
+
+    return {
+      sounds,
+      isGM: game.user.isGM,
+      canUserAddAudio,
+      flavor: this.roll.flavor,
+      users,
+    };
+  }
+
+  /** @override */
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -32,14 +88,72 @@ export default class RollBuilderFFG extends FormApplication {
     this._activateInputs(html);
 
     html.find(".btn").click((event) => {
-      const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool);
-      roll.toMessage({
-        user: game.user._id,
-        speaker: this.roll.data,
-        flavor: `${game.i18n.localize("SWFFG.Rolling")} ${this.roll.skillName}...`,
-      });
+      // if sound was not passed search for sound dropdown value
+      if (!this.roll.sound) {
+        const sound = html.find(".sound-selection")[0].value;
+        if (sound) {
+          this.roll.sound = sound;
+        }
+      }
 
-      return roll;
+      if (!this.roll.flavor) {
+        const flavor = html.find(".flavor-text")[0].value;
+        if (flavor) {
+          this.roll.flavor = flavor;
+        }
+      }
+
+      const sentToPlayer = html.find(".user-selection")[0].value;
+      if (sentToPlayer) {
+        let container = $(`<div class='dice-pool'></div>`)[0];
+        this.dicePool.renderAdvancedPreview(container);
+
+        const messageText = `<div>
+          <div>${game.i18n.localize("SWFFG.SentDicePoolRollHint")}</div>
+          ${$(container).html()}
+          <button class="ffg-pool-to-player">${game.i18n.localize("SWFFG.SentDicePoolRoll")}</button>
+        </div>`;
+
+        ChatMessage.create({
+          user: game.user._id,
+          whisper: [sentToPlayer],
+          content: messageText,
+          flags: {
+            ffg: {
+              roll: this.roll,
+              dicePool: this.dicePool,
+              description: this.description,
+            },
+          },
+        });
+      } else {
+        const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
+        roll.toMessage({
+          user: game.user._id,
+          speaker: this.roll.data,
+          flavor: `${game.i18n.localize("SWFFG.Rolling")} ${this.roll.skillName}...`,
+        });
+        if (this.roll?.sound) {
+          AudioHelper.play({ src: this.roll.sound });
+        }
+
+        return roll;
+      }
+    });
+
+    html.find(".extend-button").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      $(event.currentTarget).toggleClass("minimize");
+
+      const selector = $(event.currentTarget).next();
+      $(selector).toggleClass("hide");
+      $(selector).toggleClass("maximize");
+
+      if (!$(event.currentTarget).hasClass("minimize")) {
+        $(selector).val("");
+      }
     });
   }
 
