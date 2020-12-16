@@ -9,6 +9,13 @@ import { GroupManager } from "./groupmanager-ffg.js";
  *
  */
 export default class DestinyTracker extends FormApplication {
+  constructor() {
+    super();
+
+    this.destinyQueue = [];
+    this.isRunningQueue = false;
+  }
+
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
@@ -123,7 +130,7 @@ export default class DestinyTracker extends FormApplication {
               pool.dark = game.settings.get("starwarsffg", flipType) + 1;
               pool.light = game.settings.get("starwarsffg", pointType) - 1;
             }
-            await game.socket.emit("userActivity", game.user.id, { pool });
+            await game.socket.emit("system.starwarsffg", { pool });
           }
           messageText = `Flipped a ${typeName} point.`;
         }
@@ -181,11 +188,11 @@ export default class DestinyTracker extends FormApplication {
     });
 
     // setup socket handler for checking destiny roll
-    game.socket.on("userActivity", async (...args) => {
-      if (args[1]?.canIRollDestinyResponse === game.user.id && !game.user.isGM) {
-        if (!args[1]?.rolled) {
+    game.socket.on("system.starwarsffg", async (...args) => {
+      if (args[0]?.canIRollDestinyResponse === game.user.id && !game.user.isGM) {
+        if (!args[0]?.rolled) {
           const roll = this._rollDestiny();
-          await game.socket.emit("userActivity", game.user.id, { destiny: game.user.id, light: roll.ffg.light, dark: roll.ffg.dark });
+          await game.socket.emit("system.starwarsffg", { destiny: game.user.id, light: roll.ffg.light, dark: roll.ffg.dark });
         } else {
           ui.notifications.error(`${game.i18n.localize("SWFFG.DestinyAlreadyRolled")}`);
         }
@@ -194,15 +201,15 @@ export default class DestinyTracker extends FormApplication {
 
     if (game.user.isGM) {
       // socket handler for GM
-      game.socket.on("userActivity", async (...args) => {
+      game.socket.on("system.starwarsffg", async (...args) => {
         // Can user roll destiny? Or have they already rolled
-        if (args[1]?.canIRollDestiny) {
+        if (args[0]?.canIRollDestiny) {
           let rolled = false;
 
           try {
-            rolled = await game.settings.get("starwarsffg", `destinyrollers${args[1]?.canIRollDestiny}`);
+            rolled = await game.settings.get("starwarsffg", `destinyrollers${args[0]?.canIRollDestiny}`);
           } catch (err) {
-            game.settings.register("starwarsffg", `destinyrollers${args[1].canIRollDestiny}`, {
+            game.settings.register("starwarsffg", `destinyrollers${args[0].canIRollDestiny}`, {
               name: "DestinyRoll",
               scope: "client",
               default: false,
@@ -211,25 +218,38 @@ export default class DestinyTracker extends FormApplication {
             });
           }
 
-          await game.socket.emit("userActivity", game.user.id, { canIRollDestinyResponse: args[1]?.canIRollDestiny, rolled });
+          await game.socket.emit("system.starwarsffg", { canIRollDestinyResponse: args[0]?.canIRollDestiny, rolled });
         }
 
         // Handle user initiated destiny pool flips
-        if (args[1]?.pool) {
-          CONFIG.logger.log("Received DestinyPool socket");
-          CONFIG.logger.log(args[1].pool);
-          game.settings.set("starwarsffg", "dPoolLight", args[1].pool.light);
-          game.settings.set("starwarsffg", "dPoolDark", args[1].pool.dark);
-        }
-
-        // Handle user report for initial Destiny roll
-        if (args[1]?.destiny) {
-          game.settings.set("starwarsffg", `destinyrollers${args[1].destiny}`, true);
+        if (args[0]?.pool) {
           const light = await game.settings.get("starwarsffg", "dPoolLight");
           const dark = await game.settings.get("starwarsffg", "dPoolDark");
 
-          game.settings.set("starwarsffg", "dPoolLight", light + args[1].light);
-          game.settings.set("starwarsffg", "dPoolDark", dark + args[1].dark);
+          const request = {
+            id: "player",
+            type: "destiny-flip",
+            light: +light - +args[0].pool.light,
+            dark: +dark - +args[0].pool.dark,
+          };
+
+          this.destinyQueue.push(request);
+        }
+
+        // Handle user report for initial Destiny roll
+        if (args[0]?.destiny) {
+          const request = {
+            id: args[0].destiny,
+            type: "destiny-roll",
+            light: args[0].light,
+            dark: args[0].dark,
+          };
+
+          this.destinyQueue.push(request);
+        }
+
+        if (!this.isRunningQueue) {
+          this._processDestinyRequests();
         }
       });
     }
@@ -240,7 +260,7 @@ export default class DestinyTracker extends FormApplication {
     event.preventDefault();
     event.stopPropagation();
     if (!game.user.isGM) {
-      await game.socket.emit("userActivity", game.user.id, { canIRollDestiny: game.user.id });
+      await game.socket.emit("system.starwarsffg", { canIRollDestiny: game.user.id });
     }
 
     if (game.user.isGM) {
@@ -252,6 +272,35 @@ export default class DestinyTracker extends FormApplication {
       await game.settings.set("starwarsffg", "dPoolLight", light + roll.ffg.light);
       await game.settings.set("starwarsffg", "dPoolDark", dark + roll.ffg.dark);
     }
+  }
+
+  async _processDestinyRequests() {
+    CONFIG.logger.debug(`Processing ${this.destinyQueue.length} Destiny Requests`);
+
+    while (this.destinyQueue.length > 0) {
+      const request = this.destinyQueue.shift();
+      CONFIG.logger.debug(`Processing Destiny Request (${request.type}) from User ${request.id}`, request);
+
+      const light = await game.settings.get("starwarsffg", "dPoolLight");
+      const dark = await game.settings.get("starwarsffg", "dPoolDark");
+
+      switch (request.type) {
+        case "destiny-roll": {
+          game.settings.set("starwarsffg", `destinyrollers${request.id}`, true);
+          await game.settings.set("starwarsffg", "dPoolLight", light + request.light);
+          await game.settings.set("starwarsffg", "dPoolDark", dark + request.dark);
+          break;
+        }
+        case "destiny-flip": {
+          await game.settings.set("starwarsffg", "dPoolLight", light - request.light);
+          game.settings.set("starwarsffg", "dPoolDark", dark - request.dark);
+          break;
+        }
+      }
+    }
+
+    CONFIG.logger.debug(`Done Processing Destiny Requests`);
+    this.isRunningQueue = false;
   }
 
   _rollDestiny() {
