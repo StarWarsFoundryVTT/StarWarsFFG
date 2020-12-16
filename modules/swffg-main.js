@@ -38,10 +38,6 @@ import { createFFGMacro } from "./helpers/macros.js";
 Hooks.once("init", async function () {
   console.log(`Initializing SWFFG System`);
 
-  game.socket.on("system.starwarsffg", (message) => {
-    console.log("HERE!!!!!!");
-  });
-
   // Place our classes in their own namespace for later reference.
   game.ffg = {
     ActorFFG,

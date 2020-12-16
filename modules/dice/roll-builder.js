@@ -84,8 +84,6 @@ export default class RollBuilderFFG extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
 
-    game.socket.emit("system.starwarsffg", { a: "here" });
-
     this._initializeInputs(html);
     this._activateInputs(html);
 
