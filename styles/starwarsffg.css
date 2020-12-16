@@ -2895,10 +2895,6 @@ img {
   position: fixed;
 }
 
-.swffg-destiny #destinyLight {
-  margin-left: 35px;
-}
-
 .swffg-destiny .destiny-points {
   flex: 1;
   position: relative;
@@ -2915,6 +2911,10 @@ img {
   position: absolute;
   transform: translateX(-50%);
   width: 80px;
+}
+
+.swffg-destiny .destiny-points.display-menu {
+  margin-left: 35px;
 }
 
 .swffg-destiny #context-menu {

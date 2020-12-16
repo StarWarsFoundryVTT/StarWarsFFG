@@ -90,14 +90,14 @@ export default class RollBuilderFFG extends FormApplication {
     html.find(".btn").click((event) => {
       // if sound was not passed search for sound dropdown value
       if (!this.roll.sound) {
-        const sound = html.find(".sound-selection")[0].value;
+        const sound = html.find(".sound-selection")?.[0]?.value;
         if (sound) {
           this.roll.sound = sound;
         }
       }
 
       if (!this.roll.flavor) {
-        const flavor = html.find(".flavor-text")[0].value;
+        const flavor = html.find(".flavor-text")?.[0]?.value;
         if (flavor) {
           this.roll.flavor = flavor;
         }
