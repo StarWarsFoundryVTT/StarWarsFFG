@@ -103,7 +103,7 @@ export default class RollBuilderFFG extends FormApplication {
         }
       }
 
-      const sentToPlayer = html.find(".user-selection")[0].value;
+      const sentToPlayer = html.find(".user-selection")?.[0]?.value;
       if (sentToPlayer) {
         let container = $(`<div class='dice-pool'></div>`)[0];
         this.dicePool.renderAdvancedPreview(container);
