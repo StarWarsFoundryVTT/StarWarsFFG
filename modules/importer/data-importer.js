@@ -1091,7 +1091,7 @@ export default class DataImporter extends FormApplication {
             });
           }
 
-          newItem.data.special.value = qualities.join(",");
+          newItem.data.special.value = qualities.join(", ");
 
           if ((skill.includes("Melee") || skill.includes("Brawl") || skill.includes("Lightsaber")) && damage === "0") {
             newItem.data.skill.useBrawn = true;
@@ -1784,7 +1784,7 @@ export default class DataImporter extends FormApplication {
                 if (weapon?.Qualities?.Quality) {
                   const qualities = await ImportHelpers.getQualities(weapon.Qualities.Quality);
 
-                  weaponData.data.special.value = qualities.qualities.join(",");
+                  weaponData.data.special.value = qualities.qualities.join(", ");
                   weaponData.data.attributes = qualities.attributes;
                 }
 

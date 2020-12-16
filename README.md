@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 16/12/2020 - Cstadther - Fix 532 - Updated OggDude importer to add space after comma when adding specials so that they wrap correctly.
 - 16/12/2020 - Cstadther - Enhancement - Added two new system settings (Allow Users to Add Audio to Roll and Playlist Users User to Add Audio to Roll), Added ability to add sounds to dice rolls, added ability to add additional flavor text to dice rolls, added ability for GM to send a build dice pool to a user who can click on the chat message to load dialog and roll.
 - 14/12/2020 - Cstadther - Enhancement - Converted dice pool display from dialog to formapplication.  This allows for context to be maintained through popout dialog.
 - 13/12/2020 - Cstadther - Fix/Enhancement - Move Group Manager launch button to destiny pool display for GMs
