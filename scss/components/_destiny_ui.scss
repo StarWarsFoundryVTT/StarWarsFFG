@@ -121,10 +121,6 @@
     position: fixed;
   }
 
-  #destinyLight {
-    margin-left:35px;
-  }
-
   .destiny-points {
     flex: 1;
     position: relative;
@@ -141,6 +137,10 @@
       -ms-transform: translateX(-50%);
       transform: translateX(-50%);
       width: 80px;
+    }
+
+    &.display-menu {
+      margin-left: 35px;
     }
   }
 
