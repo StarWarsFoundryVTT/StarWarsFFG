@@ -268,4 +268,28 @@ export default class ModifierHelpers {
       title,
     }).render(true);
   }
+
+  static async popoutModiferWindowSpecTalents(event) {
+    event.preventDefault();
+    const a = $(event.currentTarget).parents(".talent-block")?.[0];
+    const keyname = $(a).attr("id");
+
+    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.data.data.talents[keyname].name}`;
+
+    const data = {
+      parent: this.object,
+      keyname,
+      data: {
+        data: {
+          ...this.object.data.data.talents[keyname],
+        },
+      },
+      isUpgrade: false,
+      isTalent: true,
+    };
+
+    new PopoutModifiers(data, {
+      title,
+    }).render(true);
+  }
 }

@@ -99,6 +99,10 @@
       &.talent-name {
         width: 75%;
 
+        &.talent-modifiers {
+          cursor: pointer;
+        }
+
         span {
           font-size: 9px;
           float: right;

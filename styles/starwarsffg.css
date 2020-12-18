@@ -953,6 +953,10 @@ img {
   width: 75%;
 }
 
+.starwarsffg .talent-background .talent-header div.talent-name.talent-modifiers {
+  cursor: pointer;
+}
+
 .starwarsffg .talent-background .talent-header div.talent-name span {
   font-size: 9px;
   float: right;
