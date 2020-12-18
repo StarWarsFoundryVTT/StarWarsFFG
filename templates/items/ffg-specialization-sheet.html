@@ -39,7 +39,7 @@
               <div class="conflict"></div>
               {{/if}}
             </div>
-            <div class="talent-name">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
+            <div class="talent-name {{#if (ne talent.name '')}}talent-modifiers{{/if}}">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
           </div>
           <div class="talent-body">
             <input type="text" name="data.talents.{{key}}.activationLabel" value="{{localize talent.activationLabel}}" disabled />

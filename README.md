@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 18/12/2020 - Cstadther - Enhancement - Added ability to click on specialization talent header to edit attributes associated to that instance of the talent.
 - 16/12/2020 - Cstadther - Fix 533 - Moved destiny rolls and flipping to queue model, and custom socket method.
 - 16/12/2020 - Cstadther - Fix 532 - Updated OggDude importer to add space after comma when adding specials so that they wrap correctly.
 - 16/12/2020 - Cstadther - Enhancement - Added two new system settings (Allow Users to Add Audio to Roll and Playlist Users User to Add Audio to Roll), Added ability to add sounds to dice rolls, added ability to add additional flavor text to dice rolls, added ability for GM to send a build dice pool to a user who can click on the chat message to load dialog and roll.
