@@ -42,6 +42,9 @@ export class AdversarySheetFFG extends ActorSheetFFG {
         break;
       default:
     }
+
+    data.items = this.actor.items.map((item) => item.data);
+
     return data;
   }
 
