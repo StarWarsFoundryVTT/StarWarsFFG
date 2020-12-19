@@ -13,7 +13,7 @@
   </li>
 
   <ul class="items-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'weapon'}}
+    {{#each items as |item id|}} {{#iff item.type '==' 'weapon'}}
     <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
       <div class="item-name">{{item.name}}</div>
       <div>
