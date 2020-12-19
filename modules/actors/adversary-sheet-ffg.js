@@ -78,6 +78,9 @@ export class AdversarySheetFFG extends ActorSheet {
         this.position.height = 824;
       default:
     }
+
+    data.items = this.actor.items.map((item) => item.data);
+
     return data;
   }
 
