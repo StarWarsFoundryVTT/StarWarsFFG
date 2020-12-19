@@ -75,7 +75,7 @@ export class ActorSheetFFG extends ActorSheet {
         break;
       default:
     }
-
+    data.items = this.actor.items.map((item) => item.data);
     return data;
   }
 
