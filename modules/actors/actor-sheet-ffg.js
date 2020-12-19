@@ -223,33 +223,33 @@ export class ActorSheetFFG extends ActorSheet {
     new ContextMenu(html, "div.item", [sendToChatContextItem]);
 
     if (this.actor.data.type === "character") {
-      const options = new ActorOptions(this, html);
-      options.register("enableAutoSoakCalculation", {
+      this.sheetoptions = new ActorOptions(this, html);
+      this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         default: true,
       });
-      options.register("enableObligation", {
+      this.sheetoptions.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
         hint: game.i18n.localize("SWFFG.EnableObligationHint"),
         default: true,
       });
-      options.register("enableDuty", {
+      this.sheetoptions.register("enableDuty", {
         name: game.i18n.localize("SWFFG.EnableDuty"),
         hint: game.i18n.localize("SWFFG.EnableDutyHint"),
         default: true,
       });
-      options.register("enableMorality", {
+      this.sheetoptions.register("enableMorality", {
         name: game.i18n.localize("SWFFG.EnableMorality"),
         hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
         default: true,
       });
-      options.register("enableConflict", {
+      this.sheetoptions.register("enableConflict", {
         name: game.i18n.localize("SWFFG.EnableConflict"),
         hint: game.i18n.localize("SWFFG.EnableConflictHint"),
         default: true,
       });
-      options.register("enableForcePool", {
+      this.sheetoptions.register("enableForcePool", {
         name: game.i18n.localize("SWFFG.EnableForcePool"),
         hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
         default: true,
@@ -257,8 +257,8 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     if (this.actor.data.type === "minion") {
-      const options = new ActorOptions(this, html);
-      options.register("enableAutoSoakCalculation", {
+      this.sheetoptions = new ActorOptions(this, html);
+      this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         default: true,
