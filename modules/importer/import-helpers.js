@@ -1105,15 +1105,19 @@ export default class ImportHelpers {
 
       updateDialog(80);
 
-      const serverPath = `worlds/${game.world.id}/images/characters`;
-      await ImportHelpers.verifyPath("data", serverPath);
+      try {
+        const serverPath = `worlds/${game.world.id}/images/characters`;
+        await ImportHelpers.verifyPath("data", serverPath);
 
-      const imge = characterData.Character.Portrait;
-      if (imge) {
-        const img = this.b64toBlob(imge);
-        const i = new File([img], `${characterData.Character.Key}.png`, { type: "image/png" });
-        await Helpers.UploadFile("data", serverPath, i, { bucket: null });
-        character.img = `${serverPath}/${characterData.Character.Key}.png`;
+        const imge = characterData.Character.Portrait;
+        if (imge) {
+          const img = this.b64toBlob(imge);
+          const i = new File([img], `${characterData.Character.Key}.png`, { type: "image/png" });
+          await Helpers.UploadFile("data", serverPath, i, { bucket: null });
+          character.img = `${serverPath}/${characterData.Character.Key}.png`;
+        }
+      } catch (err) {
+        CONFIG.logger.error(`Failed to upload character portrait.`, err);
       }
 
       updateDialog(90);

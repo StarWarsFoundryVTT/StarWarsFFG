@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 20/12/2020 - Cstadther - Fix 558 - Fixes issue where uploads to Forge were not working correctly and error out of code section.
 - 20/12/2020 - Cstadther - Fix 556 - Fixed issue where title of intiative dialog was incorrect.
 - 19/12/2020 - Cstadther - Enhancement - Changed variable name in macro generation to resolve issue where `The Furnace` module defines a variable as `actor`
 - 18/12/2020 - Cstadther - Enhancement - Added ability to click on specialization talent header to edit attributes associated to that instance of the talent.
