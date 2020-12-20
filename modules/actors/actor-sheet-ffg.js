@@ -879,13 +879,15 @@ export class ActorSheetFFG extends ActorSheet {
       for (let talent in specializationTalents) {
         let gameItem;
         if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
-          const pack = await game.packs.get(specializationTalents[talent].pack);
-          await pack.getIndex();
-          let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
-          if (!entry) {
-            entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
+          const pack = await game.packs.get(specializationTalents[talent]?.pack);
+          if (pack) {
+            await pack.getIndex();
+            let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+            if (!entry) {
+              entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
+            }
+            gameItem = await pack.getEntity(entry._id);
           }
-          gameItem = await pack.getEntity(entry._id);
         } else {
           gameItem = await game.items.get(specializationTalents[talent].itemId);
         }

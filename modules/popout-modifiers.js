@@ -32,6 +32,11 @@ export default class PopoutModifiers extends FormApplication {
   /** @override */
   getData() {
     const data = this.object.data;
+    if (this.object.isUpgrade) {
+      data.data = this.object.parent.data.data.upgrades[this.object.keyname];
+    } else if (this.object.isTalent) {
+      data.data = this.object.parent.data.data.talents[this.object.keyname];
+    }
 
     data.FFG = CONFIG.FFG;
     data.cssClass = "editable popout-modifiers-window attributes";
