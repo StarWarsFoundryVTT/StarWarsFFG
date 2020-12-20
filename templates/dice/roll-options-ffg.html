@@ -1,0 +1,100 @@
+<form>
+  <div class="dice-pool-dialog">
+    <div class="dice-pool"></div>
+    <div class="upgrade-buttons">
+      <button id="upgrade-ability">{{localize "SWFFG.UpgradeAbility"}}</button>
+      <button id="downgrade-ability">{{localize "SWFFG.DowngradeAbility"}}</button>
+    </div>
+    <div class="upgrade-buttons">
+      <button id="upgrade-difficulty">{{localize "SWFFG.UpgradeDifficulty"}}</button>
+      <button id="downgrade-difficulty">{{localize "SWFFG.DowngradeDifficulty"}}</button>
+    </div>
+    <div>
+      {{#if (or (eq isGM true) (eq canUserAddAudio true)) }}
+      <button id="add-sound" class="extend-button"><i class="fas fa-volume-up"></i></button>
+      <select class="sound-selection hide">
+        <option></option>
+        {{#each sounds}} <option value="{{this.path}}" {{#if this.selected}}selected{{/if}}>{{this.name}} {{/each}}
+      </select>
+      {{/if}}
+      <button id="add-flavor" class="extend-button"><i class="far fa-comment-dots"></i></button>
+      <input type="text" class="flavor-text hide" placeholder="Flavor Text" value="{{flavor}}" />
+      {{#if isGM}}
+      <button id="send-to-player" class="extend-button"><i class="fas fa-share"></i></button>
+      <select class="user-selection hide">
+        <option></option>
+        {{#each users}}
+        <option value="{{this.id}}">{{this.name}}</option>
+        {{/each}}
+      </select>
+      {{/if}}
+    </div>
+    <div style="text-align: center;"><span>Left click to increase dice, right click to decrease.</span></div>
+    <table class="pool-additional-container">
+      <tr>
+        <td class="pool-additional">{{{ffgDiceSymbols "[AD]"}}}<input type="button" name="advantage" min="0" />{{localize "SWFFG.Advantage"}}</td>
+        <td class="pool-additional">{{{ffgDiceSymbols "[SU]"}}}<input type="button" name="success" min="0" />{{localize "SWFFG.Success"}}</td>
+        <td class="pool-additional">{{{ffgDiceSymbols "[LI]"}}}<input type="button" name="light" min="0" />{{localize "SWFFG.Lightside"}}</td>
+      </tr>
+      <tr>
+        <td class="pool-additional">{{{ffgDiceSymbols "[TH]"}}}<input type="button" name="threat" min="0" />{{localize "SWFFG.Threat"}}</td>
+        <td class="pool-additional">{{{ffgDiceSymbols "[FA]"}}}<input type="button" name="failure" min="0" />{{localize "SWFFG.Failure"}}</td>
+        <td class="pool-additional">{{{ffgDiceSymbols "[DA]"}}}<input type="button" name="dark" min="0" />{{localize "SWFFG.Darkside"}}</td>
+      </tr>
+    </table>
+    <table>
+      <tr class="pool-container flex-group-center">
+        <td><img src="systems/starwarsffg/images/dice/starwars/yellow.png" width="30" height="30" /></td>
+        <td>
+          <div class="pool-value">
+            <input type="button" name="proficiency" min="0" />
+          </div>
+        </td>
+        <td>{{localize "SWFFG.DiceProficiency"}}</td>
+      </tr>
+      <tr class="pool-container flex-group-center">
+        <td><img src="systems/starwarsffg/images/dice/starwars/green.png" width="30" height="30" /></td>
+        <td>
+          <div class="pool-value"><input type="button" name="ability" min="0" /></div>
+        </td>
+        <td>{{localize "SWFFG.DiceAbility"}}</td>
+      </tr>
+      <tr class="pool-container flex-group-center">
+        <td><img src="systems/starwarsffg/images/dice/starwars/red.png" width="30" height="30" /></td>
+        <td>
+          <div class="pool-value"><input type="button" name="challenge" min="0" /></div>
+        </td>
+        <td>{{localize "SWFFG.DiceChallenge"}}</td>
+      </tr>
+      <tr class="pool-container flex-group-center">
+        <td><img src="systems/starwarsffg/images/dice/starwars/purple.png" width="30" height="30" /></td>
+        <td>
+          <div class="pool-value"><input type="button" name="difficulty" min="0" /></div>
+        </td>
+        <td>{{localize "SWFFG.DiceDifficulty"}}</td>
+      </tr>
+      <tr class="pool-container flex-group-center">
+        <td><img src="systems/starwarsffg/images/dice/starwars/blue.png" width="30" height="30" /></td>
+        <td>
+          <div class="pool-value"><input type="button" name="boost" min="0" /></div>
+        </td>
+        <td>{{localize "SWFFG.DiceBoost"}}</td>
+      </tr>
+      <tr class="pool-container flex-group-center">
+        <td><img src="systems/starwarsffg/images/dice/starwars/black.png" width="30" height="30" /></td>
+        <td>
+          <div class="pool-value"><input type="button" name="setback" min="0" /></div>
+        </td>
+        <td>{{localize "SWFFG.DiceSetback"}}</td>
+      </tr>
+      <tr class="pool-container flex-group-center">
+        <td><img src="systems/starwarsffg/images/dice/starwars/whiteHex.png" width="30" height="30" /></td>
+        <td>
+          <div class="pool-value"><input type="button" name="force" min="0" /></div>
+        </td>
+        <td>{{localize "SWFFG.DiceForce"}}</td>
+      </tr>
+    </table>
+  </div>
+  <button class="btn">ROLL</button>
+</form>

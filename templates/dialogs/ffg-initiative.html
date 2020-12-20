@@ -1,0 +1,88 @@
+<div id="{{id}}" class="dialog-content initiative-dialog dice-pool-dialog">
+  <div style="text-align: center;"><span>{{localize "SWFFG.InitiativePoolSelectorHint"}}</span></div>
+  <div class="pool-selector">
+    {{#each dicePools as |p key|}} <input type="radio" id="{{key}}" name="skill" value="{{p.name}}" {{#if (eq ../defaultInitiativeFormula p.name) }}checked{{/if}}>
+    <label for="{{key}}">{{localize p.label}}</label>
+    {{/each}}
+  </div>
+  <div id="Vigilancepool" class="hidden-content">
+    {{#each vigilanceDicePool as |attr key|}}
+    <input type="button" name="{{key}}" min="0" value="{{attr}}" />
+    {{/each}}
+  </div>
+
+  <div id="Coolpool" class="hidden-content">
+    {{#each coolDicePool as |attr key|}}
+    <input type="button" name="{{key}}" min="0" value="{{attr}}" />
+    {{/each}}
+  </div>
+
+  <div style="text-align: center;"><span>{{localize "SWFFG.InitiativePoolAddsHint"}}</span></div>
+
+  <table class="addDicePool">
+    <tr>
+      <td class="pool-additional"></td>
+      <td class="pool-additional"><img src="systems/starwarsffg/images/dice/starwars/blue.png" width="15" height="15" /><input type="button" name="boost" min="0" />{{localize "SWFFG.DiceBoost"}}</td>
+      <td class="pool-additional"><img src="systems/starwarsffg/images/dice/starwars/black.png" width="15" height="15" /><input type="button" name="setback" min="0" />{{localize "SWFFG.DiceSetback"}}</td>
+      <td class="pool-additional"></td>
+    </tr>
+    <tr>
+      <td class="pool-additional">{{{ffgDiceSymbols "[AD]"}}}<input type="button" name="advantage" min="0" />{{localize "SWFFG.Advantage"}}</td>
+      <td class="pool-additional">{{{ffgDiceSymbols "[SU]"}}}<input type="button" name="success" min="0" />{{localize "SWFFG.Success"}}</td>
+      <td class="pool-additional">{{{ffgDiceSymbols "[TH]"}}}<input type="button" name="threat" min="0" />{{localize "SWFFG.Threat"}}</td>
+      <td class="pool-additional">{{{ffgDiceSymbols "[FA]"}}}<input type="button" name="failure" min="0" />{{localize "SWFFG.Failure"}}</td>
+    </tr>
+  </table>
+</div>
+
+<script>
+  function updateInput(scope, pool, type) {
+    const input = scope.querySelector(`[name="${type}"`);
+    input.value = pool[type];
+  }
+
+  function setupInput(scope, pool, type, allowNegative = false) {
+      const input = scope.querySelector(`[name="${type}"`);
+      input.value = pool[type];
+
+      input.addEventListener("click", (event) => {
+        event.target.value++;
+        pool[type] = parseInt(event.target.value);
+        //updatePreview(scope, pool);
+      });
+      input.addEventListener("contextmenu", (event) => {
+        if (event.target.value > 0 || allowNegative) {
+          event.target.value--;
+          pool[type] = parseInt(event.target.value);
+          //updatePreview(scope, pool);
+        }
+      });
+  }
+
+  function updatePreview(scope, pool) {
+      const poolDiv = scope.querySelector(".dice-pool");
+      poolDiv.innerHTML = "";
+      pool.renderPreview(poolDiv);
+  }
+
+  (function() {
+      const container = document.getElementById("{{{id}}}");
+      const scope = container.querySelector('.addDicePool');
+      const pool = new DicePoolFFG({{{json addDicePool}}});
+
+      // setupInput(scope, pool, "proficiency");
+      // setupInput(scope, pool, "ability");
+      // setupInput(scope, pool, "challenge");
+      // setupInput(scope, pool, "difficulty");
+      setupInput(scope, pool, "boost");
+      setupInput(scope, pool, "setback");
+      // setupInput(scope, pool, "force");
+
+      setupInput(scope, pool, "advantage", true);
+      setupInput(scope, pool, "success", true);
+      setupInput(scope, pool, "threat", true);
+      setupInput(scope, pool, "failure", true);
+      // setupInput(scope, pool, "light", true);
+      // setupInput(scope, pool, "dark", true);
+  })();
+</script>

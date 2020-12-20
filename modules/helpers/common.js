@@ -39,6 +39,10 @@ export default class Helpers {
    * @param  {object} options
    */
   static async UploadFile(source, path, file, options) {
+    if (typeof ForgeVTT !== "undefined" && ForgeVTT?.usingTheForge) {
+      return ForgeUploadFile("forgevtt", path, file, options);
+    }
+
     let fd = new FormData();
     fd.set("source", source);
     fd.set("target", path);
@@ -58,6 +62,20 @@ export default class Helpers {
       return false;
     } else if (!response.path) {
       return ui.notifications.error(game.i18n.localize("FILES.ErrorSomethingWrong"));
+    }
+  }
+
+  static async ForgeUploadFile(source, path, file, options) {
+    const fd = new FormData();
+    fd.append("file", file);
+    fd.append("path", `${path}/${file.name}`);
+
+    const response = await ForgeAPI.call("assets/upload", fd);
+    if (!response || response.error) {
+      ui.notifications.error(response ? response.error : "An unknown error occured accessing The Forge API");
+      return false;
+    } else {
+      return { path: response.url };
     }
   }
 

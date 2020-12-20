@@ -274,7 +274,7 @@ export default class ImportHelpers {
     if (Object.keys(CONFIG.temporary.skills).includes(mod.Key)) {
       if (mod.SkillIsCareer) {
         modtype = "Career Skill";
-      } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount) {
+      } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount || mod.AdvantageCount || mod.ThreatCount || mod.SuccessCount || mod.FailureCount) {
         modtype = "Skill Boost";
 
         if (mod.AddSetbackCount) {
@@ -287,6 +287,22 @@ export default class ImportHelpers {
         }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
+        }
+        if (mod.AdvantageCount) {
+          modtype = "Skill Add Advantage";
+          value = parseInt(mod.AdvantageCount, 10);
+        }
+        if (mod.ThreatCount) {
+          modtype = "Skill Add Threat";
+          value = parseInt(mod.ThreatCount, 10);
+        }
+        if (mod.SuccessCount) {
+          modtype = "Skill Add Success";
+          value = parseInt(mod.SuccessCount, 10);
+        }
+        if (mod.FailureCount) {
+          modtype = "Skill Add Failure";
+          value = parseInt(mod.FailureCount, 10);
         }
       } else {
         modtype = "Skill Rank";
@@ -349,28 +365,56 @@ export default class ImportHelpers {
         itemAttributes[attr.type] = attr.value;
       }
     } else if (attrs?.Mod?.DieModifiers?.DieModifier) {
-      if (Array.isArray(attrs.Mod.DieModifiers.DieModifier)) {
-        attrs.Mod.DieModifiers.DieModifier.forEach((mod) => {
-          const attr = this.getBaseModAttributeObject({
-            Key: mod.SkillKey,
-            ...mod,
-          });
-          if (attr) {
-            itemAttributes[attr.type] = attr.value;
-          }
-        });
-      } else {
+      if (!Array.isArray(attrs.Mod.DieModifiers.DieModifier)) {
+        attrs.Mod.DieModifiers.DieModifier = [attrs.Mod.DieModifiers.DieModifier];
+      }
+      attrs.Mod.DieModifiers.DieModifier.forEach((mod) => {
         const attr = this.getBaseModAttributeObject({
-          Key: attrs.Mod.DieModifiers.DieModifier.SkillKey,
-          ...attrs.Mod.DieModifiers.DieModifier,
+          Key: mod.SkillKey,
+          ...mod,
         });
         if (attr) {
           itemAttributes[attr.type] = attr.value;
         }
-      }
+      });
     }
 
     return itemAttributes;
+  }
+
+  static async getQualities(qualityList) {
+    let qualities = [];
+    let attributes = {};
+
+    if (qualityList && !Array.isArray(qualityList)) {
+      qualityList = [qualityList];
+    }
+
+    if (qualityList && qualityList.length > 0) {
+      await this.asyncForEach(qualityList, async (quality) => {
+        let descriptor = await ImportHelpers.findCompendiumEntityByImportId("JournalEntry", quality.Key);
+
+        if (descriptor?.compendium?.metadata) {
+          qualities.push(`<a class="entity-link" draggable="true" data-pack="${descriptor.compendium.metadata.package}.${descriptor.compendium.metadata.name}" data-id="${descriptor.id}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
+        } else {
+          qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
+        }
+
+        if (quality.Key === "DEFENSIVE") {
+          const nk = randomId();
+          const count = quality.Count ? parseInt(quality.Count) : 0;
+
+          attributes[`attr${nk}`] = {
+            isCheckbox: false,
+            mod: "Defence-Melee",
+            modtype: "Stat",
+            value: count,
+          };
+        }
+      });
+
+      return { qualities, attributes };
+    }
   }
 
   static asyncForEach = async (array, callback) => {
@@ -952,7 +996,7 @@ export default class ImportHelpers {
 
           character.items.push(force);
         } catch (err) {
-          CONFIG.logger.error(`Unable to add force power ${characterSpecTalent.Key} to character.`);
+          CONFIG.logger.error(`Unable to add force power ${forcepowers.Key} to character.`);
         }
       });
 

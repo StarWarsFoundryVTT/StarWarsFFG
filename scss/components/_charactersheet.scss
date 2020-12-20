@@ -1,3 +1,4 @@
+$swffg-table-header-color: rgb(145, 145, 145);
 &.sheet {
   &.actor {
 
@@ -110,6 +111,138 @@
       .sheet-body {
         height: calc(100% - 13.75rem);
         overflow:hidden;
+
+        .general, .obligation {
+          .grid {
+            margin: 0;
+          }
+          
+          .resource {
+            width: 100%;
+            line-height: normal;
+
+            p {
+              padding: 0 0.3125rem;
+            }
+                        
+            &.full {
+              width:100%;
+
+              table {
+                margin: 0;
+                border-bottom: none;
+
+                thead {
+                  background: $swffg-table-header-color;
+                }
+
+                th {
+                  line-height: 0.875rem;
+                }
+
+                td {
+                  vertical-align: top;
+                  padding: 0.25em 0.3125rem;
+                }
+
+                .motivation{
+                  &.description {
+                    width: 66%;
+                  }
+                }
+
+                input {
+                  width: 100%;
+                }
+              }
+
+
+            }
+          }
+
+          .genesys {
+            &.grid {
+              gap: 0px;
+            }
+
+            .resource {
+              min-height: 6rem;
+
+              .attribute {
+                height: 100%;
+
+                .block-background {
+                  height: 100%;
+
+                  .block-attribute {  
+                    height: calc(100% - 0.9375rem);
+                    overflow: hidden;
+
+                    .block-value {
+                      overflow: auto;
+                      width:100%;
+                      height:100%;
+                      max-height: 3.5rem;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .block-editor {
+            .resource {
+              min-height: 4.6875rem;
+
+              .attribute {
+                height: 100%;
+
+                .block-background {
+                  height: 100%;
+
+                  .block-attribute {  
+                    height: calc(100% - 0.9375rem);
+                    overflow: hidden;
+
+                    .block-value {
+                      overflow: auto;
+                      width:100%;
+                      height:100%;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        .obligation {
+          .resource {
+            &.full {
+              table {
+                width: 97.4%;
+                margin: 0 0 0 0.5rem;
+              }
+            }
+          }
+          .block-editor {
+            .resource {
+              min-height: 4.6875rem;
+            }
+
+            .popout-editor {
+              min-height: 4.6875rem;
+            }
+          }
+          
+          
+        }
+
+        .tab {
+          &.items, &.general, &.obligation {
+            height: calc(100% - 2.5rem);
+          }
+        }
 
         .biography {
           height: calc(100% - 4.6875rem);

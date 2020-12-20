@@ -85,6 +85,7 @@
   border: 1px groove rgba(0, 0, 0, 0.2);
   grid-area: inherit;
   .item-properties {
+    position: relative;
     flex: 0 0 120px;
     margin: 5px 5px 5px 0;
     padding-right: 5px;

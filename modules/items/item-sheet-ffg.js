@@ -3,6 +3,7 @@ import Helpers from "../helpers/common.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import ImportHelpers from "../importer/import-helpers.js";
+import DiceHelpers from "../helpers/dice-helpers.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -251,39 +252,11 @@ export class ItemSheetFFG extends ItemSheet {
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
-    if (this.object.data.type === "criticalinjury" || this.object.data.type === "criticaldamage") {
-      const formatDropdown = (item) => {
-        if (!item.id) {
-          return item.text;
-        }
-
-        const imgUrl = "/systems/starwarsffg/images/dice/starwars/purple.png";
-
-        let images = [];
-        for (let i = 0; i < item.id; i += 1) {
-          images.push(`<img class="severity-img" src="${imgUrl}" />`);
-        }
-        let selections = `<span>${item.text}${images.join("")}</span>`;
-        return $(selections);
-      };
-
-      const id = `#${this.object.data.type}-${this.object.id}`;
-
-      $(id).select2({
-        dropdownParent: $(".severity-block"),
-        dropdownAutoWidth: true,
-        selectionCssClass: "severity-select",
-        width: "resolve",
-        minimumResultsForSearch: Infinity,
-        templateSelection: formatDropdown,
-        templateResult: formatDropdown,
-      });
-    }
-
     if (["forcepower", "specialization", "signatureability"].includes(this.object.data.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
+      html.find(".talent-name.talent-modifiers").on("click", ModifierHelpers.popoutModiferWindowSpecTalents.bind(this));
     }
 
     if (this.object.data.type === "specialization") {
@@ -309,6 +282,21 @@ export class ItemSheetFFG extends ItemSheet {
       $(event.currentTarget).find(".popout-editor-button").hide();
     });
     html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
+
+    // Roll from [ROLL][/ROLL] tag.
+    html.find(".rollSkillDirect").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      let data = event.currentTarget.dataset;
+      if (data) {
+        let sheet = this.actor.data;
+        let skill = sheet.data.skills[data["skill"]];
+        let characteristic = sheet.data.characteristics[skill.characteristic];
+        let difficulty = data["difficulty"];
+        await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+      }
+    });
   }
 
   /* -------------------------------------------- */
@@ -527,6 +515,15 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.data.data.isConflictTalent);
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(data.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
+
+      const fields = $(li).find(`input[name='data.talents.${talentId}.name']`).parent();
+      Object.keys(itemObject.data.data.attributes).forEach((attr) => {
+        const a = itemObject.data.data.attributes[attr];
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.key" value="${attr}" />`);
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.value" value="${a.value}" />`);
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.modtype" value="${a.modtype}" />`);
+        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.mod" value="${a.mod}" />`);
+      });
 
       // check to see if the talent already has a reference to the specialization
       if (!itemObject.data.data.trees.includes(specialization.id)) {

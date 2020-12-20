@@ -1,29 +1,13 @@
 <div class="starwarsffg dice-roll">
-  {{#if publicRoll }}
+  {{#if data.additionalFlavorText}}
+  <div class="dice-additional-flavor">
+    {{data.additionalFlavorText}}
+  </div>
+  {{/if}} {{#if publicRoll }}
   <div class="dice-result">
     {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
-    {{/if}} {{#if hasFFG}} {{#if data._id}}
-    <div class="item-display">
-      {{#if (ne data.img "icons/svg/mystery-man.svg")}}
-      <img class="item-image" src="{{data.img}}" />
-      {{/if}}
-      <h2 class="item-name">{{data.name}}</h2>
-      {{#if ffg.success}}
-      <h4 class="item-damage">Damage: <input class="damage-value" type="text" value="{{data.data.damage.adjusted}} + {{ffg.success}} = {{math data.data.damage.adjusted '+' ffg.success}}" disabled /></h4>
-      <h4 class="item-critical">Critical: <input class="damage-value" type="text" value="{{data.data.crit.value}}" disabled /></h4>
-      {{else}}
-      <h4 class="item-miss">Miss!</h4>
-      {{/if}} {{#if data.data.special.value}}
-      <div class="specials">
-        <h5>
-          Special Qualities:
-          <div class="damage-value">{{{ffgDiceSymbols data.data.special.value}}}</div>
-        </h5>
-      </div>
-      {{/if}}
-    </div>
-    {{/if}}
+    {{/if}} {{#if hasFFG}} {{#if data._id}} {{#if (eq data.type "forcepower")}} {{> "systems/starwarsffg/templates/chat/roll-forcepower-card.html"}} {{/if}} {{#if (or (eq data.type "weapon") (eq data.type "shipweapon"))}} {{> "systems/starwarsffg/templates/chat/roll-weapon-card.html"}} {{/if}} {{/if}}
     <div class="ffgDiceArray">
       <ol class="dice-rolls">
         {{#each ffgDice}} {{#if this.isFFG}}{{#each this.rolls}}
@@ -40,12 +24,12 @@
     <h4 class="dice-total">{{total}}</h4>
     {{/if}} {{#if publicRoll }} {{#if hasFFG}}
     <ul>
-      {{#if ffg.success}}
+      {{#if hasSuccess}} {{#if ffg.success}}
       <li class="roll-success">Check succeeded!</li>
       {{else}}
       <li class="roll-failure">Check failed!</li>
-      {{/if}} {{#each ffg as | result key|}} {{#if this}}
-      <li>{{lookup ../this.diceresults [key]}}: {{this}}</li>
+      {{/if}} {{/if}} {{#each ffg as | result key|}} {{#if this}}
+      <li>{{localize (lookup ../this.diceresults [key])}}: {{this}}</li>
       {{/if}} {{/each}}
     </ul>
     {{/if}} {{/if}}

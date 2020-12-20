@@ -32,6 +32,11 @@ export default class PopoutModifiers extends FormApplication {
   /** @override */
   getData() {
     const data = this.object.data;
+    if (this.object.isUpgrade) {
+      data.data = this.object.parent.data.data.upgrades[this.object.keyname];
+    } else if (this.object.isTalent) {
+      data.data = this.object.parent.data.data.talents[this.object.keyname];
+    }
 
     data.FFG = CONFIG.FFG;
     data.cssClass = "editable popout-modifiers-window attributes";
@@ -73,26 +78,17 @@ export default class PopoutModifiers extends FormApplication {
       }
     }
 
-    // // Re-combine formData
-    // formData = Object.entries(formData)
-    //   .filter((e) => !e[0].startsWith("data.attributes"))
-    //   .reduce(
-    //     (obj, e) => {
-    //       obj[e[0]] = e[1];
-    //       return obj;
-    //     },
-    //     { _id: this.object._id, "data.attributes": attributes }
-    //   );
-
     if (this.object.isUpgrade) {
-      let data = formData.data.attributes;
+      let data = attributes;
 
-      let upgradeFormData;
+      let upgradeFormData = {};
       setProperty(upgradeFormData, `data.upgrades.${this.object.keyname}.attributes`, data);
 
-      // let upgradeFormData = {
-      //   [`data.upgrades.${this.object.keyname}.attributes`]: data,
-      // };
+      await this.object.parent.update(upgradeFormData);
+    } else if (this.object.isTalent) {
+      let data = attributes;
+      let upgradeFormData = {};
+      setProperty(upgradeFormData, `data.talents.${this.object.keyname}.attributes`, data);
 
       await this.object.parent.update(upgradeFormData);
     } else {

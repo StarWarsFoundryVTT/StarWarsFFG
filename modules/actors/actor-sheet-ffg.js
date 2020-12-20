@@ -91,8 +91,23 @@ export class ActorSheetFFG extends ActorSheet {
     let initial = this._sheetTab;
     new TabsV2(tabs, {
       initial: initial,
-      callback: (clicked) => (this._sheetTab = clicked.data("tab")),
+      callback: (clicked) => {
+        this._sheetTab = clicked.data("tab");
+      },
     });
+
+    html.find(".alt-tab").click((ev) => {
+      const item = $(ev.currentTarget);
+      this._tabs[0].activate(item.data("tab"));
+    });
+
+    html.find(".popout-editor").on("mouseover", (event) => {
+      $(event.currentTarget).find(".popout-editor-button").show();
+    });
+    html.find(".popout-editor").on("mouseout", (event) => {
+      $(event.currentTarget).find(".popout-editor-button").hide();
+    });
+    html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
 
     // Setup dice pool image and hide filtered skills
     html.find(".skill").each((_, elem) => {
@@ -144,6 +159,13 @@ export class ActorSheetFFG extends ActorSheet {
         },
       },
       {
+        name: game.i18n.localize("SWFFG.SkillAddAsInitiative"),
+        icon: '<i class="fas fa-cog"></i>',
+        callback: (li) => {
+          this._onInitiativeSkill(li);
+        },
+      },
+      {
         name: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
         icon: '<i class="fas fa-times"></i>',
         callback: (li) => {
@@ -163,65 +185,82 @@ export class ActorSheetFFG extends ActorSheet {
     ]);
 
     // Send Item Details to chat.
-    new ContextMenu(html, "li.item", [
-      {
-        name: game.i18n.localize("SWFFG.SendToChat"),
-        icon: '<i class="far fa-comment"></i>',
-        callback: (li) => {
-          let itemId = li.data("itemId");
-          this._itemDetailsToChat(itemId);
-        },
+
+    const sendToChatContextItem = {
+      name: game.i18n.localize("SWFFG.SendToChat"),
+      icon: '<i class="far fa-comment"></i>',
+      callback: (li) => {
+        let itemId = li.data("itemId");
+        this._itemDetailsToChat(itemId);
       },
-    ]);
-    new ContextMenu(html, "div.item", [
-      {
-        name: game.i18n.localize("SWFFG.SendToChat"),
-        icon: '<i class="far fa-comment"></i>',
-        callback: (li) => {
-          let itemId = li.data("itemId");
-          this._itemDetailsToChat(itemId);
-        },
+    };
+
+    const rollForceToChatContextItem = {
+      name: game.i18n.localize("SWFFG.SendForceRollToChat"),
+      icon: '<i class="fas fa-dice-d20"></i>',
+      callback: async (li) => {
+        let itemId = li.data("itemId");
+        let item = this.actor.getOwnedItem(itemId);
+        if (!item) {
+          item = game.items.get(itemId);
+        }
+        if (!item) {
+          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+        }
+        const forcedice = this.actor.data.data.stats.forcePool.max - this.actor.data.data.stats.forcePool.value;
+        if (forcedice > 0) {
+          let sheet = this.getData();
+          const dicePool = new DicePoolFFG({
+            force: forcedice,
+          });
+          DiceHelpers.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${item.name}`, item.name, item);
+        }
       },
-    ]);
-    // TODO: Figure out how to prevent event propagation on this ContextMenu to allow for proper behaviour
-    new ContextMenu(html, "li.force-power", [
-      {
-        name: game.i18n.localize("SWFFG.SendToChat"),
-        icon: '<i class="far fa-comment"></i>',
-        callback: (li) => {
-          const itemId = li.data("itemId");
-          const desc = li.data("desc");
-          const name = li.data("upgradeName");
-          this._forcePowerDetailsToChat(itemId, desc, name);
-        },
-      },
-    ]);
+    };
+
+    new ContextMenu(html, "li.item:not(.forcepower)", [sendToChatContextItem]);
+    new ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
+    new ContextMenu(html, "div.item", [sendToChatContextItem]);
 
     if (this.actor.data.type === "character") {
-      const options = new ActorOptions(this, html);
-      options.register("enableObligation", {
+      this.sheetoptions = new ActorOptions(this, html);
+      this.sheetoptions.register("enableAutoSoakCalculation", {
+        name: game.i18n.localize("SWFFG.EnableSoakCalc"),
+        hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+        default: true,
+      });
+      this.sheetoptions.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
         hint: game.i18n.localize("SWFFG.EnableObligationHint"),
         default: true,
       });
-      options.register("enableDuty", {
+      this.sheetoptions.register("enableDuty", {
         name: game.i18n.localize("SWFFG.EnableDuty"),
         hint: game.i18n.localize("SWFFG.EnableDutyHint"),
         default: true,
       });
-      options.register("enableMorality", {
+      this.sheetoptions.register("enableMorality", {
         name: game.i18n.localize("SWFFG.EnableMorality"),
         hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
         default: true,
       });
-      options.register("enableConflict", {
+      this.sheetoptions.register("enableConflict", {
         name: game.i18n.localize("SWFFG.EnableConflict"),
         hint: game.i18n.localize("SWFFG.EnableConflictHint"),
         default: true,
       });
-      options.register("enableForcePool", {
+      this.sheetoptions.register("enableForcePool", {
         name: game.i18n.localize("SWFFG.EnableForcePool"),
         hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
+        default: true,
+      });
+    }
+
+    if (this.actor.data.type === "minion") {
+      this.sheetoptions = new ActorOptions(this, html);
+      this.sheetoptions.register("enableAutoSoakCalculation", {
+        name: game.i18n.localize("SWFFG.EnableSoakCalc"),
+        hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         default: true,
       });
     }
@@ -389,6 +428,9 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Roll from [ROLL][/ROLL] tag.
     html.find(".rollSkillDirect").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
       let data = event.currentTarget.dataset;
       if (data) {
         let sheet = this.getData();
@@ -441,6 +483,44 @@ export class ActorSheetFFG extends ActorSheet {
         $(a).val("2");
       }
     });
+
+    html.find(".add-obligation").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const form = this.form;
+
+      const nk = randomID();
+      let newKey = document.createElement("div");
+      newKey.innerHTML = `<input type="text" name="data.obligationlist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.obligationlist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
+      form.appendChild(newKey);
+      await this._onSubmit(event);
+    });
+
+    html.find(".remove-obligation").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const id = a.dataset["id"];
+      this.object.update({ "data.obligationlist": { ["-=" + id]: null } });
+    });
+
+    html.find(".add-duty").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const form = this.form;
+
+      const nk = randomID();
+      let newKey = document.createElement("div");
+      newKey.innerHTML = `<input type="text" name="data.dutylist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.dutylist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
+      form.appendChild(newKey);
+      await this._onSubmit(event);
+    });
+
+    html.find(".remove-duty").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const id = a.dataset["id"];
+      this.object.update({ "data.dutylist": { ["-=" + id]: null } });
+    });
   }
 
   /**
@@ -457,11 +537,27 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${itemDetails.prettyDesc}</div>`);
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(itemDetails.description, this.actor.data)}</div>`);
       let props = $(`<div class="item-properties"></div>`);
       itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
       li.append(div.hide());
+      $(div)
+        .find(".rollSkillDirect")
+        .on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          let data = event.currentTarget.dataset;
+          if (data) {
+            let sheet = this.getData();
+            let skill = sheet.data.skills[data["skill"]];
+            let characteristic = sheet.data.characteristics[skill.characteristic];
+            let difficulty = data["difficulty"];
+            await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+          }
+        });
+
       div.slideDown(200);
     }
     li.toggleClass("expanded");
@@ -480,7 +576,7 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc)}</div>`);
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc, this.actor.data)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
@@ -646,6 +742,19 @@ export class ActorSheetFFG extends ActorSheet {
     this.object.update({ "data.skills": { ["-=" + ability]: null } });
   }
 
+  _onInitiativeSkill(a) {
+    const skill = $(a).data("ability");
+    let updateData = {};
+
+    let useSkillForInitiative = false;
+    if (!this.object.data.data.skills[skill]?.useForInitiative) {
+      useSkillForInitiative = true;
+    }
+
+    setProperty(updateData, `data.skills.${skill}.useForInitiative`, useSkillForInitiative);
+    this.object.update(updateData);
+  }
+
   /**
    * Listen for click events on a filter control to modify the selected filter option.
    * @param {MouseEvent} event    The originating left click event
@@ -770,13 +879,15 @@ export class ActorSheetFFG extends ActorSheet {
       for (let talent in specializationTalents) {
         let gameItem;
         if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
-          const pack = await game.packs.get(specializationTalents[talent].pack);
-          await pack.getIndex();
-          let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
-          if (!entry) {
-            entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
+          const pack = await game.packs.get(specializationTalents[talent]?.pack);
+          if (pack) {
+            await pack.getIndex();
+            let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+            if (!entry) {
+              entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
+            }
+            gameItem = await pack.getEntity(entry._id);
           }
-          gameItem = await pack.getEntity(entry._id);
         } else {
           gameItem = await game.items.get(specializationTalents[talent].itemId);
         }
@@ -824,5 +935,31 @@ export class ActorSheetFFG extends ActorSheet {
     specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
     specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
     specializationTalentItem.attributes = talentItem.data.attributes;
+  }
+
+  _onPopoutEditor(event) {
+    event.preventDefault();
+    const a = event.currentTarget.parentElement;
+    const label = a.dataset.label;
+    const key = a.dataset.target;
+
+    const parent = $(a.parentElement);
+    const parentPosition = $(parent).offset();
+
+    const windowHeight = parseInt($(parent).height(), 10) + 100 < 200 ? 200 : parseInt($(parent).height(), 10) + 100;
+    const windowWidth = parseInt($(parent).width(), 10) < 320 ? 320 : parseInt($(parent).width(), 10);
+    const windowLeft = parseInt(parentPosition.left, 10);
+    const windowTop = parseInt(parentPosition.top, 10);
+
+    const title = a.dataset.label ? `Editor for ${this.object.name}: ${label}` : `Editor for ${this.object.name}`;
+
+    new PopoutEditor(this.object, {
+      name: key,
+      title: title,
+      height: windowHeight,
+      width: windowWidth,
+      left: windowLeft,
+      top: windowTop,
+    }).render(true);
   }
 }

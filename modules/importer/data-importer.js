@@ -104,6 +104,7 @@ export default class DataImporter extends FormApplication {
         this._enableImportSelection(zip.files, "Vehicles", true);
         this._enableImportSelection(zip.files, "ItemDescriptors");
         this._enableImportSelection(zip.files, "SigAbilityNodes");
+        this._enableImportSelection(zip.files, "Skills");
       } catch (err) {
         ui.notifications.warn("There was an error trying to load the import file, check the console log for more information.");
         console.error(err);
@@ -147,13 +148,19 @@ export default class DataImporter extends FormApplication {
       let isSpecialization = false;
       let isVehicle = false;
 
-      const skillsFileName = await this._enableImportSelection(zip.files, "Skills", false, true);
+      let skillsFileName = importFiles.find((item) => item.file.includes("Skills.xml")).file;
+      let createSkillJournalEntries = true;
+
+      if (!skillsFileName) {
+        skillsFileName = await this._enableImportSelection(zip.files, "Skills", false, true);
+        createSkillJournalEntries = false;
+      }
 
       if (skillsFileName) {
         // load skills for reference
         let data = await zip.file(skillsFileName).async("text");
         const xmlDoc = ImportHelpers.stringToXml(data);
-        await this._loadSkillsList(xmlDoc);
+        await this._loadSkillsList(xmlDoc, createSkillJournalEntries);
       }
 
       const itemDescriptors = importFiles.find((item) => item.file.includes("ItemDescriptors.xml"));
@@ -165,7 +172,7 @@ export default class DataImporter extends FormApplication {
       }
 
       await this.asyncForEach(importFiles, async (file) => {
-        if (!zip.files[file.file].dir) {
+        if (zip.files[file.file] && !zip.files[file.file].dir) {
           const data = await zip.file(file.file).async("text");
           const xmlDoc = ImportHelpers.stringToXml(data);
 
@@ -208,10 +215,19 @@ export default class DataImporter extends FormApplication {
     }
   }
 
-  async _loadSkillsList(xmlDoc) {
+  async _loadSkillsList(xmlDoc, create) {
     const skills = xmlDoc.getElementsByTagName("Skill");
     if (skills.length > 0) {
       CONFIG.temporary["skills"] = {};
+
+      let totalCount = skills.length;
+      let currentCount = 0;
+      let pack;
+      if (create) {
+        pack = await this._getCompendiumPack("JournalEntry", `oggdude.SkillDescriptions`);
+        $(".import-progress.skills").toggleClass("import-hidden");
+      }
+
       for (let i = 0; i < skills.length; i += 1) {
         const skill = skills[i];
         const importkey = skill.getElementsByTagName("Key")[0]?.textContent;
@@ -223,6 +239,46 @@ export default class DataImporter extends FormApplication {
         }
 
         CONFIG.temporary.skills[importkey] = name;
+
+        if (create) {
+          try {
+            const d = JXON.xmlToJs(skill);
+
+            let item = {
+              name: d.Name,
+              flags: {
+                importid: d.Key,
+              },
+              content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
+            };
+
+            let compendiumItem;
+            await pack.getIndex();
+            let entry = pack.index.find((e) => e.name === item.name);
+
+            if (!entry) {
+              CONFIG.logger.debug(`Importing Skill Description - JournalEntry`);
+              compendiumItem = new JournalEntry(item, { temporary: true });
+              this._importLogger(`New Skill Description ${d.Name} : ${JSON.stringify(compendiumItem)}`);
+              let id = await pack.importEntity(compendiumItem);
+            } else {
+              CONFIG.logger.debug(`Updating Skill Description - JournalEntry`);
+              let updateData = item;
+              updateData["_id"] = entry._id;
+              this._importLogger(`Updating Skill Description ${d.Name} : ${JSON.stringify(updateData)}`);
+              pack.updateEntity(updateData);
+            }
+            //}
+            currentCount += 1;
+
+            $(".skills .import-progress-bar")
+              .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
+              .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
+            this._importLogger(`End importing Skill Description ${d.Name}`);
+          } catch (err) {
+            CONFIG.logger.error(`Error importing record : `, err);
+          }
+        }
       }
     }
   }
@@ -389,35 +445,35 @@ export default class DataImporter extends FormApplication {
         try {
           const d = JXON.xmlToJs(descriptor);
 
-          if (d.Type) {
-            let itemDescriptor = {
-              name: d.Name,
-              flags: {
-                importid: d.Key,
-              },
-              content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
-            };
+          //if (d.Type) {
+          let itemDescriptor = {
+            name: d.Name,
+            flags: {
+              importid: d.Key,
+            },
+            content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
+          };
 
-            let compendiumItem;
-            await pack.getIndex();
-            let entry = pack.index.find((e) => e.name === itemDescriptor.name);
+          let compendiumItem;
+          await pack.getIndex();
+          let entry = pack.index.find((e) => e.name === itemDescriptor.name);
 
-            if (!entry) {
-              CONFIG.logger.debug(`Importing Item Quality - JournalEntry`);
-              compendiumItem = new JournalEntry(itemDescriptor, { temporary: true });
-              this._importLogger(`New item quality ${d.Name} : ${JSON.stringify(compendiumItem)}`);
-              let id = await pack.importEntity(compendiumItem);
-              CONFIG.temporary["descriptors"][d.Key] = id.id;
-            } else {
-              CONFIG.logger.debug(`Updating Item Quality - JournalEntry`);
-              //let updateData = ImportHelpers.buildUpdateData(itemDescriptor);
-              let updateData = itemDescriptor;
-              updateData["_id"] = entry._id;
-              CONFIG.temporary["descriptors"][d.Key] = entry._id;
-              this._importLogger(`Updating item quality ${d.Name} : ${JSON.stringify(updateData)}`);
-              pack.updateEntity(updateData);
-            }
+          if (!entry) {
+            CONFIG.logger.debug(`Importing Item Quality - JournalEntry`);
+            compendiumItem = new JournalEntry(itemDescriptor, { temporary: true });
+            this._importLogger(`New item quality ${d.Name} : ${JSON.stringify(compendiumItem)}`);
+            let id = await pack.importEntity(compendiumItem);
+            CONFIG.temporary["descriptors"][d.Key] = id.id;
+          } else {
+            CONFIG.logger.debug(`Updating Item Quality - JournalEntry`);
+            //let updateData = ImportHelpers.buildUpdateData(itemDescriptor);
+            let updateData = itemDescriptor;
+            updateData["_id"] = entry._id;
+            CONFIG.temporary["descriptors"][d.Key] = entry._id;
+            this._importLogger(`Updating item quality ${d.Name} : ${JSON.stringify(updateData)}`);
+            pack.updateEntity(updateData);
           }
+          //}
           currentCount += 1;
 
           $(".itemdescriptors .import-progress-bar")
@@ -530,50 +586,19 @@ export default class DataImporter extends FormApplication {
           const diemodifiers = talent.getElementsByTagName("DieModifiers")[0];
           if (diemodifiers) {
             const diemod = JXON.xmlToJs(diemodifiers);
-
-            const funcAddDieModifier = (mod) => {
-              if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
-                // only handling boosts initially
-                if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
-                  const skill = CONFIG.temporary.skills[mod.SkillKey];
-                  const modKey = Object.keys(item.data.attributes).length + 1;
-                  let modtype = "Skill Boost";
-                  let count = 0;
-                  if (mod.AddSetbackCount) {
-                    modtype = "Skill Setback";
-                    count = mod.AddSetbackCount;
-                  }
-                  if (mod.SetbackCount) {
-                    modtype = "Skill Remove Setback";
-                    count = mod.SetbackCount;
-                  }
-                  if (mod.ForceCount) {
-                    modtype = "Force Boost";
-                    count = true;
-                  }
-                  if (mod.BoostCount) {
-                    count = mod.BoostCount;
-                  }
-
-                  item.data.attributes[`attr${modKey}`] = {
-                    mod: skill,
-                    modtype,
-                    value: count,
-                  };
-                }
-              }
-            };
-
             if (diemod.DieModifier) {
-              if (Array.isArray(diemod.DieModifier)) {
-                diemod.DieModifier.forEach((mod) => {
-                  funcAddDieModifier(mod);
-                });
-              } else {
-                if (Object.keys(CONFIG.temporary.skills).includes(diemod.DieModifier.SkillKey)) {
-                  funcAddDieModifier(diemod.DieModifier);
-                }
+              if (!Array.isArray(diemod.DieModifier)) {
+                diemod.DieModifier = [diemod.DieModifier];
               }
+              diemod.DieModifier.forEach((mod) => {
+                const attr = ImportHelpers.getBaseModAttributeObject({
+                  Key: mod.SkillKey,
+                  ...mod,
+                });
+                if (attr) {
+                  item.data.attributes[attr.type] = attr.value;
+                }
+              });
             }
           }
 
@@ -664,49 +689,19 @@ export default class DataImporter extends FormApplication {
 
           power.data.description = forceAbility.Description;
 
-          const funcAddDieModifier = (mod) => {
-            if (Object.keys(CONFIG.temporary.skills).includes(mod.SkillKey)) {
-              // only handling boosts initially
-              if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount) {
-                const skill = CONFIG.temporary.skills[mod.SkillKey];
-                const modKey = Object.keys(power.data.attributes).length + 1;
-                let modtype = "Skill Boost";
-                let count = 0;
-                if (mod.AddSetbackCount) {
-                  modtype = "Skill Setback";
-                  count = mod.AddSetbackCount;
-                }
-                if (mod.SetbackCount) {
-                  modtype = "Skill Remove Setback";
-                  count = mod.SetbackCount;
-                }
-                if (mod.ForceCount) {
-                  modtype = "Force Boost";
-                  count = true;
-                }
-                if (mod.BoostCount) {
-                  count = mod.BoostCount;
-                }
-
-                power.data.attributes[`attr${modKey}`] = {
-                  mod: skill,
-                  modtype,
-                  value: count,
-                };
-              }
-            }
-          };
-
           if (forceAbility?.DieModifiers?.DieModifier) {
-            if (Array.isArray(forceAbility.DieModifiers.DieModifier)) {
-              forceAbility.DieModifiers.DieModifier.forEach((mod) => {
-                funcAddDieModifier(mod);
-              });
-            } else {
-              if (Object.keys(CONFIG.temporary.skills).includes(forceAbility.DieModifiers.DieModifier.SkillKey)) {
-                funcAddDieModifier(forceAbility.DieModifiers.DieModifier);
-              }
+            if (!Array.isArray(forceAbility.DieModifiers.DieModifier)) {
+              forceAbility.DieModifiers.DieModifier = [forceAbility.DieModifiers.DieModifier];
             }
+            forceAbility.DieModifiers.DieModifier.forEach((mod) => {
+              const attr = ImportHelpers.getBaseModAttributeObject({
+                Key: mod.SkillKey,
+                ...mod,
+              });
+              if (attr) {
+                power.data.attributes[attr.type] = attr.value;
+              }
+            });
           }
 
           // next we will parse the rows
@@ -1068,13 +1063,20 @@ export default class DataImporter extends FormApplication {
 
           const qualities = [];
 
+          if (fp?.Qualities?.Quality && !Array.isArray(fp?.Qualities?.Quality)) {
+            fp.Qualities.Quality = [fp.Qualities.Quality];
+          }
+
           if (fp?.Qualities?.Quality && fp.Qualities.Quality.length > 0) {
-            fp.Qualities.Quality.forEach((quality) => {
-              if (CONFIG.temporary?.descriptors && CONFIG.temporary?.descriptors?.[quality.Key]) {
-                qualities.push(`<a class="entity-link" draggable="true" data-pack="world.oggdudeitemqualities" data-id="${CONFIG.temporary.descriptors[quality.Key]}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
+            await this.asyncForEach(fp.Qualities.Quality, async (quality) => {
+              let descriptor = await ImportHelpers.findCompendiumEntityByImportId("JournalEntry", quality.Key);
+
+              if (descriptor?.compendium?.metadata) {
+                qualities.push(`<a class="entity-link" draggable="true" data-pack="${descriptor.compendium.metadata.package}.${descriptor.compendium.metadata.name}" data-id="${descriptor.id}"> ${quality.Key}  ${quality.Count ? quality.Count : ""}</a>`);
               } else {
                 qualities.push(`${quality.Key} ${quality.Count ? quality.Count : ""}`);
               }
+
               if (quality.Key === "DEFENSIVE") {
                 const nk = Object.keys(newItem.data.attributes).length + 1;
                 const count = quality.Count ? parseInt(quality.Count) : 0;
@@ -1089,9 +1091,9 @@ export default class DataImporter extends FormApplication {
             });
           }
 
-          newItem.data.special.value = qualities.join(",");
+          newItem.data.special.value = qualities.join(", ");
 
-          if ((skill === "Melee" || skill === "Brawl") && damage === "0") {
+          if ((skill.includes("Melee") || skill.includes("Brawl") || skill.includes("Lightsaber")) && damage === "0") {
             newItem.data.skill.useBrawn = true;
           }
 
@@ -1144,7 +1146,7 @@ export default class DataImporter extends FormApplication {
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           this._importLogger(`End importing weapon ${name}`);
         } catch (err) {
-          CONFIG.logger.error(`Error importing record : `, err);
+          CONFIG.logger.error(`Error importing record (${weapons[i].getElementsByTagName("Name")[0]?.textContent}) : `, err);
           this._importLogger(`Error importing weapon: ${JSON.stringify(err)}`);
         }
       }
@@ -1565,6 +1567,26 @@ export default class DataImporter extends FormApplication {
             }
           }
 
+          let abilities = [];
+
+          if (speciesData?.Species?.OptionChoices?.OptionChoice) {
+            let options = speciesData.Species.OptionChoices.OptionChoice;
+
+            if (!Array.isArray(speciesData.Species.OptionChoices.OptionChoice)) {
+              options = [speciesData.Species.OptionChoices.OptionChoice];
+            }
+
+            options.forEach((o) => {
+              let option = o.Options.Option;
+              if (!Array.isArray(o.Options.Option)) {
+                option = [o.Options.Option];
+              }
+              abilities.push(`<p>${option[0].Name} : ${option[0].Description}</p>`);
+            });
+          }
+
+          species.data.description = `<h4>Abilities</h4>` + abilities.join("") + "<p></p>" + species.data.description;
+
           // does an image exist?
           let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", species.flags.importid);
           if (imgPath) {
@@ -1759,6 +1781,13 @@ export default class DataImporter extends FormApplication {
                 weaponData.data.firingarc.dorsal = weapon.FiringArcs.Dorsal === "true" ? true : false;
                 weaponData.data.firingarc.ventral = weapon.FiringArcs.Ventral === "true" ? true : false;
 
+                if (weapon?.Qualities?.Quality) {
+                  const qualities = await ImportHelpers.getQualities(weapon.Qualities.Quality);
+
+                  weaponData.data.special.value = qualities.qualities.join(", ");
+                  weaponData.data.attributes = qualities.attributes;
+                }
+
                 vehicle.items.push(weaponData);
               }
             } catch (err) {
@@ -1769,13 +1798,13 @@ export default class DataImporter extends FormApplication {
 
           if (vehicleData.Vehicle.VehicleWeapons?.VehicleWeapon) {
             const temp = new Actor(vehicle, { temporary: true });
-            if (Array.isArray(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon)) {
-              await this.asyncForEach(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon, async (weapon) => {
-                await funcAddWeapon(weapon);
-              });
-            } else {
-              await funcAddWeapon(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon);
+
+            if (!Array.isArray(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon)) {
+              vehicleData.Vehicle.VehicleWeapons.VehicleWeapon = [vehicleData.Vehicle.VehicleWeapons.VehicleWeapon];
             }
+            await this.asyncForEach(vehicleData.Vehicle.VehicleWeapons.VehicleWeapon, async (weapon) => {
+              await funcAddWeapon(weapon);
+            });
           }
 
           let pack;
@@ -1839,9 +1868,13 @@ export default class DataImporter extends FormApplication {
     Object.values(files).findIndex((file) => {
       if (file.name.includes(`/${name}.xml`) || (isDirectory && file.name.includes(`/${name}`))) {
         this._importLogger(`Found file ${file.name}`);
+        let filename = file.name;
+        if (file.name.includes(`.xml`) && isDirectory) {
+          filename = `${file.name.substring(0, file.name.lastIndexOf("/"))}/`;
+        }
         $(`#import${name.replace(" ", "")}`)
           .removeAttr("disabled")
-          .val(file.name);
+          .val(filename);
         if (returnFilename) {
           fileName = file.name;
         }

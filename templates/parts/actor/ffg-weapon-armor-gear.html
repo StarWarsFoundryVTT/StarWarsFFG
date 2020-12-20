@@ -29,8 +29,6 @@
       <div>{{item.data.damage.value}} {{#if (and (ne item.data.damage.value item.data.damage.adjusted) (or (gt item.data.damage.adjusted.length 0) (gt item.data.damage.adjusted 0)))}}({{item.data.damage.adjusted}}){{/if}}</div>
       <div>{{localize item.data.range.label}}</div>
       <div>{{item.data.crit.value}}</div>
-      <!-- <div>{{item.data.encumbrance.value}}</div> -->
-      <!-- <div>{{{renderDiceTags item.data.special.value}}}</div> -->
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
@@ -113,6 +111,7 @@
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.VehicleTabShipWeapons"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabFiringArc"}}</div>
+    <div class="">{{localize "SWFFG.ItemsSkill"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabDamage"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabRange"}}</div>
     <div class="">{{localize "SWFFG.VehicleTabCritical"}}</div>
@@ -124,6 +123,9 @@
     <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
       <div class="item-name">{{item.name}}</div>
       <div>{{#if (eq item.data.firingarc.fore true)}}{{localize "SWFFG.VehicleFiringArcForward"}}{{/if}} {{#if (eq item.data.firingarc.aft true)}}{{localize "SWFFG.VehicleFiringArcAft"}}{{/if}} {{#if (eq item.data.firingarc.port true)}}{{localize "SWFFG.VehicleFiringArcPort"}}{{/if}} {{#if (eq item.data.firingarc.starboard true)}}{{localize "SWFFG.VehicleFiringArcStarboard"}}{{/if}} {{#if (eq item.data.firingarc.dorsal true)}}{{localize "SWFFG.VehicleFiringArcDorsal"}}{{/if}} {{#if (eq item.data.firingarc.ventral true)}}{{localize "SWFFG.VehicleFiringArcVentral"}}{{/if}}</div>
+      <div class="skill-roll">
+        <div class="roll-button"><div class="skill-label rollable">{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</div></div>
+      </div>
       <div>{{item.data.damage.value}}</div>
       <div>{{localize item.data.range.label}}</div>
       <div>{{item.data.crit.value}}</div>
@@ -162,10 +164,7 @@
 <ul class="items">
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.VehicleTabShipCargoHold"}}</div>
-    <!-- <div>{{localize "SWFFG.ItemsPrice"}}</div>
-    <div>{{localize "SWFFG.ItemsRarity"}}</div> -->
     <div>{{localize "SWFFG.ItemsQuantity"}}</div>
-    <!-- <div>{{localize "SWFFG.ItemsEncum"}}</div> -->
     <div></div>
   </li>
 
@@ -173,10 +172,11 @@
     {{#each actor.items as |item id|}} {{#if (and (ne item.type "shipweapon") (ne item.type "shipattachment") (ne item.type "talent") (ne item.type "criticalinjury") (ne item.type "criticaldamage") )}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">{{item.name}}</div>
-      <!-- <div>{{item.data.price.value}}</div>
-      <div>{{item.data.rarity.value}}</div> -->
-      <div>{{item.data.quantity.value}}</div>
-      <!-- <div>{{item.data.encumbrance.value}}</div> -->
+      <div class="item-quantity">
+        <div class="quantity increase"><i class="far fa-plus-square"></i></div>
+        {{item.data.quantity.value}}
+        <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
+      </div>
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>

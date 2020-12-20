@@ -22,6 +22,8 @@ export class DicePoolFFG {
     this.success = obj.success || 0;
     this.threat = obj.threat || 0;
     this.failure = obj.failure || 0;
+    this.light = obj.light || 0;
+    this.dark = obj.dark || 0;
 
     this.source = {};
 
@@ -162,15 +164,15 @@ export class DicePoolFFG {
       container.classList.add("dice-pool");
     }
 
-    const totalDice = this.proficiency + this.ability + this.challenge + this.difficulty + this.boost + this.setback + this.force;
+    const totalDice = +this.proficiency + +this.ability + +this.challenge + +this.difficulty + +this.boost + +this.setback + +this.force;
 
     let height = 36;
     let width = 36;
-    if (totalDice > 10) {
+    if (totalDice > 8) {
       height = 24;
       width = 24;
     }
-    if (totalDice > 32) {
+    if (totalDice > 24) {
       height = 12;
       width = 12;
     }
@@ -187,6 +189,49 @@ export class DicePoolFFG {
     this._addSourceToolTip(container);
 
     return container;
+  }
+
+  renderAdvancedPreview(container) {
+    let advanceContainer = this.renderPreview(container);
+
+    let additionalSymbols = [];
+    ["advantage", "success", "threat", "failure", "light", "dark"].forEach((symbol) => {
+      let diceSymbol = "";
+      switch (symbol) {
+        case "advantage": {
+          diceSymbol = "[AD]";
+          break;
+        }
+        case "success": {
+          diceSymbol = "[SU]";
+          break;
+        }
+        case "threat": {
+          diceSymbol = "[TH]";
+          break;
+        }
+        case "failure": {
+          diceSymbol = "[FA]";
+          break;
+        }
+        case "light": {
+          diceSymbol = "[LI]";
+          break;
+        }
+        case "dark": {
+          diceSymbol = "[DA]";
+          break;
+        }
+      }
+
+      if (this[symbol] !== 0) {
+        additionalSymbols.push(`${this[symbol] < 0 ? "-" : "+"} ${this[symbol]} ${diceSymbol}`);
+      }
+    });
+
+    $(advanceContainer).append(`<div>${additionalSymbols.join(", ")}</div>`);
+
+    return advanceContainer;
   }
 
   _addIcons(container, icon, times, height = 36, width = 36) {
@@ -236,17 +281,19 @@ export class DicePoolFFG {
    */
   static fromContainer(container) {
     return new DicePoolFFG({
-      proficiency: container.querySelector('[name="proficiency"]').value,
-      ability: container.querySelector('[name="ability"]').value,
-      challenge: container.querySelector('[name="challenge"]').value,
-      difficulty: container.querySelector('[name="difficulty"]').value,
-      boost: container.querySelector('[name="boost"]').value,
-      setback: container.querySelector('[name="setback"]').value,
-      force: container.querySelector('[name="force"]').value,
-      advantage: container.querySelector('[name="advantage"]').value,
-      success: container.querySelector('[name="success"]').value,
-      threat: container.querySelector('[name="threat"]').value,
-      failure: container.querySelector('[name="failure"]').value,
+      proficiency: container.querySelector('[name="proficiency"]')?.value ? container.querySelector('[name="proficiency"]').value : 0,
+      ability: container.querySelector('[name="ability"]')?.value ? container.querySelector('[name="ability"]').value : 0,
+      challenge: container.querySelector('[name="challenge"]')?.value ? container.querySelector('[name="challenge"]').value : 0,
+      difficulty: container.querySelector('[name="difficulty"]')?.value ? container.querySelector('[name="difficulty"]').value : 0,
+      boost: container.querySelector('[name="boost"]')?.value ? container.querySelector('[name="boost"]').value : 0,
+      setback: container.querySelector('[name="setback"]')?.value ? container.querySelector('[name="setback"]').value : 0,
+      force: container.querySelector('[name="force"]')?.value ? container.querySelector('[name="force"]').value : 0,
+      advantage: container.querySelector('[name="advantage"]')?.value ? container.querySelector('[name="advantage"]').value : 0,
+      success: container.querySelector('[name="success"]')?.value ? container.querySelector('[name="success"]').value : 0,
+      threat: container.querySelector('[name="threat"]')?.value ? container.querySelector('[name="threat"]').value : 0,
+      failure: container.querySelector('[name="failure"]')?.value ? container.querySelector('[name="failure"]').value : 0,
+      light: container.querySelector('[name="light"]')?.value ? container.querySelector('[name="light"]').value : 0,
+      dark: container.querySelector('[name="dark"]')?.value ? container.querySelector('[name="dark"]').value : 0,
     });
   }
 }

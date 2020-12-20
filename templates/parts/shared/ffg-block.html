@@ -2,10 +2,12 @@
   <div class="attribute flex-group-center">
     <div class="block-background">
       <div class="block-title">
-        {{localize title}}
+        {{#if headerlink}}
+        <a class="{{headerclass}}" {{{headerattributes}}}>{{localize title}}</a>
+        {{else}} {{localize title}} {{/if}}
       </div>
       <div class="block-attribute">
-        {{#if (or (eq blocktype "single") (eq blocktype "double")) }} {{#if (eq type "Boolean")}}
+        {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}
         <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="{{name}}" data-dtype="{{type}}" {{checked value}} />
         {{/if}} {{#if (eq type "Dropdown")}}
         <select style="text-align: center;" name="{{name}}">
@@ -26,7 +28,7 @@
         <div class="block-value block-single">
           <div class="popout-editor" data-target="{{name}}" data-label="{{localize title}}">
             <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-            {{{renderDiceTags value}}}
+            {{{ffgDiceSymbols value}}}
           </div>
         </div>
         {{/if}} {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor"))}}

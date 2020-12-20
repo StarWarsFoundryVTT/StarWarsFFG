@@ -52,8 +52,18 @@ export default class PopoutEditor extends FormApplication {
    * Renders the dice symbols based on strings
    * @param  {String} string
    */
-  static renderDiceImages(str) {
+  static renderDiceImages(str, actorData) {
     let html = str || "";
+
+    html = this.replaceRollTags(html, actorData);
+    try {
+      html = TextEditor.enrichHTML(html, { entities: true });
+    } catch (err) {
+      // ignore the message below, it means that we already created an entity link (this could be part of an editor text)
+      if (err.message !== "An Entity subclass must configure the EntityCollection it belongs to.") {
+        CONFIG.logger.error(err);
+      }
+    }
 
     const dicetheme = game.settings.get("starwarsffg", "dicetheme");
 
@@ -62,43 +72,43 @@ export default class PopoutEditor extends FormApplication {
         type: "ability",
         character: "d",
         class: "starwars",
-        pattern: /\[(AB)[ILITY]?\]/gim,
+        pattern: /\[(AB)(ILITY)?\]/gim,
       },
       {
         type: "advantage",
         character: "a",
         class: dicetheme,
-        pattern: /\[(AD)[VANTAGE]?\]/gim,
+        pattern: /\[(AD)(VANTAGE)?\]/gim,
       },
       {
         type: "boost",
         character: "b",
         class: "starwars",
-        pattern: /\[(BO)[OST]?\]/gim,
+        pattern: /\[(BO)(OST)?\]/gim,
       },
       {
         type: "challenge",
         character: "c",
         class: "starwars",
-        pattern: /\[(CH)[ALLENGE]?\]/gim,
+        pattern: /\[(CH)(ALLENGE)?\]/gim,
       },
       {
         type: "dark",
         character: "z",
         class: "starwars",
-        pattern: /\[(DA)[RK]?\]/gim,
+        pattern: /\[(DA)(RK)?\]/gim,
       },
       {
         type: "despair",
         character: dicetheme === "starwars" ? "y" : "d",
         class: dicetheme,
-        pattern: /\[(DE)[SPAIR]?\]/gim,
+        pattern: /\[(DE)(SPAIR)?\]/gim,
       },
       {
         type: "difficulty",
         character: "d",
         class: "starwars",
-        pattern: /\[(DI)[FFICULTY]?\]/gim,
+        pattern: /\[(DI)(FFICULTY)?\]/gim,
       },
       {
         type: "forcepoint",
@@ -110,25 +120,25 @@ export default class PopoutEditor extends FormApplication {
         type: "failure",
         character: "f",
         class: dicetheme,
-        pattern: /\[(FA)[ILURE]?\]/gim,
+        pattern: /\[(FA)(ILURE)?\]/gim,
       },
       {
         type: "force",
         character: "C",
         class: "starwars",
-        pattern: /\[(FO)[RCE]?\]/gim,
+        pattern: /\[(FO)(RCE)?\]/gim,
       },
       {
         type: "light",
         character: "Z",
         class: "starwars",
-        pattern: /\[(LI)[GHT]?\]/gim,
+        pattern: /\[(LI)(GHT)?\]/gim,
       },
       {
         type: "proficiency",
         character: "c",
         class: "starwars",
-        pattern: /\[(PR)[OFICIENCY]?\]/gim,
+        pattern: /\[(PR)(OFICIENCY)?\]/gim,
       },
       {
         type: "remsetback",
@@ -140,31 +150,31 @@ export default class PopoutEditor extends FormApplication {
         type: "restricted",
         character: "z",
         class: "starwars",
-        pattern: /\[(RE)[STRICTED]?\]/gim,
+        pattern: /\[(RE)(STRICTED)?\]/gim,
       },
       {
         type: "setback",
         character: "b",
         class: "starwars",
-        pattern: /\[(SE)[TBACK]?\]/gim,
+        pattern: /\[(SE)(TBACK)?\]/gim,
       },
       {
         type: "success",
         character: "s",
         class: dicetheme,
-        pattern: /\[(SU)[CCESS]?\]/gim,
+        pattern: /\[(SU)(CCESS)?\]/gim,
       },
       {
         type: "threat",
         character: dicetheme === "starwars" ? "t" : "h",
         class: dicetheme,
-        pattern: /\[(TH)[REAT]?\]/gim,
+        pattern: /\[(TH)(REAT)?\]/gim,
       },
       {
         type: "triumph",
         character: dicetheme === "starwars" ? "x" : "t",
         class: dicetheme,
-        pattern: /\[(TR)[IUMPH]?\]/gim,
+        pattern: /\[(TR)(IUMPH)?\]/gim,
       },
       {
         type: "adddifficulty",
@@ -269,7 +279,9 @@ export default class PopoutEditor extends FormApplication {
           difficulty = "Formidable";
           break;
       }
-      let formula = `<span class="rollable rollSkillDirect" data-skill="${args[0]}" data-difficulty="${args[1]}" data-actor-id="${actorData._id}"><strong>${difficulty} (${di.repeat(args[1])}) ${args[0]}</strong></span>`;
+      const id = actorData?._id ? actorData._id : "";
+
+      let formula = `<span class="rollable rollSkillDirect" data-skill="${args[0]}" data-difficulty="${args[1]}" data-actor-id="${id}"><strong>${difficulty} (${di.repeat(args[1])}) ${args[0]}</strong></span>`;
       return formula;
     });
 

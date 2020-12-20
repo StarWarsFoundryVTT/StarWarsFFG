@@ -69,8 +69,8 @@ export class ActorFFG extends Actor {
 
   _prepareSharedData(actorData) {
     const data = actorData.data;
-    data.biography = PopoutEditor.replaceRollTags(data.biography, actorData);
-    data.biography = PopoutEditor.renderDiceImages(data.biography);
+    //data.biography = PopoutEditor.replaceRollTags(data.biography, actorData);
+    data.biography = PopoutEditor.renderDiceImages(data.biography, actorData);
 
     // localize characteristic names
     if (actorData.type !== "vehicle") {
@@ -120,7 +120,7 @@ export class ActorFFG extends Actor {
     }
 
     //Calculate the number of alive minions
-    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.value - 1) / data.unit_wounds.value));
+    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor(data.stats.wounds.value / data.unit_wounds.value));
 
     // Loop through Skills, and where groupskill = true, set the rank to 1*(quantity-1).
     for (let [key, skill] of Object.entries(data.skills)) {
@@ -302,6 +302,29 @@ export class ActorFFG extends Actor {
     }
 
     data.talentList = globalTalentList;
+
+    if (data?.obligationlist && Object.keys(data.obligationlist).length > 0) {
+      let obligation = 0;
+      Object.keys(data.obligationlist).forEach((element) => {
+        const item = data.obligationlist[element];
+
+        if (parseInt(item.magnitude, 10)) {
+          obligation += parseInt(item.magnitude, 10);
+        }
+      });
+      data.obligation.value = obligation;
+    }
+
+    if (data?.dutylist && Object.keys(data.dutylist).length > 0) {
+      let duty = 0;
+      Object.keys(data.dutylist).forEach((element) => {
+        const item = data.dutylist[element];
+        if (parseInt(item.magnitude, 10)) {
+          duty += parseInt(item.magnitude, 10);
+        }
+      });
+      data.duty.value = duty;
+    }
   }
 
   _calculateDerivedValues(actorData) {
@@ -596,7 +619,7 @@ export class ActorFFG extends Actor {
       /* Career Skills */
       if (!data.skills[key].careerskill) {
         const careerSkillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill", true);
-        data.skills[key].careerskill = careerSkillValues.total;
+        data.skills[key].careerskill = careerSkillValues.checked;
         data.skills[key].careerskillsource = careerSkillValues.sources;
       }
 
@@ -607,12 +630,27 @@ export class ActorFFG extends Actor {
       const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback", true);
       const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback", true);
 
+      const setValueAndSources = (modifiername, propertyname) => {
+        const obj = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, modifiername, true);
+        if (obj.total > 0) {
+          data.skills[key][propertyname] = obj.total;
+          data.skills[key][`${propertyname}source`] = obj.sources;
+        }
+      };
+
+      setValueAndSources("Skill Add Advantage", "advantage");
+      setValueAndSources("Skill Add Dark", "dark");
+      setValueAndSources("Skill Add Failure", "failure");
+      setValueAndSources("Skill Add Light", "light");
+      setValueAndSources("Skill Add Success", "success");
+      setValueAndSources("Skill Add Threat", "threat");
+
       const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
       data.skills[key].force = 0;
       if (forceboost.total > 0) {
         const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
         if (forcedice > 0) {
-          data.skills[key].force = forcedice;
+          data.skills[key].force = forcedice.total;
           data.skills[key].forcesource = forceboost.sources;
         }
       }

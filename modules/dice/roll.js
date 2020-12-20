@@ -1,4 +1,5 @@
 import PopoutEditor from "../popout-editor.js";
+import { ForceDie } from "./dietype/ForceDie.js";
 
 /**
  * New extension of the core DicePool class for evaluating rolls with the FFG DiceTerms
@@ -46,6 +47,28 @@ export class RollFFG extends Roll {
         value: Math.abs(+args[2].threat),
         negative: +args[2].threat < 0,
       });
+    }
+    if (args[2]?.light) {
+      this.ffg.light = +args[2].light;
+      this.addedResults.push({
+        type: "Light",
+        symbol: PopoutEditor.renderDiceImages("[LI]"),
+        value: Math.abs(+args[2].light),
+        negative: +args[2].light < 0,
+      });
+    }
+    if (args[2]?.dark) {
+      this.ffg.dark = +args[2].dark;
+      this.addedResults.push({
+        type: "Dark",
+        symbol: PopoutEditor.renderDiceImages("[DA]"),
+        value: Math.abs(+args[2].dark),
+        negative: +args[2].dark < 0,
+      });
+    }
+
+    if (args[3]) {
+      this.flavorText = args[3];
     }
   }
 
@@ -165,6 +188,7 @@ export class RollFFG extends Roll {
       };
     });
     parts.addedResults = this.addedResults;
+    parts.flavorText = this.flavorText;
     return renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { parts });
   }
 
@@ -186,6 +210,8 @@ export class RollFFG extends Roll {
     if (!this._rolled) this.roll();
 
     // Define chat data
+    this.data.additionalFlavorText = this.flavorText;
+
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : chatOptions.flavor,
@@ -208,6 +234,7 @@ export class RollFFG extends Roll {
           }),
       hasFFG: this.hasFFG,
       hasStandard: this.hasStandard,
+      hasSuccess: this.dice.filter((i) => i.constructor !== ForceDie).length > 0,
       diceresults: CONFIG.FFG.diceresults,
       data: this.data,
       addedResults: this.addedResults,
@@ -260,6 +287,7 @@ export class RollFFG extends Roll {
     json.hasStandard = this.hasStandard;
     json.data = this.data;
     json.addedResults = this.addedResults;
+    json.flavorText = this.flavorText;
     return json;
   }
 
@@ -271,6 +299,7 @@ export class RollFFG extends Roll {
     roll.hasStandard = data.hasStandard;
     roll.data = data.data;
     roll.addedResults = data.addedResults;
+    roll.flavorText = data.flavorText;
     return roll;
   }
 }

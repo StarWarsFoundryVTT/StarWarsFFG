@@ -81,4 +81,12 @@ export default class ActorOptions {
       this.register(option.name, option.options);
     });
   }
+
+  unregister(optionName) {
+    delete this.options[optionName];
+  }
+
+  clear() {
+    this.options = {};
+  }
 }
