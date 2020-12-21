@@ -170,6 +170,8 @@ export default class DestinyTracker extends FormApplication {
               game.settings.set(i.module, i.key, undefined);
             });
 
+            CONFIG.FFG.DestinyGM = game.user.id;
+
             ChatMessage.create({
               user: game.user._id,
               content: messageText,
@@ -233,7 +235,10 @@ export default class DestinyTracker extends FormApplication {
             dark: +dark - +args[0].pool.dark,
           };
 
-          this.destinyQueue.push(request);
+          // only allow one player flip at a time.
+          if (!this.destinyQueue.find((q) => q.id === args[0].destiny)) {
+            this.destinyQueue.push(request);
+          }
         }
 
         // Handle user report for initial Destiny roll
@@ -245,7 +250,10 @@ export default class DestinyTracker extends FormApplication {
             dark: args[0].dark,
           };
 
-          this.destinyQueue.push(request);
+          // make sure only one player destiny roll is queued.
+          if (!this.destinyQueue.find((q) => q.id === args[0].destiny) && CONFIG.FFG.DestinyGM === game.user.id) {
+            this.destinyQueue.push(request);
+          }
         }
 
         if (!this.isRunningQueue) {
