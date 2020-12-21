@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 21/12/2020 - Cstadther - Multiple Fixes - Fixed issue with additionalFlavorText error on some rolls. Fixed issues with Dedication increasing stat out of control. Fixed issue with OggDude import failing when skills not selected. Moved import id to ffgimportid to resolve issue when compendiums are migrated from a core upgrade. Updated roll audiohelper call to push sound to all connected clients.
 - 20/12/2020 - Cstadther - Added additional error handling for dice dialog error on `skills`
 - 20/12/2020 - Cstadther - Fix 558 - Fixes issue where uploads to Forge were not working correctly and error out of code section.
 - 20/12/2020 - Cstadther - Fix 556 - Fixed issue where title of intiative dialog was incorrect.
