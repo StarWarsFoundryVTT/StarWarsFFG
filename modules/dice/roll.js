@@ -210,7 +210,9 @@ export class RollFFG extends Roll {
     if (!this._rolled) this.roll();
 
     // Define chat data
-    this.data.additionalFlavorText = this.flavorText;
+    if (this?.data) {
+      this.data.additionalFlavorText = this.flavorText;
+    }
 
     const chatData = {
       formula: isPrivate ? "???" : this._formula,

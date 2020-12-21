@@ -133,7 +133,7 @@ export default class ImportHelpers {
    */
   static findEntityByImportId(type, id) {
     return game.data[type].find((item) => {
-      return item.flags.importid === id;
+      return item.flags.ffgimportid === id;
     });
   }
 
@@ -176,7 +176,7 @@ export default class ImportHelpers {
 
           const content = await pack.getContent();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].data.flags.importid] = content[i];
+            CONFIG.temporary[packid][content[i].data.flags.ffgimportid] = content[i];
           }
         }
       } else {
@@ -447,7 +447,7 @@ export default class ImportHelpers {
         name: characterName ? characterName : "No Name",
         type: "character",
         flags: {
-          importid: characterData.Character.Key,
+          ffgimportid: characterData.Character.Key,
         },
         data: {
           attributes: {},
@@ -1122,7 +1122,7 @@ export default class ImportHelpers {
 
       updateDialog(90);
 
-      const exists = game.data.actors.find((actor) => actor.flags.importid === characterData.Character.Key);
+      const exists = game.data.actors.find((actor) => actor.flags.ffgimportid === characterData.Character.Key);
       if (exists) {
         //let updateData = ImportHelpers.buildUpdateData(character);
         let updateData = character;

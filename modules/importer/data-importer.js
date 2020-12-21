@@ -148,7 +148,13 @@ export default class DataImporter extends FormApplication {
       let isSpecialization = false;
       let isVehicle = false;
 
-      let skillsFileName = importFiles.find((item) => item.file.includes("Skills.xml")).file;
+      let skillsFileName;
+      try {
+        skillsFileName = importFiles.find((item) => item.file.includes("Skills.xml")).file;
+      } catch (err) {
+        CONFIG.logger.warn(`Not importing skills.`);
+      }
+
       let createSkillJournalEntries = true;
 
       if (!skillsFileName) {
@@ -247,7 +253,7 @@ export default class DataImporter extends FormApplication {
             let item = {
               name: d.Name,
               flags: {
-                importid: d.Key,
+                ffgimportid: d.Key,
               },
               content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
             };
@@ -311,7 +317,7 @@ export default class DataImporter extends FormApplication {
                 name: sa.SigAbility.Name,
                 type: "signatureability",
                 flags: {
-                  importid: sa.SigAbility.Key,
+                  ffgimportid: sa.SigAbility.Key,
                 },
                 data: {
                   description: sa.SigAbility.Description,
@@ -387,7 +393,7 @@ export default class DataImporter extends FormApplication {
                 }
               }
 
-              let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", signatureAbility.flags.importid);
+              let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", signatureAbility.flags.ffgimportid);
               if (imgPath) {
                 signatureAbility.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
               }
@@ -449,7 +455,7 @@ export default class DataImporter extends FormApplication {
           let itemDescriptor = {
             name: d.Name,
             flags: {
-              importid: d.Key,
+              ffgimportid: d.Key,
             },
             content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
           };
@@ -535,7 +541,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: "talent",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -603,7 +609,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", item.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", item.flags.ffgimportid);
           if (imgPath) {
             item.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -670,7 +676,7 @@ export default class DataImporter extends FormApplication {
             name: fp.ForcePower.Name,
             type: "forcepower",
             flags: {
-              importid: fp.ForcePower.Key,
+              ffgimportid: fp.ForcePower.Key,
             },
             data: {
               attributes: {},
@@ -832,7 +838,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", power.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", power.flags.ffgimportid);
           if (imgPath) {
             power.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -898,7 +904,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: "gear",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -924,7 +930,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", newItem.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", newItem.flags.ffgimportid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1026,7 +1032,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: weaponType === "Vehicle" ? "shipweapon" : "weapon",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -1117,7 +1123,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", newItem.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", newItem.flags.ffgimportid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1190,7 +1196,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: "armour",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -1225,7 +1231,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", newItem.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", newItem.flags.ffgimportid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1286,7 +1292,7 @@ export default class DataImporter extends FormApplication {
             name: specData.Specialization.Name,
             type: "specialization",
             flags: {
-              importid: specData.Specialization.Key,
+              ffgimportid: specData.Specialization.Key,
             },
             data: {
               attributes: {},
@@ -1377,7 +1383,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", specialization.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", specialization.flags.ffgimportid);
           if (imgPath) {
             specialization.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1437,7 +1443,7 @@ export default class DataImporter extends FormApplication {
             name: careerData.Career.Name,
             type: "career",
             flags: {
-              importid: careerData.Career.Key,
+              ffgimportid: careerData.Career.Key,
             },
             data: {
               attributes: {},
@@ -1465,7 +1471,7 @@ export default class DataImporter extends FormApplication {
           });
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", career.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", career.flags.ffgimportid);
           if (imgPath) {
             career.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1523,7 +1529,7 @@ export default class DataImporter extends FormApplication {
             name: speciesData.Species.Name,
             type: "species",
             flags: {
-              importid: speciesData.Species.Key,
+              ffgimportid: speciesData.Species.Key,
             },
             data: {
               attributes: {},
@@ -1588,7 +1594,7 @@ export default class DataImporter extends FormApplication {
           species.data.description = `<h4>Abilities</h4>` + abilities.join("") + "<p></p>" + species.data.description;
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", species.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", species.flags.ffgimportid);
           if (imgPath) {
             species.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1701,7 +1707,7 @@ export default class DataImporter extends FormApplication {
             name: vehicleData.Vehicle.Name,
             type: "vehicle",
             flags: {
-              importid: vehicleData.Vehicle.Key,
+              ffgimportid: vehicleData.Vehicle.Key,
             },
             data: {
               biography: vehicleData.Vehicle.Description,
