@@ -16,8 +16,11 @@ export default class ModifierHelpers {
 
       return attrs[key].value.map((v) => v + total);
     } else {
-      total += attrs[key].value;
-      total += this.getCalculatedValueFromItems(items, key, modtype);
+      const attrValue = attrs[key].value;
+      const itemsValue = this.getCalculatedValueFromItems(items, key, modtype);
+
+      total += attrValue;
+      total += itemsValue;
     }
 
     return total;
@@ -132,7 +135,8 @@ export default class ModifierHelpers {
                 total += subValues.total;
                 sources = sources.concat(subValues.sources);
               } else {
-                total += this.getCalculatedValueFromItems(upgrades, key, modtype);
+                const subValues = this.getCalculatedValueFromItems(upgrades, key, modtype);
+                total += subValues;
               }
             }
           } else {

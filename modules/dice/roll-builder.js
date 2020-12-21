@@ -134,7 +134,7 @@ export default class RollBuilderFFG extends FormApplication {
           flavor: `${game.i18n.localize("SWFFG.Rolling")} ${this.roll.skillName}...`,
         });
         if (this.roll?.sound) {
-          AudioHelper.play({ src: this.roll.sound });
+          AudioHelper.play({ src: this.roll.sound }, true);
         }
 
         return roll;
