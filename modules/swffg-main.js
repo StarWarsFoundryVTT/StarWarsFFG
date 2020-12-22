@@ -770,6 +770,27 @@ Hooks.once("ready", async () => {
     game.settings.set("starwarsffg", "systemMigrationVersion", game.system.data.version);
   }
 
+  // enable functional testing
+  if (game.user.isGM && window.location.href.includes("localhost") && game?.data?.system?.data?.test) {
+    const command = `
+      const testing = import('/systems/starwarsffg/tests/ffg-tests.js').then((mod) => {
+      const tester = new mod.default();
+      tester.render(true);
+    });
+    `;
+
+    const macro = {
+      name: "Functional Testing",
+      type: "script",
+      command: command,
+    };
+
+    const macroExists = game.macros.entities.find((m) => m.name === macro.name);
+    if (!macroExists) {
+      Macro.create(macro);
+    }
+  }
+
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
   Hooks.on("hotbarDrop", (bar, data, slot) => createFFGMacro(data, slot));
 
