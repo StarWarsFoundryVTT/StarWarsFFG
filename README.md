@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 22/12/2020 - Cstadther - Added Functional Testing.
 - 21/12/2020 - Cstadther - Fix 562 - Fixed issue where multiple GMs were causing the Destiny Roll to be handled multiple times.
 - 21/12/2020 - Cstadther - Multiple Fixes - Fixed issue with additionalFlavorText error on some rolls. Fixed issues with Dedication increasing stat out of control. Fixed issue with OggDude import failing when skills not selected. Moved import id to ffgimportid to resolve issue when compendiums are migrated from a core upgrade. Updated roll audiohelper call to push sound to all connected clients.
 - 20/12/2020 - Cstadther - Added additional error handling for dice dialog error on `skills`
