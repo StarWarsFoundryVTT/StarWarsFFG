@@ -1,0 +1,26 @@
+<form>
+  <div>
+    PASSES {{pass.length}}
+  </div>
+  <div>
+    FAILURES {{fail.length}}
+  </div>
+  {{#if (gt fail.length 0)}}
+  <div>
+    {{#each suites}}
+    <div>
+      <div>{{this.title}}</div>
+      <div>
+        {{#each this.tests.fail}}
+        <div>
+          <li>{{this.title}}</li>
+          <div>{{this.err.stack}}</div>
+        </div>
+
+        {{/each}}
+      </div>
+    </div>
+    {{/each}}
+  </div>
+  {{/if}}
+</form>
