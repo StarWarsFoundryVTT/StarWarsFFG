@@ -62,10 +62,10 @@ export default class RollBuilderFFG extends FormApplication {
       }
     }
 
-    let users = [];
+    let users = [{ name: 'Send To All', id: 'all'}];
     if (game.user.isGM) {
       game.users.entries.forEach((user) => {
-        if (user.active && user.id !== game.user.id) {
+        if (user.visible && user.id !== game.user.id) {
           users.push({ name: user.data.name, id: user.id });
         }
       });
@@ -114,18 +114,23 @@ export default class RollBuilderFFG extends FormApplication {
           <button class="ffg-pool-to-player">${game.i18n.localize("SWFFG.SentDicePoolRoll")}</button>
         </div>`;
 
-        ChatMessage.create({
+        let chatOptions = {
           user: game.user._id,
-          whisper: [sentToPlayer],
           content: messageText,
           flags: {
             ffg: {
               roll: this.roll,
               dicePool: this.dicePool,
               description: this.description,
-            },
-          },
-        });
+            }
+          }
+        }
+
+        if(sentToPlayer !== 'all') {
+          chatOptions.whisper = [sentToPlayer];
+        }
+
+        ChatMessage.create(chatOptions);
       } else {
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
         roll.toMessage({
