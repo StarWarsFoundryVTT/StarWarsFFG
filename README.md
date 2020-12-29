@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 28/12/2020 - Cstadther - Fix 553 - Fixed specialization link search for world compendiums that have been converted module compendiums.
 - 28/12/2020 - Cstadther - Enhancement 570 - Added "Send to All" option for roll dialog.
 - 22/12/2020 - Cstadther - Added Functional Testing.
 - 21/12/2020 - Cstadther - Fix 562 - Fixed issue where multiple GMs were causing the Destiny Roll to be handled multiple times.

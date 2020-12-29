@@ -89,11 +89,16 @@ export class ItemSheetFFG extends ItemSheet {
             if (specializationTalents?.[talent]?.pack?.length) {
               try {
                 const pack = await game.packs.get(specializationTalents[talent].pack);
-                await pack.getIndex();
-                const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
-
-                if (entry) {
-                  gameItem = await pack.getEntity(entry._id);
+                
+                // this may be a coverted specialization talent from a world to a module.
+                if(!pack) {
+                  gameItem = await ImportHelpers.findCompendiumEntityById("Item", specializationTalents[talent].itemId);
+                } else {
+                  await pack.getIndex();
+                  const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+                  if (entry) {
+                    gameItem = await pack.getEntity(entry._id);
+                  }
                 }
               } catch (err) {
                 CONFIG.logger.warn(`Unable to load ${specializationTalents[talent].pack}`, err);
