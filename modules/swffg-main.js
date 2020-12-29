@@ -767,7 +767,51 @@ Hooks.once("ready", async () => {
       }
     }
 
-    game.settings.set("starwarsffg", "systemMigrationVersion", game.system.data.version);
+    if (currentVersion === "null" || parseFloat(currentVersion) < 1.3) {
+      ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
+
+      const pro = [];
+
+      game.packs.entries.forEach((pack) => {
+        pro.push(
+          new Promise(async (resolve, reject) => {
+            const content = await pack.getContent();
+            CONFIG.logger.log(`Migrating ${pack.metadata.label} - ${content.length} Entries`);
+
+            const isLocked = pack.locked;
+
+            if (isLocked) {
+              await pack.configure({ locked: false });
+            }
+
+            for (var i = 0; i < content.length; i++) {
+              if (!content[i]?.data?.flags?.ffgimportid && content[i]?.data?.flags?.importid) {
+                CONFIG.logger.debug(`Migrating (${content[i].data._id}) ${content[i].data.name}`);
+                content[i].update({
+                  flags: {
+                    ffgimportid: content[i].data.flags.importid,
+                  },
+                });
+              }
+              resolve();
+            }
+
+            if (isLocked) {
+              await pack.configure({ locked: true });
+            }
+          })
+        );
+      });
+
+      Promise.all(pro)
+        .then(() => {
+          ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+          game.settings.set("starwarsffg", "systemMigrationVersion", game.system.data.version);
+        })
+        .catch((err) => {
+          CONFIG.logger.error(`Error during system migration`, err);
+        });
+    }
   }
 
   // enable functional testing

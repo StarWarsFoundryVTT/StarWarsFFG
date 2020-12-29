@@ -249,26 +249,7 @@ export default class ImportHelpers {
 
     if (["BR", "AG", "INT", "CUN", "WIL", "PR"].includes(mod.Key)) {
       modtype = "Characteristic";
-      switch (mod.Key) {
-        case "BR":
-          type = "Brawn";
-          break;
-        case "AG":
-          type = "Agility";
-          break;
-        case "INT":
-          type = "Intellect";
-          break;
-        case "CUN":
-          type = "Cunning";
-          break;
-        case "WIL":
-          type = "Willpower";
-          break;
-        case "PR":
-          type = "Presence";
-          break;
-      }
+      type = ImportHelpers.convertOGCharacteristic(mod.Key);
     }
 
     if (Object.keys(CONFIG.temporary.skills).includes(mod.Key)) {
@@ -422,6 +403,8 @@ export default class ImportHelpers {
       await callback(array[index], index, array);
     }
   };
+
+  static characteristicKeyToName(key) {}
 
   static async characterImport(data) {
     try {
@@ -674,17 +657,19 @@ export default class ImportHelpers {
       };
 
       characterData.Character.Characteristics.CharCharacteristic.forEach((char) => {
-        if (!character.data.attributes?.[char.name]) {
-          character.data.attributes[char.Name] = {
-            key: char.name,
-            mod: char.name,
+        const name = ImportHelpers.convertOGCharacteristic(char.Key);
+
+        if (!character.data.attributes?.[name]) {
+          character.data.attributes[name] = {
+            key: name,
+            mod: name,
             modtype: "Characteristic",
             value: 0,
           };
         }
         if (char.Rank?.PurchasedRanks) {
-          character.data.characteristics[char.Name].value = parseInt(char.Rank.PurchasedRanks, 10);
-          character.data.attributes[char.Name].value = parseInt(char.Rank.PurchasedRanks, 10);
+          character.data.characteristics[name].value = parseInt(char.Rank.PurchasedRanks, 10);
+          character.data.attributes[name].value = parseInt(char.Rank.PurchasedRanks, 10);
         }
       });
 
@@ -742,7 +727,9 @@ export default class ImportHelpers {
       updateDialog(10);
 
       try {
-        const species = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey)));
+        const x = await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey);
+
+        const species = JSON.parse(JSON.stringify(x));
         if (species) {
           for (let i = 0; i < speciesSkills.length; i += 1) {
             // first determine if the modifier exists, oggdudes doesn't differentiate between chosen skills (ie human) vs static skill (ie Nautolan)
