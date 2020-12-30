@@ -289,6 +289,10 @@ img {
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 }
 
+.starwarsffg.sheet.actor.adversary .character .sheet-body .skillsTablesGrid {
+  height: calc(100% - 32.1875rem);
+}
+
 .starwarsffg.sheet.actor .character .header-fields {
   flex: 1;
   height: auto;
@@ -521,7 +525,7 @@ img {
 }
 
 .starwarsffg.sheet.actor .character .sheet-body .skillsTablesGrid {
-  height: calc(100% - 32.1875rem);
+  height: calc(100% - 33.1875rem);
   overflow: auto;
 }
 
@@ -1489,10 +1493,7 @@ img {
 
 .starwarsffg .skillsGrid {
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
   align-content: flex-start;
-  max-height: 600px;
   width: 100%;
   padding: 0 5px;
 }
@@ -1502,13 +1503,18 @@ img {
   flex-direction: column;
 }
 
+.starwarsffg .skillsGrid .skillTypeGrid.skillColumnGrid {
+  border: 1px solid #7a7971;
+  background: rgba(0, 0, 0, 0.05);
+  flex: 50%;
+}
+
 .starwarsffg .skillsGrid .pure-g {
   letter-spacing: initial;
 }
 
-.starwarsffg .skillsGrid .skillTable {
-  border: 1px solid #7a7971;
-  background: rgba(0, 0, 0, 0.05);
+.starwarsffg .skillsGrid .skillTable .skillsHeader {
+  line-height: 1.313rem;
 }
 
 .starwarsffg .skillsGrid .skillTable .skillsHeader div {

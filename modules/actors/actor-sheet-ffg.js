@@ -76,6 +76,8 @@ export class ActorSheetFFG extends ActorSheet {
       default:
     }
     data.items = this.actor.items.map((item) => item.data);
+    data.data.skilllist = this._createSkillColumns(data);
+
     return data;
   }
 
@@ -643,6 +645,10 @@ export class ActorSheetFFG extends ActorSheet {
     ChatMessage.create(messageData);
   }
 
+  /**
+   * Change skill characteristic
+   * @param  {object} a - Event object
+   */
   _onChangeSkillCharacteristic(a) {
     //const a = event.currentTarget;
     const characteristic = $(a).data("characteristic");
@@ -687,6 +693,10 @@ export class ActorSheetFFG extends ActorSheet {
     ).render(true);
   }
 
+  /**
+   * Create new one-off skill for this actor
+   * @param  {object} a - Event object
+   */
   _onCreateSkill(a) {
     const group = $(a).parent().data("type");
 
@@ -737,11 +747,19 @@ export class ActorSheetFFG extends ActorSheet {
     ).render(true);
   }
 
+  /**
+   * Remove skill from skill list
+   * @param  {object} a - Event object
+   */
   _onRemoveSkill(a) {
     const ability = $(a).data("ability");
     this.object.update({ "data.skills": { ["-=" + ability]: null } });
   }
 
+  /**
+   * Set skill as a skill available in the initiative dialog
+   * @param  {object} a - Event object
+   */
   _onInitiativeSkill(a) {
     const skill = $(a).data("ability");
     let updateData = {};
@@ -781,6 +799,10 @@ export class ActorSheetFFG extends ActorSheet {
     actorUpdate(event, formData);
   }
 
+  /**
+   * Drag Event function for creating Hotbar macros for skill rolls
+   * @param  {} event
+   */
   _onSkillDragStart(event) {
     const li = event.currentTarget;
 
@@ -866,6 +888,10 @@ export class ActorSheetFFG extends ActorSheet {
     }
   }
 
+  /**
+   * Update specialization talents
+   * @param  {Object} data
+   */
   async _updateSpecialization(data) {
     CONFIG.logger.debug(`Running Actor initial load`);
     this.actor.data.flags.loaded = true;
@@ -925,6 +951,11 @@ export class ActorSheetFFG extends ActorSheet {
     });
   }
 
+  /**
+   * Update a specialization talent based on talent reference
+   * @param  {Object} specializationTalentItem
+   * @param  {Object} talentItem
+   */
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
     CONFIG.logger.debug(`Starwars FFG - Updating Specializations Talent`);
     specializationTalentItem.name = talentItem.name;
@@ -937,6 +968,10 @@ export class ActorSheetFFG extends ActorSheet {
     specializationTalentItem.attributes = talentItem.data.attributes;
   }
 
+  /**
+   * Open dialog for popout editor
+   * @param  {Object} event
+   */
   _onPopoutEditor(event) {
     event.preventDefault();
     const a = event.currentTarget.parentElement;
@@ -961,5 +996,59 @@ export class ActorSheetFFG extends ActorSheet {
       left: windowLeft,
       top: windowTop,
     }).render(true);
+  }
+
+  /**
+   * Creates two even columns of skills for display while also sorting them.
+   * @param  {Object} data
+   */
+  _createSkillColumns(data) {
+    const numberSkills = Object.values(data.data.skills).length;
+    const totalRows = numberSkills + Object.values(data.data.skilltypes).length;
+
+    let colRowCount = Math.ceil(totalRows / 2.0);
+
+    const cols = [[], []];
+
+    let currentColumn = 0;
+    let rowsLeft = colRowCount;
+
+    data.data.skilltypes.forEach((type) => {
+      // filter and sort skills for current skill category
+      const skills = Object.keys(data.data.skills)
+        .filter((s) => data.data.skills[s].type === type.type)
+        .sort((a, b) => {
+          let comparison = 0;
+          if (a.toLowerCase() > b.toLowerCase()) {
+            comparison = 1;
+          } else if (a.toLowerCase() < b.toLowerCase()) {
+            comparison = -1;
+          }
+          return comparison;
+        });
+
+      // if the skill list is larger that the column row count then take into account the added header row.
+      if (skills.length > colRowCount) {
+        colRowCount = Math.ceil((totalRows + 1) / 2.0);
+        rowsLeft = colRowCount;
+      }
+
+      cols[currentColumn].push({ id: "header", ...type });
+      rowsLeft -= 1;
+      skills.forEach((s) => {
+        cols[currentColumn].push({ name: s, ...data.data.skills[s] });
+        rowsLeft -= 1;
+        if (rowsLeft <= 0) {
+          currentColumn += 1;
+          rowsLeft = colRowCount;
+          if (currentColumn === 0) {
+            cols[currentColumn].push({ id: "header", ...type });
+            rowsLeft -= 1;
+          }
+        }
+      });
+    });
+
+    return cols;
   }
 }
