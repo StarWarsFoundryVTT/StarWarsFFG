@@ -2,6 +2,16 @@ $swffg-table-header-color: rgb(145, 145, 145);
 &.sheet {
   &.actor {
 
+    &.adversary {
+      .character {
+        .sheet-body {
+          .skillsTablesGrid {
+            height: calc(100% - 32.1875rem)
+          }
+        }
+      }
+    }
+
     .character {
       .header-fields {
         flex: 1;
@@ -255,7 +265,7 @@ $swffg-table-header-color: rgb(145, 145, 145);
         }
 
         .skillsTablesGrid {
-          height: calc(100% - 32.1875rem);
+          height: calc(100% - 33.1875rem);
           overflow:auto;
         }
       
