@@ -805,7 +805,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addDicePreset(
       {
         type: "da",
-        labels: ["", "s", "s", "s\ns", "a", "s", "s\na", "a\na"],
+        labels: ["", "s", "s", "s\ns", "a", "a", "s\na", "a\na"],
         font: "SWRPG-Symbol-Regular",
         colorset: "green",
         system: "swffg",
@@ -885,7 +885,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addDicePreset(
       {
         type: "da",
-        labels: ["", "s", "s", "s\ns", "a", "s", "s\na", "a\na"],
+        labels: ["", "s", "s", "s\ns", "a", "a", "s\na", "a\na"],
         font: "Genesys",
         colorset: "green",
         system: "genesys",
