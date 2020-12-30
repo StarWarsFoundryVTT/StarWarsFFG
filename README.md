@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 30/12/2020 - Cstadther - Fix 568 - Changed the way skills are rendered, but spliting skills into two columns and rendering those columns. 
 - 28/12/2020 - Cstadther - Fix 569 - Fixed OggDude export with non-english characteristic names (now uses characteristic keys).  Added compendium migrations, as new version (1.3) will change importid property from importid to ffgimportid to resolve issue with Core migration overwriting property.
 - 28/12/2020 - Cstadther - Fix 553 - Fixed specialization link search for world compendiums that have been converted module compendiums.
 - 28/12/2020 - Cstadther - Enhancement 570 - Added "Send to All" option for roll dialog.

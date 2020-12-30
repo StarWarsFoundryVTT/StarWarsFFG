@@ -38,16 +38,22 @@
 
 .skillsGrid {
   display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  // flex-direction: column;
+  // flex-wrap: wrap;
   align-content: flex-start;
-  max-height: 600px;
+  // max-height: 800px;
   width: 100%;
   padding: 0 5px;
 
   .skillTypeGrid {
     flex: 0 1 auto;
     flex-direction: column;
+
+    &.skillColumnGrid {
+      border: 1px solid #7a7971;
+      background: rgba(0, 0, 0, 0.05);
+      flex: 50%;
+    }
   }
 
   .pure-g {
@@ -55,10 +61,9 @@
   }
 
   .skillTable {
-    border: 1px solid #7a7971;
-    background: rgba(0, 0, 0, 0.05);
-
     .skillsHeader {
+      line-height: 1.313rem;
+    
       div {
         text-align: center;
         padding: 3px;
