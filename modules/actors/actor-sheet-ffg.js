@@ -1038,13 +1038,11 @@ export class ActorSheetFFG extends ActorSheet {
       skills.forEach((s) => {
         cols[currentColumn].push({ name: s, ...data.data.skills[s] });
         rowsLeft -= 1;
-        if (rowsLeft <= 0) {
+        if (rowsLeft <= 0 && currentColumn === 0) {
           currentColumn += 1;
           rowsLeft = colRowCount;
-          if (currentColumn === 0) {
-            cols[currentColumn].push({ id: "header", ...type });
-            rowsLeft -= 1;
-          }
+          cols[currentColumn].push({ id: "header", ...type });
+          rowsLeft -= 1;
         }
       });
     });
