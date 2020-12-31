@@ -33,3 +33,15 @@
   }
   
 }
+
+&.sheet {
+  &.item {
+    &.v2 {
+      .item-sheet-talent {
+        .sheet-body {
+          height: calc(100% - 19.3125rem);
+        }        
+      }
+    }
+  }
+}

@@ -420,5 +420,7 @@
   "SWFFG.EnableRollAudioPlaylist": "Roll - Playlist users use for roll audio",
   "SWFFG.EnableRollAudioPlaylistHint": "This is the playlist that users are given access to, from which they can add audio to rolls.",
   "SWFFG.SentDicePoolRoll": "Click here to roll the dice pool.",
-  "SWFFG.SentDicePoolRollHint": "Sent a dice pool for you to roll."
+  "SWFFG.SentDicePoolRollHint": "Sent a dice pool for you to roll.",
+  "SWFFG.TabGeneral": "Basic Information",
+  "SWFFG.TabObligationDutyMorality": "Obligation/Duty/Morality"
 }

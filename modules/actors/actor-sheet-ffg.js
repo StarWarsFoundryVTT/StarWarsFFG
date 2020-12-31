@@ -46,6 +46,7 @@ export class ActorSheetFFG extends ActorSheet {
   /** @override */
   getData() {
     const data = super.getData();
+    data.classType = this.constructor.name;
     data.dtypes = ["String", "Number", "Boolean"];
     for (let attr of Object.values(data.data.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
@@ -76,7 +77,10 @@ export class ActorSheetFFG extends ActorSheet {
       default:
     }
     data.items = this.actor.items.map((item) => item.data);
-    data.data.skilllist = this._createSkillColumns(data);
+
+    if (this.actor.data.type !== "vehicle") {
+      data.data.skilllist = this._createSkillColumns(data);
+    }
 
     return data;
   }
