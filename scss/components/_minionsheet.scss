@@ -69,3 +69,20 @@
     }
   }
 }
+
+&.sheet {
+  &.actor {
+    &.v2 {
+      .minion {
+        .sheet-body {
+          .skillsTablesGrid {
+            height: calc(100% - 31.10rem);
+          }
+        }
+        .profile-block {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}

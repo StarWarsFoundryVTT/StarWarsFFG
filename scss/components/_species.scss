@@ -55,3 +55,25 @@
     height: calc(100% - 25.25rem);
   }
 }
+
+&.sheet {
+  &.item {
+    &.v2 {
+      .item-sheet-species {
+        .container.flex-group-center {
+          padding: 0 5px 0 5px;
+          margin-bottom: 0;
+        }
+         
+        .weapon-values {
+          margin: 0 5px;
+          padding: 0 5px 0 5px;
+        }
+
+        .sheet-body {
+          height: calc(100% - 21.1125rem);
+        }
+      }
+    }
+  }
+}

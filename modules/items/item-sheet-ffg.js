@@ -30,7 +30,7 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   async getData() {
     const data = super.getData();
-
+    data.classType = this.constructor.name;
     CONFIG.logger.debug(`Getting Item Data ${this.object.name}`);
 
     data.dtypes = ["String", "Number", "Boolean"];
@@ -89,9 +89,9 @@ export class ItemSheetFFG extends ItemSheet {
             if (specializationTalents?.[talent]?.pack?.length) {
               try {
                 const pack = await game.packs.get(specializationTalents[talent].pack);
-                
+
                 // this may be a coverted specialization talent from a world to a module.
-                if(!pack) {
+                if (!pack) {
                   gameItem = await ImportHelpers.findCompendiumEntityById("Item", specializationTalents[talent].itemId);
                 } else {
                   await pack.getIndex();
