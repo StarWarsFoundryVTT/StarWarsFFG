@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 31/12/2020 - Cstadther - Fix - Fixed issue with v2 styles cutting off.  Fixed issue with Signature Abilities and Force Power Upgrades not being listed (from previous core update)
 - 31/12/2020 - Cstadther - Enhancement - Added Terrinoth and Crucible skill sets, verified Android skill set.  These will only be available in new worlds.
 - 30/12/2020 - Cstadther - Enhancement 442 - Added v2 Character sheets with tabs broken out on the left.
 - 30/12/2020 - Cstadther - Fix 568 - Changed the way skills are rendered, but spliting skills into two columns and rendering those columns. 
