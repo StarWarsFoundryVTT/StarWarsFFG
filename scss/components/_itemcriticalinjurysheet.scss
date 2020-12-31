@@ -52,3 +52,15 @@
   }
   
 }
+
+&.sheet {
+  &.item {
+    &.v2 {
+      .item-sheet-criticalinjury {
+        .sheet-body {
+          height: calc(100% - 18.75rem);
+        }
+      }
+    }
+  }
+}

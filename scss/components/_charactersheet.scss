@@ -301,3 +301,23 @@ $swffg-table-header-color: rgb(145, 145, 145);
     }
   }
 }
+
+
+&.sheet {
+  &.actor {
+    &.v2 {
+      .character {
+        .sheet-body {
+          .skillsTablesGrid {
+            height: calc(100% - 31.1875rem);
+          }
+          .tab {
+            &.items, &.general, &.obligation {
+              height: calc(100% + 0.5rem);
+            }
+          }
+        }
+      }
+    }
+  }
+}

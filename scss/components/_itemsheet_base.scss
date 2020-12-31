@@ -26,3 +26,21 @@
     overflow: auto;
   }
 }
+
+&.sheet {
+  &.item {
+    &.v2 {
+      .sheet-body {
+        margin : 0px 5px;
+      }
+      .tabs {
+        .item {
+          line-height: normal;
+          &.active {
+            color: rgb(73, 12, 11);
+          }
+        }
+      }
+    }
+  }
+}

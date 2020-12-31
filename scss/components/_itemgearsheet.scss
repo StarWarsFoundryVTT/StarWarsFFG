@@ -33,3 +33,25 @@
     overflow:auto;
   }
 }
+
+&.sheet {
+  &.item {
+    &.v2 {
+      .item-sheet-gear {
+        .container.flex-group-center {
+          padding: 0 5px 0 5px;
+          margin-bottom: 0;
+        }
+         
+        .weapon-values {
+          margin: 0 5px;
+          padding: 0 5px 0 5px;
+        }
+
+        .sheet-body {
+          height: calc(100% - 17.3125rem);
+        }
+      }
+    }
+  }
+}

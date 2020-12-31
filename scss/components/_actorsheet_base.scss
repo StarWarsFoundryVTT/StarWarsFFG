@@ -1,8 +1,6 @@
 &.sheet {
   &.actor {
     $swffg-characteristic-color: rgb(73, 12, 11);
-    
-    
     .tabs {
       height: 15px;
       margin-bottom: 10px;
@@ -26,6 +24,17 @@
           
           input:focus {
             border-radius: 50%;
+          }
+        }
+      }
+    }
+
+    &.v2 {
+      .tabs {
+        .item {
+          line-height: normal;
+          &.active {
+            color: $swffg-characteristic-color;
           }
         }
       }
