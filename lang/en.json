@@ -422,5 +422,18 @@
   "SWFFG.SentDicePoolRoll": "Click here to roll the dice pool.",
   "SWFFG.SentDicePoolRollHint": "Sent a dice pool for you to roll.",
   "SWFFG.TabGeneral": "Basic Information",
-  "SWFFG.TabObligationDutyMorality": "Obligation/Duty/Morality"
+  "SWFFG.TabObligationDutyMorality": "Obligation/Duty/Morality",
+  "SWFFG.SkillsNameKnowledgeAdventuring": "Adventuring",
+  "SWFFG.SkillsNameKnowledgeAdventuringAbbrev": "Adven",
+  "SWFFG.SkillsNameKnowledgeForbidden": "Forbidden",
+  "SWFFG.SkillsNameKnowledgeForbiddenAbbrev": "Frbdn",
+  "SWFFG.SkillsNameKnowledgeGeography": "Geography",
+  "SWFFG.SkillsNameKnowledgeGeographyAbbrev": "Geog",
+  "SWFFG.SkillsNameRunes": "Runes",
+  "SWFFG.SkillsNameVerse": "Verse",
+  "SWFFG.SkillsNameAember": "Æmbercraft",
+  "SWFFG.SkillsNameAemberAbbrev": "ÆmCrft",
+  "SWFFG.SkillsNameKnowledgeAember": "Æmber",
+  "SWFFG.SkillsNameKnowledgeCrucible": "Crucible",
+  "SWFFG.SkillsNameKnowledgeCulture": "Culture"
 }
