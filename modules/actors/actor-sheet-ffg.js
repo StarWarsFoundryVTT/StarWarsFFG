@@ -727,6 +727,7 @@ export class ActorSheetFFG extends ActorSheet {
                 rank: 0,
                 type: group,
                 custom: true,
+                nontheme: true,
               };
 
               if (name.trim().length > 0) {
