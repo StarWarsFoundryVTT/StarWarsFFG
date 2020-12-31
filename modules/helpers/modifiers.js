@@ -40,7 +40,7 @@ export default class ModifierHelpers {
       items.forEach((item) => {
         if (item.data.attributes) {
           const attrsToApply = Object.keys(item.data.attributes)
-            .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
+            .filter((id) => (item.data.attributes[id].mod === key || item.data.attributes[id].mod === "*") && item.data.attributes[id].modtype === modtype)
             .map((i) => item.data.attributes[i]);
 
           if (item.type === "armour" || item.type === "weapon") {
