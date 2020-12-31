@@ -1,4 +1,4 @@
-{{#contains actor.items "type" "signatureability"}}
+{{#contains items "type" "signatureability"}}
 <ul class="talent-list">
   <li class="talents-header flexrow">
     <div class="header-name">{{localize "SWFFG.SignatureAbility"}}</div>
@@ -7,7 +7,7 @@
   </li>
 
   <ul class="talent-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'signatureability'}}
+    {{#each items as |item id|}} {{#iff item.type '==' 'signatureability'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">
         {{item.name}}

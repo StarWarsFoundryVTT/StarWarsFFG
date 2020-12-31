@@ -51,7 +51,7 @@
   </li>
 
   <ul class="items-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'armour'}}
+    {{#each items as |item id|}} {{#iff item.type '==' 'armour'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">{{item.name}}</div>
       <div>
@@ -86,7 +86,7 @@
   </li>
 
   <ul class="items-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'gear'}}
+    {{#each items as |item id|}} {{#iff item.type '==' 'gear'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">{{item.name}}</div>
       <!-- <div>{{item.data.price.value}}</div>
@@ -119,7 +119,7 @@
   </li>
 
   <ul class="items-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipweapon'}}
+    {{#each items as |item id|}} {{#iff item.type '==' 'shipweapon'}}
     <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
       <div class="item-name">{{item.name}}</div>
       <div>{{#if (eq item.data.firingarc.fore true)}}{{localize "SWFFG.VehicleFiringArcForward"}}{{/if}} {{#if (eq item.data.firingarc.aft true)}}{{localize "SWFFG.VehicleFiringArcAft"}}{{/if}} {{#if (eq item.data.firingarc.port true)}}{{localize "SWFFG.VehicleFiringArcPort"}}{{/if}} {{#if (eq item.data.firingarc.starboard true)}}{{localize "SWFFG.VehicleFiringArcStarboard"}}{{/if}} {{#if (eq item.data.firingarc.dorsal true)}}{{localize "SWFFG.VehicleFiringArcDorsal"}}{{/if}} {{#if (eq item.data.firingarc.ventral true)}}{{localize "SWFFG.VehicleFiringArcVentral"}}{{/if}}</div>
@@ -147,7 +147,7 @@
   </li>
 
   <ul class="items-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'shipattachment'}}
+    {{#each items as |item id|}} {{#iff item.type '==' 'shipattachment'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">{{item.name}}</div>
       <div>{{item.data.hardpoints.value}}</div>
@@ -169,7 +169,7 @@
   </li>
 
   <ul class="items-list">
-    {{#each actor.items as |item id|}} {{#if (and (ne item.type "shipweapon") (ne item.type "shipattachment") (ne item.type "talent") (ne item.type "criticalinjury") (ne item.type "criticaldamage") )}}
+    {{#each items as |item id|}} {{#if (and (ne item.type "shipweapon") (ne item.type "shipattachment") (ne item.type "talent") (ne item.type "criticalinjury") (ne item.type "criticaldamage") )}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">{{item.name}}</div>
       <div class="item-quantity">

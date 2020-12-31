@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="block-attribute">
-          {{#each actor.items as |item id|}} {{#if (eq item.type ../type)}}
+          {{#each items as |item id|}} {{#if (eq item.type ../type)}}
           <div class="grid grid-3col item" data-item-id="{{item._id}}">
             <div class="item-name">
               {{item.name}}
