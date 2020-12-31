@@ -265,7 +265,7 @@ Hooks.once("init", async function () {
           CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
           Object.keys(actor.data.data.skills).forEach((skill) => {
-            if (!skills.skills[skill]) {
+            if (!skills.skills[skill] && !skills.skills[skill].nontheme) {
               skills.skills[`-=${skill}`] = null;
             }
           });

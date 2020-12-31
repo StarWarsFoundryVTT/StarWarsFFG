@@ -42,11 +42,13 @@
                   {{/iff}}{{/each}}
                 </div>
               </div>
+              {{#if (contains classType "V2")}}{{else}}
               <div class="row">
                 <div>
                   <a class="alt-tab" data-tab="general"><i class="far fa-id-card"></i></a>
                 </div>
               </div>
+              {{/if}}
             </div>
           </div>
         </div>
