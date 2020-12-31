@@ -309,11 +309,27 @@ $swffg-table-header-color: rgb(145, 145, 145);
       .character {
         .sheet-body {
           .skillsTablesGrid {
-            height: calc(100% - 31.1875rem);
+            height: calc(100% - 32.1875rem);
           }
           .tab {
             &.items, &.general, &.obligation {
-              height: calc(100% + 0.5rem);
+              height: calc(100% - 1.0rem);
+            }
+          }
+        }
+      }
+
+      &.adversary {
+        .character {
+          .sheet-body {
+            .skillsTablesGrid {
+              height: calc(100% - 31.1875rem);
+            }
+
+            .tab {
+              &.items, &.general, &.obligation {
+                height: calc(100% - 0rem);
+              }
             }
           }
         }
