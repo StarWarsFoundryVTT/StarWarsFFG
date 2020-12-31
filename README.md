@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 31/12/2020 - Cstadther - Enhancement 529 - Added Restricted checkbox to items.  Updated OggDude importer to import restricted data.
 - 31/12/2020 - Cstadther - Fix 539 - Fixed issue where added skills were removed when duplicating an actor.
 - 31/12/2020 - Cstadther - Enhancement 546 - Added `All Skills` to skill list modifier drop down, will apply the modifier to all skills.
 - 31/12/2020 - Cstadther - Fix - Fixed issue with v2 styles cutting off.  Fixed issue with Signature Abilities and Force Power Upgrades not being listed (from previous core update)
