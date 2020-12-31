@@ -436,5 +436,6 @@
   "SWFFG.SkillsNameKnowledgeAember": "Æmber",
   "SWFFG.SkillsNameKnowledgeCrucible": "Crucible",
   "SWFFG.SkillsNameKnowledgeCulture": "Culture",
-  "SWFFG.ModifierAllSkills": "All Skills"
+  "SWFFG.ModifierAllSkills": "All Skills",
+  "SWFFG.IsRestricted": "Restricted?"
 }

@@ -897,6 +897,7 @@ export default class DataImporter extends FormApplication {
           const rarity = item.getElementsByTagName("Rarity")[0]?.textContent;
           const encumbrance = item.getElementsByTagName("Encumbrance")[0]?.textContent;
           const type = item.getElementsByTagName("Type")[0]?.textContent;
+          const restricted = item.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
 
           this._importLogger(`Start importing gear ${name}`);
 
@@ -917,6 +918,7 @@ export default class DataImporter extends FormApplication {
               },
               rarity: {
                 value: rarity,
+                isrestricted: restricted,
               },
             },
           };
@@ -999,6 +1001,7 @@ export default class DataImporter extends FormApplication {
           const hardpoints = weapon.getElementsByTagName("HP")[0]?.textContent;
 
           const weaponType = weapon.getElementsByTagName("Type")[0]?.textContent;
+          const restricted = weapon.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
 
           this._importLogger(`Start importing weapon ${name}`);
 
@@ -1045,6 +1048,7 @@ export default class DataImporter extends FormApplication {
               },
               rarity: {
                 value: rarity,
+                isrestricted: restricted,
               },
               damage: {
                 value: !damage ? damageAdd : damage,
@@ -1184,6 +1188,7 @@ export default class DataImporter extends FormApplication {
           const description = armor.getElementsByTagName("Description")[0]?.textContent;
           const price = armor.getElementsByTagName("Price")[0]?.textContent;
           const rarity = armor.getElementsByTagName("Rarity")[0]?.textContent;
+          const restricted = armor.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
           const encumbrance = armor.getElementsByTagName("Encumbrance")[0]?.textContent;
 
           const defense = armor.getElementsByTagName("Defense")[0]?.textContent;
@@ -1209,6 +1214,7 @@ export default class DataImporter extends FormApplication {
               },
               rarity: {
                 value: rarity,
+                isrestricted: restricted,
               },
               defence: {
                 value: defense,

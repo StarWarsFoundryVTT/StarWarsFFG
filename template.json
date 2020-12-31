@@ -493,6 +493,7 @@
         },
         "rarity": {
           "value": 0,
+          "isrestricted": false,
           "type": "Number",
           "label": "Rarity"
         },
