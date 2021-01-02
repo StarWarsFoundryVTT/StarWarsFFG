@@ -1,3 +1,4 @@
+import ItemBaseFFG from "./itembase-ffg.js";
 import PopoutEditor from "../popout-editor.js";
 import ActorOptions from "../actors/actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
@@ -7,7 +8,7 @@ import Helpers from "../helpers/common.js";
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class ItemFFG extends Item {
+export class ItemFFG extends ItemBaseFFG {
   /**
    * Augment the basic Item data model with additional dynamic data.
    */
