@@ -533,7 +533,7 @@ img {
 }
 
 .starwarsffg.sheet.actor .character .sheet-body .skillsTablesGrid {
-  height: calc(100% - 33.1875rem);
+  height: calc(100% - 32.1875rem);
   overflow: auto;
 }
 
