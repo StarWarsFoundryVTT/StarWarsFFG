@@ -258,6 +258,8 @@ export default class DataImporter extends FormApplication {
               content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
             };
 
+            item.content += ImportHelpers.getSources(d?.Sources ?? d?.Source);
+
             let compendiumItem;
             await pack.getIndex();
             let entry = pack.index.find((e) => e.name === item.name);
@@ -325,6 +327,8 @@ export default class DataImporter extends FormApplication {
                   upgrades: {},
                 },
               };
+
+              signatureAbility.data.description += ImportHelpers.getSources(sa?.SigAbility?.Sources ?? sa?.SigAbility?.Source);
 
               for (let i = 1; i < sa.SigAbility.AbilityRows.AbilityRow.length; i += 1) {
                 try {
@@ -460,6 +464,8 @@ export default class DataImporter extends FormApplication {
             content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
           };
 
+          itemDescriptor.content += ImportHelpers.getSources(d?.Sources ?? d?.Source);
+
           let compendiumItem;
           await pack.getIndex();
           let entry = pack.index.find((e) => e.name === itemDescriptor.name);
@@ -556,6 +562,9 @@ export default class DataImporter extends FormApplication {
               isConflictTalent: conflicttalent,
             },
           };
+
+          const d = JXON.xmlToJs(talents[i]);
+          item.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
           const attributes = talent.getElementsByTagName("Attributes")[0];
           if (attributes) {
@@ -694,6 +703,7 @@ export default class DataImporter extends FormApplication {
           });
 
           power.data.description = forceAbility.Description;
+          power.data.description += ImportHelpers.getSources(fp?.ForcePower?.Sources ?? fp?.ForcePower?.Source);
 
           if (forceAbility?.DieModifiers?.DieModifier) {
             if (!Array.isArray(forceAbility.DieModifiers.DieModifier)) {
@@ -923,6 +933,9 @@ export default class DataImporter extends FormApplication {
             },
           };
 
+          const d = JXON.xmlToJs(item);
+          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
+
           const baseMods = item.getElementsByTagName("BaseMods")[0];
           if (baseMods) {
             const mods = await ImportHelpers.getBaseModObject(baseMods);
@@ -1070,6 +1083,9 @@ export default class DataImporter extends FormApplication {
               },
             },
           };
+
+          const d = JXON.xmlToJs(weapon);
+          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
           const qualities = [];
 
@@ -1228,6 +1244,9 @@ export default class DataImporter extends FormApplication {
             },
           };
 
+          const d = JXON.xmlToJs(armor);
+          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
+
           const baseMods = armor.getElementsByTagName("BaseMods")[0];
           if (baseMods) {
             const mods = await ImportHelpers.getBaseModObject(baseMods);
@@ -1308,6 +1327,8 @@ export default class DataImporter extends FormApplication {
               isReadOnly: true,
             },
           };
+
+          specialization.data.description += ImportHelpers.getSources(specData?.Specialization?.Sources ?? specData?.Specialization?.Source);
           this._importLogger(`Start importing Specialization ${specialization.name}`);
 
           // assign career skills
@@ -1456,6 +1477,9 @@ export default class DataImporter extends FormApplication {
               description: careerData.Career.Description,
             },
           };
+
+          career.data.description += ImportHelpers.getSources(careerData?.Career?.Sources ?? careerData?.Career?.Source);
+
           this._importLogger(`Start importing Career ${career.name}`);
 
           careerData.Career.CareerSkills.Key.forEach((skillKey) => {
@@ -1542,6 +1566,8 @@ export default class DataImporter extends FormApplication {
               description: speciesData.Species.Description,
             },
           };
+
+          species.data.description += ImportHelpers.getSources(speciesData?.Species?.Sources ?? speciesData?.Species?.Source);
 
           const funcAddAttribute = (modtype, mod, value, hidden) => {
             const charKey = Object.keys(species.data.attributes).length + 1;
@@ -1772,6 +1798,8 @@ export default class DataImporter extends FormApplication {
             },
             items: [],
           };
+
+          vehicle.data.biography += ImportHelpers.getSources(vehicleData?.Vehicle?.Sources ?? vehicleData?.Vehicle?.Source);
 
           const funcAddWeapon = async (weapon) => {
             try {
