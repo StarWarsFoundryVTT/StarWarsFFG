@@ -152,3 +152,24 @@
 .ffg-destiny-roll {
   cursor: pointer;
 }
+
+.destiny-flip {
+  text-align: center;
+  .destiny-title {
+    font-size: 23px;
+
+    span {
+      font-weight: bold;
+    }
+  }
+  border-radius: 15px;
+  box-shadow: 0 0 20px #000;
+
+  &.dPoolDark {
+    background-color: rgb(240, 230, 140);
+  }
+  &.dPoolLight {
+    background-color: rgb(184, 56, 59);
+    color: white;
+  }
+}
