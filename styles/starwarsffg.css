@@ -3090,3 +3090,26 @@ img {
 .ffg-destiny-roll {
   cursor: pointer;
 }
+
+.destiny-flip {
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 0 20px #000;
+}
+
+.destiny-flip .destiny-title {
+  font-size: 23px;
+}
+
+.destiny-flip .destiny-title span {
+  font-weight: bold;
+}
+
+.destiny-flip.dPoolDark {
+  background-color: khaki;
+}
+
+.destiny-flip.dPoolLight {
+  background-color: #b8383b;
+  color: white;
+}
