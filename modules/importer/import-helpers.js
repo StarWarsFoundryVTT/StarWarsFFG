@@ -649,8 +649,8 @@ export default class ImportHelpers {
             },
           },
           experience: {
-            total: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10),
-            available: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10) - parseInt((characterData.Character.Experience.ExperienceRanks.UsedExperience?? 0), 10),
+            total: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10),
+            available: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10) - parseInt(characterData.Character.Experience.ExperienceRanks.UsedExperience ?? 0, 10),
           },
         },
         items: [],
@@ -1204,5 +1204,29 @@ export default class ImportHelpers {
     }
 
     return type;
+  }
+
+  /**
+   * Converts sources to text
+   * @param  {} sources
+   */
+  static getSources(sources) {
+    if (!sources) return "";
+
+    let sourceArray = [];
+
+    if (!sources?.Source) {
+      sourceArray = [sources];
+    } else {
+      if (!Array.isArray(sources.Source)) {
+        sourceArray = [sources.Source];
+      } else {
+        sourceArray = sources.Source;
+      }
+    }
+
+    const sourceText = `[P][H3]Sources:[h3]${sourceArray.map((s) => `[H4]Page ${s.$Page} - ${s._}[h4]`).join("")}`;
+
+    return sourceText;
   }
 }
