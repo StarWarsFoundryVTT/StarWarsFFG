@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 04/01/2021 - Cstadther - Fix issue with Genesys Adversaries import.
 - 03/01/2021 - Cstadther - Fix for rendering secrets in content.
 - 02/01/2021 - Cstadther - Enhancement 593 - Added context to destiny point flip message, now with styling and lists what the pools changed to.
 - 02/01/2021 - Cstadther - Enhancement 591 - Added `Source` to the description for all imported items.

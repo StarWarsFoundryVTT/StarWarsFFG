@@ -20,7 +20,7 @@
     <select class="attribute-mod" name="data.attributes.{{key}}.mod">
       {{#select attr.mod}} {{#if (and (eq attr.modtype "Stat") (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon"))) }} {{#each ../this.FFG.vehicle_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (and (eq attr.modtype "Stat") (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon")) }} {{#each ../this.FFG.character_stats as |t|}}
+      {{/each}} {{/if}} {{#if (and (eq attr.modtype "Stat") (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment")) }} {{#each ../this.FFG.character_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Characteristic")}} {{#each ../this.FFG.characteristics as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
