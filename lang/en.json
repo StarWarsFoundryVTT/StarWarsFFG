@@ -440,5 +440,8 @@
   "SWFFG.IsRestricted": "Restricted?",
   "SWFFG.EnableSortTalentsByActivationGlobal": "Sort Talents (Global)",
   "SWFFG.EnableSortTalentsByActivation": "Sort Talents",
-  "SWFFG.EnableSortTalentsByActivationHint": "Enable grouping Talents by activation"
+  "SWFFG.EnableSortTalentsByActivationHint": "Enable grouping Talents by activation",
+  "SWFFG.UseGlobalSetting": "Use Global",
+  "SWFFG.OptionValueYes": "Yes",
+  "SWFFG.OptionValueNo": "No"
 }

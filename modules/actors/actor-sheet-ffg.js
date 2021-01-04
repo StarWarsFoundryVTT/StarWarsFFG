@@ -271,7 +271,7 @@ export class ActorSheetFFG extends ActorSheet {
         hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
         type: "Array",
         default: 0,
-        options: ["Use Global", "Yes", "No"],
+        options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
       });
     }
 
@@ -287,7 +287,7 @@ export class ActorSheetFFG extends ActorSheet {
         hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
         type: "Array",
         default: 0,
-        options: ["Use Global", "Yes", "No"],
+        options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
       });
     }
 
