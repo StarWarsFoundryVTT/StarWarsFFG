@@ -301,10 +301,12 @@ export class ActorFFG extends Actor {
       });
     }
 
-    if (game.settings.get("starwarsffg", "talentSorting"))
+    // enable talent sorting if global to true and sheet is set to inherit or sheet is set to true.
+    if ((game.settings.get("starwarsffg", "talentSorting") && actorData.flags?.config?.talentSorting === "0") || actorData.flags?.config?.talentSorting === "1") {
       data.talentList = globalTalentList.slice().sort(this._sortTalents);
-    else
-      data.talentList = globalTalentList
+    } else {
+      data.talentList = globalTalentList;
+    }
 
     if (data?.obligationlist && Object.keys(data.obligationlist).length > 0) {
       let obligation = 0;
@@ -454,43 +456,37 @@ export class ActorFFG extends Actor {
         Active
         Passive
     */
-    if (a.activation.includes('Active') && a.activation.includes('Out')) {
-        return -1;
+    if (a.activation.includes("Active") && a.activation.includes("Out")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Out")) {
+      return 1;
     }
-    else if (b.activation.includes('Active') && b.activation.includes('Out')) {
-        return 1;
+    if (a.activation.includes("Active") && a.activation.includes("Maneuver")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Maneuver")) {
+      return 1;
     }
-    if (a.activation.includes('Active') && a.activation.includes('Maneuver')) {
-        return -1;
+    if (a.activation.includes("Active") && a.activation.includes("Incidental")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Incidental")) {
+      return 1;
     }
-    else if (b.activation.includes('Active') && b.activation.includes('Maneuver')) {
-        return 1;
+    if (a.activation.includes("Active") && a.activation.includes("Incidental")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Incidental")) {
+      return 1;
     }
-    if (a.activation.includes('Active') && a.activation.includes('Incidental')) {
-        return -1;
+    if (a.activation.includes("Active")) {
+      return -1;
+    } else if (b.activation.includes("Active")) {
+      return 1;
     }
-    else if (b.activation.includes('Active') && b.activation.includes('Incidental')) {
-        return 1;
+    if (a.activation.includes("Passive")) {
+      return -1;
+    } else if (b.activation.includes("Passive")) {
+      return 1;
     }
-    if (a.activation.includes('Active') && a.activation.includes('Incidental')) {
-        return -1;
-    }
-    else if (b.activation.includes('Active') && b.activation.includes('Incidental')) {
-        return 1;
-    }
-    if (a.activation.includes('Active')) {
-        return -1;
-    }
-    else if (b.activation.includes('Active')) {
-        return 1;
-    }
-    if (a.activation.includes('Passive')) {
-        return -1;
-    }
-    else if (b.activation.includes('Passive')) {
-        return 1;
-    }
-}
+  }
 
   /**
    * Prepares the modifier data in the attributes object

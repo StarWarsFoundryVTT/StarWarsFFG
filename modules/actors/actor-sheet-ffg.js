@@ -233,32 +233,45 @@ export class ActorSheetFFG extends ActorSheet {
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
         hint: game.i18n.localize("SWFFG.EnableObligationHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableDuty", {
         name: game.i18n.localize("SWFFG.EnableDuty"),
         hint: game.i18n.localize("SWFFG.EnableDutyHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableMorality", {
         name: game.i18n.localize("SWFFG.EnableMorality"),
         hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableConflict", {
         name: game.i18n.localize("SWFFG.EnableConflict"),
         hint: game.i18n.localize("SWFFG.EnableConflictHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableForcePool", {
         name: game.i18n.localize("SWFFG.EnableForcePool"),
         hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
+        type: "Boolean",
         default: true,
+      });
+      this.sheetoptions.register("talentSorting", {
+        name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
+        hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
+        type: "Array",
+        default: 0,
+        options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
       });
     }
 
@@ -268,6 +281,13 @@ export class ActorSheetFFG extends ActorSheet {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         default: true,
+      });
+      this.sheetoptions.register("talentSorting", {
+        name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
+        hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
+        type: "Array",
+        default: 0,
+        options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
       });
     }
 
