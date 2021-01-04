@@ -66,6 +66,11 @@ export class AdversarySheetFFG extends ActorSheetFFG {
         hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
         default: true,
       });
+      this.sheetoptions.register("talentSorting", {
+        name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
+        hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
+        default: false,
+      });
     }
   }
 }

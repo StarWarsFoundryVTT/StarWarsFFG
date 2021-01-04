@@ -28,7 +28,7 @@ export default class ActorOptions {
             icon: '<i class="fas fa-check"></i>',
             label: game.i18n.localize("SWFFG.ButtonAccept"),
             callback: (html) => {
-              const controls = html.find("input");
+              const controls = html.find("input, select");
 
               let updateObject = {};
 
@@ -46,6 +46,7 @@ export default class ActorOptions {
               }
 
               this.data.object.update(updateObject);
+              this.data.object.sheet.render(true);
             },
           },
           two: {
