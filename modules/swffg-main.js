@@ -296,11 +296,11 @@ Hooks.once("init", async function () {
 
   // Register grouping talents so people can let them be ordered by purchase history
   game.settings.register("starwarsffg", "talentSorting", {
-    name: "Sort Talents",
-    hint: "Enable grouping Talents by activation",
+    name: game.i18n.localize("SWFFG.EnableSortTalentsByActivationGlobal"),
+    hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
     scope: "world",
     config: true,
-    default: true,
+    default: false,
     type: Boolean,
     onChange: (rule) => window.location.reload(),
   });
