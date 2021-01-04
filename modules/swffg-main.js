@@ -229,7 +229,7 @@ Hooks.once("init", async function () {
       });
 
       if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-        const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+        const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
 
         let skills = {};
         Object.keys(altSkills).forEach((skillKey) => {
@@ -743,7 +743,7 @@ Hooks.once("ready", async () => {
 
         CONFIG.FFG.alternateskilllists = skillList;
         if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-          const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+          const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
 
           let skills = {};
           Object.keys(altSkills).forEach((skillKey) => {

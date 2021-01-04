@@ -352,7 +352,7 @@ export default class SWAImporter extends FormApplication {
                 const skilltheme = await game.settings.get("starwarsffg", "skilltheme");
 
                 if (skilltheme !== "starwars") {
-                  skills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+                  skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
                 }
 
                 let adversary = {
