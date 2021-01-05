@@ -9,11 +9,13 @@ export default class ItemHelpers {
     }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
-    const isMelee = formData?.data?.skill?.value ? formData.data.skill.value.includes("Melee") : formData[`data.skill.value`].includes("Melee");
-    const isBrawl = formData?.data?.skill?.value ? formData.data.skill.value.includes("Brawl") : formData[`data.skill.value`].includes("Brawl");
+    if (this.object.data.type === "weapon") {
+      const isMelee = formData?.data?.skill?.value ? formData.data.skill.value.includes("Melee") : formData[`data.skill.value`].includes("Melee");
+      const isBrawl = formData?.data?.skill?.value ? formData.data.skill.value.includes("Brawl") : formData[`data.skill.value`].includes("Brawl");
 
-    if (this.object.data.type === "weapon" && (isMelee || isBrawl) && formData?.data?.useBrawn) {
-      setProperty(formData, `data.damage.value`, 0);
+      if ((isMelee || isBrawl) && formData?.data?.useBrawn) {
+        setProperty(formData, `data.damage.value`, 0);
+      }
     }
 
     // Handle the free-form attributes list
