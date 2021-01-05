@@ -478,7 +478,7 @@ export class ActorSheetFFG extends ActorSheet {
       callbacks: { dragstart: this._onTransferItemDragStart.bind(this), drop: this._onTransferItemDrop.bind(this) },
     });
 
-    dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
+    dragDrop.bind(html[0]);
 
     const dragDrop1 = new DragDrop({
       dragSelector: ".skill",
@@ -487,9 +487,9 @@ export class ActorSheetFFG extends ActorSheet {
       callbacks: { dragstart: this._onSkillDragStart.bind(this) },
     });
 
-    dragDrop1.bind($(`form.editable.${this.actor.data.type}`)[0]);
+    dragDrop1.bind(html[0]);
 
-    $("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
+    html.find("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
       const a = event.currentTarget;
       const min = parseInt($(a).attr("min"), 10);
       const max = parseInt($(a).attr("max"), 10);
@@ -500,7 +500,7 @@ export class ActorSheetFFG extends ActorSheet {
       }
     });
 
-    $("input[type='text'][data-dtype='Number'][pattern]").on("change", (event) => {
+    html.find("input[type='text'][data-dtype='Number'][pattern]").on("change", (event) => {
       const a = event.currentTarget;
       const value = $(a).val() || "2";
       const pattern = new RegExp($(a).attr("pattern"));
