@@ -267,6 +267,11 @@ Hooks.once("init", async function () {
           Object.keys(actor.data.data.skills).forEach((skill) => {
             if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
               skills.skills[`-=${skill}`] = null;
+            } else {
+              skills.skills[skill] = {
+                ...skills.skills[skill],
+                ...actor.data.data.skills[skill],
+              };
             }
           });
 
