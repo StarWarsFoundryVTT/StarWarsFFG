@@ -1060,14 +1060,17 @@ export class ActorSheetFFG extends ActorSheet {
 
       cols[currentColumn].push({ id: "header", ...type });
       rowsLeft -= 1;
-      skills.forEach((s) => {
+      skills.forEach((s, index) => {
         cols[currentColumn].push({ name: s, ...data.data.skills[s] });
         rowsLeft -= 1;
         if (rowsLeft <= 0 && currentColumn === 0) {
           currentColumn += 1;
           rowsLeft = colRowCount;
-          cols[currentColumn].push({ id: "header", ...type });
-          rowsLeft -= 1;
+
+          if (index + 1 < skills.length) {
+            cols[currentColumn].push({ id: "header", ...type });
+            rowsLeft -= 1;
+          }
         }
       });
     });
