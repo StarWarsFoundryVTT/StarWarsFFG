@@ -15,7 +15,15 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'weapon'}}
     <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
-      <div class="item-name">{{item.name}}</div>
+      <div class="item-name hover">
+        {{#if item.data.rarity.isrestricted}}
+          <font color="#8b0000">
+        {{/if}}
+        {{item.name}}
+        {{#if item.data.rarity.isrestricted}}
+          </font><div class="tooltip2">This is a Restricted item</div>
+        {{/if}}
+      </div>
       <div>
         {{#if item.data.equippable.equipped}}
         <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
@@ -53,7 +61,15 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'armour'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
-      <div class="item-name">{{item.name}}</div>
+      <div class="item-name hover">
+        {{#if item.data.rarity.isrestricted}}
+          <font color="#8b0000">
+        {{/if}}
+        {{item.name}}
+        {{#if item.data.rarity.isrestricted}}
+          </font><div class="tooltip2">This is a Restricted item</div>
+        {{/if}}
+      </div>
       <div>
         {{#if item.data.equippable.equipped}}
         <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
@@ -88,7 +104,15 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'gear'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
-      <div class="item-name">{{item.name}}</div>
+      <div class="item-name hover">
+        {{#if item.data.rarity.isrestricted}}
+          <font color="#8b0000">
+        {{/if}}
+        {{item.name}}
+        {{#if item.data.rarity.isrestricted}}
+          </font><div class="tooltip2">This is a Restricted item</div>
+        {{/if}}
+      </div>
       <!-- <div>{{item.data.price.value}}</div>
       <div>{{item.data.rarity.value}}</div> -->
       <div class="item-quantity">
