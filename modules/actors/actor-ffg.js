@@ -11,7 +11,7 @@ export class ActorFFG extends Actor {
    */
   prepareDerivedData() {
     CONFIG.logger.debug(`Preparing Actor Data ${this.data.type}`);
-    const actorData = this.data;
+    const actorData = this._data;
     const data = actorData.data;
     const flags = actorData.flags;
 
