@@ -142,6 +142,14 @@ span.dietype.triumph {
   color: black;
 }
 
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
 .paused img {
   content: url("/systems/starwarsffg/images/paused.png");
 }
@@ -627,6 +635,42 @@ img {
 .starwarsffg.sheet .sheet-body {
   margin: 10px 5px;
   overflow: auto;
+}
+
+.starwarsffg.sheet .item-pill-list {
+  padding: 0 0 0 0.5em;
+}
+
+.starwarsffg.sheet .item-pill-list:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+.starwarsffg.sheet .item-pill {
+  list-style-type: none;
+  padding: 0 5px;
+  background-color: #aaa;
+  border: 1px solid black;
+  border-radius: 12px;
+  float: left;
+  margin: 1px;
+  cursor: pointer;
+}
+
+.starwarsffg.sheet .item-pill span {
+  padding: 0 3px;
+}
+
+.starwarsffg.sheet .item-pill .item-delete {
+  padding-left: 5px;
+  cursor: pointer;
+}
+
+.starwarsffg.sheet .item-pill .item-delete:hover {
+  color: red;
 }
 
 .starwarsffg.sheet.item.v2 .sheet-body {
@@ -2932,6 +2976,45 @@ img {
   right: 5px;
   bottom: 2px;
   z-index: 10;
+}
+
+.starwarsffg .item-sheet-modifiers .charname input {
+  color: #2c0344;
+}
+
+.starwarsffg .item-sheet-modifiers .characteristic-item .characteristic-label {
+  background-color: #2c0344;
+}
+
+.starwarsffg .item-sheet-modifiers .characteristic-item .characteristic {
+  border: 5px double #2c0344;
+}
+
+.starwarsffg .item-sheet-modifiers .block-background {
+  background-color: #e9c6fd;
+}
+
+.starwarsffg .item-sheet-modifiers .attribute .block-title {
+  background-color: #2c0344;
+}
+
+.starwarsffg .item-sheet-modifiers .sheet-body {
+  height: calc(100% - 17.3125rem);
+  overflow: auto;
+}
+
+.starwarsffg.sheet.item.v2 .item-sheet-modifiers .container.flex-group-center {
+  padding: 0 5px 0 5px;
+  margin-bottom: 0;
+}
+
+.starwarsffg.sheet.item.v2 .item-sheet-modifiers .weapon-values {
+  margin: 0 5px;
+  padding: 0 5px 0 5px;
+}
+
+.starwarsffg.sheet.item.v2 .item-sheet-modifiers .sheet-body {
+  height: calc(100% - 17.3125rem);
 }
 
 .initiative-dialog .pool-selector {

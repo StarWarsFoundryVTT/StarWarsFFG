@@ -341,8 +341,8 @@ export class ItemSheetFFG extends ItemSheet {
       const itemType = li.dataset.itemName;
       const itemIndex = li.dataset.itemIndex;
 
-      const title = game.i18n.localize(`SWFFG.Title${itemType}`);
       const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
+      const title = item.name;
 
       new Dialog(
         {
@@ -358,7 +358,25 @@ export class ItemSheetFFG extends ItemSheet {
               callback: (html) => {
                 switch (itemType) {
                   case "itemmodifier": {
-                    console.log(itemType);
+                    const formData = {};
+                    const items = $(html).find("input");
+
+                    items.each((index) => {
+                      const input = $(items[index]);
+                      const name = input.attr("name");
+                      const id = input[0].dataset.itemId;
+
+                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
+
+                      if (arrayItem > -1) {
+                        setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
+                      }
+                    });
+
+                    setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+                    this.object.update(formData);
+
+                    console.log(formData);
                     break;
                   }
                   case "itemattachment": {
