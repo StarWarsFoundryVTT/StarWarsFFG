@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 08/01/2021 - Cstadther - Added new paused image.
 - 04/01/2021 - Cstadther - Fix for Melee-* skills not calculating damage correctly when based on Brawn.
 - 04/01/2021 - Cstadther - Enhanced the enhancement provided by @wrycu, added localization, added sheet level options for talent sorting to override global setting, added localization.
 - 04/01/2021 - Cstadther - Fix issue with Genesys Adversaries import.
