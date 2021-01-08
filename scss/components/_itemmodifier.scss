@@ -1,0 +1,57 @@
+.item-sheet-modifiers {
+  $swffg-modifiers-color: rgb(44, 3, 68);
+  $swffg-modifiers-color-light: rgb(233, 198, 253);
+
+  .charname {
+    input {
+      color: $swffg-modifiers-color
+    }
+  }
+
+  .characteristic-item {
+    .characteristic-label {
+      background-color: $swffg-modifiers-color
+    }
+
+    .characteristic {
+      border: 5px double $swffg-modifiers-color
+    }
+  }
+
+  .block-background {
+    background-color: $swffg-modifiers-color-light;
+  }
+
+  .attribute {
+    .block-title {
+      background-color: $swffg-modifiers-color;
+    }
+  }
+
+  .sheet-body {
+    height: calc(100% - 17.3125rem);
+    overflow:auto;
+  }
+}
+
+&.sheet {
+  &.item {
+    &.v2 {
+      .item-sheet-modifiers {
+        .container.flex-group-center {
+          padding: 0 5px 0 5px;
+          margin-bottom: 0;
+        }
+         
+        .weapon-values {
+          margin: 0 5px;
+          padding: 0 5px 0 5px;
+        }
+
+        .sheet-body {
+          height: calc(100% - 17.3125rem);
+        }
+      }
+    }
+  }
+}

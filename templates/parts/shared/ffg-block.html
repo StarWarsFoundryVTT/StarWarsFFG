@@ -7,7 +7,13 @@
         {{else}} {{localize title}} {{/if}}
       </div>
       <div class="block-attribute">
-        {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}
+        {{#if (eq blocktype "pills")}}
+        <ul class="item-pill-list">
+          {{#each fields as |item id|}}
+          <li class="item-pill" data-item-name="{{../name}}" data-item-index="{{id}}">{{item.name}} <span>{{item.data.rank}}</span><i class="fas fa-times item-delete"></i></li>
+          {{/each}}
+        </ul>
+        {{/if}} {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}
         <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="{{name}}" data-dtype="{{type}}" {{checked value}} />
         {{/if}} {{#if (eq type "Dropdown")}}
         <select style="text-align: center;" name="{{name}}">

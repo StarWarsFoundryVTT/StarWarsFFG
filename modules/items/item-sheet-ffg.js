@@ -311,12 +311,83 @@ export class ItemSheetFFG extends ItemSheet {
     if (["weapon", "armor"].includes(this.object.data.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
-        dropSelector: ".window-content",
+        dropSelector: null,
         permissions: { dragstart: true, drop: true },
         callbacks: { drop: this._onDropItem.bind(this) },
       });
       itemToItemAssociation.bind(html[0]);
     }
+
+    html.find(".item-pill .item-delete").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      const itemType = parent.dataset.itemName;
+      const itemIndex = parent.dataset.itemIndex;
+
+      const items = this.object.data.data[itemType];
+      items.splice(itemIndex, 1);
+
+      let formData = {};
+      setProperty(formData, `data.${itemType}`, items);
+
+      this.object.update(formData);
+    });
+
+    html.find(".item-pill ").on("click", (event) => {
+      const li = event.currentTarget;
+      const itemType = li.dataset.itemName;
+      const itemIndex = li.dataset.itemIndex;
+
+      const title = game.i18n.localize(`SWFFG.Title${itemType}`);
+      const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
+
+      new Dialog(
+        {
+          title,
+          content: {
+            item,
+            type: itemType,
+          },
+          buttons: {
+            done: {
+              icon: '<i class="fas fa-check"></i>',
+              label: game.i18n.localize("SWFFG.ButtonAccept"),
+              callback: (html) => {
+                switch (itemType) {
+                  case "itemmodifier": {
+                    console.log(itemType);
+                    break;
+                  }
+                  case "itemattachment": {
+                    console.log(itemType);
+                    break;
+                  }
+                }
+
+                // const talentsToRemove = $(html).find("input[type='checkbox']:checked");
+                // CONFIG.logger.debug(`Removing ${talentsToRemove.length} talents`);
+
+                // for (let i = 0; i < talentsToRemove.length; i += 1) {
+                //   const id = $(talentsToRemove[i]).val();
+                //   this.actor.deleteOwnedItem(id);
+                // }
+              },
+            },
+            cancel: {
+              icon: '<i class="fas fa-times"></i>',
+              label: game.i18n.localize("SWFFG.Cancel"),
+            },
+          },
+        },
+        {
+          classes: ["dialog", "starwarsffg"],
+          template: `systems/starwarsffg/templates/items/dialogs/ffg-edit-${itemType}.html`,
+        }
+      ).render(true);
+    });
   }
 
   /* -------------------------------------------- */
@@ -595,16 +666,42 @@ export class ItemSheetFFG extends ItemSheet {
 
     // Case 2 - Import from World entity
     else {
-      itemObject = await game.items.get(data.id);
+      itemObject = duplicate(await game.items.get(data.id));
       if (!itemObject) return;
     }
 
-    if (itemObject.data.type === "attachment") {
-      let items = this.object.items.entries;
-      items.push(duplicate(itemObject));
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && (obj.data.type === itemObject.data.type || itemObject.data.type === "all")) {
+      let items = obj?.data?.data?.[itemObject.type];
+      if (!items) {
+        items = [];
+      }
+
+      const foundItem = items.find((i) => i._id === itemObject._id);
+
+      switch (itemObject.type) {
+        case "itemmodifier": {
+          if (itemObject.data.rank === 0) {
+            itemObject.data.rank = 1;
+          }
+
+          if (foundItem) {
+            foundItem.data.rank += itemObject.data.rank;
+          } else {
+            items.push(itemObject);
+          }
+          break;
+        }
+        case "itemattachment": {
+          items.push(itemObject);
+          break;
+        }
+        default: {
+          return;
+        }
+      }
 
       let formData = {};
-      setProperty(formData, `items`, items);
+      setProperty(formData, `data.${itemObject.type}`, items);
 
       obj.update(formData);
     }

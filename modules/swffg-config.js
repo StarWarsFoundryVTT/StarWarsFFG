@@ -1,6 +1,6 @@
 import { itemstatus } from "./config/ffg-itemstatus.js";
 import { personal_ranges, vehicle_ranges, sensor_ranges } from "./config/ffg-ranges.js";
-import { general_modifiers, weapon_modifiers, vehicle_modifiers } from "./config/ffg-modifiers.js";
+import { general_modifiers, weapon_modifiers, vehicle_modifiers, modifier_types } from "./config/ffg-modifiers.js";
 import { pool_results } from "./config/ffg-dice.js";
 import { vehicle_stats, vehicle_firingarcs } from "./config/ffg-vehicles.js";
 import { character_characteristics, character_stats } from "./config/ffg-characters.js";
@@ -31,3 +31,4 @@ FFG.vehicle_ranges = vehicle_ranges;
 FFG.vehicle_stats = vehicle_stats;
 FFG.weapon_mod_types = weapon_modifiers;
 FFG.weapon_stats = weapon_stats;
+FFG.itemmodifier_types = modifier_types;
