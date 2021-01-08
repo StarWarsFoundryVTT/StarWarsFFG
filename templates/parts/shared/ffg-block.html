@@ -10,7 +10,11 @@
         {{#if (eq blocktype "pills")}}
         <ul class="item-pill-list">
           {{#each fields as |item id|}}
-          <li class="item-pill" data-item-name="{{../name}}" data-item-index="{{id}}">{{item.name}} <span>{{item.data.rank}}</span><i class="fas fa-times item-delete"></i></li>
+          <li class="item-pill" data-item-name="{{../name}}" data-item-index="{{id}}">
+            {{item.name}} {{#if item.data.rank}}
+            <i class="rank">{{item.data.rank}}</i>
+            {{/if}}<i class="fas fa-times item-delete"></i>
+          </li>
           {{/each}}
         </ul>
         {{/if}} {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}

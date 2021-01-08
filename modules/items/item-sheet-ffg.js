@@ -336,13 +336,15 @@ export class ItemSheetFFG extends ItemSheet {
       this.object.update(formData);
     });
 
-    html.find(".item-pill ").on("click", (event) => {
-      const li = event.currentTarget;
+    html.find(".item-pill .rank").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = $(event.currentTarget).parent()[0];
       const itemType = li.dataset.itemName;
       const itemIndex = li.dataset.itemIndex;
 
       const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
-      const title = item.name;
+      const title = `${this.object.name} ${item.name}`;
 
       new Dialog(
         {
@@ -384,14 +386,6 @@ export class ItemSheetFFG extends ItemSheet {
                     break;
                   }
                 }
-
-                // const talentsToRemove = $(html).find("input[type='checkbox']:checked");
-                // CONFIG.logger.debug(`Removing ${talentsToRemove.length} talents`);
-
-                // for (let i = 0; i < talentsToRemove.length; i += 1) {
-                //   const id = $(talentsToRemove[i]).val();
-                //   this.actor.deleteOwnedItem(id);
-                // }
               },
             },
             cancel: {
@@ -405,6 +399,20 @@ export class ItemSheetFFG extends ItemSheet {
           template: `systems/starwarsffg/templates/items/dialogs/ffg-edit-${itemType}.html`,
         }
       ).render(true);
+    });
+
+    html.find(".item-pill").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      const itemType = li.dataset.itemName;
+      const itemIndex = li.dataset.itemIndex;
+
+      const item = this.object.data.data[itemType][itemIndex];
+      let temp = { ...item, flags: { ffgTempId: this.object.id, ffgTempItemType: itemType, ffgTempItemIndex: itemIndex } };
+
+      let tempItem = await Item.create(temp, { temporary: true });
+      tempItem.sheet.render(true);
     });
   }
 
@@ -698,7 +706,7 @@ export class ItemSheetFFG extends ItemSheet {
 
       switch (itemObject.type) {
         case "itemmodifier": {
-          if (itemObject.data.rank === 0) {
+          if (parseInt(itemObject.data.rank, 10) === 0) {
             itemObject.data.rank = 1;
           }
 

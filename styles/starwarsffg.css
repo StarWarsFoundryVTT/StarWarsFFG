@@ -658,14 +658,19 @@ img {
   float: left;
   margin: 1px;
   cursor: pointer;
+  font-size: 12px;
+  line-height: 20px;
 }
 
-.starwarsffg.sheet .item-pill span {
-  padding: 0 3px;
+.starwarsffg.sheet .item-pill .rank {
+  padding-right: 15px;
+}
+
+.starwarsffg.sheet .item-pill .rank:hover {
+  color: green;
 }
 
 .starwarsffg.sheet .item-pill .item-delete {
-  padding-left: 5px;
   cursor: pointer;
 }
 

@@ -8,7 +8,7 @@ import Helpers from "../helpers/common.js";
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class ItemFFG extends Item {
+export class ItemFFG extends ItemBaseFFG {
   /**
    * Augment the basic Item data model with additional dynamic data.
    */

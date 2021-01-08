@@ -9,6 +9,10 @@
           <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
         </div>
 
+        <div class="hidden-content">
+          <input name="data.rank" type="text" value="{{data.rank}}" />
+        </div>
+
         <div class="container flex-group-center weapon-values">
           {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Type" type="Dropdown" name="data.type" value=data.type options=this.FFG.itemmodifier_types)}}
         </div>
