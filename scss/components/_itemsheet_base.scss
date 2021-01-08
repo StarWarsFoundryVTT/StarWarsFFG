@@ -25,6 +25,42 @@
     margin: 10px 5px;
     overflow: auto;
   }
+
+
+
+  .item-pill-list {
+    padding: 0 0 0 0.5em;
+    &:after {
+      content:".";
+      display:block;
+      height:0;
+      clear:both;
+      visibility:hidden;
+    }
+  }
+
+  .item-pill {
+    list-style-type: none;
+    padding: 0 5px;
+    background-color: #aaa;
+    border: 1px solid black;
+    border-radius: 12px;
+    float: left;
+    margin: 1px;
+    cursor: pointer;
+
+    span {
+      padding: 0 3px;
+    }
+
+    .item-delete {
+      padding-left: 5px;
+      cursor: pointer;
+      &:hover {
+        color: red;
+      }
+    }
+  }
 }
 
 &.sheet {

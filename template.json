@@ -518,7 +518,7 @@
   },
   "Item": {
     "types": [
-      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "talent", "shipattachment", "shipweapon", "signatureability", "specialization", "species", "weapon"],
+      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "signatureability", "specialization", "species", "weapon"],
     "templates": {
       "core": {
         "description": "",
@@ -742,6 +742,16 @@
         "upgrade6": {},
         "upgrade7": {}
       }
+    },
+    "itemattachment": {
+      "templates": ["core", "basic", "hardpoints"],
+      "type": "",
+      "additionalmods" : []
+    },
+    "itemmodifier": {
+      "templates": ["core"],
+      "type": "",
+      "rank": 0
     }
   }
 }

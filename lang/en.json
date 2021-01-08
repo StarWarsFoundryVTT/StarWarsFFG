@@ -443,5 +443,6 @@
   "SWFFG.EnableSortTalentsByActivationHint": "Enable grouping Talents by activation",
   "SWFFG.UseGlobalSetting": "Use Global",
   "SWFFG.OptionValueYes": "Yes",
-  "SWFFG.OptionValueNo": "No"
+  "SWFFG.OptionValueNo": "No",
+  "SWFFG.ModTypeAll" : "All"
 }
