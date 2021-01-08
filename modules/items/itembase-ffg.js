@@ -1,35 +1,20 @@
 export default class ItemBaseFFG extends Item {
-  constructor(...args) {
-    super(...args);
+  async update(data, options = {}) {
+    if (!this.data?.flags?.ffgTempId) {
+      super.update(data, options);
+    } else {
+      const realItem = await game.items.get(this.data.flags.ffgTempId);
 
-    this.items = this.items || [];
-  }
+      if (realItem) {
+        const mergedData = { ...this.data.data, ...data.data };
+        data.data = mergedData;
 
-  /** @override */
-  prepareEmbeddedEntities() {
-    this.items = this._prepareAssociatedItems(this.data.items || []);
-  }
-
-  _prepareAssociatedItems(items) {
-    const prior = this.items;
-    const c = new Collection();
-    for (let i of items) {
-      let item = null;
-
-      // Prepare item data
-      try {
-        if (prior && prior.has(i._id)) {
-          item = prior.get(i._id);
-          item._data = i;
-          item.prepareData();
-        } else item = Item.createOwned(i, this);
-        c.set(i._id, item);
-      } catch (err) {
-        // Handle preparation failures gracefully
-        err.message = `Owned Item preparation failed for ${item.id} (${item.name}) in Item ${this.id} (${this.name})`;
-        console.error(err);
+        realItem.data.data[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex] = { ...this.data, ...data, flags: {} };
       }
+
+      let formData = {};
+      setProperty(formData, `data.${this.data.flags.ffgTempItemType}`, realItem.data.data[this.data.flags.ffgTempItemType]);
+      realItem.update(formData);
     }
-    return c;
   }
 }
