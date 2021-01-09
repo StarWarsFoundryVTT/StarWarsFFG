@@ -688,6 +688,10 @@ img {
   color: red;
 }
 
+.starwarsffg.sheet .add-new-item {
+  cursor: pointer;
+}
+
 .starwarsffg.sheet.item.v2 .sheet-body {
   margin: 0px 5px;
 }

@@ -42,6 +42,11 @@ export class ItemSheetFFG extends ItemSheet {
       }
     }
 
+    data.isTemp = false;
+    if (this.object.data?.flags?.ffgTempId) {
+      data.isTemp = true;
+    }
+
     switch (this.object.data.type) {
       case "weapon":
       case "shipweapon":
@@ -468,6 +473,31 @@ export class ItemSheetFFG extends ItemSheet {
       setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
       this.object.update(formData);
       this.object.sheet.render(true);
+    });
+
+    html.find(".additional .add-new-item").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      let itemType = li.dataset.acceptableType;
+
+      let temp = {
+        img: "icons/svg/mystery-man.svg",
+        name: "",
+        type: itemType,
+        flags: {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: -1,
+        },
+        data: {
+          attributes: {},
+          description: "",
+        },
+      };
+
+      let tempItem = await Item.create(temp, { temporary: true });
+      tempItem.sheet.render(true);
     });
   }
 
