@@ -52,7 +52,7 @@
             </div>
             <div class="characteristic-item flex-group-center">
               <div class="characteristic">
-                <div class="characteristic-value">
+                <div class="characteristic-value {{#if data.rarity.isrestricted}}restricted{{/if}}">
                   <input type="text" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number" />
                 </div>
               </div>
