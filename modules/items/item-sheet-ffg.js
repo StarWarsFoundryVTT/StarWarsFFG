@@ -316,6 +316,28 @@ export class ItemSheetFFG extends ItemSheet {
         callbacks: { drop: this._onDropItem.bind(this) },
       });
       itemToItemAssociation.bind(html[0]);
+
+      html.find(".resource.pills.itemmodifier").on("click", async (event) => {
+        let temp = {
+          img: "icons/svg/mystery-man.svg",
+          name: "",
+          type: "itemmodifier",
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: "itemmodifier",
+            ffgTempItemIndex: -1,
+          },
+          data: {
+            attributes: {},
+            description: "",
+            rank: 1,
+            type: "all",
+          },
+        };
+
+        let tempItem = await Item.create(temp, { temporary: true });
+        tempItem.sheet.render(true);
+      });
     }
 
     html.find(".item-pill .item-delete").on("click", (event) => {
