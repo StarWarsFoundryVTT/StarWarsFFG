@@ -406,7 +406,6 @@ export class ItemSheetFFG extends ItemSheet {
                     setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
                     this.object.update(formData);
 
-                    console.log(formData);
                     break;
                   }
                   case "itemattachment": {
@@ -458,9 +457,22 @@ export class ItemSheetFFG extends ItemSheet {
       let itemType = parent.dataset.itemName;
       let itemIndex = parent.dataset.itemIndex;
 
+      const item = this.object.data.data[itemType][itemIndex];
+      item.data.rank = parseInt(item.data.rank, 10);
+
       if ($(li).hasClass("increase")) {
+        item.data.rank += 1;
       } else {
+        item.data.rank -= 1;
+        if (item.data.rank < 0) {
+          item.data.rank = 0;
+        }
       }
+
+      let formData = {};
+      setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+      this.object.update(formData);
+      this.object.sheet.render(true);
     });
   }
 
