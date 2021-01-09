@@ -1,7 +1,7 @@
 <div class="dialog-content {{content.type}}">
   <table>
     <tr>
-      <td>{{localize "SWFFG.Rank"}}</td>
+      <td>{{#if (eq content.parenttype "itemattachment")}}{{localize "SWFFG.ModCount"}}{{else}}{{localize "SWFFG.SkillsRank"}}{{/if}}</td>
       <td><input type="number" data-dtype="number" data-item-id="{{content.item._id}}" name="data.rank" value="{{content.item.data.rank}}" placeholder="0" /></td>
     </tr>
   </table>

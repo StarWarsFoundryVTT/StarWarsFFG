@@ -313,7 +313,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    if (["weapon", "armor"].includes(this.object.data.type)) {
+    if (["weapon", "armor", "itemattachment"].includes(this.object.data.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
         dropSelector: null,
@@ -345,7 +345,7 @@ export class ItemSheetFFG extends ItemSheet {
       });
     }
 
-    html.find(".item-pill .item-delete").on("click", (event) => {
+    html.find(".item-pill .item-delete, .additional .add-modifier .item-delete").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
 
@@ -379,6 +379,7 @@ export class ItemSheetFFG extends ItemSheet {
           content: {
             item,
             type: itemType,
+            parenttype: this.object.data.type,
           },
           buttons: {
             done: {
@@ -428,18 +429,38 @@ export class ItemSheetFFG extends ItemSheet {
       ).render(true);
     });
 
-    html.find(".item-pill").on("click", async (event) => {
+    html.find(".item-pill, .additional .add-modifier .fa-edit").on("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
       const li = event.currentTarget;
-      const itemType = li.dataset.itemName;
-      const itemIndex = li.dataset.itemIndex;
+
+      let itemType = li.dataset.itemName;
+      let itemIndex = li.dataset.itemIndex;
+
+      if ($(li).hasClass("fa-edit")) {
+        const parent = $(li).parent()[0];
+        itemType = parent.dataset.itemName;
+        itemIndex = parent.dataset.itemIndex;
+      }
 
       const item = this.object.data.data[itemType][itemIndex];
       let temp = { ...item, flags: { ffgTempId: this.object.id, ffgTempItemType: itemType, ffgTempItemIndex: itemIndex } };
 
       let tempItem = await Item.create(temp, { temporary: true });
       tempItem.sheet.render(true);
+    });
+
+    html.find(".additional .quantity").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      let itemType = parent.dataset.itemName;
+      let itemIndex = parent.dataset.itemIndex;
+
+      if ($(li).hasClass("increase")) {
+      } else {
+      }
     });
   }
 
