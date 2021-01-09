@@ -378,7 +378,7 @@
   "SWFFG.DestinyPoolRoll": "Click here to roll for the Destiny Pool",
   "SWFFG.SkillAddAsInitiative": "Toggle for use as initiative",
   "SWFFG.ItemWeaponStatus" : "Status",
-  "SWFFG.ItemStatusNone" : "No Damage",
+  "SWFFG.ItemStatusNone" : "Undamaged",
   "SWFFG.ItemStatusMinor" : "Minor Damage",
   "SWFFG.ItemStatusModerate" : "Moderate Damage",
   "SWFFG.ItemStatusMajor" : "Major Damage",
@@ -444,5 +444,11 @@
   "SWFFG.UseGlobalSetting": "Use Global",
   "SWFFG.OptionValueYes": "Yes",
   "SWFFG.OptionValueNo": "No",
-  "SWFFG.ModTypeAll" : "All"
+  "SWFFG.ModTypeAll" : "All",
+  "SWFFG.ItemQualities": "Qualities",
+  "SWFFG.ItemAttachments": "Attachments",
+  "SWFFG.TabConfiguration": "Configuration",
+  "SWFFG.TabBaseModifiers": "Base Mods",
+  "SWFFG.TabAdditionalModifiers": "Add Mods"
 }
+

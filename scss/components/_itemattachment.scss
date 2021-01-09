@@ -1,0 +1,29 @@
+.item-sheet-itemattachment {
+  .profile-img-field {
+    width: 25%;
+    
+    img {
+
+      &.profile-img {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+
+  .sheet-body {
+    height: calc(100% - 19rem);
+  }
+}
+
+&.sheet {
+  &.item {
+    &.v2 {
+      .item-sheet-itemattachment {
+        .sheet-body {
+          height: calc(100% - 16.5rem);
+        }
+      }
+    }
+  }
+}
