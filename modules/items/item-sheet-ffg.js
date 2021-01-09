@@ -50,7 +50,7 @@ export class ItemSheetFFG extends ItemSheet {
     switch (this.object.data.type) {
       case "weapon":
       case "shipweapon":
-        this.position.width = 530;
+        this.position.width = 550;
         this.position.height = 750;
         break;
       case "itemattachment":
@@ -322,6 +322,8 @@ export class ItemSheetFFG extends ItemSheet {
       });
       itemToItemAssociation.bind(html[0]);
 
+      html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
+
       html.find(".resource.pills.itemmodifier").on("click", async (event) => {
         let temp = {
           img: "icons/svg/mystery-man.svg",
@@ -337,6 +339,28 @@ export class ItemSheetFFG extends ItemSheet {
             description: "",
             rank: 1,
             type: "all",
+          },
+        };
+
+        let tempItem = await Item.create(temp, { temporary: true });
+        tempItem.sheet.render(true);
+      });
+
+      html.find(".resource.pills.itemattachment").on("click", async (event) => {
+        let temp = {
+          img: "icons/svg/mystery-man.svg",
+          name: "",
+          type: "itemattachment",
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: "itemattachment",
+            ffgTempItemIndex: -1,
+          },
+          data: {
+            attributes: {},
+            description: "",
+            type: "all",
+            itemmodifier: [],
           },
         };
 
