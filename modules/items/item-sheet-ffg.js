@@ -41,7 +41,9 @@ export class ItemSheetFFG extends ItemSheet {
     data.dtypes = ["String", "Number", "Boolean"];
     if (data?.data?.attributes) {
       for (let attr of Object.values(data.data.attributes)) {
-        attr.isCheckbox = attr.dtype === "Boolean";
+        if (attr?.dtype) {
+          attr.isCheckbox = attr.dtype === "Boolean";
+        }
       }
     }
 

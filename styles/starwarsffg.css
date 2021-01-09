@@ -3004,7 +3004,7 @@ img {
 }
 
 .starwarsffg .item-sheet-modifiers .sheet-body {
-  height: calc(100% - 17.3125rem);
+  height: calc(100% - 12.7rem);
   overflow: auto;
 }
 
@@ -3019,7 +3019,7 @@ img {
 }
 
 .starwarsffg.sheet.item.v2 .item-sheet-modifiers .sheet-body {
-  height: calc(100% - 17.3125rem);
+  height: calc(100% - 8.6rem);
 }
 
 .initiative-dialog .pool-selector {
