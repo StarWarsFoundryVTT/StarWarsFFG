@@ -327,7 +327,7 @@ export class ItemSheetFFG extends ItemSheet {
       });
       itemToItemAssociation.bind(html[0]);
 
-      html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
+      html.find(".resource.pills.itemmodifier .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
 
       html.find(".resource.pills.itemmodifier").on("click", async (event) => {
         let temp = {
@@ -351,27 +351,27 @@ export class ItemSheetFFG extends ItemSheet {
         tempItem.sheet.render(true);
       });
 
-      html.find(".resource.pills.itemattachment").on("click", async (event) => {
-        let temp = {
-          img: "icons/svg/mystery-man.svg",
-          name: "",
-          type: "itemattachment",
-          flags: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: "itemattachment",
-            ffgTempItemIndex: -1,
-          },
-          data: {
-            attributes: {},
-            description: "",
-            type: "all",
-            itemmodifier: [],
-          },
-        };
-
-        let tempItem = await Item.create(temp, { temporary: true });
-        tempItem.sheet.render(true);
-      });
+      // commented out because the nature of item to item where one item is also has children items is causing a issue.
+      // html.find(".resource.pills.itemattachment").on("click", async (event) => {
+      //   let temp = {
+      //     img: "icons/svg/mystery-man.svg",
+      //     name: "",
+      //     type: "itemattachment",
+      //     flags: {
+      //       ffgTempId: this.object.id,
+      //       ffgTempItemType: "itemattachment",
+      //       ffgTempItemIndex: -1,
+      //     },
+      //     data: {
+      //       attributes: {},
+      //       description: "",
+      //       type: "all",
+      //       itemmodifier: [],
+      //     },
+      //   };
+      //   let tempItem = await Item.create(temp, { temporary: true });
+      //   tempItem.sheet.render(true);
+      // });
     }
 
     html.find(".item-pill .item-delete, .additional .add-modifier .item-delete").on("click", (event) => {
