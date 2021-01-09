@@ -35,6 +35,13 @@
   .pills {
     &.itemmodifier, &.itemattachment {
       width: auto;
+      max-width: 50%;
+
+      .item-pill-list {
+        max-height: 100px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
     }
   } 
 

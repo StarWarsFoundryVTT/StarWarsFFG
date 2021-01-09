@@ -608,6 +608,7 @@ img {
   border: 0;
   margin-bottom: 5px;
   padding: 0 5px 5px 5px;
+  align-items: flex-start;
 }
 
 .starwarsffg.sheet.item .popout-editor {
@@ -1926,6 +1927,13 @@ img {
 
 .starwarsffg .item-sheet-weapon .pills.itemmodifier, .starwarsffg .item-sheet-weapon .pills.itemattachment {
   width: auto;
+  max-width: 50%;
+}
+
+.starwarsffg .item-sheet-weapon .pills.itemmodifier .item-pill-list, .starwarsffg .item-sheet-weapon .pills.itemattachment .item-pill-list {
+  max-height: 100px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .starwarsffg.sheet.item.v2 .item-sheet-weapon .container.flex-group-center {
