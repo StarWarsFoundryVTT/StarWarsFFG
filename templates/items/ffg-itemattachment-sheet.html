@@ -60,7 +60,28 @@
     </div>
 
     <div class="tab additional" data-group="primary" data-tab="additional">
-      Additional Mods
+      <table>
+        <thead>
+          <tr>
+            <th>Modification</th>
+            <th>Count</th>
+            <th><i class="fas fa-plus"></i></th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each data.itemmodifier as |item id|}}
+          <tr>
+            <td>{{item.name}}</td>
+            <td data-item-name="itemmodifier" data-item-index="{{id}}">
+              <div class="quantity increase"><i class="far fa-plus-square"></i></div>
+              {{item.data.rank}}
+              <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
+            </td>
+            <td class="add-modifier" data-item-name="itemmodifier" data-item-index="{{id}}"><i class="fas fa-edit"></i><i class="fas fa-times item-delete"></i></td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
 
     <div class="tab configuration" data-group="primary" data-tab="configuration">

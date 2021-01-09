@@ -449,6 +449,7 @@
   "SWFFG.ItemAttachments": "Attachments",
   "SWFFG.TabConfiguration": "Configuration",
   "SWFFG.TabBaseModifiers": "Base Mods",
-  "SWFFG.TabAdditionalModifiers": "Add Mods"
+  "SWFFG.TabAdditionalModifiers": "Add Mods",
+  "SWFFG.ModCount" : "Count"
 }
 

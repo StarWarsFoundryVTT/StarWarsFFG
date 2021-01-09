@@ -13,6 +13,32 @@
 
   .sheet-body {
     height: calc(100% - 19rem);
+
+    table {
+      th:first-child {
+        text-align: left;
+        padding-left: 3px;
+      }
+
+      td {
+        &:not(:first-child) {
+          position: relative;
+          text-align: center;
+  
+          .quantity {
+            top: 3px;
+          }
+        }
+
+        &.add-modifier {
+          i {
+            padding: 0 2px;
+            cursor: pointer;
+          }
+        }
+      }
+
+    }
   }
 }
 

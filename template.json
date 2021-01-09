@@ -746,7 +746,7 @@
     "itemattachment": {
       "templates": ["core", "basic", "hardpoints"],
       "type": "",
-      "additionalmods" : []
+      "itemmodifier" : []
     },
     "itemmodifier": {
       "templates": ["core"],
