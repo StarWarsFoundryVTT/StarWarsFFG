@@ -628,6 +628,15 @@ img {
   line-height: 15px;
 }
 
+.starwarsffg.sheet.item .characteristic .characteristic-value.restricted::after {
+  content: 'R';
+  position: absolute;
+  font-size: 15px;
+  right: 1px;
+  top: -1px;
+  color: red;
+}
+
 .starwarsffg.sheet .window-content {
   overflow-y: hidden;
 }
@@ -638,7 +647,7 @@ img {
 }
 
 .starwarsffg.sheet .item-pill-list {
-  padding: 0 0 0 0.5em;
+  padding: 0;
 }
 
 .starwarsffg.sheet .item-pill-list:after {
@@ -660,6 +669,7 @@ img {
   cursor: pointer;
   font-size: 12px;
   line-height: 20px;
+  white-space: nowrap;
 }
 
 .starwarsffg.sheet .item-pill .rank {
@@ -1888,6 +1898,10 @@ img {
   height: calc(100% - 31.875rem);
 }
 
+.starwarsffg .item-sheet-weapon .pills.itemmodifier, .starwarsffg .item-sheet-weapon .pills.itemattachment {
+  width: auto;
+}
+
 .starwarsffg.sheet.item.v2 .item-sheet-weapon .container.flex-group-center {
   padding: 0 5px 0 5px;
   margin-bottom: 0;
@@ -2969,10 +2983,6 @@ img {
   background-color: #2c0344;
 }
 
-.starwarsffg .item-sheet-modifiers .characteristic-item .characteristic {
-  border: 5px double #2c0344;
-}
-
 .starwarsffg .item-sheet-modifiers .block-background {
   background-color: #e9c6fd;
 }
@@ -2998,6 +3008,23 @@ img {
 
 .starwarsffg.sheet.item.v2 .item-sheet-modifiers .sheet-body {
   height: calc(100% - 8.6rem);
+}
+
+.starwarsffg .item-sheet-itemattachment .profile-img-field {
+  width: 25%;
+}
+
+.starwarsffg .item-sheet-itemattachment .profile-img-field img.profile-img {
+  width: 100%;
+  height: auto;
+}
+
+.starwarsffg .item-sheet-itemattachment .sheet-body {
+  height: calc(100% - 19rem);
+}
+
+.starwarsffg.sheet.item.v2 .item-sheet-itemattachment .sheet-body {
+  height: calc(100% - 16.5rem);
 }
 
 .initiative-dialog .pool-selector {

@@ -32,6 +32,12 @@
     height: calc(100% - 31.875rem);
   }
 
+  .pills {
+    &.itemmodifier, &.itemattachment {
+      width: auto;
+    }
+  } 
+
 }
 
 &.sheet {
