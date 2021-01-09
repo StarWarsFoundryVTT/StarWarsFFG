@@ -27,6 +27,7 @@ export default class ItemBaseFFG extends Item {
         this.data = itemData;
 
         realItem.update(formData);
+        realItem.sheet.render(false);
         this.sheet.render(true);
         return;
       }
