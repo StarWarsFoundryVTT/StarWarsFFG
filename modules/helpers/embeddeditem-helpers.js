@@ -40,12 +40,13 @@ export default class EmbeddedItemHelpers {
         });
       }
 
-      const mergedData = { ...item.data.data, ...data.data };
+      const mergedData = mergeObject(item.data.data, data.data);
       data.data = mergedData;
-      const itemData = { ...item.data, ...data };
+      const itemData = mergeObject(item.data, data);
 
       if (item.data.flags.ffgTempItemIndex > -1) {
         dataPointer.data[item.data.flags.ffgTempItemType][item.data.flags.ffgTempItemIndex] = { ...itemData, flags: {} };
+        //setProperty(dataPointer.data, `${item.data.flags.ffgTempItemType}.${item.data.flags.ffgTempItemIndex}`, { ...itemData, flags: {} })
       } else {
         item.data.flags.ffgTempItemIndex = dataPointer.data[item.data.flags.ffgTempItemType].length;
         dataPointer.data[item.data.flags.ffgTempItemType].push({ ...itemData, flags: {} });
@@ -56,7 +57,7 @@ export default class EmbeddedItemHelpers {
 
       item.data = itemData;
 
-      realItem.update(formData);
+      await realItem.update(formData);
     }
     return;
   }
