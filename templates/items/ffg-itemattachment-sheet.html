@@ -64,7 +64,8 @@
         <thead>
           <tr>
             <th>Modification</th>
-            <th>Count</th>
+            <!-- <th>Count</th> -->
+            <th>Active</th>
             <th><i class="fas fa-plus add-new-item" data-acceptable-type="itemmodifier"></i></th>
           </tr>
         </thead>
@@ -72,10 +73,13 @@
           {{#each data.itemmodifier as |item id|}}
           <tr>
             <td>{{item.name}}</td>
-            <td data-item-name="itemmodifier" data-item-index="{{id}}">
+            <!-- <td data-item-name="itemmodifier" data-item-index="{{id}}">
               <div class="quantity increase"><i class="far fa-plus-square"></i></div>
               {{item.data.rank}}
               <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
+            </td> -->
+            <td data-item-name="itemmodifier" data-item-index="{{id}}">
+              <div class="modifier-active"><i class="far {{#if item.data.active}} fa-check-square {{else}} fa-square {{/if}}"></i></div>
             </td>
             <td class="add-modifier" data-item-name="itemmodifier" data-item-index="{{id}}"><i class="fas fa-edit"></i><i class="fas fa-times item-delete"></i></td>
           </tr>

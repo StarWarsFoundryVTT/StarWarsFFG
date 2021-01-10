@@ -3049,6 +3049,10 @@ img {
   top: 3px;
 }
 
+.starwarsffg .item-sheet-itemattachment .sheet-body table td .modifier-active i {
+  cursor: pointer;
+}
+
 .starwarsffg .item-sheet-itemattachment .sheet-body table td.add-modifier i {
   padding: 0 2px;
   cursor: pointer;
