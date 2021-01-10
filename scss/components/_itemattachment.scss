@@ -30,6 +30,12 @@
           }
         }
 
+        .modifier-active {
+          i {
+            cursor: pointer;
+          }
+        }
+
         &.add-modifier {
           i {
             padding: 0 2px;

@@ -46,7 +46,6 @@ export default class EmbeddedItemHelpers {
 
       if (item.data.flags.ffgTempItemIndex > -1) {
         dataPointer.data[item.data.flags.ffgTempItemType][item.data.flags.ffgTempItemIndex] = { ...itemData, flags: {} };
-        //setProperty(dataPointer.data, `${item.data.flags.ffgTempItemType}.${item.data.flags.ffgTempItemIndex}`, { ...itemData, flags: {} })
       } else {
         item.data.flags.ffgTempItemIndex = dataPointer.data[item.data.flags.ffgTempItemType].length;
         dataPointer.data[item.data.flags.ffgTempItemType].push({ ...itemData, flags: {} });

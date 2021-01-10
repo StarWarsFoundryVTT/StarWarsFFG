@@ -484,25 +484,15 @@ export class ItemSheetFFG extends ItemSheet {
       tempItem.sheet.render(true);
     });
 
-    html.find(".additional .quantity").on("click", async (event) => {
+    html.find(".additional .modifier-active").on("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
       const li = event.currentTarget;
       const parent = $(li).parent()[0];
       let itemType = parent.dataset.itemName;
       let itemIndex = parent.dataset.itemIndex;
-
       const item = this.object.data.data[itemType][itemIndex];
-      item.data.rank = parseInt(item.data.rank, 10);
-
-      if ($(li).hasClass("increase")) {
-        item.data.rank += 1;
-      } else {
-        item.data.rank -= 1;
-        if (item.data.rank < 0) {
-          item.data.rank = 0;
-        }
-      }
+      item.data.active = !item.data.active;
 
       if (this.object.data.flags.ffgTempId) {
         // this is a temporary sheet for an embedded item
@@ -851,7 +841,7 @@ export class ItemSheetFFG extends ItemSheet {
             itemObject.data.rank = 1;
           }
 
-          if (foundItem) {
+          if (foundItem && this.object.type !== "itemattachment") {
             foundItem.data.rank += itemObject.data.rank;
           } else {
             items.push(itemObject);
