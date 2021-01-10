@@ -4,6 +4,8 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
+import item from "../helpers/embeddeditem-helpers.js";
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -322,7 +324,7 @@ export class ItemSheetFFG extends ItemSheet {
       });
       itemToItemAssociation.bind(html[0]);
 
-      html.find(".resource.pills.itemmodifier .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
+      html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
 
       html.find(".resource.pills.itemmodifier").on("click", async (event) => {
         let temp = {
@@ -346,27 +348,26 @@ export class ItemSheetFFG extends ItemSheet {
         tempItem.sheet.render(true);
       });
 
-      // commented out because the nature of item to item where one item is also has children items is causing a issue.
-      // html.find(".resource.pills.itemattachment").on("click", async (event) => {
-      //   let temp = {
-      //     img: "icons/svg/mystery-man.svg",
-      //     name: "",
-      //     type: "itemattachment",
-      //     flags: {
-      //       ffgTempId: this.object.id,
-      //       ffgTempItemType: "itemattachment",
-      //       ffgTempItemIndex: -1,
-      //     },
-      //     data: {
-      //       attributes: {},
-      //       description: "",
-      //       type: "all",
-      //       itemmodifier: [],
-      //     },
-      //   };
-      //   let tempItem = await Item.create(temp, { temporary: true });
-      //   tempItem.sheet.render(true);
-      // });
+      html.find(".resource.pills.itemattachment").on("click", async (event) => {
+        let temp = {
+          img: "icons/svg/mystery-man.svg",
+          name: "",
+          type: "itemattachment",
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: "itemattachment",
+            ffgTempItemIndex: -1,
+          },
+          data: {
+            attributes: {},
+            description: "",
+            type: "all",
+            itemmodifier: [],
+          },
+        };
+        let tempItem = await Item.create(temp, { temporary: true });
+        tempItem.sheet.render(true);
+      });
     }
 
     html.find(".item-pill .item-delete, .additional .add-modifier .item-delete").on("click", (event) => {
@@ -467,13 +468,18 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       const item = this.object.data.data[itemType][itemIndex];
-      let temp = { ...item, flags: { ffgTempId: this.object.id, ffgTempItemType: itemType, ffgTempItemIndex: itemIndex } };
+      let temp = { ...item, flags: { ffgTempId: this.object.id, ffgTempItemType: itemType, ffgTempItemIndex: itemIndex, ffgIsTemp: true, ffgParent: this.object.data.flags } };
 
       let tempItem = await Item.create(temp, { temporary: true });
+
+      tempItem.data._id = temp._id;
+      if (!temp._id) {
+        tempItem.data._id = randomID();
+      }
       tempItem.sheet.render(true);
     });
 
-    html.find(".additional .quantity").on("click", (event) => {
+    html.find(".additional .quantity").on("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
       const li = event.currentTarget;
@@ -493,9 +499,24 @@ export class ItemSheetFFG extends ItemSheet {
         }
       }
 
-      let formData = {};
-      setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
-      this.object.update(formData);
+      if (this.object.data.flags.ffgTempId) {
+        // this is a temporary sheet for an embedded item
+
+        item.flags = {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: itemIndex,
+          ffgParent: this.object.data.flags,
+          ffgIsTemp: true,
+        };
+
+        await EmbeddedItemHelpers.updateRealObject({ data: item }, {});
+      } else {
+        let formData = {};
+        setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+        this.object.update(formData);
+      }
+
       this.object.sheet.render(true);
     });
 
@@ -513,6 +534,8 @@ export class ItemSheetFFG extends ItemSheet {
           ffgTempId: this.object.id,
           ffgTempItemType: itemType,
           ffgTempItemIndex: -1,
+          ffgParent: this.object.data.flags,
+          ffgIsTemp: true,
         },
         data: {
           attributes: {},
@@ -521,6 +544,10 @@ export class ItemSheetFFG extends ItemSheet {
       };
 
       let tempItem = await Item.create(temp, { temporary: true });
+      tempItem.data._id = temp._id;
+      if (!temp._id) {
+        tempItem.data._id = randomID();
+      }
       tempItem.sheet.render(true);
     });
   }

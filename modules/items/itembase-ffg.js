@@ -1,36 +1,72 @@
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
+
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
     if (!this.data?.flags?.ffgTempId) {
       return super.update(data, options);
     } else {
-      const realItem = await game.items.get(this.data.flags.ffgTempId);
+      return await EmbeddedItemHelpers.updateRealObject(this, data);
+      // let flags = this.data.flags;
 
-      if (realItem) {
-        if (!this.data._id) {
-          data._id = randomID();
-        }
+      // let realItem = await game.items.get(flags.ffgTempId);
+      // let parents = [];
 
-        const mergedData = { ...this.data.data, ...data.data };
-        data.data = mergedData;
-        const itemData = { ...this.data, ...data };
+      // if(realItem) {
+      //   parents.push(flags)
+      // } else {
+      //   let x = flags?.ffgParent
 
-        if (this.data.flags.ffgTempItemIndex > -1) {
-          realItem.data.data[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex] = { ...itemData, flags: {} };
-        } else {
-          this.data.flags.ffgTempItemIndex = realItem.data.data[this.data.flags.ffgTempItemType].length;
-          realItem.data.data[this.data.flags.ffgTempItemType].push({ ...itemData, flags: {} });
-        }
+      //   parents.push(x);
 
-        let formData = {};
-        setProperty(formData, `data.${this.data.flags.ffgTempItemType}`, realItem.data.data[this.data.flags.ffgTempItemType]);
+      //   let ffgTempId = "";
+      //   while(x) {
+      //     if(Object.values(x.ffgParent).length > 0) {
+      //       parents.push(x.ffgParent);
+      //       x = x.ffgParent;
+      //     } else {
+      //       flags = x;
+      //       ffgTempId = x.ffgTempId;
+      //       x = undefined;
+      //     }
+      //   }
 
-        this.data = itemData;
+      //   realItem = await game.items.get(ffgTempId);
+      // }
 
-        realItem.update(formData);
-        realItem.sheet.render(false);
-        this.sheet.render(true);
-        return;
-      }
+      // if (realItem) {
+      //   if (!this.data._id) {
+      //     data._id = randomID();
+      //   }
+
+      //   const mergedData = { ...this.data.data, ...data.data };
+      //   data.data = mergedData;
+      //   const itemData = { ...this.data, ...data };
+
+      //   let dataPointer = realItem.data.data;
+
+      //   parents.forEach((value, index) => {
+      //     dataPointer = dataPointer[parents[index].ffgTempItemType][parents[index].ffgTempItemIndex]
+      //   });
+
+      //   if (this.data.flags.ffgTempItemIndex > -1) {
+      //     dataPointer.data[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex] = { ...itemData, flags: {} };
+      //     //realItem.data.data[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex] = { ...itemData, flags: {} };
+      //   } else {
+      //     this.data.flags.ffgTempItemIndex = dataPointer.data[this.data.flags.ffgTempItemType].length
+      //     dataPointer.data[this.data.flags.ffgTempItemType].push({ ...itemData, flags: {} });
+      //     //this.data.flags.ffgTempItemIndex = realItem.data.data[this.data.flags.ffgTempItemType].length;
+      //     //realItem.data.data[this.data.flags.ffgTempItemType].push({ ...itemData, flags: {} });
+      //   }
+
+      //   let formData = {};
+      //   setProperty(formData, `data.${parents[0].ffgTempItemType}`, realItem.data.data[parents[0].ffgTempItemType]);
+
+      //   this.data = itemData;
+
+      //   realItem.update(formData);
+      //   this.sheet.render(true);
+      //   return;
+      // }
     }
   }
 }
