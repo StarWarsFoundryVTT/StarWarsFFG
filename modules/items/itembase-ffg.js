@@ -5,7 +5,8 @@ export default class ItemBaseFFG extends Item {
     if (!this.data?.flags?.ffgTempId) {
       return super.update(data, options);
     } else {
-      return await EmbeddedItemHelpers.updateRealObject(this, data);
+      await EmbeddedItemHelpers.updateRealObject(this, data);
+      this.sheet.render(true);
       // let flags = this.data.flags;
 
       // let realItem = await game.items.get(flags.ffgTempId);
