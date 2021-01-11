@@ -3,6 +3,7 @@ export default class EmbeddedItemHelpers {
     let flags = item.data.flags;
     let realItem = await game.items.get(flags.ffgTempId);
     let parents = [];
+    let owner;
 
     if (realItem) {
       parents.unshift(flags);
@@ -11,10 +12,13 @@ export default class EmbeddedItemHelpers {
         parents.unshift(flags);
       }
       let x = flags?.ffgParent;
-      parents.unshift(x);
+      if (flags?.ffgParent) {
+        parents.unshift(x);
+      }
+
       let ffgTempId = "";
       while (x) {
-        if (Object.values(x.ffgParent).length > 0) {
+        if (x?.ffgParent && Object.values(x.ffgParent).length > 0) {
           parents.unshift(x.ffgParent);
           x = x.ffgParent;
         } else {
@@ -24,7 +28,15 @@ export default class EmbeddedItemHelpers {
         }
       }
 
-      realItem = await game.items.get(ffgTempId);
+      if (flags.ffgUuid) {
+        const parts = flags.ffgUuid.split(".");
+        const [entityName, entityId, embeddedName, embeddedId] = parts;
+
+        owner = CONFIG[entityName].entityClass.collection.get(entityId);
+        realItem = await owner.getOwnedItem(embeddedId);
+      } else {
+        realItem = await game.items.get(ffgTempId);
+      }
     }
 
     if (realItem) {

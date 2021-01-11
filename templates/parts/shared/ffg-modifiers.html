@@ -13,7 +13,7 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (and (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon") )}} {{#each ../this.FFG.mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq ../item.type "weapon") (eq ../item.type "itemmodifier") )}} {{#each ../this.FFG.weapon_mod_types as |t|}}
+      {{/each}} {{/if}} {{#if (or (eq ../item.type "weapon") (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment") )}} {{#each ../this.FFG.weapon_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{/select}}
     </select>

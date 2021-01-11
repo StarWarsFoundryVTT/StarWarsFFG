@@ -468,7 +468,22 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       const item = this.object.data.data[itemType][itemIndex];
+
       let temp = { ...item, flags: { ffgTempId: this.object.id, ffgTempItemType: itemType, ffgTempItemIndex: itemIndex, ffgIsTemp: true, ffgParent: this.object.data.flags } };
+      if (this.object.isOwned) {
+        let ownerObject = await fromUuid(this.object.uuid);
+
+        temp = {
+          ...item,
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: itemType,
+            ffgTempItemIndex: itemIndex,
+            ffgIsTemp: true,
+            ffgUuid: this.object.uuid,
+          },
+        };
+      }
 
       let tempItem = await Item.create(temp, { temporary: true });
 
@@ -821,6 +836,7 @@ export class ItemSheetFFG extends ItemSheet {
       itemObject = duplicate(await game.items.get(data.id));
       if (!itemObject) return;
     }
+    itemObject._id = randomID();
 
     if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && (obj.data.type === itemObject.data.type || itemObject.data.type === "all")) {
       let items = obj?.data?.data?.[itemObject.type];
@@ -844,7 +860,11 @@ export class ItemSheetFFG extends ItemSheet {
           break;
         }
         case "itemattachment": {
-          items.push(itemObject);
+          if (this.object.data.data.hardpoints.current - itemObject.data.hardpoints.value > 0) {
+            items.push(itemObject);
+          } else {
+            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.data.data.hardpoints.current} left)`);
+          }
           break;
         }
         default: {

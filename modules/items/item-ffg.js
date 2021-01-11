@@ -69,6 +69,19 @@ export class ItemFFG extends ItemBaseFFG {
       default:
     }
 
+    if (["weapon", "armor"].includes(this.type)) {
+      // get all item attachments
+      let totalHPUsed = 0;
+
+      if (data?.itemattachment?.length) {
+        data.itemattachment.forEach((attachment) => {
+          totalHPUsed += attachment.data.hardpoints.value;
+        });
+      }
+
+      data.hardpoints.current = data.hardpoints.value - totalHPUsed;
+    }
+
     if (this.type === "forcepower") {
       this._prepareForcePowers();
     }

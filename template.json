@@ -562,13 +562,16 @@
           "type": "Boolean",
           "equipped": false
         }
+      },
+      "itemattachments": {
+        "itemattachment":[]
       }
     },
     "gear": {
       "templates": ["core", "basic"]
     },
     "weapon": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments"],
       "skill": {
         "value": "Ranged: Light",
         "type": "String",
@@ -598,7 +601,7 @@
       }
     },
     "armour": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments"],
       "defence": {
         "value": 0,
         "type": "Number",

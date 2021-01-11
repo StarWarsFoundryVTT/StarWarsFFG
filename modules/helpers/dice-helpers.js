@@ -1,5 +1,6 @@
 import PopoutEditor from "../popout-editor.js";
 import RollBuilderFFG from "../dice/roll-builder.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 export default class DiceHelpers {
   static async rollSkill(obj, event, type, flavorText, sound) {
@@ -60,6 +61,34 @@ export default class DiceHelpers {
       } else {
         ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.data.status].label)}).`);
         return;
+      }
+    }
+
+    // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
+
+    if (item.type === "weapon") {
+      if (item?.data?.itemattachment) {
+        item.data.itemattachment.forEach((attachment) => {
+          //get base mods
+          const boostValues = ModifierHelpers.getCalculatedValueFromItems(attachment.data.itemmodifier, item.data.skill.value, "Skill Boost");
+          const setback = ModifierHelpers.getCalculatedValueFromItems(attachment.data.itemmodifier, item.data.skill.value, "Skill Setback");
+          const remsetback = ModifierHelpers.getCalculatedValueFromItems(attachment.data.itemmodifier, item.data.skill.value, "Skill Remove Setback");
+
+          // const setValueAndSources = (modifiername, propertyname) => {
+          //   const obj = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, modifiername, true);
+          //   if (obj.total > 0) {
+          //     data.skills[key][propertyname] = obj.total;
+          //     data.skills[key][`${propertyname}source`] = obj.sources;
+          //   }
+          // };
+
+          // setValueAndSources("Skill Add Advantage", "advantage");
+          // setValueAndSources("Skill Add Dark", "dark");
+          // setValueAndSources("Skill Add Failure", "failure");
+          // setValueAndSources("Skill Add Light", "light");
+          // setValueAndSources("Skill Add Success", "success");
+          // setValueAndSources("Skill Add Threat", "threat");
+        });
       }
     }
 

@@ -1891,6 +1891,13 @@ img {
   border: 5px double #134103;
 }
 
+.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .hardpoints-left {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  color: red;
+}
+
 .starwarsffg .item-sheet-weapon .block-background {
   background-color: #bffebf;
 }
