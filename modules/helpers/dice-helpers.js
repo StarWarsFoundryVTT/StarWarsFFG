@@ -66,32 +66,6 @@ export default class DiceHelpers {
 
     // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
 
-    if (item.type === "weapon") {
-      if (item?.data?.itemattachment) {
-        item.data.itemattachment.forEach((attachment) => {
-          //get base mods
-          const boostValues = ModifierHelpers.getCalculatedValueFromItems(attachment.data.itemmodifier, item.data.skill.value, "Skill Boost");
-          const setback = ModifierHelpers.getCalculatedValueFromItems(attachment.data.itemmodifier, item.data.skill.value, "Skill Setback");
-          const remsetback = ModifierHelpers.getCalculatedValueFromItems(attachment.data.itemmodifier, item.data.skill.value, "Skill Remove Setback");
-
-          // const setValueAndSources = (modifiername, propertyname) => {
-          //   const obj = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, modifiername, true);
-          //   if (obj.total > 0) {
-          //     data.skills[key][propertyname] = obj.total;
-          //     data.skills[key][`${propertyname}source`] = obj.sources;
-          //   }
-          // };
-
-          // setValueAndSources("Skill Add Advantage", "advantage");
-          // setValueAndSources("Skill Add Dark", "dark");
-          // setValueAndSources("Skill Add Failure", "failure");
-          // setValueAndSources("Skill Add Light", "light");
-          // setValueAndSources("Skill Add Success", "success");
-          // setValueAndSources("Skill Add Threat", "threat");
-        });
-      }
-    }
-
     const dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
@@ -112,6 +86,30 @@ export default class DiceHelpers {
       dicePool.upgrade();
     } else if (type === "difficulty") {
       dicePool.upgradeDifficulty();
+    }
+
+    if (item.type === "weapon") {
+      if (item?.data?.itemattachment) {
+        item.data.itemattachment.forEach((attachment) => {
+          //get base mods and additional mods totals
+          const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+
+          dicePool.boost += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Boost", "Roll Modifiers");
+          dicePool.setback += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Setback", "Roll Modifiers");
+          dicePool.advantage += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Advantage", "Result Modifiers");
+          dicePool.dark += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Dark", "Result Modifiers");
+          dicePool.failure += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Failure", "Result Modifiers");
+          dicePool.light += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Light", "Result Modifiers");
+          dicePool.success += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Success", "Result Modifiers");
+          dicePool.threat += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Threat", "Result Modifiers");
+
+          dicePool.difficulty += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Add Difficulty", "Dice Modifiers");
+          dicePool.upgradeDifficulty(ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Upgrade Difficulty", "Dice Modifiers"));
+          dicePool.upgradeDifficulty(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Downgrade Difficulty", "Dice Modifiers"));
+          dicePool.upgrade(ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Upgrade Difficulty", "Dice Ability"));
+          dicePool.upgrade(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Downgrade Difficulty", "Dice Ability"));
+        });
+      }
     }
 
     this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
