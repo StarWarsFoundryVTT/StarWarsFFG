@@ -59,6 +59,10 @@
 .item-name {
   margin: 0;
   padding-bottom: 0;
+
+  &.restricted {
+    color: #8b0000;
+  }
 }
 
 .item-quantity {

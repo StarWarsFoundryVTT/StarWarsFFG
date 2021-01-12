@@ -702,6 +702,10 @@ img {
   padding-bottom: 0;
 }
 
+.starwarsffg .item-name.restricted {
+  color: #8b0000;
+}
+
 .starwarsffg .item-quantity {
   position: relative;
 }
