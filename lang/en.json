@@ -450,6 +450,23 @@
   "SWFFG.TabConfiguration": "Configuration",
   "SWFFG.TabBaseModifiers": "Base Mods",
   "SWFFG.TabAdditionalModifiers": "Add Mods",
-  "SWFFG.ModCount" : "Count"
+  "SWFFG.ModCount" : "Count",
+  "SWFFG.ModTypeResultModifiers": "Result Mods",
+  "SWFFG.ModTypeDiceModifiers": "Dice Mods",
+  "SWFFG.ModTypeRollModifiers": "Roll Mods",
+  "SWFFG.ModTypeAddBoost": "Add Boost",
+  "SWFFG.ModTypeAddSetback": "Add Setback",
+  "SWFFG.ModTypeAddDifficulty": "Add Diffculty",
+  "SWFFG.ModTypeUpgradeDifficulty": "Upgrade Diffculty",
+  "SWFFG.ModTypeDowngradeDifficulty": "Downgrade Diffculty",
+  "SWFFG.ModTypeUpgradeAbility": "Upgrade Ability",
+  "SWFFG.ModTypeDowngradeAbility": "Downgrade Ability",
+  "SWFFG.ModTypeAddAdvantage": "Add Advantage",
+  "SWFFG.ModTypeAddDark": "Add Dark",
+  "SWFFG.ModTypeAddFailure": "Add Failure",
+  "SWFFG.ModTypeAddLight": "Add Light",
+  "SWFFG.ModTypeAddSuccess": "Add Success",
+  "SWFFG.ModTypeAddThreat": "Add Threat",
+  "SWFFG.ModTypeStatArmor" : "Armor Stat"
 }
 

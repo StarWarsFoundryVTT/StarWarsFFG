@@ -89,3 +89,87 @@ export const modifier_types = {
     "label": "SWFFG.ItemsWeapons",
   },
 };
+
+export const itemmodifier_modifiertypes = {
+  "Result Modifiers": {
+    "value": "Result Modifiers",
+    "label": "SWFFG.ModTypeResultModifiers",
+  },
+  "Dice Modifiers": {
+    "value": "Dice Modifiers",
+    "label": "SWFFG.ModTypeDiceModifiers",
+  },
+  "Roll Modifiers": {
+    "value": "Roll Modifiers",
+    "label": "SWFFG.ModTypeRollModifiers",
+  },
+  "Weapon Stat": {
+    "value": "Weapon Stat",
+    "label": "SWFFG.ModTypeStatWeapon",
+  }, //-> Damage, Crit, Encum, HP, Rarity, Price, Range,
+  "Armor Stat": {
+    "value": "Armor Stat",
+    "label": "SWFFG.ModTypeStatArmor",
+  }, //-> Def, Soak, Encum, HP, Rarity, Price
+};
+
+export const itemmodifier_rollmodifiers = {
+  "Add Boost": {
+    "value": "Add Boost",
+    "label": "SWFFG.ModTypeAddBoost",
+  },
+  "Add Setback": {
+    "value": "Add Setback",
+    "label": "SWFFG.ModTypeAddSetback",
+  },
+};
+
+export const itemmodifier_dicemodifiers = {
+  "Add Difficulty": {
+    "value": "Add Difficulty",
+    "label": "SWFFG.ModTypeAddDifficulty",
+  },
+  "Upgrade Difficulty": {
+    "value": "Upgrade Difficulty",
+    "label": "SWFFG.ModTypeUpgradeDifficulty",
+  },
+  "Downgrade Difficulty": {
+    "value": "Downgrade Difficulty",
+    "label": "SWFFG.ModTypeDowngradeDifficulty",
+  },
+  "Upgrade Ability": {
+    "value": "Upgrade Ability",
+    "label": "SWFFG.ModTypeUpgradeAbility",
+  },
+  "Downgrade Ability": {
+    "value": "Downgrade Ability",
+    "label": "SWFFG.ModTypeDowngradeAbility",
+  },
+};
+
+export const itemmodifier_resultmodifiers = {
+  "Add Advantage": {
+    "value": "Add Advantage",
+    "label": "SWFFG.ModTypeAddAdvantage",
+  },
+  "Add Success": {
+    "value": "Add Success",
+    "label": "SWFFG.ModTypeAddSuccess",
+  },
+  "Add Threat": {
+    "value": "Add Threat",
+    "label": "SWFFG.ModTypeAddThreat",
+  },
+  "Add Failure": {
+    "value": "Add Failure",
+    "label": "SWFFG.ModTypeAddFailure",
+  },
+  "Add Light": {
+    "value": "Add Light",
+    "label": "SWFFG.ModTypeAddLight",
+  },
+  "Add Dark": {
+    "value": "Add Dark",
+    "label": "SWFFG.ModTypeAddDark",
+  },
+};

@@ -1,11 +1,11 @@
-export const weapon_stats = {
-  "damage": {
-    value: "damage",
-    label: "SWFFG.ItemsDamage",
+export const armor_stats = {
+  "defence": {
+    value: "defence",
+    label: "SWFFG.Defense",
   },
-  "critical": {
-    value: "critical",
-    label: "SWFFG.ItemsCrit",
+  "soak": {
+    value: "soak",
+    label: "SWFFG.ItemsSoak",
   },
   "encumbrance": {
     value: "emcubrance",
@@ -22,9 +22,5 @@ export const weapon_stats = {
   "price": {
     value: "price",
     label: "SWFFG.ItemsPrice",
-  },
-  "range": {
-    value: "range",
-    label: "SWFFG.ItemWeaponRange",
   },
 };
