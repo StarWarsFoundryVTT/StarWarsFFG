@@ -2,6 +2,7 @@ import ItemBaseFFG from "./itembase-ffg.js";
 import PopoutEditor from "../popout-editor.js";
 import ActorOptions from "../actors/actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 import Helpers from "../helpers/common.js";
 
 /**
@@ -43,6 +44,20 @@ export class ItemFFG extends ItemBaseFFG {
           } else {
             data.damage.value = parseInt(data.damage.value, 10);
             data.damage.adjusted = +data.damage.value + damageAdd;
+          }
+
+          // Apply item attachments / modifiers
+
+          if (data?.itemattachment) {
+            data.itemattachment.forEach((attachment) => {
+              const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+              data.damage.adjusted = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
+            });
+          }
+          if (data?.itemmodifier) {
+            data.itemmodifier.forEach((modifier) => {
+              data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
+            });
           }
         }
 

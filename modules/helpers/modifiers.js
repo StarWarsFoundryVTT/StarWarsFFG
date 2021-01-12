@@ -183,6 +183,30 @@ export default class ModifierHelpers {
     }
   }
 
+  static getCalculatedValueFromCurrentAndArray(item, items, key, modtype, includeSource) {
+    let total = 0;
+    let checked = false;
+    let sources = [];
+
+    const filteredAttributes = Object.values(item.data.attributes).filter((a) => a.modtype === modtype && a.mod === key);
+
+    filteredAttributes.forEach((attr) => {
+      sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
+      total += parseInt(attr.value, 10);
+    });
+
+    const itemsTotal = ModifierHelpers.getCalculatedValueFromItems(items, key, modtype, includeSource);
+    if (includeSource) {
+      total += itemsTotal.total;
+      sources = sources.concat(itemsTotal.sources);
+
+      return { total, sources };
+    } else {
+      total += itemsTotal;
+      return total;
+    }
+  }
+
   static getBaseValue(items, key, modtype) {
     let total = 0;
 
