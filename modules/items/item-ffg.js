@@ -28,7 +28,51 @@ export class ItemFFG extends ItemBaseFFG {
     // perform localisation of dynamic values
     switch (this.type) {
       case "weapon":
-        const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.value)}`;
+        // Apply item attachments / modifiers
+
+        data.range.adjusted = data.range.value;
+        data.damage.adjusted = data.damage.value;
+        data.crit.adjusted = data.crit.value;
+        data.adjusteditemmodifier = [];
+
+        if (data?.itemmodifier) {
+          data.itemmodifier.forEach((modifier) => {
+            data.adjusteditemmodifier.push({ ...modifier });
+            data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
+          });
+        }
+
+        if (data?.itemattachment) {
+          data.itemattachment.forEach((attachment) => {
+            const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+            data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
+            data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
+            if (data.crit.adjusted < 1) data.crit.adjusted = 1;
+            const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
+            const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
+            const newRange = currentRangeIndex + range;
+            if (newRange < 0) newRange = 0;
+            if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
+
+            data.range.adjusted = Object.values(CONFIG.FFG.ranges)[newRange].value;
+
+            if (attachment?.data?.itemmodifier) {
+              const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
+
+              activeMods.forEach((am) => {
+                const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
+
+                if (foundItem) {
+                  foundItem.data.rank += am.data.rank;
+                } else {
+                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
+                }
+              });
+            }
+          });
+        }
+
+        const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.adjusted)}`;
         data.range.label = rangeId;
 
         if (this.isOwned && this.actor && this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
@@ -39,25 +83,12 @@ export class ItemFFG extends ItemBaseFFG {
             }
           }
           if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl")) && data.skill.useBrawn) {
+            const olddamage = data.damage.value;
             data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
-            data.damage.adjusted = +data.damage.value;
+            data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
           } else {
             data.damage.value = parseInt(data.damage.value, 10);
-            data.damage.adjusted = +data.damage.value + damageAdd;
-          }
-
-          // Apply item attachments / modifiers
-
-          if (data?.itemattachment) {
-            data.itemattachment.forEach((attachment) => {
-              const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
-              data.damage.adjusted = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
-            });
-          }
-          if (data?.itemmodifier) {
-            data.itemmodifier.forEach((modifier) => {
-              data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
-            });
+            data.damage.adjusted += damageAdd;
           }
         }
 
