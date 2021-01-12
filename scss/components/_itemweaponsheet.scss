@@ -16,13 +16,21 @@
     .characteristic {
       border: 5px double $swffg-weapon-color;
 
-      .hardpoints-left {
+      .adjustedvalues-left {
         position: absolute;
         top: 0;
         right: 2px;
         color: red;
+        &.positive {
+          color: green;
+        }
       }
     }
+  }
+
+  .adjustedvalue {
+    color: red;
+    
   }
 
   .block-background {

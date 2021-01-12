@@ -23,7 +23,7 @@
             content: 'R';
             position: absolute;
             font-size: 15px;
-            right: 1px;
+            left: 1px;
             top: -1px;
             color: red;
           }
@@ -64,6 +64,10 @@
     font-size: 12px;
     line-height: 20px;
     white-space: nowrap;
+
+    &.adjusted {
+      color: red;
+    }
     
     .rank {
       padding-right: 15px;

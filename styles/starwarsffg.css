@@ -633,7 +633,7 @@ img {
   content: 'R';
   position: absolute;
   font-size: 15px;
-  right: 1px;
+  left: 1px;
   top: -1px;
   color: red;
 }
@@ -671,6 +671,10 @@ img {
   font-size: 12px;
   line-height: 20px;
   white-space: nowrap;
+}
+
+.starwarsffg.sheet .item-pill.adjusted {
+  color: red;
 }
 
 .starwarsffg.sheet .item-pill .rank {
@@ -1891,10 +1895,18 @@ img {
   border: 5px double #134103;
 }
 
-.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .hardpoints-left {
+.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left {
   position: absolute;
   top: 0;
   right: 2px;
+  color: red;
+}
+
+.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left.positive {
+  color: green;
+}
+
+.starwarsffg .item-sheet-weapon .adjustedvalue {
   color: red;
 }
 

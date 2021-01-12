@@ -13,7 +13,9 @@
             <div class="characteristic-item flex-group-center">
               <div class="characteristic">
                 <div class="characteristic-value">
-                  <input type="text" name="data.damage.value" value="{{#if (and (or (contains data.skill.value "Brawl") (contains data.skill.value "Melee") (contains data.skill.value "Lightsaber")) (eq data.skill.useBrawn true))}}0{{else}}{{data.damage.value}}{{/if}}" data-dtype="Number" {{#if (and (or (contains data.skill.value "Brawl") (contains data.skill.value "Melee") (contains data.skill.value "Lightsaber")) (eq data.skill.useBrawn true))}}disabled{{/if}} />
+                  <input type="text" name="data.damage.value" value="{{#if (and (or (contains data.skill.value "Brawl") (contains data.skill.value "Melee") (contains data.skill.value "Lightsaber")) (eq data.skill.useBrawn true))}}0{{else}}{{data.damage.value}}{{/if}}" data-dtype="Number" {{#if (and (or (contains data.skill.value "Brawl") (contains data.skill.value "Melee") (contains data.skill.value "Lightsaber")) (eq data.skill.useBrawn true))}}disabled{{/if}} /> {{#if (ne data.damage.adjusted data.damage.value)}}
+                  <div class="adjustedvalues-left {{#if (gt data.damage.adjusted data.damage.value)}}positive{{/if}}">{{data.damage.adjusted}}</div>
+                  {{/if}}
                 </div>
               </div>
               <div class="characteristic-label">
@@ -24,6 +26,9 @@
               <div class="characteristic">
                 <div class="characteristic-value">
                   <input type="text" name="data.crit.value" value="{{data.crit.value}}" data-dtype="Number" />
+                  {{#if (ne data.crit.adjusted data.crit.value)}}
+                  <div class="adjustedvalues-left {{#if (lt data.crit.adjusted data.crit.value)}}positive{{/if}}">{{data.crit.adjusted}}</div>
+                  {{/if}}
                 </div>
               </div>
               <div class="characteristic-label">
@@ -44,7 +49,9 @@
               <div class="characteristic">
                 <div class="characteristic-value">
                   <input type="text" name="data.hardpoints.value" value="{{data.hardpoints.value}}" data-dtype="Number" />
-                  <div class="hardpoints-left">{{data.hardpoints.current}}</div>
+                  {{#if (ne data.hardpoints.current data.hardpoints.value)}}
+                  <div class="adjustedvalues-left {{#if (gt data.hardpoints.current data.hardpoints.value)}}positive{{/if}}">{{data.hardpoints.current}}</div>
+                  {{/if}}
                 </div>
               </div>
               <div class="characteristic-label">
@@ -64,14 +71,14 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.ranges)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponStatus" type="Dropdown" name="data.status" value=data.status options=this.FFG.itemstatus)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.ranges) adjusted=data.range.label}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponStatus" type="Dropdown" name="data.status" value=data.status options=this.FFG.itemstatus)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}}
           </div>
           <div class="flex-group-center weapon-values hidden-content">
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
           </div>
 
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.itemmodifier)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemAttachments" name="itemattachment" fields=data.itemattachment)}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.adjusteditemmodifier)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemAttachments" name="itemattachment" fields=data.itemattachment)}}
           </div>
         </div>
       </div>
