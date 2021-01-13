@@ -437,7 +437,7 @@
   "SWFFG.SkillsNameKnowledgeCrucible": "Crucible",
   "SWFFG.SkillsNameKnowledgeCulture": "Culture",
   "SWFFG.ModifierAllSkills": "All Skills",
-  "SWFFG.IsRestricted": "Restricted?",
+  "SWFFG.IsRestricted": "Restricted",
   "SWFFG.EnableSortTalentsByActivationGlobal": "Sort Talents (Global)",
   "SWFFG.EnableSortTalentsByActivation": "Sort Talents",
   "SWFFG.EnableSortTalentsByActivationHint": "Enable grouping Talents by activation",
@@ -467,6 +467,8 @@
   "SWFFG.ModTypeAddLight": "Add Light",
   "SWFFG.ModTypeAddSuccess": "Add Success",
   "SWFFG.ModTypeAddThreat": "Add Threat",
-  "SWFFG.ModTypeStatArmor" : "Armor Stat"
+  "SWFFG.ModTypeStatArmor" : "Armor Stat",
+  "SWFFG.FromAttachment": "From Attachment",
+  "SWFFG.WeaponCardCritical" : "Critical"
 }
 

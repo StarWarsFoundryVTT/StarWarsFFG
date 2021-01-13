@@ -317,6 +317,49 @@ export class ActorSheetFFG extends ActorSheet {
           if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
           else this._itemDisplayDetails(item, ev);
         }
+
+        html.find("li.item-pill").on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const li = event.currentTarget;
+
+          let itemId = li.dataset.itemId;
+          let modifierType = li.dataset.modifierType;
+          let modifierId = li.dataset.modifierId;
+
+          const ownedItem = await this.actor.getOwnedItem(itemId);
+          let modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
+          let item = ownedItem.data.data[modifierType][modifierIndex];
+
+          if (!item) {
+            // this is a modifier on an attachment
+            ownedItem.data.data.itemattachment.forEach((a) => {
+              modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
+              if (modifierIndex > -1) {
+                item = a.data[modifierType][modifierIndex];
+              }
+            });
+          }
+
+          const temp = {
+            ...item,
+            flags: {
+              ffgTempId: itemId,
+              ffgTempItemType: modifierType,
+              ffgTempItemIndex: modifierIndex,
+              ffgIsTemp: true,
+              ffgUuid: ownedItem.uuid,
+            },
+          };
+
+          let tempItem = await Item.create(temp, { temporary: true });
+          tempItem.data._id = temp._id;
+          tempItem.data.flags.readonly = true;
+          if (!temp._id) {
+            tempItem.data._id = randomID();
+          }
+          tempItem.sheet.render(true);
+        });
       }
     });
 

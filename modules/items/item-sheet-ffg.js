@@ -264,6 +264,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     // Everything below here is only needed if the sheet is editable
+    if (this.object.data.flags.readonly) this.options.editable = false;
     if (!this.options.editable) return;
 
     // Add or Remove Attribute
