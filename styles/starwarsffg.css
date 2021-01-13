@@ -635,7 +635,7 @@ img {
   font-size: 15px;
   left: 1px;
   top: -1px;
-  color: red;
+  color: #8b0000;
 }
 
 .starwarsffg.sheet .window-content {
@@ -674,7 +674,7 @@ img {
 }
 
 .starwarsffg.sheet .item-pill.adjusted {
-  color: red;
+  color: #8b0000;
 }
 
 .starwarsffg.sheet .item-pill .rank {
@@ -770,7 +770,7 @@ img {
   padding-bottom: 0;
 }
 
-.starwarsffg .item-name .restricted {
+.starwarsffg .item-name.restricted {
   color: #8b0000;
 }
 
@@ -1355,6 +1355,40 @@ img {
   color: darkred;
 }
 
+.starwarsffg .item-display .item-pill {
+  list-style-type: none;
+  padding: 0 5px;
+  background-color: #aaa;
+  border: 1px solid black;
+  border-radius: 12px;
+  display: inline-block;
+  margin: 1px;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.starwarsffg .item-display .item-pill.adjusted {
+  color: #8b0000;
+}
+
+.starwarsffg .item-display .item-pill .rank {
+  padding-right: 15px;
+}
+
+.starwarsffg .item-display .item-pill .rank:hover {
+  color: green;
+}
+
+.starwarsffg .item-display .item-pill .item-delete {
+  cursor: pointer;
+}
+
+.starwarsffg .item-display .item-pill .item-delete:hover {
+  color: red;
+}
+
 .starwarsffg span.dietype {
   position: relative;
 }
@@ -1420,7 +1454,7 @@ img {
 }
 
 .starwarsffg span.dietype.restricted {
-  color: red;
+  color: #8b0000;
 }
 
 .starwarsffg span.dietype.restricted::after {
@@ -1721,7 +1755,7 @@ img {
 }
 
 .starwarsffg .items .items-header .header-name {
-  flex: 1 0 120px;
+  flex: 1 0 100px;
   text-align: left;
 }
 
@@ -1781,9 +1815,8 @@ img {
 .starwarsffg .items .items-list .item-name {
   margin: 0;
   cursor: pointer;
-  flex: 1 0 120px;
+  flex: 1 0 100px;
   text-align: left;
-  display: flex;
 }
 
 .starwarsffg .items .items-list .item-controls {
@@ -1826,21 +1859,8 @@ img {
   background: rgba(0, 0, 0, 0.1);
 }
 
-.starwarsffg .item-rollable {
-  height: 24px;
-  width: 48px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  margin-right: 5px;
-  border: none;
-}
-
-.starwarsffg .item-rollable.rollable:hover {
-  background-image: url(/systems/starwarsffg/images/generic-die.svg) !important;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
+.starwarsffg .item-details .restricted {
+  color: #8b0000;
 }
 
 .starwarsffg .talents {
@@ -1868,7 +1888,7 @@ img {
 }
 
 .starwarsffg .talent-list .talents-header .header-name {
-  flex: 1 0 120px;
+  flex: 1 0 100px;
   text-align: left;
 }
 

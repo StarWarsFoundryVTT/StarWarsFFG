@@ -33,6 +33,9 @@ export class ItemFFG extends ItemBaseFFG {
         data.range.adjusted = data.range.value;
         data.damage.adjusted = data.damage.value;
         data.crit.adjusted = data.crit.value;
+        data.encumbrance.adjusted = data.encumbrance.value;
+        data.price.adjusted = data.price.value;
+        data.rarity.adjusted = data.rarity.value;
         data.adjusteditemmodifier = [];
 
         if (data?.itemmodifier) {
@@ -299,20 +302,20 @@ export class ItemFFG extends ItemBaseFFG {
     }
     // General equipment properties
     else if (this.type !== "talent") {
-      if (data.hasOwnProperty("special")) {
-        props.push(`<div>Special qualities: ${data.special.value}</div>`);
+      if (data.hasOwnProperty("adjusteditemmodifier")) {
+        const qualities = data.adjusteditemmodifier.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this._id}' data-modifier-id='${m._id}' data-modifier-type='${m.type}'>${m.name} ${m.data.rank} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+
+        props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
-      if (data.hasOwnProperty("equippable")) {
-        props.push(game.i18n.localize(data.equippable.equipped ? "SWFFG.Equipped" : "SWFFG.Unequipped"));
-      }
+
       if (data.hasOwnProperty("encumbrance")) {
-        props.push(`Encumbrance: ${data.encumbrance.value}`);
+        props.push(`${game.i18n.localize("SWFFG.Encumbrance")}: ${data.encumbrance.adjusted}`);
       }
       if (data.hasOwnProperty("price")) {
-        props.push(`Price: ${data.price.value}`);
+        props.push(`${game.i18n.localize("SWFFG.ItemsPrice")}: ${data.price.adjusted}`);
       }
       if (data.hasOwnProperty("rarity")) {
-        props.push(`Rarity: ${data.rarity.value}`);
+        props.push(`${game.i18n.localize("SWFFG.ItemsRarity")}: ${data.rarity.adjusted} ${data.rarity.isrestricted ? "<span class='restricted'>" + game.i18n.localize("SWFFG.IsRestricted") + "</span>" : ""}`);
       }
     }
 

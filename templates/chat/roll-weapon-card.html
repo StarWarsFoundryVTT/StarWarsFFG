@@ -4,15 +4,16 @@
   {{/if}}
   <h2 class="item-name">{{data.name}}</h2>
   {{#if ffg.success}}
-  <h4 class="item-damage">Damage: <input class="damage-value" type="text" value="{{data.data.damage.adjusted}} + {{ffg.success}} = {{math data.data.damage.adjusted '+' ffg.success}}" disabled /></h4>
-  <h4 class="item-critical">Critical: <input class="damage-value" type="text" value="{{data.data.crit.value}}" disabled /></h4>
+  <h4 class="item-damage">{{localize "SWFFG.ItemsDamage"}}: <input class="damage-value" type="text" value="{{data.data.damage.adjusted}} + {{ffg.success}} = {{math data.data.damage.adjusted '+' ffg.success}}" disabled /></h4>
+  <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{data.data.crit.adjusted}}" disabled /></h4>
   {{else}}
   <h4 class="item-miss">Miss!</h4>
-  {{/if}} {{#if data.data.special.value}}
+  {{/if}} {{#if data.data.adjusteditemmodifier}}
   <div class="specials">
     <h5>
-      Special Qualities:
-      <div class="damage-value">{{{ffgDiceSymbols data.data.special.value}}}</div>
+      {{#each data.data.adjusteditemmodifier as |item id|}}
+      <li class="item-pill" data-item-id="{{../data.flags.uuid}}" data-modifier-id="{{item._id}}" data-modifier-type="{{item.type}}">{{item.name}} {{item.data.rank}}</li>
+      {{/each}}
     </h5>
   </div>
   {{/if}}
