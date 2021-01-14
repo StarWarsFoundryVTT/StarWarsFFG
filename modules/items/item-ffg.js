@@ -35,6 +35,7 @@ export class ItemFFG extends ItemBaseFFG {
         data.encumbrance.value = parseInt(data.encumbrance.value, 10);
         data.price.value = parseInt(data.price.value, 10);
         data.rarity.value = parseInt(data.rarity.value, 10);
+        data.hardpoints.value = parseInt(data.rarity.value, 10);
 
         data.range.adjusted = data.range.value;
         data.damage.adjusted = parseInt(data.damage.value, 10);
@@ -42,6 +43,7 @@ export class ItemFFG extends ItemBaseFFG {
         data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
         data.price.adjusted = parseInt(data.price.value, 10);
         data.rarity.adjusted = parseInt(data.rarity.value, 10);
+        data.hardpoints.adjusted = parseInt(data.rarity.value, 10);
 
         data.adjusteditemmodifier = [];
 

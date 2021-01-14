@@ -1961,16 +1961,18 @@ img {
 }
 
 .starwarsffg .item-sheet-weapon .sheet-body {
-  height: calc(100% - 31.875rem);
+  height: calc(100% - 27.5rem);
 }
 
 .starwarsffg .item-sheet-weapon .pills.itemmodifier, .starwarsffg .item-sheet-weapon .pills.itemattachment {
   width: auto;
   max-width: 50%;
+  width: 50%;
 }
 
 .starwarsffg .item-sheet-weapon .pills.itemmodifier .item-pill-list, .starwarsffg .item-sheet-weapon .pills.itemattachment .item-pill-list {
-  max-height: 100px;
+  max-height: 75px;
+  height: 75px;
   overflow-y: scroll;
   overflow-x: hidden;
 }
