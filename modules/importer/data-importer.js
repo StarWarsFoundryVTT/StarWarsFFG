@@ -448,40 +448,45 @@ export default class DataImporter extends FormApplication {
       let totalCount = descriptors.length;
       let currentCount = 0;
       $(".import-progress.itemdescriptors").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack("JournalEntry", `oggdude.ItemQualities`);
+      let pack = await this._getCompendiumPack("Item", `oggdude.ItemQualities`);
       CONFIG.temporary["descriptors"] = {};
 
       await this.asyncForEach(descriptors, async (descriptor) => {
         try {
           const d = JXON.xmlToJs(descriptor);
 
-          //if (d.Type) {
-          let itemDescriptor = {
+          let itemModifier = {
             name: d.Name,
+            type: "itemmodifier",
+            img: `/systems/starwarsffg/images/mod-${d.Type ? d.Type.toLowerCase() : "all"}.png`,
             flags: {
               ffgimportid: d.Key,
             },
-            content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
+            data: {
+              description: d.Description,
+              attributes: {},
+              type: d.Type ? d.Type.toLowerCase() : "all",
+              rank: 1,
+            },
           };
 
-          itemDescriptor.content += ImportHelpers.getSources(d?.Sources ?? d?.Source);
+          itemModifier.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
           let compendiumItem;
-          await pack.getIndex();
-          let entry = pack.index.find((e) => e.name === itemDescriptor.name);
+
+          let entry = await ImportHelpers.findCompendiumEntityByImportId("Item", d.Key, pack.collection);
 
           if (!entry) {
-            CONFIG.logger.debug(`Importing Item Quality - JournalEntry`);
-            compendiumItem = new JournalEntry(itemDescriptor, { temporary: true });
+            CONFIG.logger.debug(`Importing Item Quality - Item`);
+            compendiumItem = new Item(itemModifier, { temporary: true });
             this._importLogger(`New item quality ${d.Name} : ${JSON.stringify(compendiumItem)}`);
             let id = await pack.importEntity(compendiumItem);
-            CONFIG.temporary["descriptors"][d.Key] = id.id;
+            CONFIG.temporary["descriptors"][d.Key] = id;
           } else {
             CONFIG.logger.debug(`Updating Item Quality - JournalEntry`);
-            //let updateData = ImportHelpers.buildUpdateData(itemDescriptor);
-            let updateData = itemDescriptor;
+            let updateData = itemModifier;
             updateData["_id"] = entry._id;
-            CONFIG.temporary["descriptors"][d.Key] = entry._id;
+            CONFIG.temporary["descriptors"][d.Key] = entry;
             this._importLogger(`Updating item quality ${d.Name} : ${JSON.stringify(updateData)}`);
             pack.updateEntity(updateData);
           }
