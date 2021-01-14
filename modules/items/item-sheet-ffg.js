@@ -832,7 +832,8 @@ export class ItemSheetFFG extends ItemSheet {
     // Case 1 - Import from a Compendium pack
     let itemObject;
     if (data.pack) {
-      itemObject = await this.importItemFromCollection(data.pack, data.id);
+      const compendiumObject = await this.importItemFromCollection(data.pack, data.id);
+      itemObject = compendiumObject.data;
     }
 
     // Case 2 - Import from World entity
@@ -848,7 +849,9 @@ export class ItemSheetFFG extends ItemSheet {
         items = [];
       }
 
-      const foundItem = items.find((i) => i._id === itemObject._id);
+      const foundItem = items.find((i) => {
+        return i._id === itemObject._id || i.flags.ffgimportid === itemObject.flags.ffgimportid;
+      });
 
       switch (itemObject.type) {
         case "itemmodifier": {
