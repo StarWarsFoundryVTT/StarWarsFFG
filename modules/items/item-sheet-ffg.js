@@ -458,9 +458,12 @@ export class ItemSheetFFG extends ItemSheet {
       event.preventDefault();
       event.stopPropagation();
       const li = event.currentTarget;
-
       let itemType = li.dataset.itemName;
       let itemIndex = li.dataset.itemIndex;
+
+      if ($(li).hasClass("adjusted")) {
+        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object._id, itemType, itemIndex, this.object?.actor?._id);
+      }
 
       if ($(li).hasClass("fa-edit")) {
         const parent = $(li).parent()[0];

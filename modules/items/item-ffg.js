@@ -66,8 +66,9 @@ export class ItemFFG extends ItemBaseFFG {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.data.rank += am.data.rank;
+                  foundItem.data.rank_current += 1;
                 } else {
+                  am.data.rank_current = 1;
                   data.adjusteditemmodifier.push({ ...am, adjusted: true });
                 }
               });

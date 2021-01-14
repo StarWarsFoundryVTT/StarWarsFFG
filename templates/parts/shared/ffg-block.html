@@ -11,8 +11,8 @@
         <ul class="item-pill-list">
           {{#each fields as |item id|}}
           <li class="item-pill {{#if adjusted}}adjusted{{/if}}" data-item-name="{{../name}}" data-item-index="{{id}}">
-            {{item.name}} {{#if item.data.rank}}
-            <i class="rank">{{item.data.rank}}</i>
+            {{item.name}} {{#if item.data.rank_current}}
+            <i class="rank">{{item.data.rank_current}}</i>
             {{/if}} {{#if adjusted}}{{else}}<i class="fas fa-times item-delete"></i>{{/if}}
           </li>
           {{/each}}
@@ -45,9 +45,9 @@
         <div class="block-value block-single">{{#if prefix}}{{{prefix}}}{{/if}}<input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
         {{/if}} {{/if}} {{#if (eq blocktype "split")}} {{#each fields as |t|}}
         <div class="block-value"><input type="text" name="{{name}}" value="{{value}}" data-dtype="type" {{#if disabled}}disabled{{/if}} /></div>
-        {{/each}} {{/if}} {{#if adjusted}}
+        {{/each}} {{/if}} {{#with (lookup options [value])~}} {{#if (ne label ../adjusted)}}
         <div class="adjustedvalue">{{localize adjusted}}</div>
-        {{/if}}
+        {{/if}} {{/with}}
       </div>
     </div>
     {{#if (or (eq hasShadow true) (eq blocktype "split"))}}

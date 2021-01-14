@@ -1,3 +1,6 @@
+import PopoutEditor from "../popout-editor.js";
+import JournalEntryFFG from "../items/journalentry-ffg.js";
+
 export default class EmbeddedItemHelpers {
   static async updateRealObject(item, data) {
     let flags = item.data.flags;
@@ -68,8 +71,110 @@ export default class EmbeddedItemHelpers {
 
       item.data = itemData;
 
+      // because this could be a temporary item, item-ffg.js may not fire, we need to set the renderedDesc.
+      if (item.data.data.renderedDesc) {
+        item.data.data.renderedDesc = PopoutEditor.renderDiceImages(item.data.data.description, {});
+      }
+
       await realItem.update(formData);
     }
     return;
+  }
+
+  /**
+   * Displays Owned Item, Item Modifier as a journal entry
+   *
+   * @param  {string} itemId - Owned Item Id
+   * @param  {string} modifierType - Item Modifier Type (itemattachment/itemmodifier)
+   * @param  {string} modifierId - Item Modifier Id
+   * @param  {string} actorId = Actor Id
+   */
+  static async displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, actorId) {
+    const actor = await game.actors.get(actorId);
+    const ownedItem = await actor.getOwnedItem(itemId);
+
+    if (!ownedItem) ui.notifications.warn(`The item had been removed or can not be found!`);
+
+    let modifierIndex;
+    let item;
+    if (ownedItem?.data?.data?.[modifierType]) {
+      modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
+      item = ownedItem.data.data[modifierType][modifierIndex];
+    }
+
+    if (!item) {
+      // this is a modifier on an attachment
+      ownedItem.data.data.itemattachment.forEach((a) => {
+        modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
+        if (modifierIndex > -1) {
+          item = a.data[modifierType][modifierIndex];
+        }
+      });
+    }
+
+    const readonlyItem = {
+      name: item.name,
+      content: item.data.description,
+    };
+
+    const readonlyItemJournalEntry = new JournalEntryFFG(readonlyItem, { temporary: true });
+    readonlyItemJournalEntry.sheet.render(true);
+  }
+
+  static async loadItemModifierSheet(itemId, modifierType, modifierId, actorId) {
+    let parent;
+    let ownedItem;
+
+    if (actorId) {
+      parent = await game.actors.get(actorId);
+      ownedItem = await parent.getOwnedItem(itemId);
+    } else {
+      ownedItem = await game.items.get(itemId);
+    }
+
+    let modifierIndex;
+    if (!isNaN(modifierId)) {
+      modifierIndex = modifierId;
+    } else {
+      modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
+    }
+
+    let item;
+    if (ownedItem?.data?.data?.[modifierType]) {
+      item = ownedItem.data.data[modifierType][modifierIndex];
+    }
+
+    if (!item) {
+      // this is a modifier on an attachment
+      ownedItem.data.data.itemattachment.forEach((a) => {
+        if (!isNaN(modifierId)) {
+          modifierIndex = modifierId;
+        } else {
+          modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
+        }
+        if (modifierIndex > -1) {
+          item = a.data[modifierType][modifierIndex];
+        }
+      });
+    }
+
+    const temp = {
+      ...item,
+      flags: {
+        ffgTempId: itemId,
+        ffgTempItemType: modifierType,
+        ffgTempItemIndex: modifierIndex,
+        ffgIsTemp: true,
+        ffgUuid: ownedItem.uuid,
+      },
+    };
+
+    let tempItem = await Item.create(temp, { temporary: true });
+    tempItem.data._id = temp._id;
+    tempItem.data.flags.readonly = true;
+    if (!temp._id) {
+      tempItem.data._id = randomID();
+    }
+    tempItem.sheet.render(true);
   }
 }
