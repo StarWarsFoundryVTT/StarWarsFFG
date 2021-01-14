@@ -850,7 +850,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       const foundItem = items.find((i) => {
-        return i._id === itemObject._id || i.flags.ffgimportid === itemObject.flags.ffgimportid;
+        return i._id === itemObject._id || (i.flags?.ffgimportid?.length ? i.flags.ffgimportid === itemObject.flags.ffgimportid : false);
       });
 
       switch (itemObject.type) {
