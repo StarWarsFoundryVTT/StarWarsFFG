@@ -90,35 +90,40 @@ export default class EmbeddedItemHelpers {
    * @param  {string} actorId = Actor Id
    */
   static async displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, actorId) {
-    const actor = await game.actors.get(actorId);
-    const ownedItem = await actor.getOwnedItem(itemId);
+    try {
+      const actor = await game.actors.get(actorId);
+      const ownedItem = await actor.getOwnedItem(itemId);
 
-    if (!ownedItem) ui.notifications.warn(`The item had been removed or can not be found!`);
+      if (!ownedItem) ui.notifications.warn(`The item had been removed or can not be found!`);
 
-    let modifierIndex;
-    let item;
-    if (ownedItem?.data?.data?.[modifierType]) {
-      modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
-      item = ownedItem.data.data[modifierType][modifierIndex];
+      let modifierIndex;
+      let item;
+      if (ownedItem?.data?.data?.[modifierType]) {
+        modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
+        item = ownedItem.data.data[modifierType][modifierIndex];
+      }
+
+      if (!item) {
+        // this is a modifier on an attachment
+        ownedItem.data.data.itemattachment.forEach((a) => {
+          modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
+          if (modifierIndex > -1) {
+            item = a.data[modifierType][modifierIndex];
+          }
+        });
+      }
+
+      const readonlyItem = {
+        name: item.name,
+        content: item.data.description,
+      };
+
+      const readonlyItemJournalEntry = new JournalEntryFFG(readonlyItem, { temporary: true });
+      readonlyItemJournalEntry.sheet.render(true);
+    } catch (err) {
+      ui.notifications.warn(`The item or quality has been removed or can not be found!`);
+      CONFIG.logger.warn(`Error loading Read-Only Journal Item`, err);
     }
-
-    if (!item) {
-      // this is a modifier on an attachment
-      ownedItem.data.data.itemattachment.forEach((a) => {
-        modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
-        if (modifierIndex > -1) {
-          item = a.data[modifierType][modifierIndex];
-        }
-      });
-    }
-
-    const readonlyItem = {
-      name: item.name,
-      content: item.data.description,
-    };
-
-    const readonlyItemJournalEntry = new JournalEntryFFG(readonlyItem, { temporary: true });
-    readonlyItemJournalEntry.sheet.render(true);
   }
 
   static async loadItemModifierSheet(itemId, modifierType, modifierId, actorId) {

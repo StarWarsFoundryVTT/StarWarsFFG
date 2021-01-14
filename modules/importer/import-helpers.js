@@ -1237,4 +1237,14 @@ export default class ImportHelpers {
 
     return sourceText;
   }
+
+  static prepareBaseObject(obj, type) {
+    const output = {
+      name: obj.Name,
+      type,
+      flags: {
+        ffgimportid: obj.Key,
+      },
+    };
+  }
 }
