@@ -6,7 +6,8 @@ export default class ItemBaseFFG extends Item {
       return super.update(data, options);
     } else {
       await EmbeddedItemHelpers.updateRealObject(this, data);
-      this.sheet.render(true);
+
+      this.sheet.render(false);
     }
   }
 }

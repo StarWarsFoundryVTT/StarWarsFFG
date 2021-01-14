@@ -1,4 +1,5 @@
 import ImportHelpers from "../importer/import-helpers.js";
+import JournalEntryFFG from "../items/journalentry-ffg.js";
 
 export default class ItemHelpers {
   static async itemUpdate(event, formData) {
@@ -159,41 +160,5 @@ export default class ItemHelpers {
         });
       }
     }
-  }
-
-  static async loadItemModifierSheet(itemId, modifierType, modifierId, actorId) {
-    const actor = await game.actors.get(actorId);
-    const ownedItem = await actor.getOwnedItem(itemId);
-    let modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
-    let item = ownedItem.data.data[modifierType][modifierIndex];
-
-    if (!item) {
-      // this is a modifier on an attachment
-      ownedItem.data.data.itemattachment.forEach((a) => {
-        modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
-        if (modifierIndex > -1) {
-          item = a.data[modifierType][modifierIndex];
-        }
-      });
-    }
-
-    const temp = {
-      ...item,
-      flags: {
-        ffgTempId: itemId,
-        ffgTempItemType: modifierType,
-        ffgTempItemIndex: modifierIndex,
-        ffgIsTemp: true,
-        ffgUuid: ownedItem.uuid,
-      },
-    };
-
-    let tempItem = await Item.create(temp, { temporary: true });
-    tempItem.data._id = temp._id;
-    tempItem.data.flags.readonly = true;
-    if (!temp._id) {
-      tempItem.data._id = randomID();
-    }
-    tempItem.sheet.render(true);
   }
 }

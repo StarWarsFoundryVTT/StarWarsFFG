@@ -35,6 +35,7 @@ import ImportHelpers from "./importer/import-helpers.js";
 import { createFFGMacro } from "./helpers/macros.js";
 import ModifierHelpers from "./helpers/modifiers.js";
 import ItemHelpers from "./helpers/item-helpers.js";
+import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -700,7 +701,7 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
     const parts = uuid.split(".");
     const [entityName, entityId, embeddedName, embeddedId] = parts;
 
-    await ItemHelpers.loadItemModifierSheet(embeddedId, modifierType, modifierId, entityId);
+    await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
   });
 });
 

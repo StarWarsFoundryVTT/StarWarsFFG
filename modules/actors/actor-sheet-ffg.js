@@ -8,6 +8,8 @@ import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers from "../helpers/actor-helpers.js";
+import ItemHelpers from "../helpers/item-helpers.js";
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -326,39 +328,7 @@ export class ActorSheetFFG extends ActorSheet {
           let itemId = li.dataset.itemId;
           let modifierType = li.dataset.modifierType;
           let modifierId = li.dataset.modifierId;
-
-          const ownedItem = await this.actor.getOwnedItem(itemId);
-          let modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
-          let item = ownedItem.data.data[modifierType][modifierIndex];
-
-          if (!item) {
-            // this is a modifier on an attachment
-            ownedItem.data.data.itemattachment.forEach((a) => {
-              modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
-              if (modifierIndex > -1) {
-                item = a.data[modifierType][modifierIndex];
-              }
-            });
-          }
-
-          const temp = {
-            ...item,
-            flags: {
-              ffgTempId: itemId,
-              ffgTempItemType: modifierType,
-              ffgTempItemIndex: modifierIndex,
-              ffgIsTemp: true,
-              ffgUuid: ownedItem.uuid,
-            },
-          };
-
-          let tempItem = await Item.create(temp, { temporary: true });
-          tempItem.data._id = temp._id;
-          tempItem.data.flags.readonly = true;
-          if (!temp._id) {
-            tempItem.data._id = randomID();
-          }
-          tempItem.sheet.render(true);
+          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor._id);
         });
       }
     });
