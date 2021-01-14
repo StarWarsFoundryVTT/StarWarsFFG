@@ -30,16 +30,24 @@ export class ItemFFG extends ItemBaseFFG {
       case "weapon":
         // Apply item attachments / modifiers
 
+        data.damage.value = parseInt(data.damage.value, 10);
+        data.crit.value = parseInt(data.crit.value, 10);
+        data.encumbrance.value = parseInt(data.encumbrance.value, 10);
+        data.price.value = parseInt(data.price.value, 10);
+        data.rarity.value = parseInt(data.rarity.value, 10);
+
         data.range.adjusted = data.range.value;
-        data.damage.adjusted = data.damage.value;
-        data.crit.adjusted = data.crit.value;
-        data.encumbrance.adjusted = data.encumbrance.value;
-        data.price.adjusted = data.price.value;
-        data.rarity.adjusted = data.rarity.value;
+        data.damage.adjusted = parseInt(data.damage.value, 10);
+        data.crit.adjusted = parseInt(data.crit.value, 10);
+        data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
+        data.price.adjusted = parseInt(data.price.value, 10);
+        data.rarity.adjusted = parseInt(data.rarity.value, 10);
+
         data.adjusteditemmodifier = [];
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
+            modifier.data.rank_current = modifier.data.rank;
             data.adjusteditemmodifier.push({ ...modifier });
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
           });

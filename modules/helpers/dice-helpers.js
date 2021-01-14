@@ -114,6 +114,24 @@ export default class DiceHelpers {
           dicePool.upgrade(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Downgrade Difficulty", "Dice Ability"));
         });
       }
+      if (item?.data?.itemmodifier) {
+        item.data.itemmodifier.forEach((modifier) => {
+          dicePool.boost += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Boost", "Roll Modifiers");
+          dicePool.setback += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Setback", "Roll Modifiers");
+          dicePool.advantage += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Advantage", "Result Modifiers");
+          dicePool.dark += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Dark", "Result Modifiers");
+          dicePool.failure += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Failure", "Result Modifiers");
+          dicePool.light += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Light", "Result Modifiers");
+          dicePool.success += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Success", "Result Modifiers");
+          dicePool.threat += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Threat", "Result Modifiers");
+
+          dicePool.difficulty += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Add Difficulty", "Dice Modifiers");
+          dicePool.upgradeDifficulty(ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Upgrade Difficulty", "Dice Modifiers"));
+          dicePool.upgradeDifficulty(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Downgrade Difficulty", "Dice Modifiers"));
+          dicePool.upgrade(ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Upgrade Difficulty", "Dice Ability"));
+          dicePool.upgrade(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "Downgrade Difficulty", "Dice Ability"));
+        });
+      }
     }
 
     this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
