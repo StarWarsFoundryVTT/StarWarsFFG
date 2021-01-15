@@ -469,6 +469,9 @@
   "SWFFG.ModTypeAddThreat": "Add Threat",
   "SWFFG.ModTypeStatArmor" : "Armor Stat",
   "SWFFG.FromAttachment": "From Attachment",
-  "SWFFG.WeaponCardCritical" : "Critical"
+  "SWFFG.WeaponCardCritical" : "Critical",
+  "SWFFG.ItemModifiers" : "Item Modifiers",
+  "SWFFG.BaseMods": "Base Mods",
+  "SWFFG.Count": "Count"
 }
 
