@@ -23,6 +23,10 @@ export class ItemFFG extends ItemBaseFFG {
     const actorData = this.actor ? this.actor.data : {};
     const data = itemData.data;
 
+    if (this.compendium) {
+      itemData.flags.isCompendium = true;
+    }
+
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actorData);
 
     // perform localisation of dynamic values
