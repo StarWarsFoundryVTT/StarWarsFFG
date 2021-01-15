@@ -28,8 +28,13 @@ export class ItemSheetFFG extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  async getData() {
-    const data = super.getData();
+  async getData(options) {
+    let data = super.getData(options);
+
+    if (options?.action === "update" && this.object.compendium) {
+      data.item = mergeObject(data.item, options.data);
+    }
+
     data.classType = this.constructor.name;
     CONFIG.logger.debug(`Getting Item Data ${this.object.name}`);
 
