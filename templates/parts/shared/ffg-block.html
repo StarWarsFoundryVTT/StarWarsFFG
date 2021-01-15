@@ -46,7 +46,7 @@
         {{/if}} {{/if}} {{#if (eq blocktype "split")}} {{#each fields as |t|}}
         <div class="block-value"><input type="text" name="{{name}}" value="{{value}}" data-dtype="type" {{#if disabled}}disabled{{/if}} /></div>
         {{/each}} {{/if}} {{#with (lookup options [value])~}} {{#if (ne label ../adjusted)}}
-        <div class="adjustedvalue">{{localize adjusted}}</div>
+        <div class="adjustedvalue">{{localize ../adjusted}}</div>
         {{/if}} {{/with}}
       </div>
     </div>
