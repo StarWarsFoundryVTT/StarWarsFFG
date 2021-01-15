@@ -93,6 +93,8 @@ export class DicePoolFFG {
         if (this.proficiency > 0) {
           this.proficiency--;
           this.ability++;
+        } else if (this.ability > 0) {
+          this.ability--;
         }
       } else {
         if (this.ability > 0) {
@@ -124,7 +126,9 @@ export class DicePoolFFG {
         if (this.challenge > 0) {
           this.challenge--;
           this.difficulty++;
-        } 
+        } else if (this.difficulty > 0) {
+          this.difficulty--;
+        }
       } else {
         if (this.difficulty > 0) {
           this.difficulty--;
