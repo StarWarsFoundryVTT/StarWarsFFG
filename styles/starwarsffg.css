@@ -1653,7 +1653,7 @@ img {
 }
 
 .starwarsffg .items .items-header .header-name {
-  flex: 1 0 100px;
+  flex: 1 0 120px;
   text-align: left;
 }
 
@@ -1713,8 +1713,18 @@ img {
 .starwarsffg .items .items-list .item-name {
   margin: 0;
   cursor: pointer;
-  flex: 1 0 100px;
+  flex: 1 0 120px;
   text-align: left;
+  display: flex;
+}
+
+.starwarsffg .item-rollable {
+  height: 24px;
+  width: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin-right: 5px;
+  border: none;
 }
 
 .starwarsffg .items .items-list .item-controls {
@@ -1782,7 +1792,7 @@ img {
 }
 
 .starwarsffg .talent-list .talents-header .header-name {
-  flex: 1 0 100px;
+  flex: 1 0 120px;
   text-align: left;
 }
 
