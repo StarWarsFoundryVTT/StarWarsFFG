@@ -42,8 +42,7 @@ export default class ItemHelpers {
 
     // Update the Item
     this.item.data.flags.loaded = false;
-    const x = await this.object.update(formData);
-    this.item.data = mergeObject(this.item.data, x[0]);
+    await this.object.update(formData);
 
     if (this.object.data.type === "talent") {
       if (this.object.data.flags?.clickfromparent?.length) {
