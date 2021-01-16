@@ -690,7 +690,7 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
     DiceHelpers.displayRollDialog(poolData.roll.data, dicePool, poolData.description, poolData.roll.skillName, poolData.roll.item, poolData.roll.flavor, poolData.roll.sound);
   });
 
-  html.find(".item-display .item-pill").on("click", async (event) => {
+  html.find(".item-display .item-pill, .item-properties .item-pill").on("click", async (event) => {
     event.preventDefault();
     event.stopPropagation();
     const li = event.currentTarget;
@@ -698,7 +698,12 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
     let modifierId = li.dataset.modifierId;
     let modifierType = li.dataset.modifierType;
 
+    if (li.dataset.uuid) {
+      uuid = li.dataset.uuid;
+    }
+
     const parts = uuid.split(".");
+
     const [entityName, entityId, embeddedName, embeddedId] = parts;
 
     await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
