@@ -11,9 +11,9 @@ export default class ItemBaseFFG extends Item {
     } else {
       await EmbeddedItemHelpers.updateRealObject(this, data);
 
-      if (this.data.flags?.ffgParent?.isCompendium) {
+      if (this.data.flags?.ffgParent?.isCompendium || Object.values(this.apps)[0]._state === Application.RENDER_STATES.RENDERED) {
       } else {
-        this.sheet.render(false);
+        this.sheet.render(true);
         return this;
       }
     }
