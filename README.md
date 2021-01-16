@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 16/01/2021 - Cstadther - Enhancement 633 - Added quality rendering to `Send To Chat` template.
 - 16/01/2021 - Cstadther - Added Item Attachments and styling to support it.
 - 15/01/2021 - Cstadther - Added code to fix save/display issues with compendium items.
 - 08/01/2021 - Cstadther - Added new paused image.

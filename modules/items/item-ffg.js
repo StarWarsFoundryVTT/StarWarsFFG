@@ -318,7 +318,7 @@ export class ItemFFG extends ItemBaseFFG {
     // General equipment properties
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
-        const qualities = data.adjusteditemmodifier.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this._id}' data-modifier-id='${m._id}' data-modifier-type='${m.type}'>${m.name} ${m.data.rank} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = data.adjusteditemmodifier.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this._id}' data-uuid='${this.uuid}' data-modifier-id='${m._id}' data-modifier-type='${m.type}'>${m.name} ${m.data.rank} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
