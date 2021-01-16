@@ -758,6 +758,35 @@ Hooks.once("ready", async () => {
           CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
           CONFIG.logger.log(actor.data.data.stats.strain);
         }
+
+        // migrate all character to using current skill list if not default.
+        let skilllist = game.settings.get("starwarsffg", "skilltheme");
+
+        if (CONFIG.FFG?.alternateskilllists?.length) {
+          try {
+            let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
+            CONFIG.logger.log(`Applying skill theme ${skilllist} to actor ${actor.name}`);
+
+            Object.keys(actor.data.data.skills).forEach((skill) => {
+              if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
+                skills.skills[`-=${skill}`] = null;
+              } else {
+                skills.skills[skill] = {
+                  ...skills.skills[skill],
+                  ...actor.data.data.skills[skill],
+                };
+              }
+            });
+
+            actor.update({
+              data: {
+                skills: skills.skills,
+              },
+            });
+          } catch (err) {
+            CONFIG.logger.warn(err);
+          }
+        }
       }
     });
 
