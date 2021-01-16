@@ -34,8 +34,11 @@ export class ActorFFG extends Actor {
           };
         });
 
-      const skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
-      mergeObject(skills, actorSkills);
+      let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
+
+      if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+        data.skills = mergeObject(skills, actorSkills);
+      }
 
       const sorted = Object.keys(skills).sort(function (a, b) {
         const x = game.i18n.localize(skills[a].abrev);
@@ -85,7 +88,11 @@ export class ActorFFG extends Actor {
       for (let skill of Object.keys(data.skills)) {
         const cleanedSkillName = skill.replace(/[\W_]+/g, "");
 
-        const strId = `SWFFG.SkillsName${cleanedSkillName}`;
+        let strId = `SWFFG.SkillsName${cleanedSkillName}`;
+        if (data.skills[skill].label) {
+          strId = data.skills[skill].label;
+        }
+
         const localizedField = game.i18n.localize(strId);
 
         if (!data.skills[skill].custom) {
