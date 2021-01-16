@@ -1,4 +1,5 @@
 import ImportHelpers from "../importer/import-helpers.js";
+import JournalEntryFFG from "../items/journalentry-ffg.js";
 
 export default class ItemHelpers {
   static async itemUpdate(event, formData) {

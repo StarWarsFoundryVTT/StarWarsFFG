@@ -33,6 +33,9 @@ import { defaultSkillArrayString } from "./config/ffg-skillslist.js";
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
 import ImportHelpers from "./importer/import-helpers.js";
 import { createFFGMacro } from "./helpers/macros.js";
+import ModifierHelpers from "./helpers/modifiers.js";
+import ItemHelpers from "./helpers/item-helpers.js";
+import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -685,6 +688,20 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
     const dicePool = new DicePoolFFG(poolData.dicePool);
 
     DiceHelpers.displayRollDialog(poolData.roll.data, dicePool, poolData.description, poolData.roll.skillName, poolData.roll.item, poolData.roll.flavor, poolData.roll.sound);
+  });
+
+  html.find(".item-display .item-pill").on("click", async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const li = event.currentTarget;
+    let uuid = li.dataset.itemId;
+    let modifierId = li.dataset.modifierId;
+    let modifierType = li.dataset.modifierType;
+
+    const parts = uuid.split(".");
+    const [entityName, entityId, embeddedName, embeddedId] = parts;
+
+    await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
   });
 });
 

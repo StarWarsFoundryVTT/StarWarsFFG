@@ -1,10 +1,6 @@
 import { ItemSheetFFG } from "./item-sheet-ffg.js";
 
 export class ItemSheetFFGV2 extends ItemSheetFFG {
-  constructor(...args) {
-    super(...args);
-  }
-
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {

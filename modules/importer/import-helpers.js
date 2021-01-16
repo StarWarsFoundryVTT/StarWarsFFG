@@ -1225,8 +1225,27 @@ export default class ImportHelpers {
       }
     }
 
-    const sourceText = `[P][H3]Sources:[h3]${sourceArray.map((s) => `[H4]Page ${s.$Page} - ${s._}[h4]`).join("")}`;
+    const text = sourceArray.map((s) => {
+      if (s?.$Page) {
+        return `[H4]Page ${s.$Page} - ${s._}[h4]`;
+      } else {
+        return `[H4]${s}[h4]`;
+      }
+    });
+
+    const sourceText = `[P][H3]Sources:[h3]${text.join("")}`;
 
     return sourceText;
+  }
+
+  static prepareBaseObject(obj, type) {
+    return {
+      name: obj.Name,
+      type,
+      flags: {
+        ffgimportid: obj.Key,
+      },
+      data: {},
+    };
   }
 }

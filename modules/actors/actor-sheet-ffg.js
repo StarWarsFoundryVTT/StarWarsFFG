@@ -8,6 +8,8 @@ import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers from "../helpers/actor-helpers.js";
+import ItemHelpers from "../helpers/item-helpers.js";
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -317,6 +319,17 @@ export class ActorSheetFFG extends ActorSheet {
           if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
           else this._itemDisplayDetails(item, ev);
         }
+
+        html.find("li.item-pill").on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const li = event.currentTarget;
+
+          let itemId = li.dataset.itemId;
+          let modifierType = li.dataset.modifierType;
+          let modifierId = li.dataset.modifierId;
+          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor._id);
+        });
       }
     });
 
