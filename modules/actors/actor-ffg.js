@@ -102,7 +102,7 @@ export class ActorFFG extends Actor {
         this._calculateDerivedValues(actorData);
       }
     } else if (actorData.type === "vehicle") {
-      this._applyVehicelModifiers(actorData);
+      this._applyVehicleModifiers(actorData);
     }
   }
 
@@ -720,7 +720,7 @@ export class ActorFFG extends Actor {
     });
   }
 
-  _applyVehicelModifiers(actorData) {
+  _applyVehicleModifiers(actorData) {
     const data = actorData.data;
     const isPC = this.hasPlayerOwner;
     if (!actorData.modifiers) {

@@ -75,6 +75,7 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'armour'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
+
       <div class="item-name">
         <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
         {{#if item.data.rarity.isrestricted}}
