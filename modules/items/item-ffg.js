@@ -257,6 +257,15 @@ export class ItemFFG extends ItemBaseFFG {
       }
     }
 
+    // Weapon properties
+    if (this.type === "weapon") {
+      if (data.hasOwnProperty("skill")) {
+        const cleanedSkillName = data.skill.value.replace(/[\W_]+/g, "");
+        const skillLabel = "SWFFG.SkillsName" + cleanedSkillName;
+        props.push(`Skill: ${game.i18n.localize(skillLabel)}`);
+      }
+    }
+
     // Talent properties
     if (data.hasOwnProperty("isForceTalent")) {
       if (data.isForceTalent) props.push(game.i18n.localize("SWFFG.ForceTalent"));
