@@ -1,9 +1,20 @@
 {{#if (ne actor.type "vehicle")}} {{!-- Weapons List --}}
+<script>
+    function swapIcon(element, iconPath) {
+        /*
+            Update the CSS of the item element when moused over. Done here to avoid super difficult to read, inline Javascript
+            Feel free to move elsewhere (feels a bit weird to have a random script block here)
+        */
+        element.style.backgroundImage = 'url(' + encodeURI(iconPath) + ')';
+        element.style.backgroundSize = 'contain';
+        element.style.backgroundRepeat = 'no-repeat';
+        element.style.backgroundPosition = 'center';
+    };
+</script>
 <ul class="items">
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.ItemsWeapons"}}</div>
     <div class="">{{localize "SWFFG.Equipped"}}</div>
-    <div class="">{{localize "SWFFG.ItemsSkill"}}</div>
     <div class="">{{localize "SWFFG.ItemsDamage"}}</div>
     <div class="">{{localize "SWFFG.ItemsRange"}}</div>
     <div class="">{{localize "SWFFG.ItemsCrit"}}</div>
@@ -15,9 +26,19 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'weapon'}}
     <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
-      <div class="item-name hover {{#if item.data.rarity.isrestricted}}restricted{{/if}}">
-        {{item.name}} {{#if item.data.rarity.isrestricted}}
-        <div class="tooltip2">This is a Restricted item</div>
+      <div class="item-name">
+        <div class="roll-button">
+          <!-- Create define a button with mouseover events to update the icon and generate rolls when clicked and moused over -->
+          <div class="skill-label rollable roll-button starwarsffg item-rollable" style="background-image: url('{{ item.img }}')" onmouseover="swapIcon(this, 'systems/starwarsffg/images/generic-die.svg')" onmouseout="swapIcon(this, '{{ item.img }}')"></div>
+        </div>
+        {{#if item.data.rarity.isrestricted}}
+          <div class="hover">
+          <font color="#8b0000">
+        {{/if}}
+        {{item.name}}
+        {{#if item.data.rarity.isrestricted}}
+          </font><div class="tooltip2">This is a Restricted item</div>
+            </div>
         {{/if}}
       </div>
       <div>
@@ -26,9 +47,6 @@
         {{else}}
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
         {{/if}}
-      </div>
-      <div class="skill-roll">
-        <div class="roll-button"><div class="skill-label rollable">{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</div></div>
       </div>
       <div>{{item.data.damage.value}} {{#if (and (ne item.data.damage.value item.data.damage.adjusted) (or (gt item.data.damage.adjusted.length 0) (gt item.data.damage.adjusted 0)))}}({{item.data.damage.adjusted}}){{/if}}</div>
       <div>{{localize item.data.range.label}}</div>
@@ -57,9 +75,17 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'armour'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
-      <div class="item-name hover {{#if item.data.rarity.isrestricted}}restricted{{/if}}">
-        {{item.name}} {{#if item.data.rarity.isrestricted}}
-        <div class="tooltip2">This is a Restricted item</div>
+
+      <div class="item-name">
+        <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
+        {{#if item.data.rarity.isrestricted}}
+        <div class="hover">
+          <font color="#8b0000">
+        {{/if}}
+        {{item.name}}
+        {{#if item.data.rarity.isrestricted}}
+          </font><div class="tooltip2">This is a Restricted item</div>
+            </div>
         {{/if}}
       </div>
       <div>
@@ -96,9 +122,16 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'gear'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
-      <div class="item-name hover {{#if item.data.rarity.isrestricted}}restricted{{/if}}">
-        {{item.name}} {{#if item.data.rarity.isrestricted}}
-        <div class="tooltip2">This is a Restricted item</div>
+      <div class="item-name">
+        <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
+        {{#if item.data.rarity.isrestricted}}
+        <div class="hover">
+          <font color="#8b0000">
+        {{/if}}
+        {{item.name}}
+        {{#if item.data.rarity.isrestricted}}
+          </font><div class="tooltip2">This is a Restricted item</div>
+            </div>
         {{/if}}
       </div>
       <!-- <div>{{item.data.price.value}}</div>
