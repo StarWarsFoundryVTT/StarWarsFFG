@@ -702,7 +702,7 @@ img {
   padding-bottom: 0;
 }
 
-.starwarsffg .item-name.restricted {
+.starwarsffg .item-name .restricted {
   color: #8b0000;
 }
 
@@ -1718,15 +1718,6 @@ img {
   display: flex;
 }
 
-.starwarsffg .item-rollable {
-  height: 24px;
-  width: 48px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  margin-right: 5px;
-  border: none;
-}
-
 .starwarsffg .items .items-list .item-controls {
   z-index: 500;
   width: 20px;
@@ -1765,6 +1756,23 @@ img {
   border: 1px solid #646464;
   border-radius: 3px;
   background: rgba(0, 0, 0, 0.1);
+}
+
+.starwarsffg .item-rollable {
+  height: 24px;
+  width: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 5px;
+  border: none;
+}
+
+.starwarsffg .item-rollable.rollable:hover {
+  background-image: url(/systems/starwarsffg/images/generic-die.svg) !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .starwarsffg .talents {
