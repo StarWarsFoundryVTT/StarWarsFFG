@@ -12,7 +12,7 @@
     font-size: 12px;
     font-weight: normal;
     .header-name {
-      flex: 1 0 100px;
+      flex: 1 0 120px;
       text-align: left;
     }
   }
@@ -62,8 +62,9 @@
     .item-name {
       margin: 0;
       cursor: pointer;
-      flex: 1 0 100px;
+      flex: 1 0 120px;
       text-align: left;
+      display: flex;
     }
     .item-controls {
       z-index: 500;
@@ -102,3 +103,22 @@
     }
   }
 }
+
+.item-rollable {
+  height: 24px;
+  width: 48px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 5px;
+  border: none;
+  &.rollable {
+    &:hover {
+      background-image: url(/systems/starwarsffg/images/generic-die.svg) !important;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+} 
+
