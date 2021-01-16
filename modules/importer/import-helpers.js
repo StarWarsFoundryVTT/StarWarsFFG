@@ -133,7 +133,7 @@ export default class ImportHelpers {
    */
   static findEntityByImportId(type, id) {
     return game.data[type].find((item) => {
-      return item.flags.importid === id;
+      return item.flags.ffgimportid === id;
     });
   }
 
@@ -176,7 +176,7 @@ export default class ImportHelpers {
 
           const content = await pack.getContent();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].data.flags.importid] = content[i];
+            CONFIG.temporary[packid][content[i].data.flags.ffgimportid] = content[i];
           }
         }
       } else {
@@ -249,26 +249,7 @@ export default class ImportHelpers {
 
     if (["BR", "AG", "INT", "CUN", "WIL", "PR"].includes(mod.Key)) {
       modtype = "Characteristic";
-      switch (mod.Key) {
-        case "BR":
-          type = "Brawn";
-          break;
-        case "AG":
-          type = "Agility";
-          break;
-        case "INT":
-          type = "Intellect";
-          break;
-        case "CUN":
-          type = "Cunning";
-          break;
-        case "WIL":
-          type = "Willpower";
-          break;
-        case "PR":
-          type = "Presence";
-          break;
-      }
+      type = ImportHelpers.convertOGCharacteristic(mod.Key);
     }
 
     if (Object.keys(CONFIG.temporary.skills).includes(mod.Key)) {
@@ -423,6 +404,8 @@ export default class ImportHelpers {
     }
   };
 
+  static characteristicKeyToName(key) {}
+
   static async characterImport(data) {
     try {
       $(".import-progress.current").toggleClass("import-hidden");
@@ -447,7 +430,7 @@ export default class ImportHelpers {
         name: characterName ? characterName : "No Name",
         type: "character",
         flags: {
-          importid: characterData.Character.Key,
+          ffgimportid: characterData.Character.Key,
         },
         data: {
           attributes: {},
@@ -666,25 +649,27 @@ export default class ImportHelpers {
             },
           },
           experience: {
-            total: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks, 10),
-            available: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks, 10) - parseInt(characterData.Character.Experience.ExperienceRanks.UsedExperience, 10),
+            total: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10),
+            available: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10) - parseInt(characterData.Character.Experience.ExperienceRanks.UsedExperience ?? 0, 10),
           },
         },
         items: [],
       };
 
       characterData.Character.Characteristics.CharCharacteristic.forEach((char) => {
-        if (!character.data.attributes?.[char.name]) {
-          character.data.attributes[char.Name] = {
-            key: char.name,
-            mod: char.name,
+        const name = ImportHelpers.convertOGCharacteristic(char.Key);
+
+        if (!character.data.attributes?.[name]) {
+          character.data.attributes[name] = {
+            key: name,
+            mod: name,
             modtype: "Characteristic",
             value: 0,
           };
         }
         if (char.Rank?.PurchasedRanks) {
-          character.data.characteristics[char.Name].value = parseInt(char.Rank.PurchasedRanks, 10);
-          character.data.attributes[char.Name].value = parseInt(char.Rank.PurchasedRanks, 10);
+          character.data.characteristics[name].value = parseInt(char.Rank.PurchasedRanks, 10);
+          character.data.attributes[name].value = parseInt(char.Rank.PurchasedRanks, 10);
         }
       });
 
@@ -742,7 +727,9 @@ export default class ImportHelpers {
       updateDialog(10);
 
       try {
-        const species = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey)));
+        const x = await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey);
+
+        const species = JSON.parse(JSON.stringify(x));
         if (species) {
           for (let i = 0; i < speciesSkills.length; i += 1) {
             // first determine if the modifier exists, oggdudes doesn't differentiate between chosen skills (ie human) vs static skill (ie Nautolan)
@@ -1105,20 +1092,24 @@ export default class ImportHelpers {
 
       updateDialog(80);
 
-      const serverPath = `worlds/${game.world.id}/images/characters`;
-      await ImportHelpers.verifyPath("data", serverPath);
+      try {
+        const serverPath = `worlds/${game.world.id}/images/characters`;
+        await ImportHelpers.verifyPath("data", serverPath);
 
-      const imge = characterData.Character.Portrait;
-      if (imge) {
-        const img = this.b64toBlob(imge);
-        const i = new File([img], `${characterData.Character.Key}.png`, { type: "image/png" });
-        await Helpers.UploadFile("data", serverPath, i, { bucket: null });
-        character.img = `${serverPath}/${characterData.Character.Key}.png`;
+        const imge = characterData.Character.Portrait;
+        if (imge) {
+          const img = this.b64toBlob(imge);
+          const i = new File([img], `${characterData.Character.Key}.png`, { type: "image/png" });
+          await Helpers.UploadFile("data", serverPath, i, { bucket: null });
+          character.img = `${serverPath}/${characterData.Character.Key}.png`;
+        }
+      } catch (err) {
+        CONFIG.logger.error(`Failed to upload character portrait.`, err);
       }
 
       updateDialog(90);
 
-      const exists = game.data.actors.find((actor) => actor.flags.importid === characterData.Character.Key);
+      const exists = game.data.actors.find((actor) => actor.flags.ffgimportid === characterData.Character.Key);
       if (exists) {
         //let updateData = ImportHelpers.buildUpdateData(character);
         let updateData = character;
@@ -1213,5 +1204,29 @@ export default class ImportHelpers {
     }
 
     return type;
+  }
+
+  /**
+   * Converts sources to text
+   * @param  {} sources
+   */
+  static getSources(sources) {
+    if (!sources) return "";
+
+    let sourceArray = [];
+
+    if (!sources?.Source) {
+      sourceArray = [sources];
+    } else {
+      if (!Array.isArray(sources.Source)) {
+        sourceArray = [sources.Source];
+      } else {
+        sourceArray = sources.Source;
+      }
+    }
+
+    const sourceText = `[P][H3]Sources:[h3]${sourceArray.map((s) => `[H4]Page ${s.$Page} - ${s._}[h4]`).join("")}`;
+
+    return sourceText;
   }
 }

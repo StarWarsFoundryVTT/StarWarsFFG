@@ -36,6 +36,30 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 15/01/2021 - Cstadther - Added code to fix save/display issues with compendium items.
+- 08/01/2021 - Cstadther - Added new paused image.
+- 04/01/2021 - Cstadther - Fix for Melee-* skills not calculating damage correctly when based on Brawn.
+- 04/01/2021 - Cstadther - Enhanced the enhancement provided by @wrycu, added localization, added sheet level options for talent sorting to override global setting, added localization.
+- 04/01/2021 - Cstadther - Fix issue with Genesys Adversaries import.
+- 03/01/2021 - Cstadther - Fix for rendering secrets in content.
+- 02/01/2021 - Cstadther - Enhancement 593 - Added context to destiny point flip message, now with styling and lists what the pools changed to.
+- 02/01/2021 - Cstadther - Enhancement 591 - Added `Source` to the description for all imported items.
+- 31/12/2020 - Cstadther - Enhancement 529 - Added Restricted checkbox to items.  Updated OggDude importer to import restricted data.
+- 31/12/2020 - Cstadther - Fix 539 - Fixed issue where added skills were removed when duplicating an actor.
+- 31/12/2020 - Cstadther - Enhancement 546 - Added `All Skills` to skill list modifier drop down, will apply the modifier to all skills.
+- 31/12/2020 - Cstadther - Fix - Fixed issue with v2 styles cutting off.  Fixed issue with Signature Abilities and Force Power Upgrades not being listed (from previous core update)
+- 31/12/2020 - Cstadther - Enhancement - Added Terrinoth and Crucible skill sets, verified Android skill set.  These will only be available in new worlds.
+- 30/12/2020 - Cstadther - Enhancement 442 - Added v2 Character sheets with tabs broken out on the left.
+- 30/12/2020 - Cstadther - Fix 568 - Changed the way skills are rendered, but spliting skills into two columns and rendering those columns. 
+- 28/12/2020 - Cstadther - Fix 569 - Fixed OggDude export with non-english characteristic names (now uses characteristic keys).  Added compendium migrations, as new version (1.3) will change importid property from importid to ffgimportid to resolve issue with Core migration overwriting property.
+- 28/12/2020 - Cstadther - Fix 553 - Fixed specialization link search for world compendiums that have been converted module compendiums.
+- 28/12/2020 - Cstadther - Enhancement 570 - Added "Send to All" option for roll dialog.
+- 22/12/2020 - Cstadther - Added Functional Testing.
+- 21/12/2020 - Cstadther - Fix 562 - Fixed issue where multiple GMs were causing the Destiny Roll to be handled multiple times.
+- 21/12/2020 - Cstadther - Multiple Fixes - Fixed issue with additionalFlavorText error on some rolls. Fixed issues with Dedication increasing stat out of control. Fixed issue with OggDude import failing when skills not selected. Moved import id to ffgimportid to resolve issue when compendiums are migrated from a core upgrade. Updated roll audiohelper call to push sound to all connected clients.
+- 20/12/2020 - Cstadther - Added additional error handling for dice dialog error on `skills`
+- 20/12/2020 - Cstadther - Fix 558 - Fixes issue where uploads to Forge were not working correctly and error out of code section.
+- 20/12/2020 - Cstadther - Fix 556 - Fixed issue where title of intiative dialog was incorrect.
 - 19/12/2020 - Cstadther - Enhancement - Changed variable name in macro generation to resolve issue where `The Furnace` module defines a variable as `actor`
 - 18/12/2020 - Cstadther - Enhancement - Added ability to click on specialization talent header to edit attributes associated to that instance of the talent.
 - 16/12/2020 - Cstadther - Fix 533 - Moved destiny rolls and flipping to queue model, and custom socket method.

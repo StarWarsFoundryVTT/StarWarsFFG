@@ -16,8 +16,11 @@ export default class ModifierHelpers {
 
       return attrs[key].value.map((v) => v + total);
     } else {
-      total += attrs[key].value;
-      total += this.getCalculatedValueFromItems(items, key, modtype);
+      const attrValue = attrs[key].value;
+      const itemsValue = this.getCalculatedValueFromItems(items, key, modtype);
+
+      total += attrValue;
+      total += itemsValue;
     }
 
     return total;
@@ -37,7 +40,7 @@ export default class ModifierHelpers {
       items.forEach((item) => {
         if (item.data.attributes) {
           const attrsToApply = Object.keys(item.data.attributes)
-            .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
+            .filter((id) => (item.data.attributes[id].mod === key || item.data.attributes[id].mod === "*") && item.data.attributes[id].modtype === modtype)
             .map((i) => item.data.attributes[i]);
 
           if (item.type === "armour" || item.type === "weapon") {
@@ -132,7 +135,8 @@ export default class ModifierHelpers {
                 total += subValues.total;
                 sources = sources.concat(subValues.sources);
               } else {
-                total += this.getCalculatedValueFromItems(upgrades, key, modtype);
+                const subValues = this.getCalculatedValueFromItems(upgrades, key, modtype);
+                total += subValues;
               }
             }
           } else {

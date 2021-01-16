@@ -57,6 +57,7 @@ export class CombatFFG extends Combat {
         ids = typeof ids === "string" ? [ids] : ids;
         const c = initiative.getCombatant(ids[0]);
         const data = c.actor.data.data;
+        whosInitiative = c.actor.name;
 
         vigilanceDicePool = _buildInitiativePool(data, "Vigilance");
         coolDicePool = _buildInitiativePool(data, "Cool");

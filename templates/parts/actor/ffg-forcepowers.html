@@ -1,4 +1,4 @@
-{{#contains actor.items "type" "forcepower"}}
+{{#contains items "type" "forcepower"}}
 <ul class="talent-list">
   <li class="talents-header flexrow">
     <div class="header-name">{{localize "SWFFG.ForcePower"}}</div>
@@ -6,7 +6,7 @@
   </li>
 
   <ul class="talent-list">
-    {{#each actor.items as |item id|}} {{#iff item.type '==' 'forcepower'}}
+    {{#each items as |item id|}} {{#iff item.type '==' 'forcepower'}}
     <li class="item flexrow forcepower" data-item-id="{{item._id}}">
       <div class="item-name">
         {{item.name}}

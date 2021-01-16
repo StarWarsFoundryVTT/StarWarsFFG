@@ -42,11 +42,13 @@
                   {{/iff}}{{/each}}
                 </div>
               </div>
+              {{#if (contains classType "V2")}}{{else}}
               <div class="row">
                 <div>
                   <a class="alt-tab" data-tab="general"><i class="far fa-id-card"></i></a>
                 </div>
               </div>
+              {{/if}}
             </div>
           </div>
         </div>
@@ -61,19 +63,7 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}}
-  <nav class="sheet-tabs tabs" data-group="primary" style="{{#if limited}}display:none;{{/if}}">
-    <a class="item" data-tab="characteristics">{{localize "SWFFG.TabCharacteristics"}}</a>
-    <a class="item" data-tab="items">{{localize "SWFFG.TabGear"}}</a>
-    <a class="item" data-tab="talents">{{localize "SWFFG.TabTalents"}}</a>
-    <a class="item" data-tab="description">{{localize "SWFFG.TabBiography"}}</a>
-    <a class="item hidden-content" data-tab="general"><i class="fas fa-address-card"></i></a>
-    <a class="item hidden-content" data-tab="obligation"></a>
-    <!-- <a class="item" data-tab="attributes">Modifiers</a> -->
-    <!-- <a class="item" data-tab="description">{{localize "SWFFG.TabForcePowers"}}</a> -->
-  </nav>
-
-  {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) (object tab="obligation" label="SWFFG.TabObligationDutyMorality" icon="fas fa-balance-scale" cls=classType isHidden=true) )}} {{!-- Sheet Body --}}
   <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}
     <div class="tab characteristics active" data-group="primary" data-tab="characteristics">

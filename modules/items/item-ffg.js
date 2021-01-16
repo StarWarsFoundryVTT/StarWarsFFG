@@ -1,3 +1,4 @@
+import ItemBaseFFG from "./itembase-ffg.js";
 import PopoutEditor from "../popout-editor.js";
 import ActorOptions from "../actors/actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
@@ -7,7 +8,7 @@ import Helpers from "../helpers/common.js";
  * Extend the basic Item with some very simple modifications.
  * @extends {Item}
  */
-export class ItemFFG extends Item {
+export class ItemFFG extends ItemBaseFFG {
   /**
    * Augment the basic Item data model with additional dynamic data.
    */
@@ -36,7 +37,7 @@ export class ItemFFG extends Item {
               damageAdd += parseInt(data.attributes[attr].value, 10);
             }
           }
-          if ((data.skill.value === "Melee" || data.skill.value === "Brawl") && data.skill.useBrawn) {
+          if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl")) && data.skill.useBrawn) {
             data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
             data.damage.adjusted = +data.damage.value;
           } else {
@@ -253,6 +254,15 @@ export class ItemFFG extends Item {
       }
       if (data.hasOwnProperty("rarity")) {
         props.push(`Rarity: ${data.rarity.value}`);
+      }
+    }
+
+    // Weapon properties
+    if (this.type === "weapon") {
+      if (data.hasOwnProperty("skill")) {
+        const cleanedSkillName = data.skill.value.replace(/[\W_]+/g, "");
+        const skillLabel = "SWFFG.SkillsName" + cleanedSkillName;
+        props.push(`Skill: ${game.i18n.localize(skillLabel)}`);
       }
     }
 

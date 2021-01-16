@@ -148,7 +148,13 @@ export default class DataImporter extends FormApplication {
       let isSpecialization = false;
       let isVehicle = false;
 
-      let skillsFileName = importFiles.find((item) => item.file.includes("Skills.xml")).file;
+      let skillsFileName;
+      try {
+        skillsFileName = importFiles.find((item) => item.file.includes("Skills.xml")).file;
+      } catch (err) {
+        CONFIG.logger.warn(`Not importing skills.`);
+      }
+
       let createSkillJournalEntries = true;
 
       if (!skillsFileName) {
@@ -247,10 +253,12 @@ export default class DataImporter extends FormApplication {
             let item = {
               name: d.Name,
               flags: {
-                importid: d.Key,
+                ffgimportid: d.Key,
               },
               content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
             };
+
+            item.content += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
             let compendiumItem;
             await pack.getIndex();
@@ -311,7 +319,7 @@ export default class DataImporter extends FormApplication {
                 name: sa.SigAbility.Name,
                 type: "signatureability",
                 flags: {
-                  importid: sa.SigAbility.Key,
+                  ffgimportid: sa.SigAbility.Key,
                 },
                 data: {
                   description: sa.SigAbility.Description,
@@ -319,6 +327,8 @@ export default class DataImporter extends FormApplication {
                   upgrades: {},
                 },
               };
+
+              signatureAbility.data.description += ImportHelpers.getSources(sa?.SigAbility?.Sources ?? sa?.SigAbility?.Source);
 
               for (let i = 1; i < sa.SigAbility.AbilityRows.AbilityRow.length; i += 1) {
                 try {
@@ -387,7 +397,7 @@ export default class DataImporter extends FormApplication {
                 }
               }
 
-              let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", signatureAbility.flags.importid);
+              let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", signatureAbility.flags.ffgimportid);
               if (imgPath) {
                 signatureAbility.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
               }
@@ -449,10 +459,12 @@ export default class DataImporter extends FormApplication {
           let itemDescriptor = {
             name: d.Name,
             flags: {
-              importid: d.Key,
+              ffgimportid: d.Key,
             },
             content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
           };
+
+          itemDescriptor.content += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
           let compendiumItem;
           await pack.getIndex();
@@ -535,7 +547,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: "talent",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -550,6 +562,9 @@ export default class DataImporter extends FormApplication {
               isConflictTalent: conflicttalent,
             },
           };
+
+          const d = JXON.xmlToJs(talents[i]);
+          item.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
           const attributes = talent.getElementsByTagName("Attributes")[0];
           if (attributes) {
@@ -603,7 +618,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", item.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", item.flags.ffgimportid);
           if (imgPath) {
             item.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -670,7 +685,7 @@ export default class DataImporter extends FormApplication {
             name: fp.ForcePower.Name,
             type: "forcepower",
             flags: {
-              importid: fp.ForcePower.Key,
+              ffgimportid: fp.ForcePower.Key,
             },
             data: {
               attributes: {},
@@ -688,6 +703,7 @@ export default class DataImporter extends FormApplication {
           });
 
           power.data.description = forceAbility.Description;
+          power.data.description += ImportHelpers.getSources(fp?.ForcePower?.Sources ?? fp?.ForcePower?.Source);
 
           if (forceAbility?.DieModifiers?.DieModifier) {
             if (!Array.isArray(forceAbility.DieModifiers.DieModifier)) {
@@ -832,7 +848,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", power.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", power.flags.ffgimportid);
           if (imgPath) {
             power.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -891,6 +907,7 @@ export default class DataImporter extends FormApplication {
           const rarity = item.getElementsByTagName("Rarity")[0]?.textContent;
           const encumbrance = item.getElementsByTagName("Encumbrance")[0]?.textContent;
           const type = item.getElementsByTagName("Type")[0]?.textContent;
+          const restricted = item.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
 
           this._importLogger(`Start importing gear ${name}`);
 
@@ -898,7 +915,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: "gear",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -911,9 +928,13 @@ export default class DataImporter extends FormApplication {
               },
               rarity: {
                 value: rarity,
+                isrestricted: restricted,
               },
             },
           };
+
+          const d = JXON.xmlToJs(item);
+          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
           const baseMods = item.getElementsByTagName("BaseMods")[0];
           if (baseMods) {
@@ -924,7 +945,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", newItem.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", newItem.flags.ffgimportid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -993,6 +1014,7 @@ export default class DataImporter extends FormApplication {
           const hardpoints = weapon.getElementsByTagName("HP")[0]?.textContent;
 
           const weaponType = weapon.getElementsByTagName("Type")[0]?.textContent;
+          const restricted = weapon.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
 
           this._importLogger(`Start importing weapon ${name}`);
 
@@ -1026,7 +1048,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: weaponType === "Vehicle" ? "shipweapon" : "weapon",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -1039,6 +1061,7 @@ export default class DataImporter extends FormApplication {
               },
               rarity: {
                 value: rarity,
+                isrestricted: restricted,
               },
               damage: {
                 value: !damage ? damageAdd : damage,
@@ -1060,6 +1083,9 @@ export default class DataImporter extends FormApplication {
               },
             },
           };
+
+          const d = JXON.xmlToJs(weapon);
+          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
 
           const qualities = [];
 
@@ -1117,7 +1143,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", newItem.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", newItem.flags.ffgimportid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1178,6 +1204,7 @@ export default class DataImporter extends FormApplication {
           const description = armor.getElementsByTagName("Description")[0]?.textContent;
           const price = armor.getElementsByTagName("Price")[0]?.textContent;
           const rarity = armor.getElementsByTagName("Rarity")[0]?.textContent;
+          const restricted = armor.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
           const encumbrance = armor.getElementsByTagName("Encumbrance")[0]?.textContent;
 
           const defense = armor.getElementsByTagName("Defense")[0]?.textContent;
@@ -1190,7 +1217,7 @@ export default class DataImporter extends FormApplication {
             name,
             type: "armour",
             flags: {
-              importid: importkey,
+              ffgimportid: importkey,
             },
             data: {
               attributes: {},
@@ -1203,6 +1230,7 @@ export default class DataImporter extends FormApplication {
               },
               rarity: {
                 value: rarity,
+                isrestricted: restricted,
               },
               defence: {
                 value: defense,
@@ -1216,6 +1244,9 @@ export default class DataImporter extends FormApplication {
             },
           };
 
+          const d = JXON.xmlToJs(armor);
+          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
+
           const baseMods = armor.getElementsByTagName("BaseMods")[0];
           if (baseMods) {
             const mods = await ImportHelpers.getBaseModObject(baseMods);
@@ -1225,7 +1256,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", newItem.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", newItem.flags.ffgimportid);
           if (imgPath) {
             newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1286,7 +1317,7 @@ export default class DataImporter extends FormApplication {
             name: specData.Specialization.Name,
             type: "specialization",
             flags: {
-              importid: specData.Specialization.Key,
+              ffgimportid: specData.Specialization.Key,
             },
             data: {
               attributes: {},
@@ -1296,6 +1327,8 @@ export default class DataImporter extends FormApplication {
               isReadOnly: true,
             },
           };
+
+          specialization.data.description += ImportHelpers.getSources(specData?.Specialization?.Sources ?? specData?.Specialization?.Source);
           this._importLogger(`Start importing Specialization ${specialization.name}`);
 
           // assign career skills
@@ -1377,7 +1410,7 @@ export default class DataImporter extends FormApplication {
           }
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", specialization.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", specialization.flags.ffgimportid);
           if (imgPath) {
             specialization.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1437,13 +1470,16 @@ export default class DataImporter extends FormApplication {
             name: careerData.Career.Name,
             type: "career",
             flags: {
-              importid: careerData.Career.Key,
+              ffgimportid: careerData.Career.Key,
             },
             data: {
               attributes: {},
               description: careerData.Career.Description,
             },
           };
+
+          career.data.description += ImportHelpers.getSources(careerData?.Career?.Sources ?? careerData?.Career?.Source);
+
           this._importLogger(`Start importing Career ${career.name}`);
 
           careerData.Career.CareerSkills.Key.forEach((skillKey) => {
@@ -1465,7 +1501,7 @@ export default class DataImporter extends FormApplication {
           });
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", career.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", career.flags.ffgimportid);
           if (imgPath) {
             career.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1523,13 +1559,15 @@ export default class DataImporter extends FormApplication {
             name: speciesData.Species.Name,
             type: "species",
             flags: {
-              importid: speciesData.Species.Key,
+              ffgimportid: speciesData.Species.Key,
             },
             data: {
               attributes: {},
               description: speciesData.Species.Description,
             },
           };
+
+          species.data.description += ImportHelpers.getSources(speciesData?.Species?.Sources ?? speciesData?.Species?.Source);
 
           const funcAddAttribute = (modtype, mod, value, hidden) => {
             const charKey = Object.keys(species.data.attributes).length + 1;
@@ -1588,7 +1626,7 @@ export default class DataImporter extends FormApplication {
           species.data.description = `<h4>Abilities</h4>` + abilities.join("") + "<p></p>" + species.data.description;
 
           // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", species.flags.importid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", species.flags.ffgimportid);
           if (imgPath) {
             species.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           }
@@ -1701,7 +1739,7 @@ export default class DataImporter extends FormApplication {
             name: vehicleData.Vehicle.Name,
             type: "vehicle",
             flags: {
-              importid: vehicleData.Vehicle.Key,
+              ffgimportid: vehicleData.Vehicle.Key,
             },
             data: {
               biography: vehicleData.Vehicle.Description,
@@ -1760,6 +1798,8 @@ export default class DataImporter extends FormApplication {
             },
             items: [],
           };
+
+          vehicle.data.biography += ImportHelpers.getSources(vehicleData?.Vehicle?.Sources ?? vehicleData?.Vehicle?.Source);
 
           const funcAddWeapon = async (weapon) => {
             try {

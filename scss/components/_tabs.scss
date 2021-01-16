@@ -26,3 +26,24 @@
     font-weight: normal;
   }
 }
+
+&.v2 {
+  .tabs {
+    position: absolute;
+    width: 40px;
+    right: -20px;
+    top: 30px;
+
+    .item {
+      line-height: 35px;
+      font-size: 16pt;
+      margin: 5px 5px;
+      background-color: #cccccc;
+      &.active {
+        background: rgb(204,204,204);
+        background: linear-gradient(to right, rgba(204,204,204,1) 0%, #7da9c2 100%);
+        margin-right: -10px;
+      }
+    }
+  }
+}

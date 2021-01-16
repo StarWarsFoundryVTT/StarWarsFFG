@@ -63,7 +63,7 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}} {{#if (or (contains data.skill.value "Melee") (contains data.skill.value "Brawl") (contains data.skill.value "Lightsaber"))}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.UseBrawnBaseDamage" type="Boolean" name="data.skill.useBrawn" value=data.skill.useBrawn)}} {{/if}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}} {{#if (or (contains data.skill.value "Melee") (contains data.skill.value "Brawl") (contains data.skill.value "Lightsaber"))}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.UseBrawnBaseDamage" type="Boolean" name="data.skill.useBrawn" value=data.skill.useBrawn)}} {{/if}}{{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
           </div>
           <div class="container flex-group-center weapon-values">
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.ranges)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponStatus" type="Dropdown" name="data.status" value=data.status options=this.FFG.itemstatus)}}
@@ -77,13 +77,7 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}}
-  <nav class="sheet-tabs tabs" data-group="primary">
-    <a class="item" data-tab="description">{{localize "SWFFG.TabDescription"}}</a>
-    <a class="item" data-tab="attributes">{{localize "SWFFG.TabModifiers"}}</a>
-  </nav>
-
-  {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body small">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">

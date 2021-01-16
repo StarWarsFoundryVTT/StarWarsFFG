@@ -10,8 +10,11 @@ import { ActorFFG } from "./actors/actor-ffg.js";
 import { CombatFFG } from "./combat-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
+import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
 import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
+import { ActorSheetFFGV2 } from "./actors/actor-sheet-ffg-v2.js";
 import { AdversarySheetFFG } from "./actors/adversary-sheet-ffg.js";
+import { AdversarySheetFFGV2 } from "./actors/adversary-sheet-ffg-v2.js";
 import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
 import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
@@ -226,7 +229,7 @@ Hooks.once("init", async function () {
       });
 
       if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-        const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+        const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
 
         let skills = {};
         Object.keys(altSkills).forEach((skillKey) => {
@@ -262,8 +265,13 @@ Hooks.once("init", async function () {
           CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
           Object.keys(actor.data.data.skills).forEach((skill) => {
-            if (!skills.skills[skill]) {
+            if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
               skills.skills[`-=${skill}`] = null;
+            } else {
+              skills.skills[skill] = {
+                ...skills.skills[skill],
+                ...actor.data.data.skills[skill],
+              };
             }
           });
 
@@ -287,6 +295,17 @@ Hooks.once("init", async function () {
     scope: "world",
     config: true,
     default: true,
+    type: Boolean,
+    onChange: (rule) => window.location.reload(),
+  });
+
+  // Register grouping talents so people can let them be ordered by purchase history
+  game.settings.register("starwarsffg", "talentSorting", {
+    name: game.i18n.localize("SWFFG.EnableSortTalentsByActivationGlobal"),
+    hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
+    scope: "world",
+    config: true,
+    default: false,
     type: Boolean,
     onChange: (rule) => window.location.reload(),
   });
@@ -503,10 +522,13 @@ Hooks.once("init", async function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true });
-  Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"] });
+  Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true, label: "Actor Sheet v1" });
+  Actors.registerSheet("ffg", ActorSheetFFGV2, { label: "Actor Sheet v2" });
+  Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
+  Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
   Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("ffg", ItemSheetFFG, { makeDefault: true });
+  Items.registerSheet("ffg", ItemSheetFFG, { makeDefault: true, label: "Item Sheet v1" });
+  Items.registerSheet("ffg", ItemSheetFFGV2, { label: "Item Sheet v2" });
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
@@ -737,7 +759,7 @@ Hooks.once("ready", async () => {
 
         CONFIG.FFG.alternateskilllists = skillList;
         if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-          const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+          const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
 
           let skills = {};
           Object.keys(altSkills).forEach((skillKey) => {
@@ -767,7 +789,72 @@ Hooks.once("ready", async () => {
       }
     }
 
-    game.settings.set("starwarsffg", "systemMigrationVersion", game.system.data.version);
+    if (currentVersion === "null" || parseFloat(currentVersion) < 1.3) {
+      ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
+
+      const pro = [];
+
+      game.packs.entries.forEach((pack) => {
+        pro.push(
+          new Promise(async (resolve, reject) => {
+            const content = await pack.getContent();
+            CONFIG.logger.log(`Migrating ${pack.metadata.label} - ${content.length} Entries`);
+
+            const isLocked = pack.locked;
+
+            if (isLocked) {
+              await pack.configure({ locked: false });
+            }
+
+            for (var i = 0; i < content.length; i++) {
+              if (!content[i]?.data?.flags?.ffgimportid && content[i]?.data?.flags?.importid) {
+                CONFIG.logger.debug(`Migrating (${content[i].data._id}) ${content[i].data.name}`);
+                content[i].update({
+                  flags: {
+                    ffgimportid: content[i].data.flags.importid,
+                  },
+                });
+              }
+              resolve();
+            }
+
+            if (isLocked) {
+              await pack.configure({ locked: true });
+            }
+          })
+        );
+      });
+
+      Promise.all(pro)
+        .then(() => {
+          ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+          game.settings.set("starwarsffg", "systemMigrationVersion", game.system.data.version);
+        })
+        .catch((err) => {
+          CONFIG.logger.error(`Error during system migration`, err);
+        });
+    }
+  }
+
+  // enable functional testing
+  if (game.user.isGM && window.location.href.includes("localhost") && game?.data?.system?.data?.test) {
+    const command = `
+      const testing = import('/systems/starwarsffg/tests/ffg-tests.js').then((mod) => {
+      const tester = new mod.default();
+      tester.render(true);
+    });
+    `;
+
+    const macro = {
+      name: "Functional Testing",
+      type: "script",
+      command: command,
+    };
+
+    const macroExists = game.macros.entities.find((m) => m.name === macro.name);
+    if (!macroExists) {
+      Macro.create(macro);
+    }
   }
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
@@ -805,7 +892,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addDicePreset(
       {
         type: "da",
-        labels: ["", "s", "s", "s\ns", "a", "s", "s\na", "a\na"],
+        labels: ["", "s", "s", "s\ns", "a", "a", "s\na", "a\na"],
         font: "SWRPG-Symbol-Regular",
         colorset: "green",
         system: "swffg",
@@ -885,7 +972,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addDicePreset(
       {
         type: "da",
-        labels: ["", "s", "s", "s\ns", "a", "s", "s\na", "a\na"],
+        labels: ["", "s", "s", "s\ns", "a", "a", "s\na", "a\na"],
         font: "Genesys",
         colorset: "green",
         system: "genesys",

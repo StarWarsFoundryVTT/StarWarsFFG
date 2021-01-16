@@ -28,9 +28,14 @@ export class ItemSheetFFG extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  async getData() {
-    const data = super.getData();
+  async getData(options) {
+    let data = super.getData(options);
 
+    if (options?.action === "update" && this.object.compendium) {
+      data.item = mergeObject(data.item, options.data);
+    }
+
+    data.classType = this.constructor.name;
     CONFIG.logger.debug(`Getting Item Data ${this.object.name}`);
 
     data.dtypes = ["String", "Number", "Boolean"];
@@ -89,11 +94,16 @@ export class ItemSheetFFG extends ItemSheet {
             if (specializationTalents?.[talent]?.pack?.length) {
               try {
                 const pack = await game.packs.get(specializationTalents[talent].pack);
-                await pack.getIndex();
-                const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
 
-                if (entry) {
-                  gameItem = await pack.getEntity(entry._id);
+                // this may be a coverted specialization talent from a world to a module.
+                if (!pack) {
+                  gameItem = await ImportHelpers.findCompendiumEntityById("Item", specializationTalents[talent].itemId);
+                } else {
+                  await pack.getIndex();
+                  const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+                  if (entry) {
+                    gameItem = await pack.getEntity(entry._id);
+                  }
                 }
               } catch (err) {
                 CONFIG.logger.warn(`Unable to load ${specializationTalents[talent].pack}`, err);
@@ -297,6 +307,16 @@ export class ItemSheetFFG extends ItemSheet {
         await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
       }
     });
+
+    if (["weapon", "armor"].includes(this.object.data.type)) {
+      const itemToItemAssociation = new DragDrop({
+        dragSelector: ".item",
+        dropSelector: ".window-content",
+        permissions: { dragstart: true, drop: true },
+        callbacks: { drop: this._onDropItem.bind(this) },
+      });
+      itemToItemAssociation.bind(html[0]);
+    }
   }
 
   /* -------------------------------------------- */
@@ -554,4 +574,41 @@ export class ItemSheetFFG extends ItemSheet {
     specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
     specializationTalentItem.attributes = talentItem.data.attributes;
   }
+
+  async _onDropItem(event) {
+    let data;
+    const obj = this.object;
+    const li = event.currentTarget;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    // Case 1 - Import from a Compendium pack
+    let itemObject;
+    if (data.pack) {
+      itemObject = await this.importItemFromCollection(data.pack, data.id);
+    }
+
+    // Case 2 - Import from World entity
+    else {
+      itemObject = await game.items.get(data.id);
+      if (!itemObject) return;
+    }
+
+    if (itemObject.data.type === "attachment") {
+      let items = this.object.items.entries;
+      items.push(duplicate(itemObject));
+
+      let formData = {};
+      setProperty(formData, `items`, items);
+
+      obj.update(formData);
+    }
+  }
+
+  async _onDragItemStart(event) {}
 }

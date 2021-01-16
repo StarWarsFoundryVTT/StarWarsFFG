@@ -7,7 +7,15 @@ export default class DiceHelpers {
     const row = event.target.parentElement.parentElement;
     const skillName = row.parentElement.dataset["ability"];
 
-    const skills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+    let skills;
+    const theme = await game.settings.get("starwarsffg", "skilltheme");
+    try {
+      skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === theme).skills));
+    } catch (err) {
+      // if we run into an error use the default starwars skill set
+      skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === "starwars").skills));
+      CONFIG.logger.warn(`Unable to load skill theme ${theme}, defaulting to starwars skill theme`, err);
+    }
 
     let skill = {
       rank: 0,

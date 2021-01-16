@@ -9,11 +9,13 @@ export default class ItemHelpers {
     }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
-    const isMelee = formData?.data?.skill?.value ? formData.data.skill.value === "Melee" : formData[`data.skill.value`] === "Melee";
-    const isBrawl = formData?.data?.skill?.value ? formData.data.skill.value === "Brawl" : formData[`data.skill.value`] === "Brawl";
+    if (this.object.data.type === "weapon") {
+      const isMelee = formData?.data?.skill?.value ? formData.data.skill.value.includes("Melee") : formData[`data.skill.value`].includes("Melee");
+      const isBrawl = formData?.data?.skill?.value ? formData.data.skill.value.includes("Brawl") : formData[`data.skill.value`].includes("Brawl");
 
-    if (this.object.data.type === "weapon" && (isMelee || isBrawl) && formData?.data?.useBrawn) {
-      setProperty(formData, `data.damage.value`, 0);
+      if ((isMelee || isBrawl) && formData?.data?.useBrawn) {
+        setProperty(formData, `data.damage.value`, 0);
+      }
     }
 
     // Handle the free-form attributes list
@@ -39,7 +41,8 @@ export default class ItemHelpers {
 
     // Update the Item
     this.item.data.flags.loaded = false;
-    this.object.update(formData);
+    const x = await this.object.update(formData);
+    this.item.data = mergeObject(this.item.data, x[0]);
 
     if (this.object.data.type === "talent") {
       if (this.object.data.flags?.clickfromparent?.length) {

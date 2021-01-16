@@ -106,10 +106,10 @@ export default class DestinyTracker extends FormApplication {
       var actionType = null;
       if (pointType == "dPoolLight") {
         flipType = "dPoolDark";
-        typeName = "Light Side point";
+        typeName = game.i18n.localize("SWFFG.Lightside");
       } else {
         flipType = "dPoolLight";
-        typeName = "Dark Side point";
+        typeName = game.i18n.localize("SWFFG.Darkside");
       }
       var messageText;
 
@@ -118,21 +118,27 @@ export default class DestinyTracker extends FormApplication {
           ui.notifications.warn(`Cannot flip a ${typeName} point; 0 remaining.`);
           return;
         } else {
+          let pool = { light: 0, dark: 0 };
+          if (flipType == "dPoolLight") {
+            pool.light = game.settings.get("starwarsffg", flipType) + 1;
+            pool.dark = game.settings.get("starwarsffg", pointType) - 1;
+          } else if (flipType == "dPoolDark") {
+            pool.dark = game.settings.get("starwarsffg", flipType) + 1;
+            pool.light = game.settings.get("starwarsffg", pointType) - 1;
+          }
+
           if (game.user.isGM) {
-            game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
-            game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
+            game.settings.set("starwarsffg", "dPoolLight", pool.light);
+            game.settings.set("starwarsffg", "dPoolDark", pool.dark);
           } else {
-            let pool = { light: 0, dark: 0 };
-            if (flipType == "dPoolLight") {
-              pool.light = game.settings.get("starwarsffg", flipType) + 1;
-              pool.dark = game.settings.get("starwarsffg", pointType) - 1;
-            } else if (flipType == "dPoolDark") {
-              pool.dark = game.settings.get("starwarsffg", flipType) + 1;
-              pool.light = game.settings.get("starwarsffg", pointType) - 1;
-            }
             await game.socket.emit("system.starwarsffg", { pool });
           }
-          messageText = `Flipped a ${typeName} point.`;
+
+          messageText = `<div class="destiny-flip ${flipType}">
+            <div class="destiny-title">Flipped a <span>${typeName}</span> point</div>
+            <div class="destiny-left">${game.i18n.localize("SWFFG.Darkside")} Remaining: ${pool.dark}</div>
+            <div class="destiny-left">${game.i18n.localize("SWFFG.Lightside")} Remaining: ${pool.light}</div>
+          </div>`;
         }
       } else if (add) {
         if (!game.user.isGM) {
@@ -169,6 +175,8 @@ export default class DestinyTracker extends FormApplication {
             new Map([...game.settings.settings].filter(([k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
               game.settings.set(i.module, i.key, undefined);
             });
+
+            CONFIG.FFG.DestinyGM = game.user.id;
 
             ChatMessage.create({
               user: game.user._id,
@@ -233,7 +241,10 @@ export default class DestinyTracker extends FormApplication {
             dark: +dark - +args[0].pool.dark,
           };
 
-          this.destinyQueue.push(request);
+          // only allow one player flip at a time.
+          if (!this.destinyQueue.find((q) => q.id === args[0].destiny)) {
+            this.destinyQueue.push(request);
+          }
         }
 
         // Handle user report for initial Destiny roll
@@ -245,7 +256,10 @@ export default class DestinyTracker extends FormApplication {
             dark: args[0].dark,
           };
 
-          this.destinyQueue.push(request);
+          // make sure only one player destiny roll is queued.
+          if (!this.destinyQueue.find((q) => q.id === args[0].destiny) && CONFIG.FFG.DestinyGM === game.user.id) {
+            this.destinyQueue.push(request);
+          }
         }
 
         if (!this.isRunningQueue) {

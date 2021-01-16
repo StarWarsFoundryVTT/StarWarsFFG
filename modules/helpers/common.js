@@ -40,7 +40,7 @@ export default class Helpers {
    */
   static async UploadFile(source, path, file, options) {
     if (typeof ForgeVTT !== "undefined" && ForgeVTT?.usingTheForge) {
-      return ForgeUploadFile("forgevtt", path, file, options);
+      return Helpers.ForgeUploadFile("forgevtt", path, file, options);
     }
 
     let fd = new FormData();

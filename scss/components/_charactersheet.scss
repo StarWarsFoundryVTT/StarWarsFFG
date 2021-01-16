@@ -2,6 +2,16 @@ $swffg-table-header-color: rgb(145, 145, 145);
 &.sheet {
   &.actor {
 
+    &.adversary {
+      .character {
+        .sheet-body {
+          .skillsTablesGrid {
+            height: calc(100% - 32.1875rem)
+          }
+        }
+      }
+    }
+
     .character {
       .header-fields {
         flex: 1;
@@ -283,6 +293,42 @@ $swffg-table-header-color: rgb(145, 145, 145);
                 text-align: right;
                 width: auto;
                 z-index: auto;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+&.sheet {
+  &.actor {
+    &.v2 {
+      .character {
+        .sheet-body {
+          .skillsTablesGrid {
+            height: calc(100% - 31.1875rem);
+          }
+          .tab {
+            &.items, &.general, &.obligation {
+              height: calc(100% - 1.0rem);
+            }
+          }
+        }
+      }
+
+      &.adversary {
+        .character {
+          .sheet-body {
+            .skillsTablesGrid {
+              height: calc(100% - 31.1875rem);
+            }
+
+            .tab {
+              &.items, &.general, &.obligation {
+                height: calc(100% - 0rem);
               }
             }
           }
