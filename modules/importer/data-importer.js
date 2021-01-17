@@ -1,4 +1,5 @@
 import ImportHelpers from "./import-helpers.js";
+import OggDude from "./oggdude/oggdude.js";
 
 /**
  * A specialized form used to pop out the editor.
@@ -167,7 +168,7 @@ export default class DataImporter extends FormApplication {
         // load skills for reference
         let data = await zip.file(skillsFileName).async("text");
         const xmlDoc = ImportHelpers.stringToXml(data);
-        await this._loadSkillsList(xmlDoc, createSkillJournalEntries);
+        await OggDude.Import.Skills(xmlDoc, createSkillJournalEntries);
       }
 
       const itemDescriptors = importFiles.find((item) => item.file.includes("ItemDescriptors.xml"));
@@ -188,7 +189,7 @@ export default class DataImporter extends FormApplication {
           promises.push(this._handleArmor(xmlDoc, zip));
           promises.push(this._handleTalents(xmlDoc, zip));
           promises.push(this._handleForcePowers(xmlDoc, zip));
-          promises.push(this._handleSignatureAbilties(xmlDoc, zip));
+          promises.push(OggDude.Import.SignatureAbilities(xmlDoc, zip));
           promises.push(this._handleItemAttachments(xmlDoc, zip));
         } else {
           if (file.file.includes("/Specializations/")) {
@@ -220,226 +221,6 @@ export default class DataImporter extends FormApplication {
 
       CONFIG.temporary = {};
       this.close();
-    }
-  }
-
-  async _loadSkillsList(xmlDoc, create) {
-    const skills = xmlDoc.getElementsByTagName("Skill");
-    if (skills.length > 0) {
-      CONFIG.temporary["skills"] = {};
-
-      let totalCount = skills.length;
-      let currentCount = 0;
-      let pack;
-      if (create) {
-        pack = await this._getCompendiumPack("JournalEntry", `oggdude.SkillDescriptions`);
-        $(".import-progress.skills").toggleClass("import-hidden");
-      }
-
-      for (let i = 0; i < skills.length; i += 1) {
-        const skill = skills[i];
-        const importkey = skill.getElementsByTagName("Key")[0]?.textContent;
-        let name = skill.getElementsByTagName("Name")[0]?.textContent;
-
-        name = name.replace(" - ", ": ");
-        if (["CORE", "EDU", "LORE", "OUT", "UND", "WARF", "XEN"].includes(importkey)) {
-          name = `Knowledge: ${name}`;
-        }
-
-        CONFIG.temporary.skills[importkey] = name;
-
-        if (create) {
-          try {
-            const d = JXON.xmlToJs(skill);
-
-            let item = {
-              name: d.Name,
-              flags: {
-                ffgimportid: d.Key,
-              },
-              content: d?.Description?.length && d.Description.length > 0 ? d.Description : "Dataset did not have a description",
-            };
-
-            item.content += ImportHelpers.getSources(d?.Sources ?? d?.Source);
-
-            let compendiumItem;
-            await pack.getIndex();
-            let entry = pack.index.find((e) => e.name === item.name);
-
-            if (!entry) {
-              CONFIG.logger.debug(`Importing Skill Description - JournalEntry`);
-              compendiumItem = new JournalEntry(item, { temporary: true });
-              this._importLogger(`New Skill Description ${d.Name} : ${JSON.stringify(compendiumItem)}`);
-              let id = await pack.importEntity(compendiumItem);
-            } else {
-              CONFIG.logger.debug(`Updating Skill Description - JournalEntry`);
-              let updateData = item;
-              updateData["_id"] = entry._id;
-              this._importLogger(`Updating Skill Description ${d.Name} : ${JSON.stringify(updateData)}`);
-              pack.updateEntity(updateData);
-            }
-            //}
-            currentCount += 1;
-
-            $(".skills .import-progress-bar")
-              .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-              .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-            this._importLogger(`End importing Skill Description ${d.Name}`);
-          } catch (err) {
-            CONFIG.logger.error(`Error importing record : `, err);
-          }
-        }
-      }
-    }
-  }
-
-  async _handleSignatureAbilties(xmlDoc, zip) {
-    try {
-      const sigAbilityNode = xmlDoc.getElementsByTagName("SigAbilityNode");
-
-      if (sigAbilityNode.length > 0) {
-        const signatureAbilityUpgrades = JXON.xmlToJs(xmlDoc);
-
-        const signatureAbilityFiles = Object.values(zip.files).filter((file) => {
-          return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/SigAbilities/");
-        });
-
-        if (signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length > 0 && signatureAbilityFiles.length > 0) {
-          $(".import-progress.signatureabilities").toggleClass("import-hidden");
-          let pack = await this._getCompendiumPack("Item", `oggdude.SignatureAbilities`);
-          let totalCount = signatureAbilityFiles.length;
-          let currentCount = 0;
-          this._importLogger(`Beginning import of ${signatureAbilityFiles.length} signature abilities`);
-
-          await this.asyncForEach(signatureAbilityFiles, async (file) => {
-            try {
-              const data = await zip.file(file.name).async("text");
-              const xmlDoc1 = ImportHelpers.stringToXml(data);
-              const sa = JXON.xmlToJs(xmlDoc1);
-
-              let signatureAbility = {
-                name: sa.SigAbility.Name,
-                type: "signatureability",
-                flags: {
-                  ffgimportid: sa.SigAbility.Key,
-                },
-                data: {
-                  description: sa.SigAbility.Description,
-                  attributes: {},
-                  upgrades: {},
-                },
-              };
-
-              signatureAbility.data.description += ImportHelpers.getSources(sa?.SigAbility?.Sources ?? sa?.SigAbility?.Source);
-
-              for (let i = 1; i < sa.SigAbility.AbilityRows.AbilityRow.length; i += 1) {
-                try {
-                  const row = sa.SigAbility.AbilityRows.AbilityRow[i];
-                  row.Abilities.Key.forEach((keyName, index) => {
-                    let rowAbility = {};
-
-                    let rowAbilityData = signatureAbilityUpgrades.SigAbilityNodes.SigAbilityNode.find((a) => {
-                      return a.Key === keyName;
-                    });
-
-                    rowAbility.name = rowAbilityData.Name;
-                    rowAbility.description = rowAbilityData.Description;
-                    rowAbility.visible = true;
-                    rowAbility.attributes = {};
-
-                    if (row.Directions.Direction[index].Up) {
-                      rowAbility["links-top-1"] = true;
-                    }
-
-                    switch (row.AbilitySpan.Span[index]) {
-                      case "1":
-                        rowAbility.size = "single";
-                        break;
-                      case "2":
-                        rowAbility.size = "double";
-                        if (index < 3 && row.Directions.Direction[index + 1].Up) {
-                          rowAbility["links-top-2"] = true;
-                        }
-                        break;
-                      case "3":
-                        rowAbility.size = "triple";
-                        if (index < 2 && row.Directions.Direction[index + 1].Up) {
-                          rowAbility["links-top-2"] = true;
-                        }
-                        if (index < 2 && row.Directions.Direction[index + 2].Up) {
-                          rowAbility["links-top-3"] = true;
-                        }
-                        break;
-                      case "4":
-                        rowAbility.size = "full";
-                        if (index < 1 && row.Directions.Direction[index + 1].Up) {
-                          rowAbility["links-top-2"] = true;
-                        }
-                        if (index < 1 && row.Directions.Direction[index + 2].Up) {
-                          rowAbility["links-top-3"] = true;
-                        }
-                        if (index < 1 && row.Directions.Direction[index + 3].Up) {
-                          rowAbility["links-top-4"] = true;
-                        }
-                        break;
-                      default:
-                        rowAbility.size = "single";
-                        rowAbility.visible = false;
-                    }
-
-                    if (row.Directions.Direction[index].Right) {
-                      rowAbility["links-right"] = true;
-                    }
-
-                    const talentKey = `upgrade${(i - 1) * 4 + index}`;
-                    signatureAbility.data.upgrades[talentKey] = rowAbility;
-                  });
-                } catch (err) {
-                  CONFIG.logger.error(`Error importing record : `, err);
-                }
-              }
-
-              let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", signatureAbility.flags.ffgimportid);
-              if (imgPath) {
-                signatureAbility.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
-              }
-
-              let compendiumItem;
-              await pack.getIndex();
-              let entry = pack.index.find((e) => e.name === signatureAbility.name);
-
-              if (!entry) {
-                CONFIG.logger.debug(`Importing Signature Ability - Item`);
-                compendiumItem = new Item(signatureAbility, { temporary: true });
-                this._importLogger(`New Signature Ability ${signatureAbility.name} : ${JSON.stringify(compendiumItem)}`);
-                pack.importEntity(compendiumItem);
-              } else {
-                CONFIG.logger.debug(`Updating Signature Ability - Item`);
-                //let updateData = ImportHelpers.buildUpdateData(power);
-                let updateData = signatureAbility;
-                updateData["_id"] = entry._id;
-                this._importLogger(`Updating Signature Ability ${signatureAbility.name} : ${JSON.stringify(updateData)}`);
-                pack.updateEntity(updateData);
-              }
-              currentCount += 1;
-
-              $(".signatureabilities .import-progress-bar")
-                .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-                .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-              this._importLogger(`End importing Signature Ability ${sa.SigAbility.Name}`);
-            } catch (err) {
-              CONFIG.logger.error(`Error importing record : `, err);
-            }
-          });
-          this._importLogger(`Completed Signature Ability Import`);
-        } else {
-          CONFIG.logger.error(`Error importing signature abilities, found ${signatureAbilityFiles.length} signature ability files and ${signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length} upgrades in data set`);
-          this._importLogger(`Error importing signature abilities, found ${signatureAbilityFiles.length} signature ability files and ${signatureAbilityUpgrades.SigAbilityNodes?.SigAbilityNode?.length} upgrades in data set`);
-        }
-      }
-    } catch (err) {
-      CONFIG.logger.error(`Failed to import signature abilities`, err);
-      this._importLogger(`Failed to import signature abilities`, err);
     }
   }
 

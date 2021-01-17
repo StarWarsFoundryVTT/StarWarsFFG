@@ -1330,4 +1330,59 @@ export default class ImportHelpers {
       data: {},
     };
   }
+
+  static async addImportItemToCompendium(type, data, pack) {
+    let entry = await ImportHelpers.findCompendiumEntityByImportId(type, data.flags.ffgimportid, pack.collection);
+    let objClass;
+    let dataType;
+    switch (type) {
+      case "Item": {
+        objClass = Item;
+        dataType = data.type;
+        break;
+      }
+      case "JournalEntry": {
+        objClass = JournalEntry;
+        if (!data.img) {
+          data.img = `icons/sundries/scrolls/scroll-rolled-white.webp`;
+        }
+        dataType = type;
+        break;
+      }
+      case "Actor": {
+        objClass = Actor;
+        dataType = data.type;
+        break;
+      }
+    }
+
+    if (!entry) {
+      let compendiumItem;
+      CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
+      compendiumItem = new objClass(data, { temporary: true });
+      CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
+      let id = await pack.importEntity(compendiumItem);
+    } else {
+      CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
+      let updateData = data;
+      updateData["_id"] = entry._id;
+      CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
+      pack.updateEntity(updateData);
+    }
+  }
+
+  static async getCompendiumPack(type, name) {
+    CONFIG.logger.debug(`Checking for existing compendium pack ${name}`);
+    let pack = game.packs.find((p) => {
+      return p.metadata.label === name;
+    });
+    if (!pack) {
+      CONFIG.logger.debug(`Compendium pack ${name} not found, creating new`);
+      pack = await Compendium.create({ entity: type, label: name });
+    } else {
+      CONFIG.logger.debug(`Existing compendium pack ${name} found`);
+    }
+
+    return pack;
+  }
 }
