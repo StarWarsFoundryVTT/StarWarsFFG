@@ -176,7 +176,7 @@ export default class DataImporter extends FormApplication {
       if (itemDescriptors) {
         let data = await zip.file(itemDescriptors.file).async("text");
         const xmlDoc = ImportHelpers.stringToXml(data);
-        await this._loadItemDescriptors(xmlDoc);
+        await OggDude.Import.ItemDescriptors(xmlDoc);
       }
 
       await this.asyncForEach(importFiles, async (file) => {
@@ -222,70 +222,6 @@ export default class DataImporter extends FormApplication {
       CONFIG.temporary = {};
       this.close();
     }
-  }
-
-  async _loadItemDescriptors(xmlDoc) {
-    this._importLogger(`Starting Item Qualities Import`);
-    const descriptors = xmlDoc.getElementsByTagName("ItemDescriptor");
-    if (descriptors.length > 0) {
-      let totalCount = descriptors.length;
-      let currentCount = 0;
-      $(".import-progress.itemdescriptors").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack("Item", `oggdude.ItemQualities`);
-      CONFIG.temporary["descriptors"] = {};
-
-      await this.asyncForEach(descriptors, async (descriptor) => {
-        try {
-          const d = JXON.xmlToJs(descriptor);
-
-          let itemModifier = {
-            name: d.Name,
-            type: "itemmodifier",
-            img: `/systems/starwarsffg/images/mod-${d.Type ? d.Type.toLowerCase() : "all"}.png`,
-            flags: {
-              ffgimportid: d.Key,
-            },
-            data: {
-              description: d.Description?.length ? d.Description : d.ModDesc,
-              attributes: {},
-              type: d.Type ? d.Type.toLowerCase() : "all",
-              rank: 1,
-            },
-          };
-
-          itemModifier.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
-
-          let compendiumItem;
-
-          let entry = await ImportHelpers.findCompendiumEntityByImportId("Item", d.Key, pack.collection);
-
-          if (!entry) {
-            CONFIG.logger.debug(`Importing Item Quality - Item`);
-            compendiumItem = new Item(itemModifier, { temporary: true });
-            this._importLogger(`New item quality ${d.Name} : ${JSON.stringify(compendiumItem)}`);
-            let id = await pack.importEntity(compendiumItem);
-            CONFIG.temporary["descriptors"][d.Key] = id;
-          } else {
-            CONFIG.logger.debug(`Updating Item Quality - JournalEntry`);
-            let updateData = itemModifier;
-            updateData["_id"] = entry._id;
-            CONFIG.temporary["descriptors"][d.Key] = entry;
-            this._importLogger(`Updating item quality ${d.Name} : ${JSON.stringify(updateData)}`);
-            pack.updateEntity(updateData);
-          }
-          //}
-          currentCount += 1;
-
-          $(".itemdescriptors .import-progress-bar")
-            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          this._importLogger(`End importing item quality ${d.Name}`);
-        } catch (err) {
-          CONFIG.logger.error(`Error importing record : `, err);
-        }
-      });
-    }
-    this._importLogger(`Completed Item Qualities Import`);
   }
 
   async _handleTalents(xmlDoc, zip) {

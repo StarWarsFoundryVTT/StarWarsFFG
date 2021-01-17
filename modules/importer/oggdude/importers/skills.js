@@ -6,7 +6,7 @@ export default class Skills {
 
     const base = JXON.xmlToJs(xml);
     let items = base.Skills.Skill;
-    let totalCount = base.Skills.Skill.length;
+    let totalCount = items.length;
     let currentCount = 0;
     let pack;
     if (createJournalCompendium) {
@@ -48,11 +48,11 @@ export default class Skills {
           $(".skills .import-progress-bar")
             .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          CONFIG.logger.debug(`Completed Oggdude Skill Import`);
         }
       } catch (err) {
-        CONFIG.logger.error(`Error importing record : `, err);
+        CONFIG.logger.error(`Error importing record : ${data}`, err);
       }
     });
+    CONFIG.logger.debug(`Completed Oggdude Skill Import`);
   }
 }
