@@ -1112,7 +1112,7 @@ export default class DataImporter extends FormApplication {
 
           newItem.data.itemmodifier = qualities;
 
-          if ((skill.includes("Melee") || skill.includes("Brawl") || skill.includes("Lightsaber")) && damage === "0") {
+          if ((skill.includes("Melee") || skill.includes("Brawl") || skill.includes("Lightsaber")) && (!damage || damage === "0")) {
             newItem.data.skill.useBrawn = true;
           }
 
