@@ -1459,7 +1459,9 @@ export default class ImportHelpers {
     };
 
     await ImportHelpers.asyncForEach(mod.DieModifier, async (dieMod) => {
-      if (dieMod.SkillKey) {
+      if (!dieMod) {
+        return;
+      } else if (dieMod.SkillKey) {
         // this is a skill modifier
         const skillModifier = ImportHelpers.processSkillMod({ Key: dieMod.SkillKey, ...dieMod });
         output.attributes[skillModifier.type] = skillModifier.value;
@@ -1560,13 +1562,15 @@ export default class ImportHelpers {
           };
           const descriptor = new Item(unique, { temporary: true });
           descriptor.data._id = randomID();
-          output.description += `<div>${unique.data.description} ${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}</div>`;
+          let rank = "";
+          if (unique.data.rank > 1) {
+            rank = `${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}`;
+          }
+
+          output.description += `<div>${unique.data.description} ${rank}</div>`;
           output.itemmodifier.push(descriptor.data);
         }
       });
-
-      console.log(output);
-
       return output;
     }
   }

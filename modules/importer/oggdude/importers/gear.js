@@ -1,21 +1,20 @@
 import ImportHelpers from "../../import-helpers.js";
 
-export default class Armor {
+export default class Gear {
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);
-      let items = base?.Armors?.Armor;
+      let items = base?.Gears?.Gear;
       if (items?.length) {
         let totalCount = items.length;
         let currentCount = 0;
-        let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Armor`);
-        CONFIG.logger.debug(`Starting Oggdude Armor Import`);
-        $(".import-progress.armor").toggleClass("import-hidden");
+        let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Gear`);
+        CONFIG.logger.debug(`Starting Oggdude Gear Import`);
+        $(".import-progress.gear").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(items, async (item) => {
           try {
-            let data = ImportHelpers.prepareBaseObject(item, "armour");
-
+            let data = ImportHelpers.prepareBaseObject(item, "gear");
             data.data = {
               attributes: {},
               description: item.Description,
@@ -29,15 +28,6 @@ export default class Armor {
                 value: parseInt(item.Rarity, 10),
                 isrestricted: item.Restricted === "true" ? true : false,
               },
-              defence: {
-                value: item.Defense ? parseInt(item.Defense, 10) : 0,
-              },
-              soak: {
-                value: parseInt(item.Soak, 10),
-              },
-              hardpoints: {
-                value: item.HP ? parseInt(item.HP, 10) : 0,
-              },
             };
 
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
@@ -49,8 +39,7 @@ export default class Armor {
               data.data.description += mods.description;
             }
 
-            // does an image exist?
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", data.flags.ffgimportid);
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", data.flags.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }
@@ -59,7 +48,7 @@ export default class Armor {
 
             currentCount += 1;
 
-            $(".armor .import-progress-bar")
+            $(".gear .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {
@@ -70,6 +59,5 @@ export default class Armor {
     } catch (err) {
       CONFIG.logger.error(`Error importing record : `, err);
     }
-    CONFIG.logger.debug(`Completed Oggdude Armor Import`);
   }
 }

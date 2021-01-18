@@ -184,9 +184,9 @@ export default class DataImporter extends FormApplication {
           const data = await zip.file(file.file).async("text");
           const xmlDoc = ImportHelpers.stringToXml(data);
 
-          promises.push(this._handleGear(xmlDoc, zip));
+          //promises.push(this._handleGear(xmlDoc, zip));
+          promises.push(OggDude.Import.Gear(xmlDoc, zip));
           promises.push(this._handleWeapons(xmlDoc, zip));
-          //promises.push(this._handleArmor(xmlDoc, zip));
           promises.push(OggDude.Import.Armor(xmlDoc, zip));
           promises.push(this._handleTalents(xmlDoc, zip));
           promises.push(this._handleForcePowers(xmlDoc, zip));
