@@ -123,6 +123,8 @@ export default class SignatureAbilities {
           CONFIG.logger.error(`Error importing record : `, err);
         }
       });
+
+      CONFIG.logger.debug(`Completed Oggdude Signature Ability (${files.length}) Import`);
     }
   }
 }

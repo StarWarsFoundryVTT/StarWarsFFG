@@ -186,7 +186,8 @@ export default class DataImporter extends FormApplication {
 
           promises.push(this._handleGear(xmlDoc, zip));
           promises.push(this._handleWeapons(xmlDoc, zip));
-          promises.push(this._handleArmor(xmlDoc, zip));
+          //promises.push(this._handleArmor(xmlDoc, zip));
+          promises.push(OggDude.Import.Armor(xmlDoc, zip));
           promises.push(this._handleTalents(xmlDoc, zip));
           promises.push(this._handleForcePowers(xmlDoc, zip));
           promises.push(OggDude.Import.SignatureAbilities(xmlDoc, zip));
@@ -888,119 +889,6 @@ export default class DataImporter extends FormApplication {
       }
     }
     this._importLogger(`Completed Weapon Import`);
-  }
-
-  async _handleArmor(xmlDoc, zip) {
-    this._importLogger(`Starting Armor Import`);
-
-    const fa = JXON.xmlToJs(xmlDoc);
-
-    const armors = xmlDoc.getElementsByTagName("Armor");
-
-    if (armors.length > 0) {
-      let totalCount = armors.length;
-      let currentCount = 0;
-      this._importLogger(`Beginning import of ${armors.length} armor`);
-
-      $(".import-progress.armor").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack("Item", `oggdude.Armor`);
-
-      for (let i = 0; i < armors.length; i += 1) {
-        try {
-          const armor = armors[i];
-
-          const importkey = armor.getElementsByTagName("Key")[0]?.textContent;
-          const name = armor.getElementsByTagName("Name")[0]?.textContent;
-          const description = armor.getElementsByTagName("Description")[0]?.textContent;
-          const price = armor.getElementsByTagName("Price")[0]?.textContent;
-          const rarity = armor.getElementsByTagName("Rarity")[0]?.textContent;
-          const restricted = armor.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
-          const encumbrance = armor.getElementsByTagName("Encumbrance")[0]?.textContent;
-
-          const defense = armor.getElementsByTagName("Defense")[0]?.textContent;
-          const soak = armor.getElementsByTagName("Soak")[0]?.textContent;
-          const hardpoints = armor.getElementsByTagName("HP")[0]?.textContent;
-
-          this._importLogger(`Start importing armor ${name}`);
-
-          let newItem = {
-            name,
-            type: "armour",
-            flags: {
-              ffgimportid: importkey,
-            },
-            data: {
-              attributes: {},
-              description,
-              encumbrance: {
-                value: encumbrance,
-              },
-              price: {
-                value: price,
-              },
-              rarity: {
-                value: rarity,
-                isrestricted: restricted,
-              },
-              defence: {
-                value: defense,
-              },
-              soak: {
-                value: soak,
-              },
-              hardpoints: {
-                value: hardpoints,
-              },
-            },
-          };
-
-          const d = JXON.xmlToJs(armor);
-          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
-
-          const baseMods = armor.getElementsByTagName("BaseMods")[0];
-          if (baseMods) {
-            const mods = await ImportHelpers.getBaseModObject(baseMods);
-            if (mods) {
-              newItem.data.attributes = mods;
-            }
-          }
-
-          // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", newItem.flags.ffgimportid);
-          if (imgPath) {
-            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
-          }
-
-          let compendiumItem;
-          await pack.getIndex();
-          let entry = pack.index.find((e) => e.name === newItem.name);
-
-          if (!entry) {
-            CONFIG.logger.debug(`Importing Armor - Item`);
-            compendiumItem = new Item(newItem, { temporary: true });
-            this._importLogger(`New armor ${name} : ${JSON.stringify(compendiumItem)}`);
-            pack.importEntity(compendiumItem);
-          } else {
-            CONFIG.logger.debug(`Updating Armor - Item`);
-            //let updateData = ImportHelpers.buildUpdateData(newItem);
-            let updateData = newItem;
-            updateData["_id"] = entry._id;
-            this._importLogger(`Updating armor ${name} : ${JSON.stringify(updateData)}`);
-            pack.updateEntity(updateData);
-          }
-          currentCount += 1;
-
-          $(".armor .import-progress-bar")
-            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          this._importLogger(`End importing armor ${name}`);
-        } catch (err) {
-          CONFIG.logger.error(`Error importing record : `, err);
-          this._importLogger(`Error importing armor: ${JSON.stringify(err)}`);
-        }
-      }
-    }
-    this._importLogger(`Completed Armor Import`);
   }
 
   async _handleSpecializations(zip) {

@@ -29,8 +29,10 @@ export default class ItemDescriptors {
         $(".itemdescriptors .import-progress-bar")
           .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
           .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-      } catch (err) {}
-      CONFIG.logger.debug(`Completed Oggdude Item Descriptor Import`);
+      } catch (err) {
+        CONFIG.logger.error(`Error importing record : `, err);
+      }
     });
+    CONFIG.logger.debug(`Completed Oggdude Item Descriptor Import`);
   }
 }

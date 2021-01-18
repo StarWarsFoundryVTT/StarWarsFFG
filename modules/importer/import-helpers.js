@@ -1385,4 +1385,189 @@ export default class ImportHelpers {
 
     return pack;
   }
+
+  static processCharacteristicMod(mod) {
+    const modtype = "Characteristic";
+    const type = ImportHelpers.convertOGCharacteristic(mod.Key);
+
+    return {
+      type,
+      value: {
+        mod: type,
+        modtype,
+        value: mod?.Count ? parseInt(mod.Count, 10) : 0,
+      },
+    };
+  }
+
+  static processSkillMod(mod) {
+    let type;
+    let modtype;
+    let value = mod?.Count ? parseInt(mod.Count, 10) : 0;
+    if (mod.SkillIsCareer) {
+      modtype = "Career Skill";
+    } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount || mod.AdvantageCount || mod.ThreatCount || mod.SuccessCount || mod.FailureCount) {
+      modtype = "Skill Boost";
+
+      if (mod.AddSetbackCount) {
+        modtype = "Skill Setback";
+        value = parseInt(mod.AddSetbackCount, 10);
+      }
+      if (mod.SetbackCount) {
+        modtype = "Skill Remove Setback";
+        value = parseInt(mod.SetbackCount, 10);
+      }
+      if (mod.BoostCount) {
+        value = parseInt(mod.BoostCount, 10);
+      }
+      if (mod.AdvantageCount) {
+        modtype = "Skill Add Advantage";
+        value = parseInt(mod.AdvantageCount, 10);
+      }
+      if (mod.ThreatCount) {
+        modtype = "Skill Add Threat";
+        value = parseInt(mod.ThreatCount, 10);
+      }
+      if (mod.SuccessCount) {
+        modtype = "Skill Add Success";
+        value = parseInt(mod.SuccessCount, 10);
+      }
+      if (mod.FailureCount) {
+        modtype = "Skill Add Failure";
+        value = parseInt(mod.FailureCount, 10);
+      }
+    } else {
+      modtype = "Skill Rank";
+    }
+    if (mod.Key) {
+      type = CONFIG.temporary.skills[mod.Key];
+    } else {
+      type = mod.Skill;
+    }
+    if (type) {
+      return { type, value: { mod: type, modtype, value } };
+    }
+  }
+
+  static async processDieMod(mod) {
+    if (!Array.isArray(mod.DieModifier)) {
+      mod.DieModifier = [mod.DieModifier];
+    }
+
+    let output = {
+      attributes: {},
+    };
+
+    await ImportHelpers.asyncForEach(mod.DieModifier, async (dieMod) => {
+      if (dieMod.SkillKey) {
+        // this is a skill modifier
+        const skillModifier = ImportHelpers.processSkillMod({ Key: dieMod.SkillKey, ...dieMod });
+        output.attributes[skillModifier.type] = skillModifier.value;
+      } else if (dieMod.SkillChar) {
+        // this is a skill modifier based on characteristic (ex all Brawn skills);
+        const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
+        const allSkillsLists = JSON.parse(await game.settings.get("starwarsffg", "arraySkillList"));
+        const skills = allSkillsLists.find((i) => i.id === skillTheme).skills;
+        const characteristicSkills = Object.keys(skills).filter((s) => skills[s].characteristic === ImportHelpers.convertOGCharacteristic(dieMod.SkillChar));
+
+        characteristicSkills.forEach((cs) => {
+          const skillModifier = ImportHelpers.processSkillMod({ Skill: cs, ...dieMod });
+
+          if (output.attributes[skillModifier.type]) {
+            output.attributes[skillModifier.type].value += skillModifier.value.value;
+          } else {
+            output.attributes[skillModifier.type] = skillModifier.value;
+          }
+        });
+      } else if (dieMod.SkillType) {
+        const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
+        const allSkillsLists = JSON.parse(await game.settings.get("starwarsffg", "arraySkillList"));
+        const skills = allSkillsLists.find((i) => i.id === skillTheme).skills;
+        const characteristicSkills = Object.keys(skills).filter((s) => skills[s].type.toLowerCase() === dieMod.SkillType.toLowerCase());
+
+        characteristicSkills.forEach((cs) => {
+          const skillModifier = ImportHelpers.processSkillMod({ Skill: cs, ...dieMod });
+
+          if (output.attributes[skillModifier.type]) {
+            output.attributes[skillModifier.type].value += skillModifier.value.value;
+          } else {
+            output.attributes[skillModifier.type] = skillModifier.value;
+          }
+        });
+      }
+    });
+
+    return output;
+  }
+
+  static async processMods(obj) {
+    let output = {
+      attributes: {},
+      description: "",
+      itemattachment: [],
+      itemmodifier: [],
+    };
+
+    if (obj?.BaseMods?.Mod) {
+      let mods;
+      if (!Array.isArray(obj.BaseMods.Mod)) {
+        mods = [obj.BaseMods.Mod];
+      } else {
+        mods = obj.BaseMods.Mod;
+      }
+
+      //There are multiple types of mods:  Die Modifiers, Characteristic Modifiers, Stat Modifiers, Skill Modifiers, Qualities Modifiers, Text Modifiers
+      await this.asyncForEach(mods, async (modifier) => {
+        if (modifier.Key) {
+          // this is a characteristic or stat or skill or quality modifier.
+          if (["BR", "AG", "INT", "CUN", "WIL", "PR"].includes(modifier.Key)) {
+            // this is a characteristic modifier
+            const attribute = ImportHelpers.processCharacteristicMod(modifier);
+
+            output.attributes[attribute.type] = attribute.value;
+          } else {
+            const compendiumEntry = await ImportHelpers.findCompendiumEntityByImportId("Item", modifier.Key);
+            if (compendiumEntry) {
+              if (compendiumEntry.data.type === "itemmodifier") {
+                const descriptor = duplicate(compendiumEntry);
+                descriptor._id = randomID();
+                descriptor.data.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 0;
+                output.itemmodifier.push(descriptor);
+              }
+            } else if (Object.keys(CONFIG.temporary.skills).includes(modifier.Key)) {
+              // this is a skill upgrade
+              const skillModifier = ImportHelpers.processSkillMod(modifier);
+              output.attributes[skillModifier.type] = skillModifier.value;
+            } else {
+              CONFIG.logger.warn(`${modifier.Key} not found`);
+            }
+          }
+        } else if (modifier.DieModifiers) {
+          // this is a die modifier
+          const dieModifiers = await ImportHelpers.processDieMod(modifier.DieModifiers);
+          output.attributes = mergeObject(output.attributes, dieModifiers.attributes);
+        } else {
+          // this is just a text modifier
+          const unique = {
+            name: "Unique Mod",
+            type: "itemmodifier",
+            data: {
+              description: modifier.MiscDesc,
+              attributes: {},
+              type: "all",
+              rank: modifier?.Count ? parseInt(modifier.Count, 10) : 0,
+            },
+          };
+          const descriptor = new Item(unique, { temporary: true });
+          descriptor.data._id = randomID();
+          output.description += `<div>${unique.data.description} ${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}</div>`;
+          output.itemmodifier.push(descriptor.data);
+        }
+      });
+
+      console.log(output);
+
+      return output;
+    }
+  }
 }
