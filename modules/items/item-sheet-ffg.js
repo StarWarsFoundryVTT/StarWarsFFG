@@ -54,6 +54,10 @@ export class ItemSheetFFG extends ItemSheet {
       data.isTemp = true;
     }
 
+    if (this.object.compendium) {
+      this.object.data.flags.apps = this.object.apps;
+    }
+
     switch (this.object.data.type) {
       case "weapon":
       case "shipweapon":
@@ -550,6 +554,7 @@ export class ItemSheetFFG extends ItemSheet {
           ffgTempItemIndex: -1,
           ffgParent: this.object.data.flags,
           ffgIsTemp: true,
+          ffgUuid: this.object.uuid,
         },
         data: {
           attributes: {},
