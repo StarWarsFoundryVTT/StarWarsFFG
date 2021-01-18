@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 17/01/2021 - Cstadther - Fix 648 - Fixed issue where qualities were reset on drag/drop.
 - 16/01/2021 - Cstadther - Fix 636 - Fixed issues where Social Skill category is not longer being displays, also affected Labels on some of the skills.
 - 16/01/2021 - Cstadther - Added migration for alternate skill lists.
 - 16/01/2021 - Cstadther - Enhancement 633 - Added quality rendering to `Send To Chat` template.

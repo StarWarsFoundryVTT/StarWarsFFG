@@ -565,13 +565,16 @@
       },
       "itemattachments": {
         "itemattachment":[]
+      },
+      "qualities" : {
+        "itemmodifier": []
       }
     },
     "gear": {
       "templates": ["core", "basic"]
     },
     "weapon": {
-      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
       "skill": {
         "value": "Ranged: Light",
         "type": "String",
