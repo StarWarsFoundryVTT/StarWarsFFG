@@ -201,7 +201,8 @@ export default class DataImporter extends FormApplication {
             promises.push(OggDude.Import.Career(zip));
           }
           if (file.file.includes("/Species/")) {
-            promises.push(this._handleSpecies(zip));
+            //promises.push(this._handleSpecies(zip));
+            promises.push(OggDude.Import.Species(zip));
           }
           if (file.file.includes("/Vehicles/")) {
             isVehicle = true;
