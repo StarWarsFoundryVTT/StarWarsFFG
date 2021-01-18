@@ -7,6 +7,7 @@ export default class EmbeddedItemHelpers {
     let realItem = await game.items.get(flags.ffgTempId);
     let parents = [];
     let owner;
+    let entity;
 
     if (realItem) {
       parents.unshift(flags);
@@ -15,7 +16,7 @@ export default class EmbeddedItemHelpers {
         parents.unshift(flags);
       }
       let x = flags?.ffgParent;
-      if (flags?.ffgParent) {
+      if (flags?.ffgParent && !flags?.ffgParent?.isCompendium) {
         parents.unshift(x);
       }
 
@@ -34,9 +35,13 @@ export default class EmbeddedItemHelpers {
       if (flags.ffgUuid) {
         const parts = flags.ffgUuid.split(".");
         const [entityName, entityId, embeddedName, embeddedId] = parts;
-
-        owner = CONFIG[entityName].entityClass.collection.get(entityId);
-        realItem = await owner.getOwnedItem(embeddedId);
+        entity = entityName;
+        if (entityName === "Compendium") {
+          realItem = await fromUuid(flags.ffgUuid);
+        } else {
+          owner = CONFIG[entityName].entityClass.collection.get(entityId);
+          realItem = await owner.getOwnedItem(embeddedId);
+        }
       } else {
         realItem = await game.items.get(ffgTempId);
       }
@@ -49,7 +54,7 @@ export default class EmbeddedItemHelpers {
 
       let dataPointer = realItem.data;
 
-      if (Object.values(data).length === 0 || parents.length > 1) {
+      if ((Object.values(data).length === 0 || parents.length > 1) && !entity) {
         parents.forEach((value, index) => {
           dataPointer = dataPointer.data[parents[index].ffgTempItemType][parents[index].ffgTempItemIndex];
         });
@@ -76,7 +81,13 @@ export default class EmbeddedItemHelpers {
         item.data.data.renderedDesc = PopoutEditor.renderDiceImages(item.data.data.description, {});
       }
 
-      await realItem.update(formData);
+      if (realItem?.compendium) {
+        formData._id = realItem._id;
+        realItem.update(formData);
+        realItem.render(false, { action: "update", data: formData });
+      } else {
+        await realItem.update(formData);
+      }
     }
     return;
   }
