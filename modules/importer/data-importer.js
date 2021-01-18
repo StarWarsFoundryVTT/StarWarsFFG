@@ -197,7 +197,8 @@ export default class DataImporter extends FormApplication {
             isSpecialization = true;
           }
           if (file.file.includes("/Careers/")) {
-            promises.push(this._handleCareers(zip));
+            //promises.push(this._handleCareers(zip));
+            promises.push(OggDude.Import.Career(zip));
           }
           if (file.file.includes("/Species/")) {
             promises.push(this._handleSpecies(zip));
@@ -609,105 +610,6 @@ export default class DataImporter extends FormApplication {
     this._importLogger(`Completed Force Power Import`);
   }
 
-  async _handleGear(xmlDoc, zip) {
-    this._importLogger(`Starting Gear Import`);
-    const gear = xmlDoc.getElementsByTagName("Gear");
-
-    if (gear.length > 0) {
-      let totalCount = gear.length;
-      let currentCount = 0;
-      this._importLogger(`Beginning import of ${gear.length} gear`);
-
-      $(".import-progress.gear").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack("Item", `oggdude.Gear`);
-
-      for (let i = 0; i < gear.length; i += 1) {
-        try {
-          const item = gear[i];
-
-          const importkey = item.getElementsByTagName("Key")[0]?.textContent;
-          const name = item.getElementsByTagName("Name")[0]?.textContent;
-          const description = item.getElementsByTagName("Description")[0]?.textContent;
-          const price = item.getElementsByTagName("Price")[0]?.textContent;
-          const rarity = item.getElementsByTagName("Rarity")[0]?.textContent;
-          const encumbrance = item.getElementsByTagName("Encumbrance")[0]?.textContent;
-          const type = item.getElementsByTagName("Type")[0]?.textContent;
-          const restricted = item.getElementsByTagName("Restricted")[0]?.textContent === "true" ? true : false;
-
-          this._importLogger(`Start importing gear ${name}`);
-
-          const newItem = {
-            name,
-            type: "gear",
-            flags: {
-              ffgimportid: importkey,
-            },
-            data: {
-              attributes: {},
-              description,
-              encumbrance: {
-                value: encumbrance,
-              },
-              price: {
-                value: price,
-              },
-              rarity: {
-                value: rarity,
-                isrestricted: restricted,
-              },
-            },
-          };
-
-          const d = JXON.xmlToJs(item);
-          newItem.data.description += ImportHelpers.getSources(d?.Sources ?? d?.Source);
-
-          const baseMods = item.getElementsByTagName("BaseMods")[0];
-          if (baseMods) {
-            const mods = await ImportHelpers.getBaseModObject(baseMods);
-            if (mods) {
-              newItem.data.attributes = mods;
-            }
-          }
-
-          // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", newItem.flags.ffgimportid);
-          if (imgPath) {
-            newItem.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
-          }
-
-          let compendiumItem;
-          await pack.getIndex();
-          let entry = pack.index.find((e) => e.name === newItem.name);
-
-          if (!entry) {
-            CONFIG.logger.debug(`Importing Gear - Item`);
-            compendiumItem = new Item(newItem, { temporary: true });
-            this._importLogger(`New gear ${name} : ${JSON.stringify(compendiumItem)}`);
-            pack.importEntity(compendiumItem);
-          } else {
-            CONFIG.logger.debug(`Updating Gear - Item`);
-            //let updateData = ImportHelpers.buildUpdateData(newItem);
-            let updateData = newItem;
-            updateData["_id"] = entry._id;
-            this._importLogger(`Updating gear ${name} : ${JSON.stringify(updateData)}`);
-            pack.updateEntity(updateData);
-          }
-          currentCount += 1;
-
-          $(".gear .import-progress-bar")
-            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          this._importLogger(`End importing gear ${name}`);
-        } catch (err) {
-          CONFIG.logger.error(`Error importing record : `, err);
-          this._importLogger(`Error importing gear: ${JSON.stringify(err)}`);
-        }
-      }
-    }
-
-    this._importLogger(`Completed Gear Import`);
-  }
-
   async _handleWeapons(xmlDoc, zip) {
     this._importLogger(`Starting Weapon Import`);
     const weapons = xmlDoc.getElementsByTagName("Weapon");
@@ -1042,96 +944,6 @@ export default class DataImporter extends FormApplication {
     }
 
     this._importLogger(`Completed Specialization Import`);
-  }
-
-  async _handleCareers(zip) {
-    this._importLogger(`Starting Career Import`);
-
-    const careerFiles = Object.values(zip.files).filter((file) => {
-      return !file.dir && file.name.split(".").pop() === "xml" && file.name.includes("/Careers/");
-    });
-
-    let totalCount = careerFiles.length;
-    let currentCount = 0;
-
-    if (careerFiles.length > 0) {
-      $(".import-progress.careers").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack("Item", `oggdude.Careers`);
-
-      await this.asyncForEach(careerFiles, async (file) => {
-        try {
-          const data = await zip.file(file.name).async("text");
-          const xmlDoc = ImportHelpers.stringToXml(data);
-          const careerData = JXON.xmlToJs(xmlDoc);
-
-          let career = {
-            name: careerData.Career.Name,
-            type: "career",
-            flags: {
-              ffgimportid: careerData.Career.Key,
-            },
-            data: {
-              attributes: {},
-              description: careerData.Career.Description,
-            },
-          };
-
-          career.data.description += ImportHelpers.getSources(careerData?.Career?.Sources ?? careerData?.Career?.Source);
-
-          this._importLogger(`Start importing Career ${career.name}`);
-
-          careerData.Career.CareerSkills.Key.forEach((skillKey) => {
-            let skill = CONFIG.temporary.skills[skillKey];
-            if (skill) {
-              const careerKey = Object.keys(career.data.attributes).length + 1;
-              career.data.attributes[`attr${careerKey}`] = {
-                mod: skill,
-                modtype: "Career Skill",
-                value: true,
-              };
-              const skillKey = Object.keys(career.data.attributes).length + 1;
-              career.data.attributes[`attr${skillKey}`] = {
-                mod: skill,
-                modtype: "Skill Rank",
-                value: "0",
-              };
-            }
-          });
-
-          // does an image exist?
-          let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", career.flags.ffgimportid);
-          if (imgPath) {
-            career.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
-          }
-
-          let compendiumItem;
-          await pack.getIndex();
-          let entry = pack.index.find((e) => e.name === career.name);
-          if (!entry) {
-            CONFIG.logger.debug(`Importing Career - Item`);
-            compendiumItem = new Item(career, { temporary: true });
-            this._importLogger(`New Career ${career.name} : ${JSON.stringify(compendiumItem)}`);
-            pack.importEntity(compendiumItem);
-          } else {
-            CONFIG.logger.debug(`Updating Career - Item`);
-            //let updateData = ImportHelpers.buildUpdateData(career);
-            let updateData = career;
-            updateData["_id"] = entry._id;
-            this._importLogger(`Updating Career ${career.name} : ${JSON.stringify(updateData)}`);
-            pack.updateEntity(updateData);
-          }
-          currentCount += 1;
-
-          $(".careers .import-progress-bar")
-            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          this._importLogger(`End importing Career ${career.name}`);
-        } catch (err) {
-          this._importLogger(`Error importing record : `, err);
-          CONFIG.logger.error(`Error importing record : `, err);
-        }
-      });
-    }
   }
 
   async _handleSpecies(zip) {

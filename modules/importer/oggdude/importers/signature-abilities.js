@@ -24,17 +24,12 @@ export default class SignatureAbilities {
           const signatureAbility = JXON.xmlToJs(xmlData);
           const item = signatureAbility.SigAbility;
 
-          let data = {
-            name: item.Name,
-            type: "signatureability",
-            flags: {
-              ffgimportid: item.Key,
-            },
-            data: {
-              description: item.Description,
-              attributes: {},
-              upgrades: {},
-            },
+          let data = ImportHelpers.prepareBaseObject(item, "signatureability");
+
+          data.data = {
+            description: item.Description,
+            attributes: {},
+            upgrades: {},
           };
 
           data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);

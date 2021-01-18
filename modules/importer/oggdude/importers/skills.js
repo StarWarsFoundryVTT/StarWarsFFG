@@ -18,7 +18,7 @@ export default class Skills {
     await ImportHelpers.asyncForEach(items, async (item) => {
       try {
         let data = {
-          name: `${item.TypeValue === "stKnowledge" ? "Knowledge:" : ""}${item.Name}`,
+          name: `${item.TypeValue === "stKnowledge" ? "Knowledge:" : ""}${item.Name.replace(" - ", ": ")}`,
           flags: {
             ffgimportid: item.Key,
           },
