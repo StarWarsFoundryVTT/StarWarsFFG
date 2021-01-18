@@ -4,9 +4,9 @@ export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
     if (!this.data?.flags?.ffgTempId) {
       super.update(data, options);
-      if (this.compendium) {
-        return this.sheet.render(false);
-      }
+      // if (this.compendium) {
+      //   return this.sheet.render(true);
+      // }
       return;
     } else {
       const preState = Object.values(this.apps)[0]._state;
