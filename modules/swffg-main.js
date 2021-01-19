@@ -33,6 +33,9 @@ import { defaultSkillArrayString } from "./config/ffg-skillslist.js";
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
 import ImportHelpers from "./importer/import-helpers.js";
 import { createFFGMacro } from "./helpers/macros.js";
+import ModifierHelpers from "./helpers/modifiers.js";
+import ItemHelpers from "./helpers/item-helpers.js";
+import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -229,7 +232,7 @@ Hooks.once("init", async function () {
       });
 
       if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-        const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+        const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
 
         let skills = {};
         Object.keys(altSkills).forEach((skillKey) => {
@@ -265,8 +268,13 @@ Hooks.once("init", async function () {
           CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
           Object.keys(actor.data.data.skills).forEach((skill) => {
-            if (!skills.skills[skill] && !skills.skills[skill].nontheme) {
+            if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
               skills.skills[`-=${skill}`] = null;
+            } else {
+              skills.skills[skill] = {
+                ...skills.skills[skill],
+                ...actor.data.data.skills[skill],
+              };
             }
           });
 
@@ -290,6 +298,17 @@ Hooks.once("init", async function () {
     scope: "world",
     config: true,
     default: true,
+    type: Boolean,
+    onChange: (rule) => window.location.reload(),
+  });
+
+  // Register grouping talents so people can let them be ordered by purchase history
+  game.settings.register("starwarsffg", "talentSorting", {
+    name: game.i18n.localize("SWFFG.EnableSortTalentsByActivationGlobal"),
+    hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
+    scope: "world",
+    config: true,
+    default: false,
     type: Boolean,
     onChange: (rule) => window.location.reload(),
   });
@@ -670,6 +689,25 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
 
     DiceHelpers.displayRollDialog(poolData.roll.data, dicePool, poolData.description, poolData.roll.skillName, poolData.roll.item, poolData.roll.flavor, poolData.roll.sound);
   });
+
+  html.find(".item-display .item-pill, .item-properties .item-pill").on("click", async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const li = event.currentTarget;
+    let uuid = li.dataset.itemId;
+    let modifierId = li.dataset.modifierId;
+    let modifierType = li.dataset.modifierType;
+
+    if (li.dataset.uuid) {
+      uuid = li.dataset.uuid;
+    }
+
+    const parts = uuid.split(".");
+
+    const [entityName, entityId, embeddedName, embeddedId] = parts;
+
+    await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
+  });
 });
 
 // Handle migration duties
@@ -720,6 +758,35 @@ Hooks.once("ready", async () => {
           CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
           CONFIG.logger.log(actor.data.data.stats.strain);
         }
+
+        // migrate all character to using current skill list if not default.
+        let skilllist = game.settings.get("starwarsffg", "skilltheme");
+
+        if (CONFIG.FFG?.alternateskilllists?.length) {
+          try {
+            let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
+            CONFIG.logger.log(`Applying skill theme ${skilllist} to actor ${actor.name}`);
+
+            Object.keys(actor.data.data.skills).forEach((skill) => {
+              if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
+                skills.skills[`-=${skill}`] = null;
+              } else {
+                skills.skills[skill] = {
+                  ...skills.skills[skill],
+                  ...actor.data.data.skills[skill],
+                };
+              }
+            });
+
+            actor.update({
+              data: {
+                skills: skills.skills,
+              },
+            });
+          } catch (err) {
+            CONFIG.logger.warn(err);
+          }
+        }
       }
     });
 
@@ -743,7 +810,7 @@ Hooks.once("ready", async () => {
 
         CONFIG.FFG.alternateskilllists = skillList;
         if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-          const altSkills = CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills;
+          const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
 
           let skills = {};
           Object.keys(altSkills).forEach((skillKey) => {
@@ -876,7 +943,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addDicePreset(
       {
         type: "da",
-        labels: ["", "s", "s", "s\ns", "a", "s", "s\na", "a\na"],
+        labels: ["", "s", "s", "s\ns", "a", "a", "s\na", "a\na"],
         font: "SWRPG-Symbol-Regular",
         colorset: "green",
         system: "swffg",
@@ -956,7 +1023,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     dice3d.addDicePreset(
       {
         type: "da",
-        labels: ["", "s", "s", "s\ns", "a", "s", "s\na", "a\na"],
+        labels: ["", "s", "s", "s\ns", "a", "a", "s\na", "a\na"],
         font: "Genesys",
         colorset: "green",
         system: "genesys",

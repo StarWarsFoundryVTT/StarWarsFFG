@@ -34,8 +34,11 @@ export class ActorFFG extends Actor {
           };
         });
 
-      const skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
-      mergeObject(skills, actorSkills);
+      let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
+
+      if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+        data.skills = mergeObject(skills, actorSkills);
+      }
 
       const sorted = Object.keys(skills).sort(function (a, b) {
         const x = game.i18n.localize(skills[a].abrev);
@@ -85,7 +88,11 @@ export class ActorFFG extends Actor {
       for (let skill of Object.keys(data.skills)) {
         const cleanedSkillName = skill.replace(/[\W_]+/g, "");
 
-        const strId = `SWFFG.SkillsName${cleanedSkillName}`;
+        let strId = `SWFFG.SkillsName${cleanedSkillName}`;
+        if (data.skills[skill].label) {
+          strId = data.skills[skill].label;
+        }
+
         const localizedField = game.i18n.localize(strId);
 
         if (!data.skills[skill].custom) {
@@ -102,7 +109,7 @@ export class ActorFFG extends Actor {
         this._calculateDerivedValues(actorData);
       }
     } else if (actorData.type === "vehicle") {
-      this._applyVehicelModifiers(actorData);
+      this._applyVehicleModifiers(actorData);
     }
   }
 
@@ -301,7 +308,12 @@ export class ActorFFG extends Actor {
       });
     }
 
-    data.talentList = globalTalentList;
+    // enable talent sorting if global to true and sheet is set to inherit or sheet is set to true.
+    if ((game.settings.get("starwarsffg", "talentSorting") && actorData.flags?.config?.talentSorting === "0") || actorData.flags?.config?.talentSorting === "1") {
+      data.talentList = globalTalentList.slice().sort(this._sortTalents);
+    } else {
+      data.talentList = globalTalentList;
+    }
 
     if (data?.obligationlist && Object.keys(data.obligationlist).length > 0) {
       let obligation = 0;
@@ -440,6 +452,47 @@ export class ActorFFG extends Actor {
     });
     skills = skillobject;
     return skills;
+  }
+
+  // group talents
+  _sortTalents(a, b) {
+    /*
+        Active (Out)
+        Active (Maneuver)
+        Active (Incidental)
+        Active
+        Passive
+    */
+    if (a.activation.includes("Active") && a.activation.includes("Out")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Out")) {
+      return 1;
+    }
+    if (a.activation.includes("Active") && a.activation.includes("Maneuver")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Maneuver")) {
+      return 1;
+    }
+    if (a.activation.includes("Active") && a.activation.includes("Incidental")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Incidental")) {
+      return 1;
+    }
+    if (a.activation.includes("Active") && a.activation.includes("Incidental")) {
+      return -1;
+    } else if (b.activation.includes("Active") && b.activation.includes("Incidental")) {
+      return 1;
+    }
+    if (a.activation.includes("Active")) {
+      return -1;
+    } else if (b.activation.includes("Active")) {
+      return 1;
+    }
+    if (a.activation.includes("Passive")) {
+      return -1;
+    } else if (b.activation.includes("Passive")) {
+      return 1;
+    }
   }
 
   /**
@@ -674,7 +727,7 @@ export class ActorFFG extends Actor {
     });
   }
 
-  _applyVehicelModifiers(actorData) {
+  _applyVehicleModifiers(actorData) {
     const data = actorData.data;
     const isPC = this.hasPlayerOwner;
     if (!actorData.modifiers) {

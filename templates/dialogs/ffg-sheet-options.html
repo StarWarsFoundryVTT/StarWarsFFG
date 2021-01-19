@@ -4,11 +4,17 @@
     <div class="form-group">
       <label>{{option.name}}</label>
       <div class="form-fields">
-        {{#iff option.type "==" Boolean}}
+        {{#if (eq option.type "Boolean")}}
         <input type="checkbox" name="flags.config.{{id}}" id="{{id}}" data-dtype="Boolean" {{checked option.value}} />
-        {{else}}
+        {{/if}} {{#if (eq option.type "String")}}
         <input type="text" name="flags.config.{{id}}" id="{{id}}" data-dtype="String" value="{{option.value}}" />
-        {{/iff}}
+        {{/if}} {{#if (eq option.type "Array")}}
+        <select name="flags.config.{{id}}" id="{{id}}">
+          {{#select option.value }}{{#each option.options as |optionvalue id| }}
+          <option value="{{id}}">{{optionvalue}}</option>
+          {{/each}}{{/select}}
+        </select>
+        {{/if}}
       </div>
       <p class="notes">
         {{option.hint}}

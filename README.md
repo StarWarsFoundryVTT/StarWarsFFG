@@ -36,6 +36,21 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 18/01/2021 - Cstadther - Fix 644 - Fixed issue with import vehicle encumbrance.
+- 17/01/2021 - Cstadther - Fix 651 - Fixed issue where users could not display read-only journal entries.
+- 17/01/2021 - Cstadther - Fix 648 - Fixed issue where qualities were reset on drag/drop.
+- 16/01/2021 - Cstadther - Fix 636 - Fixed issues where Social Skill category is not longer being displays, also affected Labels on some of the skills.
+- 16/01/2021 - Cstadther - Added migration for alternate skill lists.
+- 16/01/2021 - Cstadther - Enhancement 633 - Added quality rendering to `Send To Chat` template.
+- 16/01/2021 - Cstadther - Added Item Attachments and styling to support it.
+- 15/01/2021 - Cstadther - Added code to fix save/display issues with compendium items.
+- 08/01/2021 - Cstadther - Added new paused image.
+- 04/01/2021 - Cstadther - Fix for Melee-* skills not calculating damage correctly when based on Brawn.
+- 04/01/2021 - Cstadther - Enhanced the enhancement provided by @wrycu, added localization, added sheet level options for talent sorting to override global setting, added localization.
+- 04/01/2021 - Cstadther - Fix issue with Genesys Adversaries import.
+- 03/01/2021 - Cstadther - Fix for rendering secrets in content.
+- 02/01/2021 - Cstadther - Enhancement 593 - Added context to destiny point flip message, now with styling and lists what the pools changed to.
+- 02/01/2021 - Cstadther - Enhancement 591 - Added `Source` to the description for all imported items.
 - 31/12/2020 - Cstadther - Enhancement 529 - Added Restricted checkbox to items.  Updated OggDude importer to import restricted data.
 - 31/12/2020 - Cstadther - Fix 539 - Fixed issue where added skills were removed when duplicating an actor.
 - 31/12/2020 - Cstadther - Enhancement 546 - Added `All Skills` to skill list modifier drop down, will apply the modifier to all skills.

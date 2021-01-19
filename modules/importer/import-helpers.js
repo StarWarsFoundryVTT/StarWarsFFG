@@ -1216,4 +1216,47 @@ export default class ImportHelpers {
 
     return type;
   }
+
+  /**
+   * Converts sources to text
+   * @param  {} sources
+   */
+  static getSources(sources) {
+    if (!sources) return "";
+
+    let sourceArray = [];
+
+    if (!sources?.Source) {
+      sourceArray = [sources];
+    } else {
+      if (!Array.isArray(sources.Source)) {
+        sourceArray = [sources.Source];
+      } else {
+        sourceArray = sources.Source;
+      }
+    }
+
+    const text = sourceArray.map((s) => {
+      if (s?.$Page) {
+        return `[H4]Page ${s.$Page} - ${s._}[h4]`;
+      } else {
+        return `[H4]${s}[h4]`;
+      }
+    });
+
+    const sourceText = `[P][H3]Sources:[h3]${text.join("")}`;
+
+    return sourceText;
+  }
+
+  static prepareBaseObject(obj, type) {
+    return {
+      name: obj.Name,
+      type,
+      flags: {
+        ffgimportid: obj.Key,
+      },
+      data: {},
+    };
+  }
 }
