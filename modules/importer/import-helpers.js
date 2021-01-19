@@ -649,9 +649,29 @@ export default class ImportHelpers {
             },
           },
           experience: {
-            total: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10),
-            available: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10) - parseInt(characterData.Character.Experience.ExperienceRanks.UsedExperience ?? 0, 10),
+            total: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10),
+            available: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10) - parseInt((characterData.Character.Experience.UsedExperience?? 0), 10),
           },
+          obligationlist:{},
+          dutylist:{},
+          morality:{
+            label:"Morality",
+            strength:characterData.Character.Morality?.MoralityPairs?.MoralityPair?.StrengthKey,
+            type:"Number",
+            value: parseInt(characterData.Character.Morality.MoralityValue ?? 0,10),
+            weakness:characterData.Character.Morality?.MoralityPairs?.MoralityPair?.WeaknessKey,
+          },
+          biography: characterData.Character.Story,
+          general:{
+             age:characterData.Character.Description.Age,
+             build:characterData.Character.Description.Build,
+             eyes: characterData.Character.Description.Eyes,
+             hair: characterData.Character.Description.Hair,
+             features:characterData.Character.Description.OtherFeatures,
+             height: characterData.Character.Description.Height,
+             gender: characterData.Character.Description.Gender,
+          },
+
         },
         items: [],
       };
@@ -747,6 +767,68 @@ export default class ImportHelpers {
       } catch (err) {
         CONFIG.logger.error(`Unable to add species ${characterData.Character.Species.SpeciesKey} to character.`);
       }
+
+      let obligationlist = []
+	    if (characterData.Character.Obligations.CharObligation ){
+			  let obligation = 0;
+        if(Array.isArray(characterData.Character.Obligations.CharObligation)){
+          characterData.Character.Obligations.CharObligation.forEach((CharObligation) => {
+            const nk = randomID();
+            const charobligation ={
+              key:nk,
+              type: CharObligation.Name,
+              magnitude:CharObligation.Size
+            }				
+            character.data.obligationlist[charobligation.key]=charobligation;
+            if (parseInt(CharObligation.Size, 10)) {
+              obligation += parseInt(CharObligation.Size, 10);
+            }			  
+          });
+        }
+        else{
+          const nk = randomID();
+            const charobligation ={
+              key:nk,
+              type: characterData.Character.Obligations.CharObligation.Name,
+              magnitude:characterData.Character.Obligations.CharObligation.Size
+            }				
+            character.data.obligationlist[charobligation.key]=charobligation;
+            if (parseInt(characterData.Character.Obligations.CharObligation.Size, 10)) {
+              obligation += parseInt(characterData.Character.Obligations.CharObligation.Size, 10);
+            }	
+        }
+	    }
+
+      let dutylist = []
+	    if (characterData.Character.Duties.CharDuty ){
+        let duty = 0;
+        if(Array.isArray(characterData.Character.Duties.CharDuty)){
+			    characterData.Character.Duties.CharDuty.forEach((CharDuty) => {
+					  const nk = randomID();
+				    const charduty ={
+					    key:nk,
+              type: CharDuty.Name,
+              magnitude:CharDuty.Size
+				    }				
+			      character.data.dutylist[charduty.key]=charduty;
+				    if (parseInt(CharDuty.Size, 10)) {
+				      duty += parseInt(CharDuty.Size, 10);
+				    }			  
+          });
+        }
+        else{
+          const nk = randomID();
+				    const charduty ={
+					    key:nk,
+              type: characterData.Character.Duties.CharDuty.Name,
+              magnitude:characterData.Character.Duties.CharDuty.Size
+				    }				
+			      character.data.dutylist[charduty.key]=charduty;
+				    if (parseInt(characterData.Character.Duties.CharDuty.Size, 10)) {
+				      duty += parseInt(characterData.Character.Duties.CharDuty.Size, 10);
+				    }	
+        }
+	    }
 
       updateDialog(20);
 
