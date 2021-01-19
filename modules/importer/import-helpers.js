@@ -652,6 +652,13 @@ export default class ImportHelpers {
             total: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10),
             available: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10) - parseInt((characterData.Character.Experience.UsedExperience?? 0), 10),
           },
+          morality:{
+            label:"Morality",
+            strength:characterData.Character.Morality?.MoralityPairs?.MoralityPair?.StrengthKey,
+            type:"Number",
+            value: parseInt(characterData.Character.Morality.MoralityValue ?? 0,10),
+            weakness:characterData.Character.Morality?.MoralityPairs?.MoralityPair?.WeaknessKey,
+          },
           biography: characterData.Character.Story,
           general:{
              age:characterData.Character.Description.Age,
