@@ -650,7 +650,7 @@ export default class ImportHelpers {
           },
           experience: {
             total: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10),
-            available: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10) - parseInt((characterData.Character.Experience.ExperienceRanks.UsedExperience?? 0), 10),
+            available: parseInt((characterData.Character.Experience.ExperienceRanks.StartingRanks?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0), 10) + parseInt((characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0), 10) - parseInt((characterData.Character.Experience.UsedExperience?? 0), 10),
           },
         },
         items: [],
