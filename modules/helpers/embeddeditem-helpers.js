@@ -127,6 +127,9 @@ export default class EmbeddedItemHelpers {
       const readonlyItem = {
         name: item.name,
         content: item.data.description,
+        permission: {
+          default: ENTITY_PERMISSIONS.OBSERVER,
+        },
       };
 
       const readonlyItemJournalEntry = new JournalEntryFFG(readonlyItem, { temporary: true });
