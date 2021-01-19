@@ -1769,7 +1769,7 @@ export default class DataImporter extends FormApplication {
                   value: parseInt(vehicleData.Vehicle.Passengers, 10),
                 },
                 encumbrance: {
-                  max: parseInt(vehicleData.Vehicle.Encumbrance, 10),
+                  max: parseInt(vehicleData.Vehicle.EncumbranceCapacity, 10),
                 },
                 cost: {
                   value: parseInt(vehicleData.Vehicle.Price, 10),
