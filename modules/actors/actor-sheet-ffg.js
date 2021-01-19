@@ -8,6 +8,8 @@ import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers from "../helpers/actor-helpers.js";
+import ItemHelpers from "../helpers/item-helpers.js";
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -233,32 +235,45 @@ export class ActorSheetFFG extends ActorSheet {
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
         hint: game.i18n.localize("SWFFG.EnableObligationHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableDuty", {
         name: game.i18n.localize("SWFFG.EnableDuty"),
         hint: game.i18n.localize("SWFFG.EnableDutyHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableMorality", {
         name: game.i18n.localize("SWFFG.EnableMorality"),
         hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableConflict", {
         name: game.i18n.localize("SWFFG.EnableConflict"),
         hint: game.i18n.localize("SWFFG.EnableConflictHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableForcePool", {
         name: game.i18n.localize("SWFFG.EnableForcePool"),
         hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
+        type: "Boolean",
         default: true,
+      });
+      this.sheetoptions.register("talentSorting", {
+        name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
+        hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
+        type: "Array",
+        default: 0,
+        options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
       });
     }
 
@@ -268,6 +283,13 @@ export class ActorSheetFFG extends ActorSheet {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         default: true,
+      });
+      this.sheetoptions.register("talentSorting", {
+        name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
+        hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
+        type: "Array",
+        default: 0,
+        options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
       });
     }
 
@@ -297,6 +319,17 @@ export class ActorSheetFFG extends ActorSheet {
           if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
           else this._itemDisplayDetails(item, ev);
         }
+
+        html.find("li.item-pill").on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const li = event.currentTarget;
+
+          let itemId = li.dataset.itemId;
+          let modifierType = li.dataset.modifierType;
+          let modifierId = li.dataset.modifierId;
+          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor._id);
+        });
       }
     });
 
@@ -458,7 +491,7 @@ export class ActorSheetFFG extends ActorSheet {
       callbacks: { dragstart: this._onTransferItemDragStart.bind(this), drop: this._onTransferItemDrop.bind(this) },
     });
 
-    dragDrop.bind($(`form.editable.${this.actor.data.type}`)[0]);
+    dragDrop.bind(html[0]);
 
     const dragDrop1 = new DragDrop({
       dragSelector: ".skill",
@@ -467,9 +500,9 @@ export class ActorSheetFFG extends ActorSheet {
       callbacks: { dragstart: this._onSkillDragStart.bind(this) },
     });
 
-    dragDrop1.bind($(`form.editable.${this.actor.data.type}`)[0]);
+    dragDrop1.bind(html[0]);
 
-    $("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
+    html.find("input[type='text'][data-dtype='Number'][min][max]").on("change", (event) => {
       const a = event.currentTarget;
       const min = parseInt($(a).attr("min"), 10);
       const max = parseInt($(a).attr("max"), 10);
@@ -480,7 +513,7 @@ export class ActorSheetFFG extends ActorSheet {
       }
     });
 
-    $("input[type='text'][data-dtype='Number'][pattern]").on("change", (event) => {
+    html.find("input[type='text'][data-dtype='Number'][pattern]").on("change", (event) => {
       const a = event.currentTarget;
       const value = $(a).val() || "2";
       const pattern = new RegExp($(a).attr("pattern"));
@@ -1040,14 +1073,17 @@ export class ActorSheetFFG extends ActorSheet {
 
       cols[currentColumn].push({ id: "header", ...type });
       rowsLeft -= 1;
-      skills.forEach((s) => {
+      skills.forEach((s, index) => {
         cols[currentColumn].push({ name: s, ...data.data.skills[s] });
         rowsLeft -= 1;
         if (rowsLeft <= 0 && currentColumn === 0) {
           currentColumn += 1;
           rowsLeft = colRowCount;
-          cols[currentColumn].push({ id: "header", ...type });
-          rowsLeft -= 1;
+
+          if (index + 1 < skills.length) {
+            cols[currentColumn].push({ id: "header", ...type });
+            rowsLeft -= 1;
+          }
         }
       });
     });

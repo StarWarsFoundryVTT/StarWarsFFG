@@ -3,7 +3,6 @@
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.ItemsWeapons"}}</div>
     <div class="">{{localize "SWFFG.Equipped"}}</div>
-    <div class="">{{localize "SWFFG.ItemsSkill"}}</div>
     <div class="">{{localize "SWFFG.ItemsDamage"}}</div>
     <div class="">{{localize "SWFFG.ItemsRange"}}</div>
     <div class="">{{localize "SWFFG.ItemsCrit"}}</div>
@@ -15,16 +14,23 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'weapon'}}
     <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
-      <div class="item-name">{{item.name}}</div>
+      <div class="item-name">
+        <div class="roll-button">
+          <!-- Create define a button with mouseover events to update the icon and generate rolls when clicked and moused over -->
+          <div class="skill-label rollable roll-button starwarsffg item-rollable" style="background-image: url('{{ item.img }}')"></div>
+        </div>
+        <div class="hover {{#if item.data.rarity.isrestricted}}restricted{{/if}}">
+          {{item.name}} {{#if item.data.rarity.isrestricted}}
+          <div class="tooltip2">This is a Restricted item</div>
+          {{/if}}
+        </div>
+      </div>
       <div>
         {{#if item.data.equippable.equipped}}
         <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
         {{else}}
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
         {{/if}}
-      </div>
-      <div class="skill-roll">
-        <div class="roll-button"><div class="skill-label rollable">{{#with (lookup ../this.FFG.skills item.data.skill.value)}}{{localize this.abrev}}{{/with}}</div></div>
       </div>
       <div>{{item.data.damage.value}} {{#if (and (ne item.data.damage.value item.data.damage.adjusted) (or (gt item.data.damage.adjusted.length 0) (gt item.data.damage.adjusted 0)))}}({{item.data.damage.adjusted}}){{/if}}</div>
       <div>{{localize item.data.range.label}}</div>
@@ -53,7 +59,14 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'armour'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
-      <div class="item-name">{{item.name}}</div>
+      <div class="item-name">
+        <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
+        <div class="hover {{#if item.data.rarity.isrestricted}}restricted{{/if}}">
+          {{item.name}} {{#if item.data.rarity.isrestricted}}
+          <div class="tooltip2">This is a Restricted item</div>
+          {{/if}}
+        </div>
+      </div>
       <div>
         {{#if item.data.equippable.equipped}}
         <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
@@ -88,7 +101,14 @@
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'gear'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
-      <div class="item-name">{{item.name}}</div>
+      <div class="item-name">
+        <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
+        <div class="hover {{#if item.data.rarity.isrestricted}}restricted{{/if}}">
+          {{item.name}} {{#if item.data.rarity.isrestricted}}
+          <div class="tooltip2">This is a Restricted item</div>
+          {{/if}}
+        </div>
+      </div>
       <!-- <div>{{item.data.price.value}}</div>
       <div>{{item.data.rarity.value}}</div> -->
       <div class="item-quantity">

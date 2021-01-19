@@ -106,10 +106,10 @@ export default class DestinyTracker extends FormApplication {
       var actionType = null;
       if (pointType == "dPoolLight") {
         flipType = "dPoolDark";
-        typeName = "Light Side point";
+        typeName = game.i18n.localize("SWFFG.Lightside");
       } else {
         flipType = "dPoolLight";
-        typeName = "Dark Side point";
+        typeName = game.i18n.localize("SWFFG.Darkside");
       }
       var messageText;
 
@@ -118,21 +118,27 @@ export default class DestinyTracker extends FormApplication {
           ui.notifications.warn(`Cannot flip a ${typeName} point; 0 remaining.`);
           return;
         } else {
+          let pool = { light: 0, dark: 0 };
+          if (flipType == "dPoolLight") {
+            pool.light = game.settings.get("starwarsffg", flipType) + 1;
+            pool.dark = game.settings.get("starwarsffg", pointType) - 1;
+          } else if (flipType == "dPoolDark") {
+            pool.dark = game.settings.get("starwarsffg", flipType) + 1;
+            pool.light = game.settings.get("starwarsffg", pointType) - 1;
+          }
+
           if (game.user.isGM) {
-            game.settings.set("starwarsffg", flipType, game.settings.get("starwarsffg", flipType) + 1);
-            game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
+            game.settings.set("starwarsffg", "dPoolLight", pool.light);
+            game.settings.set("starwarsffg", "dPoolDark", pool.dark);
           } else {
-            let pool = { light: 0, dark: 0 };
-            if (flipType == "dPoolLight") {
-              pool.light = game.settings.get("starwarsffg", flipType) + 1;
-              pool.dark = game.settings.get("starwarsffg", pointType) - 1;
-            } else if (flipType == "dPoolDark") {
-              pool.dark = game.settings.get("starwarsffg", flipType) + 1;
-              pool.light = game.settings.get("starwarsffg", pointType) - 1;
-            }
             await game.socket.emit("system.starwarsffg", { pool });
           }
-          messageText = `Flipped a ${typeName} point.`;
+
+          messageText = `<div class="destiny-flip ${flipType}">
+            <div class="destiny-title">Flipped a <span>${typeName}</span> point</div>
+            <div class="destiny-left">${game.i18n.localize("SWFFG.Darkside")} Remaining: ${pool.dark}</div>
+            <div class="destiny-left">${game.i18n.localize("SWFFG.Lightside")} Remaining: ${pool.light}</div>
+          </div>`;
         }
       } else if (add) {
         if (!game.user.isGM) {

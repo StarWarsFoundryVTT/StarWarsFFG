@@ -518,7 +518,7 @@
   },
   "Item": {
     "types": [
-      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "talent", "shipattachment", "shipweapon", "signatureability", "specialization", "species", "weapon"],
+      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "signatureability", "specialization", "species", "weapon"],
     "templates": {
       "core": {
         "description": "",
@@ -562,13 +562,19 @@
           "type": "Boolean",
           "equipped": false
         }
+      },
+      "itemattachments": {
+        "itemattachment":[]
+      },
+      "qualities" : {
+        "itemmodifier": []
       }
     },
     "gear": {
       "templates": ["core", "basic"]
     },
     "weapon": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
       "skill": {
         "value": "Ranged: Light",
         "type": "String",
@@ -598,7 +604,7 @@
       }
     },
     "armour": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments"],
       "defence": {
         "value": 0,
         "type": "Number",
@@ -742,6 +748,16 @@
         "upgrade6": {},
         "upgrade7": {}
       }
+    },
+    "itemattachment": {
+      "templates": ["core", "basic", "hardpoints"],
+      "type": "",
+      "itemmodifier" : []
+    },
+    "itemmodifier": {
+      "templates": ["core"],
+      "type": "",
+      "rank": 0
     }
   }
 }

@@ -4,6 +4,8 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
+import item from "../helpers/embeddeditem-helpers.js";
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -28,24 +30,39 @@ export class ItemSheetFFG extends ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  async getData() {
-    const data = super.getData();
+  async getData(options) {
+    let data = super.getData(options);
+
+    if (options?.action === "update" && this.object.compendium) {
+      data.item = mergeObject(data.item, options.data);
+    }
+
     data.classType = this.constructor.name;
     CONFIG.logger.debug(`Getting Item Data ${this.object.name}`);
 
     data.dtypes = ["String", "Number", "Boolean"];
     if (data?.data?.attributes) {
       for (let attr of Object.values(data.data.attributes)) {
-        attr.isCheckbox = attr.dtype === "Boolean";
+        if (attr?.dtype) {
+          attr.isCheckbox = attr.dtype === "Boolean";
+        }
       }
+    }
+
+    data.isTemp = false;
+    if (this.object.data?.flags?.ffgTempId) {
+      data.isTemp = true;
     }
 
     switch (this.object.data.type) {
       case "weapon":
       case "shipweapon":
-        this.position.width = 530;
+        this.position.width = 550;
         this.position.height = 750;
         break;
+      case "itemattachment":
+        this.position.width = 500;
+        this.position.height = 450;
       case "armour":
       case "gear":
       case "shipattachment":
@@ -252,6 +269,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     // Everything below here is only needed if the sheet is editable
+    if (this.object.data.flags.readonly) this.options.editable = false;
     if (!this.options.editable) return;
 
     // Add or Remove Attribute
@@ -301,6 +319,251 @@ export class ItemSheetFFG extends ItemSheet {
         let difficulty = data["difficulty"];
         await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
       }
+    });
+
+    if (["weapon", "armor", "itemattachment"].includes(this.object.data.type)) {
+      const itemToItemAssociation = new DragDrop({
+        dragSelector: ".item",
+        dropSelector: null,
+        permissions: { dragstart: true, drop: true },
+        callbacks: { drop: this._onDropItem.bind(this) },
+      });
+      itemToItemAssociation.bind(html[0]);
+
+      html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
+
+      html.find(".resource.pills.itemmodifier").on("click", async (event) => {
+        let temp = {
+          img: "icons/svg/mystery-man.svg",
+          name: "",
+          type: "itemmodifier",
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: "itemmodifier",
+            ffgTempItemIndex: -1,
+          },
+          data: {
+            attributes: {},
+            description: "",
+            rank: 1,
+            type: "all",
+          },
+        };
+
+        let tempItem = await Item.create(temp, { temporary: true });
+        tempItem.sheet.render(true);
+      });
+
+      html.find(".resource.pills.itemattachment").on("click", async (event) => {
+        let temp = {
+          img: "icons/svg/mystery-man.svg",
+          name: "",
+          type: "itemattachment",
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: "itemattachment",
+            ffgTempItemIndex: -1,
+          },
+          data: {
+            attributes: {},
+            description: "",
+            type: "all",
+            itemmodifier: [],
+          },
+        };
+        let tempItem = await Item.create(temp, { temporary: true });
+        tempItem.sheet.render(true);
+      });
+    }
+
+    html.find(".item-pill .item-delete, .additional .add-modifier .item-delete").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      const itemType = parent.dataset.itemName;
+      const itemIndex = parent.dataset.itemIndex;
+
+      const items = this.object.data.data[itemType];
+      items.splice(itemIndex, 1);
+
+      let formData = {};
+      setProperty(formData, `data.${itemType}`, items);
+
+      this.object.update(formData);
+    });
+
+    html.find(".item-pill .rank").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = $(event.currentTarget).parent()[0];
+      const itemType = li.dataset.itemName;
+      const itemIndex = li.dataset.itemIndex;
+
+      const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
+      const title = `${this.object.name} ${item.name}`;
+
+      new Dialog(
+        {
+          title,
+          content: {
+            item,
+            type: itemType,
+            parenttype: this.object.data.type,
+          },
+          buttons: {
+            done: {
+              icon: '<i class="fas fa-check"></i>',
+              label: game.i18n.localize("SWFFG.ButtonAccept"),
+              callback: (html) => {
+                switch (itemType) {
+                  case "itemmodifier": {
+                    const formData = {};
+                    const items = $(html).find("input");
+
+                    items.each((index) => {
+                      const input = $(items[index]);
+                      const name = input.attr("name");
+                      const id = input[0].dataset.itemId;
+
+                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
+
+                      if (arrayItem > -1) {
+                        setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
+                      }
+                    });
+
+                    setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+                    this.object.update(formData);
+
+                    break;
+                  }
+                  case "itemattachment": {
+                    console.log(itemType);
+                    break;
+                  }
+                }
+              },
+            },
+            cancel: {
+              icon: '<i class="fas fa-times"></i>',
+              label: game.i18n.localize("SWFFG.Cancel"),
+            },
+          },
+        },
+        {
+          classes: ["dialog", "starwarsffg"],
+          template: `systems/starwarsffg/templates/items/dialogs/ffg-edit-${itemType}.html`,
+        }
+      ).render(true);
+    });
+
+    html.find(".item-pill, .additional .add-modifier .fa-edit").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      let itemType = li.dataset.itemName;
+      let itemIndex = li.dataset.itemIndex;
+
+      if ($(li).hasClass("adjusted")) {
+        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object._id, itemType, itemIndex, this.object?.actor?._id);
+      }
+
+      if ($(li).hasClass("fa-edit")) {
+        const parent = $(li).parent()[0];
+        itemType = parent.dataset.itemName;
+        itemIndex = parent.dataset.itemIndex;
+      }
+
+      const item = this.object.data.data[itemType][itemIndex];
+
+      let temp = { ...item, flags: { ffgTempId: this.object.id, ffgTempItemType: itemType, ffgTempItemIndex: itemIndex, ffgIsTemp: true, ffgParent: this.object.data.flags } };
+      if (this.object.isOwned) {
+        let ownerObject = await fromUuid(this.object.uuid);
+
+        temp = {
+          ...item,
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: itemType,
+            ffgTempItemIndex: itemIndex,
+            ffgIsTemp: true,
+            ffgUuid: this.object.uuid,
+          },
+        };
+      }
+
+      let tempItem = await Item.create(temp, { temporary: true });
+
+      tempItem.data._id = temp._id;
+      if (!temp._id) {
+        tempItem.data._id = randomID();
+      }
+      tempItem.sheet.render(true);
+    });
+
+    html.find(".additional .modifier-active").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      let itemType = parent.dataset.itemName;
+      let itemIndex = parent.dataset.itemIndex;
+      const item = this.object.data.data[itemType][itemIndex];
+      item.data.active = !item.data.active;
+
+      if (this.object.data.flags.ffgTempId) {
+        // this is a temporary sheet for an embedded item
+
+        item.flags = {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: itemIndex,
+          ffgParent: this.object.data.flags,
+          ffgIsTemp: true,
+        };
+
+        await EmbeddedItemHelpers.updateRealObject({ data: item }, {});
+      } else {
+        let formData = {};
+        setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+        this.object.update(formData);
+      }
+
+      this.object.sheet.render(true);
+    });
+
+    html.find(".additional .add-new-item").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      let itemType = li.dataset.acceptableType;
+
+      let temp = {
+        img: "icons/svg/mystery-man.svg",
+        name: "",
+        type: itemType,
+        flags: {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: -1,
+          ffgParent: this.object.data.flags,
+          ffgIsTemp: true,
+          ffgUuid: this.object.uuid,
+        },
+        data: {
+          attributes: {},
+          description: "",
+        },
+      };
+
+      let tempItem = await Item.create(temp, { temporary: true });
+      tempItem.data._id = temp._id;
+      if (!temp._id) {
+        tempItem.data._id = randomID();
+      }
+      tempItem.sheet.render(true);
     });
   }
 
@@ -559,4 +822,75 @@ export class ItemSheetFFG extends ItemSheet {
     specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
     specializationTalentItem.attributes = talentItem.data.attributes;
   }
+
+  async _onDropItem(event) {
+    let data;
+    const obj = this.object;
+    const li = event.currentTarget;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    // Case 1 - Import from a Compendium pack
+    let itemObject;
+    if (data.pack) {
+      const compendiumObject = await this.importItemFromCollection(data.pack, data.id);
+      itemObject = compendiumObject.data;
+    }
+
+    // Case 2 - Import from World entity
+    else {
+      itemObject = duplicate(await game.items.get(data.id));
+      if (!itemObject) return;
+    }
+    itemObject._id = randomID();
+
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && (obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
+      let items = obj?.data?.data?.[itemObject.type];
+      if (!items) {
+        items = [];
+      }
+
+      const foundItem = items.find((i) => {
+        return i._id === itemObject._id || (i.flags?.ffgimportid?.length ? i.flags.ffgimportid === itemObject.flags.ffgimportid : false);
+      });
+
+      switch (itemObject.type) {
+        case "itemmodifier": {
+          if (parseInt(itemObject.data.rank, 10) === 0) {
+            itemObject.data.rank = 1;
+          }
+
+          if (foundItem && this.object.type !== "itemattachment") {
+            foundItem.data.rank += itemObject.data.rank;
+          } else {
+            items.push(itemObject);
+          }
+          break;
+        }
+        case "itemattachment": {
+          if (this.object.data.data.hardpoints.current - itemObject.data.hardpoints.value > 0) {
+            items.push(itemObject);
+          } else {
+            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.data.data.hardpoints.current} left)`);
+          }
+          break;
+        }
+        default: {
+          return;
+        }
+      }
+
+      let formData = {};
+      setProperty(formData, `data.${itemObject.type}`, items);
+
+      obj.update(formData);
+    }
+  }
+
+  async _onDragItemStart(event) {}
 }
