@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 19/01/2021 - Cstadther - Fixed issue where Force Modifer was not being calculated correctly.
 - 18/01/2021 - Cstadther - Fix 644 - Fixed issue with import vehicle encumbrance.
 - 17/01/2021 - Cstadther - Fix 651 - Fixed issue where users could not display read-only journal entries.
 - 17/01/2021 - Cstadther - Fix 648 - Fixed issue where qualities were reset on drag/drop.
