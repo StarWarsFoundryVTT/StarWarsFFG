@@ -700,10 +700,10 @@ export class ActorFFG extends Actor {
 
       const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
       data.skills[key].force = 0;
-      if (forceboost.total > 0) {
+      if (forceboost.checked) {
         const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
         if (forcedice > 0) {
-          data.skills[key].force = forcedice.total;
+          data.skills[key].force = forcedice;
           data.skills[key].forcesource = forceboost.sources;
         }
       }
