@@ -1,21 +1,26 @@
 import ImportHelpers from "../../import-helpers.js";
 
-export default class Armor {
+export default class Weapons {
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);
-      let items = base?.Armors?.Armor;
+      let items = base?.Weapons?.Weapon;
       if (items?.length) {
         let totalCount = items.length;
         let currentCount = 0;
-        let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Armor`);
-        CONFIG.logger.debug(`Starting Oggdude Armor Import`);
-        $(".import-progress.armor").toggleClass("import-hidden");
+        let packs = {
+          weapon: await ImportHelpers.getCompendiumPack("Item", `oggdude.Weapons`),
+          shipweapon: await ImportHelpers.getCompendiumPack("Item", `oggdude.VehicleWeapons`),
+        };
+        CONFIG.logger.debug(`Starting Oggdude Weapons Import`);
+        $(".import-progress.weapons").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(items, async (item) => {
           try {
-            let data = ImportHelpers.prepareBaseObject(item, "armour");
+            const itemType = item.Type === "Vehicle" ? "shipweapon" : "weapon";
+            let pack = packs[itemType];
 
+            let data = ImportHelpers.prepareBaseObject(item, itemType);
             data.data = {
               attributes: {},
               description: item.Description,
@@ -29,18 +34,28 @@ export default class Armor {
                 value: parseInt(item.Rarity, 10),
                 isrestricted: item.Restricted === "true" ? true : false,
               },
-              defence: {
-                value: item.Defense ? parseInt(item.Defense, 10) : 0,
+              damage: {
+                value: parseInt(!item?.Damage ? item.DamageAdd : item.Damage, 10),
               },
-              soak: {
-                value: parseInt(item.Soak, 10),
+              crit: {
+                value: parseInt(item.Crit, 10),
+              },
+              skill: {
+                value: CONFIG.temporary.skills[item.SkillKey],
+              },
+              range: {
+                value: item?.RangeValue ? item.RangeValue.replace("wr", "") : "",
               },
               hardpoints: {
                 value: item.HP ? parseInt(item.HP, 10) : 0,
               },
+              itemmodifier: [],
+              itemattachment: [],
             };
-
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+
+            data.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => data.data.skill.value.includes(element)) && (!item.Damage || item.Damage === "0");
+
             const mods = await ImportHelpers.processMods(item);
             if (mods) {
               if (mods.baseMods) {
@@ -49,19 +64,29 @@ export default class Armor {
                 data.data.itemattachment = mods.baseMods.itemattachment;
                 data.data.description += mods.baseMods.description;
               }
+              if (mods.qualities) {
+                data.data.itemmodifier = data.data.itemmodifier.concat(mods.qualities.itemmodifier);
+              }
             }
 
-            // does an image exist?
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", data.flags.ffgimportid);
+            if (item?.DamageAdd && parseInt(item.DamageAdd, 10) > 0 && data.type === "weapon") {
+              data.data.attributes[randomID()] = {
+                isCheckbox: false,
+                mod: "damage",
+                modtype: "Weapon Stat",
+                value: parseInt(item.DamageAdd, 10),
+              };
+            }
+
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", data.flags.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }
-
             await ImportHelpers.addImportItemToCompendium("Item", data, pack);
 
             currentCount += 1;
 
-            $(".armor .import-progress-bar")
+            $(".weapons .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {
@@ -72,6 +97,5 @@ export default class Armor {
     } catch (err) {
       CONFIG.logger.error(`Error importing record : `, err);
     }
-    CONFIG.logger.debug(`Completed Oggdude Armor Import`);
   }
 }

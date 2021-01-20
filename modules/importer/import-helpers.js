@@ -189,12 +189,6 @@ export default class ImportHelpers {
       return undefined;
     };
 
-    // first try finding item by import id in normal items
-    const item = this.findEntityByImportId("items", id);
-    if (item) {
-      return item;
-    }
-
     let packname;
     if (!packId) {
       let packs = Array.from(await game.packs.keys());
@@ -1527,14 +1521,21 @@ export default class ImportHelpers {
       itemmodifier: [],
     };
 
-    if (modifiersData?.Mod) {
+    if (modifiersData?.Mod || modifiersData?.Quality) {
       let mods;
-      if (!Array.isArray(modifiersData.Mod)) {
-        mods = [modifiersData.Mod];
+      if (modifiersData?.Mod) {
+        if (!Array.isArray(modifiersData.Mod)) {
+          mods = [modifiersData.Mod];
+        } else {
+          mods = modifiersData.Mod;
+        }
       } else {
-        mods = modifiersData.Mod;
+        if (!Array.isArray(modifiersData.Quality)) {
+          mods = [modifiersData.Quality];
+        } else {
+          mods = modifiersData.Quality;
+        }
       }
-
       await this.asyncForEach(mods, async (modifier) => {
         if (modifier.Key) {
           // this is a characteristic or stat or skill or quality modifier.
@@ -1549,7 +1550,7 @@ export default class ImportHelpers {
               if (compendiumEntry.data.type === "itemmodifier") {
                 const descriptor = duplicate(compendiumEntry);
                 descriptor._id = randomID();
-                descriptor.data.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 0;
+                descriptor.data.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
                 output.itemmodifier.push(descriptor);
                 let rank = "";
                 if (descriptor.data.rank > 1) {
@@ -1578,7 +1579,7 @@ export default class ImportHelpers {
               description: modifier.MiscDesc,
               attributes: {},
               type: "all",
-              rank: modifier?.Count ? parseInt(modifier.Count, 10) : 0,
+              rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
             },
           };
           const descriptor = new Item(unique, { temporary: true });
@@ -1605,6 +1606,10 @@ export default class ImportHelpers {
 
     if (obj?.AddedMods?.Mod) {
       output.addedMods = await ImportHelpers.processModsData(obj.AddedMods);
+    }
+
+    if (obj?.Qualities?.Quality) {
+      output.qualities = await ImportHelpers.processModsData(obj.Qualities);
     }
 
     return output;

@@ -184,25 +184,22 @@ export default class DataImporter extends FormApplication {
           const data = await zip.file(file.file).async("text");
           const xmlDoc = ImportHelpers.stringToXml(data);
 
-          //promises.push(this._handleGear(xmlDoc, zip));
           promises.push(OggDude.Import.Gear(xmlDoc, zip));
-          promises.push(this._handleWeapons(xmlDoc, zip));
+          //promises.push(this._handleWeapons(xmlDoc, zip));
+          promises.push(OggDude.Import.Weapons(xmlDoc, zip));
           promises.push(OggDude.Import.Armor(xmlDoc, zip));
           promises.push(this._handleTalents(xmlDoc, zip));
           promises.push(this._handleForcePowers(xmlDoc, zip));
           promises.push(OggDude.Import.SignatureAbilities(xmlDoc, zip));
-          //promises.push(this._handleItemAttachments(xmlDoc, zip));
           promises.push(OggDude.Import.ItemAttachments(xmlDoc));
         } else {
           if (file.file.includes("/Specializations/")) {
             isSpecialization = true;
           }
           if (file.file.includes("/Careers/")) {
-            //promises.push(this._handleCareers(zip));
             promises.push(OggDude.Import.Career(zip));
           }
           if (file.file.includes("/Species/")) {
-            //promises.push(this._handleSpecies(zip));
             promises.push(OggDude.Import.Species(zip));
           }
           if (file.file.includes("/Vehicles/")) {
@@ -1171,141 +1168,6 @@ export default class DataImporter extends FormApplication {
         }
       });
     }
-  }
-
-  async _handleItemAttachments(xmlDoc) {
-    this._importLogger(`Starting Item Attachments Import`);
-    const attachments = xmlDoc.getElementsByTagName("ItemAttachment");
-    if (attachments.length > 0) {
-      let totalCount = attachments.length;
-      let currentCount = 0;
-      $(".import-progress.itemattachments").toggleClass("import-hidden");
-      let pack = await this._getCompendiumPack("Item", `oggdude.ItemAttachments`);
-
-      await this.asyncForEach(attachments, async (attachment) => {
-        try {
-          const a = JXON.xmlToJs(attachment);
-
-          let obj = ImportHelpers.prepareBaseObject(a, "itemattachment");
-
-          obj.img = `/systems/starwarsffg/images/mod-${a.Type ? a.Type.toLowerCase() : "all"}.png`;
-          obj.data = {
-            description: a.Description,
-            attributes: {},
-            price: {
-              value: a.Price,
-            },
-            rarity: {
-              value: a.Rarity,
-            },
-            hardpoints: {
-              value: a.HP,
-            },
-            type: a.Type ? a.Type.toLowerCase() : "all",
-            itemmodifier: [],
-          };
-
-          if (a?.BaseMods?.Mod) {
-            let mods;
-            if (!Array.isArray(a.BaseMods.Mod)) {
-              mods = [a.BaseMods.Mod];
-            } else {
-              mods = a.BaseMods.Mod;
-            }
-            obj.data.description += `<h4>${game.i18n.localize("SWFFG.BaseMods")}:</h4>`;
-            await this.asyncForEach(mods, async (m) => {
-              if (m.Key) {
-                let descriptor = await ImportHelpers.findCompendiumEntityByImportId("Item", m.Key);
-                if (descriptor) {
-                  obj.data.description += `<div>${descriptor.name} - ${descriptor.data.data.description} ${game.i18n.localize("SWFFG.Count")} ${m.Count}</div>`;
-                } else {
-                  CONFIG.logger.warn(`Unable to add modifier ${m.Key} to item ${a.Name}`);
-                }
-              } else if (m.MiscDesc) {
-                obj.data.description += `<div>${m.MiscDesc} ${game.i18n.localize("SWFFG.Count")} ${m.Count}</div>`;
-              }
-            });
-          }
-
-          if (a?.AddedMods?.Mod) {
-            let mods;
-            if (!Array.isArray(a.AddedMods.Mod)) {
-              mods = [a.AddedMods.Mod];
-            } else {
-              mods = a.AddedMods.Mod;
-            }
-
-            await this.asyncForEach(mods, async (m) => {
-              if (m.Key) {
-                let descriptor = await ImportHelpers.findCompendiumEntityByImportId("Item", m.Key);
-                if (descriptor) {
-                  try {
-                    for (let i = 0; i < parseInt(Math.abs(m.Count ? m.Count : 1), 10); i += 1) {
-                      const tempDescriptor = duplicate(descriptor);
-                      tempDescriptor._id = randomID();
-                      obj.data.itemmodifier.push(tempDescriptor);
-                    }
-                  } catch (err) {
-                    CONFIG.logger.error(`Unable to add modifier ${m.Key} to item ${a.Name}`, err);
-                  }
-                } else {
-                  CONFIG.logger.warn(`Unable to add modifier ${m.Key} to item ${a.Name}`);
-                }
-              } else if (m.MiscDesc) {
-                let tempDescriptor = {
-                  name: "Unique Mod",
-                  type: "itemmodifier",
-                  data: {
-                    description: m.MiscDesc,
-                    attributes: {},
-                    type: "all",
-                    rank: parseInt(m.Count, 10),
-                  },
-                };
-                try {
-                  for (let i = 0; i < parseInt(Math.abs(m.Count ? m.Count : 1), 10); i += 1) {
-                    const descriptor = new Item(tempDescriptor, { temporary: true });
-                    descriptor.data._id = randomID();
-                    obj.data.itemmodifier.push(descriptor.data);
-                  }
-                } catch (err) {
-                  CONFIG.logger.error(`Unable to add modifier ${m.Key} to item ${a.Name}`, err);
-                }
-              }
-            });
-          }
-
-          obj.data.description += ImportHelpers.getSources(a?.Sources ?? a?.Source);
-
-          let compendiumItem;
-
-          let entry = await ImportHelpers.findCompendiumEntityByImportId("Item", a.Key, pack.collection);
-
-          if (!entry) {
-            CONFIG.logger.debug(`Importing Item Attachment - Item`);
-            compendiumItem = new Item(obj, { temporary: true });
-            this._importLogger(`New item attachment ${a.Name} : ${JSON.stringify(compendiumItem)}`);
-            let id = await pack.importEntity(compendiumItem);
-          } else {
-            CONFIG.logger.debug(`Updating Item Attachment - JournalEntry`);
-            let updateData = obj;
-            updateData["_id"] = entry._id;
-            this._importLogger(`Updating item attachment ${a.Name} : ${JSON.stringify(updateData)}`);
-            pack.updateEntity(updateData);
-          }
-          //}
-          currentCount += 1;
-
-          $(".itemattachments .import-progress-bar")
-            .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
-            .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
-          this._importLogger(`End importing item attachment ${a.Name}`);
-        } catch (err) {
-          CONFIG.logger.error(`Error importing record : `, err);
-        }
-      });
-    }
-    this._importLogger(`Completed Item Attachments Import`);
   }
 
   async _getCompendiumPack(type, name) {

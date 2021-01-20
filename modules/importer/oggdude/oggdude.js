@@ -6,6 +6,7 @@ import Skills from "./importers/skills.js";
 import Species from "./importers/species.js";
 import ItemAttachments from "./importers/item-attachments.js";
 import ItemDescriptors from "./importers/item-descriptors.js";
+import Weapons from "./importers/weapons.js";
 
 export default class OggDude {
   static Import = {
@@ -17,5 +18,6 @@ export default class OggDude {
     SignatureAbilities: SignatureAbilities.Import,
     Skills: Skills.Import,
     Species: Species.Import,
+    Weapons: Weapons.Import,
   };
 }
