@@ -33,10 +33,10 @@ export default class Gear {
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
             const mods = await ImportHelpers.processMods(item);
             if (mods) {
-              data.data.attributes = mods.attributes;
-              data.data.itemmodifier = mods.itemmodifier;
-              data.data.itemattachment = mods.itemattachment;
-              data.data.description += mods.description;
+              data.data.attributes = mods.baseMods.attributes;
+              data.data.itemmodifier = mods.baseMods.itemmodifier;
+              data.data.itemattachment = mods.baseMods.itemattachment;
+              data.data.description += mods.baseMods.description;
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", data.flags.ffgimportid);

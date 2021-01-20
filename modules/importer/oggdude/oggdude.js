@@ -4,6 +4,7 @@ import Gear from "./importers/gear.js";
 import SignatureAbilities from "./importers/signature-abilities.js";
 import Skills from "./importers/skills.js";
 import Species from "./importers/species.js";
+import ItemAttachments from "./importers/item-attachments.js";
 import ItemDescriptors from "./importers/item-descriptors.js";
 
 export default class OggDude {
@@ -11,6 +12,7 @@ export default class OggDude {
     Armor: Armor.Import,
     Career: Career.Import,
     Gear: Gear.Import,
+    ItemAttachments: ItemAttachments.Import,
     ItemDescriptors: ItemDescriptors.Import,
     SignatureAbilities: SignatureAbilities.Import,
     Skills: Skills.Import,

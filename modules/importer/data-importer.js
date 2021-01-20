@@ -191,7 +191,8 @@ export default class DataImporter extends FormApplication {
           promises.push(this._handleTalents(xmlDoc, zip));
           promises.push(this._handleForcePowers(xmlDoc, zip));
           promises.push(OggDude.Import.SignatureAbilities(xmlDoc, zip));
-          promises.push(this._handleItemAttachments(xmlDoc, zip));
+          //promises.push(this._handleItemAttachments(xmlDoc, zip));
+          promises.push(OggDude.Import.ItemAttachments(xmlDoc));
         } else {
           if (file.file.includes("/Specializations/")) {
             isSpecialization = true;
@@ -1187,22 +1188,22 @@ export default class DataImporter extends FormApplication {
 
           let obj = ImportHelpers.prepareBaseObject(a, "itemattachment");
 
-          (obj.img = `/systems/starwarsffg/images/mod-${a.Type ? a.Type.toLowerCase() : "all"}.png`),
-            (obj.data = {
-              description: a.Description,
-              attributes: {},
-              price: {
-                value: a.Price,
-              },
-              rarity: {
-                value: a.Rarity,
-              },
-              hardpoints: {
-                value: a.HP,
-              },
-              type: a.Type ? a.Type.toLowerCase() : "all",
-              itemmodifier: [],
-            });
+          obj.img = `/systems/starwarsffg/images/mod-${a.Type ? a.Type.toLowerCase() : "all"}.png`;
+          obj.data = {
+            description: a.Description,
+            attributes: {},
+            price: {
+              value: a.Price,
+            },
+            rarity: {
+              value: a.Rarity,
+            },
+            hardpoints: {
+              value: a.HP,
+            },
+            type: a.Type ? a.Type.toLowerCase() : "all",
+            itemmodifier: [],
+          };
 
           if (a?.BaseMods?.Mod) {
             let mods;

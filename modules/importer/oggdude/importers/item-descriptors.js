@@ -21,7 +21,11 @@ export default class ItemDescriptors {
           rank: 1,
         };
 
-        data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+        const mods = await ImportHelpers.processMods(item);
+        if (mods) {
+          if (mods?.baseMods?.attributes) data.data.attributes = mods.baseMods.attributes;
+        }
+
         await ImportHelpers.addImportItemToCompendium("Item", data, pack);
 
         currentCount += 1;
