@@ -309,7 +309,7 @@ export class ActorFFG extends Actor {
     }
 
     // enable talent sorting if global to true and sheet is set to inherit or sheet is set to true.
-    if ((game.settings.get("starwarsffg", "talentSorting") && actorData.flags?.config?.talentSorting === "0") || actorData.flags?.config?.talentSorting === "1") {
+    if ((game.settings.get("starwarsffg", "talentSorting") && (!actorData.flags?.config?.talentSorting || actorData.flags?.config?.talentSorting === "0")) || actorData.flags?.config?.talentSorting === "1") {
       data.talentList = globalTalentList.slice().sort(this._sortTalents);
     } else {
       data.talentList = globalTalentList;

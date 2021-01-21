@@ -866,8 +866,8 @@ Hooks.once("ready", async () => {
                   },
                 });
               }
-              resolve();
             }
+            resolve();
 
             if (isLocked) {
               await pack.configure({ locked: true });
