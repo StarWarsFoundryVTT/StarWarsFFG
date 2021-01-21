@@ -1,3 +1,4 @@
+import ItemBaseFFG from "../items/itembase-ffg.js";
 import ImportHelpers from "./import-helpers.js";
 
 export default class SWAImporter extends FormApplication {
@@ -141,9 +142,8 @@ export default class SWAImporter extends FormApplication {
         compendiumName = filename.replace(/\.[^/.]+$/, "");
       }
 
-      let pack = await this._getCompendiumPack("Actor", compendiumName);
-
       await ImportHelpers.asyncForEach(adversaryFiles, async (f) => {
+        let pack = await this._getCompendiumPack("Actor", `${compendiumName}.${f.name.replace(/^.*[\\\/]/, "").replace(".json", "")}`);
         try {
           const file = await zip.file(f.name).async("text");
           let fileData;
@@ -389,15 +389,9 @@ export default class SWAImporter extends FormApplication {
                 };
 
                 if (item.derived) {
-                  if (item.derived.defence) {
-                    adversary.data.stats.defence = {
-                      ranged: item.derived.defence[0],
-                      melee: item.derived.defence[1],
-                    };
-                  }
                   if (item.derived.soak) {
                     adversary.data.stats.soak = {
-                      value: item.derived.soak - adversary.data.characteristics.Brawn,
+                      value: adversary.data.characteristics.Brawn,
                     };
                   }
                   if (item.derived.wounds) {
@@ -515,13 +509,13 @@ export default class SWAImporter extends FormApplication {
                           },
                         },
                       };
-                      adversary.items.push(weaponData);
+                      let w = new Item(weaponData, { temporary: true });
+                      adversary.items.push(duplicate(w));
                     } else {
                       const swaWeaponKey = Object.keys(CONFIG.temporary.swa.weapons).find((t) => weapon.includes(t));
 
                       if (swaWeaponKey) {
                         const swaWeapon = CONFIG.temporary.swa.weapons[swaWeaponKey];
-
                         let weaponData = {
                           name: swaWeapon.name,
                           type: "weapon",
@@ -545,7 +539,8 @@ export default class SWAImporter extends FormApplication {
                           },
                         };
 
-                        adversary.items.push(weaponData);
+                        let w = new Item(weaponData, { temporary: true });
+                        adversary.items.push(duplicate(w));
                       }
                     }
                   });
@@ -554,16 +549,97 @@ export default class SWAImporter extends FormApplication {
                 if (item.gear) {
                   if (Array.isArray(item.gear)) {
                     item.gear.forEach((gear) => {
-                      let gearData = {
-                        name: gear,
-                        type: "gear",
-                        data: {
-                          description: "No description provided",
-                        },
-                      };
+                      if (gear.includes("Soak") && gear.includes("Defence")) {
+                        let Armordata = {
+                          name: gear.slice(0, gear.indexOf("(") - 1).trim(),
+                          type: "armour",
+                          data: {
+                            description: "No description provided",
+                            defence: {
+                              value: gear.charAt(gear.indexOf("Defence") - 2),
+                            },
+                            soak: {
+                              value: gear.charAt(gear.indexOf("Soak") - 2),
+                            },
+                          },
+                        };
+                        adversary.items.push(Armordata);
+                      } else if (gear.includes("Soak")) {
+                        let Armordata = {
+                          name: gear.slice(0, gear.indexOf("(") - 1).trim(),
+                          type: "armour",
+                          data: {
+                            description: "No description provided",
 
-                      adversary.items.push(gearData);
+                            soak: {
+                              value: gear.charAt(gear.indexOf("Soak") - 2),
+                            },
+                          },
+                        };
+                        adversary.items.push(Armordata);
+                      } else if (gear.includes("Defence")) {
+                        let Armordata = {
+                          name: gear.slice(0, gear.indexOf("(") - 1).trim(),
+                          type: "armour",
+                          data: {
+                            description: "No description provided",
+                            defence: {
+                              value: gear.charAt(gear.indexOf("Defence") - 2),
+                            },
+                          },
+                        };
+                        adversary.items.push(Armordata);
+                      } else {
+                        let gearData = {
+                          name: gear,
+                          type: "gear",
+                          data: {
+                            description: "No description provided",
+                          },
+                        };
+                        adversary.items.push(gearData);
+                      }
                     });
+                  } else if (item.gear.includes("Soak") && item.gear.includes("Defence")) {
+                    let Armordata = {
+                      name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
+                      type: "armour",
+                      data: {
+                        description: "No description provided",
+                        defence: {
+                          value: item.gear.charAt(item.gear.indexOf("Defence") - 2),
+                        },
+                        soak: {
+                          value: item.gear.charAt(item.gear.indexOf("Soak") - 2),
+                        },
+                      },
+                    };
+                    adversary.items.push(Armordata);
+                  } else if (item.gear.includes("Soak")) {
+                    let Armordata = {
+                      name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
+                      type: "armour",
+                      data: {
+                        description: "No description provided",
+
+                        soak: {
+                          value: item.gear.charAt(item.gear.indexOf("Soak") - 2),
+                        },
+                      },
+                    };
+                    adversary.items.push(Armordata);
+                  } else if (item.gear.includes("Defence")) {
+                    let Armordata = {
+                      name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
+                      type: "armour",
+                      data: {
+                        description: "No description provided",
+                        defence: {
+                          value: item.gear.charAt(item.gear.indexOf("Defence") - 2),
+                        },
+                      },
+                    };
+                    adversary.items.push(Armordata);
                   } else {
                     let gearData = {
                       name: item.gear,
