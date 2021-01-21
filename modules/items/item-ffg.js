@@ -34,7 +34,6 @@ export class ItemFFG extends ItemBaseFFG {
     switch (this.type) {
       case "weapon":
         // Apply item attachments / modifiers
-
         data.damage.value = parseInt(data.damage.value, 10);
         data.crit.value = parseInt(data.crit.value, 10);
         data.encumbrance.value = parseInt(data.encumbrance.value, 10);
