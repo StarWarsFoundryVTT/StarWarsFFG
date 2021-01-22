@@ -1401,6 +1401,7 @@ export default class ImportHelpers {
     let value = mod?.Count ? parseInt(mod.Count, 10) : 0;
 
     if (isDescriptor) {
+      // handle description modifiers ** Experimental **
       Object.keys(mod).forEach((m) => {
         value = parseInt(mod[m], 10);
         switch (m) {
@@ -1613,5 +1614,62 @@ export default class ImportHelpers {
     }
 
     return output;
+  }
+
+  static processStatMod(mod) {
+    let attributes = {};
+    if (mod) {
+      Object.keys(mod).forEach((m) => {
+        const value = parseInt(mod[m], 10);
+        const modtype = "Stat";
+        switch (m) {
+          case "SoakValue": {
+            type = "Soak";
+            break;
+          }
+          case "ForceRating": {
+            type = "ForcePool";
+            break;
+          }
+          case "StrainThreshold": {
+            type = "Strain";
+            break;
+          }
+          case "DefenseRanged": {
+            type = "Defence-Ranged";
+            break;
+          }
+          case "DefenseMelee": {
+            type = "Defence-Melee";
+            break;
+          }
+          case "WoundThreshold": {
+            type = "Wounds";
+            break;
+          }
+        }
+
+        attributes[randomID()] = { mod: type, modtype, value };
+      });
+    }
+
+    return attributes;
+  }
+
+  static processTalentCareerSkills(skills) {
+    let attributes = {};
+    if (skills) {
+      if (!Array.isArray(skills.Key)) {
+        skills.Key = [skills.Key];
+      }
+
+      skills.Key.forEach((skill) => {
+        const mod = CONFIG.temporary.skills[skill];
+        const modtype = "Career Skill";
+        attributes[randomID()] = { mod: type, modtype, value: true };
+      });
+    }
+
+    return attributes;
   }
 }
