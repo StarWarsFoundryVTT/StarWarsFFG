@@ -1619,6 +1619,7 @@ export default class ImportHelpers {
   static processStatMod(mod) {
     let attributes = {};
     if (mod) {
+      let type;
       Object.keys(mod).forEach((m) => {
         const value = parseInt(mod[m], 10);
         const modtype = "Stat";
@@ -1666,7 +1667,7 @@ export default class ImportHelpers {
       skills.Key.forEach((skill) => {
         const mod = CONFIG.temporary.skills[skill];
         const modtype = "Career Skill";
-        attributes[randomID()] = { mod: type, modtype, value: true };
+        attributes[randomID()] = { mod, modtype, value: true };
       });
     }
 

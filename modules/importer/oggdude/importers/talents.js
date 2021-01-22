@@ -45,12 +45,12 @@ export default class Talents {
                 value: activation,
               },
               isForceTalent: item.ForceTalent === "true" ? true : false,
-              isConflictTalent: item.Conflict === "true" ? true : false,
+              isConflictTalent: item?.Conflict ? true : false,
             };
 
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
-            data.data.attributes = mergeObject(data.attributes, ImportHelpers.processStatMod(item?.Attributes));
-            data.data.attributes = mergeObject(data.attributes, ImportHelpers.processTalentCareerSkills(item?.ChooseCareerSkills?.NewSkills));
+            data.data.attributes = mergeObject(data.data.attributes, ImportHelpers.processStatMod(item?.Attributes));
+            data.data.attributes = mergeObject(data.data.attributes, ImportHelpers.processTalentCareerSkills(item?.ChooseCareerSkills?.NewSkills));
             if (item?.DieModifiers) {
               const dieModifiers = await ImportHelpers.processDieMod(item.DieModifiers);
               data.data.attributes = mergeObject(data.data.attributes, dieModifiers.attributes);
@@ -60,6 +60,9 @@ export default class Talents {
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }
+
+            await ImportHelpers.addImportItemToCompendium("Item", data, pack);
+
             currentCount += 1;
 
             $(".talents .import-progress-bar")
