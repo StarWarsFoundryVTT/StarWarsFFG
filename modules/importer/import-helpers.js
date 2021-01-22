@@ -1657,7 +1657,7 @@ export default class ImportHelpers {
     return attributes;
   }
 
-  static processTalentCareerSkills(skills) {
+  static processCareerSkills(skills, includeRank) {
     let attributes = {};
     if (skills) {
       if (!Array.isArray(skills.Key)) {
@@ -1668,6 +1668,10 @@ export default class ImportHelpers {
         const mod = CONFIG.temporary.skills[skill];
         const modtype = "Career Skill";
         attributes[randomID()] = { mod, modtype, value: true };
+
+        if (includeRank) {
+          attributes[randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+        }
       });
     }
 
