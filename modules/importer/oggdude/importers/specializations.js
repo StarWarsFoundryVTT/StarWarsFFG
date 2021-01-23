@@ -40,24 +40,24 @@ export default class Specializations {
               await ImportHelpers.asyncForEach(row.Talents.Key, async (keyName, index) => {
                 let rowTalent = {};
 
-                let talentItem = ImportHelpers.findEntityByImportId("items", keyName);
+                let talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", keyName, undefined, "talent");
                 if (!talentItem) {
-                  talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", keyName);
+                  talentItem = ImportHelpers.findEntityByImportId("items", keyName);
                 }
 
                 if (talentItem) {
-                  rowTalent.name = talentItem.data.name;
-                  rowTalent.description = talentItem.data.data.description;
-                  rowTalent.activation = talentItem.data.data.activation.value;
-                  rowTalent.activationLabel = talentItem.data.data.activation.label;
-                  rowTalent.isForceTalent = talentItem.data.data.isForceTalent === "true" ? true : false;
-                  rowTalent.isConflictTalent = talentItem.data.data.isConflictTalent === "true" ? true : false;
-                  rowTalent.isRanked = talentItem.data.data.ranks.ranked === "true" ? true : false;
+                  rowTalent.name = talentItem.name;
+                  rowTalent.description = talentItem.data.description;
+                  rowTalent.activation = talentItem.data.activation.value;
+                  rowTalent.activationLabel = talentItem.data.activation.label;
+                  rowTalent.isForceTalent = talentItem?.data?.isForceTalent ? true : false;
+                  rowTalent.isConflictTalent = talentItem?.data?.isConflictTalent ? true : false;
+                  rowTalent.isRanked = talentItem?.data?.ranks?.ranked ? true : false;
                   rowTalent.size = "single";
                   rowTalent.canLinkTop = true;
                   rowTalent.canLinkRight = true;
-                  rowTalent.itemId = talentItem.data._id;
-                  rowTalent.attributes = talentItem.data.data.attributes;
+                  rowTalent.itemId = talentItem._id;
+                  rowTalent.attributes = talentItem.data.attributes;
 
                   if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
                     rowTalent["links-top-1"] = true;

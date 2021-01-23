@@ -4,7 +4,7 @@ export default class ForcePowers {
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);
-      const abilities = base?.ForceAbilities.ForceAbility;
+      const abilities = base?.ForceAbilities?.ForceAbility;
 
       if (abilities?.length) {
         const files = Object.values(zip.files).filter((file) => {

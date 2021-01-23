@@ -80,6 +80,8 @@ export default class Vehicles {
                   duration: "months",
                 },
               },
+              itemmodifier: [],
+              itemattachment: [],
             };
 
             data.data.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
@@ -92,6 +94,7 @@ export default class Vehicles {
                 const weaponEntity = await ImportHelpers.findCompendiumEntityByImportId("Item", weapon.Key);
                 if (weaponEntity) {
                   const weaponData = JSON.parse(JSON.stringify(weaponEntity));
+                  weaponData.data.itemmodifier = [];
                   const count = weapon.Count ? parseInt(weapon.Count, 10) : 1;
                   if (!weaponData.data?.firingarc) weaponData.data.firingarc = {};
                   ["Fore", "Aft", "Port", "Starboard", "Dorsal", "Ventral"].forEach((location) => {

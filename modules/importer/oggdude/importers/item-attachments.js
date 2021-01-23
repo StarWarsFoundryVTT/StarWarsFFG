@@ -14,7 +14,8 @@ export default class ItemAttachments {
       await ImportHelpers.asyncForEach(items, async (item) => {
         try {
           let data = ImportHelpers.prepareBaseObject(item, "itemattachment");
-          data.img = `/systems/starwarsffg/images/mod-${item.Type ? item.Type.toLowerCase() : "all"}.png`;
+          if (Array.isArray(item.Type)) item.Type = item.Type[0];
+          data.img = `/systems/starwarsffg/images/mod-${item?.Type ? item.Type.toLowerCase() : "all"}.png`;
           data.data = {
             description: item.Description,
             attributes: {},

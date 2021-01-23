@@ -38,6 +38,8 @@ export default class Armor {
               hardpoints: {
                 value: item.HP ? parseInt(item.HP, 10) : 0,
               },
+              itemmodifier: [],
+              itemattachment: [],
             };
 
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);

@@ -166,7 +166,7 @@ export default class ImportHelpers {
    * @param  {string} id - Entity Id
    * @returns {object} - Entity Object Data
    */
-  static async findCompendiumEntityByImportId(type, id, packId) {
+  static async findCompendiumEntityByImportId(type, id, packId, itemType) {
     const cachePack = async (packid) => {
       if (!CONFIG.temporary[packid]) {
         const pack = await game.packs.get(packid);
@@ -176,7 +176,7 @@ export default class ImportHelpers {
 
           const content = await pack.getContent();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].data.flags.ffgimportid] = content[i];
+            CONFIG.temporary[packid][content[i].data.flags.ffgimportid] = duplicate(content[i]);
           }
         }
       } else {
@@ -184,7 +184,9 @@ export default class ImportHelpers {
       }
 
       if (CONFIG.temporary?.[packid]?.[id]) {
-        return packid;
+        if (!itemType || CONFIG.temporary?.[packid]?.[id]?.type === itemType) {
+          return packid;
+        }
       }
       return undefined;
     };
@@ -1353,7 +1355,7 @@ export default class ImportHelpers {
       compendiumItem = new objClass(data, { temporary: true });
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
       const crt = await pack.importEntity(compendiumItem);
-      CONFIG.temporary[pack.collection][data.flags.ffgimportid] = crt;
+      CONFIG.temporary[pack.collection][data.flags.ffgimportid] = duplicate(crt);
     } else {
       CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
       let updateData = data;
@@ -1548,7 +1550,7 @@ export default class ImportHelpers {
           } else {
             const compendiumEntry = await ImportHelpers.findCompendiumEntityByImportId("Item", modifier.Key);
             if (compendiumEntry) {
-              if (compendiumEntry.data.type === "itemmodifier") {
+              if (compendiumEntry?.type === "itemmodifier") {
                 const descriptor = duplicate(compendiumEntry);
                 descriptor._id = randomID();
                 descriptor.data.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
