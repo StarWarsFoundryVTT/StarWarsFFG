@@ -571,7 +571,7 @@
       }
     },
     "gear": {
-      "templates": ["core", "basic"]
+      "templates": ["core", "basic", "itemattachments", "qualities"]
     },
     "weapon": {
       "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
@@ -750,9 +750,8 @@
       }
     },
     "itemattachment": {
-      "templates": ["core", "basic", "hardpoints"],
-      "type": "",
-      "itemmodifier" : []
+      "templates": ["core", "basic", "hardpoints", "qualities"],
+      "type": ""
     },
     "itemmodifier": {
       "templates": ["core"],
