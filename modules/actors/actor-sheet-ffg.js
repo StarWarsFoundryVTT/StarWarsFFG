@@ -328,7 +328,8 @@ export class ActorSheetFFG extends ActorSheet {
           let itemId = li.dataset.itemId;
           let modifierType = li.dataset.modifierType;
           let modifierId = li.dataset.modifierId;
-          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor._id);
+
+          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor._id, this.actor.compendium);
         });
       }
     });

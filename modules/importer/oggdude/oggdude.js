@@ -9,6 +9,7 @@ import Skills from "./importers/skills.js";
 import Specializations from "./importers/specializations.js";
 import Species from "./importers/species.js";
 import Talents from "./importers/talents.js";
+import Vehicles from "./importers/vehicles.js";
 import Weapons from "./importers/weapons.js";
 
 export default class OggDude {
@@ -24,6 +25,7 @@ export default class OggDude {
     Specializations: Specializations.Import,
     Species: Species.Import,
     Talents: Talents.Import,
+    Vehicles: Vehicles.Import,
     Weapons: Weapons.Import,
   };
 }
