@@ -100,9 +100,15 @@ export default class EmbeddedItemHelpers {
    * @param  {string} modifierId - Item Modifier Id
    * @param  {string} actorId = Actor Id
    */
-  static async displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, actorId) {
+  static async displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, actorId, compendium) {
     try {
-      const actor = await game.actors.get(actorId);
+      let actor;
+
+      if (compendium) {
+        actor = await compendium.getEntity(actorId);
+      } else {
+        actor = await game.actors.get(actorId);
+      }
       const ownedItem = await actor.getOwnedItem(itemId);
 
       if (!ownedItem) ui.notifications.warn(`The item had been removed or can not be found!`);

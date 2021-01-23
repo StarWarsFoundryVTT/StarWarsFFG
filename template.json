@@ -604,7 +604,7 @@
       }
     },
     "armour": {
-      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
       "defence": {
         "value": 0,
         "type": "Number",
