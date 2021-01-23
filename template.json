@@ -635,7 +635,7 @@
       "trees": []
     },
     "shipweapon": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
       "label": "Ship Weapon",
       "firingarc": {
         "fore": false,
@@ -669,7 +669,7 @@
       }
     },
     "shipattachment": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
       "label": "Ship Attachment"
     },
     "species": {
