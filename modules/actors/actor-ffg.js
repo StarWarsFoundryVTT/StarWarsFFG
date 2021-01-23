@@ -40,20 +40,6 @@ export class ActorFFG extends Actor {
         data.skills = mergeObject(skills, actorSkills);
       }
 
-      const sorted = Object.keys(skills).sort(function (a, b) {
-        const x = game.i18n.localize(skills[a].abrev);
-        const y = game.i18n.localize(skills[b].abrev);
-
-        return x < y ? -1 : x > y ? 1 : 0;
-      });
-
-      let ordered = {};
-      sorted.forEach((skill) => {
-        ordered[skill] = skills[skill];
-      });
-
-      CONFIG.FFG.skills = ordered;
-
       let unique = [...new Set(Object.values(data.skills).map((item) => item.type))];
       if (unique.indexOf("General") > 0) {
         const generalIndex = unique.indexOf("General");
