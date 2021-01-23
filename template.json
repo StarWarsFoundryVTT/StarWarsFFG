@@ -571,7 +571,7 @@
       }
     },
     "gear": {
-      "templates": ["core", "basic"]
+      "templates": ["core", "basic", "itemattachments", "qualities"]
     },
     "weapon": {
       "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
@@ -635,7 +635,7 @@
       "trees": []
     },
     "shipweapon": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
       "label": "Ship Weapon",
       "firingarc": {
         "fore": false,
@@ -669,7 +669,7 @@
       }
     },
     "shipattachment": {
-      "templates": ["core", "basic", "hardpoints", "equippable"],
+      "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
       "label": "Ship Attachment"
     },
     "species": {
@@ -750,9 +750,8 @@
       }
     },
     "itemattachment": {
-      "templates": ["core", "basic", "hardpoints"],
-      "type": "",
-      "itemmodifier" : []
+      "templates": ["core", "basic", "hardpoints", "qualities"],
+      "type": ""
     },
     "itemmodifier": {
       "templates": ["core"],
