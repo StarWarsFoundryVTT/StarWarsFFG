@@ -28,6 +28,8 @@ export default class Gear {
                 value: parseInt(item.Rarity, 10),
                 isrestricted: item.Restricted === "true" ? true : false,
               },
+              itemmodifier: [],
+              itemattachment: [],
             };
 
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);

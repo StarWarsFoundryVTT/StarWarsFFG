@@ -17,22 +17,28 @@ export default class Talents {
             let data = ImportHelpers.prepareBaseObject(item, "talent");
 
             let activation = "Passive";
+            let activationLabel = "SWFFG.TalentActivationsPassive";
 
             switch (item.ActivationValue) {
               case "taManeuver":
                 activation = "Active (Maneuver)";
+                activationLabel = "SWFFG.TalentActivationsActiveManeuver";
                 break;
               case "taAction":
                 activation = "Active (Action)";
+                activationLabel = "SWFFG.TalentActivationsActiveAction";
                 break;
               case "taIncidental":
                 activation = "Active (Incidental)";
+                activationLabel = "SWFFG.TalentActivationsActiveIncidental";
                 break;
               case "taIncidentalOOT":
                 activation = "Active (Incidental, Out of Turn)";
+                activationLabel = "SWFFG.TalentActivationsActiveIncidentalOutofTurn";
                 break;
               default:
                 activation = "Passive";
+                activationLabel = "SWFFG.TalentActivationsPassive";
             }
 
             data.data = {
@@ -43,6 +49,7 @@ export default class Talents {
               },
               activation: {
                 value: activation,
+                label: activationLabel,
               },
               isForceTalent: item.ForceTalent === "true" ? true : false,
               isConflictTalent: item?.Conflict ? true : false,
