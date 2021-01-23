@@ -142,9 +142,8 @@ export default class SWAImporter extends FormApplication {
         compendiumName = filename.replace(/\.[^/.]+$/, "");
       }
 
-      let pack = await this._getCompendiumPack("Actor", compendiumName);
-
       await ImportHelpers.asyncForEach(adversaryFiles, async (f) => {
+        let pack = await this._getCompendiumPack("Actor", `${compendiumName}.${f.name.replace(/^.*[\\\/]/, "").replace(".json", "")}`);
         try {
           const file = await zip.file(f.name).async("text");
           let fileData;

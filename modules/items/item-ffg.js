@@ -33,7 +33,6 @@ export class ItemFFG extends ItemBaseFFG {
     // perform localisation of dynamic values
     switch (this.type) {
       case "weapon":
-      case "shipweapon":
         // Apply item attachments / modifiers
         data.damage.value = parseInt(data.damage.value, 10);
         data.crit.value = parseInt(data.crit.value, 10);
@@ -91,28 +90,40 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isOwned && this.actor) {
+        const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.adjusted)}`;
+        data.range.label = rangeId;
+
+        if (this.isOwned && this.actor && this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
           let damageAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
               damageAdd += parseInt(data.attributes[attr].value, 10);
             }
           }
-          if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
-            if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl")) && data.skill.useBrawn) {
-              const olddamage = data.damage.value;
-              data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
-              data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
-            } else {
-              data.damage.value = parseInt(data.damage.value, 10);
-              data.damage.adjusted += damageAdd;
-            }
+          if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl")) && data.skill.useBrawn) {
+            const olddamage = data.damage.value;
+            data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
+            data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
+          } else {
+            data.damage.value = parseInt(data.damage.value, 10);
+            data.damage.adjusted += damageAdd;
           }
         }
 
-        const rangeLabel = (this.type === "weapon" ? `SWFFG.WeaponRange` : `SWFFG.VehicleRange`) + this._capitalize(data.range.adjusted);
-        data.range.label = rangeLabel;
+        break;
+      case "shipweapon":
+        const vehiclerangeId = `SWFFG.VehicleRange${this._capitalize(data.range.value)}`;
+        data.range.label = vehiclerangeId;
 
+        let damageAdd = 0;
+        for (let attr in data.attributes) {
+          if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
+            damageAdd += parseInt(data.attributes[attr].value, 10);
+          }
+        }
+
+        data.damage.value = parseInt(data.damage.value, 10);
+        data.damage.adjusted = +data.damage.value + damageAdd;
         break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
