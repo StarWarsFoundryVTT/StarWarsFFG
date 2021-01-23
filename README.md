@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 22/01/2021 - Cstadther - Refactored OggDude importer, and changed import based on import key instead of name.
 - 20/01/2021 - Cstadther - Enhancement @Shyster Effd#5441 Provided an enhancement for SWA Importer to correct create armor.
 - 19/01/2021 - Cstadther - Fixed issue where Force Modifer was not being calculated correctly.
 - 18/01/2021 - Cstadther - Fix 644 - Fixed issue with import vehicle encumbrance.
