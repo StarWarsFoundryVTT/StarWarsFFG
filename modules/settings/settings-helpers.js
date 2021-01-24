@@ -164,7 +164,7 @@ export default class SettingsHelpers {
 
     game.settings.register("starwarsffg", "uitheme", {
       name: game.i18n.localize("SWFFG.SettingsUITheme"),
-      hint: game.i18n.localize("SWFFG.SettingsUIsThemeHint"),
+      hint: game.i18n.localize("SWFFG.SettingsUIThemeHint"),
       scope: "world",
       config: true,
       default: "default",
