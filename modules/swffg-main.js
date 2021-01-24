@@ -479,7 +479,11 @@ Hooks.once("ready", async () => {
 
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
-  if ((currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.data.version)) && game.user.isGM) {
+  const pattern = /([1-9].[1-9])/gim;
+  const version = game.system.data.version.match(pattern);
+  const isAlpha = game.system.data.version.includes("alpha");
+
+  if ((isAlpha || currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.data.version)) && game.user.isGM) {
     CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.data.version}`);
 
     // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
@@ -619,12 +623,13 @@ Hooks.once("ready", async () => {
       Promise.all(pro)
         .then(() => {
           ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
-          game.settings.set("starwarsffg", "systemMigrationVersion", game.system.data.version);
         })
         .catch((err) => {
           CONFIG.logger.error(`Error during system migration`, err);
         });
     }
+
+    game.settings.set("starwarsffg", "systemMigrationVersion", version);
   }
 
   // enable functional testing
