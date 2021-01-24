@@ -472,6 +472,8 @@
   "SWFFG.WeaponCardCritical" : "Critical",
   "SWFFG.ItemModifiers" : "Item Modifiers",
   "SWFFG.BaseMods": "Base Mods",
-  "SWFFG.Count": "Count"
+  "SWFFG.Count": "Count",
+  "SWFFG.SettingsUITheme": "Choose UI Theme",
+  "SWFFG.SettingsUIThemeHint": "Switch between different UI styles."
 }
 
