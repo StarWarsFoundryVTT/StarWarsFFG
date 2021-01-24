@@ -36,6 +36,7 @@ import { createFFGMacro } from "./helpers/macros.js";
 import ModifierHelpers from "./helpers/modifiers.js";
 import ItemHelpers from "./helpers/item-helpers.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
+import DataImporter from "./importer/data-importer.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -438,6 +439,22 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
     event.preventDefault();
     new CharacterImporter().render(true);
   });
+});
+
+Hooks.on("renderCompendiumDirectory", (app, html, data) => {
+  if (game.user.isGM) {
+    const div = $(`<div class="og-character-import"></div>`);
+    const divider = $("<hr><h4>OggDude Import</h4>");
+    const datasetImportButton = $('<button class="og-character">Dataset Importer</button>');
+    div.append(divider, datasetImportButton);
+
+    html.find(".directory-footer").append(div);
+
+    html.find(".og-character").click(async (event) => {
+      event.preventDefault();
+      new DataImporter().render(true);
+    });
+  }
 });
 
 // Update chat messages with dice images
