@@ -50,7 +50,7 @@ export default class Skills {
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
         }
       } catch (err) {
-        CONFIG.logger.error(`Error importing record : ${data}`, err);
+        CONFIG.logger.error(`Error importing record : `, err);
       }
     });
     CONFIG.logger.debug(`Completed Oggdude Skill Import`);
