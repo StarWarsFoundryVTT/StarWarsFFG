@@ -212,6 +212,10 @@ export class RollFFG extends Roll {
     // Define chat data
     if (this?.data) {
       this.data.additionalFlavorText = this.flavorText;
+    } else {
+      this.data = {
+        additionalFlavorText: this.flavorText,
+      };
     }
 
     const chatData = {
