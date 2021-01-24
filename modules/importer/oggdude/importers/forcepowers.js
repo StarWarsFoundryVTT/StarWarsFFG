@@ -52,69 +52,73 @@ export default class ForcePowers {
                 try {
                   const row = item.AbilityRows.AbilityRow[i];
                   ImportHelpers.asyncForEach(row.Abilities.Key, async (keyName, index) => {
-                    let rowAbility = {};
+                    try {
+                      let rowAbility = {};
 
-                    let rowAbilityData = abilities.find((a) => {
-                      return a.Key === keyName;
-                    });
+                      let rowAbilityData = abilities.find((a) => {
+                        return a.Key === keyName;
+                      });
 
-                    rowAbility.name = rowAbilityData.Name;
-                    rowAbility.description = rowAbilityData.Description;
-                    rowAbility.cost = row.Costs.Cost[index];
-                    rowAbility.visible = true;
-                    rowAbility.attributes = {};
+                      rowAbility.name = rowAbilityData.Name;
+                      rowAbility.description = rowAbilityData.Description;
+                      rowAbility.cost = row.Costs.Cost[index];
+                      rowAbility.visible = true;
+                      rowAbility.attributes = {};
 
-                    if (row.Directions.Direction[index].Up) {
-                      rowAbility["links-top-1"] = true;
+                      if (row.Directions.Direction[index].Up) {
+                        rowAbility["links-top-1"] = true;
+                      }
+
+                      switch (row.AbilitySpan.Span[index]) {
+                        case "1":
+                          rowAbility.size = "single";
+                          break;
+                        case "2":
+                          rowAbility.size = "double";
+                          if (index < 3 && row.Directions.Direction[index + 1].Up) {
+                            rowAbility["links-top-2"] = true;
+                          }
+                          break;
+                        case "3":
+                          rowAbility.size = "triple";
+                          if (index < 2 && row.Directions.Direction[index + 1].Up) {
+                            rowAbility["links-top-2"] = true;
+                          }
+                          if (index < 2 && row.Directions.Direction[index + 2].Up) {
+                            rowAbility["links-top-3"] = true;
+                          }
+                          break;
+                        case "4":
+                          rowAbility.size = "full";
+                          if (index < 1 && row.Directions.Direction[index + 1].Up) {
+                            rowAbility["links-top-2"] = true;
+                          }
+                          if (index < 1 && row.Directions.Direction[index + 2].Up) {
+                            rowAbility["links-top-3"] = true;
+                          }
+                          if (index < 1 && row.Directions.Direction[index + 3].Up) {
+                            rowAbility["links-top-4"] = true;
+                          }
+                          break;
+                        default:
+                          rowAbility.size = "single";
+                          rowAbility.visible = false;
+                      }
+
+                      if (row.Directions.Direction[index].Right) {
+                        rowAbility["links-right"] = true;
+                      }
+
+                      if (rowAbilityData?.DieModifiers) {
+                        const dieModifiers = await ImportHelpers.processDieMod(rowAbilityData.DieModifiers);
+                        rowAbility.attributes = mergeObject(rowAbility.attributes, dieModifiers.attributes);
+                      }
+
+                      const talentKey = `upgrade${(i - 1) * 4 + index}`;
+                      data.data.upgrades[talentKey] = rowAbility;
+                    } catch (err) {
+                      CONFIG.logger.error(`Error import force ability ${keyName} : `, err);
                     }
-
-                    switch (row.AbilitySpan.Span[index]) {
-                      case "1":
-                        rowAbility.size = "single";
-                        break;
-                      case "2":
-                        rowAbility.size = "double";
-                        if (index < 3 && row.Directions.Direction[index + 1].Up) {
-                          rowAbility["links-top-2"] = true;
-                        }
-                        break;
-                      case "3":
-                        rowAbility.size = "triple";
-                        if (index < 2 && row.Directions.Direction[index + 1].Up) {
-                          rowAbility["links-top-2"] = true;
-                        }
-                        if (index < 2 && row.Directions.Direction[index + 2].Up) {
-                          rowAbility["links-top-3"] = true;
-                        }
-                        break;
-                      case "4":
-                        rowAbility.size = "full";
-                        if (index < 1 && row.Directions.Direction[index + 1].Up) {
-                          rowAbility["links-top-2"] = true;
-                        }
-                        if (index < 1 && row.Directions.Direction[index + 2].Up) {
-                          rowAbility["links-top-3"] = true;
-                        }
-                        if (index < 1 && row.Directions.Direction[index + 3].Up) {
-                          rowAbility["links-top-4"] = true;
-                        }
-                        break;
-                      default:
-                        rowAbility.size = "single";
-                        rowAbility.visible = false;
-                    }
-
-                    if (row.Directions.Direction[index].Right) {
-                      rowAbility["links-right"] = true;
-                    }
-
-                    if (rowAbilityData?.DieModifiers) {
-                      const dieModifiers = await ImportHelpers.processDieMod(rowAbilityData.DieModifiers);
-                      rowAbility.attributes = mergeObject(rowAbility.attributes, dieModifiers.attributes);
-                    }
-
-                    const talentKey = `upgrade${(i - 1) * 4 + index}`;
-                    data.data.upgrades[talentKey] = rowAbility;
                   });
                 } catch (err) {
                   CONFIG.logger.error(`Error importing record : `, err);
