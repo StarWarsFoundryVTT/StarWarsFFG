@@ -9,11 +9,14 @@ import { GroupManager } from "./groupmanager-ffg.js";
  *
  */
 export default class DestinyTracker extends FormApplication {
-  constructor() {
+  constructor(options) {
     super();
 
     this.destinyQueue = [];
     this.isRunningQueue = false;
+    if (options?.menu) {
+      this.menu = options.menu;
+    }
   }
 
   /** @override */
@@ -39,11 +42,15 @@ export default class DestinyTracker extends FormApplication {
     this.position.width = 150;
     this.position.height = 105;
 
+    // filter menu based on role.
+
+    const menu = this.menu.filter((m) => game.user.hasRole(m.minimumRole) || !m.minimumRole);
+
     // Return data
     return {
       destinyPool,
       isGM: game.user.isGM,
-      menu: this.object.menu,
+      menu,
     };
   }
 
@@ -57,44 +64,25 @@ export default class DestinyTracker extends FormApplication {
 
   /** @override */
   activateListeners(html) {
-    const topHeader = html.find(".swffg-destiny-bar")[0];
-    new Draggable(this, html, topHeader, this.options.resizable);
-    const bottomHeader = html.find(".swffg-destiny-bar")[1];
-    new Draggable(this, html, bottomHeader, this.options.resizable);
+    const d = html.find("swffg-destiny-container")[0];
+    new Draggable(this, html, d, this.options.resizable);
 
     $("#destiny-tracker").css({ bottom: "0px", right: "305px" });
 
     // future functionality to allow multiple menu items to be passed in
-    // html.find(".dropbtn").click((event) => {
-    //   const id = `#${$(event.target).attr("id")}Content`;
-    //   console.log("clicked");
+    html.find(".dropbtn").click((event) => {
+      const id = `#${$(event.currentTarget).attr("id")}Content`;
+      console.log("clicked");
+      $(html.find(id)).toggleClass("show");
+    });
 
-    //   $(html.find(id)).toggleClass("show");
-    // });
-    // window.onclick = function(event) {
-    //   if (!event.target.matches('.dropbtn')) {
-    //     var dropdowns = document.getElementsByClassName("dropdown-content");
-    //     var i;
-    //     for (i = 0; i < dropdowns.length; i++) {
-    //       var openDropdown = dropdowns[i];
-    //       if (openDropdown.classList.contains('show')) {
-    //         openDropdown.classList.remove('show');
-    //       }
-    //     }
-    //   }
-    // }
-    // html.find(".dropdown-content a").click((event) => {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-
-    //   const index = event.currentTarget.dataset.value;
-    //   this.object.menu[index].callback();
-    //   $(event.currentTarget).parent().toggleClass("show");
-    // })
-    html.find(".group-manager").click((event) => {
+    html.find(".dropdown-content a").click((event) => {
       event.preventDefault();
       event.stopPropagation();
-      new GroupManager().render(true);
+
+      const index = event.currentTarget.dataset.value;
+      this.menu[index].callback();
+      $(event.currentTarget).parent().toggleClass("show");
     });
 
     html.find(".destiny-points").click(async (event) => {
@@ -163,29 +151,6 @@ export default class DestinyTracker extends FormApplication {
         content: messageText,
       });
     });
-
-    if (game.user.isGM) {
-      new ContextMenu(html, ".swffg-destiny-bar", [
-        {
-          name: game.i18n.localize("SWFFG.RequestDestinyRoll"),
-          icon: '<i class="fas fa-plus-circle"></i>',
-          callback: (li) => {
-            const messageText = `<button class="ffg-destiny-roll">${game.i18n.localize("SWFFG.DestinyPoolRoll")}</button>`;
-
-            new Map([...game.settings.settings].filter(([k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
-              game.settings.set(i.module, i.key, undefined);
-            });
-
-            CONFIG.FFG.DestinyGM = game.user.id;
-
-            ChatMessage.create({
-              user: game.user._id,
-              content: messageText,
-            });
-          },
-        },
-      ]);
-    }
 
     // handle previously created roll destiny chat messages
     $(".ffg-destiny-roll").on("click", this.OnClickRollDestiny.bind(this));

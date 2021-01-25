@@ -683,18 +683,37 @@ Hooks.once("ready", async () => {
   let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
 
   // future functionality to allow multiple menu items to be passed to destiny pool
-  // const defaultDestinyMenu = [
-  //   {
-  //     name: game.i18n.localize("SWFFG.GroupManager"),
-  //     icon: '<i class="fas fa-users"></i>',
-  //     callback: () => {
-  //       new GroupManager().render(true);
-  //     }
-  //   }
-  // ]
-  // const dTracker = new DestinyTracker({ menu: defaultDestinyMenu});
+  const defaultDestinyMenu = [
+    {
+      name: game.i18n.localize("SWFFG.GroupManager"),
+      icon: '<i class="fas fa-users"></i>',
+      callback: () => {
+        new GroupManager().render(true);
+      },
+      minimumRole: USER_ROLES.GAMEMASTER,
+    },
+    {
+      name: game.i18n.localize("SWFFG.RequestDestinyRoll"),
+      icon: '<i class="fas fa-dice-d20"></i>',
+      callback: (li) => {
+        const messageText = `<button class="ffg-destiny-roll">${game.i18n.localize("SWFFG.DestinyPoolRoll")}</button>`;
 
-  const dTracker = new DestinyTracker();
+        new Map([...game.settings.settings].filter(([k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
+          game.settings.set(i.module, i.key, undefined);
+        });
+
+        CONFIG.FFG.DestinyGM = game.user.id;
+
+        ChatMessage.create({
+          user: game.user._id,
+          content: messageText,
+        });
+      },
+      minimumRole: USER_ROLES.GAMEMASTER,
+    },
+  ];
+  const dTracker = new DestinyTracker({ menu: defaultDestinyMenu });
+
   dTracker.render(true);
 });
 

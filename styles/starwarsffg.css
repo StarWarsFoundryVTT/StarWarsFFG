@@ -3239,17 +3239,10 @@ img {
 
 #destiny-tracker .dropdown-content a {
   color: white;
-  padding: 12px 5px;
+  padding: 5px 4px;
   text-decoration: none;
   display: block;
-}
-
-#destiny-tracker .dropdown-content a:hover {
-  background-color: #ddd;
-}
-
-#destiny-tracker .dropdown:hover .dropdown-content {
-  display: block;
+  font-size: 15px;
 }
 
 #destiny-tracker .dropdown:hover .dropbtn {
@@ -3258,6 +3251,7 @@ img {
 
 #destiny-tracker .show {
   display: block;
+  background-color: #3e8e41;
 }
 
 .swffg-destiny-container {
@@ -3314,6 +3308,7 @@ img {
   position: relative;
   padding: 6px 0 12px 0;
   pointer-events: auto;
+  cursor: pointer;
 }
 
 .swffg-destiny .destiny-points span {
