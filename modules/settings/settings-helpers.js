@@ -1,5 +1,6 @@
 import DataImporter from "../importer/data-importer.js";
 import SWAImporter from "../importer/swa-importer.js";
+import UISettings from "./ui-settings.js";
 
 export default class SettingsHelpers {
   // Initialize System Settings after the Init Hook
@@ -162,11 +163,29 @@ export default class SettingsHelpers {
       onChange: (rule) => window.location.reload(),
     });
 
-    game.settings.register("starwarsffg", "uitheme", {
+    game.settings.registerMenu("starwarsffg", "uiSettings", {
+      name: game.i18n.localize("SWFFG.UISettings"),
+      hint: game.i18n.localize("SWFFG.UISettingsHint"),
+      label: game.i18n.localize("SWFFG.UISettingsLabel"),
+      icon: "fas fa-file-import",
+      type: UISettings,
+      restricted: true,
+    });
+    game.settings.register("starwarsffg", "uiSettings", {
+      name: "UI Settings",
+      scope: "world",
+      default: {},
+      config: false,
+      default: {},
+      type: Object,
+    });
+
+    // Register settings for UI Themes
+    game.settings.register("starwarsffg", "ui-uitheme", {
       name: game.i18n.localize("SWFFG.SettingsUITheme"),
       hint: game.i18n.localize("SWFFG.SettingsUIThemeHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: "default",
       type: String,
       onChange: (rule) => window.location.reload(),
@@ -174,6 +193,17 @@ export default class SettingsHelpers {
         default: "Default",
         mandar: "Mandar",
       },
+    });
+
+    game.settings.register("starwarsffg", "ui-pausedImage", {
+      name: game.i18n.localize("SWFFG.SettingsUITheme"),
+      hint: game.i18n.localize("SWFFG.SettingsUIThemeHint"),
+      scope: "world",
+      config: false,
+      default: "",
+      type: String,
+      valueType: "FilePicker",
+      onChange: (rule) => window.location.reload(),
     });
   }
 

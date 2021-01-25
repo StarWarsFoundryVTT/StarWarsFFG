@@ -474,6 +474,9 @@
   "SWFFG.BaseMods": "Base Mods",
   "SWFFG.Count": "Count",
   "SWFFG.SettingsUITheme": "Choose UI Theme",
-  "SWFFG.SettingsUIThemeHint": "Switch between different UI styles."
+  "SWFFG.SettingsUIThemeHint": "Switch between different UI styles.",
+  "SWFFG.UISettings": "User Interface Settings",
+  "SWFFG.UISettingsHint": "Modify default UI behavior.",
+  "SWFFG.UISettingsLabel": "UI Settings Manager"
 }
 

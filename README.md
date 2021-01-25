@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 24/01/2021 - Cstadther - Enhancement 640 - Changed location of UI settings to its own form, add customizable Paused image setting.
 - 23/01/2021 - Cstadther - Enhancement 646 - Added ability to change default stylesheet, added @Mandar theme as option.
 - 22/01/2021 - Cstadther - Refactored OggDude importer, and changed import based on import key instead of name.
 - 20/01/2021 - Cstadther - Enhancement @Shyster Effd#5441 Provided an enhancement for SWA Importer to correct create armor.
