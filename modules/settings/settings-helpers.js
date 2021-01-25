@@ -22,7 +22,12 @@ export default class SettingsHelpers {
       config: true,
       default: "starwars",
       type: String,
-      onChange: (rule) => window.location.reload(),
+      onChange: (rule) => {
+        if (rule === "starwars") {
+          game.settings.set("starwarsffg", "enableForceDie", true);
+        }
+        return window.location.reload();
+      },
       choices: {
         starwars: "starwars",
         genesys: "genesys",
@@ -204,6 +209,53 @@ export default class SettingsHelpers {
       type: String,
       valueType: "FilePicker",
       onChange: (rule) => window.location.reload(),
+    });
+
+    game.settings.register("starwarsffg", "destiny-pool-light", {
+      name: game.i18n.localize("SWFFG.SettingsDestinyLight"),
+      hint: game.i18n.localize("SWFFG.SettingsDestinyLightHint"),
+      scope: "world",
+      config: true,
+      default: "SWFFG.Lightside",
+      type: String,
+      onChange: (rule) => {
+        if (rule === "") {
+          game.settings.set("starwarsffg", "destiny-pool-light", "SWFFG.Lightside");
+        }
+        return window.location.reload();
+      },
+    });
+
+    game.settings.register("starwarsffg", "destiny-pool-dark", {
+      name: game.i18n.localize("SWFFG.SettingsDestinyDark"),
+      hint: game.i18n.localize("SWFFG.SettingsDestinyDarkHint"),
+      scope: "world",
+      config: true,
+      default: "SWFFG.Darkside",
+      type: String,
+      onChange: (rule) => {
+        if (rule === "") {
+          game.settings.set("starwarsffg", "destiny-pool-dark", "SWFFG.Darkside");
+        }
+        return window.location.reload();
+      },
+    });
+
+    game.settings.register("starwarsffg", "enableForceDie", {
+      name: game.i18n.localize("SWFFG.SettingsEnableForceDie"),
+      hint: game.i18n.localize("SWFFG.SettingsEnableForceDieHint"),
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean,
+      onChange: (rule) => {
+        if (game.settings.get("starwarsffg", "dicetheme") === "starwars") {
+          if (!rule) {
+            game.settings.set("starwarsffg", "enableForceDie", true);
+          }
+        }
+        return window.location.reload();
+      },
     });
   }
 

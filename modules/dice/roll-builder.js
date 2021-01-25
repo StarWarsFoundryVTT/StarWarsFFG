@@ -73,12 +73,15 @@ export default class RollBuilderFFG extends FormApplication {
       });
     }
 
+    const enableForceDie = game.settings.get("starwarsffg", "enableForceDie");
+
     return {
       sounds,
       isGM: game.user.isGM,
       canUserAddAudio,
       flavor: this.roll.flavor,
       users,
+      enableForceDie,
     };
   }
 
