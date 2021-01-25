@@ -33,6 +33,7 @@ export default class DestinyTracker extends FormApplication {
   getData() {
     // Get current value
     let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
+    let destinyPoolLabel = { light: game.settings.get("starwarsffg", "destiny-pool-light"), dark: game.settings.get("starwarsffg", "destiny-pool-dark") };
 
     const x = $(window).width();
     const y = $(window).height();
@@ -49,6 +50,7 @@ export default class DestinyTracker extends FormApplication {
     // Return data
     return {
       destinyPool,
+      destinyPoolLabel,
       isGM: game.user.isGM,
       menu,
     };

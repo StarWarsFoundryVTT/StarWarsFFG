@@ -477,6 +477,13 @@
   "SWFFG.SettingsUIThemeHint": "Switch between different UI styles.",
   "SWFFG.UISettings": "User Interface Settings",
   "SWFFG.UISettingsHint": "Modify default UI behavior.",
-  "SWFFG.UISettingsLabel": "UI Settings Manager"
+  "SWFFG.UISettingsLabel": "UI Settings Manager",
+  "SWFFG.SettingsDestinyLight": "Destiny Light Side",
+  "SWFFG.SettingsDestinyLightHint": "Change the text on the Destiny Pool for Light Side",
+  "SWFFG.SettingsDestinyDark": "Destiny Dark Side",
+  "SWFFG.SettingsDestinyDarkHint": "Change the text on the Destiny Pool for Dark Side",
+  "SWFFG.SettingsEnableForceDie" : "Enable Force Die in Roller",
+  "SWFFG.SettingsEnableForceDieHint" : "Enables/Disables White Force Die in Roller (NOTE: If Dice theme is Star Wars Force Die will automatically be enabled)"
+  
 }
 
