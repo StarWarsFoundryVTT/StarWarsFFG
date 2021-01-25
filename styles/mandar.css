@@ -173,10 +173,10 @@ span.dietype.threat {
 span.dietype.triumph {
   color: black;
 }
-
+/* 
 .paused img {
   content: url("/systems/starwarsffg/images/paused.png");
-}
+} */
 
 .grid,
 .grid-2col {

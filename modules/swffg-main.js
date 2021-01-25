@@ -37,6 +37,7 @@ import ModifierHelpers from "./helpers/modifiers.js";
 import ItemHelpers from "./helpers/item-helpers.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
+import PauseFFG from "./apps/pause-ffg.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -44,7 +45,6 @@ import DataImporter from "./importer/data-importer.js";
 
 Hooks.once("init", async function () {
   console.log(`Initializing SWFFG System`);
-
   // Place our classes in their own namespace for later reference.
   game.ffg = {
     ActorFFG,
@@ -87,6 +87,8 @@ Hooks.once("init", async function () {
   // TURN ON OR OFF HOOK DEBUGGING
   CONFIG.debug.hooks = false;
 
+  CONFIG.ui.pause = PauseFFG;
+
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
@@ -118,7 +120,7 @@ Hooks.once("init", async function () {
 
   SettingsHelpers.initLevelSettings();
 
-  const uitheme = game.settings.get("starwarsffg", "uitheme");
+  const uitheme = game.settings.get("starwarsffg", "ui-uitheme");
 
   switch (uitheme) {
     case "mandar": {
@@ -916,4 +918,13 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
     foreground: "#000000",
     background: "#ffffff",
   });
+});
+
+Hooks.on("pauseGame", () => {
+  if (game.data.paused) {
+    const pausedImage = game.settings.get("starwarsffg", "ui-pausedImage");
+    if (pausedImage) {
+      $("#pause img").css("content", `url(${pausedImage})`);
+    }
+  }
 });

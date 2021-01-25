@@ -150,10 +150,6 @@ span.dietype.triumph {
   visibility: hidden;
 }
 
-.paused img {
-  content: url("/systems/starwarsffg/images/paused.png");
-}
-
 .grid,
 .grid-2col {
   display: grid;
