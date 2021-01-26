@@ -1693,14 +1693,16 @@ export default class ImportHelpers {
         }
 
         if (Object.keys(CONFIG.FFG.skills).includes(mod)) {
-          const modtype = "Career Skill";
-          attributes[randomID()] = { mod, modtype, value: true };
+          if (mod) {
+            const modtype = "Career Skill";
+            attributes[randomID()] = { mod, modtype, value: true };
 
-          if (includeRank) {
-            attributes[randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+            if (includeRank) {
+              attributes[randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+            }
+          } else {
+            CONFIG.logger.warn(`Skill ${skill} was not found in the current skills list.`);
           }
-        } else {
-          CONFIG.logger.warn(`Skill ${skill} was not found in the current skills list.`);
         }
       });
     }
