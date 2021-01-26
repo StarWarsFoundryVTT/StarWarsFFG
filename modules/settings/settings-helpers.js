@@ -201,8 +201,8 @@ export default class SettingsHelpers {
     });
 
     game.settings.register("starwarsffg", "ui-pausedImage", {
-      name: game.i18n.localize("SWFFG.SettingsUITheme"),
-      hint: game.i18n.localize("SWFFG.SettingsUIThemeHint"),
+      name: game.i18n.localize("SWFFG.SettingsPausedImage"),
+      hint: game.i18n.localize("SWFFG.SettingsPausedImageHint"),
       scope: "world",
       config: false,
       default: "",
