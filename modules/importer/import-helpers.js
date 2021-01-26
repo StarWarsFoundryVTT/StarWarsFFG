@@ -284,7 +284,16 @@ export default class ImportHelpers {
       } else {
         modtype = "Skill Rank";
       }
-      type = CONFIG.temporary.skills[mod.Key];
+
+      let skill = CONFIG.temporary.skills[mod.Key];
+
+      if (skill.includes(":") && !skill.includes(": ")) {
+        skill = skill.replace(":", ": ");
+      }
+
+      if (Object.keys(CONFIG.FFG.skills).includes(skill)) {
+        type = skill;
+      }
     }
 
     if (mod.Key === "ENCTADD") {
@@ -1450,7 +1459,15 @@ export default class ImportHelpers {
         modtype = "Skill Rank";
       }
       if (mod.Key) {
-        type = CONFIG.temporary.skills[mod.Key];
+        let skill = CONFIG.temporary.skills[mod.Key];
+
+        if (skill.includes(":") && !skill.includes(": ")) {
+          skill = skill.replace(":", ": ");
+        }
+
+        if (Object.keys(CONFIG.FFG.skills).includes(skill)) {
+          type = CONFIG.temporary.skills[mod.Key];
+        }
       } else if (mod?.Skill) {
         type = mod.Skill;
       }
@@ -1564,7 +1581,9 @@ export default class ImportHelpers {
             } else if (Object.keys(CONFIG.temporary.skills).includes(modifier.Key)) {
               // this is a skill upgrade
               const skillModifier = ImportHelpers.processSkillMod(modifier);
-              output.attributes[skillModifier.type] = skillModifier.value;
+              if (skillModifier) {
+                output.attributes[skillModifier.type] = skillModifier.value;
+              }
             } else {
               CONFIG.logger.warn(`${modifier.Key} not found`);
             }
@@ -1667,9 +1686,13 @@ export default class ImportHelpers {
       }
 
       skills.Key.forEach((skill) => {
-        const mod = CONFIG.temporary.skills[skill];
+        let mod = CONFIG.temporary.skills[skill];
 
-        if (mod) {
+        if (mod.includes(":") && !mod.includes(": ")) {
+          mod = mod.replace(":", ": ");
+        }
+
+        if (Object.keys(CONFIG.FFG.skills).includes(mod)) {
           const modtype = "Career Skill";
           attributes[randomID()] = { mod, modtype, value: true };
 
