@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 26/01/2021 - Cstadther - Added a new Hook `ffgDiceMessage` which fires after a dice .tomessage function call.
 - 25/01/2021 - Cstadther - Enhancement 638 / Enhancement 639 - Added setting for Destiny Pool labels and Enable Force Die.
 - 25/01/2021 - Cstadther - Enhancement 672 - Added saving sound path on item roll (ie Weapons)
 - 25/01/2021 - Cstadther - Enhancement 659 - Created drop down menu on destiny pool, with group manager and roll for destiny options.  Removed top and bottom bar and add dragging to entire box, except for clickable items, adjusted cursors to match.

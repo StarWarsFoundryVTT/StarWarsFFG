@@ -281,6 +281,8 @@ export class RollFFG extends Roll {
     // Prepare message options
     const messageOptions = { rollMode: rMode };
 
+    Hooks.call("ffgDiceMessage", this);
+
     // Either create the message or just return the chat data
     return create ? CONFIG.ChatMessage.entityClass.create(messageData, messageOptions) : messageData;
   }
