@@ -422,10 +422,13 @@ export default class SWAImporter extends FormApplication {
                 }
 
                 if (item.skills) {
-                  Object.keys(item.skills).forEach((skill) => {
+                  let isMinion = Array.isArray(item.skills)
+                  let adversarySkills = isMinion ? item.skills : Object.keys(item.skills);
+                  adversarySkills.forEach((skill) => {
                     const ffgSkill = Object.keys(skills).find((s) => skill.toLowerCase() === s.toLowerCase());
 
                     if (ffgSkill) {
+                      adversary.data.skills[ffgSkill].groupskill = isMinion ? true : false;
                       adversary.data.skills[ffgSkill].rank = item.skills[skill];
                       if (CONFIG.temporary.swa.skills?.[skill]?.characteristic) {
                         adversary.data.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
