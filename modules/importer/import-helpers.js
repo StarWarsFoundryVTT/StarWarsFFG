@@ -1668,11 +1668,16 @@ export default class ImportHelpers {
 
       skills.Key.forEach((skill) => {
         const mod = CONFIG.temporary.skills[skill];
-        const modtype = "Career Skill";
-        attributes[randomID()] = { mod, modtype, value: true };
 
-        if (includeRank) {
-          attributes[randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+        if (mod) {
+          const modtype = "Career Skill";
+          attributes[randomID()] = { mod, modtype, value: true };
+
+          if (includeRank) {
+            attributes[randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+          }
+        } else {
+          CONFIG.logger.warn(`Skill ${skill} was not found in the current skills list.`);
         }
       });
     }
