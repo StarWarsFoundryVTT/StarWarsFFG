@@ -134,14 +134,11 @@ export class GroupManager extends FormApplication {
       const characters = [];
       const groupmanager = document.getElementById("group-manager");
       const charlist = groupmanager.querySelectorAll('tr[class="player-character"]');
+      const tokens = canvas.tokens.controlled;
       charlist.forEach((element) => {
         characters.push(element.dataset["character"]);
       });
-      characters.forEach((c) => {
-        const character = game.actors.get(c);
-        const token = character.getActiveTokens();
-        this._addCharacterToCombat(character, token, game.combat);
-      });
+      this._addGroupToCombat(characters, tokens, game.combat);
     });
 
     // Add XP to individual character.
@@ -192,18 +189,44 @@ export class GroupManager extends FormApplication {
     return formData;
   }
 
+  async _addGroupToCombat(characters, targets, cbt) {
+    await this._setupCombat(cbt);
+    await Promise.all(targets.map(async (token) => {
+      await this._addTokenToCombat(token, game.combat);
+    }));
+    await Promise.all(characters.map(async (c) => {
+      let character = game.actors.get(c);
+      let token = character.getActiveTokens();
+      await this._addCharacterToCombat(character, token, game.combat);
+    }));
+  }
+
   async _addCharacterToCombat(character, token, cbt) {
     if (token.length > 0) {
-      // If no combat encounter is active, create one.
-      if (!cbt) {
-        let scene = game.scenes.viewed;
-        if (!scene) return;
-        let cbt = await game.combats.object.create({ scene: scene._id, active: true });
-        await cbt.activate();
-      }
-      await token[0].toggleCombat(game.combat);
+      await this._setupCombat(cbt);
+      await this._addTokenToCombat(token[0], cbt)
     } else {
       ui.notifications.warn(`${character.name} has no active Token in the current scene.`);
+    }
+  }
+
+  async _addTokenToCombat(token, cbt) {
+    await this._setupCombat(cbt);
+    let tokenId = token.id
+    if (!game.combat.getCombatantByToken(tokenId)) {
+      await game.combat.createCombatant({
+        tokenId: tokenId
+      });
+    }
+  }
+
+  async _setupCombat(cbt) {
+    // If no combat encounter is active, create one.
+    if (!cbt) {
+      let scene = game.scenes.viewed;
+      if (!scene) return;
+      let cbt = await game.combats.object.create({ scene: scene._id, active: true });
+      await cbt.activate();
     }
   }
 
