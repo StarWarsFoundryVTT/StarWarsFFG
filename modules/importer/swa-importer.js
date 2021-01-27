@@ -540,6 +540,7 @@ export default class SWAImporter extends FormApplication {
                             name: wName[0],
                             type: "itemmodifier",
                             data: {
+                              description: CONFIG.temporary.swa.qualities[wName].description,
                               attributes: {},
                               type: "all",
                               rank: wRank ? parseInt(wRank[0].replace(" ", ""), 10) : 1,
