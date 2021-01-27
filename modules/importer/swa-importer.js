@@ -363,66 +363,46 @@ export default class SWAImporter extends FormApplication {
                     ffgimportid: `${f.name}-${item.type}-${item.name}`,
                   },
                   data: {
-                    characteristics: {
-                      "Brawn": {
-                        "value": item.characteristics.Brawn,
-                      },
-                      "Agility": {
-                        "value": item.characteristics.Agility,
-                      },
-                      "Intellect": {
-                        "value": item.characteristics.Intellect,
-                      },
-                      "Cunning": {
-                        "value": item.characteristics.Cunning,
-                      },
-                      "Willpower": {
-                        "value": item.characteristics.Willpower,
-                      },
-                      "Presence": {
-                        "value": item.characteristics.Presence,
-                      },
-                    },
+                    characteristics: {},
                     skills,
                     stats: {},
                   },
                   items: [],
                 };
 
-                if (item.derived) {
-                  if (item.derived.soak) {
-                    adversary.data.stats.soak = {
-                      value: adversary.data.characteristics.Brawn,
-                    };
-                  }
-                  if (item.derived.wounds) {
-                    if (adversary.type === "minion") {
-                      adversary.data.quantity = {
-                        value: 1,
-                        max: 1,
-                      };
+                Object.values(CONFIG.FFG.characteristics).forEach((char) => {
+                  adversary.data.characteristics[char.value] = { value: item?.characteristics?.[char.value] ? item?.characteristics?.[char.value] : 0 };
+                });
 
-                      adversary.data["unit_wounds"] = {
-                        value: item.derived.wounds,
+                if (item.derived) {
+                  ["soak", "wounds", "strain"].forEach((stat) => {
+                    if (stat === "soak") {
+                      adversary.data.stats[stat] = {
+                        value: item.derived[stat],
                       };
+                    } else {
+                      if (stat === "wounds" && item.type === "Minion") {
+                        adversary.data.quantity = {
+                          value: 1,
+                          max: 1,
+                        };
+
+                        adversary.data["unit_wounds"] = {
+                          value: item.derived[stat],
+                        };
+                      } else {
+                        adversary.data.stats[stat] = {
+                          value: 0,
+                          min: 0,
+                          max: item.derived[stat],
+                        };
+                      }
                     }
-                    adversary.data.stats.wounds = {
-                      value: 0,
-                      min: 0,
-                      max: item.derived.wounds,
-                    };
-                  }
-                  if (item.derived.strain) {
-                    adversary.data.stats.strain = {
-                      value: 0,
-                      min: 0,
-                      max: item.derived.strain,
-                    };
-                  }
+                  });
                 }
 
                 if (item.skills) {
-                  let isMinion = Array.isArray(item.skills)
+                  let isMinion = Array.isArray(item.skills);
                   let adversarySkills = isMinion ? item.skills : Object.keys(item.skills);
                   adversarySkills.forEach((skill) => {
                     const ffgSkill = Object.keys(skills).find((s) => skill.toLowerCase() === s.toLowerCase());
@@ -489,18 +469,22 @@ export default class SWAImporter extends FormApplication {
                 }
 
                 if (item.weapons) {
+                  const template = await ImportHelpers.getTemplate("weapon");
                   item.weapons.forEach((weapon) => {
+                    let data = JSON.parse(JSON.stringify(template));
+                    let weaponData;
+
                     if (typeof weapon === "object") {
-                      let weaponData = {
+                      weaponData = {
                         name: weapon.name,
                         type: "weapon",
                         data: {
                           description: "No description provided",
                           damage: {
-                            value: weapon.damage,
+                            value: parseInt(weapon.damage, 10),
                           },
                           crit: {
-                            value: weapon.critical,
+                            value: parseInt(weapon.critical, 10),
                           },
                           special: {
                             value: weapon?.qualities?.length ? weapon.qualities.join(",") : "",
@@ -513,23 +497,21 @@ export default class SWAImporter extends FormApplication {
                           },
                         },
                       };
-                      let w = new Item(weaponData, { temporary: true });
-                      adversary.items.push(duplicate(w));
                     } else {
                       const swaWeaponKey = Object.keys(CONFIG.temporary.swa.weapons).find((t) => weapon.includes(t));
 
                       if (swaWeaponKey) {
                         const swaWeapon = CONFIG.temporary.swa.weapons[swaWeaponKey];
-                        let weaponData = {
+                        weaponData = {
                           name: swaWeapon.name,
                           type: "weapon",
                           data: {
                             description: "No description provided",
                             damage: {
-                              value: swaWeapon.damage,
+                              value: parseInt(swaWeapon.damage, 10),
                             },
                             crit: {
-                              value: swaWeapon.critical,
+                              value: parseInt(swaWeapon.critical, 10),
                             },
                             special: {
                               value: swaWeapon?.qualities?.length ? swaWeapon.qualities.join(",") : "",
@@ -542,10 +524,35 @@ export default class SWAImporter extends FormApplication {
                             },
                           },
                         };
-
-                        let w = new Item(weaponData, { temporary: true });
-                        adversary.items.push(duplicate(w));
                       }
+                    }
+
+                    if (weaponData) {
+                      const templatedData = weaponData;
+                      templatedData.data = mergeObject(data, weaponData.data);
+
+                      if (templatedData.data.special?.value?.length > 0) {
+                        templatedData.data.special.value.split(",").forEach((w) => {
+                          const wName = w.match(/^[\w][^0-9]+/gim);
+                          const wRank = w.match(/[^\w][0-9]/gim);
+
+                          const unique = {
+                            name: wName[0],
+                            type: "itemmodifier",
+                            data: {
+                              attributes: {},
+                              type: "all",
+                              rank: wRank ? parseInt(wRank[0].replace(" ", ""), 10) : 1,
+                            },
+                          };
+                          const descriptor = new Item(unique, { temporary: true });
+                          descriptor.data._id = randomID();
+                          templatedData.data.itemmodifier.push(descriptor.data);
+                        });
+                      }
+
+                      let w = new Item(templatedData, { temporary: true });
+                      adversary.items.push(duplicate(w));
                     }
                   });
                 }
