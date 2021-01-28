@@ -533,14 +533,14 @@ export default class SWAImporter extends FormApplication {
 
                       if (templatedData.data.special?.value?.length > 0) {
                         templatedData.data.special.value.split(",").forEach((w) => {
-                          const wName = w.match(/^[\w][^0-9]+/gim);
+                          const wName = w.match(/^.*([^0-9\s]+)/gim);
                           const wRank = w.match(/[^\w][0-9]/gim);
 
                           const unique = {
                             name: wName[0],
                             type: "itemmodifier",
                             data: {
-                              description: CONFIG.temporary.swa.qualities[wName].description,
+                              description: CONFIG.temporary.swa?.qualities?.[wName]?.description ? CONFIG.temporary.swa.qualities[wName].description : "No description provided",
                               attributes: {},
                               type: "all",
                               rank: wRank ? parseInt(wRank[0].replace(" ", ""), 10) : 1,
