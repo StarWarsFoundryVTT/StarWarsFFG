@@ -20,7 +20,10 @@ export class ActorFFG extends Actor {
 
     // if the actor has skills, add custom skills and sort by abbreviation
     if (data.skills) {
-      const actorSkills = {};
+      let actorSkills = {};
+      if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+        actorSkills = data.skills;
+      }
       Object.keys(data.skills)
         .filter((skill) => {
           return data.skills[skill].custom;

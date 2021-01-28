@@ -409,9 +409,16 @@ export default class SWAImporter extends FormApplication {
 
                     if (ffgSkill) {
                       adversary.data.skills[ffgSkill].groupskill = isMinion ? true : false;
-                      adversary.data.skills[ffgSkill].rank = item.skills[skill];
+                      if (!isMinion) adversary.data.skills[ffgSkill].rank = item.skills[skill];
                       if (CONFIG.temporary.swa.skills?.[skill]?.characteristic) {
                         adversary.data.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
+                      }
+
+                      if (!adversary.data.skills[ffgSkill]?.type) {
+                        adversary.data.skills[ffgSkill].Key = ffgSkill.toUpperCase();
+                        adversary.data.skills[ffgSkill].custom = true;
+                        adversary.data.skills[ffgSkill].type = "General";
+                        adversary.data.skills[ffgSkill].label = ffgSkill;
                       }
                     }
                   });
@@ -696,14 +703,14 @@ export default class SWAImporter extends FormApplication {
                   CONFIG.logger.debug(`Importing Adversary - Actor`);
                   compendiumItem = new Actor(adversary, { temporary: true });
                   this._importLogger(`New Adversary ${name} : ${JSON.stringify(compendiumItem)}`);
-                  pack.importEntity(compendiumItem);
+                  await pack.importEntity(compendiumItem);
                 } else {
                   CONFIG.logger.debug(`Update Adversary - Actor`);
                   //let updateData = ImportHelpers.buildUpdateData(item);
                   let updateData = adversary;
                   updateData["_id"] = entry._id;
                   this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
-                  pack.updateEntity(updateData);
+                  await pack.updateEntity(updateData);
                 }
               } catch (err) {
                 CONFIG.logger.error(`Error importing ${item.name} from ${f.name}`, err);
