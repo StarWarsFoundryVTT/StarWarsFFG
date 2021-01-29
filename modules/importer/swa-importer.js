@@ -486,9 +486,10 @@ export default class SWAImporter extends FormApplication {
                         name: weapon.name,
                         type: "weapon",
                         data: {
+                          attributes: {},
                           description: "No description provided",
                           damage: {
-                            value: parseInt(weapon.damage, 10),
+                            value: parseInt(!weapon?.damage ? weapon["plus-damage"] : weapon.damage, 10),
                           },
                           crit: {
                             value: parseInt(weapon.critical, 10),
@@ -504,6 +505,15 @@ export default class SWAImporter extends FormApplication {
                           },
                         },
                       };
+                      weaponData.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.data.skill.value.includes(element)) && (!weapon.damage || weapon.damage === "0");
+                      if (weapon?.["plus-damage"] && parseInt(weapon["plus-damage"], 10) > 0) {
+                        weaponData.data.attributes[randomID()] = {
+                          isCheckbox: false,
+                          mod: "damage",
+                          modtype: "Weapon Stat",
+                          value: parseInt(weapon["plus-damage"], 10),
+                        };
+                      }
                     } else {
                       const swaWeaponKey = Object.keys(CONFIG.temporary.swa.weapons).find((t) => weapon.includes(t));
 
@@ -513,9 +523,10 @@ export default class SWAImporter extends FormApplication {
                           name: swaWeapon.name,
                           type: "weapon",
                           data: {
+                            attributes: {},
                             description: "No description provided",
                             damage: {
-                              value: parseInt(swaWeapon.damage, 10),
+                              value: parseInt(!swaWeapon?.damage ? swaWeapon["plus-damage"] : swaWeapon.damage, 10),
                             },
                             crit: {
                               value: parseInt(swaWeapon.critical, 10),
@@ -531,6 +542,17 @@ export default class SWAImporter extends FormApplication {
                             },
                           },
                         };
+
+                        weaponData.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.data.skill.value.includes(element)) && (!swaWeapon.damage || swaWeapon.damage === "0");
+
+                        if (swaWeapon?.["plus-damage"] && parseInt(swaWeapon["plus-damage"], 10) > 0) {
+                          weaponData.data.attributes[randomID()] = {
+                            isCheckbox: false,
+                            mod: "damage",
+                            modtype: "Weapon Stat",
+                            value: parseInt(swaWeapon["plus-damage"], 10),
+                          };
+                        }
                       }
                     }
 
