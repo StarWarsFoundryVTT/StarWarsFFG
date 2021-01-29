@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 29/01/2021 - Cstadther - Enhancement 616 - Added Roll Only modifiers to weapons under `Roll Modifiers`, `Dice Modifiers` and `Result Modifiers`
 - 26/01/2021 - Cstadther - Added a new Hook `ffgDiceMessage` which fires after a dice .tomessage function call.
 - 25/01/2021 - Cstadther - Enhancement 638 / Enhancement 639 - Added setting for Destiny Pool labels and Enable Force Die.
 - 25/01/2021 - Cstadther - Enhancement 672 - Added saving sound path on item roll (ie Weapons)
