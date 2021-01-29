@@ -28,6 +28,12 @@ export class GroupManagerLayer extends CanvasLayer {
 }
 
 export class GroupManager extends FormApplication {
+  constructor(options) {
+    super();
+    this.obligations = [];
+    this.duties = [];
+  }
+
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "form", "group-manager"],
@@ -36,11 +42,12 @@ export class GroupManager extends FormApplication {
       submitOnClose: true,
       popOut: true,
       editable: game.user.isGM,
+      resizable: true,
       width: 330,
-      height: 650,
+      height: 900,
       template: "systems/starwarsffg/templates/group-manager.html",
       id: "group-manager",
-      title: "Group Manager",
+      title: "Group Manager"
     });
   }
 
@@ -58,11 +65,15 @@ export class GroupManager extends FormApplication {
 
     const pcListMode = game.settings.get("starwarsffg", "pcListMode");
     const characters = [];
+    let obligationRangeStart = 0;
+    let dutyRangeStart = 0;
 
     if (pcListMode === "active") {
       players.forEach((player) => {
         if (player.character) {
           characters.push(player.character);
+          obligationRangeStart = this._addCharacterObligations(player.character, obligationRangeStart);
+          dutyRangeStart = this._addCharacterDuties(player.character, dutyRangeStart);
         }
       });
     } else if (pcListMode === "owned") {
@@ -70,6 +81,8 @@ export class GroupManager extends FormApplication {
         const char = game.actors.filter((actor) => actor.hasPerm(player, "OWNER"));
         char.forEach((c) => {
           characters.push(c);
+          obligationRangeStart = this._addCharacterObligations(c, obligationRangeStart);
+          dutyRangeStart = this._addCharacterDuties(c, dutyRangeStart);
         });
       });
     }
@@ -78,8 +91,12 @@ export class GroupManager extends FormApplication {
     const initiative = CONFIG.Combat.initiative.formula;
     const isGM = game.user.isGM;
     const theme = CONFIG.FFG.theme;
+    players.hasObligation = this.obligations?.length;
+    let obligations = this.obligations;
+    players.hasDuty = this.duties?.length;
+    let duties = this.duties;
     if (!isGM) this.position.height = 470;
-    return { dPool, players, initiative, isGM, pcListMode, characters, theme };
+    return { dPool, players, initiative, isGM, pcListMode, characters, obligations, duties, theme };
   }
 
   /* -------------------------------------------- */
@@ -158,9 +175,12 @@ export class GroupManager extends FormApplication {
       this._bulkXP(characters);
     });
 
-    // Temporary warning for non-functional buttons.
-    html.find(".temp-button").click((ev) => {
-      ui.notifications.warn("This function is not yet implemented.");
+    html.find(".obligation-button").click((ev) => {
+      this._rollObligation();
+    });
+
+    html.find(".duty-button").click((ev) => {
+      this._rollDuty();
     });
 
     // Open character sheet on row click.
@@ -189,6 +209,62 @@ export class GroupManager extends FormApplication {
     return formData;
   }
 
+  _addCharacterObligations(character, rangeStart) {
+    Object.values(character.data.data.obligationlist).forEach((obligation) => {
+      let rangeEnd = rangeStart + parseInt(obligation.magnitude);
+      this.obligations.push({
+        playerId: character.id,
+        name: character.name,
+        type: obligation.type,
+        magnitude: obligation.magnitude,
+        rangeStart: rangeStart+1,
+        rangeEnd: rangeEnd
+      })
+      rangeStart = rangeEnd;
+    });
+    return rangeStart;
+  }
+
+  _addCharacterDuties(character, rangeStart) {
+    Object.values(character.data.data.dutylist).forEach((duty) => {
+      let rangeEnd = rangeStart + parseInt(duty.magnitude);
+      this.duties.push({
+        playerId: character.id,
+        name: character.name,
+        type: duty.type,
+        magnitude: duty.magnitude,
+        rangeStart: rangeStart+1,
+        rangeEnd: rangeEnd
+      })
+      rangeStart = rangeEnd;
+    });
+    return rangeStart;
+  }
+
+  async _rollObligation() {
+    this._rollTable(this.obligations, game.i18n.localize("SWFFG.DescriptionObligation"));
+  }
+
+  async _rollDuty() {
+    this._rollTable(this.duties, game.i18n.localize("SWFFG.DescriptionDuty"));
+  }
+
+  async _rollTable(table, type) {
+    let r = new Roll("1d100").roll();
+    r.toMessage({
+      flavor: `${game.i18n.localize("SWFFG.Rolling")} ${type}...`,
+    }, {
+      rollMode: "gmroll"
+    });
+    let filteredTable = table.filter((entry) => entry.rangeStart <= r.total && r.total <= entry.rangeEnd);
+    let tableResult = filteredTable?.length ? `${filteredTable[0].type} ${type} ${game.i18n.localize("SWFFG.Triggered")} ${game.i18n.localize("SWFFG.For")} ${filteredTable[0].name}` : `${game.i18n.localize("No")} ${type} ${game.i18n.localize("SWFFG.Triggered")}`;
+    ChatMessage.create({
+      user: game.user._id,
+      content: tableResult,
+      whisper: ChatMessage.getWhisperRecipients("GM")
+    });
+  }
+
   async _addGroupToCombat(characters, targets, cbt) {
     await this._setupCombat(cbt);
     await Promise.all(targets.map(async (token) => {
@@ -209,7 +285,7 @@ export class GroupManager extends FormApplication {
       ui.notifications.warn(`${character.name} has no active Token in the current scene.`);
     }
   }
-
+  
   async _addTokenToCombat(token, cbt) {
     await this._setupCombat(cbt);
     let tokenId = token.id

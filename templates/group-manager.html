@@ -74,7 +74,60 @@
     <div style="display: flex;">
       <button class="group-to-combat"><i class="fas fa-fist-raised"></i></button>
       <button class="bulk-XP">{{localize "SWFFG.DescriptionXP"}}</button>
-      <!-- <button class="temp-button">Obligation</button> -->
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if players.hasObligation}}
+  <div class="obligation-section">
+    <h2>{{localize "SWFFG.ObligationTable"}}</h2>
+    <div class="obligation-table">
+      <table style="text-align: center;">
+        <thead>
+          <th>{{localize "SWFFG.Name"}}</th>
+          <th>{{localize "SWFFG.Type"}}</th>
+          <th>{{localize "SWFFG.Range"}}</th>
+        </thead>
+        <tbody>
+          {{#each obligations}}
+          <tr class="obligation player-character" data-character="{{playerId}}">
+            <td style="width: 100px;">{{name}}</td>
+            <td>{{type}}</td>
+            <td>{{rangeStart}}-{{rangeEnd}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div style="display: flex;">
+        <button class="obligation-button"><i class="fas fa-dice-d20"></i></button>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{#if players.hasDuty}}
+  <div class="duty-section">
+    <h2>{{localize "SWFFG.DutyTable"}}</h2>
+    <div class="duty-table">
+      <table style="text-align: center;">
+        <thead>
+          <th>{{localize "SWFFG.Name"}}</th>
+          <th>{{localize "SWFFG.Type"}}</th>
+          <th>{{localize "SWFFG.Range"}}</th>
+        </thead>
+        <tbody>
+          {{#each duties}}
+          <tr class="obligation player-character" data-character="{{playerId}}">
+            <td style="width: 100px;">{{name}}</td>
+            <td>{{type}}</td>
+            <td>{{rangeStart}}-{{rangeEnd}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div style="display: flex;">
+        <button class="duty-button"><i class="fas fa-dice-d20"></i></button>
+      </div>
     </div>
   </div>
   {{/if}}
