@@ -58,6 +58,18 @@ export const general_modifiers = {
 };
 
 export const weapon_modifiers = {
+  "Result Modifiers": {
+    "value": "Result Modifiers",
+    "label": "SWFFG.ModTypeResultModifiers",
+  },
+  "Dice Modifiers": {
+    "value": "Dice Modifiers",
+    "label": "SWFFG.ModTypeDiceModifiers",
+  },
+  "Roll Modifiers": {
+    "value": "Roll Modifiers",
+    "label": "SWFFG.ModTypeRollModifiers",
+  },
   "Weapon Stat": {
     "value": "Weapon Stat",
     "label": "SWFFG.ModTypeStatWeapon",
