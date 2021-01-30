@@ -1,5 +1,6 @@
 import ImportHelpers from "../importer/import-helpers.js";
 import JournalEntryFFG from "../items/journalentry-ffg.js";
+import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
   static async itemUpdate(event, formData) {
@@ -11,10 +12,7 @@ export default class ItemHelpers {
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
     if (this.object.data.type === "weapon") {
-      const isMelee = formData?.data?.skill?.value ? formData.data.skill.value.includes("Melee") : formData[`data.skill.value`].includes("Melee");
-      const isBrawl = formData?.data?.skill?.value ? formData.data.skill.value.includes("Brawl") : formData[`data.skill.value`].includes("Brawl");
-
-      if ((isMelee || isBrawl) && formData?.data?.useBrawn) {
+      if (ModifierHelpers.applyBrawnToDamage(formData.data)) {
         setProperty(formData, `data.damage.value`, 0);
       }
     }
