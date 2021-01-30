@@ -45,6 +45,17 @@ export default class SettingsHelpers {
       onChange: (rule) => window.location.reload(),
     });
 
+    // Enable auto Soak calculation
+    game.settings.register("starwarsffg", "privateTriggers", {
+      name: game.i18n.localize("SWFFG.EnablePrivateTriggers"),
+      hint: game.i18n.localize("SWFFG.EnablePrivateTriggersHint"),
+      scope: "world",
+      config: true,
+      default: true,
+      type: Boolean,
+      onChange: (rule) => window.location.reload(),
+    });
+
     // Register grouping talents so people can let them be ordered by purchase history
     game.settings.register("starwarsffg", "talentSorting", {
       name: game.i18n.localize("SWFFG.EnableSortTalentsByActivationGlobal"),
