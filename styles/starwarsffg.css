@@ -997,6 +997,7 @@ img {
   top: 15px;
   font-size: 15px;
   color: white;
+  z-index: 20;
 }
 
 .starwarsffg .talent-upgrade .talent-actions.talent-canSplit .split i {
