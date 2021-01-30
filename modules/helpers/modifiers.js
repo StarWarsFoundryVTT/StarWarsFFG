@@ -343,4 +343,12 @@ export default class ModifierHelpers {
 
     return dicePool;
   }
+
+  static applyBrawnToDamage(data) {
+    if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl") || data.skill.value.includes("Lightsaber")) && data.skill.useBrawn) {
+      return true;
+    }
+
+    return false;
+  }
 }

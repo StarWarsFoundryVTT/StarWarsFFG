@@ -99,7 +99,7 @@ export class ItemFFG extends ItemBaseFFG {
             }
           }
           if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
-            if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl")) && data.skill.useBrawn) {
+            if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
               data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
               data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
