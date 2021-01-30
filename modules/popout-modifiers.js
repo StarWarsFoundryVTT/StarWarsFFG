@@ -32,6 +32,7 @@ export default class PopoutModifiers extends FormApplication {
   /** @override */
   getData() {
     const data = this.object.data;
+
     if (this.object.isUpgrade) {
       data.data = this.object.parent.data.data.upgrades[this.object.keyname];
     } else if (this.object.isTalent) {
@@ -61,6 +62,8 @@ export default class PopoutModifiers extends FormApplication {
 
   /** @override */
   async _updateObject(event, formData) {
+    formData = expandObject(formData);
+
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
@@ -76,6 +79,11 @@ export default class PopoutModifiers extends FormApplication {
       for (let k of Object.keys(this.object.data.data.attributes)) {
         if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
       }
+    }
+
+    // recombine attributes to formData
+    if (Object.keys(attributes).length > 0) {
+      setProperty(formData, `data.attributes`, attributes);
     }
 
     if (this.object.isUpgrade) {
@@ -95,6 +103,7 @@ export default class PopoutModifiers extends FormApplication {
       // Update the Item
       await this.object.update(formData);
     }
+    mergeObject(this.object.data, formData);
     this.render();
   }
 }
