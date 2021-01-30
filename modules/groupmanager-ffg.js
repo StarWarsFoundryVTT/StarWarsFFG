@@ -47,7 +47,7 @@ export class GroupManager extends FormApplication {
       height: 900,
       template: "systems/starwarsffg/templates/group-manager.html",
       id: "group-manager",
-      title: "Group Manager"
+      title: "Group Manager",
     });
   }
 
@@ -217,9 +217,9 @@ export class GroupManager extends FormApplication {
         name: character.name,
         type: obligation.type,
         magnitude: obligation.magnitude,
-        rangeStart: rangeStart+1,
-        rangeEnd: rangeEnd
-      })
+        rangeStart: rangeStart + 1,
+        rangeEnd: rangeEnd,
+      });
       rangeStart = rangeEnd;
     });
     return rangeStart;
@@ -233,9 +233,9 @@ export class GroupManager extends FormApplication {
         name: character.name,
         type: duty.type,
         magnitude: duty.magnitude,
-        rangeStart: rangeStart+1,
-        rangeEnd: rangeEnd
-      })
+        rangeStart: rangeStart + 1,
+        rangeEnd: rangeEnd,
+      });
       rangeStart = rangeEnd;
     });
     return rangeStart;
@@ -251,15 +251,18 @@ export class GroupManager extends FormApplication {
 
   async _rollTable(table, type) {
     let r = new Roll("1d100").roll();
-    let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? {rollMode: "gmroll"} : {};
-    r.toMessage({
-      flavor: `${game.i18n.localize("SWFFG.Rolling")} ${type}...`,
-    }, rollOptions);
+    let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? { rollMode: "gmroll" } : {};
+    r.toMessage(
+      {
+        flavor: `${game.i18n.localize("SWFFG.Rolling")} ${type}...`,
+      },
+      rollOptions
+    );
     let filteredTable = table.filter((entry) => entry.rangeStart <= r.total && r.total <= entry.rangeEnd);
-    let tableResult = filteredTable?.length ? `${filteredTable[0].type} ${type} ${game.i18n.localize("SWFFG.Triggered")} ${game.i18n.localize("SWFFG.For")} ${filteredTable[0].name}` : `${game.i18n.localize("No")} ${type} ${game.i18n.localize("SWFFG.Triggered")}`;
+    let tableResult = filteredTable?.length ? `${filteredTable[0].type} ${type} ${game.i18n.localize("SWFFG.Triggered")} ${game.i18n.localize("SWFFG.For")} @Actor[${filteredTable[0].playerId}]{${filteredTable[0].name}}` : `${game.i18n.localize("SWFFG.OptionValueNo")} ${type} ${game.i18n.localize("SWFFG.Triggered")}`;
     let messageOptions = {
       user: game.user._id,
-      content: tableResult
+      content: tableResult,
     };
     if (game.settings.get("starwarsffg", "privateTriggers")) {
       messageOptions.whisper = ChatMessage.getWhisperRecipients("GM");
@@ -269,31 +272,35 @@ export class GroupManager extends FormApplication {
 
   async _addGroupToCombat(characters, targets, cbt) {
     await this._setupCombat(cbt);
-    await Promise.all(targets.map(async (token) => {
-      await this._addTokenToCombat(token, game.combat);
-    }));
-    await Promise.all(characters.map(async (c) => {
-      let character = game.actors.get(c);
-      let token = character.getActiveTokens();
-      await this._addCharacterToCombat(character, token, game.combat);
-    }));
+    await Promise.all(
+      targets.map(async (token) => {
+        await this._addTokenToCombat(token, game.combat);
+      })
+    );
+    await Promise.all(
+      characters.map(async (c) => {
+        let character = game.actors.get(c);
+        let token = character.getActiveTokens();
+        await this._addCharacterToCombat(character, token, game.combat);
+      })
+    );
   }
 
   async _addCharacterToCombat(character, token, cbt) {
     if (token.length > 0) {
       await this._setupCombat(cbt);
-      await this._addTokenToCombat(token[0], cbt)
+      await this._addTokenToCombat(token[0], cbt);
     } else {
       ui.notifications.warn(`${character.name} has no active Token in the current scene.`);
     }
   }
-  
+
   async _addTokenToCombat(token, cbt) {
     await this._setupCombat(cbt);
-    let tokenId = token.id
+    let tokenId = token.id;
     if (!game.combat.getCombatantByToken(tokenId)) {
       await game.combat.createCombatant({
-        tokenId: tokenId
+        tokenId: tokenId,
       });
     }
   }
