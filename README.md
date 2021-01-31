@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 30/01/2021 - Cstadther - Fix 726 - Fixed issue with available hardpoint calculation.
 - 30/01/2021 - Cstadther - Fix 710 - Fixed issue where talent boxes split button was hidden behind the box.
 - 30/01/2021 - Cstadther - Fix 708 - Fixed issue where specialization modifiers were not able to be deleted.
 - 30/01/2021 - Cstadther - Fix 707 - Fixed issue with Lightsabers using brawn not calculation damage correctly.

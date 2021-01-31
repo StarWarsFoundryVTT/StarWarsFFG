@@ -873,7 +873,7 @@ export class ItemSheetFFG extends ItemSheet {
           break;
         }
         case "itemattachment": {
-          if (this.object.data.data.hardpoints.current - itemObject.data.hardpoints.value > 0) {
+          if (this.object.data.data.hardpoints.current - itemObject.data.hardpoints.value >= 0) {
             items.push(itemObject);
           } else {
             ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.data.data.hardpoints.current} left)`);
