@@ -1650,10 +1650,10 @@ export default class ImportHelpers {
   static processStatMod(mod) {
     let attributes = {};
     if (mod) {
-      let type;
       Object.keys(mod).forEach((m) => {
         const value = parseInt(mod[m], 10);
         const modtype = "Stat";
+        let type;
         switch (m) {
           case "SoakValue": {
             type = "Soak";
@@ -1681,7 +1681,9 @@ export default class ImportHelpers {
           }
         }
 
-        attributes[randomID()] = { mod: type, modtype, value };
+        if (type) {
+          attributes[randomID()] = { mod: type, modtype, value };
+        }
       });
     }
 
