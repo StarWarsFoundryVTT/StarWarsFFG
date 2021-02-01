@@ -282,6 +282,7 @@ export class ActorSheetFFG extends ActorSheet {
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("talentSorting", {
