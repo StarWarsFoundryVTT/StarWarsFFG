@@ -1074,104 +1074,70 @@ export default class ImportHelpers {
       updateDialog(50);
 
       if (characterData.Character?.Weapons?.CharWeapon) {
-        if (Array.isArray(characterData.Character.Weapons.CharWeapon)) {
-          await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
-            try {
-              const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "weapon")));
-              if (w?.Count) {
-                weapon.data.quantity = {
-                  value: parseInt(w.Count, 10),
-                };
-              }
-              character.items.push(weapon);
-            } catch (err) {
-              if (w.ItemKey?.length) {
-                CONFIG.logger.error(`Unable to add weapon (${w.ItemKey}) to character.`, err);
-              }
-            }
-          });
-        } else {
+        if (!Array.isArray(characterData.Character.Weapons.CharWeapon)) {
+          characterData.Character.Weapons.CharWeapon = [characterData.Character.Weapons.CharWeapon];
+        }
+        await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
           try {
-            const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey, undefined, "weapon")));
-            if (characterData.Character.Weapons.CharWeapon?.Count) {
+            const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "weapon")));
+            weapon._id = randomID();
+            if (w?.Count) {
               weapon.data.quantity = {
-                value: parseInt(characterData.Character.Weapons.CharWeapon.Count, 10),
+                value: parseInt(w.Count, 10),
               };
             }
             character.items.push(weapon);
           } catch (err) {
-            if (characterData.Character.Weapons.CharWeapon?.ItemKey?.length) {
-              CONFIG.logger.warn(`Unable to add weapon (${characterData.Character.Weapons.CharWeapon.ItemKey}) to character.`, err);
+            if (w.ItemKey?.length) {
+              CONFIG.logger.error(`Unable to add weapon (${w.ItemKey}) to character.`, err);
             }
           }
-        }
+        });
       }
 
       updateDialog(60);
 
       if (characterData.Character?.Armor?.CharArmor) {
-        if (Array.isArray(characterData.Character.Armor.CharArmor)) {
-          await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
-            try {
-              const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "armour")));
-              if (w?.Count) {
-                armor.data.quantity = {
-                  value: parseInt(w.Count, 10),
-                };
-              }
-              character.items.push(armor);
-            } catch (err) {
-              CONFIG.logger.error(`Unable to add armor (${w.ItemKey}) to character.`, err);
-            }
-          });
-        } else {
-          try {
-            const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey, undefined, "armour")));
+        if (!Array.isArray(characterData.Character.Armor.CharArmor)) {
+          characterData.Character.Armor.CharArmor = [characterData.Character.Armor.CharArmor];
+        }
 
-            if (characterData.Character.Armor.CharArmor?.Count) {
+        await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
+          try {
+            const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "armour")));
+            armor._id = randomID();
+            if (w?.Count) {
               armor.data.quantity = {
-                value: parseInt(characterData.Character.Armor.CharArmor.Count, 10),
+                value: parseInt(w.Count, 10),
               };
             }
             character.items.push(armor);
           } catch (err) {
-            CONFIG.logger.error(`Unable to add armor (${characterData.Character.Armor.CharArmor.ItemKey}) to character.`, err);
+            CONFIG.logger.error(`Unable to add armor (${w.ItemKey}) to character.`, err);
           }
-        }
+        });
       }
 
       updateDialog(70);
 
       if (characterData.Character?.Gear?.CharGear) {
-        if (Array.isArray(characterData.Character.Gear.CharGear)) {
-          await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
-            try {
-              const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "gear")));
-
-              if (w?.Count) {
-                gear.data.quantity = {
-                  value: parseInt(w.Count, 10),
-                };
-              }
-              character.items.push(gear);
-            } catch (err) {
-              CONFIG.logger.error(`Unable to add gear (${w.ItemKey}) to character.`, err);
-            }
-          });
-        } else {
+        if (!Array.isArray(characterData.Character.Gear.CharGear)) {
+          characterData.Character.Gear.CharGear = [characterData.Character.Gear.CharGear];
+        }
+        await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
           try {
-            const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey, undefined, gear)));
-
-            if (characterData.Character.Gear.CharGear?.Count) {
+            const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "gear")));
+            gear._id = randomID();
+            if (w?.Count) {
               gear.data.quantity = {
-                value: parseInt(characterData.Character.Gear.CharGear.Count, 10),
+                value: parseInt(w.Count, 10),
               };
             }
             character.items.push(gear);
           } catch (err) {
-            CONFIG.logger.error(`Unable to add gear (${characterData.Character.Gear.CharGear.ItemKey}) to character.`, err);
+            CONFIG.logger.error(`Unable to add gear (${w.ItemKey}) to character.`, err);
           }
-        }
+        });
       }
 
       updateDialog(80);
