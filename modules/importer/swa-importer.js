@@ -361,6 +361,9 @@ export default class SWAImporter extends FormApplication {
                   type: item.type === "Nemesis" ? "character" : "minion",
                   flags: {
                     ffgimportid: `${f.name}-${item.type}-${item.name}`,
+                    config: {
+                      enableAutoSoakCalculation: false,
+                    },
                   },
                   data: {
                     characteristics: {},

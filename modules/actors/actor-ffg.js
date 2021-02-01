@@ -532,7 +532,7 @@ export class ActorFFG extends Actor {
           value = [data[name][k].fore, data[name][k].port, data[name][k].starboard, data[name][k].aft];
         } else if (key === "Soak") {
           try {
-            if ((actor?._sheetClass?.name === "AdversarySheetFFG" && actorData.data.flags?.config?.enableAutoSoakCalculation) || game.settings.get("starwarsffg", "enableSoakCalc")) {
+            if ((typeof actorData.data.flags?.config?.enableAutoSoakCalculation === undefined && game.settings.get("starwarsffg", "enableSoakCalc")) || actorData.data.flags?.config?.enableAutoSoakCalculation) {
               value = 0;
             }
           } catch (err) {
