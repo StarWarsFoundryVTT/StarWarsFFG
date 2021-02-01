@@ -30,50 +30,50 @@ export default class Vehicles {
               biography: item.Description,
               stats: {
                 silhouette: {
-                  value: parseInt(item.Silhouette, 10),
+                  value: item.Silhouette ? parseInt(item.Silhouette, 10) : 0,
                 },
                 speed: {
-                  max: parseInt(item.Speed, 10),
+                  max: item.Speed ? parseInt(item.Speed, 10) : 0,
                 },
                 handling: {
-                  value: parseInt(item.Handling, 10),
+                  value: item.Handling ? parseInt(item.Handling, 10) : 0,
                 },
                 hullTrauma: {
-                  max: parseInt(item.HullTrauma, 10),
+                  max: item.HullTrauma ? parseInt(item.HullTrauma, 10) : 0,
                 },
                 systemStrain: {
-                  max: parseInt(item.SystemStrain, 10),
+                  max: item.SystemStrain ? parseInt(item.SystemStrain, 10) : 0,
                 },
                 shields: {
-                  fore: parseInt(item.DefFore, 10),
-                  port: parseInt(item.DefPort, 10),
-                  starboard: parseInt(item.DefStarboard, 10),
-                  aft: parseInt(item.DefAft, 10),
+                  fore: item.DefFore ? parseInt(item.DefFore, 10) : 0,
+                  port: item.DefPort ? parseInt(item.DefPort, 10) : 0,
+                  starboard: item.DefStarboard ? parseInt(item.DefStarboard, 10) : 0,
+                  aft: item.DefAft ? parseInt(item.DefAft, 10) : 0,
                 },
                 armour: {
-                  value: parseInt(item.Armor, 10),
+                  value: item.Armor ? parseInt(item.Armor, 10) : 0,
                 },
                 sensorRange: {
                   value: item.SensorRangeValue?.includes("sr") ? item.SensorRangeValue.replace("sr", "") : "None",
                 },
                 crew: {},
                 passengerCapacity: {
-                  value: parseInt(item.Passengers, 10),
+                  value: item.Passengers ? parseInt(item.Passengers, 10) : 0,
                 },
                 encumbrance: {
-                  max: parseInt(item.EncumbranceCapacity, 10),
+                  max: item.EncumbranceCapacity ? parseInt(item.EncumbranceCapacity, 10) : 0,
                 },
                 cost: {
-                  value: parseInt(item.Price, 10),
+                  value: item.Price ? parseInt(item.Price, 10) : 0,
                 },
                 rarity: {
-                  value: parseInt(item.Rarity, 10),
+                  value: item.Rarity ? parseInt(item.Rarity, 10) : 0,
                 },
                 customizationHardPoints: {
-                  value: parseInt(item.HP, 10),
+                  value: item.HP ? parseInt(item.HP, 10) : 0,
                 },
                 hyperdrive: {
-                  value: parseInt(item.HyperdrivePrimary, 10),
+                  value: item.HyperdrivePrimary ? parseInt(item.HyperdrivePrimary, 10) : 1,
                 },
                 consumables: {
                   value: 1,

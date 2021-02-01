@@ -38,7 +38,7 @@ export default class Weapons {
                 value: parseInt(!item?.Damage ? item.DamageAdd : item.Damage, 10),
               },
               crit: {
-                value: parseInt(item.Crit, 10),
+                value: item.Crit ? parseInt(item.Crit, 10) : 0,
               },
               skill: {
                 value: CONFIG.temporary.skills[item.SkillKey],
