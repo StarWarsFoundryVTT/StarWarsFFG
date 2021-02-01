@@ -1369,6 +1369,16 @@ export default class ImportHelpers {
       CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
       let updateData = data;
       updateData["_id"] = entry._id;
+
+      if (updateData?.data?.attributes) {
+        // Remove and repopulate all modifiers
+        if (entry.data?.attributes) {
+          for (let k of Object.keys(entry.data.attributes)) {
+            if (!updateData.data.attributes.hasOwnProperty(k)) updateData.data.attributes[`-=${k}`] = null;
+          }
+        }
+      }
+
       CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
       await pack.updateEntity(updateData);
       let upd = duplicate(entry);
