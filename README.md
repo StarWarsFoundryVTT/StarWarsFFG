@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 01/02/2021 - Cstadther - Fix 705 - Switched character import compendium item lookup to lookup specific template type.
 - 01/02/2021 - Cstadther - Fix 718 - Reimporting was causing duplicate modifiers.
 - 30/01/2021 - Cstadther - Fix 726 - Fixed issue with available hardpoint calculation.
 - 30/01/2021 - Cstadther - Fix 710 - Fixed issue where talent boxes split button was hidden behind the box.

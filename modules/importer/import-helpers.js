@@ -751,7 +751,7 @@ export default class ImportHelpers {
       updateDialog(10);
 
       try {
-        const x = await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey);
+        const x = await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey, undefined, "species");
 
         const species = JSON.parse(JSON.stringify(x));
         if (species) {
@@ -835,7 +835,7 @@ export default class ImportHelpers {
       updateDialog(20);
 
       try {
-        const career = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.CareerKey)));
+        const career = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.CareerKey, undefined, "career")));
         if (career) {
           if (characterData.Character.Career.CareerSkills?.Key) {
             characterData.Character.Career.CareerSkills.Key.forEach((key) => {
@@ -867,7 +867,7 @@ export default class ImportHelpers {
       updateDialog(30);
 
       try {
-        const specialization = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.StartingSpecKey)));
+        const specialization = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.StartingSpecKey, undefined, "specialization")));
         if (specialization) {
           if (characterData.Character.Career.CareerSpecSkills?.Key) {
             characterData.Character.Career.CareerSpecSkills.Key.forEach((key) => {
@@ -967,7 +967,7 @@ export default class ImportHelpers {
                 character.items.push(specialization);
               } else {
                 try {
-                  const newspec = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", spec.Key)));
+                  const newspec = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", spec.Key, undefined, "specialization")));
                   specTotal += spec.Talents.CharTalent.length;
                   updateDialogSpecialization(specCount, specTotal);
                   for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
@@ -1058,7 +1058,7 @@ export default class ImportHelpers {
 
       await this.asyncForEach(forcepowers, async (power) => {
         try {
-          const force = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", power.Key)));
+          const force = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", power.Key, undefined, "forcepower")));
           for (let i = 4; i < power.ForceAbilities.CharForceAbility.length; i += 1) {
             if (power.ForceAbilities.CharForceAbility[i].Purchased) {
               force.data.upgrades[`upgrade${i - 4}`].islearned = true;
@@ -1077,7 +1077,7 @@ export default class ImportHelpers {
         if (Array.isArray(characterData.Character.Weapons.CharWeapon)) {
           await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
             try {
-              const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey)));
+              const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "weapon")));
               if (w?.Count) {
                 weapon.data.quantity = {
                   value: parseInt(w.Count, 10),
@@ -1092,7 +1092,7 @@ export default class ImportHelpers {
           });
         } else {
           try {
-            const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey)));
+            const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Weapons.CharWeapon.ItemKey, undefined, "weapon")));
             if (characterData.Character.Weapons.CharWeapon?.Count) {
               weapon.data.quantity = {
                 value: parseInt(characterData.Character.Weapons.CharWeapon.Count, 10),
@@ -1113,7 +1113,7 @@ export default class ImportHelpers {
         if (Array.isArray(characterData.Character.Armor.CharArmor)) {
           await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
             try {
-              const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey)));
+              const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "armour")));
               if (w?.Count) {
                 armor.data.quantity = {
                   value: parseInt(w.Count, 10),
@@ -1126,7 +1126,7 @@ export default class ImportHelpers {
           });
         } else {
           try {
-            const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey)));
+            const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Armor.CharArmor.ItemKey, undefined, "armour")));
 
             if (characterData.Character.Armor.CharArmor?.Count) {
               armor.data.quantity = {
@@ -1146,7 +1146,7 @@ export default class ImportHelpers {
         if (Array.isArray(characterData.Character.Gear.CharGear)) {
           await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
             try {
-              const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey)));
+              const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "gear")));
 
               if (w?.Count) {
                 gear.data.quantity = {
@@ -1160,7 +1160,7 @@ export default class ImportHelpers {
           });
         } else {
           try {
-            const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey)));
+            const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Gear.CharGear.ItemKey, undefined, gear)));
 
             if (characterData.Character.Gear.CharGear?.Count) {
               gear.data.quantity = {
