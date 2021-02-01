@@ -20,20 +20,20 @@ export default class Armor {
               attributes: {},
               description: item.Description,
               encumbrance: {
-                value: parseInt(item.Encumbrance, 10),
+                value: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
               },
               price: {
-                value: parseInt(item.Price, 10),
+                value: item.Price ? parseInt(item.Price, 10) : 0,
               },
               rarity: {
-                value: parseInt(item.Rarity, 10),
+                value: item.Rarity ? parseInt(item.Rarity, 10) : 0,
                 isrestricted: item.Restricted === "true" ? true : false,
               },
               defence: {
                 value: item.Defense ? parseInt(item.Defense, 10) : 0,
               },
               soak: {
-                value: parseInt(item.Soak, 10),
+                value: item.Soak ? parseInt(item.Soak, 10) : 0,
               },
               hardpoints: {
                 value: item.HP ? parseInt(item.HP, 10) : 0,

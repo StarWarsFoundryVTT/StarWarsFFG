@@ -20,13 +20,13 @@ export default class ItemAttachments {
             description: item.Description,
             attributes: {},
             price: {
-              value: parseInt(item.Price, 10),
+              value: item.Price ? parseInt(item.Price, 10) : 0,
             },
             rarity: {
-              value: parseInt(item.Rarity, 10),
+              value: item.Rarity ? parseInt(item.Rarity, 10) : 0,
             },
             hardpoints: {
-              value: parseInt(item.HP, 10),
+              value: item.HP ? parseInt(item.HP, 10) : 0,
             },
             type: item.Type ? item.Type.toLowerCase() : "all",
             itemmodifier: [],
