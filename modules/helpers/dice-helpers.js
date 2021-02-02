@@ -31,6 +31,8 @@ export default class DiceHelpers {
       failure: 0,
       threat: 0,
       success: 0,
+      triumph: 0,
+      despair: 0,
       label: skills?.[skillName]?.label ? game.i18n.localize(skills[skillName].label) : game.i18n.localize(CONFIG.FFG.skills[skillName].label),
     };
     let characteristic = {
@@ -82,6 +84,8 @@ export default class DiceHelpers {
       failure: skill.failure,
       threat: skill.threat,
       success: skill.success,
+      triumph: skill.triumph,
+      despair: skill.despair,
       difficulty: 2, // default to average difficulty
     });
 
@@ -128,7 +132,7 @@ export default class DiceHelpers {
       const characteristic = data.data.characteristics[skill.characteristic];
 
       const dicePool = new DicePoolFFG({
-        ability: Math.max(characteristic.value, skill.rank),
+        ability: Math.max(characteristic?.value ? characteristic.value : 0, skill?.rank ? skill.rank : 0),
         boost: skill.boost,
         setback: skill.setback,
         remsetback: skill.remsetback,
@@ -139,6 +143,8 @@ export default class DiceHelpers {
         failure: skill.failure,
         threat: skill.threat,
         success: skill.success,
+        triumph: skill?.triumph ? skill.triumph : 0,
+        despair: skill?.despair ? skill.despair : 0,
         source: {
           skill: skill?.ranksource?.length ? skill.ranksource : [],
           boost: skill?.boostsource?.length ? skill.boostsource : [],
@@ -179,6 +185,8 @@ export default class DiceHelpers {
       failure: skill.failure,
       threat: skill.threat,
       success: skill.success,
+      triumph: skill?.triumph ? skill.triumph : 0,
+      despair: skill?.despair ? skill.despair : 0,
       difficulty: 2, // default to average difficulty
     });
 
@@ -201,6 +209,8 @@ export default class DiceHelpers {
       failure: skill.failure,
       threat: skill.threat,
       success: skill.success,
+      triumph: skill?.triumph ? skill.triumph : 0,
+      despair: skill?.despair ? skill.despair : 0,
     });
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
