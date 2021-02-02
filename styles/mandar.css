@@ -49,7 +49,6 @@ section {
 
 .window-app .window-content {
   flex: 1;
-  display: block;
   height: 100%;
   font-size: 10pt;
   padding: 0.25rem;
