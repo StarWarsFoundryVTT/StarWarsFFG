@@ -1080,7 +1080,7 @@ export default class ImportHelpers {
         await this.asyncForEach(characterData.Character.Weapons.CharWeapon, async (w) => {
           try {
             const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "weapon")));
-            weapon._id = randomID();
+            delete weapon._id;
             if (w?.Count) {
               weapon.data.quantity = {
                 value: parseInt(w.Count, 10),
@@ -1105,7 +1105,7 @@ export default class ImportHelpers {
         await this.asyncForEach(characterData.Character.Armor.CharArmor, async (w) => {
           try {
             const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "armour")));
-            armor._id = randomID();
+            delete armor._id;
             if (w?.Count) {
               armor.data.quantity = {
                 value: parseInt(w.Count, 10),
@@ -1127,7 +1127,7 @@ export default class ImportHelpers {
         await this.asyncForEach(characterData.Character.Gear.CharGear, async (w) => {
           try {
             const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "gear")));
-            gear._id = randomID();
+            delete gear._id;
             if (w?.Count) {
               gear.data.quantity = {
                 value: parseInt(w.Count, 10),

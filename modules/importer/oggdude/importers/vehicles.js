@@ -94,7 +94,7 @@ export default class Vehicles {
                 const weaponEntity = await ImportHelpers.findCompendiumEntityByImportId("Item", weapon.Key, undefined, "shipweapon");
                 if (weaponEntity) {
                   const weaponData = JSON.parse(JSON.stringify(weaponEntity));
-                  weaponData._id = randomID();
+                  delete weaponData._id;
                   weaponData.data.itemmodifier = [];
                   const count = weapon.Count ? parseInt(weapon.Count, 10) : 1;
                   if (!weaponData.data?.firingarc) weaponData.data.firingarc = {};
