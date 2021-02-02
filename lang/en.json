@@ -492,6 +492,8 @@
   "SWFFG.SettingsEnableForceDie" : "Enable Force Die in Roller",
   "SWFFG.SettingsEnableForceDieHint" : "Enables/Disables White Force Die in Roller (NOTE: If Dice theme is Star Wars Force Die will automatically be enabled)",
   "SWFFG.SettingsPausedImage": "Paused Icon",
-  "SWFFG.SettingsPausedImageHint": "Change the paused icon by selecting an image replacement."
+  "SWFFG.SettingsPausedImageHint": "Change the paused icon by selecting an image replacement.",
+  "SWFFG.Triumph" : "Triumph",
+  "SWFFG.Despair" : "Despair"
 }
 

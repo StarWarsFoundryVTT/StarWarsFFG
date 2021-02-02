@@ -66,6 +66,26 @@ export class RollFFG extends Roll {
         negative: +args[2].dark < 0,
       });
     }
+    if (args[2]?.triumph) {
+      this.ffg.triumph = +args[2].triumph;
+      this.ffg.success = +args[2].triumph;
+      this.addedResults.push({
+        type: "Triumph",
+        symbol: PopoutEditor.renderDiceImages("[TR]"),
+        value: Math.abs(+args[2].triumph),
+        negative: +args[2].triumph < 0,
+      });
+    }
+    if (args[2]?.despair) {
+      this.ffg.despair = +args[2].despair;
+      this.ffg.failure = +args[2].despair;
+      this.addedResults.push({
+        type: "Despair",
+        symbol: PopoutEditor.renderDiceImages("[DE]"),
+        value: Math.abs(+args[2].despair),
+        negative: +args[2].despair < 0,
+      });
+    }
 
     if (args[3]) {
       this.flavorText = args[3];
