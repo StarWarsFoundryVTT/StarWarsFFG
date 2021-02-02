@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 02/02/2021 - Cstadther - Enhancement 732 - Added Triumph and Despair to die roller.
 - 01/02/2021 - Cstadther - Fix 725 - Resolved issue with SW Adversary's soak, now will automatically disable soak calculation on import.
 - 01/02/2021 - Cstadther - Fix 727 - Fixed issue where adding multiple owned items to a character with the same id resulted in only 1 entry.
 - 01/02/2021 - Cstadther - Fix 720 - Fixed issue where additional modifiers were being incorrectly added.
