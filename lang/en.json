@@ -494,6 +494,8 @@
   "SWFFG.SettingsPausedImage": "Paused Icon",
   "SWFFG.SettingsPausedImageHint": "Change the paused icon by selecting an image replacement.",
   "SWFFG.Triumph" : "Triumph",
-  "SWFFG.Despair" : "Despair"
+  "SWFFG.Despair" : "Despair",
+  "SWFFG.EnableCriticalInjuries" : "Enable Critical Injuries",
+  "SWFFG.EnableCriticalInjuriesHint" : "Enable the Critical Injuries section"
 }
 

@@ -363,9 +363,11 @@ export default class SWAImporter extends FormApplication {
                     ffgimportid: `${f.name}-${item.type}-${item.name}`,
                     config: {
                       enableAutoSoakCalculation: false,
+                      enableCriticalInjuries: item.type === "Minion" ? false : true,
                     },
                   },
                   data: {
+                    attributes: {},
                     characteristics: {},
                     skills,
                     stats: {},
@@ -381,7 +383,13 @@ export default class SWAImporter extends FormApplication {
                   ["soak", "wounds", "strain"].forEach((stat) => {
                     if (stat === "soak") {
                       adversary.data.stats[stat] = {
-                        value: item.derived[stat],
+                        value: parseInt(item.derived[stat], 10),
+                      };
+
+                      adversary.data.attributes.Soak = {
+                        mod: "Soak",
+                        modtype: "Stat",
+                        value: Math.abs(adversary.data.stats[stat].value - parseInt(adversary.data.characteristics.Brawn.value, 10)),
                       };
                     } else {
                       if (stat === "wounds" && adversary.type === "minion") {
