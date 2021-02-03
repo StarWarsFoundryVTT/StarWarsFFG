@@ -142,9 +142,7 @@ export class GroupManager extends FormApplication {
     // Add individual character to combat tracker.
     html.find(".add-to-combat").click((ev) => {
       const character = ev.currentTarget.dataset.character;
-      const c = game.actors.get(character);
-      const token = c.getActiveTokens();
-      this._addCharacterToCombat(c, token, game.combat);
+      this._addCharacterToCombat(character, game.combat);
     });
     // Add all characters to combat tracker.
     html.find(".group-to-combat").click((ev) => {
@@ -272,37 +270,38 @@ export class GroupManager extends FormApplication {
 
   async _addGroupToCombat(characters, targets, cbt) {
     await this._setupCombat(cbt);
-    await Promise.all(
-      targets.map(async (token) => {
-        await this._addTokenToCombat(token, game.combat);
-      })
-    );
+    let tokens = targets.filter((t) => !t.inCombat);
     await Promise.all(
       characters.map(async (c) => {
-        let character = game.actors.get(c);
-        let token = character.getActiveTokens();
-        await this._addCharacterToCombat(character, token, game.combat);
+        let token = await this._getCharacterToken(game.actors.get(c));
+        if (token) {
+          if (!token._controlled && !token.inCombat) {
+            tokens.push(token);
+          }
+        } else {
+          ui.notifications.warn(`${c.name} has no active Token in the current scene.`);
+        }
       })
     );
+    const createData = tokens.map((t) => {
+      return { tokenId: t.id };
+    });
+    await game.combat.createCombatant(createData);
   }
 
-  async _addCharacterToCombat(character, token, cbt) {
-    if (token.length > 0) {
-      await this._setupCombat(cbt);
-      await this._addTokenToCombat(token[0], cbt);
-    } else {
-      ui.notifications.warn(`${character.name} has no active Token in the current scene.`);
-    }
-  }
-
-  async _addTokenToCombat(token, cbt) {
+  async _addCharacterToCombat(character, cbt) {
     await this._setupCombat(cbt);
-    let tokenId = token.id;
-    if (!game.combat.getCombatantByToken(tokenId)) {
-      await game.combat.createCombatant({
-        tokenId: tokenId,
-      });
+    let token = await this._getCharacterToken(game.actors.get(character));
+    if (token && !token.inCombat) {
+      await game.combat.createCombatant({ tokenId: token.id });
+    } else {
+      ui.notifications.warn(`${c.name} has no active Token in the current scene.`);
     }
+  }
+
+  async _getCharacterToken(character) {
+    let activeTokens = character.getActiveTokens();
+    return activeTokens.length ? activeTokens[0] : null;
   }
 
   async _setupCombat(cbt) {
