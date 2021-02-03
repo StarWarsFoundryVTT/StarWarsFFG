@@ -407,17 +407,25 @@ export default class SWAImporter extends FormApplication {
                 if (item.skills) {
                   let isMinion = Array.isArray(item.skills);
                   let adversarySkills = isMinion ? item.skills : Object.keys(item.skills);
-                  adversarySkills.forEach((skill) => {
+                  adversarySkills.forEach((skillRaw) => {
+                    let skill = skillRaw.match(/^[^\(]*/)[0];
+                    skill = $.trim(skill);
+                    let alternateCharacteristic = skillRaw.match(/(?<=\()(.*?)(?=\))/)?.length ? skillRaw.match(/(?<=\()(.*?)(?=\))/)[0] : undefined;
+
                     const ffgSkill = Object.keys(skills).find((s) => skill.toLowerCase() === s.toLowerCase());
 
                     if (ffgSkill) {
                       adversary.data.skills[ffgSkill].groupskill = isMinion ? true : false;
                       if (!isMinion) adversary.data.skills[ffgSkill].rank = item.skills[skill];
                       if (CONFIG.temporary.swa.skills?.[skill]?.characteristic) {
-                        adversary.data.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
+                        if (alternateCharacteristic) {
+                          adversary.data.skills[ffgSkill].characteristic = alternateCharacteristic;
+                        } else {
+                          adversary.data.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
+                        }
                       }
 
-                      if (!adversary.data.skills[ffgSkill]?.type) {
+                      if ((!adversary.data.skills[ffgSkill]?.type && skilltheme !== "starwars") || (skilltheme === "starwars" && !CONFIG.FFG.skills[ffgSkill])) {
                         adversary.data.skills[ffgSkill].Key = ffgSkill.toUpperCase();
                         adversary.data.skills[ffgSkill].custom = true;
                         adversary.data.skills[ffgSkill].type = "General";
