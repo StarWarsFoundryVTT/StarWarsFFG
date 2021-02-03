@@ -19,6 +19,10 @@ export const general_modifiers = {
     "value": "Skill Add Dark",
     "label": "SWFFG.ModTypeSkillAddDark",
   },
+  "Skill Add Despair": {
+    "value": "Skill Add Despair",
+    "label": "SWFFG.ModTypeSkillAddDespair",
+  },
   "Skill Add Failure": {
     "value": "Skill Add Failure",
     "label": "SWFFG.ModTypeSkillAddFailure",
@@ -34,6 +38,10 @@ export const general_modifiers = {
   "Skill Add Threat": {
     "value": "Skill Add Threat",
     "label": "SWFFG.ModTypeSkillAddThreat",
+  },
+  "Skill Add Triumph": {
+    "value": "Skill Add Triumph",
+    "label": "SWFFG.ModTypeSkillAddTriumph",
   },
   "Skill Boost": {
     "value": "Skill Boost",
@@ -183,5 +191,13 @@ export const itemmodifier_resultmodifiers = {
   "Add Dark": {
     "value": "Add Dark",
     "label": "SWFFG.ModTypeAddDark",
+  },
+  "Add Triumph": {
+    "value": "Add Triumph",
+    "label": "SWFFG.ModTypeAddTriumph",
+  },
+  "Add Despair": {
+    "value": "Add Despair",
+    "label": "SWFFG.ModTypeAddDespair",
   },
 };
