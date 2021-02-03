@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 03/02/2021 - Cstadther - Enhancement 717 - Added ability to decode SWA dice symbols, example `:boost:`
 - 03/02/2021 - Cstadhter - Fix 744 - Fixed issue where roll and expanded data cards were displaying incorrect rank for qualities.
 - 03/02/2021 - Cstadther - Fix 743 - Fixed issue to where damaged weapons were not applying a difficulty die addition.
 - 03/02/2021 - Cstadther - Fix 723/724 - Fixed SWA Import issues with soak and added ability for minions (Rivals on Minion Sheet) to have criticals, shows up as a sheet option, but for import defaults to true.
