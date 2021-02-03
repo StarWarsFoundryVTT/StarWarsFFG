@@ -384,7 +384,7 @@ export default class SWAImporter extends FormApplication {
                         value: item.derived[stat],
                       };
                     } else {
-                      if (stat === "wounds" && item.type === "Minion") {
+                      if (stat === "wounds" && adversary.type === "minion") {
                         adversary.data.quantity = {
                           value: 1,
                           max: 1,
