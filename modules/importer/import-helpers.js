@@ -281,6 +281,14 @@ export default class ImportHelpers {
           modtype = "Skill Add Failure";
           value = parseInt(mod.FailureCount, 10);
         }
+        if (mod.TriumphCount) {
+          modtype = "Skill Add Triumph";
+          value = parseInt(mod.TriumphCount, 10);
+        }
+        if (mod.DespairCount) {
+          modtype = "Skill Add Despair";
+          value = parseInt(mod.DespairCount, 10);
+        }
       } else {
         modtype = "Skill Rank";
       }
