@@ -313,13 +313,13 @@ export class ItemFFG extends ItemBaseFFG {
       }
 
       if (data.hasOwnProperty("encumbrance")) {
-        props.push(`${game.i18n.localize("SWFFG.Encumbrance")}: ${data.encumbrance.adjusted}`);
+        props.push(`${game.i18n.localize("SWFFG.Encumbrance")}: ${data.encumbrance?.adjusted ? data.encumbrance.adjusted : data.encumbrance.value}`);
       }
       if (data.hasOwnProperty("price")) {
-        props.push(`${game.i18n.localize("SWFFG.ItemsPrice")}: ${data.price.adjusted}`);
+        props.push(`${game.i18n.localize("SWFFG.ItemsPrice")}: ${data.price?.adjusted ? data.price.adjusted : data.price.value}`);
       }
       if (data.hasOwnProperty("rarity")) {
-        props.push(`${game.i18n.localize("SWFFG.ItemsRarity")}: ${data.rarity.adjusted} ${data.rarity.isrestricted ? "<span class='restricted'>" + game.i18n.localize("SWFFG.IsRestricted") + "</span>" : ""}`);
+        props.push(`${game.i18n.localize("SWFFG.ItemsRarity")}: ${data.rarity?.adjusted ? data.rarity.adjusted : data.rarity.value} ${data.rarity.isrestricted ? "<span class='restricted'>" + game.i18n.localize("SWFFG.IsRestricted") + "</span>" : ""}`);
       }
     }
 
