@@ -72,73 +72,109 @@ export default class PopoutEditor extends FormApplication {
         type: "ability",
         character: "d",
         class: "starwars",
-        pattern: /\[(AB)(ILITY)?\]/gim,
+        pattern: /:(ability):|\[(AB)(ILITY)?\]/gim,
       },
       {
         type: "advantage",
         character: "a",
         class: dicetheme,
-        pattern: /\[(AD)(VANTAGE)?\]/gim,
+        pattern: /:(advantage):|\[(AD)(VANTAGE)?\]/gim,
+      },
+      {
+        type: "difficulty",
+        character: "dd",
+        class: "starwars",
+        pattern: /:(average):/gim,
       },
       {
         type: "boost",
         character: "b",
         class: "starwars",
-        pattern: /\[(BO)(OST)?\]/gim,
+        pattern: /:(boost):|\[(BO)(OST)?\]/gim,
       },
       {
         type: "challenge",
         character: "c",
         class: "starwars",
-        pattern: /\[(CH)(ALLENGE)?\]/gim,
+        pattern: /:(challenge):|\[(CH)(ALLENGE)?\]/gim,
       },
       {
         type: "dark",
         character: "z",
         class: "starwars",
-        pattern: /\[(DA)(RK)?\]/gim,
+        pattern: /:(darkside):|\[(DA)(RK)?\]/gim,
+      },
+      {
+        type: "difficulty",
+        character: "dddd",
+        class: "starwars",
+        pattern: /:(daunting):/gim,
       },
       {
         type: "despair",
         character: dicetheme === "starwars" ? "y" : "d",
         class: dicetheme,
-        pattern: /\[(DE)(SPAIR)?\]/gim,
+        pattern: /:(despair):|\[(DE)(SPAIR)?\]/gim,
       },
       {
         type: "difficulty",
         character: "d",
         class: "starwars",
-        pattern: /\[(DI)(FFICULTY)?\]/gim,
+        pattern: /:(difficulty):|\[(DI)(FFICULTY)?\]/gim,
+      },
+      {
+        type: "difficulty",
+        character: "d",
+        class: "starwars",
+        pattern: /:(easy):/gim,
+      },
+      {
+        type: "challenge",
+        character: "c",
+        class: "starwars",
+        pattern: /:(easy-1):/gim,
       },
       {
         type: "forcepoint",
         character: "Y",
         class: "starwars",
-        pattern: /\[(FP|FORCEPOINT)\]/gim,
+        pattern: /:(forcepip):|\[(FP|FORCEPOINT)\]/gim,
+      },
+      {
+        type: "difficulty",
+        character: "ddddd",
+        class: "starwars",
+        pattern: /:(formidable):/gim,
       },
       {
         type: "failure",
         character: "f",
         class: dicetheme,
-        pattern: /\[(FA)(ILURE)?\]/gim,
+        pattern: /:(failure):|\[(FA)(ILURE)?\]/gim,
       },
       {
         type: "force",
         character: "C",
         class: "starwars",
-        pattern: /\[(FO)(RCE)?\]/gim,
+        pattern: /:(force):|\[(FO)(RCE)?\]/gim,
+      },
+      {
+        type: "difficulty",
+        character: "ddd",
+        class: "starwars",
+        pattern: /:(hard):/gim,
       },
       {
         type: "light",
         character: "Z",
         class: "starwars",
-        pattern: /\[(LI)(GHT)?\]/gim,
+        pattern: /:(lightside):|\[(LI)(GHT)?\]/gim,
       },
       {
         type: "proficiency",
         character: "c",
         class: "starwars",
-        pattern: /\[(PR)(OFICIENCY)?\]/gim,
+        pattern: /:(proficiency):|\[(PR)(OFICIENCY)?\]/gim,
       },
       {
         type: "remsetback",
@@ -156,25 +192,25 @@ export default class PopoutEditor extends FormApplication {
         type: "setback",
         character: "b",
         class: "starwars",
-        pattern: /\[(SE)(TBACK)?\]/gim,
+        pattern: /:(setback):|\[(SE)(TBACK)?\]/gim,
       },
       {
         type: "success",
         character: "s",
         class: dicetheme,
-        pattern: /\[(SU)(CCESS)?\]/gim,
+        pattern: /:(success):|\[(SU)(CCESS)?\]/gim,
       },
       {
         type: "threat",
         character: dicetheme === "starwars" ? "t" : "h",
         class: dicetheme,
-        pattern: /\[(TH)(REAT)?\]/gim,
+        pattern: /:(threat):|\[(TH)(REAT)?\]/gim,
       },
       {
         type: "triumph",
         character: dicetheme === "starwars" ? "x" : "t",
         class: dicetheme,
-        pattern: /\[(TR)(IUMPH)?\]/gim,
+        pattern: /:(triumph):|\[(TR)(IUMPH)?\]/gim,
       },
       {
         type: "adddifficulty",
@@ -199,6 +235,47 @@ export default class PopoutEditor extends FormApplication {
     replaceValues.forEach((item) => {
       html = html.replace(item.pattern, `<span class='dietype ${item.class} ${item.type}'>${item.character}</span>`);
     });
+
+    const regex = /:([\w]*)-(\d):/gim;
+    let m;
+    while ((m = regex.exec(html)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (m.index === regex.lastIndex) {
+        regex.lastIndex++;
+      }
+
+      let symbolCount = 0;
+      let replaceString = "";
+
+      switch (m[1]) {
+        case "average": {
+          symbolCount = 2;
+          break;
+        }
+        case "hard": {
+          symbolCount = 3;
+          break;
+        }
+        case "daunting": {
+          symbolCount = 4;
+          break;
+        }
+        case "formidable": {
+          symbolCount = 5;
+          break;
+        }
+      }
+
+      for (let i = 0; i < symbolCount; i += 1) {
+        if (i + 1 <= parseInt(m[2], 10)) {
+          replaceString += `<span class='dietype starwars challenge'>c</span>`;
+        } else {
+          replaceString += `<span class='dietype starwars difficulty'>d</span>`;
+        }
+      }
+
+      html = html.replace(m[0], replaceString);
+    }
 
     const oggdudeTags = [
       {
