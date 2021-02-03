@@ -72,7 +72,7 @@ export default class Species {
                   data.data.attributes[skill] = {
                     mod: skill,
                     modtype: "Skill Rank",
-                    value: skillMode.RankStart ? parseInt(skillMod.RankStart, 10) : 0,
+                    value: skillMod.RankStart ? parseInt(skillMod.RankStart, 10) : 0,
                     exclude: false,
                   };
                 }
