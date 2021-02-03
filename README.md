@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 03/02/2021 - Cstadther - Fix 723/724 - Fixed SWA Import issues with soak and added ability for minions (Rivals on Minion Sheet) to have criticals, shows up as a sheet option, but for import defaults to true.
 - 02/02/2021 - Cstadther - Enhancement 732 - Added Triumph and Despair to die roller.
 - 01/02/2021 - Cstadther - Fix 725 - Resolved issue with SW Adversary's soak, now will automatically disable soak calculation on import.
 - 01/02/2021 - Cstadther - Fix 727 - Fixed issue where adding multiple owned items to a character with the same id resulted in only 1 entry.

@@ -46,16 +46,23 @@ export class ActorSheetFFG extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
+  getData(options) {
     const data = super.getData();
     data.classType = this.constructor.name;
+
+    if (options?.action === "update" && this.object.compendium) {
+      data.item = mergeObject(data.actor, options.data);
+    }
+
     data.dtypes = ["String", "Number", "Boolean"];
     for (let attr of Object.values(data.data.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
     data.FFG = CONFIG.FFG;
+    const autoSoakCalculation = (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.data.flags.config.enableAutoSoakCalculation;
     data.settings = {
-      enableSoakCalculation: game.settings.get("starwarsffg", "enableSoakCalc"),
+      enableSoakCalculation: autoSoakCalculation,
+      enableCriticalInjuries: this.actor.data?.flags?.config?.enableCriticalInjuries,
     };
 
     // Establish sheet width and height using either saved persistent values or default values defined in swffg-config.js
@@ -284,6 +291,12 @@ export class ActorSheetFFG extends ActorSheet {
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
         type: "Boolean",
         default: true,
+      });
+      this.sheetoptions.register("enableCriticalInjuries", {
+        name: game.i18n.localize("SWFFG.EnableCriticalInjuries"),
+        hint: game.i18n.localize("SWFFG.EnableCriticalInjuriesHint"),
+        type: "Boolean",
+        default: false,
       });
       this.sheetoptions.register("talentSorting", {
         name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
