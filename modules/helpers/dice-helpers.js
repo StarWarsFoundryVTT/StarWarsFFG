@@ -59,12 +59,17 @@ export default class DiceHelpers {
     }
 
     let itemStatusSetback = 0;
+    let itemStatusDifficulty = 0;
 
     if (item.type === "weapon" && item?.data?.status && item.data.status !== "None") {
       const status = CONFIG.FFG.itemstatus[item.data.status].attributes.find((i) => i.mod === "Setback");
 
       if (status.value < 99) {
-        itemStatusSetback = status.value;
+        if (status.value === 1) {
+          itemStatusSetback = status.value;
+        } else {
+          itemStatusDifficulty = 1;
+        }
       } else {
         ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.data.status].label)}).`);
         return;
@@ -86,7 +91,7 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill.triumph,
       despair: skill.despair,
-      difficulty: 2, // default to average difficulty
+      difficulty: 2 + itemStatusDifficulty, // default to average difficulty
     });
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));

@@ -59,7 +59,15 @@ export class ActorSheetFFG extends ActorSheet {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
     data.FFG = CONFIG.FFG;
-    const autoSoakCalculation = (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.data.flags.config.enableAutoSoakCalculation;
+
+    let autoSoakCalculation = true;
+
+    if (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined") {
+      autoSoakCalculation = game.settings.get("starwarsffg", "enableSoakCalc");
+    } else {
+      autoSoakCalculation = this.actor.data.flags.config.enableAutoSoakCalculation;
+    }
+
     data.settings = {
       enableSoakCalculation: autoSoakCalculation,
       enableCriticalInjuries: this.actor.data?.flags?.config?.enableCriticalInjuries,
