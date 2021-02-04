@@ -99,16 +99,25 @@ export default class RollBuilderFFG extends FormApplication {
         if (sound) {
           this.roll.sound = sound;
           if (this?.roll?.item) {
-            const parts = this.roll.item.flags.uuid.split(".");
-            const [entityName, entityId, embeddedName, embeddedId] = parts;
-            const entity = CONFIG[entityName].entityClass.collection.get(entityId);
-            if (parts.length === 4) {
-              let d = {
-                _id: embeddedId,
+            let entity;
+            let entityData;
+            if (!this?.roll?.item?.flags?.uuid) {
+              entity = CONFIG["Actor"].entityClass.collection.get(this.roll.data.actor._id);
+              entityData = {
+                _id: this.roll.item._id,
               };
-              setProperty(d, "flags.ffgsound", sound);
-              entity.updateOwnedItem(d);
+            } else {
+              const parts = this.roll.item.flags.uuid.split(".");
+              const [entityName, entityId, embeddedName, embeddedId] = parts;
+              entity = CONFIG[entityName].entityClass.collection.get(entityId);
+              if (parts.length === 4) {
+                entityData = {
+                  _id: embeddedId,
+                };
+              }
             }
+            setProperty(entityData, "flags.ffgsound", sound);
+            entity.updateOwnedItem(entityData);
           }
         }
       }
