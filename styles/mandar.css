@@ -905,6 +905,7 @@ img {
   top: 15px;
   font-size: 15px;
   color: white;
+  z-index: 20;
 }
 
 .starwarsffg .talent-upgrade .talent-actions.talent-canSplit .split i {
@@ -2306,6 +2307,21 @@ img {
 
 .starwarsffg .item-sheet-weapon .characteristic-item, .starwarsffg .item-sheet-weapon .block-background {
   background-color: #bffebf;
+}
+
+.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+  width: 1rem;
+  border-radius: 0 0.5rem;
+  border: 1px solid transparent;
+}
+
+.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left.positive {
+  color: green;
 }
 
 .starwarsffg .item-sheet-weapon .attribute .block-title {
