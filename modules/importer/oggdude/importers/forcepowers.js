@@ -14,9 +14,6 @@ export default class ForcePowers {
         let currentCount = 0;
 
         if (files.length) {
-          const base = JXON.xmlToJs(xml);
-          const abilities = base?.ForceAbilities.ForceAbility;
-
           let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.ForcePowers`);
           CONFIG.logger.debug(`Starting Oggdude Force Powers Import`);
           $(".import-progress.force").toggleClass("import-hidden");
@@ -51,7 +48,7 @@ export default class ForcePowers {
               for (let i = 1; i < item.AbilityRows.AbilityRow.length; i += 1) {
                 try {
                   const row = item.AbilityRows.AbilityRow[i];
-                  ImportHelpers.asyncForEach(row.Abilities.Key, async (keyName, index) => {
+                  await ImportHelpers.asyncForEach(row.Abilities.Key, async (keyName, index) => {
                     try {
                       let rowAbility = {};
 
