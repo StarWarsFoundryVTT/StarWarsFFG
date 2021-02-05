@@ -96,7 +96,13 @@ export class GroupManager extends FormApplication {
     players.hasDuty = this.duties?.length;
     let duties = this.duties;
     if (!isGM) this.position.height = 470;
-    return { dPool, players, initiative, isGM, pcListMode, characters, obligations, duties, theme };
+
+    const labels = {
+      light: game.settings.get("starwarsffg", "destiny-pool-light"),
+      dark: game.settings.get("starwarsffg", "destiny-pool-dark"),
+    };
+
+    return { dPool, players, initiative, isGM, pcListMode, characters, obligations, duties, theme, labels };
   }
 
   /* -------------------------------------------- */
