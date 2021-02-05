@@ -2321,7 +2321,11 @@ img {
 }
 
 .starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left.positive {
-  color: green;
+  background: green;
+}
+
+.starwarsffg .item-sheet-weapon .adjustedvalue {
+  color: red;
 }
 
 .starwarsffg .item-sheet-weapon .attribute .block-title {
