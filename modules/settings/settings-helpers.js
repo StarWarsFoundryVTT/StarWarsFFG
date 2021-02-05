@@ -112,7 +112,7 @@ export default class SettingsHelpers {
         }
         let destinyLight = game.settings.get("starwarsffg", "dPoolLight");
         document.getElementById("destinyLight").setAttribute("data-value", destinyLight);
-        document.getElementById("destinyLight").innerHTML = destinyLight + `<span>${game.i18n.localize("SWFFG.Lightside")}</span>`;
+        document.getElementById("destinyLight").innerHTML = destinyLight + `<span>${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))}</span>`;
       },
     });
     game.settings.register("starwarsffg", "dPoolDark", {
@@ -128,7 +128,7 @@ export default class SettingsHelpers {
         }
         let destinyDark = game.settings.get("starwarsffg", "dPoolDark");
         document.getElementById("destinyDark").setAttribute("data-value", destinyDark);
-        document.getElementById("destinyDark").innerHTML = destinyDark + `<span>${game.i18n.localize("SWFFG.Darkside")}</span>`;
+        document.getElementById("destinyDark").innerHTML = destinyDark + `<span>${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))}</span>`;
       },
     });
 

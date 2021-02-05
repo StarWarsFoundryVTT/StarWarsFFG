@@ -74,6 +74,10 @@ export default class RollBuilderFFG extends FormApplication {
     }
 
     const enableForceDie = game.settings.get("starwarsffg", "enableForceDie");
+    const labels = {
+      light: game.settings.get("starwarsffg", "destiny-pool-light"),
+      dark: game.settings.get("starwarsffg", "destiny-pool-dark"),
+    };
 
     return {
       sounds,
@@ -82,6 +86,7 @@ export default class RollBuilderFFG extends FormApplication {
       flavor: this.roll.flavor,
       users,
       enableForceDie,
+      labels,
     };
   }
 

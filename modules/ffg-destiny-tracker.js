@@ -96,10 +96,10 @@ export default class DestinyTracker extends FormApplication {
       var actionType = null;
       if (pointType == "dPoolLight") {
         flipType = "dPoolDark";
-        typeName = game.i18n.localize("SWFFG.Lightside");
+        typeName = game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"));
       } else {
         flipType = "dPoolLight";
-        typeName = game.i18n.localize("SWFFG.Darkside");
+        typeName = game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"));
       }
       var messageText;
 
@@ -126,8 +126,8 @@ export default class DestinyTracker extends FormApplication {
 
           messageText = `<div class="destiny-flip ${flipType}">
             <div class="destiny-title">Flipped a <span>${typeName}</span> point</div>
-            <div class="destiny-left">${game.i18n.localize("SWFFG.Darkside")} Remaining: ${pool.dark}</div>
-            <div class="destiny-left">${game.i18n.localize("SWFFG.Lightside")} Remaining: ${pool.light}</div>
+            <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))} Remaining: ${pool.dark}</div>
+            <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))} Remaining: ${pool.light}</div>
           </div>`;
         }
       } else if (add) {

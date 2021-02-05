@@ -14,12 +14,12 @@
   <div class="destiny-pool flex-center">
     <h1>{{localize "SWFFG.DestinyPool"}}</h1>
     <div class="grid grid-3col">
-      <label>{{localize "SWFFG.Lightside"}}:<img src="systems/starwarsffg/images/dice/{{this.theme}}/lightside.png" alt="Light side:" /><input type="text" name="dPool.light" value="{{dPool.light}}" data-dtype="Number" placeholder="0" /></label>
+      <label>{{localize labels.light}}:<img src="systems/starwarsffg/images/dice/{{this.theme}}/lightside.png" alt="{{localize labels.light}}:" /><input type="text" name="dPool.light" value="{{dPool.light}}" data-dtype="Number" placeholder="0" /></label>
       <div style="display: flex;">
         <button class="destiny-flip-dtl" style="height: 25%; align-self: center;"><i class="fas fa-arrow-left"></i></button>
         <button class="destiny-flip-ltd" style="height: 25%; align-self: center;"><i class="fas fa-arrow-right"></i></button>
       </div>
-      <label>{{localize "SWFFG.Darkside"}}:<img src="systems/starwarsffg/images/dice/{{this.theme}}/darkside.png" alt="Dark side:" /><input type="text" name="dPool.dark" value="{{dPool.dark}}" data-dtype="Number" placeholder="0" /></label>
+      <label>{{localize labels.dark}}:<img src="systems/starwarsffg/images/dice/{{this.theme}}/darkside.png" alt="{{localize labels.dark}}:" /><input type="text" name="dPool.dark" value="{{dPool.dark}}" data-dtype="Number" placeholder="0" /></label>
     </div>
   </div>
 
@@ -76,9 +76,7 @@
       <button class="bulk-XP">{{localize "SWFFG.DescriptionXP"}}</button>
     </div>
   </div>
-  {{/if}}
-
-  {{#if players.hasObligation}}
+  {{/if}} {{#if players.hasObligation}}
   <div class="obligation-section">
     <h2>{{localize "SWFFG.ObligationTable"}}</h2>
     <div class="obligation-table">
@@ -103,9 +101,7 @@
       </div>
     </div>
   </div>
-  {{/if}}
-
-  {{#if players.hasDuty}}
+  {{/if}} {{#if players.hasDuty}}
   <div class="duty-section">
     <h2>{{localize "SWFFG.DutyTable"}}</h2>
     <div class="duty-table">
