@@ -57,31 +57,14 @@ export default class DiceHelpers {
       item = item[0][1];
       item.flags.uuid = item1.uuid;
     }
-
-    let itemStatusSetback = 0;
-    let itemStatusDifficulty = 0;
-
-    if (item.type === "weapon" && item?.data?.status && item.data.status !== "None") {
-      const status = CONFIG.FFG.itemstatus[item.data.status].attributes.find((i) => i.mod === "Setback");
-
-      if (status.value < 99) {
-        if (status.value === 1) {
-          itemStatusSetback = status.value;
-        } else {
-          itemStatusDifficulty = 1;
-        }
-      } else {
-        ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.data.status].label)}).`);
-        return;
-      }
-    }
+    const status = this.getWeaponStatus(item);
 
     // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
 
     let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
-      setback: skill.setback + itemStatusSetback,
+      setback: skill.setback + status.setback,
       force: skill.force,
       advantage: skill.advantage,
       dark: skill.dark,
@@ -91,7 +74,7 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill.triumph,
       despair: skill.despair,
-      difficulty: 2 + itemStatusDifficulty, // default to average difficulty
+      difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
@@ -102,26 +85,7 @@ export default class DiceHelpers {
       dicePool.upgradeDifficulty();
     }
 
-    if (item.type === "weapon") {
-      dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
-
-      if (item?.data?.itemattachment) {
-        await ImportHelpers.asyncForEach(item.data.itemattachment, async (attachment) => {
-          //get base mods and additional mods totals
-          const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
-
-          dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, attachment, activeModifiers);
-        });
-      }
-      if (item?.data?.itemmodifier) {
-        await ImportHelpers.asyncForEach(item.data.itemmodifier, async (modifier) => {
-          dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, modifier, []);
-        });
-      }
-
-      dicePool = new DicePoolFFG(dicePool);
-    }
-
+    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, item));
     this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
   }
 
@@ -175,14 +139,17 @@ export default class DiceHelpers {
     const actorSheet = actor.sheet.getData();
 
     const item = actor.getOwnedItem(itemId).data;
+    item.flags.uuid = item.uuid;
+
+    const status = this.getWeaponStatus(item);
 
     const skill = actor.data.data.skills[item.data.skill.value];
     const characteristic = actor.data.data.characteristics[skill.characteristic];
 
-    const dicePool = new DicePoolFFG({
+    let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
-      setback: skill.setback,
+      setback: skill.setback + status.setback,
       force: skill.force,
       advantage: skill.advantage,
       dark: skill.dark,
@@ -192,10 +159,12 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill?.triumph ? skill.triumph : 0,
       despair: skill?.despair ? skill.despair : 0,
-      difficulty: 2, // default to average difficulty
+      difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+
+    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, item));
 
     this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
   }
@@ -221,5 +190,49 @@ export default class DiceHelpers {
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
     this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, null, flavorText, sound);
+  }
+
+  static getWeaponStatus(item) {
+    let setback = 0;
+    let difficulty = 0;
+
+    if (item.type === "weapon" && item?.data?.status && item.data.status !== "None") {
+      const status = CONFIG.FFG.itemstatus[item.data.status].attributes.find((i) => i.mod === "Setback");
+
+      if (status.value < 99) {
+        if (status.value === 1) {
+          setback = status.value;
+        } else {
+          difficulty = 1;
+        }
+      } else {
+        ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.data.status].label)}).`);
+        return;
+      }
+    }
+
+    return { setback, difficulty };
+  }
+
+  static async getModifiers(dicePool, item) {
+    if (item.type === "weapon") {
+      dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
+
+      if (item?.data?.itemattachment) {
+        await ImportHelpers.asyncForEach(item.data.itemattachment, async (attachment) => {
+          //get base mods and additional mods totals
+          const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+
+          dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, attachment, activeModifiers);
+        });
+      }
+      if (item?.data?.itemmodifier) {
+        await ImportHelpers.asyncForEach(item.data.itemmodifier, async (modifier) => {
+          dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, modifier, []);
+        });
+      }
+    }
+
+    return dicePool;
   }
 }

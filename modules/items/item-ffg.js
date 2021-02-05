@@ -26,6 +26,9 @@ export class ItemFFG extends ItemBaseFFG {
     if (this.compendium) {
       itemData.flags.isCompendium = true;
       itemData.flags.ffgUuid = this.uuid;
+    } else {
+      itemData.flags.isCompendium = false;
+      delete itemData.flags.ffgUuid;
     }
 
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actorData);
