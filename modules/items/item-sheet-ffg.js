@@ -35,6 +35,8 @@ export class ItemSheetFFG extends ItemSheet {
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
+    } else if (options?.action === "ffgUpdate") {
+      data.item = mergeObject(data.item, options.data);
     }
 
     data.classType = this.constructor.name;
@@ -341,6 +343,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempId: this.object.id,
             ffgTempItemType: "itemmodifier",
             ffgTempItemIndex: -1,
+            ffgParentApp: this.appId,
           },
           data: {
             attributes: {},
@@ -351,18 +354,34 @@ export class ItemSheetFFG extends ItemSheet {
         };
 
         let tempItem = await Item.create(temp, { temporary: true });
+
+        tempItem.data._id = temp._id;
+        if (!temp._id) {
+          tempItem.data._id = randomID();
+        }
+
+        let data = {};
+        this.object.data.data[itemType].push(tempItem);
+        setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
+        await this.object.update(data);
+
+        tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i._id === tempItem.data._id);
+
         tempItem.sheet.render(true);
       });
 
       html.find(".resource.pills.itemattachment").on("click", async (event) => {
+        const itemType = "itemattachment";
         let temp = {
           img: "icons/svg/mystery-man.svg",
           name: "",
           type: "itemattachment",
           flags: {
             ffgTempId: this.object.id,
-            ffgTempItemType: "itemattachment",
+            ffgTempItemType: itemType,
             ffgTempItemIndex: -1,
+            ffgUuid: this.item.uuid,
+            ffgParentApp: this.appId,
           },
           data: {
             attributes: {},
@@ -372,6 +391,18 @@ export class ItemSheetFFG extends ItemSheet {
           },
         };
         let tempItem = await Item.create(temp, { temporary: true });
+        tempItem.data._id = temp._id;
+        if (!temp._id) {
+          tempItem.data._id = randomID();
+        }
+
+        let data = {};
+        this.object.data.data[itemType].push(tempItem);
+        setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
+        await this.object.update(data);
+
+        tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i._id === tempItem.data._id);
+
         tempItem.sheet.render(true);
       });
     }
@@ -478,7 +509,17 @@ export class ItemSheetFFG extends ItemSheet {
 
       const item = this.object.data.data[itemType][itemIndex];
 
-      let temp = { ...item, flags: { ffgTempId: this.object.id, ffgTempItemType: itemType, ffgTempItemIndex: itemIndex, ffgIsTemp: true, ffgParent: this.object.data.flags } };
+      let temp = {
+        ...item,
+        flags: {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: itemIndex,
+          ffgIsTemp: true,
+          ffgParent: this.object.data.flags,
+          ffgParentApp: this.appId,
+        },
+      };
       if (this.object.isOwned) {
         let ownerObject = await fromUuid(this.object.uuid);
 
@@ -551,6 +592,7 @@ export class ItemSheetFFG extends ItemSheet {
           ffgParent: this.object.data.flags,
           ffgIsTemp: true,
           ffgUuid: this.object.uuid,
+          ffgParentApp: this.appId,
         },
         data: {
           attributes: {},
@@ -563,6 +605,14 @@ export class ItemSheetFFG extends ItemSheet {
       if (!temp._id) {
         tempItem.data._id = randomID();
       }
+
+      let data = {};
+      this.object.data.data[itemType].push(tempItem);
+      setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
+      await this.object.update(data);
+
+      tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i._id === tempItem.data._id);
+
       tempItem.sheet.render(true);
     });
   }
