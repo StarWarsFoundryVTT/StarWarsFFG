@@ -85,8 +85,8 @@ export default class EmbeddedItemHelpers {
 
       if (realItem?.compendium) {
         formData._id = realItem._id;
-        realItem.update(formData);
-        realItem.sheet.render(true, { action: "update", data: formData });
+        await realItem.update(formData);
+        await realItem.sheet.render(true, { action: "update", data: formData });
       } else {
         await realItem.update(formData);
       }
