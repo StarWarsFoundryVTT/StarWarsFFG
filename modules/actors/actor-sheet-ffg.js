@@ -1094,7 +1094,7 @@ export class ActorSheetFFG extends ActorSheet {
         .sort(sortFunction);
 
       // if the skill list is larger that the column row count then take into account the added header row.
-      if (skills.length > colRowCount) {
+      if (skills.length >= colRowCount) {
         if (skills.length - colRowCount > 2) {
           colRowCount = Math.ceil((totalRows + 1) / 2.0);
           rowsLeft = colRowCount;
