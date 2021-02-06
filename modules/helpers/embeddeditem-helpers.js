@@ -58,6 +58,8 @@ export default class EmbeddedItemHelpers {
         parents.forEach((value, index) => {
           dataPointer = dataPointer.data[parents[index].ffgTempItemType][parents[index].ffgTempItemIndex];
         });
+      } else if (entity === "Actor" && parents.length > 1) {
+        dataPointer = dataPointer.data[parents[0].ffgTempItemType][parents[0].ffgTempItemIndex];
       }
 
       const mergedData = mergeObject(item.data.data, data.data);

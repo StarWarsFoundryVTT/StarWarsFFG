@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 05/02/2021 - Cstadhter - Fix 759 - Fixed issue where unable to add modifiers to item attachments.
 - 05/02/2021 - Cstadther - Fix 757 - Fixed issue where modifiers were ignored when rolling from macro.
 - 05/02/2021 - Cstadther - Fix 756 - Custom Destiny Pool Names were reverting on closing Group Manager.
 - 03/02/2021 - Cstadther - Enhancement 717 - Added ability to decode SWA dice symbols, example `:boost:`
