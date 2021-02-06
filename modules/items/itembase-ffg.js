@@ -18,16 +18,17 @@ export default class ItemBaseFFG extends Item {
           this.sheet.render(false);
         }
       } else {
+        let me = this;
+
         // we're working on an embedded item
+        await this.sheet.render(true);
         const appId = this.data?.flags?.ffgParentApp;
         if (appId) {
           const newData = ui.windows[appId].object.data.data;
           newData[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex] = mergeObject(newData[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex], this.data);
-          ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
+          await ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
         }
-
-        this.sheet.render(true);
-        return this;
+        return;
       }
     }
   }

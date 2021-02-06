@@ -10,12 +10,6 @@ export class ItemSheetFFGV2 extends ItemSheetFFG {
     });
   }
 
-  /** @override */
-  get template() {
-    const path = "systems/starwarsffg/templates/items";
-    return `${path}/ffg-${this.item.data.type}-sheet.html`;
-  }
-
   getData() {
     const data = super.getData();
     return data;

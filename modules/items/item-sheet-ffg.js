@@ -24,7 +24,7 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   get template() {
     const path = "systems/starwarsffg/templates/items";
-    return `${path}/ffg-${this.item.data.type}-sheet.html`;
+    return `${path}/ffg-${this.item.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -36,7 +36,11 @@ export class ItemSheetFFG extends ItemSheet {
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
     } else if (options?.action === "ffgUpdate") {
-      data.item = mergeObject(data.item, options.data);
+      if (options?.data?.data) {
+        data.item = mergeObject(data.item, options.data);
+      } else {
+        data.item.data = mergeObject(data.item.data, options.data);
+      }
     }
 
     data.classType = this.constructor.name;
@@ -349,7 +353,6 @@ export class ItemSheetFFG extends ItemSheet {
             attributes: {},
             description: "",
             rank: 1,
-            type: "all",
           },
         };
 
@@ -386,7 +389,6 @@ export class ItemSheetFFG extends ItemSheet {
           data: {
             attributes: {},
             description: "",
-            type: "all",
             itemmodifier: [],
           },
         };
