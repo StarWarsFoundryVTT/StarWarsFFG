@@ -2,7 +2,7 @@
   "name": "starwarsffg",
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
-  "version": "1.4-alpha-4",
+  "version": "1.4-alpha-5",
   "minimumCoreVersion": "0.7.3",
   "compatibleCoreVersion": "0.7.9",
   "templateVersion": 1,
