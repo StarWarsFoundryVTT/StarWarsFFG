@@ -1076,22 +1076,32 @@ export class ActorSheetFFG extends ActorSheet {
 
     data.data.skilltypes.forEach((type) => {
       // filter and sort skills for current skill category
+      let sortFunction = (a, b) => {
+        if (a.toLowerCase() > b.toLowerCase()) return 1;
+        if (a.toLowerCase() < b.toLowerCase()) return -1;
+        return 0;
+      };
+      if (game.settings.get("starwarsffg", "skillSorting")) {
+        sortFunction = (a, b) => {
+          if (data.data.skills[a].label > data.data.skills[b].label) return 1;
+          if (data.data.skills[a].label < data.data.skills[b].label) return -1;
+          return 0;
+        };
+      }
+
       const skills = Object.keys(data.data.skills)
         .filter((s) => data.data.skills[s].type === type.type)
-        .sort((a, b) => {
-          let comparison = 0;
-          if (a.toLowerCase() > b.toLowerCase()) {
-            comparison = 1;
-          } else if (a.toLowerCase() < b.toLowerCase()) {
-            comparison = -1;
-          }
-          return comparison;
-        });
+        .sort(sortFunction);
 
       // if the skill list is larger that the column row count then take into account the added header row.
       if (skills.length > colRowCount) {
-        colRowCount = Math.ceil((totalRows + 1) / 2.0);
-        rowsLeft = colRowCount;
+        if (skills.length - colRowCount > 2) {
+          colRowCount = Math.ceil((totalRows + 1) / 2.0);
+          rowsLeft = colRowCount;
+        } else {
+          colRowCount = skills.length + 1;
+          rowsLeft = colRowCount;
+        }
       }
 
       cols[currentColumn].push({ id: "header", ...type });

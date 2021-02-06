@@ -75,19 +75,16 @@ export class ActorFFG extends Actor {
 
       //localize skill names
       for (let skill of Object.keys(data.skills)) {
-        const cleanedSkillName = skill.replace(/[\W_]+/g, "");
+        let skillLabel = CONFIG.FFG.skills?.[skill]?.label;
 
-        let strId = `SWFFG.SkillsName${cleanedSkillName}`;
-        if (data.skills[skill].label) {
-          strId = data.skills[skill].label;
+        if (!skillLabel) {
+          // this is a one-off skill added directly to the character
+          skillLabel = data.skills[skill].label;
         }
 
-        const localizedField = game.i18n.localize(strId);
+        const localizedField = game.i18n.localize(skillLabel);
 
-        if (!data.skills[skill].custom) {
-          data.skills[skill].label = localizedField;
-        }
-        data.skills = this._sortSkills(data.skills);
+        data.skills[skill].label = localizedField;
       }
     }
 
@@ -365,82 +362,6 @@ export class ActorFFG extends Actor {
   _capitalize(s) {
     if (typeof s !== "string") return "";
     return s.charAt(0).toUpperCase() + s.slice(1);
-  }
-
-  // Sort skills by label
-  _sortSkills(skills) {
-    // Break down skills object into an array for sorting (I hate Javascript)
-    let skillarray = Object.entries(skills).filter((skill) => {
-      return skill[1]["type"] != "Knowledge";
-    });
-    let knowledgearray = Object.entries(skills).filter((skill) => {
-      return skill[1]["type"] === "Knowledge";
-    });
-    if (game.settings.get("starwarsffg", "skillSorting")) {
-      skillarray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (a[1]["label"] < b[1]["label"]) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (a[1]["label"] > b[1]["label"]) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-      knowledgearray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[a[0]]) < game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[b[0]])) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[a[0]]) > game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[b[0]])) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-    } else {
-      skillarray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (a[0] < b[0]) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (a[0] > b[0]) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-      knowledgearray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (a[0] < b[0]) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (a[0] > b[0]) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-    }
-    let skillobject = {};
-    // Reconstruct skills object from sorted array.
-    skillarray.forEach((skill) => {
-      const skillname = skill[0];
-      const value = skill[1];
-      skillobject[skillname] = value;
-    });
-    knowledgearray.forEach((skill) => {
-      const skillname = skill[0];
-      const value = skill[1];
-      skillobject[skillname] = value;
-    });
-    skills = skillobject;
-    return skills;
   }
 
   // group talents
