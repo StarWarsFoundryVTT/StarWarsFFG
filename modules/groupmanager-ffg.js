@@ -71,18 +71,30 @@ export class GroupManager extends FormApplication {
     if (pcListMode === "active") {
       players.forEach((player) => {
         if (player.character) {
-          characters.push(player.character);
-          obligationRangeStart = this._addCharacterObligations(player.character, obligationRangeStart);
-          dutyRangeStart = this._addCharacterDuties(player.character, dutyRangeStart);
+          try {
+            obligationRangeStart = this._addCharacterObligationDuty(player.character, obligationRangeStart, player.character.data.data.obligationlist, "obligations");
+            dutyRangeStart = this._addCharacterObligationDuty(player.character, dutyRangeStart, player.character.data.data.dutylist, "duties");
+            //obligationRangeStart = this._addCharacterObligations(player.character, obligationRangeStart);
+            //dutyRangeStart = this._addCharacterDuties(player.character, dutyRangeStart);
+            characters.push(player.character);
+          } catch (err) {
+            CONFIG.logger.warn(`Unable to add player (${player.character.name}) to obligation/duty table`, err);
+          }
         }
       });
     } else if (pcListMode === "owned") {
       players.forEach((player) => {
         const char = game.actors.filter((actor) => actor.hasPerm(player, "OWNER"));
         char.forEach((c) => {
-          characters.push(c);
-          obligationRangeStart = this._addCharacterObligations(c, obligationRangeStart);
-          dutyRangeStart = this._addCharacterDuties(c, dutyRangeStart);
+          try {
+            obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.data.data.obligationlist, "obligations");
+            dutyRangeStart = this._addCharacterObligationDuty(c, dutyRangeStart, c.data.data.dutylist, "duties");
+            characters.push(c);
+            // obligationRangeStart = this._addCharacterObligations(c, obligationRangeStart);
+            // dutyRangeStart = this._addCharacterDuties(c, dutyRangeStart);
+          } catch (err) {
+            CONFIG.logger.warn(`Unable to add player (${c.data.name}) to obligation/duty table`, err);
+          }
         });
       });
     }
@@ -213,35 +225,23 @@ export class GroupManager extends FormApplication {
     return formData;
   }
 
-  _addCharacterObligations(character, rangeStart) {
-    Object.values(character.data.data.obligationlist).forEach((obligation) => {
-      let rangeEnd = rangeStart + parseInt(obligation.magnitude);
-      this.obligations.push({
-        playerId: character.id,
-        name: character.name,
-        type: obligation.type,
-        magnitude: obligation.magnitude,
-        rangeStart: rangeStart + 1,
-        rangeEnd: rangeEnd,
+  _addCharacterObligationDuty(character, rangeStart, list, type) {
+    try {
+      Object.values(list).forEach((item) => {
+        let rangeEnd = rangeStart + parseInt(item.magnitude);
+        this[type].push({
+          playerId: character.id,
+          name: character.name,
+          type: item.type,
+          magnitude: item.magnitude,
+          rangeStart: rangeStart + 1,
+          rangeEnd: rangeEnd,
+        });
+        rangeStart = rangeEnd;
       });
-      rangeStart = rangeEnd;
-    });
-    return rangeStart;
-  }
-
-  _addCharacterDuties(character, rangeStart) {
-    Object.values(character.data.data.dutylist).forEach((duty) => {
-      let rangeEnd = rangeStart + parseInt(duty.magnitude);
-      this.duties.push({
-        playerId: character.id,
-        name: character.name,
-        type: duty.type,
-        magnitude: duty.magnitude,
-        rangeStart: rangeStart + 1,
-        rangeEnd: rangeEnd,
-      });
-      rangeStart = rangeEnd;
-    });
+    } catch (err) {
+      CONFIG.logger.warn(`Unable to add player ${character.name} `);
+    }
     return rangeStart;
   }
 
