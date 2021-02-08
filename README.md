@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 08/02/2021 - Cstadther - Fix 773 - Fixed issue with Obligation/Duty table on GroupManager
 - 07/02/2021 - Cstadther - Fix 770 - Fixed issue where Knowledge skill modifiers were not being created correctly.
 - 05/02/2021 - Cstadther - Fix 764/765 - Fixed issues where skills were not sorting by translated name.  Fixed issue where straggler skills were not being grouped together.
 - 05/02/2021 - Cstadhter - Fix 759 - Fixed issue where unable to add modifiers to item attachments.
