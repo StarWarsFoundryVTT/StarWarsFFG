@@ -1,6 +1,6 @@
 <nav class="sheet-tabs tabs" data-group="primary" style="{{#if (and (eq limited true) (eq displayLimited false)) }}display:none;{{/if}}">
   {{#each items}} {{#if (contains cls "V2")}}
-  <a class="item" data-tab="{{tab}}" title="{{localize label}}"><i class="{{icon}}"></i></a>
+  <a class="item {{#if isHiddenV2}}hidden-content{{/if}}" data-tab="{{tab}}" title="{{localize label}}"><i class="{{icon}}"></i></a>
   {{else}}
   <a class="item {{#if isHidden}}hidden-content{{/if}}" data-tab="{{tab}}">{{localize label}}</a>
   {{/if}} {{/each}}
