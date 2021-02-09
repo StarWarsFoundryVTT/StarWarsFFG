@@ -267,9 +267,13 @@ Hooks.once("init", async function () {
               skills.skills[`-=${skill}`] = null;
             } else {
               skills.skills[skill] = {
-                ...skills.skills[skill],
                 ...actor.data.data.skills[skill],
+                ...skills.skills[skill],
               };
+
+              skills.skills[skill].rank = actor.data.data.skills[skill].rank;
+              skills.skills[skill].careerskill = actor.data.data.skills[skill].careerskill;
+              skills.skills[skill].groupskill = actor.data.data.skills[skill].groupskill;
             }
           });
 
