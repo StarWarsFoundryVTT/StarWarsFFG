@@ -99,6 +99,10 @@ export class ActorSheetFFG extends ActorSheet {
       data.data.skilllist = this._createSkillColumns(data);
     }
 
+    if (this.actor.data?.flags?.config?.enableObligation === false && this.actor.data?.flags?.config?.enableDuty === false && this.actor.data?.flags?.config?.enableMorality === false && this.actor.data?.flags?.config?.enableConflict === false) {
+      data.hideObligationDutyMoralityConflictTab = true;
+    }
+
     return data;
   }
 
@@ -108,7 +112,6 @@ export class ActorSheetFFG extends ActorSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
-    // TODO: This is not needed in Foundry 0.6.0
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
