@@ -336,77 +336,33 @@ export class ItemSheetFFG extends ItemSheet {
       });
       itemToItemAssociation.bind(html[0]);
 
-      html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
+      //commented out the ability to add on-the-fly qualities/attachments
+      //html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
 
-      html.find(".resource.pills.itemmodifier").on("click", async (event) => {
-        let temp = {
-          img: "icons/svg/mystery-man.svg",
-          name: "",
-          type: "itemmodifier",
-          flags: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: "itemmodifier",
-            ffgTempItemIndex: -1,
-            ffgParentApp: this.appId,
-          },
-          data: {
-            attributes: {},
-            description: "",
-            rank: 1,
-          },
-        };
+      // html.find(".resource.pills.itemmodifier").on("click", async (event) => {
 
-        let tempItem = await Item.create(temp, { temporary: true });
+      //   const tempItem = await EmbeddedItemHelpers.createNewEmbeddedItem("itemmodifier", {attributes: {}, description: "", rank: 1}, {ffgTempId: this.object.id, ffgParentApp: this.appId} );
 
-        tempItem.data._id = temp._id;
-        if (!temp._id) {
-          tempItem.data._id = randomID();
-        }
+      //   let data = {};
+      //   this.object.data.data[tempItem.type].push(tempItem);
+      //   setProperty(data, `data.${tempItem.type}`, this.object.data.data[tempItem.type]);
+      //   await this.object.update(data);
+      //   tempItem.data.flags.ffgTempItemIndex = this.object.data.data[tempItem.type].findIndex((i) => i._id === tempItem.data._id);
+      //   tempItem.sheet.render(true);
+      // });
 
-        let data = {};
-        this.object.data.data[itemType].push(tempItem);
-        setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
-        await this.object.update(data);
+      // html.find(".resource.pills.itemattachment").on("click", async (event) => {
+      //   const tempItem = await EmbeddedItemHelpers.createNewEmbeddedItem("itemattachment", {attributes: {}, description: "", itemmodifier: []}, {ffgTempId: this.object.id, ffgUuid: this.item.uuid, ffgParentApp: this.appId,});
 
-        tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i._id === tempItem.data._id);
+      //   let data = {};
+      //   this.object.data.data[tempItem.type].push(tempItem);
+      //   setProperty(data, `data.${tempItem.type}`, this.object.data.data[tempItem.type]);
+      //   await this.object.update(data);
 
-        tempItem.sheet.render(true);
-      });
+      //   tempItem.data.flags.ffgTempItemIndex = this.object.data.data[tempItem.type].findIndex((i) => i._id === tempItem.data._id);
 
-      html.find(".resource.pills.itemattachment").on("click", async (event) => {
-        const itemType = "itemattachment";
-        let temp = {
-          img: "icons/svg/mystery-man.svg",
-          name: "",
-          type: "itemattachment",
-          flags: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: itemType,
-            ffgTempItemIndex: -1,
-            ffgUuid: this.item.uuid,
-            ffgParentApp: this.appId,
-          },
-          data: {
-            attributes: {},
-            description: "",
-            itemmodifier: [],
-          },
-        };
-        let tempItem = await Item.create(temp, { temporary: true });
-        tempItem.data._id = temp._id;
-        if (!temp._id) {
-          tempItem.data._id = randomID();
-        }
-
-        let data = {};
-        this.object.data.data[itemType].push(tempItem);
-        setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
-        await this.object.update(data);
-
-        tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i._id === tempItem.data._id);
-
-        tempItem.sheet.render(true);
-      });
+      //   tempItem.sheet.render(true);
+      // });
     }
 
     html.find(".item-pill .item-delete, .additional .add-modifier .item-delete").on("click", (event) => {
@@ -533,6 +489,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempItemIndex: itemIndex,
             ffgIsTemp: true,
             ffgUuid: this.object.uuid,
+            ffgIsOwned: this.object.isOwned,
           },
         };
       }
@@ -595,6 +552,7 @@ export class ItemSheetFFG extends ItemSheet {
           ffgIsTemp: true,
           ffgUuid: this.object.uuid,
           ffgParentApp: this.appId,
+          ffgIsOwned: this.object.isOwned,
         },
         data: {
           attributes: {},

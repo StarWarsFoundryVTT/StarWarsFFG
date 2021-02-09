@@ -206,4 +206,27 @@ export default class EmbeddedItemHelpers {
     }
     tempItem.sheet.render(true);
   }
+
+  static async createNewEmbeddedItem(type, data, flags) {
+    let temp = {
+      img: "icons/svg/mystery-man.svg",
+      name: "",
+      type,
+      flags: {
+        ffgTempItemType: type,
+        ffgTempItemIndex: -1,
+        ...flags,
+      },
+      data,
+    };
+
+    let tempItem = await Item.create(temp, { temporary: true });
+
+    tempItem.data._id = temp._id;
+    if (!temp._id) {
+      tempItem.data._id = randomID();
+    }
+
+    return tempItem;
+  }
 }

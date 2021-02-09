@@ -2,7 +2,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
-    if (!this.data?.flags?.ffgTempId) {
+    if (!this.data?.flags?.ffgTempId || (this.data?.flags?.ffgTempId === this.data._id && !this.data.isTemp)) {
       super.update(data, options);
       // if (this.compendium) {
       //   return this.sheet.render(true);
