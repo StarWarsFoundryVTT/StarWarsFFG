@@ -27,9 +27,13 @@ export class ItemFFG extends ItemBaseFFG {
       itemData.flags.isCompendium = true;
       itemData.flags.ffgUuid = this.uuid;
     } else {
+      itemData.flags.isCompendium = false;
+      itemData.flags.ffgIsOwned = false;
       if (this.isOwned) {
-        itemData.flags.isCompendium = false;
+        itemData.flags.ffgIsOwned = true;
         itemData.flags.ffgUuid = this.uuid;
+      } else if (itemData._id) {
+        itemData.flags.ffgTempId = itemData._id;
       }
     }
 

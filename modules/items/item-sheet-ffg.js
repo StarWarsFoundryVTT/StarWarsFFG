@@ -489,6 +489,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempItemIndex: itemIndex,
             ffgIsTemp: true,
             ffgUuid: this.object.uuid,
+            ffgIsOwned: this.object.isOwned,
           },
         };
       }
@@ -551,6 +552,7 @@ export class ItemSheetFFG extends ItemSheet {
           ffgIsTemp: true,
           ffgUuid: this.object.uuid,
           ffgParentApp: this.appId,
+          ffgIsOwned: this.object.isOwned,
         },
         data: {
           attributes: {},
