@@ -62,6 +62,7 @@ export default class SWAImporter extends FormApplication {
       if (form.data.files.length) {
         zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
       }
+      let filter = $(form).find("[name=tag-filter]").val();
 
       if (zip) {
         // load ancillary files
@@ -92,7 +93,7 @@ export default class SWAImporter extends FormApplication {
         const adversaries = this._enableImportSelection(zip.files, "adversaries", true, true);
 
         if (adversaries) {
-          await this._handleAdversaries(zip);
+          await this._handleAdversaries(zip, filter);
         }
       }
     }
@@ -121,7 +122,7 @@ export default class SWAImporter extends FormApplication {
     }
   }
 
-  async _handleAdversaries(zip) {
+  async _handleAdversaries(zip, filter) {
     this._importLogger(`Starting Adversary Import`);
     const adversaryFiles = Object.values(zip.files).filter((file) => {
       return !file.dir && file.name.split(".").pop() === "json" && file.name.includes("/adversaries/");
@@ -163,6 +164,10 @@ export default class SWAImporter extends FormApplication {
 
             await ImportHelpers.asyncForEach(fileData, async (item) => {
               try {
+                if (filter.length > 0 && !item.tags.includes(filter)) {
+                  return;
+                }
+
                 let skills = {
                   "Astrogation": {
                     "rank": 0,
@@ -366,6 +371,7 @@ export default class SWAImporter extends FormApplication {
                       enableCriticalInjuries: item.type === "Minion" ? false : true,
                     },
                   },
+                  flags: {},
                   data: {
                     attributes: {},
                     characteristics: {},
@@ -449,6 +455,7 @@ export default class SWAImporter extends FormApplication {
                       let adversaryTalent = {
                         name: talent.name,
                         type: "talent",
+                        flags: {},
                         data: {
                           attributes: {},
                           description: talent.description,
@@ -474,6 +481,7 @@ export default class SWAImporter extends FormApplication {
                         let adversaryTalent = {
                           name: swaTalent.name,
                           type: "talent",
+                          flags: {},
                           data: {
                             attributes: {},
                             description: swaTalent.description,
@@ -504,6 +512,7 @@ export default class SWAImporter extends FormApplication {
                       weaponData = {
                         name: weapon.name,
                         type: "weapon",
+                        flags: {},
                         data: {
                           attributes: {},
                           description: "No description provided",
@@ -541,6 +550,7 @@ export default class SWAImporter extends FormApplication {
                         weaponData = {
                           name: swaWeapon.name,
                           type: "weapon",
+                          flags: {},
                           data: {
                             attributes: {},
                             description: "No description provided",
@@ -587,6 +597,7 @@ export default class SWAImporter extends FormApplication {
                           const unique = {
                             name: wName[0],
                             type: "itemmodifier",
+                            flags: {},
                             data: {
                               description: CONFIG.temporary.swa?.qualities?.[wName]?.description ? CONFIG.temporary.swa.qualities[wName].description : "No description provided",
                               attributes: {},
@@ -613,6 +624,7 @@ export default class SWAImporter extends FormApplication {
                         let Armordata = {
                           name: gear.slice(0, gear.indexOf("(") - 1).trim(),
                           type: "armour",
+                          flags: {},
                           data: {
                             description: "No description provided",
                             defence: {
@@ -628,6 +640,7 @@ export default class SWAImporter extends FormApplication {
                         let Armordata = {
                           name: gear.slice(0, gear.indexOf("(") - 1).trim(),
                           type: "armour",
+                          flags: {},
                           data: {
                             description: "No description provided",
 
@@ -641,6 +654,7 @@ export default class SWAImporter extends FormApplication {
                         let Armordata = {
                           name: gear.slice(0, gear.indexOf("(") - 1).trim(),
                           type: "armour",
+                          flags: {},
                           data: {
                             description: "No description provided",
                             defence: {
@@ -653,6 +667,7 @@ export default class SWAImporter extends FormApplication {
                         let gearData = {
                           name: gear,
                           type: "gear",
+                          flags: {},
                           data: {
                             description: "No description provided",
                           },
@@ -664,6 +679,7 @@ export default class SWAImporter extends FormApplication {
                     let Armordata = {
                       name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
                       type: "armour",
+                      flags: {},
                       data: {
                         description: "No description provided",
                         defence: {
@@ -679,6 +695,7 @@ export default class SWAImporter extends FormApplication {
                     let Armordata = {
                       name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
                       type: "armour",
+                      flags: {},
                       data: {
                         description: "No description provided",
 
@@ -692,6 +709,7 @@ export default class SWAImporter extends FormApplication {
                     let Armordata = {
                       name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
                       type: "armour",
+                      flags: {},
                       data: {
                         description: "No description provided",
                         defence: {
@@ -704,6 +722,7 @@ export default class SWAImporter extends FormApplication {
                     let gearData = {
                       name: item.gear,
                       type: "gear",
+                      flags: {},
                       data: {
                         description: "No description provided",
                       },
