@@ -500,6 +500,7 @@
   "SWFFG.ModTypeSkillAddTriumph" : "Skill Add Triumph",
   "SWFFG.ModTypeAddTriumph" : "Add Triumph",
   "SWFFG.ModTypeSkillAddDespair" : "Skill Add Despair",
-  "SWFFG.ModTypeAddDespair" : "Add Despair"
+  "SWFFG.ModTypeAddDespair" : "Add Despair",
+  "SWFFG.AdversariesImportInstructions3" : "Filter the incoming data by a tag (ie setting:Fantasy), leave blank to import all" 
 }
 
