@@ -93,7 +93,7 @@ Hooks.once("init", async function () {
   Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
     // FFG style behaviour for wounds and strain.
-    if (data.attribute === "stats.wounds" || data.attribute === "stats.strain") {
+    if (data.attribute === "stats.wounds" || data.attribute === "stats.strain" || data.attribute === "stats.hullTrauma" || data.attribute === "stats.systemStrain") {
       val = Number(data.max - data.value);
     }
 
