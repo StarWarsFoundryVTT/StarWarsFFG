@@ -1356,7 +1356,10 @@ export default class ImportHelpers {
       CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
       await pack.updateEntity(updateData);
       let upd = duplicate(entry);
-      entry.data = mergeObject(entry.data, data.data);
+      if (upd.data) {
+        upd.data = mergeObject(upd.data, data.data);
+      }
+
       CONFIG.temporary[pack.collection][data.flags.ffgimportid] = upd;
     }
   }
