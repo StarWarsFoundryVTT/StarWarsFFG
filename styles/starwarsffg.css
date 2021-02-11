@@ -3238,6 +3238,10 @@ img {
   z-index: 1;
 }
 
+#destiny-tracker .dropdown-content.vertical {
+  margin-top: calc(-13vh + 40px);
+}
+
 #destiny-tracker .dropdown-content a {
   color: white;
   padding: 5px 4px;

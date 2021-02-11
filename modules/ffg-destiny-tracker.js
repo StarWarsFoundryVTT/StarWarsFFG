@@ -72,10 +72,21 @@ export default class DestinyTracker extends FormApplication {
     $("#destiny-tracker").css({ bottom: "0px", right: "305px" });
 
     // future functionality to allow multiple menu items to be passed in
+
+    $.expr.filters.offscreen = function (el) {
+      var rect = el.getBoundingClientRect();
+      return rect.x + rect.width < 0 || rect.y + rect.height < 0 || rect.y + rect.height > window.innerHeight || rect.x + rect.width > window.innerWidth || rect.x > window.innerWidth || rect.y > window.innerHeight;
+    };
+
     html.find(".dropbtn").click((event) => {
       const id = `#${$(event.currentTarget).attr("id")}Content`;
-      console.log("clicked");
       $(html.find(id)).toggleClass("show");
+
+      if ($(".dropdown-content").is(":offscreen")) {
+        $(html.find(id)).addClass("vertical");
+      } else {
+        $(html.find(id)).removeClass("vertical");
+      }
     });
 
     html.find(".dropdown-content a").click((event) => {
