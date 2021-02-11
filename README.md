@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 11/02/2021 - Cstadther - Fix 701 - Fixed issue where in Standard UI destiny drop down doesn't expand up when list options expands off screen.
 - 08/02/2021 - Cstadther - Fix 774 - Fixed issue where setting characteristic to 0 was not setting the value to 0.
 - 08/02/2021 - Cstadther - Fix 773 - Fixed issue with Obligation/Duty table on GroupManager
 - 07/02/2021 - Cstadther - Fix 770 - Fixed issue where Knowledge skill modifiers were not being created correctly.
