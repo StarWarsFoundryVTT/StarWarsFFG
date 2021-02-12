@@ -72,6 +72,10 @@ section {
   position: relative;
 }
 
+.window-app .window-resizable-handle {
+  z-index: 99999;
+}
+
 .sidebar-tab {
   height: 100%;
 }
@@ -644,7 +648,11 @@ img {
 }
 
 .starwarsffg.sheet.v2 .sheet-body {
-  height: calc(100% - 14.5rem);
+  height: calc(100% - 14rem);
+}
+
+.starwarsffg.sheet.v2.minion .sheet-body {
+  height: calc(100% - 13rem);
 }
 
 .starwarsffg.sheet .sheet-header {
@@ -1009,6 +1017,20 @@ img {
   background-color: #464855;
 }
 
+.starwarsffg .sheet-header .talent-background {
+  margin: 0 0.25rem;
+}
+
+.starwarsffg .sheet-header .talent-background .talent-header .talent-name {
+  height: 2rem;
+}
+
+.starwarsffg .sheet-header .talent-background .talent-header .talent-name input {
+  font-size: 2rem;
+  height: 2rem;
+  text-align: left;
+}
+
 .starwarsffg .talent-row {
   margin: 10px 0;
 }
@@ -1087,7 +1109,7 @@ img {
 
 .starwarsffg .talent-connection-point-right {
   position: absolute;
-  right: -5px;
+  right: -15px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -1103,7 +1125,7 @@ img {
 .starwarsffg .talent-connector .talent-connector-up,
 .starwarsffg .talent-connector .talent-connector-side {
   display: inline-block;
-  width: 20px;
+  width: 34px;
   height: 12px;
   background-color: black;
   position: absolute;
@@ -1125,13 +1147,15 @@ img {
 .starwarsffg .talent-connector .talent-connector-up i {
   position: absolute;
   top: 50%;
-  left: 3px;
+  left: 0;
+  width: 34px;
 }
 
 .starwarsffg .talent-connector .talent-connector-side {
-  right: -15px;
-  width: 20px;
-  height: 20px;
+  width: 35px;
+  height: 35px;
+  left: -15px;
+  padding-top: 8px;
 }
 
 .starwarsffg .talent-disable-edit .talent-actions {
@@ -1563,6 +1587,10 @@ img {
   line-height: 2.5rem;
 }
 
+.starwarsffg.v2.minimized nav.sheet-tabs {
+  display: none;
+}
+
 .starwarsffg.sheet nav.sheet-tabs {
   flex: 0 0 auto;
   height: auto;
@@ -1939,7 +1967,7 @@ img {
 
 .starwarsffg .skillsGrid .skillTypeGrid.skillColumnGrid {
   border: 1px solid #7a7971;
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.5);
   flex: calc(50% - 0.25rem);
 }
 
@@ -1968,7 +1996,6 @@ img {
 
 .starwarsffg .skillsGrid .skillTable div.skill {
   position: relative;
-  background: rgba(255, 255, 255, 0.5);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -2269,6 +2296,11 @@ img {
 
 .starwarsffg .talent-list .item-controls .item-control {
   padding: 5px;
+}
+
+.starwarsffg .sheet-header .header-fields .talents-header .header-name {
+  font-size: 2rem;
+  text-align: left;
 }
 
 .starwarsffg .biography .container.biography-values {
