@@ -1166,7 +1166,7 @@ img {
 
 .starwarsffg .talent-connection-point-right {
   position: absolute;
-  right: -5px;
+  right: -15px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -1182,7 +1182,7 @@ img {
 .starwarsffg .talent-connector .talent-connector-up,
 .starwarsffg .talent-connector .talent-connector-side {
   display: inline-block;
-  width: 20px;
+  width: 34px;
   height: 12px;
   background-color: black;
   position: absolute;
@@ -1204,13 +1204,15 @@ img {
 .starwarsffg .talent-connector .talent-connector-up i {
   position: absolute;
   top: 50%;
-  left: 3px;
+  left: 0;
+  width: 34px;
 }
 
 .starwarsffg .talent-connector .talent-connector-side {
-  right: -15px;
-  width: 20px;
-  height: 20px;
+  width: 35px;
+  height: 35px;
+  left: -15px;
+  padding-top: 8px;
 }
 
 .starwarsffg .talent-disable-edit .talent-actions {
