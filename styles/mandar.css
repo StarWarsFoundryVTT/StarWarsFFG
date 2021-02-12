@@ -2303,15 +2303,8 @@ img {
   text-align: left;
 }
 
-.starwarsffg .biography .container.biography-values {
-  position: absolute;
-  width: calc(100% - 1rem);
-  left: 0.5rem;
-  bottom: 3rem;
-}
-
 .starwarsffg .biography .biography-editor {
-  height: 75%;
+  height: 70%;
 }
 
 .starwarsffg .biography .bio-grid {
@@ -2321,6 +2314,35 @@ img {
 
 .starwarsffg .biography .resource.split {
   width: 10rem;
+}
+
+.starwarsffg.actor .biography .container.biography-values {
+  height: 30%;
+  display: flex;
+  flex-direction: column-reverse;
+  flex-wrap: initial;
+}
+
+.starwarsffg .sheet-body .biography .editor {
+  height: 100%;
+}
+
+.starwarsffg.actor .vehicle .biography .container.biography-values {
+  height: 30%;
+  display: grid;
+  grid-auto-flow: column;
+}
+
+.starwarsffg.actor .vehicle .biography .container.biography-values .block-title {
+  font-size: 0.6rem;
+}
+
+.starwarsffg.actor .vehicle .biography .container.biography-values .resource:nth-child(1), .starwarsffg.actor .vehicle .biography .container.biography-values .resource:nth-child(4) {
+  width: 5rem;
+}
+
+.starwarsffg.actor .vehicle .biography .container.biography-values .resource:nth-child(6) {
+  width: 7rem;
 }
 
 .starwarsffg .item-sheet-weapon .charname {
@@ -3010,9 +3032,9 @@ img {
 }
 
 .starwarsffg .injuries {
-  width: 100%;
-  position: absolute;
-  top: 5rem;
+  width: calc(100% - 0.25rem);
+  overflow-y: scroll;
+  margin-left: 0.25rem;
 }
 
 .starwarsffg .injuries .grid, .starwarsffg .injuries .grid-2col {
@@ -3042,26 +3064,29 @@ img {
   border: 0;
 }
 
-.starwarsffg .injuries.resource {
-  position: absolute;
-  top: 5rem;
-  left: 1.5rem;
+.starwarsffg .injuries .resource.full {
+  margin: 0;
 }
 
-.starwarsffg .injuries.resource.full {
-  flex: calc(100% - 3.5rem);
-}
-
-.starwarsffg .injuries .block-header {
+.starwarsffg .injuries .block-header > div:first-child {
   line-height: initial;
-  background-color: rgba(73, 12, 11, 0.85);
+  background-color: #415064;
   color: white;
   font-size: 0.75rem;
+  line-height: 1.25rem;
   text-transform: uppercase;
   margin: auto;
-  --notchSize: 8px;
+  --notchSize: 0.25rem;
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg .injuries .block-header > div:last-child {
+  background-color: rgba(73, 12, 11, 0.85);
+  margin: 0.25rem 0;
+  color: white;
+  font-size: 0.75rem;
+  line-height: 1.25rem;
 }
 
 .starwarsffg .injuries .item-controls {
