@@ -20,10 +20,8 @@ export class ActorFFG extends Actor {
 
     // if the actor has skills, add custom skills and sort by abbreviation
     if (data.skills) {
-      let actorSkills = {};
-      if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-        actorSkills = data.skills;
-      }
+      let actorSkills = data.skills;
+
       Object.keys(data.skills)
         .filter((skill) => {
           return data.skills[skill].custom;
@@ -34,14 +32,15 @@ export class ActorFFG extends Actor {
             abrev: data.skills[skill].label,
             label: data.skills[skill].label,
             custom: data.skills[skill].custom,
+            ...data.skills[skill],
           };
         });
 
       let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
 
-      if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
-        data.skills = mergeObject(skills, actorSkills);
-      }
+      // if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+      data.skills = mergeObject(skills, actorSkills);
+      // }
 
       let unique = [...new Set(Object.values(data.skills).map((item) => item.type))];
       if (unique.indexOf("General") > 0) {

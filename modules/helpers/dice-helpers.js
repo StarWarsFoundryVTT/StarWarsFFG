@@ -19,6 +19,12 @@ export default class DiceHelpers {
       CONFIG.logger.warn(`Unable to load skill theme ${theme}, defaulting to starwars skill theme`, err);
     }
 
+    let skillData = skills?.[skillName];
+
+    if (!skillData) {
+      skillData = data.data[skillName];
+    }
+
     let skill = {
       rank: 0,
       characteristic: "",
@@ -33,7 +39,7 @@ export default class DiceHelpers {
       success: 0,
       triumph: 0,
       despair: 0,
-      label: skills?.[skillName]?.label ? game.i18n.localize(skills[skillName].label) : game.i18n.localize(CONFIG.FFG.skills[skillName].label),
+      label: skillData?.label ? game.i18n.localize(skillData.label) : game.i18n.localize(skillName),
     };
     let characteristic = {
       value: 0,
