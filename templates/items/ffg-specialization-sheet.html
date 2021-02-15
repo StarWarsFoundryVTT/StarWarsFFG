@@ -42,12 +42,13 @@
             <div class="talent-name {{#if (ne talent.name '')}}talent-modifiers{{/if}}">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
           </div>
           <div class="talent-body">
-            <input type="text" name="data.talents.{{key}}.activationLabel" value="{{localize talent.activationLabel}}" disabled />
+            <input type="text" value="{{localize talent.activationLabel}}" disabled />
             {{{ffgDiceSymbols talent.description}}}
             <div class="talent-hidden">
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.name" value="{{talent.name}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.description" value="{{talent.description}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.activation" value="{{talent.activation}}" />
+              <input class="talent-hidden" type="text" name="data.talents.{{key}}.activationLabel" value="{{talent.activationLabel}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.itemId" value="{{talent.itemId}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.isRanked" value="{{talent.isRanked}}" data-dtype="Boolean" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.pack" value="{{talent.pack}}" />
