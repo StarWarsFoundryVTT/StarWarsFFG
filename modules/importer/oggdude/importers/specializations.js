@@ -84,7 +84,7 @@ export default class Specializations {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }
 
-            await ImportHelpers.addImportItemToCompendium("Item", data, pack);
+            await ImportHelpers.addImportItemToCompendium("Item", data, pack, true);
 
             currentCount += 1;
 
