@@ -1307,7 +1307,7 @@ export default class ImportHelpers {
     };
   }
 
-  static async addImportItemToCompendium(type, data, pack) {
+  static async addImportItemToCompendium(type, data, pack, removeFirst) {
     let entry = await ImportHelpers.findCompendiumEntityByImportId(type, data.flags.ffgimportid, pack.collection);
     let objClass;
     let dataType;
@@ -1340,26 +1340,36 @@ export default class ImportHelpers {
       const crt = await pack.importEntity(compendiumItem);
       CONFIG.temporary[pack.collection][data.flags.ffgimportid] = duplicate(crt);
     } else {
-      CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
-      let updateData = data;
-      updateData["_id"] = entry._id;
+      let upd;
+      if (removeFirst) {
+        await pack.deleteEntity(entry._id);
+        let compendiumItem;
+        CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
+        compendiumItem = new objClass(data, { temporary: true });
+        CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
+        upd = await pack.importEntity(compendiumItem);
+      } else {
+        CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
 
-      if (updateData?.data?.attributes) {
-        // Remove and repopulate all modifiers
-        if (entry.data?.attributes) {
-          for (let k of Object.keys(entry.data.attributes)) {
-            if (!updateData.data.attributes.hasOwnProperty(k)) updateData.data.attributes[`-=${k}`] = null;
+        let updateData = data;
+        updateData["_id"] = entry._id;
+
+        if (updateData?.data?.attributes) {
+          // Remove and repopulate all modifiers
+          if (entry.data?.attributes) {
+            for (let k of Object.keys(entry.data.attributes)) {
+              if (!updateData.data.attributes.hasOwnProperty(k)) updateData.data.attributes[`-=${k}`] = null;
+            }
           }
         }
-      }
 
-      CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
-      await pack.updateEntity(updateData);
-      let upd = duplicate(entry);
-      if (upd.data) {
-        upd.data = mergeObject(upd.data, data.data);
+        CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
+        await pack.updateEntity(updateData);
+        upd = duplicate(entry);
+        if (upd.data) {
+          upd.data = mergeObject(upd.data, data.data);
+        }
       }
-
       CONFIG.temporary[pack.collection][data.flags.ffgimportid] = upd;
     }
   }
