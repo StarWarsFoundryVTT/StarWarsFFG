@@ -439,6 +439,8 @@ export default class ImportHelpers {
 
       const characterName = characterData.Character.Description.CharName;
 
+      const exists = game.data.actors.find((actor) => actor.flags.ffgimportid === characterData.Character.Key);
+
       let character = {
         name: characterName ? characterName : "No Name",
         type: "character",
@@ -685,7 +687,7 @@ export default class ImportHelpers {
             gender: characterData.Character.Description.Gender,
           },
         },
-        items: [],
+        items: exists?.items ? exists.items : [],
       };
 
       characterData.Character.Characteristics.CharCharacteristic.forEach((char) => {
@@ -759,10 +761,11 @@ export default class ImportHelpers {
       updateDialog(10);
 
       try {
-        const x = await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey, undefined, "species");
+        const speciesDBItem = await this.findCompendiumEntityByImportId("Item", characterData.Character.Species.SpeciesKey, undefined, "species");
 
-        const species = JSON.parse(JSON.stringify(x));
-        if (species) {
+        if (speciesDBItem) {
+          let species = JSON.parse(JSON.stringify(speciesDBItem));
+
           for (let i = 0; i < speciesSkills.length; i += 1) {
             // first determine if the modifier exists, oggdudes doesn't differentiate between chosen skills (ie human) vs static skill (ie Nautolan)
 
@@ -774,10 +777,17 @@ export default class ImportHelpers {
             }
           }
 
-          character.items.push(species);
+          // does the character data already include the species
+          let speciesItem = character.items.find((s) => s.flags.ffgimportid === species.flags.ffgimportid);
+
+          if (speciesItem) {
+            species = mergeObject(species, speciesItem);
+          } else {
+            character.items.push(species);
+          }
         }
       } catch (err) {
-        CONFIG.logger.error(`Unable to add species ${characterData.Character.Species.SpeciesKey} to character.`);
+        CONFIG.logger.error(`Unable to add species ${characterData.Character.Species.SpeciesKey} to character.`, err);
       }
 
       let obligationlist = [];
@@ -866,16 +876,23 @@ export default class ImportHelpers {
               }
             });
           }
-          character.items.push(career);
+
+          let careerItem = character.items.find((s) => s.flags.ffgimportid === career.flags.ffgimportid);
+
+          if (careerItem) {
+            careerItem = mergeObject(career, careerItem);
+          } else {
+            character.items.push(career);
+          }
         }
       } catch (err) {
-        CONFIG.logger.error(`Unable to add career ${characterData.Character.Career.CareerKey} to character.`);
+        CONFIG.logger.error(`Unable to add career ${characterData.Character.Career.CareerKey} to character.`, err);
       }
 
       updateDialog(30);
 
       try {
-        const specialization = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.StartingSpecKey, undefined, "specialization")));
+        let specialization = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", characterData.Character.Career.StartingSpecKey, undefined, "specialization")));
         if (specialization) {
           if (characterData.Character.Career.CareerSpecSkills?.Key) {
             characterData.Character.Career.CareerSpecSkills.Key.forEach((key) => {
@@ -917,7 +934,7 @@ export default class ImportHelpers {
                 }
                 output.islearned = true;
               } catch (err) {
-                CONFIG.logger.error(`Unable to add specialization ${characterSpecTalent.Key} to character.`);
+                CONFIG.logger.error(`Unable to add specialization ${characterSpecTalent.Key} to character.`, err);
               }
               return output;
             }
@@ -931,7 +948,11 @@ export default class ImportHelpers {
             updateDialog(30 + miniValue);
           };
 
-          if (Array.isArray(characterData.Character.Specializations.CharSpecialization)) {
+          if (!Array.isArray(characterData.Character.Specializations.CharSpecialization)) {
+            characterData.Character.Specializations.CharSpecialization = [characterData.Character.Specializations.CharSpecialization];
+          }
+
+          if (characterData?.Character?.Specializations?.CharSpecialization?.length) {
             specTotal = characterData.Character.Specializations.CharSpecialization.length;
             updateDialogSpecialization(specCount, specTotal);
             await this.asyncForEach(characterData.Character.Specializations.CharSpecialization, async (spec) => {
@@ -972,10 +993,17 @@ export default class ImportHelpers {
 
                 specCount += 1;
                 updateDialogSpecialization(specCount, specTotal);
-                character.items.push(specialization);
+
+                let specializationItem = character.items.find((s) => s.flags.ffgimportid === specialization.flags.ffgimportid);
+
+                if (specializationItem) {
+                  specializationItem = mergeObject(specialization, specializationItem);
+                } else {
+                  character.items.push(specialization);
+                }
               } else {
                 try {
-                  const newspec = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", spec.Key, undefined, "specialization")));
+                  let newspec = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", spec.Key, undefined, "specialization")));
                   specTotal += spec.Talents.CharTalent.length;
                   updateDialogSpecialization(specCount, specTotal);
                   for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
@@ -1010,7 +1038,14 @@ export default class ImportHelpers {
                     specCount += 1;
                     updateDialogSpecialization(specCount, specTotal);
                   }
-                  character.items.push(newspec);
+
+                  let specializationItem = character.items.find((s) => s.flags.ffgimportid === newspec.flags.ffgimportid);
+
+                  if (specializationItem) {
+                    specializationItem = mergeObject(newspec, specializationItem);
+                  } else {
+                    character.items.push(newspec);
+                  }
                 } catch (err) {
                   CONFIG.logger.error(`Unable to add specialization ${spec.Key} to character.`);
                 }
@@ -1018,64 +1053,32 @@ export default class ImportHelpers {
                 updateDialogSpecialization(specCount, specTotal);
               }
             });
-          } else {
-            specTotal += characterData.Character.Specializations.CharSpecialization.Talents.CharTalent.length;
-            updateDialogSpecialization(specCount, specTotal);
-            for (let i = 0; i < characterData.Character.Specializations.CharSpecialization.Talents.CharTalent.length; i += 1) {
-              const talent = await funcGetTalent(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i], specialization.data.talents[`talent${i}`].itemId);
-              if (talent) {
-                specialization.data.talents[`talent${i}`] = { ...specialization.data.talents[`talent${i}`], ...talent };
-
-                if (characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i]?.BonusChars?.BonusChar) {
-                  if (Array.isArray(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i]?.BonusChars?.BonusChar)) {
-                    await this.asyncForEach(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].BonusChars.BonusChar, async (char) => {
-                      let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
-
-                      specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
-                        isCheckbox: false,
-                        mod: this.convertOGCharacteristic(char.CharKey),
-                        modtype: "Characteristic",
-                        value: char.Bonus,
-                      };
-                    });
-                  } else {
-                    let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
-
-                    specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
-                      isCheckbox: false,
-                      mod: this.convertOGCharacteristic(characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].BonusChars.BonusChar.CharKey),
-                      modtype: "Characteristic",
-                      value: characterData.Character.Specializations.CharSpecialization.Talents.CharTalent[i].BonusChars.BonusChar.Bonus,
-                    };
-                  }
-                }
-              }
-              specCount += 1;
-              updateDialogSpecialization(specCount, specTotal);
-            }
-            specCount += 1;
-            updateDialogSpecialization(specCount, specTotal);
-            character.items.push(specialization);
           }
         }
       } catch (err) {
-        CONFIG.logger.error(`Unable to add specializations to character.`);
+        CONFIG.logger.error(`Unable to add specializations to character.`, err);
       }
 
       updateDialog(40);
 
       await this.asyncForEach(forcepowers, async (power) => {
         try {
-          const force = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", power.Key, undefined, "forcepower")));
+          let force = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", power.Key, undefined, "forcepower")));
           for (let i = 4; i < power.ForceAbilities.CharForceAbility.length; i += 1) {
             if (power.ForceAbilities.CharForceAbility[i].Purchased) {
               force.data.upgrades[`upgrade${i - 4}`].islearned = true;
             }
           }
 
-          character.items.push(force);
+          let forceItem = character.items.find((s) => s.flags.ffgimportid === force.flags.ffgimportid);
+
+          if (forceItem) {
+            forceItem = mergeObject(force, forceItem);
+          } else {
+            character.items.push(force);
+          }
         } catch (err) {
-          CONFIG.logger.error(`Unable to add force power ${forcepowers.Key} to character.`);
+          CONFIG.logger.error(`Unable to add force power ${forcepowers.Key} to character.`, err);
         }
       });
 
@@ -1089,12 +1092,26 @@ export default class ImportHelpers {
           try {
             const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "weapon")));
             delete weapon._id;
-            if (w?.Count) {
-              weapon.data.quantity = {
-                value: parseInt(w.Count, 10),
-              };
+
+            const weaponItems = character.items.filter((s) => s.flags.ffgimportid === weapon.flags.ffgimportid);
+
+            if (weaponItems.length > 0) {
+              for (let i = 0; i < character.items.length; i += 1) {
+                if (character.items[i].type === "weapon" && character.items[i].flags.ffgimportid === weapon.flags.ffgimportid) {
+                  character.items[i] = mergeObject(weapon, character.items[i]);
+                }
+              }
+            } else {
+              if (w?.Count) {
+                w.Count = parseInt(w.Count, 10);
+              } else {
+                w.Count = 1;
+              }
+
+              await this.asyncForEach(new Array(parseInt(w.Count, 10)), () => {
+                character.items.push(weapon);
+              });
             }
-            character.items.push(weapon);
           } catch (err) {
             if (w.ItemKey?.length) {
               CONFIG.logger.error(`Unable to add weapon (${w.ItemKey}) to character.`, err);
@@ -1114,12 +1131,25 @@ export default class ImportHelpers {
           try {
             const armor = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "armour")));
             delete armor._id;
-            if (w?.Count) {
-              armor.data.quantity = {
-                value: parseInt(w.Count, 10),
-              };
+            const armorItems = character.items.filter((s) => s.flags.ffgimportid === armor.flags.ffgimportid);
+
+            if (armorItems.length > 0) {
+              for (let i = 0; i < character.items.length; i += 1) {
+                if (character.items[i].type === "armor" && character.items[i].flags.ffgimportid === armor.flags.ffgimportid) {
+                  character.items[i] = mergeObject(armor, character.items[i]);
+                }
+              }
+            } else {
+              if (w?.Count) {
+                w.Count = parseInt(w.Count, 10);
+              } else {
+                w.Count = 1;
+              }
+
+              await this.asyncForEach(new Array(parseInt(w.Count, 10)), () => {
+                character.items.push(armor);
+              });
             }
-            character.items.push(armor);
           } catch (err) {
             CONFIG.logger.error(`Unable to add armor (${w.ItemKey}) to character.`, err);
           }
@@ -1136,12 +1166,23 @@ export default class ImportHelpers {
           try {
             const gear = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "gear")));
             delete gear._id;
+
+            let gearItem = character.items.find((s) => s.flags.ffgimportid === gear.flags.ffgimportid);
+
+            let gearCount = 1;
             if (w?.Count) {
+              gearCount = parseInt(w.Count, 10);
               gear.data.quantity = {
-                value: parseInt(w.Count, 10),
+                value: gearCount,
               };
             }
-            character.items.push(gear);
+
+            if (gearItem) {
+              gearItem = mergeObject(gear, gearItem);
+              gear.data.quantity.value = gearCount;
+            } else {
+              character.items.push(gear);
+            }
           } catch (err) {
             CONFIG.logger.error(`Unable to add gear (${w.ItemKey}) to character.`, err);
           }
@@ -1167,7 +1208,6 @@ export default class ImportHelpers {
 
       updateDialog(90);
 
-      const exists = game.data.actors.find((actor) => actor.flags.ffgimportid === characterData.Character.Key);
       if (exists) {
         //let updateData = ImportHelpers.buildUpdateData(character);
         let updateData = character;
