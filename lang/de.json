@@ -287,5 +287,9 @@
   "SWFFG.Consumables": "Verpflegung",
   "SWFFG.Days": "Tage",
   "SWFFG.Months": "Monate",
-  "SWFFG.Years": "Jahre"
+  "SWFFG.Years": "Jahre",
+  "SWFFG.DestinyAddString1" : "FÃ¼gte einen ",
+  "SWFFG.DestinyAddString2" : "n Punkt hinzu.",
+  "SWFFG.DestinyRemString1" : "Entfernte einen ",
+  "SWFFG.DestinyRemString2" : "n Punkt"
 }
