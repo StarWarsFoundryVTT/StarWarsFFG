@@ -147,7 +147,9 @@ export default class DestinyTracker extends FormApplication {
         }
         const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
         game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) + 1);
-        messageText = "Added a " + typeName + " point.";
+        //messageText = "Added a " + typeName + " point.";
+        messageText = game.i18n.localize("SWFFG.DestinyAddString1") + typeName + game.i18n.localize("SWFFG.DestinyAddString2");
+
       } else if (remove) {
         if (!game.user.isGM) {
           ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
@@ -155,7 +157,9 @@ export default class DestinyTracker extends FormApplication {
         }
         const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
         game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
-        messageText = "Removed a " + typeName + " point.";
+        //messageText = "Removed a " + typeName + " point.";
+        messageText = game.i18n.localize("SWFFG.DestinyRemString1") + typeName + game.i18n.localize("SWFFG.DestinyRemString2");
+
       }
 
       ChatMessage.create({
