@@ -287,5 +287,13 @@
   "SWFFG.Consumables": "Verpflegung",
   "SWFFG.Days": "Tage",
   "SWFFG.Months": "Monate",
-  "SWFFG.Years": "Jahre"
+  "SWFFG.Years": "Jahre","SWFFG.InitiativeRollResult": "rollt Initiative!",
+  "SWFFG.RollResultSuccess" : "Erfolge",
+  "SWFFG.RollResultFailure" :  "Misserfolge",
+  "SWFFG.RollResultAdvantage" : "Vorteile",
+  "SWFFG.RollResultThreat" :  "Nachteile",
+  "SWFFG.RollResultTriumph" :  "Triumphe",
+  "SWFFG.RollResultDespair" :  "Verzweiflung",
+  "SWFFG.RollResultLight" :  "Hell",
+  "SWFFG.RollResultDark" :  "Dunkel"
 }
