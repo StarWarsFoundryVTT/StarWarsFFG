@@ -38,7 +38,8 @@ export default class RollBuilderFFG extends FormApplication {
       game.playlists.entries.forEach((playlist) => {
         playlist.sounds.forEach((sound) => {
           let selected = false;
-          if (this.roll?.sound && this.roll.sound === sound.path) {
+          const s = this.roll?.sound ?? this.roll?.item?.flags?.ffgsound;
+          if (s === sound.path) {
             selected = true;
           }
           sounds.push({ name: sound.name, path: sound.path, selected });
@@ -51,7 +52,8 @@ export default class RollBuilderFFG extends FormApplication {
       if (playlist) {
         playlist.sounds.forEach((sound) => {
           let selected = false;
-          if (this.roll?.sound && this.roll.sound === sound.path) {
+          const s = this.roll?.sound ?? this.roll?.item?.flags?.ffgsound;
+          if (s === sound.path) {
             selected = true;
           }
           sounds.push({ name: sound.name, path: sound.path, selected });
@@ -62,7 +64,7 @@ export default class RollBuilderFFG extends FormApplication {
       }
     }
 
-    let users = [{ name: 'Send To All', id: 'all'}];
+    let users = [{ name: "Send To All", id: "all" }];
     if (game.user.isGM) {
       game.users.entries.forEach((user) => {
         if (user.visible && user.id !== game.user.id) {
@@ -71,12 +73,20 @@ export default class RollBuilderFFG extends FormApplication {
       });
     }
 
+    const enableForceDie = game.settings.get("starwarsffg", "enableForceDie");
+    const labels = {
+      light: game.settings.get("starwarsffg", "destiny-pool-light"),
+      dark: game.settings.get("starwarsffg", "destiny-pool-dark"),
+    };
+
     return {
       sounds,
       isGM: game.user.isGM,
       canUserAddAudio,
       flavor: this.roll.flavor,
       users,
+      enableForceDie,
+      labels,
     };
   }
 
@@ -93,6 +103,27 @@ export default class RollBuilderFFG extends FormApplication {
         const sound = html.find(".sound-selection")?.[0]?.value;
         if (sound) {
           this.roll.sound = sound;
+          if (this?.roll?.item) {
+            let entity;
+            let entityData;
+            if (!this?.roll?.item?.flags?.uuid) {
+              entity = CONFIG["Actor"].entityClass.collection.get(this.roll.data.actor._id);
+              entityData = {
+                _id: this.roll.item._id,
+              };
+            } else {
+              const parts = this.roll.item.flags.uuid.split(".");
+              const [entityName, entityId, embeddedName, embeddedId] = parts;
+              entity = CONFIG[entityName].entityClass.collection.get(entityId);
+              if (parts.length === 4) {
+                entityData = {
+                  _id: embeddedId,
+                };
+              }
+            }
+            setProperty(entityData, "flags.ffgsound", sound);
+            entity.updateOwnedItem(entityData);
+          }
         }
       }
 
@@ -122,11 +153,11 @@ export default class RollBuilderFFG extends FormApplication {
               roll: this.roll,
               dicePool: this.dicePool,
               description: this.description,
-            }
-          }
-        }
+            },
+          },
+        };
 
-        if(sentToPlayer !== 'all') {
+        if (sentToPlayer !== "all") {
           chatOptions.whisper = [sentToPlayer];
         }
 

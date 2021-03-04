@@ -4,6 +4,8 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
+import item from "../helpers/embeddeditem-helpers.js";
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -22,7 +24,7 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   get template() {
     const path = "systems/starwarsffg/templates/items";
-    return `${path}/ffg-${this.item.data.type}-sheet.html`;
+    return `${path}/ffg-${this.item.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -33,6 +35,12 @@ export class ItemSheetFFG extends ItemSheet {
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
+    } else if (options?.action === "ffgUpdate") {
+      if (options?.data?.data) {
+        data.item = mergeObject(data.item, options.data);
+      } else {
+        data.item.data = mergeObject(data.item.data, options.data);
+      }
     }
 
     data.classType = this.constructor.name;
@@ -41,16 +49,26 @@ export class ItemSheetFFG extends ItemSheet {
     data.dtypes = ["String", "Number", "Boolean"];
     if (data?.data?.attributes) {
       for (let attr of Object.values(data.data.attributes)) {
-        attr.isCheckbox = attr.dtype === "Boolean";
+        if (attr?.dtype) {
+          attr.isCheckbox = attr.dtype === "Boolean";
+        }
       }
+    }
+
+    data.isTemp = false;
+    if (this.object.data?.flags?.ffgTempId) {
+      data.isTemp = true;
     }
 
     switch (this.object.data.type) {
       case "weapon":
       case "shipweapon":
-        this.position.width = 530;
+        this.position.width = 550;
         this.position.height = 750;
         break;
+      case "itemattachment":
+        this.position.width = 500;
+        this.position.height = 450;
       case "armour":
       case "gear":
       case "shipattachment":
@@ -257,6 +275,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     // Everything below here is only needed if the sheet is editable
+    if (this.object.data.flags.readonly) this.options.editable = false;
     if (!this.options.editable) return;
 
     // Add or Remove Attribute
@@ -308,15 +327,254 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    if (["weapon", "armor"].includes(this.object.data.type)) {
+    if (["weapon", "armor", "itemattachment", "shipweapon"].includes(this.object.data.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
-        dropSelector: ".window-content",
+        dropSelector: null,
         permissions: { dragstart: true, drop: true },
         callbacks: { drop: this._onDropItem.bind(this) },
       });
       itemToItemAssociation.bind(html[0]);
+
+      //commented out the ability to add on-the-fly qualities/attachments
+      //html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
+
+      // html.find(".resource.pills.itemmodifier").on("click", async (event) => {
+
+      //   const tempItem = await EmbeddedItemHelpers.createNewEmbeddedItem("itemmodifier", {attributes: {}, description: "", rank: 1}, {ffgTempId: this.object.id, ffgParentApp: this.appId} );
+
+      //   let data = {};
+      //   this.object.data.data[tempItem.type].push(tempItem);
+      //   setProperty(data, `data.${tempItem.type}`, this.object.data.data[tempItem.type]);
+      //   await this.object.update(data);
+      //   tempItem.data.flags.ffgTempItemIndex = this.object.data.data[tempItem.type].findIndex((i) => i._id === tempItem.data._id);
+      //   tempItem.sheet.render(true);
+      // });
+
+      // html.find(".resource.pills.itemattachment").on("click", async (event) => {
+      //   const tempItem = await EmbeddedItemHelpers.createNewEmbeddedItem("itemattachment", {attributes: {}, description: "", itemmodifier: []}, {ffgTempId: this.object.id, ffgUuid: this.item.uuid, ffgParentApp: this.appId,});
+
+      //   let data = {};
+      //   this.object.data.data[tempItem.type].push(tempItem);
+      //   setProperty(data, `data.${tempItem.type}`, this.object.data.data[tempItem.type]);
+      //   await this.object.update(data);
+
+      //   tempItem.data.flags.ffgTempItemIndex = this.object.data.data[tempItem.type].findIndex((i) => i._id === tempItem.data._id);
+
+      //   tempItem.sheet.render(true);
+      // });
     }
+
+    html.find(".item-pill .item-delete, .additional .add-modifier .item-delete").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      const itemType = parent.dataset.itemName;
+      const itemIndex = parent.dataset.itemIndex;
+
+      const items = this.object.data.data[itemType];
+      items.splice(itemIndex, 1);
+
+      let formData = {};
+      setProperty(formData, `data.${itemType}`, items);
+
+      this.object.update(formData);
+    });
+
+    html.find(".item-pill .rank").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = $(event.currentTarget).parent()[0];
+      const itemType = li.dataset.itemName;
+      const itemIndex = li.dataset.itemIndex;
+
+      const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
+      const title = `${this.object.name} ${item.name}`;
+
+      new Dialog(
+        {
+          title,
+          content: {
+            item,
+            type: itemType,
+            parenttype: this.object.data.type,
+          },
+          buttons: {
+            done: {
+              icon: '<i class="fas fa-check"></i>',
+              label: game.i18n.localize("SWFFG.ButtonAccept"),
+              callback: (html) => {
+                switch (itemType) {
+                  case "itemmodifier": {
+                    const formData = {};
+                    const items = $(html).find("input");
+
+                    items.each((index) => {
+                      const input = $(items[index]);
+                      const name = input.attr("name");
+                      const id = input[0].dataset.itemId;
+
+                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
+
+                      if (arrayItem > -1) {
+                        setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
+                      }
+                    });
+
+                    setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+                    this.object.update(formData);
+
+                    break;
+                  }
+                  case "itemattachment": {
+                    console.log(itemType);
+                    break;
+                  }
+                }
+              },
+            },
+            cancel: {
+              icon: '<i class="fas fa-times"></i>',
+              label: game.i18n.localize("SWFFG.Cancel"),
+            },
+          },
+        },
+        {
+          classes: ["dialog", "starwarsffg"],
+          template: `systems/starwarsffg/templates/items/dialogs/ffg-edit-${itemType}.html`,
+        }
+      ).render(true);
+    });
+
+    html.find(".item-pill, .additional .add-modifier .fa-edit").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      let itemType = li.dataset.itemName;
+      let itemIndex = li.dataset.itemIndex;
+
+      if ($(li).hasClass("adjusted")) {
+        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object._id, itemType, itemIndex, this.object?.actor?._id);
+      }
+
+      if ($(li).hasClass("fa-edit")) {
+        const parent = $(li).parent()[0];
+        itemType = parent.dataset.itemName;
+        itemIndex = parent.dataset.itemIndex;
+      }
+
+      const item = this.object.data.data[itemType][itemIndex];
+
+      let temp = {
+        ...item,
+        flags: {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: itemIndex,
+          ffgIsTemp: true,
+          ffgParent: this.object.data.flags,
+          ffgParentApp: this.appId,
+        },
+      };
+      if (this.object.isOwned) {
+        let ownerObject = await fromUuid(this.object.uuid);
+
+        temp = {
+          ...item,
+          flags: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: itemType,
+            ffgTempItemIndex: itemIndex,
+            ffgIsTemp: true,
+            ffgUuid: this.object.uuid,
+            ffgIsOwned: this.object.isOwned,
+          },
+        };
+      }
+
+      let tempItem = await Item.create(temp, { temporary: true });
+
+      tempItem.data._id = temp._id;
+      if (!temp._id) {
+        tempItem.data._id = randomID();
+      }
+      tempItem.sheet.render(true);
+    });
+
+    html.find(".additional .modifier-active").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      const parent = $(li).parent()[0];
+      let itemType = parent.dataset.itemName;
+      let itemIndex = parent.dataset.itemIndex;
+      const item = this.object.data.data[itemType][itemIndex];
+      item.data.active = !item.data.active;
+
+      if (this.object.data.flags.ffgTempId) {
+        // this is a temporary sheet for an embedded item
+
+        item.flags = {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: itemIndex,
+          ffgParent: this.object.data.flags,
+          ffgIsTemp: true,
+        };
+
+        await EmbeddedItemHelpers.updateRealObject({ data: item }, {});
+      } else {
+        let formData = {};
+        setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+        this.object.update(formData);
+      }
+
+      this.object.sheet.render(true);
+    });
+
+    html.find(".additional .add-new-item").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const li = event.currentTarget;
+      let itemType = li.dataset.acceptableType;
+
+      let temp = {
+        img: "icons/svg/mystery-man.svg",
+        name: "",
+        type: itemType,
+        flags: {
+          ffgTempId: this.object.id,
+          ffgTempItemType: itemType,
+          ffgTempItemIndex: -1,
+          ffgParent: this.object.data.flags,
+          ffgIsTemp: true,
+          ffgUuid: this.object.uuid,
+          ffgParentApp: this.appId,
+          ffgIsOwned: this.object.isOwned,
+        },
+        data: {
+          attributes: {},
+          description: "",
+        },
+      };
+
+      let tempItem = await Item.create(temp, { temporary: true });
+      tempItem.data._id = temp._id;
+      if (!temp._id) {
+        tempItem.data._id = randomID();
+      }
+
+      let data = {};
+      this.object.data.data[itemType].push(tempItem);
+      setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
+      await this.object.update(data);
+
+      tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i._id === tempItem.data._id);
+
+      tempItem.sheet.render(true);
+    });
   }
 
   /* -------------------------------------------- */
@@ -590,21 +848,55 @@ export class ItemSheetFFG extends ItemSheet {
     // Case 1 - Import from a Compendium pack
     let itemObject;
     if (data.pack) {
-      itemObject = await this.importItemFromCollection(data.pack, data.id);
+      const compendiumObject = await this.importItemFromCollection(data.pack, data.id);
+      itemObject = compendiumObject.data;
     }
 
     // Case 2 - Import from World entity
     else {
-      itemObject = await game.items.get(data.id);
+      itemObject = duplicate(await game.items.get(data.id));
       if (!itemObject) return;
     }
+    itemObject._id = randomID();
 
-    if (itemObject.data.type === "attachment") {
-      let items = this.object.items.entries;
-      items.push(duplicate(itemObject));
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && (obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
+      let items = obj?.data?.data?.[itemObject.type];
+      if (!items) {
+        items = [];
+      }
+
+      const foundItem = items.find((i) => {
+        return i._id === itemObject._id || (i.flags?.ffgimportid?.length ? i.flags.ffgimportid === itemObject.flags.ffgimportid : false);
+      });
+
+      switch (itemObject.type) {
+        case "itemmodifier": {
+          if (parseInt(itemObject.data.rank, 10) === 0) {
+            itemObject.data.rank = 1;
+          }
+
+          if (foundItem && this.object.type !== "itemattachment") {
+            foundItem.data.rank += itemObject.data.rank;
+          } else {
+            items.push(itemObject);
+          }
+          break;
+        }
+        case "itemattachment": {
+          if (this.object.data.data.hardpoints.current - itemObject.data.hardpoints.value >= 0) {
+            items.push(itemObject);
+          } else {
+            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.data.data.hardpoints.current} left)`);
+          }
+          break;
+        }
+        default: {
+          return;
+        }
+      }
 
       let formData = {};
-      setProperty(formData, `items`, items);
+      setProperty(formData, `data.${itemObject.type}`, items);
 
       obj.update(formData);
     }

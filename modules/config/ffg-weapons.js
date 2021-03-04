@@ -15,4 +15,16 @@ export const weapon_stats = {
     value: "hardpoints",
     label: "SWFFG.ItemsHP",
   },
+  "rarity": {
+    value: "rarity",
+    label: "SWFFG.ItemsRarity",
+  },
+  "price": {
+    value: "price",
+    label: "SWFFG.ItemsPrice",
+  },
+  "range": {
+    value: "range",
+    label: "SWFFG.ItemWeaponRange",
+  },
 };

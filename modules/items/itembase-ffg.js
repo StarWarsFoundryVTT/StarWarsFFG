@@ -1,35 +1,35 @@
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
+
 export default class ItemBaseFFG extends Item {
-  constructor(...args) {
-    super(...args);
+  async update(data, options = {}) {
+    if (!this.data?.flags?.ffgTempId || (this.data?.flags?.ffgTempId === this.data._id && !this.data.isTemp) || this.data?.flags?.ffgIsOwned) {
+      super.update(data, options);
+      // if (this.compendium) {
+      //   return this.sheet.render(true);
+      // }
+      return;
+    } else {
+      const preState = Object.values(this.apps)[0]._state;
 
-    this.items = this.items || [];
-  }
+      await EmbeddedItemHelpers.updateRealObject(this, data);
 
-  /** @override */
-  prepareEmbeddedEntities() {
-    this.items = this._prepareAssociatedItems(this.data.items || []);
-  }
+      if (this.data.flags?.ffgParent?.isCompendium || Object.values(this.apps)[0]._state !== preState) {
+        if (this.data.flags?.ffgParent?.ffgUuid) {
+          this.sheet.render(false);
+        }
+      } else {
+        let me = this;
 
-  _prepareAssociatedItems(items) {
-    const prior = this.items;
-    const c = new Collection();
-    for (let i of items) {
-      let item = null;
-
-      // Prepare item data
-      try {
-        if (prior && prior.has(i._id)) {
-          item = prior.get(i._id);
-          item._data = i;
-          item.prepareData();
-        } else item = Item.createOwned(i, this);
-        c.set(i._id, item);
-      } catch (err) {
-        // Handle preparation failures gracefully
-        err.message = `Owned Item preparation failed for ${item.id} (${item.name}) in Item ${this.id} (${this.name})`;
-        console.error(err);
+        // we're working on an embedded item
+        await this.sheet.render(true);
+        const appId = this.data?.flags?.ffgParentApp;
+        if (appId) {
+          const newData = ui.windows[appId].object.data.data;
+          newData[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex] = mergeObject(newData[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex], this.data);
+          await ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
+        }
+        return;
       }
     }
-    return c;
   }
 }

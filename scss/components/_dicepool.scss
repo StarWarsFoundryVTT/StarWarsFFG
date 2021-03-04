@@ -105,5 +105,38 @@
     font-style: italic;
     color: darkred;
   }
+
+  .item-pill {
+    list-style-type: none;
+    padding: 0 5px;
+    background-color: #aaa;
+    border: 1px solid black;
+    border-radius: 12px;
+    display: inline-block;
+    margin: 1px;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+
+    &.adjusted {
+      color: #8b0000;
+    }
+    
+    .rank {
+      padding-right: 15px;
+      &:hover {
+        color: green;
+      }
+    }
+  
+    .item-delete {
+      cursor: pointer;
+      &:hover {
+        color: red;
+      }
+    }
+  }
+
 }
 

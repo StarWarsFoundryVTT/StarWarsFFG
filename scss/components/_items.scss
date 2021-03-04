@@ -102,6 +102,10 @@
       background: rgba(0, 0, 0, 0.1);
     }
   }
+
+  .restricted {
+    color: #8b0000;
+  }
 }
 
 .item-rollable {
@@ -122,3 +126,26 @@
   }
 } 
 
+&.item-card {
+  .item-details {
+    .item-properties {
+      .item-pill {
+        list-style-type: none;
+        padding: 0 5px;
+        background-color: #aaa;
+        border: 1px solid black;
+        border-radius: 12px;
+        display: inline-block;
+        margin: 1px;
+        cursor: pointer;
+        font-size: 12px;
+        line-height: 20px;
+        white-space: nowrap;
+    
+        &.adjusted {
+          color: #8b0000;
+        }
+      }
+    }
+  }
+}

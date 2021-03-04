@@ -183,6 +183,30 @@ export default class ModifierHelpers {
     }
   }
 
+  static getCalculatedValueFromCurrentAndArray(item, items, key, modtype, includeSource) {
+    let total = 0;
+    let checked = false;
+    let sources = [];
+
+    const filteredAttributes = Object.values(item.data.attributes).filter((a) => a.modtype === modtype && a.mod === key);
+
+    filteredAttributes.forEach((attr) => {
+      sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
+      total += parseInt(attr.value, 10);
+    });
+
+    const itemsTotal = ModifierHelpers.getCalculatedValueFromItems(items, key, modtype, includeSource);
+    if (includeSource) {
+      total += itemsTotal.total;
+      sources = sources.concat(itemsTotal.sources);
+
+      return { total, sources };
+    } else {
+      total += itemsTotal;
+      return total;
+    }
+  }
+
   static getBaseValue(items, key, modtype) {
     let total = 0;
 
@@ -220,6 +244,8 @@ export default class ModifierHelpers {
       let newKey = document.createElement("div");
       if (["criticaldamage", "shipattachment", "shipweapon"].includes(this.object.type)) {
         newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Stat">Stat</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+      } else if (["itemmodifier", "itemattachment"].includes(this.object.type)) {
+        newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Roll Modifiers">Stat</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
       } else {
         newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
       }
@@ -295,5 +321,36 @@ export default class ModifierHelpers {
     new PopoutModifiers(data, {
       title,
     }).render(true);
+  }
+
+  static async getDicePoolModifiers(pool, item, items) {
+    let dicePool = new DicePoolFFG(pool);
+
+    dicePool.boost += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Boost", "Roll Modifiers");
+    dicePool.setback += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Setback", "Roll Modifiers");
+    dicePool.advantage += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Advantage", "Result Modifiers");
+    dicePool.dark += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Dark", "Result Modifiers");
+    dicePool.failure += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Failure", "Result Modifiers");
+    dicePool.light += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Light", "Result Modifiers");
+    dicePool.success += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Success", "Result Modifiers");
+    dicePool.threat += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Threat", "Result Modifiers");
+    dicePool.triumph += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Triumph", "Result Modifiers");
+    dicePool.despair += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Despair", "Result Modifiers");
+
+    dicePool.difficulty += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Difficulty", "Dice Modifiers");
+    dicePool.upgradeDifficulty(ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Upgrade Difficulty", "Dice Modifiers"));
+    dicePool.upgradeDifficulty(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Downgrade Difficulty", "Dice Modifiers"));
+    dicePool.upgrade(ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Upgrade Ability", "Dice Modifiers"));
+    dicePool.upgrade(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Downgrade Ability", "Dice Modifiers"));
+
+    return dicePool;
+  }
+
+  static applyBrawnToDamage(data) {
+    if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl") || data.skill.value.includes("Lightsaber")) && data.skill.useBrawn) {
+      return true;
+    }
+
+    return false;
   }
 }

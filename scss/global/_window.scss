@@ -161,8 +161,15 @@ span.dietype {
   }
 }
 
-.paused {
-  img {
-    content: url("/systems/starwarsffg/images/paused.png");
-  }
+.clearfix:after {
+  content:".";
+  display:block;
+  height:0;
+  clear:both;
+  visibility:hidden;
 }
+// .paused {
+//   img {
+//     content: url("/systems/starwarsffg/images/paused.png");
+//   }
+// }

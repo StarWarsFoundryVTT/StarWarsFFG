@@ -1,0 +1,15 @@
+<div class="dialog-content {{content.type}}">
+  <table>
+    <tr>
+      <td>{{#if (eq content.parenttype "itemattachment")}}{{localize "SWFFG.ModCount"}}{{else}}{{localize "SWFFG.SkillsRank"}}{{/if}}</td>
+      <td><input type="number" data-dtype="number" data-item-id="{{content.item._id}}" name="data.rank" value="{{content.item.data.rank}}" placeholder="0" /></td>
+    </tr>
+  </table>
+</div>
+<div class="dialog-buttons">
+  {{#each buttons as |button id|}}
+  <button class="dialog-button" data-button="{{id}}">
+    {{{button.icon}}} {{{button.label}}}
+  </button>
+  {{/each}}
+</div>

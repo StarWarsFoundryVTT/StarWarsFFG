@@ -9,13 +9,17 @@
   <li class="attribute flexrow" data-attribute="{{key}}">
     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
     <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-      {{#select attr.modtype}} {{#if (eq ../item.type "weapon")}} {{#each ../this.FFG.weapon_mod_types as |t|}}
+      {{#select attr.modtype}} {{#if (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon") )}} {{#each ../this.FFG.vehicle_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon") )}} {{#each ../this.FFG.vehicle_mod_types as |t|}}
+      {{/each}} {{/if}} {{#if (and (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon") (ne ../item.type "itemmodifier") (ne ../item.type "itemattachment") )}} {{#each ../this.FFG.mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (and (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon") (ne ../item.type "weapon") )}} {{#each ../this.FFG.mod_types as |t|}}
+      {{/each}} {{/if}} {{#if (eq ../item.type "weapon")}} {{#each ../this.FFG.weapon_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{/select}}
+      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../item.data.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
+      {{else}} {{#if (and (eq ../../item.data.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (eq ../../item.data.type "armor") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (ne t.value "Armor Stat") (ne t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{/if}} {{/each}} {{/if}} {{/select}}
     </select>
     <select class="attribute-mod" name="data.attributes.{{key}}.mod">
       {{#select attr.mod}} {{#if (and (eq attr.modtype "Stat") (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon"))) }} {{#each ../this.FFG.vehicle_stats as |t|}}
@@ -24,11 +28,19 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Characteristic")}} {{#each ../this.FFG.characteristics as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") (eq attr.modtype "Skill Add Advantage") (eq attr.modtype "Skill Add Dark") (eq attr.modtype "Skill Add Failure") (eq attr.modtype "Skill Add Light") (eq attr.modtype "Skill Add Success") (eq attr.modtype "Skill Add Threat") )}}
+      {{/each}} {{/if}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") (eq attr.modtype "Skill Add Advantage") (eq attr.modtype "Skill Add Dark") (eq attr.modtype "Skill Add Failure") (eq attr.modtype "Skill Add Light") (eq attr.modtype "Skill Add Success") (eq attr.modtype "Skill Add Triumph") (eq attr.modtype "Skill Add Despair") )}}
       <option value="*">{{localize "SWFFG.ModifierAllSkills"}}</option>
       {{#each ../this.FFG.skills as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
+      {{/each}} {{/if}} {{#if (eq attr.modtype "Result Modifiers") }} {{#each ../this.FFG.itemmodifier_resultmodifiers as |t|}}
+      <option value="{{t.value}}">{{localize t.label}}</option>
+      {{/each}} {{/if}} {{#if (eq attr.modtype "Dice Modifiers") }} {{#each ../this.FFG.itemmodifier_dicemodifiers as |t|}}
+      <option value="{{t.value}}">{{localize t.label}}</option>
+      {{/each}} {{/if}} {{#if (eq attr.modtype "Roll Modifiers") }} {{#each ../this.FFG.itemmodifier_rollmodifiers as |t|}}
+      <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Weapon Stat") }} {{#each ../this.FFG.weapon_stats as |t|}}
+      <option value="{{t.value}}">{{localize t.label}}</option>
+      {{/each}} {{/if}} {{#if (eq attr.modtype "Armor Stat") }} {{#each ../this.FFG.armor_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{/select}}
     </select>

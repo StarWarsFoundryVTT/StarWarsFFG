@@ -2,6 +2,7 @@ import ItemBaseFFG from "./itembase-ffg.js";
 import PopoutEditor from "../popout-editor.js";
 import ActorOptions from "../actors/actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 import Helpers from "../helpers/common.js";
 
 /**
@@ -22,44 +23,105 @@ export class ItemFFG extends ItemBaseFFG {
     const actorData = this.actor ? this.actor.data : {};
     const data = itemData.data;
 
+    if (this.compendium) {
+      itemData.flags.isCompendium = true;
+      itemData.flags.ffgUuid = this.uuid;
+    } else {
+      itemData.flags.isCompendium = false;
+      itemData.flags.ffgIsOwned = false;
+      if (this.isOwned) {
+        itemData.flags.ffgIsOwned = true;
+        itemData.flags.ffgUuid = this.uuid;
+      } else if (itemData._id) {
+        itemData.flags.ffgTempId = itemData._id;
+      }
+    }
+
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actorData);
 
     // perform localisation of dynamic values
     switch (this.type) {
       case "weapon":
-        const rangeId = `SWFFG.WeaponRange${this._capitalize(data.range.value)}`;
-        data.range.label = rangeId;
+      case "shipweapon":
+        // Apply item attachments / modifiers
+        data.damage.value = parseInt(data.damage.value, 10);
+        data.crit.value = parseInt(data.crit.value, 10);
+        data.encumbrance.value = parseInt(data.encumbrance.value, 10);
+        data.price.value = parseInt(data.price.value, 10);
+        data.rarity.value = parseInt(data.rarity.value, 10);
+        data.hardpoints.value = parseInt(data.hardpoints.value, 10);
 
-        if (this.isOwned && this.actor && this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
+        data.range.adjusted = data.range.value;
+        data.damage.adjusted = parseInt(data.damage.value, 10);
+        data.crit.adjusted = parseInt(data.crit.value, 10);
+        data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
+        data.price.adjusted = parseInt(data.price.value, 10);
+        data.rarity.adjusted = parseInt(data.rarity.value, 10);
+        data.hardpoints.adjusted = parseInt(data.hardpoints.value, 10);
+
+        data.adjusteditemmodifier = [];
+
+        if (data?.itemmodifier) {
+          data.itemmodifier.forEach((modifier) => {
+            modifier.data.rank_current = modifier.data.rank;
+            data.adjusteditemmodifier.push({ ...modifier });
+            data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
+          });
+        }
+
+        if (data?.itemattachment) {
+          data.itemattachment.forEach((attachment) => {
+            const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+            data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
+            data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
+            if (data.crit.adjusted < 1) data.crit.adjusted = 1;
+            const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
+            const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
+            const newRange = currentRangeIndex + range;
+            if (newRange < 0) newRange = 0;
+            if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
+
+            data.range.adjusted = Object.values(CONFIG.FFG.ranges)[newRange].value;
+
+            if (attachment?.data?.itemmodifier) {
+              const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
+
+              activeMods.forEach((am) => {
+                const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
+
+                if (foundItem) {
+                  foundItem.data.rank_current = parseInt(foundItem.data.rank_current, 10) + 1;
+                } else {
+                  am.data.rank_current = 1;
+                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
+                }
+              });
+            }
+          });
+        }
+
+        if (this.isOwned && this.actor) {
           let damageAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
               damageAdd += parseInt(data.attributes[attr].value, 10);
             }
           }
-          if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl")) && data.skill.useBrawn) {
-            data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
-            data.damage.adjusted = +data.damage.value;
-          } else {
-            data.damage.value = parseInt(data.damage.value, 10);
-            data.damage.adjusted = +data.damage.value + damageAdd;
+          if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
+            if (ModifierHelpers.applyBrawnToDamage(data)) {
+              const olddamage = data.damage.value;
+              data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
+              data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
+            } else {
+              data.damage.value = parseInt(data.damage.value, 10);
+              data.damage.adjusted += damageAdd;
+            }
           }
         }
 
-        break;
-      case "shipweapon":
-        const vehiclerangeId = `SWFFG.VehicleRange${this._capitalize(data.range.value)}`;
-        data.range.label = vehiclerangeId;
+        const rangeLabel = (this.type === "weapon" ? `SWFFG.WeaponRange` : `SWFFG.VehicleRange`) + this._capitalize(data.range.adjusted);
+        data.range.label = rangeLabel;
 
-        let damageAdd = 0;
-        for (let attr in data.attributes) {
-          if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
-            damageAdd += parseInt(data.attributes[attr].value, 10);
-          }
-        }
-
-        data.damage.value = parseInt(data.damage.value, 10);
-        data.damage.adjusted = +data.damage.value + damageAdd;
         break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
@@ -67,6 +129,19 @@ export class ItemFFG extends ItemBaseFFG {
         data.activation.label = activationId;
         break;
       default:
+    }
+
+    if (["weapon", "armor"].includes(this.type)) {
+      // get all item attachments
+      let totalHPUsed = 0;
+
+      if (data?.itemattachment?.length) {
+        data.itemattachment.forEach((attachment) => {
+          totalHPUsed += attachment.data.hardpoints.value;
+        });
+      }
+
+      data.hardpoints.current = data.hardpoints.value - totalHPUsed;
     }
 
     if (this.type === "forcepower") {
@@ -240,20 +315,20 @@ export class ItemFFG extends ItemBaseFFG {
     }
     // General equipment properties
     else if (this.type !== "talent") {
-      if (data.hasOwnProperty("special")) {
-        props.push(`<div>Special qualities: ${data.special.value}</div>`);
+      if (data.hasOwnProperty("adjusteditemmodifier")) {
+        const qualities = data.adjusteditemmodifier.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this._id}' data-uuid='${this.uuid}' data-modifier-id='${m._id}' data-modifier-type='${m.type}'>${m.name} ${m.data.rank_current > 0 ? m.data.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+
+        props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
-      if (data.hasOwnProperty("equippable")) {
-        props.push(game.i18n.localize(data.equippable.equipped ? "SWFFG.Equipped" : "SWFFG.Unequipped"));
-      }
+
       if (data.hasOwnProperty("encumbrance")) {
-        props.push(`Encumbrance: ${data.encumbrance.value}`);
+        props.push(`${game.i18n.localize("SWFFG.Encumbrance")}: ${data.encumbrance?.adjusted ? data.encumbrance.adjusted : data.encumbrance.value}`);
       }
       if (data.hasOwnProperty("price")) {
-        props.push(`Price: ${data.price.value}`);
+        props.push(`${game.i18n.localize("SWFFG.ItemsPrice")}: ${data.price?.adjusted ? data.price.adjusted : data.price.value}`);
       }
       if (data.hasOwnProperty("rarity")) {
-        props.push(`Rarity: ${data.rarity.value}`);
+        props.push(`${game.i18n.localize("SWFFG.ItemsRarity")}: ${data.rarity?.adjusted ? data.rarity.adjusted : data.rarity.value} ${data.rarity.isrestricted ? "<span class='restricted'>" + game.i18n.localize("SWFFG.IsRestricted") + "</span>" : ""}`);
       }
     }
 

@@ -8,6 +8,8 @@ import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers from "../helpers/actor-helpers.js";
+import ItemHelpers from "../helpers/item-helpers.js";
+import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -44,16 +46,31 @@ export class ActorSheetFFG extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData() {
+  getData(options) {
     const data = super.getData();
     data.classType = this.constructor.name;
+
+    if (options?.action === "update" && this.object.compendium) {
+      data.item = mergeObject(data.actor, options.data);
+    }
+
     data.dtypes = ["String", "Number", "Boolean"];
     for (let attr of Object.values(data.data.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
     data.FFG = CONFIG.FFG;
+
+    let autoSoakCalculation = true;
+
+    if (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined") {
+      autoSoakCalculation = game.settings.get("starwarsffg", "enableSoakCalc");
+    } else {
+      autoSoakCalculation = this.actor.data.flags.config.enableAutoSoakCalculation;
+    }
+
     data.settings = {
-      enableSoakCalculation: game.settings.get("starwarsffg", "enableSoakCalc"),
+      enableSoakCalculation: autoSoakCalculation,
+      enableCriticalInjuries: this.actor.data?.flags?.config?.enableCriticalInjuries,
     };
 
     // Establish sheet width and height using either saved persistent values or default values defined in swffg-config.js
@@ -82,6 +99,10 @@ export class ActorSheetFFG extends ActorSheet {
       data.data.skilllist = this._createSkillColumns(data);
     }
 
+    if (this.actor.data?.flags?.config?.enableObligation === false && this.actor.data?.flags?.config?.enableDuty === false && this.actor.data?.flags?.config?.enableMorality === false && this.actor.data?.flags?.config?.enableConflict === false) {
+      data.hideObligationDutyMoralityConflictTab = true;
+    }
+
     return data;
   }
 
@@ -91,7 +112,6 @@ export class ActorSheetFFG extends ActorSheet {
   activateListeners(html) {
     super.activateListeners(html);
 
-    // TODO: This is not needed in Foundry 0.6.0
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
@@ -280,7 +300,14 @@ export class ActorSheetFFG extends ActorSheet {
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+        type: "Boolean",
         default: true,
+      });
+      this.sheetoptions.register("enableCriticalInjuries", {
+        name: game.i18n.localize("SWFFG.EnableCriticalInjuries"),
+        hint: game.i18n.localize("SWFFG.EnableCriticalInjuriesHint"),
+        type: "Boolean",
+        default: false,
       });
       this.sheetoptions.register("talentSorting", {
         name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
@@ -317,6 +344,18 @@ export class ActorSheetFFG extends ActorSheet {
           if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
           else this._itemDisplayDetails(item, ev);
         }
+
+        html.find("li.item-pill").on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          const li = event.currentTarget;
+
+          let itemId = li.dataset.itemId;
+          let modifierType = li.dataset.modifierType;
+          let modifierId = li.dataset.modifierId;
+
+          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor._id, this.actor.compendium);
+        });
       }
     });
 
@@ -1040,22 +1079,32 @@ export class ActorSheetFFG extends ActorSheet {
 
     data.data.skilltypes.forEach((type) => {
       // filter and sort skills for current skill category
+      let sortFunction = (a, b) => {
+        if (a.toLowerCase() > b.toLowerCase()) return 1;
+        if (a.toLowerCase() < b.toLowerCase()) return -1;
+        return 0;
+      };
+      if (game.settings.get("starwarsffg", "skillSorting")) {
+        sortFunction = (a, b) => {
+          if (data.data.skills[a].label > data.data.skills[b].label) return 1;
+          if (data.data.skills[a].label < data.data.skills[b].label) return -1;
+          return 0;
+        };
+      }
+
       const skills = Object.keys(data.data.skills)
         .filter((s) => data.data.skills[s].type === type.type)
-        .sort((a, b) => {
-          let comparison = 0;
-          if (a.toLowerCase() > b.toLowerCase()) {
-            comparison = 1;
-          } else if (a.toLowerCase() < b.toLowerCase()) {
-            comparison = -1;
-          }
-          return comparison;
-        });
+        .sort(sortFunction);
 
       // if the skill list is larger that the column row count then take into account the added header row.
-      if (skills.length > colRowCount) {
-        colRowCount = Math.ceil((totalRows + 1) / 2.0);
-        rowsLeft = colRowCount;
+      if (skills.length >= colRowCount) {
+        if (skills.length - colRowCount > 2) {
+          colRowCount = Math.ceil((totalRows + 1) / 2.0);
+          rowsLeft = colRowCount;
+        } else {
+          colRowCount = skills.length + 1;
+          rowsLeft = colRowCount;
+        }
       }
 
       cols[currentColumn].push({ id: "header", ...type });
