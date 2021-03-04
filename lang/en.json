@@ -443,5 +443,9 @@
   "SWFFG.EnableSortTalentsByActivationHint": "Enable grouping Talents by activation",
   "SWFFG.UseGlobalSetting": "Use Global",
   "SWFFG.OptionValueYes": "Yes",
-  "SWFFG.OptionValueNo": "No"
+  "SWFFG.OptionValueNo": "No",
+  "SWFFG.DestinyAddString1" : "Added a ",
+  "SWFFG.DestinyAddString2" : "point.",
+  "SWFFG.DestinyRemString1" : "Removed a ",
+  "SWFFG.DestinyRemString2" : "point."
 }
