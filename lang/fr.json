@@ -354,5 +354,9 @@
   "SWFFG.Advantage": "Avantage",
   "SWFFG.Success": "Succès",
   "SWFFG.Threat": "Menace",
-  "SWFFG.Failure": "Échec"
+  "SWFFG.Failure": "Échec",
+  "SWFFG.DestinyAddString1" : "Added a ",
+  "SWFFG.DestinyAddString2" : "point.",
+  "SWFFG.DestinyRemString1" : "Removed a ",
+  "SWFFG.DestinyRemString2" : "point."
 }
