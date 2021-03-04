@@ -420,5 +420,9 @@
   "SWFFG.EnableRollAudioPlaylist": "Tirada - Lista de sonidos a utilizar por el usuario",
   "SWFFG.EnableRollAudioPlaylistHint": "Esta es la lista de reproducción permitida para los efectos de sonido.",
   "SWFFG.SentDicePoolRoll": "Pulsa aquí para tirar la reserva de dados.",
-  "SWFFG.SentDicePoolRollHit": "Envía una reserva de dados para su tirada."
+  "SWFFG.SentDicePoolRollHit": "Envía una reserva de dados para su tirada.",
+  "SWFFG.DestinyAddString1" : "Added a ",
+  "SWFFG.DestinyAddString2" : "point.",
+  "SWFFG.DestinyRemString1" : "Removed a ",
+  "SWFFG.DestinyRemString2" : "point."
 }
