@@ -29,7 +29,7 @@
       </select>
       {{/if}}
     </div>
-    <div style="text-align: center;"><span>Left click to increase dice, right click to decrease.</span></div>
+    <div style="text-align: center;"><span>{{localize "SWFFG.DicePoolAddsHint"}}</span></div>
     <table class="pool-additional-container">
       <tr>
         <td class="pool-additional">{{{ffgDiceSymbols "[AD]"}}}<input type="button" name="advantage" min="0" />{{localize "SWFFG.Advantage"}}</td>
@@ -113,5 +113,5 @@
       {{/if}}
     </table>
   </div>
-  <button class="btn">ROLL</button>
+  <button class="btn">{{localize "SWFFG.SkillsRoll"}}</button>
 </form>
