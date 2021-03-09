@@ -25,9 +25,9 @@
     {{/if}} {{#if publicRoll }} {{#if hasFFG}}
     <ul>
       {{#if hasSuccess}} {{#if ffg.success}}
-      <li class="roll-success">Check succeeded!</li>
+      <li class="roll-success">{{localize "SWFFG.RollSucceeded"}}</li>
       {{else}}
-      <li class="roll-failure">Check failed!</li>
+      <li class="roll-failure">{{localize "SWFFG.RollFailure"}}</li>
       {{/if}} {{/if}} {{#each ffg as | result key|}} {{#if this}}
       <li>{{localize (lookup ../this.diceresults [key])}}: {{this}}</li>
       {{/if}} {{/each}}
