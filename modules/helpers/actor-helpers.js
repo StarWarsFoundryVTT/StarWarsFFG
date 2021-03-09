@@ -88,7 +88,10 @@ export default class ActorHelpers {
       // Handle credits
 
       if (formData.data.stats?.credits?.value) {
-        const rawCredits = formData.data.stats?.credits.value?.toString().replace(/[^0-9]+|(?<=\.)[^.]*$/g, "");
+        const rawCredits = formData.data.stats?.credits.value
+          ?.toString()
+          .match(/^(?!.*\.).*|.*\./)[0]
+          .replace(/[^0-9]+/g, "");
         formData.data.stats.credits.value = parseInt(rawCredits, 10);
       }
     } else {
