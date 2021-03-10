@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 10/03/2021 - Cstadther - Fix 828 - Fixed issue where qualities were not being imported for vehicles correctly.
 - 09/03/2021 - Cstadther - Fix 820 - Updated RegEx for monetary value scrubbing to allow Safari.
 - 23/02/2021 - Cstadther - Fix OggDude Character import changing owned item ids when reimporting characters.
 - 17/02/2021 - Cstadther - Fix 803 - Fixed issue where specialization talents were duplicating modifiers on each import.

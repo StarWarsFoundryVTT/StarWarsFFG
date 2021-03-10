@@ -95,7 +95,10 @@ export default class Vehicles {
                 if (weaponEntity) {
                   const weaponData = JSON.parse(JSON.stringify(weaponEntity));
                   delete weaponData._id;
-                  weaponData.data.itemmodifier = [];
+
+                  if (!Array.isArray(weaponData.data.itemmodifier)) {
+                    weaponData.data.itemmodifier = [];
+                  }
                   const count = weapon.Count ? parseInt(weapon.Count, 10) : 1;
                   if (!weaponData.data?.firingarc) weaponData.data.firingarc = {};
                   ["Fore", "Aft", "Port", "Starboard", "Dorsal", "Ventral"].forEach((location) => {
