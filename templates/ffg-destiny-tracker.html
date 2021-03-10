@@ -1,27 +1,20 @@
 <div class="swffg-destiny-container">
-  <div class="swffg-destiny-bar"></div>
-  <div class="swffg-destiny {{#if isGM}}swffg-groupmanager{{/if}}" title="Left click to flip, SHIFT+left click to add, CTRL+left click to remove.">
+  <div class="swffg-destiny {{#if isGM}}swffg-groupmanager{{/if}}" title="{{localize 'SWFFG.DestinyTrackerHint'}}">
     {{#if isGM}}
-    <section id="destinyMenu" class="group-manager">
-      <button id="menuDropdown" class="dropbtn"><i class="fas fa-users"></i></button>
-    </section>
-    <!-- 
-      Future functionality to allow for multiple menu items to be passed to destiny pool
     <section id="destinyMenu" class="group-manager">
       <div class="dropdown">
         <button id="menuDropdown" class="dropbtn"><i class="fas fa-bars"></i></button>
         <div id="menuDropdownContent" class="dropdown-content">
           {{#each menu as |item id|}}
-          <a href="#"data-value="{{id}}" title="{{item.name}}">
+          <a href="#" data-value="{{id}}" title="{{item.name}}">
             {{{item.icon}}}
           </a>
           {{/each}}
         </div>
       </div>
-    </section> -->
+    </section>
     {{/if}}
-    <section id="destinyLight" class="destiny-points {{#if isGM}}display-menu{{/if}}" data-value="${destinyPool.light}" data-group="dPoolLight">{{destinyPool.light}}<span>{{localize "SWFFG.Lightside" }}</span></section>
-    <section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">{{destinyPool.dark}}<span>{{localize "SWFFG.Darkside" }}</span></section>
+    <section id="destinyLight" class="destiny-points {{#if isGM}}display-menu{{/if}}" data-value="${destinyPool.light}" data-group="dPoolLight">{{destinyPool.light}}<span>{{localize destinyPoolLabel.light }}</span></section>
+    <section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">{{destinyPool.dark}}<span>{{localize destinyPoolLabel.dark }}</span></section>
   </div>
-  <div class="swffg-destiny-bar"></div>
 </div>

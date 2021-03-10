@@ -9,11 +9,14 @@ import { GroupManager } from "./groupmanager-ffg.js";
  *
  */
 export default class DestinyTracker extends FormApplication {
-  constructor() {
+  constructor(options) {
     super();
 
     this.destinyQueue = [];
     this.isRunningQueue = false;
+    if (options?.menu) {
+      this.menu = options.menu;
+    }
   }
 
   /** @override */
@@ -30,6 +33,7 @@ export default class DestinyTracker extends FormApplication {
   getData() {
     // Get current value
     let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
+    let destinyPoolLabel = { light: game.settings.get("starwarsffg", "destiny-pool-light"), dark: game.settings.get("starwarsffg", "destiny-pool-dark") };
 
     const x = $(window).width();
     const y = $(window).height();
@@ -39,11 +43,16 @@ export default class DestinyTracker extends FormApplication {
     this.position.width = 150;
     this.position.height = 105;
 
+    // filter menu based on role.
+
+    const menu = this.menu.filter((m) => game.user.hasRole(m.minimumRole) || !m.minimumRole);
+
     // Return data
     return {
       destinyPool,
+      destinyPoolLabel,
       isGM: game.user.isGM,
-      menu: this.object.menu,
+      menu,
     };
   }
 
@@ -57,44 +66,36 @@ export default class DestinyTracker extends FormApplication {
 
   /** @override */
   activateListeners(html) {
-    const topHeader = html.find(".swffg-destiny-bar")[0];
-    new Draggable(this, html, topHeader, this.options.resizable);
-    const bottomHeader = html.find(".swffg-destiny-bar")[1];
-    new Draggable(this, html, bottomHeader, this.options.resizable);
+    const d = html.find("swffg-destiny-container")[0];
+    new Draggable(this, html, d, this.options.resizable);
 
     $("#destiny-tracker").css({ bottom: "0px", right: "305px" });
 
     // future functionality to allow multiple menu items to be passed in
-    // html.find(".dropbtn").click((event) => {
-    //   const id = `#${$(event.target).attr("id")}Content`;
-    //   console.log("clicked");
 
-    //   $(html.find(id)).toggleClass("show");
-    // });
-    // window.onclick = function(event) {
-    //   if (!event.target.matches('.dropbtn')) {
-    //     var dropdowns = document.getElementsByClassName("dropdown-content");
-    //     var i;
-    //     for (i = 0; i < dropdowns.length; i++) {
-    //       var openDropdown = dropdowns[i];
-    //       if (openDropdown.classList.contains('show')) {
-    //         openDropdown.classList.remove('show');
-    //       }
-    //     }
-    //   }
-    // }
-    // html.find(".dropdown-content a").click((event) => {
-    //   event.preventDefault();
-    //   event.stopPropagation();
+    $.expr.filters.offscreen = function (el) {
+      var rect = el.getBoundingClientRect();
+      return rect.x + rect.width < 0 || rect.y + rect.height < 0 || rect.y + rect.height > window.innerHeight || rect.x + rect.width > window.innerWidth || rect.x > window.innerWidth || rect.y > window.innerHeight;
+    };
 
-    //   const index = event.currentTarget.dataset.value;
-    //   this.object.menu[index].callback();
-    //   $(event.currentTarget).parent().toggleClass("show");
-    // })
-    html.find(".group-manager").click((event) => {
+    html.find(".dropbtn").click((event) => {
+      const id = `#${$(event.currentTarget).attr("id")}Content`;
+      $(html.find(id)).toggleClass("show");
+
+      if ($(".dropdown-content").is(":offscreen")) {
+        $(html.find(id)).addClass("vertical");
+      } else {
+        $(html.find(id)).removeClass("vertical");
+      }
+    });
+
+    html.find(".dropdown-content a").click((event) => {
       event.preventDefault();
       event.stopPropagation();
-      new GroupManager().render(true);
+
+      const index = event.currentTarget.dataset.value;
+      this.menu[index].callback();
+      $(event.currentTarget).parent().toggleClass("show");
     });
 
     html.find(".destiny-points").click(async (event) => {
@@ -106,10 +107,10 @@ export default class DestinyTracker extends FormApplication {
       var actionType = null;
       if (pointType == "dPoolLight") {
         flipType = "dPoolDark";
-        typeName = game.i18n.localize("SWFFG.Lightside");
+        typeName = game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"));
       } else {
         flipType = "dPoolLight";
-        typeName = game.i18n.localize("SWFFG.Darkside");
+        typeName = game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"));
       }
       var messageText;
 
@@ -136,8 +137,8 @@ export default class DestinyTracker extends FormApplication {
 
           messageText = `<div class="destiny-flip ${flipType}">
             <div class="destiny-title">Flipped a <span>${typeName}</span> point</div>
-            <div class="destiny-left">${game.i18n.localize("SWFFG.Darkside")} Remaining: ${pool.dark}</div>
-            <div class="destiny-left">${game.i18n.localize("SWFFG.Lightside")} Remaining: ${pool.light}</div>
+            <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))} Remaining: ${pool.dark}</div>
+            <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))} Remaining: ${pool.light}</div>
           </div>`;
         }
       } else if (add) {
@@ -163,29 +164,6 @@ export default class DestinyTracker extends FormApplication {
         content: messageText,
       });
     });
-
-    if (game.user.isGM) {
-      new ContextMenu(html, ".swffg-destiny-bar", [
-        {
-          name: game.i18n.localize("SWFFG.RequestDestinyRoll"),
-          icon: '<i class="fas fa-plus-circle"></i>',
-          callback: (li) => {
-            const messageText = `<button class="ffg-destiny-roll">${game.i18n.localize("SWFFG.DestinyPoolRoll")}</button>`;
-
-            new Map([...game.settings.settings].filter(([k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
-              game.settings.set(i.module, i.key, undefined);
-            });
-
-            CONFIG.FFG.DestinyGM = game.user.id;
-
-            ChatMessage.create({
-              user: game.user._id,
-              content: messageText,
-            });
-          },
-        },
-      ]);
-    }
 
     // handle previously created roll destiny chat messages
     $(".ffg-destiny-roll").on("click", this.OnClickRollDestiny.bind(this));

@@ -36,6 +36,52 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 10/03/2021 - Cstadther - Fix 828 - Fixed issue where qualities were not being imported for vehicles correctly.
+- 09/03/2021 - Cstadther - Fix 820 - Updated RegEx for monetary value scrubbing to allow Safari.
+- 23/02/2021 - Cstadther - Fix OggDude Character import changing owned item ids when reimporting characters.
+- 17/02/2021 - Cstadther - Fix 803 - Fixed issue where specialization talents were duplicating modifiers on each import.
+- 15/02/2021 - Cstadther - Fix 797 - Fixed issue where talent activations on custom specializations were not displaying activation on talent list.
+- 15/02/2021 - Cstadther - Fix 795 - Fixed issue where custom one-off skills disappear on refresh.
+- 11/02/2021 - Cstadther - Enhancment 709 - Updated connectors CSS for Specializations, Force Powers and Signature Abilities
+- 11/02/2021 - Cstadther - Fix 701 - Fixed issue where in Standard UI destiny drop down doesn't expand up when list options expands off screen.
+- 08/02/2021 - Cstadther - Fix 774 - Fixed issue where setting characteristic to 0 was not setting the value to 0.
+- 08/02/2021 - Cstadther - Fix 773 - Fixed issue with Obligation/Duty table on GroupManager
+- 07/02/2021 - Cstadther - Fix 770 - Fixed issue where Knowledge skill modifiers were not being created correctly.
+- 05/02/2021 - Cstadther - Fix 764/765 - Fixed issues where skills were not sorting by translated name.  Fixed issue where straggler skills were not being grouped together.
+- 05/02/2021 - Cstadhter - Fix 759 - Fixed issue where unable to add modifiers to item attachments.
+- 05/02/2021 - Cstadther - Fix 757 - Fixed issue where modifiers were ignored when rolling from macro.
+- 05/02/2021 - Cstadther - Fix 756 - Custom Destiny Pool Names were reverting on closing Group Manager.
+- 03/02/2021 - Cstadther - Enhancement 717 - Added ability to decode SWA dice symbols, example `:boost:`
+- 03/02/2021 - Cstadhter - Fix 744 - Fixed issue where roll and expanded data cards were displaying incorrect rank for qualities.
+- 03/02/2021 - Cstadther - Fix 743 - Fixed issue to where damaged weapons were not applying a difficulty die addition.
+- 03/02/2021 - Cstadther - Fix 723/724 - Fixed SWA Import issues with soak and added ability for minions (Rivals on Minion Sheet) to have criticals, shows up as a sheet option, but for import defaults to true.
+- 02/02/2021 - Cstadther - Enhancement 732 - Added Triumph and Despair to die roller.
+- 01/02/2021 - Cstadther - Fix 725 - Resolved issue with SW Adversary's soak, now will automatically disable soak calculation on import.
+- 01/02/2021 - Cstadther - Fix 727 - Fixed issue where adding multiple owned items to a character with the same id resulted in only 1 entry.
+- 01/02/2021 - Cstadther - Fix 720 - Fixed issue where additional modifiers were being incorrectly added.
+- 01/02/2021 - Cstadther - Fix 705 - Switched character import compendium item lookup to lookup specific template type.
+- 01/02/2021 - Cstadther - Fix 718 - Reimporting was causing duplicate modifiers.
+- 30/01/2021 - Cstadther - Fix 726 - Fixed issue with available hardpoint calculation.
+- 30/01/2021 - Cstadther - Fix 710 - Fixed issue where talent boxes split button was hidden behind the box.
+- 30/01/2021 - Cstadther - Fix 708 - Fixed issue where specialization modifiers were not able to be deleted.
+- 30/01/2021 - Cstadther - Fix 707 - Fixed issue with Lightsabers using brawn not calculation damage correctly.
+- 29/01/2021 - Cstadther - Enhancement 616 - Added Roll Only modifiers to weapons under `Roll Modifiers`, `Dice Modifiers` and `Result Modifiers`
+- 26/01/2021 - Cstadther - Added a new Hook `ffgDiceMessage` which fires after a dice .tomessage function call.
+- 25/01/2021 - Cstadther - Enhancement 638 / Enhancement 639 - Added setting for Destiny Pool labels and Enable Force Die.
+- 25/01/2021 - Cstadther - Enhancement 672 - Added saving sound path on item roll (ie Weapons)
+- 25/01/2021 - Cstadther - Enhancement 659 - Created drop down menu on destiny pool, with group manager and roll for destiny options.  Removed top and bottom bar and add dragging to entire box, except for clickable items, adjusted cursors to match.
+- 24/01/2021 - Cstadther - Enhancement 640 - Changed location of UI settings to its own form, add customizable Paused image setting.
+- 23/01/2021 - Cstadther - Enhancement 646 - Added ability to change default stylesheet, added @Mandar theme as option.
+- 22/01/2021 - Cstadther - Refactored OggDude importer, and changed import based on import key instead of name.
+- 20/01/2021 - Cstadther - Enhancement @Shyster Effd#5441 Provided an enhancement for SWA Importer to correct create armor.
+- 19/01/2021 - Cstadther - Fixed issue where Force Modifer was not being calculated correctly.
+- 18/01/2021 - Cstadther - Fix 644 - Fixed issue with import vehicle encumbrance.
+- 17/01/2021 - Cstadther - Fix 651 - Fixed issue where users could not display read-only journal entries.
+- 17/01/2021 - Cstadther - Fix 648 - Fixed issue where qualities were reset on drag/drop.
+- 16/01/2021 - Cstadther - Fix 636 - Fixed issues where Social Skill category is not longer being displays, also affected Labels on some of the skills.
+- 16/01/2021 - Cstadther - Added migration for alternate skill lists.
+- 16/01/2021 - Cstadther - Enhancement 633 - Added quality rendering to `Send To Chat` template.
+- 16/01/2021 - Cstadther - Added Item Attachments and styling to support it.
 - 15/01/2021 - Cstadther - Added code to fix save/display issues with compendium items.
 - 08/01/2021 - Cstadther - Added new paused image.
 - 04/01/2021 - Cstadther - Fix for Melee-* skills not calculating damage correctly when based on Brawn.

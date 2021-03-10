@@ -20,7 +20,8 @@ export class ActorFFG extends Actor {
 
     // if the actor has skills, add custom skills and sort by abbreviation
     if (data.skills) {
-      const actorSkills = {};
+      let actorSkills = data.skills;
+
       Object.keys(data.skills)
         .filter((skill) => {
           return data.skills[skill].custom;
@@ -31,25 +32,15 @@ export class ActorFFG extends Actor {
             abrev: data.skills[skill].label,
             label: data.skills[skill].label,
             custom: data.skills[skill].custom,
+            ...data.skills[skill],
           };
         });
 
-      const skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
-      mergeObject(skills, actorSkills);
+      let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
 
-      const sorted = Object.keys(skills).sort(function (a, b) {
-        const x = game.i18n.localize(skills[a].abrev);
-        const y = game.i18n.localize(skills[b].abrev);
-
-        return x < y ? -1 : x > y ? 1 : 0;
-      });
-
-      let ordered = {};
-      sorted.forEach((skill) => {
-        ordered[skill] = skills[skill];
-      });
-
-      CONFIG.FFG.skills = ordered;
+      // if (game.settings.get("starwarsffg", "skilltheme") !== "starwars") {
+      data.skills = mergeObject(skills, actorSkills);
+      // }
 
       let unique = [...new Set(Object.values(data.skills).map((item) => item.type))];
       if (unique.indexOf("General") > 0) {
@@ -83,15 +74,16 @@ export class ActorFFG extends Actor {
 
       //localize skill names
       for (let skill of Object.keys(data.skills)) {
-        const cleanedSkillName = skill.replace(/[\W_]+/g, "");
+        let skillLabel = CONFIG.FFG.skills?.[skill]?.label;
 
-        const strId = `SWFFG.SkillsName${cleanedSkillName}`;
-        const localizedField = game.i18n.localize(strId);
-
-        if (!data.skills[skill].custom) {
-          data.skills[skill].label = localizedField;
+        if (!skillLabel) {
+          // this is a one-off skill added directly to the character
+          skillLabel = data.skills[skill].label;
         }
-        data.skills = this._sortSkills(data.skills);
+
+        const localizedField = game.i18n.localize(skillLabel);
+
+        data.skills[skill].label = localizedField;
       }
     }
 
@@ -120,7 +112,7 @@ export class ActorFFG extends Actor {
     }
 
     //Calculate the number of alive minions
-    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor(data.stats.wounds.value / data.unit_wounds.value));
+    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.value - 1) / data.unit_wounds.value));
 
     // Loop through Skills, and where groupskill = true, set the rank to 1*(quantity-1).
     for (let [key, skill] of Object.entries(data.skills)) {
@@ -302,7 +294,7 @@ export class ActorFFG extends Actor {
     }
 
     // enable talent sorting if global to true and sheet is set to inherit or sheet is set to true.
-    if ((game.settings.get("starwarsffg", "talentSorting") && actorData.flags?.config?.talentSorting === "0") || actorData.flags?.config?.talentSorting === "1") {
+    if ((game.settings.get("starwarsffg", "talentSorting") && (!actorData.flags?.config?.talentSorting || actorData.flags?.config?.talentSorting === "0")) || actorData.flags?.config?.talentSorting === "1") {
       data.talentList = globalTalentList.slice().sort(this._sortTalents);
     } else {
       data.talentList = globalTalentList;
@@ -369,82 +361,6 @@ export class ActorFFG extends Actor {
   _capitalize(s) {
     if (typeof s !== "string") return "";
     return s.charAt(0).toUpperCase() + s.slice(1);
-  }
-
-  // Sort skills by label
-  _sortSkills(skills) {
-    // Break down skills object into an array for sorting (I hate Javascript)
-    let skillarray = Object.entries(skills).filter((skill) => {
-      return skill[1]["type"] != "Knowledge";
-    });
-    let knowledgearray = Object.entries(skills).filter((skill) => {
-      return skill[1]["type"] === "Knowledge";
-    });
-    if (game.settings.get("starwarsffg", "skillSorting")) {
-      skillarray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (a[1]["label"] < b[1]["label"]) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (a[1]["label"] > b[1]["label"]) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-      knowledgearray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[a[0]]) < game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[b[0]])) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[a[0]]) > game.i18n.localize(CONFIG.FFG.skills_knowledgestripped[b[0]])) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-    } else {
-      skillarray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (a[0] < b[0]) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (a[0] > b[0]) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-      knowledgearray.sort(function (a, b) {
-        // a should come before b in the sorted order
-        if (a[0] < b[0]) {
-          return -1 * 1;
-          // a should come after b in the sorted order
-        } else if (a[0] > b[0]) {
-          return 1 * 1;
-          // a and b are the same
-        } else {
-          return 0 * 1;
-        }
-      });
-    }
-    let skillobject = {};
-    // Reconstruct skills object from sorted array.
-    skillarray.forEach((skill) => {
-      const skillname = skill[0];
-      const value = skill[1];
-      skillobject[skillname] = value;
-    });
-    knowledgearray.forEach((skill) => {
-      const skillname = skill[0];
-      const value = skill[1];
-      skillobject[skillname] = value;
-    });
-    skills = skillobject;
-    return skills;
   }
 
   // group talents
@@ -536,7 +452,7 @@ export class ActorFFG extends Actor {
           value = [data[name][k].fore, data[name][k].port, data[name][k].starboard, data[name][k].aft];
         } else if (key === "Soak") {
           try {
-            if ((actor?._sheetClass?.name === "AdversarySheetFFG" && actorData.data.flags?.config?.enableAutoSoakCalculation) || game.settings.get("starwarsffg", "enableSoakCalc")) {
+            if ((typeof actorData.data.flags?.config?.enableAutoSoakCalculation === undefined && game.settings.get("starwarsffg", "enableSoakCalc")) || actorData.data.flags?.config?.enableAutoSoakCalculation) {
               value = 0;
             }
           } catch (err) {
@@ -690,13 +606,15 @@ export class ActorFFG extends Actor {
       setValueAndSources("Skill Add Light", "light");
       setValueAndSources("Skill Add Success", "success");
       setValueAndSources("Skill Add Threat", "threat");
+      setValueAndSources("Skill Add Triumph", "triumph");
+      setValueAndSources("Skill Add Despair", "despair");
 
       const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
       data.skills[key].force = 0;
-      if (forceboost.total > 0) {
+      if (forceboost.checked) {
         const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
         if (forcedice > 0) {
-          data.skills[key].force = forcedice.total;
+          data.skills[key].force = forcedice;
           data.skills[key].forcesource = forceboost.sources;
         }
       }

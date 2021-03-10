@@ -15,6 +15,21 @@
         line-height: 15px;
       }
     }
+
+    .characteristic {
+      .characteristic-value {
+        &.restricted {
+          &::after {
+            content: 'R';
+            position: absolute;
+            font-size: 15px;
+            left: 1px;
+            top: -1px;
+            color: #8b0000;;
+          }
+        }
+      }
+    }
   }
  
   .window-content {
@@ -24,6 +39,53 @@
   .sheet-body {
     margin: 10px 5px;
     overflow: auto;
+  }
+
+  .item-pill-list {
+    padding: 0;
+    &:after {
+      content:".";
+      display:block;
+      height:0;
+      clear:both;
+      visibility:hidden;
+    }
+  }
+
+  .item-pill {
+    list-style-type: none;
+    padding: 0 5px;
+    background-color: #aaa;
+    border: 1px solid black;
+    border-radius: 12px;
+    float: left;
+    margin: 1px;
+    cursor: pointer;
+    font-size: 12px;
+    line-height: 20px;
+    white-space: nowrap;
+
+    &.adjusted {
+      color: #8b0000;
+    }
+    
+    .rank {
+      padding-right: 15px;
+      &:hover {
+        color: green;
+      }
+    }
+  
+    .item-delete {
+      cursor: pointer;
+      &:hover {
+        color: red;
+      }
+    }
+  }
+
+  .add-new-item {
+    cursor: pointer;
   }
 }
 

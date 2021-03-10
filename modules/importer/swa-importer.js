@@ -1,3 +1,4 @@
+import ItemBaseFFG from "../items/itembase-ffg.js";
 import ImportHelpers from "./import-helpers.js";
 
 export default class SWAImporter extends FormApplication {
@@ -61,6 +62,7 @@ export default class SWAImporter extends FormApplication {
       if (form.data.files.length) {
         zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
       }
+      let filter = $(form).find("[name=tag-filter]").val();
 
       if (zip) {
         // load ancillary files
@@ -91,7 +93,7 @@ export default class SWAImporter extends FormApplication {
         const adversaries = this._enableImportSelection(zip.files, "adversaries", true, true);
 
         if (adversaries) {
-          await this._handleAdversaries(zip);
+          await this._handleAdversaries(zip, filter);
         }
       }
     }
@@ -120,7 +122,7 @@ export default class SWAImporter extends FormApplication {
     }
   }
 
-  async _handleAdversaries(zip) {
+  async _handleAdversaries(zip, filter) {
     this._importLogger(`Starting Adversary Import`);
     const adversaryFiles = Object.values(zip.files).filter((file) => {
       return !file.dir && file.name.split(".").pop() === "json" && file.name.includes("/adversaries/");
@@ -162,6 +164,10 @@ export default class SWAImporter extends FormApplication {
 
             await ImportHelpers.asyncForEach(fileData, async (item) => {
               try {
+                if (filter.length > 0 && !item.tags.includes(filter)) {
+                  return;
+                }
+
                 let skills = {
                   "Astrogation": {
                     "rank": 0,
@@ -360,80 +366,84 @@ export default class SWAImporter extends FormApplication {
                   type: item.type === "Nemesis" ? "character" : "minion",
                   flags: {
                     ffgimportid: `${f.name}-${item.type}-${item.name}`,
-                  },
-                  data: {
-                    characteristics: {
-                      "Brawn": {
-                        "value": item.characteristics.Brawn,
-                      },
-                      "Agility": {
-                        "value": item.characteristics.Agility,
-                      },
-                      "Intellect": {
-                        "value": item.characteristics.Intellect,
-                      },
-                      "Cunning": {
-                        "value": item.characteristics.Cunning,
-                      },
-                      "Willpower": {
-                        "value": item.characteristics.Willpower,
-                      },
-                      "Presence": {
-                        "value": item.characteristics.Presence,
-                      },
+                    config: {
+                      enableAutoSoakCalculation: false,
+                      enableCriticalInjuries: item.type === "Minion" ? false : true,
                     },
+                  },
+                  flags: {},
+                  data: {
+                    attributes: {},
+                    characteristics: {},
                     skills,
                     stats: {},
                   },
                   items: [],
                 };
 
+                Object.values(CONFIG.FFG.characteristics).forEach((char) => {
+                  adversary.data.characteristics[char.value] = { value: item?.characteristics?.[char.value] ? item?.characteristics?.[char.value] : 0 };
+                });
+
                 if (item.derived) {
-                  if (item.derived.defence) {
-                    adversary.data.stats.defence = {
-                      ranged: item.derived.defence[0],
-                      melee: item.derived.defence[1],
-                    };
-                  }
-                  if (item.derived.soak) {
-                    adversary.data.stats.soak = {
-                      value: item.derived.soak - adversary.data.characteristics.Brawn,
-                    };
-                  }
-                  if (item.derived.wounds) {
-                    if (adversary.type === "minion") {
-                      adversary.data.quantity = {
-                        value: 1,
-                        max: 1,
+                  ["soak", "wounds", "strain"].forEach((stat) => {
+                    if (stat === "soak") {
+                      adversary.data.stats[stat] = {
+                        value: parseInt(item.derived[stat], 10),
                       };
 
-                      adversary.data["unit_wounds"] = {
-                        value: item.derived.wounds,
+                      adversary.data.attributes.Soak = {
+                        mod: "Soak",
+                        modtype: "Stat",
+                        value: Math.abs(adversary.data.stats[stat].value - parseInt(adversary.data.characteristics.Brawn.value, 10)),
                       };
+                    } else {
+                      if (stat === "wounds" && adversary.type === "minion") {
+                        adversary.data.quantity = {
+                          value: 1,
+                          max: 1,
+                        };
+
+                        adversary.data["unit_wounds"] = {
+                          value: item.derived[stat],
+                        };
+                      } else {
+                        adversary.data.stats[stat] = {
+                          value: 0,
+                          min: 0,
+                          max: item.derived[stat],
+                        };
+                      }
                     }
-                    adversary.data.stats.wounds = {
-                      value: 0,
-                      min: 0,
-                      max: item.derived.wounds,
-                    };
-                  }
-                  if (item.derived.strain) {
-                    adversary.data.stats.strain = {
-                      value: 0,
-                      min: 0,
-                      max: item.derived.strain,
-                    };
-                  }
+                  });
                 }
 
                 if (item.skills) {
-                  Object.keys(item.skills).forEach((skill) => {
+                  let isMinion = Array.isArray(item.skills);
+                  let adversarySkills = isMinion ? item.skills : Object.keys(item.skills);
+                  adversarySkills.forEach((skillRaw) => {
+                    let skill = skillRaw.match(/^[^\(]*/)[0];
+                    skill = $.trim(skill);
+                    let alternateCharacteristic = skillRaw.match(/(?<=\()(.*?)(?=\))/)?.length ? skillRaw.match(/(?<=\()(.*?)(?=\))/)[0] : undefined;
+
                     const ffgSkill = Object.keys(skills).find((s) => skill.toLowerCase() === s.toLowerCase());
 
                     if (ffgSkill) {
-                      adversary.data.skills[ffgSkill].rank = item.skills[skill];
+                      adversary.data.skills[ffgSkill].groupskill = isMinion ? true : false;
+                      if (!isMinion) adversary.data.skills[ffgSkill].rank = item.skills[skill];
                       if (CONFIG.temporary.swa.skills?.[skill]?.characteristic) {
-                        adversary.data.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
+                        if (alternateCharacteristic) {
+                          adversary.data.skills[ffgSkill].characteristic = alternateCharacteristic;
+                        } else {
+                          adversary.data.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
+                        }
+                      }
+
+                      if ((!adversary.data.skills[ffgSkill]?.type && skilltheme !== "starwars") || (skilltheme === "starwars" && !CONFIG.FFG.skills[ffgSkill])) {
+                        adversary.data.skills[ffgSkill].Key = ffgSkill.toUpperCase();
+                        adversary.data.skills[ffgSkill].custom = true;
+                        adversary.data.skills[ffgSkill].type = "General";
+                        adversary.data.skills[ffgSkill].label = ffgSkill;
                       }
                     }
                   });
@@ -445,6 +455,7 @@ export default class SWAImporter extends FormApplication {
                       let adversaryTalent = {
                         name: talent.name,
                         type: "talent",
+                        flags: {},
                         data: {
                           attributes: {},
                           description: talent.description,
@@ -470,6 +481,7 @@ export default class SWAImporter extends FormApplication {
                         let adversaryTalent = {
                           name: swaTalent.name,
                           type: "talent",
+                          flags: {},
                           data: {
                             attributes: {},
                             description: swaTalent.description,
@@ -491,18 +503,24 @@ export default class SWAImporter extends FormApplication {
                 }
 
                 if (item.weapons) {
+                  const template = await ImportHelpers.getTemplate("weapon");
                   item.weapons.forEach((weapon) => {
+                    let data = JSON.parse(JSON.stringify(template));
+                    let weaponData;
+
                     if (typeof weapon === "object") {
-                      let weaponData = {
+                      weaponData = {
                         name: weapon.name,
                         type: "weapon",
+                        flags: {},
                         data: {
+                          attributes: {},
                           description: "No description provided",
                           damage: {
-                            value: weapon.damage,
+                            value: parseInt(!weapon?.damage ? weapon["plus-damage"] : weapon.damage, 10),
                           },
                           crit: {
-                            value: weapon.critical,
+                            value: parseInt(weapon.critical, 10),
                           },
                           special: {
                             value: weapon?.qualities?.length ? weapon.qualities.join(",") : "",
@@ -515,23 +533,32 @@ export default class SWAImporter extends FormApplication {
                           },
                         },
                       };
-                      adversary.items.push(weaponData);
+                      weaponData.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.data.skill.value.includes(element)) && (!weapon.damage || weapon.damage === "0");
+                      if (weapon?.["plus-damage"] && parseInt(weapon["plus-damage"], 10) > 0) {
+                        weaponData.data.attributes[randomID()] = {
+                          isCheckbox: false,
+                          mod: "damage",
+                          modtype: "Weapon Stat",
+                          value: parseInt(weapon["plus-damage"], 10),
+                        };
+                      }
                     } else {
                       const swaWeaponKey = Object.keys(CONFIG.temporary.swa.weapons).find((t) => weapon.includes(t));
 
                       if (swaWeaponKey) {
                         const swaWeapon = CONFIG.temporary.swa.weapons[swaWeaponKey];
-
-                        let weaponData = {
+                        weaponData = {
                           name: swaWeapon.name,
                           type: "weapon",
+                          flags: {},
                           data: {
+                            attributes: {},
                             description: "No description provided",
                             damage: {
-                              value: swaWeapon.damage,
+                              value: parseInt(!swaWeapon?.damage ? swaWeapon["plus-damage"] : swaWeapon.damage, 10),
                             },
                             crit: {
-                              value: swaWeapon.critical,
+                              value: parseInt(swaWeapon.critical, 10),
                             },
                             special: {
                               value: swaWeapon?.qualities?.length ? swaWeapon.qualities.join(",") : "",
@@ -545,8 +572,47 @@ export default class SWAImporter extends FormApplication {
                           },
                         };
 
-                        adversary.items.push(weaponData);
+                        weaponData.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.data.skill.value.includes(element)) && (!swaWeapon.damage || swaWeapon.damage === "0");
+
+                        if (swaWeapon?.["plus-damage"] && parseInt(swaWeapon["plus-damage"], 10) > 0) {
+                          weaponData.data.attributes[randomID()] = {
+                            isCheckbox: false,
+                            mod: "damage",
+                            modtype: "Weapon Stat",
+                            value: parseInt(swaWeapon["plus-damage"], 10),
+                          };
+                        }
                       }
+                    }
+
+                    if (weaponData) {
+                      const templatedData = weaponData;
+                      templatedData.data = mergeObject(data, weaponData.data);
+
+                      if (templatedData.data.special?.value?.length > 0) {
+                        templatedData.data.special.value.split(",").forEach((w) => {
+                          const wName = w.match(/^.*([^0-9\s]+)/gim);
+                          const wRank = w.match(/[^\w][0-9]/gim);
+
+                          const unique = {
+                            name: wName[0],
+                            type: "itemmodifier",
+                            flags: {},
+                            data: {
+                              description: CONFIG.temporary.swa?.qualities?.[wName]?.description ? CONFIG.temporary.swa.qualities[wName].description : "No description provided",
+                              attributes: {},
+                              type: "all",
+                              rank: wRank ? parseInt(wRank[0].replace(" ", ""), 10) : 1,
+                            },
+                          };
+                          const descriptor = new Item(unique, { temporary: true });
+                          descriptor.data._id = randomID();
+                          templatedData.data.itemmodifier.push(descriptor.data);
+                        });
+                      }
+
+                      let w = new Item(templatedData, { temporary: true });
+                      adversary.items.push(duplicate(w));
                     }
                   });
                 }
@@ -554,20 +620,109 @@ export default class SWAImporter extends FormApplication {
                 if (item.gear) {
                   if (Array.isArray(item.gear)) {
                     item.gear.forEach((gear) => {
-                      let gearData = {
-                        name: gear,
-                        type: "gear",
-                        data: {
-                          description: "No description provided",
-                        },
-                      };
+                      if (gear.includes("Soak") && gear.includes("Defence")) {
+                        let Armordata = {
+                          name: gear.slice(0, gear.indexOf("(") - 1).trim(),
+                          type: "armour",
+                          flags: {},
+                          data: {
+                            description: "No description provided",
+                            defence: {
+                              value: gear.charAt(gear.indexOf("Defence") - 2),
+                            },
+                            soak: {
+                              value: gear.charAt(gear.indexOf("Soak") - 2),
+                            },
+                          },
+                        };
+                        adversary.items.push(Armordata);
+                      } else if (gear.includes("Soak")) {
+                        let Armordata = {
+                          name: gear.slice(0, gear.indexOf("(") - 1).trim(),
+                          type: "armour",
+                          flags: {},
+                          data: {
+                            description: "No description provided",
 
-                      adversary.items.push(gearData);
+                            soak: {
+                              value: gear.charAt(gear.indexOf("Soak") - 2),
+                            },
+                          },
+                        };
+                        adversary.items.push(Armordata);
+                      } else if (gear.includes("Defence")) {
+                        let Armordata = {
+                          name: gear.slice(0, gear.indexOf("(") - 1).trim(),
+                          type: "armour",
+                          flags: {},
+                          data: {
+                            description: "No description provided",
+                            defence: {
+                              value: gear.charAt(gear.indexOf("Defence") - 2),
+                            },
+                          },
+                        };
+                        adversary.items.push(Armordata);
+                      } else {
+                        let gearData = {
+                          name: gear,
+                          type: "gear",
+                          flags: {},
+                          data: {
+                            description: "No description provided",
+                          },
+                        };
+                        adversary.items.push(gearData);
+                      }
                     });
+                  } else if (item.gear.includes("Soak") && item.gear.includes("Defence")) {
+                    let Armordata = {
+                      name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
+                      type: "armour",
+                      flags: {},
+                      data: {
+                        description: "No description provided",
+                        defence: {
+                          value: item.gear.charAt(item.gear.indexOf("Defence") - 2),
+                        },
+                        soak: {
+                          value: item.gear.charAt(item.gear.indexOf("Soak") - 2),
+                        },
+                      },
+                    };
+                    adversary.items.push(Armordata);
+                  } else if (item.gear.includes("Soak")) {
+                    let Armordata = {
+                      name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
+                      type: "armour",
+                      flags: {},
+                      data: {
+                        description: "No description provided",
+
+                        soak: {
+                          value: item.gear.charAt(item.gear.indexOf("Soak") - 2),
+                        },
+                      },
+                    };
+                    adversary.items.push(Armordata);
+                  } else if (item.gear.includes("Defence")) {
+                    let Armordata = {
+                      name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
+                      type: "armour",
+                      flags: {},
+                      data: {
+                        description: "No description provided",
+                        defence: {
+                          value: item.gear.charAt(item.gear.indexOf("Defence") - 2),
+                        },
+                      },
+                    };
+                    adversary.items.push(Armordata);
                   } else {
                     let gearData = {
                       name: item.gear,
                       type: "gear",
+                      flags: {},
                       data: {
                         description: "No description provided",
                       },
@@ -608,14 +763,14 @@ export default class SWAImporter extends FormApplication {
                   CONFIG.logger.debug(`Importing Adversary - Actor`);
                   compendiumItem = new Actor(adversary, { temporary: true });
                   this._importLogger(`New Adversary ${name} : ${JSON.stringify(compendiumItem)}`);
-                  pack.importEntity(compendiumItem);
+                  await pack.importEntity(compendiumItem);
                 } else {
                   CONFIG.logger.debug(`Update Adversary - Actor`);
                   //let updateData = ImportHelpers.buildUpdateData(item);
                   let updateData = adversary;
                   updateData["_id"] = entry._id;
                   this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
-                  pack.updateEntity(updateData);
+                  await pack.updateEntity(updateData);
                 }
               } catch (err) {
                 CONFIG.logger.error(`Error importing ${item.name} from ${f.name}`, err);

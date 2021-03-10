@@ -29,18 +29,33 @@
       </select>
       {{/if}}
     </div>
-    <div style="text-align: center;"><span>Left click to increase dice, right click to decrease.</span></div>
+    <div style="text-align: center;"><span>{{localize "SWFFG.DicePoolAddsHint"}}</span></div>
     <table class="pool-additional-container">
       <tr>
         <td class="pool-additional">{{{ffgDiceSymbols "[AD]"}}}<input type="button" name="advantage" min="0" />{{localize "SWFFG.Advantage"}}</td>
         <td class="pool-additional">{{{ffgDiceSymbols "[SU]"}}}<input type="button" name="success" min="0" />{{localize "SWFFG.Success"}}</td>
-        <td class="pool-additional">{{{ffgDiceSymbols "[LI]"}}}<input type="button" name="light" min="0" />{{localize "SWFFG.Lightside"}}</td>
+        {{#if enableForceDie}}
+        <td class="pool-additional">{{{ffgDiceSymbols "[LI]"}}}<input type="button" name="light" min="0" />{{localize labels.light}}</td>
+        {{else}}
+        <td class="pool-additional">{{{ffgDiceSymbols "[TR]"}}}<input type="button" name="triumph" min="0" />{{localize "SWFFG.Triumph"}}</td>
+        {{/if}}
       </tr>
       <tr>
         <td class="pool-additional">{{{ffgDiceSymbols "[TH]"}}}<input type="button" name="threat" min="0" />{{localize "SWFFG.Threat"}}</td>
         <td class="pool-additional">{{{ffgDiceSymbols "[FA]"}}}<input type="button" name="failure" min="0" />{{localize "SWFFG.Failure"}}</td>
-        <td class="pool-additional">{{{ffgDiceSymbols "[DA]"}}}<input type="button" name="dark" min="0" />{{localize "SWFFG.Darkside"}}</td>
+        {{#if enableForceDie}}
+        <td class="pool-additional">{{{ffgDiceSymbols "[DA]"}}}<input type="button" name="dark" min="0" />{{localize labels.dark}}</td>
+        {{else}}
+        <td class="pool-additional">{{{ffgDiceSymbols "[DE]"}}}<input type="button" name="despair" min="0" />{{localize "SWFFG.Despair"}}</td>
+        {{/if}}
       </tr>
+      {{#if enableForceDie}}
+      <tr>
+        <td class="pool-additional">{{{ffgDiceSymbols "[TR]"}}}<input type="button" name="triumph" min="0" />{{localize "SWFFG.Triumph"}}</td>
+        <td></td>
+        <td class="pool-additional">{{{ffgDiceSymbols "[DE]"}}}<input type="button" name="despair" min="0" />{{localize "SWFFG.Despair"}}</td>
+      </tr>
+      {{/if}}
     </table>
     <table>
       <tr class="pool-container flex-group-center">
@@ -87,6 +102,7 @@
         </td>
         <td>{{localize "SWFFG.DiceSetback"}}</td>
       </tr>
+      {{#if enableForceDie}}
       <tr class="pool-container flex-group-center">
         <td><img src="systems/starwarsffg/images/dice/starwars/whiteHex.png" width="30" height="30" /></td>
         <td>
@@ -94,7 +110,8 @@
         </td>
         <td>{{localize "SWFFG.DiceForce"}}</td>
       </tr>
+      {{/if}}
     </table>
   </div>
-  <button class="btn">ROLL</button>
+  <button class="btn">{{localize "SWFFG.SkillsRoll"}}</button>
 </form>

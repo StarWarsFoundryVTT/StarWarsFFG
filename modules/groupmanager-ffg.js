@@ -28,6 +28,12 @@ export class GroupManagerLayer extends CanvasLayer {
 }
 
 export class GroupManager extends FormApplication {
+  constructor(options) {
+    super();
+    this.obligations = [];
+    this.duties = [];
+  }
+
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "form", "group-manager"],
@@ -36,8 +42,9 @@ export class GroupManager extends FormApplication {
       submitOnClose: true,
       popOut: true,
       editable: game.user.isGM,
+      resizable: true,
       width: 330,
-      height: 650,
+      height: 900,
       template: "systems/starwarsffg/templates/group-manager.html",
       id: "group-manager",
       title: "Group Manager",
@@ -58,18 +65,36 @@ export class GroupManager extends FormApplication {
 
     const pcListMode = game.settings.get("starwarsffg", "pcListMode");
     const characters = [];
+    let obligationRangeStart = 0;
+    let dutyRangeStart = 0;
 
     if (pcListMode === "active") {
       players.forEach((player) => {
         if (player.character) {
-          characters.push(player.character);
+          try {
+            obligationRangeStart = this._addCharacterObligationDuty(player.character, obligationRangeStart, player.character.data.data.obligationlist, "obligations");
+            dutyRangeStart = this._addCharacterObligationDuty(player.character, dutyRangeStart, player.character.data.data.dutylist, "duties");
+            //obligationRangeStart = this._addCharacterObligations(player.character, obligationRangeStart);
+            //dutyRangeStart = this._addCharacterDuties(player.character, dutyRangeStart);
+            characters.push(player.character);
+          } catch (err) {
+            CONFIG.logger.warn(`Unable to add player (${player.character.name}) to obligation/duty table`, err);
+          }
         }
       });
     } else if (pcListMode === "owned") {
       players.forEach((player) => {
         const char = game.actors.filter((actor) => actor.hasPerm(player, "OWNER"));
         char.forEach((c) => {
-          characters.push(c);
+          try {
+            obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.data.data.obligationlist, "obligations");
+            dutyRangeStart = this._addCharacterObligationDuty(c, dutyRangeStart, c.data.data.dutylist, "duties");
+            characters.push(c);
+            // obligationRangeStart = this._addCharacterObligations(c, obligationRangeStart);
+            // dutyRangeStart = this._addCharacterDuties(c, dutyRangeStart);
+          } catch (err) {
+            CONFIG.logger.warn(`Unable to add player (${c.data.name}) to obligation/duty table`, err);
+          }
         });
       });
     }
@@ -78,8 +103,18 @@ export class GroupManager extends FormApplication {
     const initiative = CONFIG.Combat.initiative.formula;
     const isGM = game.user.isGM;
     const theme = CONFIG.FFG.theme;
+    players.hasObligation = this.obligations?.length;
+    let obligations = this.obligations;
+    players.hasDuty = this.duties?.length;
+    let duties = this.duties;
     if (!isGM) this.position.height = 470;
-    return { dPool, players, initiative, isGM, pcListMode, characters, theme };
+
+    const labels = {
+      light: game.settings.get("starwarsffg", "destiny-pool-light"),
+      dark: game.settings.get("starwarsffg", "destiny-pool-dark"),
+    };
+
+    return { dPool, players, initiative, isGM, pcListMode, characters, obligations, duties, theme, labels };
   }
 
   /* -------------------------------------------- */
@@ -125,23 +160,18 @@ export class GroupManager extends FormApplication {
     // Add individual character to combat tracker.
     html.find(".add-to-combat").click((ev) => {
       const character = ev.currentTarget.dataset.character;
-      const c = game.actors.get(character);
-      const token = c.getActiveTokens();
-      this._addCharacterToCombat(c, token, game.combat);
+      this._addCharacterToCombat(character, game.combat);
     });
     // Add all characters to combat tracker.
     html.find(".group-to-combat").click((ev) => {
       const characters = [];
       const groupmanager = document.getElementById("group-manager");
       const charlist = groupmanager.querySelectorAll('tr[class="player-character"]');
+      const tokens = canvas.tokens.controlled;
       charlist.forEach((element) => {
         characters.push(element.dataset["character"]);
       });
-      characters.forEach((c) => {
-        const character = game.actors.get(c);
-        const token = character.getActiveTokens();
-        this._addCharacterToCombat(character, token, game.combat);
-      });
+      this._addGroupToCombat(characters, tokens, game.combat);
     });
 
     // Add XP to individual character.
@@ -161,9 +191,12 @@ export class GroupManager extends FormApplication {
       this._bulkXP(characters);
     });
 
-    // Temporary warning for non-functional buttons.
-    html.find(".temp-button").click((ev) => {
-      ui.notifications.warn("This function is not yet implemented.");
+    html.find(".obligation-button").click((ev) => {
+      this._rollObligation();
+    });
+
+    html.find(".duty-button").click((ev) => {
+      this._rollDuty();
     });
 
     // Open character sheet on row click.
@@ -192,18 +225,98 @@ export class GroupManager extends FormApplication {
     return formData;
   }
 
-  async _addCharacterToCombat(character, token, cbt) {
-    if (token.length > 0) {
-      // If no combat encounter is active, create one.
-      if (!cbt) {
-        let scene = game.scenes.viewed;
-        if (!scene) return;
-        let cbt = await game.combats.object.create({ scene: scene._id, active: true });
-        await cbt.activate();
-      }
-      await token[0].toggleCombat(game.combat);
+  _addCharacterObligationDuty(character, rangeStart, list, type) {
+    try {
+      Object.values(list).forEach((item) => {
+        let rangeEnd = rangeStart + parseInt(item.magnitude);
+        this[type].push({
+          playerId: character.id,
+          name: character.name,
+          type: item.type,
+          magnitude: item.magnitude,
+          rangeStart: rangeStart + 1,
+          rangeEnd: rangeEnd,
+        });
+        rangeStart = rangeEnd;
+      });
+    } catch (err) {
+      CONFIG.logger.warn(`Unable to add player ${character.name} `);
+    }
+    return rangeStart;
+  }
+
+  async _rollObligation() {
+    this._rollTable(this.obligations, game.i18n.localize("SWFFG.DescriptionObligation"));
+  }
+
+  async _rollDuty() {
+    this._rollTable(this.duties, game.i18n.localize("SWFFG.DescriptionDuty"));
+  }
+
+  async _rollTable(table, type) {
+    let r = new Roll("1d100").roll();
+    let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? { rollMode: "gmroll" } : {};
+    r.toMessage(
+      {
+        flavor: `${game.i18n.localize("SWFFG.Rolling")} ${type}...`,
+      },
+      rollOptions
+    );
+    let filteredTable = table.filter((entry) => entry.rangeStart <= r.total && r.total <= entry.rangeEnd);
+    let tableResult = filteredTable?.length ? `${filteredTable[0].type} ${type} ${game.i18n.localize("SWFFG.Triggered")} ${game.i18n.localize("SWFFG.For")} @Actor[${filteredTable[0].playerId}]{${filteredTable[0].name}}` : `${game.i18n.localize("SWFFG.OptionValueNo")} ${type} ${game.i18n.localize("SWFFG.Triggered")}`;
+    let messageOptions = {
+      user: game.user._id,
+      content: tableResult,
+    };
+    if (game.settings.get("starwarsffg", "privateTriggers")) {
+      messageOptions.whisper = ChatMessage.getWhisperRecipients("GM");
+    }
+    ChatMessage.create(messageOptions);
+  }
+
+  async _addGroupToCombat(characters, targets, cbt) {
+    await this._setupCombat(cbt);
+    let tokens = targets.filter((t) => !t.inCombat);
+    await Promise.all(
+      characters.map(async (c) => {
+        let token = await this._getCharacterToken(game.actors.get(c));
+        if (token) {
+          if (!token._controlled && !token.inCombat) {
+            tokens.push(token);
+          }
+        } else {
+          ui.notifications.warn(`${c.name} has no active Token in the current scene.`);
+        }
+      })
+    );
+    const createData = tokens.map((t) => {
+      return { tokenId: t.id };
+    });
+    await game.combat.createCombatant(createData);
+  }
+
+  async _addCharacterToCombat(character, cbt) {
+    await this._setupCombat(cbt);
+    let token = await this._getCharacterToken(game.actors.get(character));
+    if (token && !token.inCombat) {
+      await game.combat.createCombatant({ tokenId: token.id });
     } else {
-      ui.notifications.warn(`${character.name} has no active Token in the current scene.`);
+      ui.notifications.warn(`${c.name} has no active Token in the current scene.`);
+    }
+  }
+
+  async _getCharacterToken(character) {
+    let activeTokens = character.getActiveTokens();
+    return activeTokens.length ? activeTokens[0] : null;
+  }
+
+  async _setupCombat(cbt) {
+    // If no combat encounter is active, create one.
+    if (!cbt) {
+      let scene = game.scenes.viewed;
+      if (!scene) return;
+      let cbt = await game.combats.object.create({ scene: scene._id, active: true });
+      await cbt.activate();
     }
   }
 

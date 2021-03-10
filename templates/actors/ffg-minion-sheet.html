@@ -69,6 +69,11 @@
       <div class="biography-editor">
         {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
       </div>
+      {{#if this.settings.enableCriticalInjuries}}
+      <div class="container flex-group-center biography-values">
+        {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}} {{!-- Experience Box --}}
+      </div>
+      {{/if}}
     </div>
 
     {{!-- Modifiers Tab --}}
