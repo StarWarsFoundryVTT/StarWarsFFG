@@ -36,6 +36,7 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 15/03/2021 - Cstadther - Fix 839 - Fixed issue where configuration tab was not visible from v1 item modifer and item attachment sheet.
 - 15/03/2021 - Cstadther - Fix 836 - Fixed issue with Skill Add Threat modifier dropdown not populating skill list.
 - 10/03/2021 - Cstadther - Fix 828 - Fixed issue where qualities were not being imported for vehicles correctly.
 - 09/03/2021 - Cstadther - Fix 820 - Updated RegEx for monetary value scrubbing to allow Safari.

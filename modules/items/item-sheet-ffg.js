@@ -56,7 +56,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.isTemp = false;
-    if (this.object.data?.flags?.ffgTempId) {
+    if (this.object.data?.flags?.ffgIsOwned || this.object.data?.flags?.ffgIsTemp) {
       data.isTemp = true;
     }
 
