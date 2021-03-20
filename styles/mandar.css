@@ -1181,7 +1181,9 @@ img {
 }
 
 .starwarsffg .dice-pool-dialog .dice-pool {
+  margin-top: 10px;
   min-height: 54px;
+  text-align: center;
 }
 
 .starwarsffg .dice-pool-dialog .pool-value {
@@ -1197,22 +1199,54 @@ img {
   width: 100%;
 }
 
+.starwarsffg .dice-pool-dialog .pool-text {
+  text-align: left;
+}
+
+.starwarsffg .dice-pool-dialog .pool-text label {
+  margin-left: 1.2em;
+}
+
 .starwarsffg .dice-pool-dialog .upgrade-buttons {
   display: flex;
-  margin: 10px;
 }
 
 .starwarsffg .dice-pool-dialog .upgrade-buttons button {
   line-height: 20px;
   font-size: 12px;
+  text-align: left;
+}
+
+.starwarsffg .dice-pool-dialog .pool-dice-pool {
+  padding: 5px 1px;
+  width: calc(100% - 2px);
+}
+
+.starwarsffg .dice-pool-dialog .pool-additional-container {
+  padding: 0 1px;
+  width: calc(100% - 2px);
+  min-width: 300px;
 }
 
 .starwarsffg .dice-pool-dialog .pool-additional {
   text-align: left;
 }
 
-.starwarsffg .dice-pool-dialog .pool-additional input[type="button"] {
+.starwarsffg .dice-pool-dialog .pool-additional-container .pool-additional input[type="button"] {
   margin: 0 3px;
+}
+
+.starwarsffg .dice-pool-dialog .pool-roll-options {
+  margin-top: 10px;
+}
+
+.starwarsffg .dice-pool-dialog .pool-roll-options select, .starwarsffg .dice-pool-dialog .pool-roll-options input {
+  margin-top: 1px;
+  margin-right: 1px;
+}
+
+.starwarsffg .dice-pool-dialog .roll-button {
+  margin-top: 15px;
 }
 
 .starwarsffg .dice-pool-dialog table {
@@ -1231,7 +1265,6 @@ img {
 
 .starwarsffg .dice-pool-dialog .maximize {
   width: 100%;
-  max-width: 78%;
 }
 
 .starwarsffg .ffgDiceArray {
