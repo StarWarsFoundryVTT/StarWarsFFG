@@ -1,7 +1,10 @@
 .dice-pool-dialog {
   .dice-pool {
+    margin-top: 10px;
     min-height: 54px;
+    text-align: center;
   }
+  
   .pool-value {
     border: 1px solid black;
     background-color: #ddd;
@@ -13,19 +16,53 @@
       width:100%;
     }
   }
+
+  .pool-text {
+    text-align: left;
+
+    label {
+      margin-left: 1.2em;
+    }
+  }
+
   .upgrade-buttons {
     display: flex;
-    margin: 10px;
     button {
       line-height: 20px;
       font-size: 12px;
+      text-align: left;
+    }   
+  }
+
+  .pool-dice-pool {
+    padding: 5px 1px;
+    width: calc(100% - 2px);
+  }
+
+  .pool-additional-container {
+    padding: 0 1px;
+    width: calc(100% - 2px);
+    min-width: 300px;
+
+    .pool-additional {
+      text-align: left;
+      input[type="button"] {
+        margin: 0 3px;
+      }
     }
   }
-  .pool-additional {
-    text-align: left;
-    input[type="button"] {
-      margin: 0 3px;
+
+  .pool-roll-options {
+    margin-top: 10px;
+
+    select, input {
+      margin-top: 1px;
+      margin-right: 1px;
     }
+  }
+
+  .roll-button {
+    margin-top: 15px;
   }
 
   table {
@@ -39,12 +76,12 @@
   }
 
   .minimize {
-    max-width: 20%;
+    max-width: 20%;    
   }
 
   .maximize {
     width: 100%;
-    max-width: 78%;
+    // max-width: 78%;
   }
 }
 
