@@ -58,6 +58,7 @@ export class ChallengeDie extends DiceTerm {
   /* -------------------------------------------- */
   /** @override */
   static getResultLabel(result) {
-    return CONFIG.FFG.CHALLENGE_RESULTS[result].label;
+    const die = CONFIG.FFG.CHALLENGE_RESULTS[result];
+    return `<img src='${die.image}' title='${game.i18n.localize(die.label)}' alt=''/>`;
   }
 }

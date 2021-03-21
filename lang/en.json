@@ -505,6 +505,19 @@
   "SWFFG.DicePoolAddsHint": "Left click to increase dice, right click to decrease.",
   "SWFFG.RollSucceeded": "Check succeeded!",
   "SWFFG.RollFailure": "Check failed!",
-  "SWFFG.DestinyTrackerHint": "Left click to flip, SHIFT+left click to add, CTRL+left click to remove."
+  "SWFFG.DestinyTrackerHint": "Left click to flip, SHIFT+left click to add, CTRL+left click to remove.",
+  "SWFFG.DiceResult.Blank": "blank",
+  "SWFFG.DiceResult.OneSuccess": "1 success",
+  "SWFFG.DiceResult.TwoSuccess": "2 successes",
+  "SWFFG.DiceResult.OneAdvantage": "1 advantage",
+  "SWFFG.DiceResult.TwoAdvantage": "2 advantages",
+  "SWFFG.DiceResult.OneSuccessOneAdvantage": "1 success, 1 advantage",
+  "SWFFG.DiceResult.OneTriumph": "1 triumph",
+  "SWFFG.DiceResult.OneFailure": "1 failure",
+  "SWFFG.DiceResult.TwoFailure": "2 failures",
+  "SWFFG.DiceResult.OneThreat": "1 threat",
+  "SWFFG.DiceResult.TwoThreat": "1 threats",
+  "SWFFG.DiceResult.OneFailureOneThreat": "1 failure, 1 threat",
+  "SWFFG.DiceResult.OneDespair": "1 despair"
 }
 
