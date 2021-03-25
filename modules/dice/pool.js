@@ -24,6 +24,8 @@ export class DicePoolFFG {
     this.failure = obj.failure || 0;
     this.light = obj.light || 0;
     this.dark = obj.dark || 0;
+    this.triumph = obj.triumph || 0;
+    this.despair = obj.despair || 0;
 
     this.source = {};
 
@@ -32,12 +34,12 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.name === "purchased") {
-            return `Purchased: ${rank.value} rank(s)`;
+            return `${game.i18n.localize("SWFFG.DicePoolPurchased")}: ${rank.value} ${game.i18n.localize("SWFFG.DiceRankText")}`;
           }
           if (rank.modtype === "Skill Rank") {
-            return `${rank.name} (${rank.type}): ${rank.value} rank(s)`;
+            return `${rank.name} (${rank.type}): ${rank.value} ${game.i18n.localize("SWFFG.DiceRankText")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.boost?.length) {
@@ -45,9 +47,9 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.modtype === "Skill Boost") {
-            return `${rank.name} (${rank.type}): +${rank.value} boost dice`;
+            return `${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceBoost")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} boost dice`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceBoost")}`;
         });
     }
     if (obj?.source?.remsetback?.length) {
@@ -55,9 +57,9 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.modtype === "Skill Remove Setback") {
-            return `${rank.name} (${rank.type}): -${rank.value} setback dice`;
+            return `${rank.name} (${rank.type}): -${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): -${rank.value} setback dice`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): -${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
         });
     }
     if (obj?.source?.setback?.length) {
@@ -65,9 +67,9 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.modtype === "Skill Setback") {
-            return `${rank.name} (${rank.type}): +${rank.value} setback dice`;
+            return `${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} setback dice`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
         });
     }
   }
@@ -124,7 +126,7 @@ export class DicePoolFFG {
         if (this.challenge > 0) {
           this.challenge--;
           this.difficulty++;
-        } 
+        }
       } else {
         if (this.difficulty > 0) {
           this.difficulty--;
@@ -191,7 +193,7 @@ export class DicePoolFFG {
     let advanceContainer = this.renderPreview(container);
 
     let additionalSymbols = [];
-    ["advantage", "success", "threat", "failure", "light", "dark"].forEach((symbol) => {
+    ["advantage", "success", "threat", "failure", "light", "dark", "triumph", "despair"].forEach((symbol) => {
       let diceSymbol = "";
       switch (symbol) {
         case "advantage": {
@@ -216,6 +218,14 @@ export class DicePoolFFG {
         }
         case "dark": {
           diceSymbol = "[DA]";
+          break;
+        }
+        case "triumph": {
+          diceSymbol = "[TR]";
+          break;
+        }
+        case "despair": {
+          diceSymbol = "[DE]";
           break;
         }
       }
@@ -290,6 +300,8 @@ export class DicePoolFFG {
       failure: container.querySelector('[name="failure"]')?.value ? container.querySelector('[name="failure"]').value : 0,
       light: container.querySelector('[name="light"]')?.value ? container.querySelector('[name="light"]').value : 0,
       dark: container.querySelector('[name="dark"]')?.value ? container.querySelector('[name="dark"]').value : 0,
+      triumph: container.querySelector('[name="triumph"]')?.value ? container.querySelector('[name="triumph"]').value : 0,
+      despair: container.querySelector('[name="despair"]')?.value ? container.querySelector('[name="despair"]').value : 0,
     });
   }
 }
