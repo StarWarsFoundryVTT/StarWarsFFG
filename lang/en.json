@@ -443,5 +443,18 @@
   "SWFFG.EnableSortTalentsByActivationHint": "Enable grouping Talents by activation",
   "SWFFG.UseGlobalSetting": "Use Global",
   "SWFFG.OptionValueYes": "Yes",
-  "SWFFG.OptionValueNo": "No"
+  "SWFFG.OptionValueNo": "No",
+  "SWFFG.ItemWeaponSpecialQualities": "Weapon Qualities",
+  "SWFFG.DicePoolFrom": "von",
+  "SWFFG.DicePoolPurchased": "purchased",
+  "SWFFG.DiceRankText": "ranks",
+  "SWFFG.RollResultDisplayFail": "Check failed!",
+  "SWFFG.DestinyTurned": "destiny point used: ",
+  "SWFFG.DestinyAdd": "Add 1 point: ",
+  "SWFFG.DestinyRem": "Removed 1 point: ",
+  "SWFFG.DestinyRemainL": "Light points remaining: ",
+  "SWFFG.DestinyRemainD": "Dark points remaining: ",
+  "SWFFG.RollResultDisplaySuccess": "Check successful!",
+  "SWFFG.ItemWeaponMiss": "Miss!",
+  "SWFFG.DiceCommandText": "Roll the Dice!"
 }
