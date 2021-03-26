@@ -43,11 +43,11 @@ export class GroupManager extends FormApplication {
       popOut: true,
       editable: game.user.isGM,
       resizable: true,
-      width: 330,
+      width: 480,
       height: 900,
       template: "systems/starwarsffg/templates/group-manager.html",
       id: "group-manager",
-      title: "Group Manager",
+      title: game.i18n.localize("SWFFG.GroupManager"),
     });
   }
 
