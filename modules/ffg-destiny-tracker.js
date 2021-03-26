@@ -136,9 +136,9 @@ export default class DestinyTracker extends FormApplication {
           }
 
           messageText = `<div class="destiny-flip ${flipType}">
-            <div class="destiny-title">Flipped a <span>${typeName}</span> point</div>
-            <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))} Remaining: ${pool.dark}</div>
-            <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))} Remaining: ${pool.light}</div>
+            <div class="destiny-title">${game.i18n.localize("SWFFG.DestinyTurned")} <span>${typeName}</span></div>
+            <div class="destiny-left">${game.i18n.localize("SWFFG.DestinyRemainL")} ${pool.light}</div>
+            <div class="destiny-left">${game.i18n.localize("SWFFG.DestinyRemainD")} ${pool.dark}</div>
           </div>`;
         }
       } else if (add) {
@@ -148,15 +148,20 @@ export default class DestinyTracker extends FormApplication {
         }
         const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
         game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) + 1);
-        messageText = "Added a " + typeName + " point.";
+        messageText = game.i18n.localize("SWFFG.DestinyAdd") + typeName;
       } else if (remove) {
         if (!game.user.isGM) {
           ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
           return;
         }
         const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
-        game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
-        messageText = "Removed a " + typeName + " point.";
+        if (game.settings.get("starwarsffg", pointType) > 0) {
+           game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
+           messageText = game.i18n.localize("SWFFG.DestinyRem") + typeName;
+	    } else {
+		   ui.notifications.warn("No more points to remove from the Destiny Pool!");
+		   return;
+        }
       }
 
       ChatMessage.create({

@@ -34,12 +34,12 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.name === "purchased") {
-            return `Purchased: ${rank.value} rank(s)`;
+            return `${game.i18n.localize("SWFFG.DicePoolPurchased")}: ${rank.value} ${game.i18n.localize("SWFFG.DiceRankText")}`;
           }
           if (rank.modtype === "Skill Rank") {
-            return `${rank.name} (${rank.type}): ${rank.value} rank(s)`;
+            return `${rank.name} (${rank.type}): ${rank.value} ${game.i18n.localize("SWFFG.DiceRankText")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.boost?.length) {
@@ -47,9 +47,9 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.modtype === "Skill Boost") {
-            return `${rank.name} (${rank.type}): +${rank.value} boost dice`;
+            return `${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceBoost")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} boost dice`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceBoost")}`;
         });
     }
     if (obj?.source?.remsetback?.length) {
@@ -57,9 +57,9 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.modtype === "Skill Remove Setback") {
-            return `${rank.name} (${rank.type}): -${rank.value} setback dice`;
+            return `${rank.name} (${rank.type}): -${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): -${rank.value} setback dice`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): -${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
         });
     }
     if (obj?.source?.setback?.length) {
@@ -67,9 +67,9 @@ export class DicePoolFFG {
         .filter((item) => parseInt(item.value, 10) > 0)
         .map((rank) => {
           if (rank.modtype === "Skill Setback") {
-            return `${rank.name} (${rank.type}): +${rank.value} setback dice`;
+            return `${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} setback dice`;
+          return `${modtype} ${game.i18n.localize("SWFFG.DicePoolFrom")} ${rank.name} (${rank.type}): +${rank.value} ${game.i18n.localize("SWFFG.DiceSetback")}`;
         });
     }
   }

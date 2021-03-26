@@ -502,5 +502,16 @@
   "SWFFG.ModTypeSkillAddDespair" : "Skill Add Despair",
   "SWFFG.ModTypeAddDespair" : "Add Despair",
   "SWFFG.AdversariesImportInstructions3" : "Filter the incoming data by a tag (ie setting:Fantasy), leave blank to import all" 
+  "SWFFG.DicePoolFrom": "von",
+  "SWFFG.DicePoolPurchased": "purchased",
+  "SWFFG.DiceRankText": "ranks",
+  "SWFFG.RollResultDisplayFail": "Check failed!",
+  "SWFFG.DestinyTurned": "destiny point used: ",
+  "SWFFG.DestinyAdd": "Add 1 point: ",
+  "SWFFG.DestinyRem": "Removed 1 point: ",
+  "SWFFG.DestinyRemainL": "Light points remaining: ",
+  "SWFFG.DestinyRemainD": "Dark points remaining: ",
+  "SWFFG.RollResultDisplaySuccess": "Check successful!",
+  "SWFFG.ItemWeaponMiss": "Miss!",
+  "SWFFG.DiceCommandText": "Roll the Dice!"
 }
-
