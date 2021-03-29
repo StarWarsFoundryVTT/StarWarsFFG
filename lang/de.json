@@ -1,4 +1,4 @@
-﻿{
+{
   "SWFFG.Advantage": "Vorteil",
   "SWFFG.AdversariesImportInstructions1": "Import data based on Stoogoff's data format (http://swa.stoogoff.com/).",
   "SWFFG.AdversariesImportInstructions2": "Download the entire source as a zip file to use for import.",
@@ -164,7 +164,7 @@
   "SWFFG.ItemWeaponEncumbrance": "Belast.",
   "SWFFG.ItemWeaponHardPoints": "AP",
   "SWFFG.ItemWeaponMiss": "Verfehlt!",
-  "SWFFG.ItemWeaponPrice": "Wert",
+  "SWFFG.ItemWeaponPrice": "Basispreis",
   "SWFFG.ItemWeaponQuantity": "Anzahl",
   "SWFFG.ItemWeaponRange": "Reichweite",
   "SWFFG.ItemWeaponRarity": "Selten.",
@@ -180,7 +180,7 @@
   "SWFFG.ItemsGear": "Ausrüstung",
   "SWFFG.ItemsHP": "AP",
   "SWFFG.ItemsName": "Name",
-  "SWFFG.ItemsPrice": "Wert",
+  "SWFFG.ItemsPrice": "Basispreis",
   "SWFFG.ItemsQty": "Anzahl",
   "SWFFG.ItemsQuantity": "Anzahl",
   "SWFFG.ItemsRange": "Reichweite",
