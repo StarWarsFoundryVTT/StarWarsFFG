@@ -188,11 +188,16 @@ export default class ModifierHelpers {
     let checked = false;
     let sources = [];
 
+    let rank = item.data.rank;
+    if(rank === null) {
+      rank = 1;
+    }
+
     const filteredAttributes = Object.values(item.data.attributes).filter((a) => a.modtype === modtype && a.mod === key);
 
     filteredAttributes.forEach((attr) => {
-      sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
-      total += parseInt(attr.value, 10);
+      sources.push({ modtype, key, name: item.name, value: attr.value * rank, type: item.type });
+      total += parseInt(attr.value * rank, 10);
     });
 
     const itemsTotal = ModifierHelpers.getCalculatedValueFromItems(items, key, modtype, includeSource);
