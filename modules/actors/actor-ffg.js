@@ -95,6 +95,7 @@ export class ActorFFG extends Actor {
       }
     } else if (actorData.type === "vehicle") {
       this._applyVehicleModifiers(actorData);
+      this._calculateDerivedValues(actorData);
     }
   }
 
