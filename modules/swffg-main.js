@@ -292,6 +292,7 @@ Hooks.once("init", async function () {
   gameSkillsList();
 
   FFG.configureDice();
+  FFG.configureVehicleRange();
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
