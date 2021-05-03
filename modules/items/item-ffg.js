@@ -123,6 +123,65 @@ export class ItemFFG extends ItemBaseFFG {
         data.range.label = rangeLabel;
 
         break;
+      case "armour":
+        data.soak.value = parseInt(data.soak.value, 10);
+        data.defence.value = parseInt(data.defence.value, 10);
+        data.encumbrance.value = parseInt(data.encumbrance.value, 10);
+        data.price.value = parseInt(data.price.value, 10);
+        data.rarity.value = parseInt(data.rarity.value, 10);
+        data.hardpoints.value = parseInt(data.hardpoints.value, 10);
+
+        data.soak.adjusted = parseInt(data.soak.value, 10);
+        data.defence.adjusted = parseInt(data.defence.value, 10);
+        data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
+        data.price.adjusted = parseInt(data.price.value, 10);
+        data.rarity.adjusted = parseInt(data.rarity.value, 10);
+        data.hardpoints.adjusted = parseInt(data.hardpoints.value, 10);
+
+        data.adjusteditemmodifier = [];
+
+        if (data?.itemmodifier) {
+          data.itemmodifier.forEach((modifier) => {
+            modifier.data.rank_current = modifier.data.rank;
+            data.adjusteditemmodifier.push({ ...modifier });
+            data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
+            data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "defence", "Armor Stat");
+            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "encumbrance", "Armor Stat");
+            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Armor Stat");
+            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Armor Stat");
+            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Armor Stat");
+          });
+        }
+
+        if (this.isOwned && this.actor) {
+          let soakAdd = 0, defenceAdd = 0, encumbranceAdd;
+          for (let attr in data.attributes) {
+            if (data.attributes[attr].modtype === "Armor Stat") {
+              switch (data.attributes[attr].mod) {
+                case "soak":
+                  soakAdd += parseInt(data.attributes[attr].value, 10);
+                  break;
+                case "defence":
+                  defenceAdd += parseInt(data.attributes[attr].value, 10);
+                  break;
+                case "encumbrance":
+                  encumbranceAdd += parseInt(data.attributes[attr].value, 10);
+                  break;
+                default:
+                  break;
+              }
+            }
+          }
+          if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
+            data.soak.value = parseInt(data.soak.value, 10);
+            data.soak.adjusted += soakAdd;
+            data.defence.value = parseInt(data.defence.value, 10);
+            data.defence.adjusted += defenceAdd;
+            data.encumbrance.value = parseInt(data.encumbrance.value, 10);
+            data.encumbrance.adjusted += encumbranceAdd;
+          }
+        }
+        break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
@@ -131,7 +190,7 @@ export class ItemFFG extends ItemBaseFFG {
       default:
     }
 
-    if (["weapon", "armor"].includes(this.type)) {
+    if (["weapon", "armour"].includes(this.type)) {
       // get all item attachments
       let totalHPUsed = 0;
 

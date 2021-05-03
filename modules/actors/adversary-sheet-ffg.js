@@ -59,11 +59,13 @@ export class AdversarySheetFFG extends ActorSheetFFG {
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
         hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("enableForcePool", {
         name: game.i18n.localize("SWFFG.EnableForcePool"),
         hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
+        type: "Boolean",
         default: true,
       });
       this.sheetoptions.register("talentSorting", {

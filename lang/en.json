@@ -268,6 +268,8 @@
   "SWFFG.SettingsSkillSortingHint": "By default skills will be sorted alphabetically by the original English names on the character sheets. Enable this setting if you would prefer sorting to use the localised skill names instead.",
   "SWFFG.SettingsDiceTheme": "Choose Dice Theme",
   "SWFFG.SettingsDiceThemeHint": "Switch between Star Wars or Genesys style dice.",
+  "SWFFG.SettingsVehicleRange": "Choose Vehicle Range System",
+  "SWFFG.SettingsVehicleRangeHint": "Switch between Star Wars or Genesys vehicle range bands.",
   "SWFFG.TalentsForce": "Force Talent?",
   "SWFFG.ForceTalent": "Force Talent",
   "SWFFG.LoadFile": "Load File",

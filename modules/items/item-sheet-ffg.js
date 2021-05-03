@@ -327,7 +327,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    if (["weapon", "armor", "itemattachment", "shipweapon"].includes(this.object.data.type)) {
+    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.data.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
         dropSelector: null,

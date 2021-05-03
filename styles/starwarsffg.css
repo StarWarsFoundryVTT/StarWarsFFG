@@ -2003,14 +2003,16 @@ img {
   border: 5px double #134103;
 }
 
-.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left {
+.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left,
+.starwarsffg .item-sheet-armor .characteristic-item .characteristic .adjustedvalues-left {
   position: absolute;
   top: 0;
   right: 2px;
   color: red;
 }
 
-.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left.positive {
+.starwarsffg .item-sheet-weapon .characteristic-item .characteristic .adjustedvalues-left.positive,
+.starwarsffg .item-sheet-armor .characteristic-item .characteristic .adjustedvalues-left.positive {
   color: green;
 }
 

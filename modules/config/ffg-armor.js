@@ -8,7 +8,7 @@ export const armor_stats = {
     label: "SWFFG.ItemsSoak",
   },
   "encumbrance": {
-    value: "emcubrance",
+    value: "encumbrance",
     label: "SWFFG.ItemsEncum",
   },
   "hardpoints": {
