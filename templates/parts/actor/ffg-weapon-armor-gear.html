@@ -74,9 +74,9 @@
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
         {{/if}}
       </div>
-      <div>{{item.data.defence.value}}</div>
-      <div>{{item.data.soak.value}}</div>
-      <div>{{item.data.hardpoints.value}}</div>
+      <div>{{item.data.defence.value}} {{#if (and (ne item.data.defence.value item.data.defence.adjusted) (or (gt item.data.defence.adjusted.length 0) (gt item.data.defence.adjusted 0)))}}({{item.data.defence.adjusted}}){{/if}}</div>
+      <div>{{item.data.soak.value}} {{#if (and (ne item.data.soak.value item.data.soak.adjusted) (or (gt item.data.soak.adjusted.length 0) (gt item.data.soak.adjusted 0)))}}({{item.data.soak.adjusted}}){{/if}}</div>
+      <div>{{item.data.hardpoints.value}} {{#if (and (ne item.data.hardpoints.adjusted item.data.hardpoints.current) (or (gt item.data.hardpoints.current.length 0) (gt item.data.hardpoints.current 0)))}}({{item.data.hardpoints.current}}){{/if}}</div>
       <!-- <div>{{item.data.encumbrance.value}}</div> -->
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
