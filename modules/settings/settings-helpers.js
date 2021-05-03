@@ -34,6 +34,23 @@ export default class SettingsHelpers {
       },
     });
 
+    // Register vehicle range bands
+    game.settings.register("starwarsffg", "vehicleRangeBand", {
+      name: game.i18n.localize("SWFFG.SettingsVehicleRange"),
+      hint: game.i18n.localize("SWFFG.SettingsVehicleRangeHint"),
+      scope: "world",
+      config: true,
+      default: "starwars",
+      type: String,
+      onChange: () => {
+        return window.location.reload();
+      },
+      choices: {
+        starwars: "starwars",
+        genesys: "genesys",
+      },
+    });
+
     // Enable auto Soak calculation
     game.settings.register("starwarsffg", "enableSoakCalc", {
       name: game.i18n.localize("SWFFG.EnableSoakCalc"),
