@@ -97,7 +97,7 @@ export const modifier_types = {
     "label": "SWFFG.ModTypeAll",
   },
   "Armor": {
-    "value": "armor",
+    "value": "armour",
     "label": "SWFFG.ItemsArmor",
   },
   "Vehicle": {

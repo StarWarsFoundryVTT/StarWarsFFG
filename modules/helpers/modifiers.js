@@ -46,15 +46,15 @@ export default class ModifierHelpers {
           if (item.type === "armour" || item.type === "weapon") {
             if (item?.data?.equippable?.equipped) {
               if (key === "Soak" && item.data?.soak) {
-                sources.push({ modtype, key, name: item.name, value: item.data.soak.value, type: item.type });
-                total += parseInt(item.data.soak.value, 10);
+                sources.push({ modtype, key, name: item.name, value: item.data.soak.adjusted, type: item.type });
+                total += parseInt(item.data.soak.adjusted, 10);
               }
               if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
                 // get the highest defense item
                 const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
                 if (shouldUse) {
-                  sources.push({ modtype, key, name: item.name, value: item.data.defence.value, type: item.type });
-                  total += parseInt(item.data.defence.value, 10);
+                  sources.push({ modtype, key, name: item.name, value: item.data.defence.adjusted, type: item.type });
+                  total += parseInt(item.data.defence.adjusted, 10);
                 }
               }
               if (attrsToApply.length > 0) {
