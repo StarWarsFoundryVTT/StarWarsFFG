@@ -48,6 +48,7 @@
         {{/each}} {{/if}} {{#with (lookup options [value])~}} {{#if (ne label ../adjusted)}}
         <div class="adjustedvalue">{{localize ../adjusted}}</div>
         {{/if}} {{/with}}
+        {{#if (and (ne value adjusted) (eq type "Number"))}}<div class="adjustedvalue">{{adjusted}}</div>{{/if}}
       </div>
     </div>
     {{#if (or (eq hasShadow true) (eq blocktype "split"))}}

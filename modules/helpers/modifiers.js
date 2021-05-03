@@ -189,7 +189,7 @@ export default class ModifierHelpers {
     let sources = [];
 
     let rank = item.data.rank;
-    if(rank === null) {
+    if(rank === null || rank === undefined) {
       rank = 1;
     }
 
