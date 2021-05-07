@@ -181,6 +181,7 @@
   "SWFFG.VehicleRangeMedium": "Medium",
   "SWFFG.VehicleRangeLong": "Long",
   "SWFFG.VehicleRangeExtreme": "Extreme",
+  "SWFFG.VehicleRangeStrategic": "Strategic",
   "SWFFG.VehicleFiringArcForward": "Forward",
   "SWFFG.VehicleFiringArcAft": "Aft",
   "SWFFG.VehicleFiringArcPort": "Port",
