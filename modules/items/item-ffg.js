@@ -66,6 +66,18 @@ export class ItemFFG extends ItemBaseFFG {
             modifier.data.rank_current = modifier.data.rank;
             data.adjusteditemmodifier.push({ ...modifier });
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
+            data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "critical", "Weapon Stat");
+            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "encumbrance", "Weapon Stat");
+            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Weapon Stat");
+            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Weapon Stat");
+            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Weapon Stat");
+            const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "range", "Weapon Stat");
+            const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
+            const newRange = currentRangeIndex + range;
+            if (newRange < 0) newRange = 0;
+            if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
+
+            data.range.adjusted = Object.values(CONFIG.FFG.ranges)[newRange].value;
           });
         }
 
@@ -75,6 +87,10 @@ export class ItemFFG extends ItemBaseFFG {
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
             data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
             if (data.crit.adjusted < 1) data.crit.adjusted = 1;
+            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Weapon Stat");
+            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Weapon Stat");
+            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Weapon Stat");
+            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
             const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
             const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
             const newRange = currentRangeIndex + range;
