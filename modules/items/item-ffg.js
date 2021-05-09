@@ -73,7 +73,7 @@ export class ItemFFG extends ItemBaseFFG {
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Weapon Stat");
             const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "range", "Weapon Stat");
             const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
-            const newRange = currentRangeIndex + range;
+            let newRange = currentRangeIndex + range;
             if (newRange < 0) newRange = 0;
             if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
 
@@ -93,7 +93,7 @@ export class ItemFFG extends ItemBaseFFG {
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
             const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
             const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
-            const newRange = currentRangeIndex + range;
+            let newRange = currentRangeIndex + range;
             if (newRange < 0) newRange = 0;
             if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
 
