@@ -84,6 +84,7 @@
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
       <div class="container flex-group-center item-values">
+        {{!-- Medical Box --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html" (object title=actor.flags.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
         {{!-- Credits Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.DescriptionCredits" type="Number" name="data.stats.credits.value" value=data.stats.credits.value disabled=this.settings.enableSoakCalculation)}}
       </div>
 
