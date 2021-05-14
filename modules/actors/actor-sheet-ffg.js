@@ -256,6 +256,12 @@ export class ActorSheetFFG extends ActorSheet {
         type: "Boolean",
         default: true,
       });
+      this.sheetoptions.register("medicalItemName", {
+        name: game.i18n.localize("SWFFG.MedicalItemName"),
+        hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
+        type: "String",
+        default: game.settings.get("starwarsffg", "medItemName"),
+      });
       this.sheetoptions.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
         hint: game.i18n.localize("SWFFG.EnableObligationHint"),
@@ -317,6 +323,30 @@ export class ActorSheetFFG extends ActorSheet {
         options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
       });
     }
+
+    html.find(".medical").click(async (ev) => {
+      const item = await $(ev.currentTarget);
+      let prevUses = (this.object.data?.data?.stats?.medical?.uses === undefined) ? 0 : this.object.data.data.stats.medical.uses;
+      let updateData = {};
+      let newUses = 0;
+      if (item[0].className === "fas fa-plus-circle medical") {
+        newUses = prevUses + 1;
+        newUses = (newUses > 5) ? 5 : newUses;
+      } else {
+        newUses = prevUses - 1;
+        newUses = (newUses < 0) ? 0 : newUses;
+      }
+
+      setProperty(updateData, `data.stats.medical.uses`, newUses);
+      this.object.update(updateData);
+
+    });
+
+    html.find(".resetMedical").click(async (ev) => {
+      let updateData = {};
+      setProperty(updateData, `data.stats.medical.uses`, 0);
+      this.object.update(updateData);
+    });
 
     // Toggle item equipped
     html.find(".items .item a.toggle-equipped").click((ev) => {
