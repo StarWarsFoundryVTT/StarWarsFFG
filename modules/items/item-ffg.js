@@ -61,6 +61,8 @@ export class ItemFFG extends ItemBaseFFG {
 
         data.adjusteditemmodifier = [];
 
+        const rangeSetting = (this.type === "shipweapon") ? CONFIG.FFG.vehicle_ranges : CONFIG.FFG.ranges;
+
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
             modifier.data.rank_current = modifier.data.rank;
@@ -72,12 +74,12 @@ export class ItemFFG extends ItemBaseFFG {
             data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Weapon Stat");
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Weapon Stat");
             const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "range", "Weapon Stat");
-            const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
+            const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
             let newRange = currentRangeIndex + range;
             if (newRange < 0) newRange = 0;
-            if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
+            if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
 
-            data.range.adjusted = Object.values(CONFIG.FFG.ranges)[newRange].value;
+            data.range.adjusted = Object.values(rangeSetting)[newRange].value;
           });
         }
 
@@ -92,12 +94,12 @@ export class ItemFFG extends ItemBaseFFG {
             data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Weapon Stat");
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
             const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
-            const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
+            const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
             let newRange = currentRangeIndex + range;
             if (newRange < 0) newRange = 0;
-            if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
+            if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
 
-            data.range.adjusted = Object.values(CONFIG.FFG.ranges)[newRange].value;
+            data.range.adjusted = Object.values(rangeSetting)[newRange].value;
 
             if (attachment?.data?.itemmodifier) {
               const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);

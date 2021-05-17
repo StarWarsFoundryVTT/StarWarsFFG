@@ -864,7 +864,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
     itemObject._id = randomID();
 
-    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && (obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.data.type === "shipweapon" && itemObject.data.type === "weapon") || obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
       let items = obj?.data?.data?.[itemObject.type];
       if (!items) {
         items = [];

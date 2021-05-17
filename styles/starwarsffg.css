@@ -2485,6 +2485,21 @@ img {
   border: 5px double #1f1c37;
 }
 
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic .adjustedvalues-left {
+  position: absolute;
+  top: 0;
+  right: 2px;
+  color: red;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic .adjustedvalues-left.positive {
+  color: green;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .adjustedvalue {
+  color: red;
+}
+
 .starwarsffg .item-sheet-vehicle-weapon .block-background {
   background-color: #cccae3;
 }
@@ -2517,6 +2532,19 @@ img {
 
 .starwarsffg .item-sheet-vehicle-weapon .sheet-body {
   height: calc(100% - 34.6875rem);
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .pills.itemmodifier, .starwarsffg .item-sheet-vehicle-weapon .pills.itemattachment {
+  width: auto;
+  max-width: 50%;
+  width: 50%;
+}
+
+.starwarsffg .item-sheet-vehicle-weapon .pills.itemmodifier .item-pill-list, .starwarsffg .item-sheet-vehicle-weapon .pills.itemattachment .item-pill-list {
+  max-height: 75px;
+  height: 75px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .starwarsffg.sheet.item.v2 .item-sheet-vehicle-weapon .container.flex-group-center {
