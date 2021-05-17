@@ -1,6 +1,6 @@
-.item-sheet-weapon {
-  $swffg-weapon-color: rgb(19, 65, 3);
-  $swffg-weapon-color-light:rgb(191,254,191);
+.item-sheet-vehicle-weapon {
+  $swffg-weapon-color: rgb(31, 28, 55);
+  $swffg-weapon-color-light:rgb(204,202,227);
 
   .charname {
     input {
@@ -30,7 +30,6 @@
 
   .adjustedvalue {
     color: red;
-    
   }
 
   .block-background {
@@ -42,9 +41,32 @@
       background-color: $swffg-weapon-color;
     }
   }
+  
+  .firing-arcs {
+    gap: 0px;
+    text-align: left;
+    padding: 0 10px;
+    line-height: 20px;
+
+    label {
+      display: inline-block;
+      padding-left: 15px;
+      text-indent: -15px;
+      font-size: .675rem;
+    }
+    
+    input[type="checkbox"] {
+    
+      position: relative;
+      padding: 0;
+      margin: 0;
+      width: 13px;
+      height: 13px;
+    }
+  }
 
   .sheet-body {
-    height: calc(100% - 27.5rem);
+    height: calc(100% - 34.6875rem);
   }
 
   .pills {
@@ -61,13 +83,12 @@
       }
     }
   } 
-
 }
 
 &.sheet {
   &.item {
     &.v2 {
-      .item-sheet-weapon {
+      .item-sheet-vehicle-weapon {
         .container.flex-group-center {
           padding: 0 5px 0 5px;
           margin-bottom: 0;
@@ -79,7 +100,7 @@
         }
 
         .sheet-body {
-          height: calc(100% - 26.6125rem);
+          height: calc(100% - 17.3125rem);
         }
       }
     }
