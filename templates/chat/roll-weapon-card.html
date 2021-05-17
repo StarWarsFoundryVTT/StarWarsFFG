@@ -15,7 +15,7 @@
       <li class="item-pill" data-item-id="{{../data.flags.uuid}}" data-modifier-id="{{item._id}}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank_current 0)}}{{item.data.rank_current}}{{else}}{{/if}}</li>
       {{/each}}
     </h5>
-    {{#if data.data.special.value}}{{{ffgDiceSymbols data.data.special.value}}}{{/if}}
   </div>
   {{/if}}
+  {{#if data.data.special.value}}{{{ffgDiceSymbols data.data.special.value}}}{{/if}}
 </div>
