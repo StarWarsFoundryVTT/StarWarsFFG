@@ -352,7 +352,7 @@ export default class ModifierHelpers {
   }
 
   static applyBrawnToDamage(data) {
-    if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl") || data.skill.value.includes("Lightsaber")) && data.skill.useBrawn) {
+    if(data.characteristic?.value !== "" && data.characteristic?.value !== undefined) {
       return true;
     }
 

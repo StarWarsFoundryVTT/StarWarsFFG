@@ -109,7 +109,7 @@
 
     <div class="tab configuration" data-group="primary" data-tab="configuration">
       <div class="container flex-group-center weapon-values">
-        {{#if (or (contains data.skill.value "Melee") (contains data.skill.value "Brawl") (contains data.skill.value "Lightsaber"))}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.UseBrawnBaseDamage" type="Boolean" name="data.skill.useBrawn" value=data.skill.useBrawn)}} {{/if}}{{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ModTypeCharacteristic" type="Dropdown" name="data.characteristic.value" value=data.characteristic.value options=FFG.characteristics)}}{{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
       </div>
     </div>
   </section>

@@ -128,7 +128,7 @@ export class ItemFFG extends ItemBaseFFG {
           if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
             if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
-              data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
+              data.damage.value = parseInt(actorData.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
               data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
