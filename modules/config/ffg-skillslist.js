@@ -980,7 +980,7 @@ export const defaultSkillArrayString = JSON.stringify([
     "skills": {
       "Alchemy": {
         "rank": 0,
-        "characteristic": "Willpower",
+        "characteristic": "Intellect",
         "groupskill": false,
         "careerskill": false,
         "type": "General",
