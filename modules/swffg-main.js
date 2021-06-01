@@ -21,6 +21,7 @@ import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 
 import CharacterImporter from "./importer/character-importer.js";
+import NPCImporter from "./importer/npc-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
@@ -438,13 +439,18 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
   const div = $(`<div class="og-character-import"></div>`);
   const divider = $("<hr><h4>OggDude Import</h4>");
   const characterImportButton = $('<button class="og-character">Character</button>');
-  div.append(divider, characterImportButton);
+  const npcImportButton = $('<button class="og-npc">NPC</button>');
+  div.append(divider, characterImportButton, npcImportButton);
 
   html.find(".directory-footer").append(div);
 
   html.find(".og-character").click(async (event) => {
     event.preventDefault();
     new CharacterImporter().render(true);
+  });
+  html.find(".og-npc").click(async (event) => {
+    event.preventDefault();
+    new NPCImporter().render(true);
   });
 });
 
