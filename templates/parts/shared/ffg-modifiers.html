@@ -9,22 +9,22 @@
   <li class="attribute flexrow" data-attribute="{{key}}">
     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
     <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-      {{#select attr.modtype}} {{#if (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon") )}} {{#each ../this.FFG.vehicle_mod_types as |t|}}
+      {{#select attr.modtype}} {{#if (or (eq ../type "criticaldamage") (eq ../type "shipattachment") (eq ../type "shipweapon") )}} {{#each ../this.FFG.vehicle_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (and (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon") (ne ../item.type "itemmodifier") (ne ../item.type "itemattachment") )}} {{#each ../this.FFG.mod_types as |t|}}
+      {{/each}} {{/if}} {{#if (and (ne ../type "criticaldamage") (ne ../type "shipattachment") (ne ../type "shipweapon") (ne ../type "itemmodifier") (ne ../type "itemattachment") )}} {{#each ../this.FFG.mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (eq ../item.type "weapon")}} {{#each ../this.FFG.weapon_mod_types as |t|}}
+      {{/each}} {{/if}} {{#if (eq ../type "weapon")}} {{#each ../this.FFG.weapon_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../item.data.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
-      {{else}} {{#if (and (eq ../../item.data.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
-      >{{/if}} {{#if (and (eq ../../item.data.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      {{/each}} {{/if}} {{#if (or (eq ../type "itemmodifier") (eq ../type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../data.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
+      {{else}} {{#if (and (eq ../../data.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (eq ../../data.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
       >{{/if}} {{#if (and (ne t.value "Armor Stat") (ne t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
       >{{/if}} {{/if}} {{/each}} {{/if}} {{/select}}
     </select>
     <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-      {{#select attr.mod}} {{#if (and (eq attr.modtype "Stat") (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon"))) }} {{#each ../this.FFG.vehicle_stats as |t|}}
+      {{#select attr.mod}} {{#if (and (eq attr.modtype "Stat") (or (eq ../type "criticaldamage") (eq ../type "shipattachment") (eq ../type "shipweapon"))) }} {{#each ../this.FFG.vehicle_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (and (eq attr.modtype "Stat") (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon")) }} {{#each ../this.FFG.character_stats as |t|}}
+      {{/each}} {{/if}} {{#if (and (eq attr.modtype "Stat") (ne ../type "criticaldamage") (ne ../type "shipattachment") (ne ../type "shipweapon")) }} {{#each ../this.FFG.character_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Characteristic")}} {{#each ../this.FFG.characteristics as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>

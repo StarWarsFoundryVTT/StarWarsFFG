@@ -5,13 +5,13 @@
         <tr>
           <td class="profile-img-field">
             <div class="container flex-group-center">
-              <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+              <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" />
             </div>
           </td>
           <td>
             <div class="container flex-group-center">
               <div class="container flex-group-center item-name">
-                <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+                <h1 class="charname"><input name="name" type="text" value="{{name}}" placeholder="Name" /></h1>
               </div>
               <div class="container flex-group-center">
                 <div class="grid grid-2col">
@@ -72,14 +72,14 @@
         <tbody>
           {{#each data.itemmodifier as |item id|}}
           <tr>
-            <td>{{item.name}}</td>
+            <td>{{name}}</td>
             <!-- <td data-item-name="itemmodifier" data-item-index="{{id}}">
               <div class="quantity increase"><i class="far fa-plus-square"></i></div>
-              {{item.data.rank}}
+              {{data.rank}}
               <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
             </td> -->
             <td data-item-name="itemmodifier" data-item-index="{{id}}">
-              <div class="modifier-active"><i class="far {{#if item.data.active}} fa-check-square {{else}} fa-square {{/if}}"></i></div>
+              <div class="modifier-active"><i class="far {{#if data.active}} fa-check-square {{else}} fa-square {{/if}}"></i></div>
             </td>
             <td class="add-modifier" data-item-name="itemmodifier" data-item-index="{{id}}"><i class="fas fa-edit"></i><i class="fas fa-times item-delete"></i></td>
           </tr>

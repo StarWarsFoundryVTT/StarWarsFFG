@@ -9,6 +9,7 @@ export default class ModifierHelpers {
    * @returns {number} - Total value of all attribute values
    */
   static getCalculateValueForAttribute(key, attrs, items, modtype) {
+    
     let total = 0;
 
     if (key === "Shields") {
@@ -38,23 +39,30 @@ export default class ModifierHelpers {
 
     try {
       items.forEach((item) => {
-        if (item.data.attributes) {
-          const attrsToApply = Object.keys(item.data.attributes)
-            .filter((id) => (item.data.attributes[id].mod === key || item.data.attributes[id].mod === "*") && item.data.attributes[id].modtype === modtype)
-            .map((i) => item.data.attributes[i]);
+        if (item.data?.data?.attributes) {
+          
+          const attrsToApply = Object.keys(item.data.data.attributes)
+            .filter((id) => (item.data.data.attributes[id].mod === key || item.data.data.attributes[id].mod === "*") && item.data.data.attributes[id].modtype === modtype)
+            .map((i) => item.data.data.attributes[i]);
 
           if (item.type === "armour" || item.type === "weapon") {
-            if (item?.data?.equippable?.equipped) {
-              if (key === "Soak" && item.data?.soak) {
-                sources.push({ modtype, key, name: item.name, value: item.data.soak.adjusted, type: item.type });
-                total += parseInt(item.data.soak.adjusted, 10);
+            if (item.data?.data?.equippable?.equipped) {
+              if(key === "Encumbrance") {
+                console.log(item.data.data.encumbrance.adjusted);
               }
-              if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
+              if (key === "Soak" && item.data?.data?.soak) {
+                let soakCalc = (item.data.data.soak.adjusted === null) ? item.data.data.soak.value : item.data.data.soak.adjusted;
+                sources.push({ modtype, key, name: item.name, value: soakCalc, type: item.type });
+                total += parseInt(soakCalc, 10);
+              }
+              if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.data?.defence) {
                 // get the highest defense item
-                const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
+                const shouldUse = items.filter((i) => item.data.data.defence >= i.data.data.defence).length >= 0;
                 if (shouldUse) {
-                  sources.push({ modtype, key, name: item.name, value: item.data.defence.adjusted, type: item.type });
-                  total += parseInt(item.data.defence.adjusted, 10);
+                  let defCalc = (item.data.data.defence.adjusted === null || item.data.data.defence.value > item.data.data.defence.adjusted) ? 
+                  item.data.data.defence.value : item.data.data.defence.adjusted;
+                  sources.push({ modtype, key, name: item.name, value: defCalc, type: item.type });
+                  total += parseInt(defCalc, 10);
                 }
               }
               if (attrsToApply.length > 0) {
@@ -91,14 +99,14 @@ export default class ModifierHelpers {
             let upgrades;
             if (item.type === "forcepower") {
               // apply force power upgrades
-              upgrades = Object.keys(item.data.upgrades)
-                .filter((k) => item.data.upgrades[k].islearned)
+              upgrades = Object.keys(item.data.data.upgrades)
+                .filter((k) => item.data.data.upgrades[k].islearned)
                 .map((k) => {
                   return {
                     type: "talent",
-                    name: `${item.name}: ${item.data.upgrades[k].name}`,
+                    name: `${item.name}: ${item.data.data.upgrades[k].name}`,
                     data: {
-                      attributes: item.data.upgrades[k]?.attributes ? item.data.upgrades[k]?.attributes : {},
+                      attributes: item.data.data.upgrades[k]?.attributes ? item.data.data.upgrades[k]?.attributes : {},
                       ranks: {
                         ranked: false,
                         current: 1,
@@ -109,15 +117,15 @@ export default class ModifierHelpers {
             } else if (item.type === "specialization") {
               // apply specialization talent modifiers
               upgrades = Object.keys(item.data.talents)
-                .filter((k) => item.data.talents[k].islearned)
+                .filter((k) => item.data.data.talents[k].islearned)
                 .map((k) => {
                   return {
                     type: "talent",
-                    name: `${item.name}: ${item.data.talents[k].name}`,
+                    name: `${item.name}: ${item.data.data.talents[k].name}`,
                     data: {
-                      attributes: item.data.talents[k].attributes,
+                      attributes: item.data.data.talents[k].attributes,
                       ranks: {
-                        ranked: item.data.talents[k].isRanked,
+                        ranked: item.data.data.talents[k].isRanked,
                         current: 1,
                       },
                     },
@@ -150,8 +158,8 @@ export default class ModifierHelpers {
                 } else {
                   if (item.type === "talent") {
                     let multiplier = 1;
-                    if (item.data.ranks.ranked) {
-                      multiplier = item.data.ranks.current;
+                    if (item.data.data.ranks.ranked) {
+                      multiplier = item.data.data.ranks.current;
                     }
                     sources.push({ modtype, key, name: item.name, value: attr.value * multiplier, type: item.type });
                     total += parseInt(attr.value, 10) * multiplier;
@@ -217,9 +225,9 @@ export default class ModifierHelpers {
 
     items.forEach((item) => {
       if (item.type === "species") {
-        const attrsToApply = Object.keys(item.data.attributes)
-          .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
-          .map((i) => item.data.attributes[i]);
+        const attrsToApply = Object.keys(item.data?.data?.attributes)
+          .filter((id) => item.data.data.attributes[id].mod === key && item.data.data.attributes[id].modtype === modtype)
+          .map((i) => item.data.data.attributes[i]);
 
         if (attrsToApply.length > 0) {
           attrsToApply.forEach((attr) => {

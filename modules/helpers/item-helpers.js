@@ -69,7 +69,7 @@ export default class ItemHelpers {
             if (parent.id.includes(".OwnedItem.")) {
               const ids = parent.id.split(".OwnedItem.");
               const actor = await fromUuid(ids[0]);
-              const item = await actor.getOwnedItem(ids[1]);
+              const item = await actor.items.get(ids[1]);
               spec.flags.loaded = false;
               await item.update(updateData);
               await item.sheet.render(true);

@@ -4,16 +4,16 @@
       <div class="talent-background talent-block">
         <div class="talent-header">
           <div></div>
-          <div class="talent-name"><input name="name" type="text" value="{{item.name}}" placeholder="{{localize 'SWFFG.Specialization'}}" /></div>
+          <div class="talent-name"><input name="name" type="text" value="{{name}}" placeholder="{{localize 'SWFFG.Specialization'}}" /></div>
         </div>
         <div class="talent-body">
-          <div class="popout-editor" data-target="data.description" data-label="{{item.name}}">
+          <div class="popout-editor" data-target="data.description" data-label="{{name}}">
             <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
             {{{ffgDiceSymbols data.description}}}
           </div>
         </div>
         <div class="talent-actions {{#if data.isReadOnly}}talent-hidden{{/if}}">
-          <a class="talent-action hover" data-itemid="{{item._id}}"
+          <a class="talent-action hover" data-itemid="{{id}}"
             ><i class="fas fa-cog"></i>
             <div class="tooltip">Modifiers</div>
           </a>

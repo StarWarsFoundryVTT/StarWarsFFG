@@ -35,7 +35,7 @@ export default class RollBuilderFFG extends FormApplication {
     let canUserAddFlavor = game.user.isGM || !this?.roll?.flavor;
 
     if (game.user.isGM) {
-      game.playlists.entries.forEach((playlist) => {
+      game.playlists.forEach((playlist) => {
         playlist.sounds.forEach((sound) => {
           let selected = false;
           const s = this.roll?.sound ?? this.roll?.item?.flags?.ffgsound;
@@ -66,7 +66,7 @@ export default class RollBuilderFFG extends FormApplication {
 
     let users = [{ name: "Send To All", id: "all" }];
     if (game.user.isGM) {
-      game.users.entries.forEach((user) => {
+      game.users.forEach((user) => {
         if (user.visible && user.id !== game.user.id) {
           users.push({ name: user.data.name, id: user.id });
         }
@@ -107,14 +107,14 @@ export default class RollBuilderFFG extends FormApplication {
             let entity;
             let entityData;
             if (!this?.roll?.item?.flags?.uuid) {
-              entity = CONFIG["Actor"].entityClass.collection.get(this.roll.data.actor._id);
+              entity = CONFIG["Actor"].documentClass.collection.get(this.roll.data.actor._id);
               entityData = {
                 _id: this.roll.item._id,
               };
             } else {
               const parts = this.roll.item.flags.uuid.split(".");
               const [entityName, entityId, embeddedName, embeddedId] = parts;
-              entity = CONFIG[entityName].entityClass.collection.get(entityId);
+              entity = CONFIG[entityName].documentClass.collection.get(entityId);
               if (parts.length === 4) {
                 entityData = {
                   _id: embeddedId,
@@ -165,7 +165,7 @@ export default class RollBuilderFFG extends FormApplication {
       } else {
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
         roll.toMessage({
-          user: game.user._id,
+          user: game.user.id,
           speaker: this.roll.data,
           flavor: `${game.i18n.localize("SWFFG.Rolling")} ${this.roll.skillName}...`,
         });

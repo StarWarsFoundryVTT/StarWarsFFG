@@ -47,7 +47,7 @@ export class ActorSheetFFG extends ActorSheet {
 
   /** @override */
   getData(options) {
-    const data = super.getData();
+    const data = super.getData().data;
     data.classType = this.constructor.name;
 
     if (options?.action === "update" && this.object.compendium) {
@@ -55,7 +55,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     data.dtypes = ["String", "Number", "Boolean"];
-    for (let attr of Object.values(data.data.attributes)) {
+    for (let attr of Object.values(data.data?.attributes)) {
       attr.isCheckbox = attr.dtype === "Boolean";
     }
     data.FFG = CONFIG.FFG;
@@ -96,7 +96,7 @@ export class ActorSheetFFG extends ActorSheet {
     data.items = this.actor.items.map((item) => item.data);
 
     if (this.actor.data.type !== "vehicle") {
-      data.data.skilllist = this._createSkillColumns(data);
+      data.data.skilllist = this._createSkillColumns(data.data);
     }
 
     if (this.actor.data?.flags?.config?.enableObligation === false && this.actor.data?.flags?.config?.enableDuty === false && this.actor.data?.flags?.config?.enableMorality === false && this.actor.data?.flags?.config?.enableConflict === false) {
@@ -226,7 +226,7 @@ export class ActorSheetFFG extends ActorSheet {
       icon: '<i class="fas fa-dice-d20"></i>',
       callback: async (li) => {
         let itemId = li.data("itemId");
-        let item = this.actor.getOwnedItem(itemId);
+        let item = this.actor.items.get(itemId);
         if (!item) {
           item = game.items.get(itemId);
         }
@@ -337,21 +337,21 @@ export class ActorSheetFFG extends ActorSheet {
         newUses = (newUses < 0) ? 0 : newUses;
       }
 
-      setProperty(updateData, `data.stats.medical.uses`, newUses);
+      setProperty(updateData, `data.data.stats.medical.uses`, newUses);
       this.object.update(updateData);
 
     });
 
     html.find(".resetMedical").click(async (ev) => {
       let updateData = {};
-      setProperty(updateData, `data.stats.medical.uses`, 0);
+      setProperty(updateData, `data.data.stats.medical.uses`, 0);
       this.object.update(updateData);
     });
 
     // Toggle item equipped
     html.find(".items .item a.toggle-equipped").click((ev) => {
       const li = $(ev.currentTarget);
-      const item = this.actor.getOwnedItem(li.data("itemId"));
+      const item = this.actor.items.get(li.data("itemId"));
       if (item) {
         item.update({ ["data.equippable.equipped"]: !item.data.data.equippable.equipped });
       }
@@ -362,7 +362,7 @@ export class ActorSheetFFG extends ActorSheet {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
         const li = $(ev.currentTarget);
         let itemId = li.data("itemId");
-        let item = this.actor.getOwnedItem(itemId);
+        let item = this.actor.items.get(itemId);
 
         if (!item) {
           item = game.items.get(itemId);
@@ -409,7 +409,7 @@ export class ActorSheetFFG extends ActorSheet {
     // Delete Inventory Item
     html.find(".item-delete").click((ev) => {
       const li = $(ev.currentTarget).parents(".item");
-      this.actor.deleteOwnedItem(li.data("itemId"));
+      this.actor.deleteEmbeddedDocuments("Item", [li.data("itemId")]);
       li.slideUp(200, () => this.render(false));
     });
 
@@ -417,7 +417,7 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".item-edit").click(async (ev) => {
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
-      let item = this.actor.getOwnedItem(itemId);
+      let item = this.actor.items.get(itemId);
       if (!item) {
         item = game.items.get(itemId);
 
@@ -480,7 +480,7 @@ export class ActorSheetFFG extends ActorSheet {
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
-      let item = this.actor.getOwnedItem(itemId);
+      let item = this.actor.items.get(itemId);
       if (!item) {
         item = game.items.get(itemId);
 
@@ -495,7 +495,7 @@ export class ActorSheetFFG extends ActorSheet {
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
-      let item = this.actor.getOwnedItem(itemId);
+      let item = this.actor.items.get(itemId);
       if (!item) {
         item = game.items.get(itemId);
 
@@ -683,7 +683,7 @@ export class ActorSheetFFG extends ActorSheet {
    * @private
    */
   async _itemDetailsToChat(itemId) {
-    let item = this.actor.getOwnedItem(itemId);
+    let item = this.actor.items.get(itemId);
     if (!item) {
       item = game.items.get(itemId);
     }
@@ -713,7 +713,7 @@ export class ActorSheetFFG extends ActorSheet {
    * @private
    */
   async _forcePowerDetailsToChat(itemId, desc, name) {
-    let item = this.actor.getOwnedItem(itemId);
+    let item = this.actor.items.get(itemId);
     if (!item) {
       item = game.items.get(itemId);
     }
@@ -929,7 +929,7 @@ export class ActorSheetFFG extends ActorSheet {
 
     $(event.currentTarget).attr("data-item-actorid", this.actor.id);
 
-    const item = this.actor.getOwnedItem(li.dataset.itemId);
+    const item = this.actor.items.get(li.dataset.itemId);
 
     // limit transfer on personal weapons/armour/gear
     if (["weapon", "armour", "gear"].includes(item.data.type)) {
@@ -946,7 +946,7 @@ export class ActorSheetFFG extends ActorSheet {
   }
 
   _canDragStart(selector) {
-    return this.options.editable && this.actor.owner;
+    return this.options.editable && this.actor.isOwner;
   }
 
   _canDragDrop(selector) {
@@ -1097,8 +1097,8 @@ export class ActorSheetFFG extends ActorSheet {
    * @param  {Object} data
    */
   _createSkillColumns(data) {
-    const numberSkills = Object.values(data.data.skills).length;
-    const totalRows = numberSkills + Object.values(data.data.skilltypes).length;
+    const numberSkills = Object.values(data.skills).length;
+    const totalRows = numberSkills + Object.values(data.skilltypes).length;
 
     let colRowCount = Math.ceil(totalRows / 2.0);
 
@@ -1107,7 +1107,7 @@ export class ActorSheetFFG extends ActorSheet {
     let currentColumn = 0;
     let rowsLeft = colRowCount;
 
-    data.data.skilltypes.forEach((type) => {
+    data.skilltypes.forEach((type) => {
       // filter and sort skills for current skill category
       let sortFunction = (a, b) => {
         if (a.toLowerCase() > b.toLowerCase()) return 1;
@@ -1116,14 +1116,14 @@ export class ActorSheetFFG extends ActorSheet {
       };
       if (game.settings.get("starwarsffg", "skillSorting")) {
         sortFunction = (a, b) => {
-          if (data.data.skills[a].label > data.data.skills[b].label) return 1;
-          if (data.data.skills[a].label < data.data.skills[b].label) return -1;
+          if (data.skills[a].label > data.skills[b].label) return 1;
+          if (data.skills[a].label < data.skills[b].label) return -1;
           return 0;
         };
       }
 
-      const skills = Object.keys(data.data.skills)
-        .filter((s) => data.data.skills[s].type === type.type)
+      const skills = Object.keys(data.skills)
+        .filter((s) => data.skills[s].type === type.type)
         .sort(sortFunction);
 
       // if the skill list is larger that the column row count then take into account the added header row.
@@ -1140,7 +1140,7 @@ export class ActorSheetFFG extends ActorSheet {
       cols[currentColumn].push({ id: "header", ...type });
       rowsLeft -= 1;
       skills.forEach((s, index) => {
-        cols[currentColumn].push({ name: s, ...data.data.skills[s] });
+        cols[currentColumn].push({ name: s, ...data.skills[s] });
         rowsLeft -= 1;
         if (rowsLeft <= 0 && currentColumn === 0) {
           currentColumn += 1;

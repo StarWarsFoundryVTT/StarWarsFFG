@@ -4,8 +4,8 @@
   {{/if}}
   <h2 class="item-name">{{data.name}}</h2>
   {{#if ffg.success}}
-  <h4 class="item-damage">{{localize "SWFFG.ItemsDamage"}}: <input class="damage-value" type="text" value="{{data.data.damage.adjusted}} + {{ffg.success}} = {{math data.data.damage.adjusted '+' ffg.success}}" disabled /></h4>
-  <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{data.data.crit.adjusted}}" disabled /></h4>
+  <h4 class="item-damage">{{localize "SWFFG.ItemsDamage"}}: <input class="damage-value" type="text" value="{{#if (ne data.data.damage.adjusted undefined)}}{{data.data.damage.adjusted}}{{else}}{{data.data.damage.value}}{{/if}} + {{ffg.success}} = {{#if (ne data.data.damage.adjusted undefined)}}{{math data.data.damage.adjusted '+' ffg.success}}{{else}}{{math data.data.damage.value '+' ffg.success}}{{/if}}" disabled /></h4>
+  <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{#if (ne data.data.crit.adjusted undefined)}}{{data.data.crit.adjusted}}{{else}}{{data.data.crit.value}}{{/if}}" disabled /></h4>
   {{else}}
   <h4 class="item-miss">Miss!</h4>
   {{/if}} {{#if data.data.adjusteditemmodifier}}

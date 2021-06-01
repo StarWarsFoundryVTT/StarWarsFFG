@@ -313,7 +313,7 @@ export default class SettingsHelpers {
     // generate a list of playlists
     const playlists = {};
     playlists["None"] = "";
-    game.playlists.entries.forEach((playlist, index) => {
+    game.playlists.forEach((playlist, index) => {
       playlists[playlist.id] = `${index}-${playlist.data.name}`;
     });
 

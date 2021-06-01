@@ -65,7 +65,7 @@ export default class DestinyTracker extends FormApplication {
   async close(options = {}) {}
 
   /** @override */
-  activateListeners(html) {
+  _activateCoreListeners(html) {
     const d = html.find("swffg-destiny-container")[0];
     new Draggable(this, html, d, this.options.resizable);
 
@@ -160,7 +160,7 @@ export default class DestinyTracker extends FormApplication {
       }
 
       ChatMessage.create({
-        user: game.user._id,
+        user: game.user.id,
         content: messageText,
       });
     });

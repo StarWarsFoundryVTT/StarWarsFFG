@@ -1,12 +1,12 @@
 <form class="{{cssClass}} minion" autocomplete="off">
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <div id="actor-id" data-actor="{{actor._id}}" style="display: none;"></div>
+    <div id="actor-id" data-actor="{{_id}}" style="display: none;"></div>
 
     <div class="header-fields">
       <div class="container flex-wrap: nowrap;">
         <div class="container minion-name">
-          <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.MinionName'}}" data-dtype="String" /></h1>
+          <h1><input name="name" type="text" value="{{name}}" placeholder="{{localize 'SWFFG.MinionName'}}" data-dtype="String" /></h1>
           <div class="container">
             <div class="grid grid-3col minion-stats">
               {{!-- Quantity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.MinionQuantity" fields=(array (object name="data.quantity.max" value=data.quantity.max type="Number" label="SWFFG.MinionQuantityMax") (object name="data.quantity.value" value=data.quantity.value type="Number" label="SWFFG.MinionQuantityAlive" disabled=true) ))}} {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value )}} {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
@@ -21,7 +21,7 @@
 
         <div class="profile-block">
           <div class="block-background">
-            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+            <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" height="100" width="100" />
           </div>
         </div>
       </div>
@@ -61,7 +61,7 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <!-- New talent list snippet -->
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq flags.config.enableForcePool undefined) (eq flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}

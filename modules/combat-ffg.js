@@ -175,7 +175,7 @@ export class CombatFFG extends Combat {
               }
 
               // Create multiple chat messages
-              await CONFIG.ChatMessage.entityClass.create(messages);
+              await CONFIG.ChatMessage.DocumentClass.create(messages);
 
               resolve(initiative);
             },

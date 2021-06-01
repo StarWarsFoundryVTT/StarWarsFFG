@@ -31,7 +31,7 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   async getData(options) {
-    let data = super.getData(options);
+    let data = super.getData(options).data;
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
@@ -715,7 +715,7 @@ export class ItemSheetFFG extends ItemSheet {
   }
 
   _canDragStart(selector) {
-    return this.options.editable && this.object.owner;
+    return this.options.editable && this.object.isOwner;
   }
 
   _canDragDrop(selector) {

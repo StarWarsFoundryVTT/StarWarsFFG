@@ -101,7 +101,7 @@ export class RollFFG extends Roll {
   /* -------------------------------------------- */
   /** @override */
   evaluate({ minimize = false, maximize = false } = {}) {
-    if (this._rolled) throw new Error("This Roll object has already been rolled.");
+    if (this._evaluated) throw new Error("This Roll object has already been rolled.");
 
     // Step 1 - evaluate any inner Rolls and recompile the formula
     let hasInner = false;
@@ -175,7 +175,7 @@ export class RollFFG extends Roll {
 
     // Store final outputs
     this._total = total;
-    this._rolled = true;
+    this._evaluated = true;
     return this;
   }
 
@@ -217,7 +217,7 @@ export class RollFFG extends Roll {
   async render(chatOptions = {}) {
     chatOptions = mergeObject(
       {
-        user: game.user._id,
+        user: game.user.id,
         flavor: null,
         template: this.constructor.CHAT_TEMPLATE,
         blind: false,
@@ -227,7 +227,7 @@ export class RollFFG extends Roll {
     const isPrivate = chatOptions.isPrivate;
 
     // Execute the roll, if needed
-    if (!this._rolled) this.roll();
+    if (!this._evaluated) this.roll();
 
     // Define chat data
     if (this?.data) {
@@ -275,7 +275,7 @@ export class RollFFG extends Roll {
   /** @override */
   toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
     // Perform the roll, if it has not yet been rolled
-    if (!this._rolled) this.evaluate();
+    if (!this._evaluated) this.evaluate();
 
     const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
 
@@ -289,7 +289,7 @@ export class RollFFG extends Roll {
     // Prepare chat data
     messageData = mergeObject(
       {
-        user: game.user._id,
+        user: game.user.id,
         type: template,
         content: this.total,
         sound: CONFIG.sounds.dice,
@@ -304,7 +304,7 @@ export class RollFFG extends Roll {
     Hooks.call("ffgDiceMessage", this);
 
     // Either create the message or just return the chat data
-    return create ? CONFIG.ChatMessage.entityClass.create(messageData, messageOptions) : messageData;
+    return create ? CONFIG.ChatMessage.documentClass.create(messageData, messageOptions) : messageData;
   }
 
   /** @override */
@@ -330,4 +330,20 @@ export class RollFFG extends Roll {
     roll.flavorText = data.flavorText;
     return roll;
   }
+
+  /** @override */
+  _safeEval(expression) {
+    let result;
+    try {
+      const src = 'with (sandbox) { return ' + expression + '}';
+      const evl = new Function('sandbox', src);
+      result = evl(Roll.MATH_PROXY);
+    } catch {
+      result = undefined;
+    }
+    if ( !Number.isNumeric(result) ) {
+      throw new Error(`Roll.safeEval produced a non-numeric result from expression "${expression}"`);
+    }
+    return result;
+  };
 }

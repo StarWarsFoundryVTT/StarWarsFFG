@@ -1,26 +1,26 @@
 <form class="{{cssClass}} character" autocomplete="off">
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <div id="actor-id" data-actor="{{actor._id}}" style="display: none;"></div>
+    <div id="actor-id" data-actor="{{_id}}" style="display: none;"></div>
 
     <div class="header-fields">
       {{!-- Character Details Container --}}
       <div class="container" style="flex-wrap: nowrap;">
         <div class="profile-block">
           <div>
-            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+            <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" height="100" width="100" />
           </div>
         </div>
         <div class="container">
           <div class="header-name header-description-block">
             <div style="{{#if limited}}display:none;{{/if}}">
-              <h2><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String" /></h2>
+              <h2><input name="name" type="text" value="{{name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String" /></h2>
             </div>
             <div class="table">
               <div class="row">
                 <div>{{localize "SWFFG.Species"}}:</div>
                 <div class="row-input">
-                  {{#each actor.items as |item id|}} {{#iff item.type '==' 'species'}}
+                  {{#each items as |item id|}} {{#iff item.type '==' 'species'}}
                   <div class="species-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
                   {{/iff}}{{/each}}
                 </div>
@@ -28,7 +28,7 @@
               <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Career"}}:</div>
                 <div class="row-input">
-                  {{#each actor.items as |item id|}} {{#if (eq item.type 'career')}}
+                  {{#each items as |item id|}} {{#if (eq item.type 'career')}}
                   <div class="career-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
                   {{/if}}{{/each}}
                 </div>
@@ -37,7 +37,7 @@
                 <div>{{localize "SWFFG.Specializations"}}:</div>
                 <!-- <div class="row-input"><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" data-dtype="String" /></div> -->
                 <div class="row-input">
-                  {{#each actor.items as |item id|}} {{#iff item.type '==' 'specialization'}}
+                  {{#each items as |item id|}} {{#iff item.type '==' 'specialization'}}
                   <div class="specialization-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
                   {{/iff}}{{/each}}
                 </div>
@@ -84,7 +84,7 @@
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
       <div class="container flex-group-center item-values">
-        {{!-- Medical Box --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html" (object title=actor.flags.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
+        {{!-- Medical Box --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html" (object title=flags.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
         {{!-- Credits Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.DescriptionCredits" type="Number" name="data.stats.credits.value" value=data.stats.credits.value disabled=this.settings.enableSoakCalculation)}}
       </div>
 
@@ -96,10 +96,10 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
-        {{!-- Force Box --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
+        {{!-- Force Box --}} {{#if (or (eq flags.config.enableForcePool undefined) (eq flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
       </div>
 
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq flags.config.enableForcePool undefined) (eq flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}

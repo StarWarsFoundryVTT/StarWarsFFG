@@ -64,9 +64,9 @@ Hooks.once("init", async function () {
 
   // Define custom Entity classes. This will override the default Actor
   // to instead use our extended version.
-  CONFIG.Actor.entityClass = ActorFFG;
-  CONFIG.Item.entityClass = ItemFFG;
-  CONFIG.Combat.entityClass = CombatFFG;
+  CONFIG.Actor.documentClass = ActorFFG;
+  CONFIG.Item.documentClass = ItemFFG;
+  CONFIG.Combat.documentClass = CombatFFG;
 
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
@@ -695,7 +695,7 @@ Hooks.once("ready", async () => {
       callback: () => {
         new GroupManager().render(true);
       },
-      minimumRole: USER_ROLES.GAMEMASTER,
+      minimumRole: CONST.USER_ROLES.GAMEMASTER,
     },
     {
       name: game.i18n.localize("SWFFG.RequestDestinyRoll"),
@@ -714,7 +714,7 @@ Hooks.once("ready", async () => {
           content: messageText,
         });
       },
-      minimumRole: USER_ROLES.GAMEMASTER,
+      minimumRole: CONST.USER_ROLES.GAMEMASTER,
     },
   ];
   const dTracker = new DestinyTracker({ menu: defaultDestinyMenu });

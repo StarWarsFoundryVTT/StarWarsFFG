@@ -1,12 +1,12 @@
 <form class="{{cssClass}} vehicle" autocomplete="off">
   {{!-- Sheet Header --}}
   <header class="sheet-header">
-    <div id="actor-id" data-actor="{{actor._id}}" style="display: none;"></div>
+    <div id="actor-id" data-actor="{{_id}}" style="display: none;"></div>
     <div class="header-fields">
       <div class="grid grid-2col">
         <div class="block-background vehicle-img">
           <div class="profile-block">
-            <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="100" width="100" />
+            <img class="profile-img" src="{{img}}" data-edit="img" title="{{name}}" height="100" width="100" />
           </div>
         </div>
         <div class="container flex-group-right">
@@ -38,7 +38,7 @@
       </div>
       <div class="container">
         <div class="container flex-group-center item-name">
-          <h1 class="charname"><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.VehicleName'}}" /></h1>
+          <h1 class="charname"><input name="name" type="text" value="{{name}}" placeholder="{{localize 'SWFFG.VehicleName'}}" /></h1>
         </div>
       </div>
       <div class="container characteristics flex-group-center">

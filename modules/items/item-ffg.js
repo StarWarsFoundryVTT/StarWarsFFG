@@ -13,15 +13,15 @@ export class ItemFFG extends ItemBaseFFG {
   /**
    * Augment the basic Item data model with additional dynamic data.
    */
-  prepareData() {
+  async prepareData() {
     super.prepareData();
 
     CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
 
     // Get the Item's data
-    const itemData = this.data;
-    const actorData = this.actor ? this.actor.data : {};
-    const data = itemData.data;
+    const itemData = await this.data;
+    const actorData = await this.actor ? this.actor.data : {};
+    const data = await itemData.data;
 
     if (this.compendium) {
       itemData.flags.isCompendium = true;
@@ -32,8 +32,8 @@ export class ItemFFG extends ItemBaseFFG {
       if (this.isOwned) {
         itemData.flags.ffgIsOwned = true;
         itemData.flags.ffgUuid = this.uuid;
-      } else if (itemData._id) {
-        itemData.flags.ffgTempId = itemData._id;
+      } else if (itemData.id) {
+        itemData.flags.ffgTempId = itemData.id;
       }
     }
 
@@ -125,7 +125,7 @@ export class ItemFFG extends ItemBaseFFG {
               damageAdd += parseInt(data.attributes[attr].value, 10);
             }
           }
-          if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
+          if (await this.actor.type !== "vehicle") {
             if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
               data.damage.value = parseInt(actorData.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
@@ -174,7 +174,7 @@ export class ItemFFG extends ItemBaseFFG {
         if (this.isOwned && this.actor) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd;
           for (let attr in data.attributes) {
-            if (data.attributes[attr].modtype === "Armor Stat") {
+            if (data.attributes[attr]?.modtype === "Armor Stat") {
               switch (data.attributes[attr].mod) {
                 case "soak":
                   soakAdd += parseInt(data.attributes[attr].value, 10);
@@ -393,7 +393,7 @@ export class ItemFFG extends ItemBaseFFG {
     // General equipment properties
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
-        const qualities = data.adjusteditemmodifier.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this._id}' data-uuid='${this.uuid}' data-modifier-id='${m._id}' data-modifier-type='${m.type}'>${m.name} ${m.data.rank_current > 0 ? m.data.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = data.adjusteditemmodifier.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m.id}' data-modifier-type='${m.type}'>${m.name} ${m.data.rank_current > 0 ? m.data.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
