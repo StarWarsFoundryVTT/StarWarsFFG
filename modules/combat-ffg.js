@@ -113,7 +113,7 @@ export class CombatFFG extends Combat {
 
                   // Get Combatant data
                   const c = initiative.getCombatant(id);
-                  if (!c || !c.owner) return resolve(results);
+                  if (!c || !c.isOwner) return resolve(results);
 
                   // Detemine Formula
                   let pool = _buildInitiativePool(c.actor.data.data, baseFormulaType);
@@ -175,7 +175,7 @@ export class CombatFFG extends Combat {
               }
 
               // Create multiple chat messages
-              await CONFIG.ChatMessage.entityClass.create(messages);
+              await CONFIG.ChatMessage.documentClass.create(messages);
 
               resolve(initiative);
             },

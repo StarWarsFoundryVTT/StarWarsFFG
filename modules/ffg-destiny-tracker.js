@@ -9,8 +9,8 @@ import { GroupManager } from "./groupmanager-ffg.js";
  *
  */
 export default class DestinyTracker extends FormApplication {
-  constructor(options) {
-    super();
+  constructor(object={}, options={}) {
+    super(object, options);
 
     this.destinyQueue = [];
     this.isRunningQueue = false;
@@ -59,10 +59,10 @@ export default class DestinyTracker extends FormApplication {
   /* -------------------------------------------- */
 
   /** @override */
-  _updateObject(event, formData) {}
+  _updateObject(event, formData) {};
 
   /** @override */
-  async close(options = {}) {}
+  async close(options = {}) {};
 
   /** @override */
   activateListeners(html) {

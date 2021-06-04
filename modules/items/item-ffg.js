@@ -29,9 +29,10 @@ export class ItemFFG extends ItemBaseFFG {
     } else {
       itemData.flags.isCompendium = false;
       itemData.flags.ffgIsOwned = false;
-      if (this.isOwned) {
+      if (this.isEmbedded) {
         itemData.flags.ffgIsOwned = true;
-        itemData.flags.ffgUuid = this.uuid;
+        // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
+        if (this.parent.data) itemData.flags.ffgUuid = this.uuid;
       } else if (itemData._id) {
         itemData.flags.ffgTempId = itemData._id;
       }
@@ -118,14 +119,14 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isOwned && this.actor) {
+        if (this.isEmbedded && this.actor && this.actor.data) {
           let damageAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
               damageAdd += parseInt(data.attributes[attr].value, 10);
             }
           }
-          if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
+          if (this.actor.type !== "vehicle") {
             if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
               data.damage.value = parseInt(actorData.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
@@ -171,7 +172,7 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isOwned && this.actor) {
+        if (this.isEmbedded && this.actor && this.actor.data) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd;
           for (let attr in data.attributes) {
             if (data.attributes[attr].modtype === "Armor Stat") {
@@ -190,7 +191,7 @@ export class ItemFFG extends ItemBaseFFG {
               }
             }
           }
-          if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
+          if (this.actor.type !== "vehicle") {
             data.soak.value = parseInt(data.soak.value, 10);
             data.soak.adjusted += soakAdd;
             data.defence.value = parseInt(data.defence.value, 10);

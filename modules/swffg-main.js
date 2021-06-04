@@ -16,7 +16,6 @@ import { ActorSheetFFGV2 } from "./actors/actor-sheet-ffg-v2.js";
 import { AdversarySheetFFG } from "./actors/adversary-sheet-ffg.js";
 import { AdversarySheetFFGV2 } from "./actors/adversary-sheet-ffg-v2.js";
 import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
-import { GroupManagerLayer } from "./groupmanager-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 
@@ -31,10 +30,7 @@ import SettingsHelpers from "./settings/settings-helpers.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
-import ImportHelpers from "./importer/import-helpers.js";
 import { createFFGMacro } from "./helpers/macros.js";
-import ModifierHelpers from "./helpers/modifiers.js";
-import ItemHelpers from "./helpers/item-helpers.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
 import PauseFFG from "./apps/pause-ffg.js";
@@ -64,9 +60,9 @@ Hooks.once("init", async function () {
 
   // Define custom Entity classes. This will override the default Actor
   // to instead use our extended version.
-  CONFIG.Actor.entityClass = ActorFFG;
-  CONFIG.Item.entityClass = ItemFFG;
-  CONFIG.Combat.entityClass = CombatFFG;
+  CONFIG.Actor.documentClass = ActorFFG;
+  CONFIG.Item.documentClass = ItemFFG;
+  CONFIG.Combat.documentClass = CombatFFG;
 
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
@@ -191,7 +187,6 @@ Hooks.once("init", async function () {
       scope: "world",
       default: {},
       config: false,
-      default: {},
       type: Object,
     });
 
@@ -262,20 +257,22 @@ Hooks.once("init", async function () {
           let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
           CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
-          Object.keys(actor.data.data.skills).forEach((skill) => {
-            if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
-              skills.skills[`-=${skill}`] = null;
-            } else {
-              skills.skills[skill] = {
-                ...actor.data.data.skills[skill],
-                ...skills.skills[skill],
-              };
+          if (actor.type !== "vehicle") {
+            Object.keys(actor.data.data.skills).forEach((skill) => {
+              if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
+                skills.skills[`-=${skill}`] = null;
+              } else {
+                skills.skills[skill] = {
+                  ...actor.data.data.skills[skill],
+                  ...skills.skills[skill],
+                };
 
-              skills.skills[skill].rank = actor.data.data.skills[skill].rank;
-              skills.skills[skill].careerskill = actor.data.data.skills[skill].careerskill;
-              skills.skills[skill].groupskill = actor.data.data.skills[skill].groupskill;
-            }
-          });
+                skills.skills[skill].rank = actor.data.data.skills[skill].rank;
+                skills.skills[skill].careerskill = actor.data.data.skills[skill].careerskill;
+                skills.skills[skill].groupskill = actor.data.data.skills[skill].groupskill;
+              }
+            });
+          }
 
           actor.update({
             data: {
@@ -695,7 +692,7 @@ Hooks.once("ready", async () => {
       callback: () => {
         new GroupManager().render(true);
       },
-      minimumRole: USER_ROLES.GAMEMASTER,
+      minimumRole: CONST.USER_ROLES.GAMEMASTER,
     },
     {
       name: game.i18n.localize("SWFFG.RequestDestinyRoll"),
@@ -714,10 +711,10 @@ Hooks.once("ready", async () => {
           content: messageText,
         });
       },
-      minimumRole: USER_ROLES.GAMEMASTER,
+      minimumRole: CONST.USER_ROLES.GAMEMASTER,
     },
   ];
-  const dTracker = new DestinyTracker({ menu: defaultDestinyMenu });
+  const dTracker = new DestinyTracker(undefined, { menu: defaultDestinyMenu });
 
   dTracker.render(true);
 });

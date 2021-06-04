@@ -33,6 +33,12 @@ export class ItemSheetFFG extends ItemSheet {
   async getData(options) {
     let data = super.getData(options);
 
+    const itemData = data.data;
+
+    data.item = itemData;
+    data.data = itemData.data;
+
+
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
     } else if (options?.action === "ffgUpdate") {
@@ -78,7 +84,7 @@ export class ItemSheetFFG extends ItemSheet {
       case "gear":
       case "shipattachment":
         this.position.width = 385;
-        this.position.height = 515;
+        this.position.height = 615;
         break;
       case "talent":
         this.position.width = 405;
@@ -483,7 +489,7 @@ export class ItemSheetFFG extends ItemSheet {
           ffgParentApp: this.appId,
         },
       };
-      if (this.object.isOwned) {
+      if (this.object.isEmbedded) {
         let ownerObject = await fromUuid(this.object.uuid);
 
         temp = {
@@ -494,7 +500,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempItemIndex: itemIndex,
             ffgIsTemp: true,
             ffgUuid: this.object.uuid,
-            ffgIsOwned: this.object.isOwned,
+            ffgIsOwned: this.object.isEmbedded,
           },
         };
       }
@@ -547,7 +553,7 @@ export class ItemSheetFFG extends ItemSheet {
 
       let temp = {
         img: "icons/svg/mystery-man.svg",
-        name: "",
+        name: "Item Mod",
         type: itemType,
         flags: {
           ffgTempId: this.object.id,
@@ -557,7 +563,7 @@ export class ItemSheetFFG extends ItemSheet {
           ffgIsTemp: true,
           ffgUuid: this.object.uuid,
           ffgParentApp: this.appId,
-          ffgIsOwned: this.object.isOwned,
+          ffgIsOwned: this.object.isEmbedded,
         },
         data: {
           attributes: {},
@@ -715,7 +721,7 @@ export class ItemSheetFFG extends ItemSheet {
   }
 
   _canDragStart(selector) {
-    return this.options.editable && this.object.owner;
+    return this.options.editable && this.object.isOwner;
   }
 
   _canDragDrop(selector) {

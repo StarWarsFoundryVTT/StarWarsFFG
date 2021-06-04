@@ -174,7 +174,6 @@ export default class SettingsHelpers {
       scope: "world",
       default: {},
       config: false,
-      default: {},
       type: Object,
     });
 
@@ -192,7 +191,6 @@ export default class SettingsHelpers {
       scope: "world",
       default: {},
       config: false,
-      default: {},
       type: Object,
     });
 
@@ -220,7 +218,6 @@ export default class SettingsHelpers {
       scope: "world",
       default: {},
       config: false,
-      default: {},
       type: Object,
     });
 
@@ -313,7 +310,7 @@ export default class SettingsHelpers {
     // generate a list of playlists
     const playlists = {};
     playlists["None"] = "";
-    game.playlists.entries.forEach((playlist, index) => {
+    game.playlists.contents.forEach((playlist, index) => {
       playlists[playlist.id] = `${index}-${playlist.data.name}`;
     });
 

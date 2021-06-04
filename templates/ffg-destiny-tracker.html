@@ -1,20 +1,22 @@
-<div class="swffg-destiny-container">
-  <div class="swffg-destiny {{#if isGM}}swffg-groupmanager{{/if}}" title="{{localize 'SWFFG.DestinyTrackerHint'}}">
-    {{#if isGM}}
-    <section id="destinyMenu" class="group-manager">
-      <div class="dropdown">
-        <button id="menuDropdown" class="dropbtn"><i class="fas fa-bars"></i></button>
-        <div id="menuDropdownContent" class="dropdown-content">
-          {{#each menu as |item id|}}
-          <a href="#" data-value="{{id}}" title="{{item.name}}">
-            {{{item.icon}}}
-          </a>
-          {{/each}}
+<form autocomplete="off" onsubmit="event.preventDefault();">
+  <div class="swffg-destiny-container">
+    <div class="swffg-destiny {{#if isGM}}swffg-groupmanager{{/if}}" title="{{localize 'SWFFG.DestinyTrackerHint'}}">
+      {{#if isGM}}
+      <section id="destinyMenu" class="group-manager">
+        <div class="dropdown">
+          <button id="menuDropdown" class="dropbtn"><i class="fas fa-bars"></i></button>
+          <div id="menuDropdownContent" class="dropdown-content">
+            {{#each menu as |item id|}}
+            <a href="#" data-value="{{id}}" title="{{item.name}}">
+              {{{item.icon}}}
+            </a>
+            {{/each}}
+          </div>
         </div>
-      </div>
-    </section>
-    {{/if}}
-    <section id="destinyLight" class="destiny-points {{#if isGM}}display-menu{{/if}}" data-value="${destinyPool.light}" data-group="dPoolLight">{{destinyPool.light}}<span>{{localize destinyPoolLabel.light }}</span></section>
-    <section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">{{destinyPool.dark}}<span>{{localize destinyPoolLabel.dark }}</span></section>
+      </section>
+      {{/if}}
+      <section id="destinyLight" class="destiny-points {{#if isGM}}display-menu{{/if}}" data-value="${destinyPool.light}" data-group="dPoolLight">{{destinyPool.light}}<span>{{localize destinyPoolLabel.light }}</span></section>
+      <section id="destinyDark" class="destiny-points" data-value="${destinyPool.dark}" data-group="dPoolDark">{{destinyPool.dark}}<span>{{localize destinyPoolLabel.dark }}</span></section>
+    </div>
   </div>
-</div>
+</form>

@@ -39,8 +39,8 @@ export default class EmbeddedItemHelpers {
         if (entityName === "Compendium") {
           realItem = await fromUuid(flags.ffgUuid);
         } else if (entityName === "Actor") {
-          owner = CONFIG[entityName].entityClass.collection.get(entityId);
-          realItem = await owner.getOwnedItem(embeddedId);
+          owner = CONFIG[entityName].documentClass.collection.get(entityId);
+          realItem = await owner.items.get(embeddedId);
         } else {
           realItem = await game.items.get(ffgTempId);
         }
@@ -113,7 +113,7 @@ export default class EmbeddedItemHelpers {
       } else {
         actor = await game.actors.get(actorId);
       }
-      const ownedItem = await actor.getOwnedItem(itemId);
+      const ownedItem = await actor.items.get(itemId);
 
       if (!ownedItem) ui.notifications.warn(`The item had been removed or can not be found!`);
 
@@ -156,7 +156,7 @@ export default class EmbeddedItemHelpers {
 
     if (actorId) {
       parent = await game.actors.get(actorId);
-      ownedItem = await parent.getOwnedItem(itemId);
+      ownedItem = await parent.items.get(itemId);
     } else {
       ownedItem = await game.items.get(itemId);
     }

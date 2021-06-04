@@ -63,7 +63,7 @@ export default class DiceHelpers {
       //Check if token is linked to actor
       if (obj.actor.token === null) {
         let itemID = row.parentElement.dataset["itemId"];
-        const item1 = actor.getOwnedItem(itemID);
+        const item1 = actor.items.get(itemID);
         item = Object.entries(data.items).filter((item) => item[1]._id === itemID);
         item = item[0][1];
         item.flags.uuid = item1.uuid;
@@ -155,7 +155,7 @@ export default class DiceHelpers {
     const actor = game.actors.get(actorId);
     const actorSheet = actor.sheet.getData();
 
-    const item = actor.getOwnedItem(itemId).data;
+    const item = actor.items.get(itemId).data;
     item.flags.uuid = item.uuid;
 
     const status = this.getWeaponStatus(item);

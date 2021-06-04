@@ -50,6 +50,14 @@ export class ActorSheetFFG extends ActorSheet {
     const data = super.getData();
     data.classType = this.constructor.name;
 
+    // Compatibility for Foundry 0.8.x with backwards compatibility (hopefully) for 0.7.x
+    const actorData = this.actor.data.toObject(false);
+    data.actor = actorData;
+    data.data = actorData.data;
+    data.rollData = this.actor.getRollData.bind(this.actor);
+
+    data.items = this.actor.items.map((item) => item.data);
+
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.actor, options.data);
     }
@@ -93,7 +101,6 @@ export class ActorSheetFFG extends ActorSheet {
         break;
       default:
     }
-    data.items = this.actor.items.map((item) => item.data);
 
     if (this.actor.data.type !== "vehicle") {
       data.data.skilllist = this._createSkillColumns(data);
@@ -226,7 +233,7 @@ export class ActorSheetFFG extends ActorSheet {
       icon: '<i class="fas fa-dice-d20"></i>',
       callback: async (li) => {
         let itemId = li.data("itemId");
-        let item = this.actor.getOwnedItem(itemId);
+        let item = this.actor.items.get(itemId);
         if (!item) {
           item = game.items.get(itemId);
         }
@@ -351,7 +358,7 @@ export class ActorSheetFFG extends ActorSheet {
     // Toggle item equipped
     html.find(".items .item a.toggle-equipped").click((ev) => {
       const li = $(ev.currentTarget);
-      const item = this.actor.getOwnedItem(li.data("itemId"));
+      const item = this.actor.items.get(li.data("itemId"));
       if (item) {
         item.update({ ["data.equippable.equipped"]: !item.data.data.equippable.equipped });
       }
@@ -362,7 +369,7 @@ export class ActorSheetFFG extends ActorSheet {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
         const li = $(ev.currentTarget);
         let itemId = li.data("itemId");
-        let item = this.actor.getOwnedItem(itemId);
+        let item = this.actor.items.get(itemId);
 
         if (!item) {
           item = game.items.get(itemId);
@@ -395,7 +402,7 @@ export class ActorSheetFFG extends ActorSheet {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
         const li = $(ev.currentTarget);
         const itemId = li.data("itemId");
-        const item = this.actor.getOwnedItem(itemId);
+        const item = this.actor.items.get(itemId);
         const desc = li.data("desc");
 
         if (item?.sheet) {
@@ -417,7 +424,7 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".item-edit").click(async (ev) => {
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
-      let item = this.actor.getOwnedItem(itemId);
+      let item = this.actor.items.get(itemId);
       if (!item) {
         item = game.items.get(itemId);
 
@@ -480,7 +487,7 @@ export class ActorSheetFFG extends ActorSheet {
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
-      let item = this.actor.getOwnedItem(itemId);
+      let item = this.actor.items.get(itemId);
       if (!item) {
         item = game.items.get(itemId);
 
@@ -495,7 +502,7 @@ export class ActorSheetFFG extends ActorSheet {
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
-      let item = this.actor.getOwnedItem(itemId);
+      let item = this.actor.items.get(itemId);
       if (!item) {
         item = game.items.get(itemId);
 
@@ -683,7 +690,7 @@ export class ActorSheetFFG extends ActorSheet {
    * @private
    */
   async _itemDetailsToChat(itemId) {
-    let item = this.actor.getOwnedItem(itemId);
+    let item = this.actor.items.get(itemId);
     if (!item) {
       item = game.items.get(itemId);
     }
@@ -713,7 +720,7 @@ export class ActorSheetFFG extends ActorSheet {
    * @private
    */
   async _forcePowerDetailsToChat(itemId, desc, name) {
-    let item = this.actor.getOwnedItem(itemId);
+    let item = this.actor.items.get(itemId);
     if (!item) {
       item = game.items.get(itemId);
     }
@@ -929,7 +936,7 @@ export class ActorSheetFFG extends ActorSheet {
 
     $(event.currentTarget).attr("data-item-actorid", this.actor.id);
 
-    const item = this.actor.getOwnedItem(li.dataset.itemId);
+    const item = this.actor.items.get(li.dataset.itemId);
 
     // limit transfer on personal weapons/armour/gear
     if (["weapon", "armour", "gear"].includes(item.data.type)) {
@@ -946,7 +953,7 @@ export class ActorSheetFFG extends ActorSheet {
   }
 
   _canDragStart(selector) {
-    return this.options.editable && this.actor.owner;
+    return this.options.editable && this.actor.isOwner;
   }
 
   _canDragDrop(selector) {
@@ -1041,7 +1048,7 @@ export class ActorSheetFFG extends ActorSheet {
         });
       }
 
-      data.actor.data.talentList = globalTalentList;
+      data.actor.data.talentList = mergeObject(data.actor.data.talentList, globalTalentList);
     });
   }
 

@@ -6,7 +6,7 @@ export default class ItemHelpers {
   static async itemUpdate(event, formData) {
     formData = expandObject(formData);
 
-    if (this.object.isOwned && this.object.actor?.compendium?.metadata) {
+    if (this.object.isEmbedded && this.object.actor?.compendium?.metadata) {
       return;
     }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
@@ -69,7 +69,7 @@ export default class ItemHelpers {
             if (parent.id.includes(".OwnedItem.")) {
               const ids = parent.id.split(".OwnedItem.");
               const actor = await fromUuid(ids[0]);
-              const item = await actor.getOwnedItem(ids[1]);
+              const item = await actor.items.get(ids[1]);
               spec.flags.loaded = false;
               await item.update(updateData);
               await item.sheet.render(true);

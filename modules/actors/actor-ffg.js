@@ -206,16 +206,16 @@ export class ActorFFG extends Actor {
 
     const globalTalentList = [];
     specializations.forEach((element) => {
-      //go throut each list of talent where learned = true
+      //go through each list of talent where learned = true
 
-      const learnedTalents = Object.keys(element.data.talents).filter((key) => element.data.talents[key].islearned === true);
+      const learnedTalents = Object.keys(element.data.data.talents).filter((key) => element.data.data.talents[key].islearned === true);
 
       learnedTalents.forEach((talent) => {
-        const item = JSON.parse(JSON.stringify(element.data.talents[talent]));
+        const item = JSON.parse(JSON.stringify(element.data.data.talents[talent]));
         item.firstSpecialization = element._id;
         item.source = [{ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
         if (item.isRanked) {
-          item.rank = element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
+          item.rank = element.data.data.talents[talent]?.rank ? element.data.data.talents[talent].rank : 1;
         } else {
           item.rank = "N/A";
         }
@@ -227,7 +227,7 @@ export class ActorFFG extends Actor {
           globalTalentList.push(item);
         } else {
           globalTalentList[index].source.push({ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id });
-          globalTalentList[index].rank += element.data.talents[talent]?.rank ? element.data.talents[talent].rank : 1;
+          globalTalentList[index].rank += element.data.data.talents[talent]?.rank ? element.data.data.talents[talent].rank : 1;
         }
       });
     });
@@ -240,21 +240,21 @@ export class ActorFFG extends Actor {
       const item = {
         name: element.name,
         itemId: element._id,
-        description: element.data.description,
-        activation: element.data.activation.value,
-        activationLabel: element.data.activation.label,
-        isRanked: element.data.ranks.ranked,
+        description: element.data.data.description,
+        activation: element.data.data.activation.value,
+        activationLabel: element.data.data.activation.label,
+        isRanked: element.data.data.ranks.ranked,
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
       };
 
       if (item.isRanked) {
-        item.rank = element.data.ranks.current;
+        item.rank = element.data.data.ranks.current;
       } else {
         item.rank = "N/A";
       }
 
       if (CONFIG.FFG.theme !== "starwars") {
-        item.tier = element.data.tier;
+        item.tier = element.data.data.tier;
       }
 
       let index = globalTalentList.findIndex((obj) => {
@@ -265,7 +265,7 @@ export class ActorFFG extends Actor {
         globalTalentList.push(item);
       } else {
         globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id });
-        globalTalentList[index].rank += element.data.ranks.current;
+        globalTalentList[index].rank += element.data.data.ranks.current;
         if (CONFIG.FFG.theme !== "starwars") {
           globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));
         }
@@ -327,7 +327,7 @@ export class ActorFFG extends Actor {
 
   _calculateDerivedValues(actorData) {
     const data = actorData.data;
-    const items = actorData.items;
+    const items = actorData.items.map((item) => item.data);
     var encum = 0;
 
     // Loop through all items
@@ -517,6 +517,7 @@ export class ActorFFG extends Actor {
     if (!actorData.modifiers) {
       actorData.modifiers = {};
     }
+    const items = actorData.items.map((item) => item.data);
 
     this._setModifiers.bind(this);
 
@@ -525,7 +526,7 @@ export class ActorFFG extends Actor {
     Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
       let total = 0;
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Characteristic");
+      total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Characteristic");
       data.characteristics[key].value = total > 7 ? 7 : total;
     });
 
@@ -541,13 +542,13 @@ export class ActorFFG extends Actor {
       }
       if (key === "Wounds") {
         if (data.attributes.Wounds.value === 0) {
-          const speciesBrawn = ModifierHelpers.getBaseValue(actorData.items, "Brawn", "Characteristic");
+          const speciesBrawn = ModifierHelpers.getBaseValue(items, "Brawn", "Characteristic");
           total = data.attributes.Brawn.value + speciesBrawn;
         }
       }
       if (key === "Strain") {
         if (data.attributes.Strain.value === 0) {
-          const speciesWillpower = ModifierHelpers.getBaseValue(actorData.items, "Willpower", "Characteristic");
+          const speciesWillpower = ModifierHelpers.getBaseValue(items, "Willpower", "Characteristic");
           total = data.attributes.Willpower.value + speciesWillpower;
         }
       }
@@ -556,7 +557,7 @@ export class ActorFFG extends Actor {
       }
 
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Stat");
+      total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Stat");
 
       if (key === "Soak") {
         data.stats[k].value = total;
@@ -575,26 +576,26 @@ export class ActorFFG extends Actor {
       let total = 0;
       total += data.attributes[key].value;
 
-      const skillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Rank", true);
+      const skillValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Rank", true);
       total += skillValues.total;
       skillValues.sources.push({ modtype: "purchased", key: "purchased", name: "purchased", value: data.attributes[key].value });
 
       /* Career Skills */
       if (!data.skills[key].careerskill) {
-        const careerSkillValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Career Skill", true);
+        const careerSkillValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Career Skill", true);
         data.skills[key].careerskill = careerSkillValues.checked;
         data.skills[key].careerskillsource = careerSkillValues.sources;
       }
 
-      const boostValues = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Boost", true);
+      const boostValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Boost", true);
       data.skills[key].boost = boostValues.total;
       data.skills[key].boostsource = boostValues.sources;
 
-      const setback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Setback", true);
-      const remsetback = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Skill Remove Setback", true);
+      const setback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Setback", true);
+      const remsetback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Remove Setback", true);
 
       const setValueAndSources = (modifiername, propertyname) => {
-        const obj = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, modifiername, true);
+        const obj = ModifierHelpers.getCalculatedValueFromItems(items, key, modifiername, true);
         if (obj.total > 0) {
           data.skills[key][propertyname] = obj.total;
           data.skills[key][`${propertyname}source`] = obj.sources;
@@ -610,7 +611,7 @@ export class ActorFFG extends Actor {
       setValueAndSources("Skill Add Triumph", "triumph");
       setValueAndSources("Skill Add Despair", "despair");
 
-      const forceboost = ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Force Boost", true);
+      const forceboost = ModifierHelpers.getCalculatedValueFromItems(items, key, "Force Boost", true);
       data.skills[key].force = 0;
       if (forceboost.checked) {
         const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
@@ -646,6 +647,8 @@ export class ActorFFG extends Actor {
       actorData.modifiers = {};
     }
 
+    const items = actorData.items.map((item) => item.data);
+
     this._setModifiers(actorData, CONFIG.FFG.vehicle_stats, "stats", "Stat");
     Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
       const key = CONFIG.FFG.vehicle_stats[k].value;
@@ -655,7 +658,7 @@ export class ActorFFG extends Actor {
       } else {
         total += data.attributes[key].value;
       }
-      total += ModifierHelpers.getCalculatedValueFromItems(actorData.items, key, "Stat");
+      total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Stat");
 
       if (k === "shields") {
         data.stats[k].fore = data.attributes[key].value[0] + total > 0 ? data.attributes[key].value[0] + total : 0;

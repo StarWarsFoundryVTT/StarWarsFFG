@@ -101,7 +101,7 @@ export class RollFFG extends Roll {
   /* -------------------------------------------- */
   /** @override */
   evaluate({ minimize = false, maximize = false } = {}) {
-    if (this._rolled) throw new Error("This Roll object has already been rolled.");
+    if (this._evaluated) throw new Error("This Roll object has already been rolled.");
 
     // Step 1 - evaluate any inner Rolls and recompile the formula
     let hasInner = false;
@@ -125,7 +125,7 @@ export class RollFFG extends Roll {
     this.results = this.terms.map((term) => {
       if (!game.ffg.diceterms.includes(term.constructor)) {
         if (term.evaluate) {
-          this.hasStandard = true;
+          if (!term instanceof OperatorTerm) this.hasStandard = true;
           return term.evaluate({ minimize, maximize }).total;
         } else return term;
       } else {
@@ -136,7 +136,7 @@ export class RollFFG extends Roll {
     });
 
     // Step 4 - safely evaluate the final total
-    const total = this._safeEval(this.results.join(" "));
+    const total = Roll.safeEval(this.results.join(" "));
     if (!Number.isNumeric(total)) {
       throw new Error(game.i18n.format("DICE.ErrorNonNumeric", { formula: this.formula }));
     }
@@ -175,7 +175,7 @@ export class RollFFG extends Roll {
 
     // Store final outputs
     this._total = total;
-    this._rolled = true;
+    this._evaluated = true;
     return this;
   }
 
@@ -191,14 +191,14 @@ export class RollFFG extends Roll {
     const parts = this.dice.map((d) => {
       const cls = d.constructor;
       let isFFG = "notFFG";
-      if (game.ffg.diceterms.includes(d.constructor)) isFFG = "isFFG";
+      if (game.ffg.diceterms.includes(cls)) isFFG = "isFFG";
       return {
         formula: d.formula,
         total: d.total,
         faces: d.faces,
         flavor: d.options.flavor,
-        isFFG: game.ffg.diceterms.includes(d.constructor),
-        notFFG: !game.ffg.diceterms.includes(d.constructor),
+        isFFG: game.ffg.diceterms.includes(cls),
+        notFFG: !game.ffg.diceterms.includes(cls),
         rolls: d.results.map((r) => {
           return {
             result: cls.getResultLabel(r.result),
@@ -217,7 +217,7 @@ export class RollFFG extends Roll {
   async render(chatOptions = {}) {
     chatOptions = mergeObject(
       {
-        user: game.user._id,
+        user: game.user.id,
         flavor: null,
         template: this.constructor.CHAT_TEMPLATE,
         blind: false,
@@ -227,7 +227,7 @@ export class RollFFG extends Roll {
     const isPrivate = chatOptions.isPrivate;
 
     // Execute the roll, if needed
-    if (!this._rolled) this.roll();
+    if (!this._evaluated) this.roll();
 
     // Define chat data
     if (this?.data) {
@@ -250,7 +250,7 @@ export class RollFFG extends Roll {
         : this.dice.map((d) => {
             const cls = d.constructor;
             return {
-              isFFG: game.ffg.diceterms.includes(d.constructor),
+              isFFG: game.ffg.diceterms.includes(cls),
               rolls: d.results.map((r) => {
                 return {
                   result: cls.getResultLabel(r.result),
@@ -275,7 +275,7 @@ export class RollFFG extends Roll {
   /** @override */
   toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
     // Perform the roll, if it has not yet been rolled
-    if (!this._rolled) this.evaluate();
+    if (!this._evaluated) this.evaluate();
 
     const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
 
@@ -289,7 +289,7 @@ export class RollFFG extends Roll {
     // Prepare chat data
     messageData = mergeObject(
       {
-        user: game.user._id,
+        user: game.user.id,
         type: template,
         content: this.total,
         sound: CONFIG.sounds.dice,
@@ -304,7 +304,7 @@ export class RollFFG extends Roll {
     Hooks.call("ffgDiceMessage", this);
 
     // Either create the message or just return the chat data
-    return create ? CONFIG.ChatMessage.entityClass.create(messageData, messageOptions) : messageData;
+    return create ? CONFIG.ChatMessage.documentClass.create(messageData, messageOptions) : messageData;
   }
 
   /** @override */
