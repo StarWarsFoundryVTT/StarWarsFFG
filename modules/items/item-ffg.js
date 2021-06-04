@@ -61,11 +61,25 @@ export class ItemFFG extends ItemBaseFFG {
 
         data.adjusteditemmodifier = [];
 
+        const rangeSetting = (this.type === "shipweapon") ? CONFIG.FFG.vehicle_ranges : CONFIG.FFG.ranges;
+
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
             modifier.data.rank_current = modifier.data.rank;
             data.adjusteditemmodifier.push({ ...modifier });
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
+            data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "critical", "Weapon Stat");
+            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "encumbrance", "Weapon Stat");
+            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Weapon Stat");
+            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Weapon Stat");
+            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Weapon Stat");
+            const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "range", "Weapon Stat");
+            const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
+            let newRange = currentRangeIndex + range;
+            if (newRange < 0) newRange = 0;
+            if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
+
+            data.range.adjusted = Object.values(rangeSetting)[newRange].value;
           });
         }
 
@@ -75,13 +89,17 @@ export class ItemFFG extends ItemBaseFFG {
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
             data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
             if (data.crit.adjusted < 1) data.crit.adjusted = 1;
+            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Weapon Stat");
+            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Weapon Stat");
+            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Weapon Stat");
+            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
             const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
-            const currentRangeIndex = Object.values(CONFIG.FFG.ranges).findIndex((r) => r.value === data.range.value);
-            const newRange = currentRangeIndex + range;
+            const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
+            let newRange = currentRangeIndex + range;
             if (newRange < 0) newRange = 0;
-            if (newRange >= Object.values(CONFIG.FFG.ranges).length) newRange = Object.values(CONFIG.FFG.ranges).length - 1;
+            if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
 
-            data.range.adjusted = Object.values(CONFIG.FFG.ranges)[newRange].value;
+            data.range.adjusted = Object.values(rangeSetting)[newRange].value;
 
             if (attachment?.data?.itemmodifier) {
               const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
@@ -110,7 +128,7 @@ export class ItemFFG extends ItemBaseFFG {
           if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
             if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
-              data.damage.value = parseInt(actorData.data.characteristics.Brawn.value, 10) + damageAdd;
+              data.damage.value = parseInt(actorData.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
               data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
@@ -123,6 +141,65 @@ export class ItemFFG extends ItemBaseFFG {
         data.range.label = rangeLabel;
 
         break;
+      case "armour":
+        data.soak.value = parseInt(data.soak.value, 10);
+        data.defence.value = parseInt(data.defence.value, 10);
+        data.encumbrance.value = parseInt(data.encumbrance.value, 10);
+        data.price.value = parseInt(data.price.value, 10);
+        data.rarity.value = parseInt(data.rarity.value, 10);
+        data.hardpoints.value = parseInt(data.hardpoints.value, 10);
+
+        data.soak.adjusted = parseInt(data.soak.value, 10);
+        data.defence.adjusted = parseInt(data.defence.value, 10);
+        data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
+        data.price.adjusted = parseInt(data.price.value, 10);
+        data.rarity.adjusted = parseInt(data.rarity.value, 10);
+        data.hardpoints.adjusted = parseInt(data.hardpoints.value, 10);
+
+        data.adjusteditemmodifier = [];
+
+        if (data?.itemmodifier) {
+          data.itemmodifier.forEach((modifier) => {
+            modifier.data.rank_current = modifier.data.rank;
+            data.adjusteditemmodifier.push({ ...modifier });
+            data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
+            data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "defence", "Armor Stat");
+            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "encumbrance", "Armor Stat");
+            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Armor Stat");
+            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Armor Stat");
+            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Armor Stat");
+          });
+        }
+
+        if (this.isOwned && this.actor) {
+          let soakAdd = 0, defenceAdd = 0, encumbranceAdd;
+          for (let attr in data.attributes) {
+            if (data.attributes[attr].modtype === "Armor Stat") {
+              switch (data.attributes[attr].mod) {
+                case "soak":
+                  soakAdd += parseInt(data.attributes[attr].value, 10);
+                  break;
+                case "defence":
+                  defenceAdd += parseInt(data.attributes[attr].value, 10);
+                  break;
+                case "encumbrance":
+                  encumbranceAdd += parseInt(data.attributes[attr].value, 10);
+                  break;
+                default:
+                  break;
+              }
+            }
+          }
+          if (this.actor.type !== "vehicle" && this.actor.data.type !== "vehicle") {
+            data.soak.value = parseInt(data.soak.value, 10);
+            data.soak.adjusted += soakAdd;
+            data.defence.value = parseInt(data.defence.value, 10);
+            data.defence.adjusted += defenceAdd;
+            data.encumbrance.value = parseInt(data.encumbrance.value, 10);
+            data.encumbrance.adjusted += encumbranceAdd;
+          }
+        }
+        break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
@@ -131,7 +208,7 @@ export class ItemFFG extends ItemBaseFFG {
       default:
     }
 
-    if (["weapon", "armor"].includes(this.type)) {
+    if (["weapon", "armour"].includes(this.type)) {
       // get all item attachments
       let totalHPUsed = 0;
 

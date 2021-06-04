@@ -56,6 +56,13 @@ export default class Weapons {
 
             data.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => data.data.skill.value.includes(element)) && (!item.Damage || item.Damage === "0");
 
+            //New setting to be able to use a characteristic as base damage for any weapon.
+            if (data.data.skill.useBrawn) {
+              data.data.characteristic.value = "Brawn";
+            } else {
+              data.data.characteristic.value = "";
+            }
+
             const mods = await ImportHelpers.processMods(item);
             if (mods) {
               if (mods.baseMods) {

@@ -8,7 +8,7 @@ export const weapon_stats = {
     label: "SWFFG.ItemsCrit",
   },
   "encumbrance": {
-    value: "emcubrance",
+    value: "encumbrance",
     label: "SWFFG.ItemsEncum",
   },
   "hardpoints": {

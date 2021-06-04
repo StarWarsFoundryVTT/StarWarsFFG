@@ -114,7 +114,7 @@ export default class Vehicles {
 
                   data.items.push(weaponData);
                 } else {
-                  CONFIG.logger.warn(`Unable to find weaon : ${weapon.Key}`);
+                  CONFIG.logger.warn(`Unable to find weapon : ${weapon.Key}`);
                 }
               });
             }

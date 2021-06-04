@@ -58,6 +58,7 @@ export class ProficiencyDie extends DiceTerm {
   /* -------------------------------------------- */
   /** @override */
   static getResultLabel(result) {
-    return CONFIG.FFG.PROFICIENCY_RESULTS[result].label;
+    const die = CONFIG.FFG.PROFICIENCY_RESULTS[result];
+    return `<img src='${die.image}' title='${game.i18n.localize(die.label)}' alt=''/>`;
   }
 }

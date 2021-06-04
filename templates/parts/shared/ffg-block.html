@@ -21,8 +21,9 @@
         <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="{{name}}" data-dtype="{{type}}" {{checked value}} />
         {{/if}} {{#if (eq type "Dropdown")}}
         <select style="text-align: center;" name="{{name}}">
+          {{#if (eq name "data.characteristic.value")}}<option value="">None</option>{{/if}}
           {{#select value}} {{#each options as |t|}}
-          <option value="{{t.value}}">{{localize t.label}}</option>
+          <option value="{{#if (eq t.value undefined) }}{{t._id}}{{else}}{{t.value}}{{/if}}">{{localize t.label}}{{t.name}}</option>
           {{/each}} {{/select}}
         </select>
         {{/if}} {{#if (eq type "Multicheckbox")}}
@@ -44,10 +45,11 @@
         {{/if}} {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor"))}}
         <div class="block-value block-single">{{#if prefix}}{{{prefix}}}{{/if}}<input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
         {{/if}} {{/if}} {{#if (eq blocktype "split")}} {{#each fields as |t|}}
-        <div class="block-value"><input type="text" name="{{name}}" value="{{value}}" data-dtype="type" {{#if disabled}}disabled{{/if}} /></div>
+        <div class="block-value"><input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
         {{/each}} {{/if}} {{#with (lookup options [value])~}} {{#if (ne label ../adjusted)}}
         <div class="adjustedvalue">{{localize ../adjusted}}</div>
         {{/if}} {{/with}}
+        {{#if (and (ne value adjusted) (eq type "Number"))}}<div class="adjustedvalue">{{adjusted}}</div>{{/if}}
       </div>
     </div>
     {{#if (or (eq hasShadow true) (eq blocktype "split"))}}

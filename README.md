@@ -36,6 +36,8 @@ See our current production goals and progress [here](https://github.com/StarWars
 
 Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases)
 
+- 15/03/2021 - Cstadther - Fix 838 - Fixed issue where "block" values were incorrectly specifying data type.
+- 15/03/2021 - Cstadther - Fix 839 - Fixed issue where configuration tab was not visible from v1 item modifer and item attachment sheet.
 - 15/03/2021 - Cstadther - Fix 836 - Fixed issue with Skill Add Threat modifier dropdown not populating skill list.
 - 10/03/2021 - Cstadther - Fix 828 - Fixed issue where qualities were not being imported for vehicles correctly.
 - 09/03/2021 - Cstadther - Fix 820 - Updated RegEx for monetary value scrubbing to allow Safari.
@@ -48,7 +50,7 @@ Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/St
 - 08/02/2021 - Cstadther - Fix 774 - Fixed issue where setting characteristic to 0 was not setting the value to 0.
 - 08/02/2021 - Cstadther - Fix 773 - Fixed issue with Obligation/Duty table on GroupManager
 - 07/02/2021 - Cstadther - Fix 770 - Fixed issue where Knowledge skill modifiers were not being created correctly.
-- 05/02/2021 - Cstadther - Fix 764/765 - Fixed issues where skills were not sorting by translated name.  Fixed issue where straggler skills were not being grouped together.
+- 05/02/2021 - Cstadther - Fix 764/765 - Fixed issues where skills were not sorting by translated name. Fixed issue where straggler skills were not being grouped together.
 - 05/02/2021 - Cstadhter - Fix 759 - Fixed issue where unable to add modifiers to item attachments.
 - 05/02/2021 - Cstadther - Fix 757 - Fixed issue where modifiers were ignored when rolling from macro.
 - 05/02/2021 - Cstadther - Fix 756 - Custom Destiny Pool Names were reverting on closing Group Manager.
@@ -70,7 +72,7 @@ Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/St
 - 26/01/2021 - Cstadther - Added a new Hook `ffgDiceMessage` which fires after a dice .tomessage function call.
 - 25/01/2021 - Cstadther - Enhancement 638 / Enhancement 639 - Added setting for Destiny Pool labels and Enable Force Die.
 - 25/01/2021 - Cstadther - Enhancement 672 - Added saving sound path on item roll (ie Weapons)
-- 25/01/2021 - Cstadther - Enhancement 659 - Created drop down menu on destiny pool, with group manager and roll for destiny options.  Removed top and bottom bar and add dragging to entire box, except for clickable items, adjusted cursors to match.
+- 25/01/2021 - Cstadther - Enhancement 659 - Created drop down menu on destiny pool, with group manager and roll for destiny options. Removed top and bottom bar and add dragging to entire box, except for clickable items, adjusted cursors to match.
 - 24/01/2021 - Cstadther - Enhancement 640 - Changed location of UI settings to its own form, add customizable Paused image setting.
 - 23/01/2021 - Cstadther - Enhancement 646 - Added ability to change default stylesheet, added @Mandar theme as option.
 - 22/01/2021 - Cstadther - Refactored OggDude importer, and changed import based on import key instead of name.
@@ -85,20 +87,20 @@ Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/St
 - 16/01/2021 - Cstadther - Added Item Attachments and styling to support it.
 - 15/01/2021 - Cstadther - Added code to fix save/display issues with compendium items.
 - 08/01/2021 - Cstadther - Added new paused image.
-- 04/01/2021 - Cstadther - Fix for Melee-* skills not calculating damage correctly when based on Brawn.
+- 04/01/2021 - Cstadther - Fix for Melee-\* skills not calculating damage correctly when based on Brawn.
 - 04/01/2021 - Cstadther - Enhanced the enhancement provided by @wrycu, added localization, added sheet level options for talent sorting to override global setting, added localization.
 - 04/01/2021 - Cstadther - Fix issue with Genesys Adversaries import.
 - 03/01/2021 - Cstadther - Fix for rendering secrets in content.
 - 02/01/2021 - Cstadther - Enhancement 593 - Added context to destiny point flip message, now with styling and lists what the pools changed to.
 - 02/01/2021 - Cstadther - Enhancement 591 - Added `Source` to the description for all imported items.
-- 31/12/2020 - Cstadther - Enhancement 529 - Added Restricted checkbox to items.  Updated OggDude importer to import restricted data.
+- 31/12/2020 - Cstadther - Enhancement 529 - Added Restricted checkbox to items. Updated OggDude importer to import restricted data.
 - 31/12/2020 - Cstadther - Fix 539 - Fixed issue where added skills were removed when duplicating an actor.
 - 31/12/2020 - Cstadther - Enhancement 546 - Added `All Skills` to skill list modifier drop down, will apply the modifier to all skills.
-- 31/12/2020 - Cstadther - Fix - Fixed issue with v2 styles cutting off.  Fixed issue with Signature Abilities and Force Power Upgrades not being listed (from previous core update)
-- 31/12/2020 - Cstadther - Enhancement - Added Terrinoth and Crucible skill sets, verified Android skill set.  These will only be available in new worlds.
+- 31/12/2020 - Cstadther - Fix - Fixed issue with v2 styles cutting off. Fixed issue with Signature Abilities and Force Power Upgrades not being listed (from previous core update)
+- 31/12/2020 - Cstadther - Enhancement - Added Terrinoth and Crucible skill sets, verified Android skill set. These will only be available in new worlds.
 - 30/12/2020 - Cstadther - Enhancement 442 - Added v2 Character sheets with tabs broken out on the left.
-- 30/12/2020 - Cstadther - Fix 568 - Changed the way skills are rendered, but spliting skills into two columns and rendering those columns. 
-- 28/12/2020 - Cstadther - Fix 569 - Fixed OggDude export with non-english characteristic names (now uses characteristic keys).  Added compendium migrations, as new version (1.3) will change importid property from importid to ffgimportid to resolve issue with Core migration overwriting property.
+- 30/12/2020 - Cstadther - Fix 568 - Changed the way skills are rendered, but spliting skills into two columns and rendering those columns.
+- 28/12/2020 - Cstadther - Fix 569 - Fixed OggDude export with non-english characteristic names (now uses characteristic keys). Added compendium migrations, as new version (1.3) will change importid property from importid to ffgimportid to resolve issue with Core migration overwriting property.
 - 28/12/2020 - Cstadther - Fix 553 - Fixed specialization link search for world compendiums that have been converted module compendiums.
 - 28/12/2020 - Cstadther - Enhancement 570 - Added "Send to All" option for roll dialog.
 - 22/12/2020 - Cstadther - Added Functional Testing.
@@ -112,17 +114,17 @@ Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/St
 - 16/12/2020 - Cstadther - Fix 533 - Moved destiny rolls and flipping to queue model, and custom socket method.
 - 16/12/2020 - Cstadther - Fix 532 - Updated OggDude importer to add space after comma when adding specials so that they wrap correctly.
 - 16/12/2020 - Cstadther - Enhancement - Added two new system settings (Allow Users to Add Audio to Roll and Playlist Users User to Add Audio to Roll), Added ability to add sounds to dice rolls, added ability to add additional flavor text to dice rolls, added ability for GM to send a build dice pool to a user who can click on the chat message to load dialog and roll.
-- 14/12/2020 - Cstadther - Enhancement - Converted dice pool display from dialog to formapplication.  This allows for context to be maintained through popout dialog.
+- 14/12/2020 - Cstadther - Enhancement - Converted dice pool display from dialog to formapplication. This allows for context to be maintained through popout dialog.
 - 13/12/2020 - Cstadther - Fix/Enhancement - Move Group Manager launch button to destiny pool display for GMs
-- 10/12/2020 - Cstadther - Fix - Issue where, when you go over max encumbrance it adds to max encumbrance by the amount over. 
+- 10/12/2020 - Cstadther - Fix - Issue where, when you go over max encumbrance it adds to max encumbrance by the amount over.
 - 07/12/2020 - Cstadther - Enhancement 518 - Added OggDude Import of Skill Descriptions and JournalEntries (NOTE!!! We will be able to link the skill descriptions to the skill on the character sheet.)
 - 07/12/2020 - Cstadther - Enhancement 521 - Added Brawn Option to Lightsaber (per Ancient Sword)
 - 04/12/2020 - Cstadther - Fix 517 - Updated CSS to correctly display items without cutting off last item.
 - 03/12/2020 - Cstadther - Enhanced current SWA Importer to create compendiums for non-starwars files based on filename (http://genesysadversaries.dylanpetrusma.com/).
 - 03/12/2020 - saethone - Updated styling for critical injuries on character sheet.
-- 02/12/2020 - Cstadther - Enhancement 403 - Added general data area (accessed by click id-badge icon underneath Specializations).  The general area has valid general information for a character based on dice theme (genesys has strength/flaw/desire/fear and star wars has motivations).  Obligation/Duty/Morality area can be accessed by clicking on the header of the item on the biography section. 
+- 02/12/2020 - Cstadther - Enhancement 403 - Added general data area (accessed by click id-badge icon underneath Specializations). The general area has valid general information for a character based on dice theme (genesys has strength/flaw/desire/fear and star wars has motivations). Obligation/Duty/Morality area can be accessed by clicking on the header of the item on the biography section.
 - 01/12/2020 - Cstadther - Enhancement 506 - Added Enable/Disable Auto Soak Calculation on Character and Minion sheets.
-- 30/11/2020 - Cstadther - Enhancement 501 - Updated `roll-options` template to not expect passed renderedDice tags.  Instead, they will be rendered when template is processed using custom handlebars function.
+- 30/11/2020 - Cstadther - Enhancement 501 - Updated `roll-options` template to not expect passed renderedDice tags. Instead, they will be rendered when template is processed using custom handlebars function.
 - 29/11/2020 - Cstadther - Enhancement 400 - Added item status to weapons, will add appropriate number of setback dice to roll, will display a UI error if damage renders weapon unusable.
 - 29/11/2020 - Cstadther - Fix 494 - Updated `Entity Link` rendering on character sheet item details.
 - 29/11/2020 - Cstadther - Fix 496 - Fixed issue where alive tracker on minion sheet was 1 wound off.
@@ -134,18 +136,18 @@ Release `CHANGELOG` can be found [here](https://github.com/StarWarsFoundryVTT/St
 - 25/11/2020 - Cstadther - Enhancement 456 - During import of species, added species abilities to the species description.
 - 25/11/2020 - Cstadther - Fix 458 - Added hook on chat message rendering to handle dice symbol replacement
 - 25/11/2020 - Cstadther - Fix 469 - Updated ffg-criticalinjury.html and item-sheet-ffg.js to correct reference images from relative path to systems.
-- 24/11/2020 - Cstadther - Fix 476 - Fixed issue with Item Qualities not coming in correctly if imported separately.  Fixed issue where weapons with one quality were not importing the quality correctly.
+- 24/11/2020 - Cstadther - Fix 476 - Fixed issue with Item Qualities not coming in correctly if imported separately. Fixed issue where weapons with one quality were not importing the quality correctly.
 - 24/11/2020 - Cstadther - Refactored default skill list out of constant into seperate file.
-- 24/11/2020 - Cstadther - Enhancement 404 - Added ability to add additional skills to initiative dialog (Right-Click on skill and select `Toggle skill as initiative`).  Skills will be prefixed with a `*` on the skill list of the character sheet if they had been added as initiative skills (Vigilance and Cool will always be initiative skills).
-- 24/11/2020 - Cstadther - Enhancement 433 - Added rolling for Destiny Pool.  Right click on top/bottom destiny pool bar as GM to send a Roll chat message.  Players can click on roll button in chat to roll destiny.
-- 23/11/2020 - Cstadther - Enhancement - Moved Destiny Pool to its own FormApplication.  Added dragging bars to the top and bottom of the display.
-- 22/11/2020 - Cstadther - Enhancement - Added Boost/Setback/Failure/Threat to initiative dialog.  Updated styling.
+- 24/11/2020 - Cstadther - Enhancement 404 - Added ability to add additional skills to initiative dialog (Right-Click on skill and select `Toggle skill as initiative`). Skills will be prefixed with a `*` on the skill list of the character sheet if they had been added as initiative skills (Vigilance and Cool will always be initiative skills).
+- 24/11/2020 - Cstadther - Enhancement 433 - Added rolling for Destiny Pool. Right click on top/bottom destiny pool bar as GM to send a Roll chat message. Players can click on roll button in chat to roll destiny.
+- 23/11/2020 - Cstadther - Enhancement - Moved Destiny Pool to its own FormApplication. Added dragging bars to the top and bottom of the display.
+- 22/11/2020 - Cstadther - Enhancement - Added Boost/Setback/Failure/Threat to initiative dialog. Updated styling.
 - 20/11/2020 - Cstadther - Enhancement - Added dialog to Initiative roll to allow for changing base ability and adding success/failure.
-- 19/11/2020 - Cstadther - Enhancement 396 - Added context menu item `Roll Force Power` that rolls available force dice and displays chat message with results.  Modified the Force Power display on the actor sheet to more closely match weapon specials,  new hover on force power upgrade (in chat or on sheet) display upgrade description.
+- 19/11/2020 - Cstadther - Enhancement 396 - Added context menu item `Roll Force Power` that rolls available force dice and displays chat message with results. Modified the Force Power display on the actor sheet to more closely match weapon specials, new hover on force power upgrade (in chat or on sheet) display upgrade description.
 - 19/11/2020 - Cstadther - Enhancement 432 - Added ability to add additional success/failure/threat/advantage/light side/dark side as modifier to actor/item
 - 18/11/2020 - Cstadther - Added Light and Dark side additions to rolls. Updated code for Force Die only rolls to exclude success/failure message.
 - 18/11/2020 - Cstadther - Enhancement 449 - Updated code to look for `Melee` or `Brawl` in skill name to determine whether to display `Use Brawn` checkbox.
-- 17/11/2020 - Cstadther - Enhancement 450 - Updated Skill Importer to update imported skill themes if they already exist.  Added ability to download skill theme.  Localized skill importer text.  Verified Skill Reset button worked correctly.
+- 17/11/2020 - Cstadther - Enhancement 450 - Updated Skill Importer to update imported skill themes if they already exist. Added ability to download skill theme. Localized skill importer text. Verified Skill Reset button worked correctly.
 - 16/11/2020 - Cstadther - Enhancement 453 - Add `[ROLL]` formula to owned item descriptions.
 - 16/11/2020 - Cstadther - Fix 448 - Added code to correctly add talent attributes to the specialization talent.
 - 16/11/2020 - Cstadther - Additional Fixes issue with uploading OggDude images and using OggDude source code zip to The Forge asset library.

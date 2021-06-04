@@ -7,7 +7,10 @@ export default class DiceHelpers {
   static async rollSkill(obj, event, type, flavorText, sound) {
     const data = obj.getData();
     const row = event.target.parentElement.parentElement;
-    const skillName = row.parentElement.dataset["ability"];
+    let skillName = row.parentElement.dataset["ability"];
+    if (skillName === undefined) {
+      skillName = row.dataset["ability"];
+    }
 
     let skills;
     const theme = await game.settings.get("starwarsffg", "skilltheme");
@@ -57,11 +60,19 @@ export default class DiceHelpers {
     // Determine if this roll is triggered by an item.
     let item = {};
     if ($(row.parentElement).hasClass("item")) {
-      let itemID = row.parentElement.dataset["itemId"];
-      const item1 = actor.getOwnedItem(itemID);
-      item = Object.entries(data.items).filter((item) => item[1]._id === itemID);
-      item = item[0][1];
-      item.flags.uuid = item1.uuid;
+      //Check if token is linked to actor
+      if (obj.actor.token === null) {
+        let itemID = row.parentElement.dataset["itemId"];
+        const item1 = actor.getOwnedItem(itemID);
+        item = Object.entries(data.items).filter((item) => item[1]._id === itemID);
+        item = item[0][1];
+        item.flags.uuid = item1.uuid;
+      } else {
+        //Rolls this if unlinked
+        let itemID = row.parentElement.dataset["itemId"];
+        item = obj.actor.token.actor.items.filter((i) => i._id === itemID);
+        item = item[0].data;
+      }
     }
     const status = this.getWeaponStatus(item);
 

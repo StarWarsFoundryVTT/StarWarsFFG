@@ -34,6 +34,23 @@ export default class SettingsHelpers {
       },
     });
 
+    // Register vehicle range bands
+    game.settings.register("starwarsffg", "vehicleRangeBand", {
+      name: game.i18n.localize("SWFFG.SettingsVehicleRange"),
+      hint: game.i18n.localize("SWFFG.SettingsVehicleRangeHint"),
+      scope: "world",
+      config: true,
+      default: "starwars",
+      type: String,
+      onChange: () => {
+        return window.location.reload();
+      },
+      choices: {
+        starwars: "starwars",
+        genesys: "genesys",
+      },
+    });
+
     // Enable auto Soak calculation
     game.settings.register("starwarsffg", "enableSoakCalc", {
       name: game.i18n.localize("SWFFG.EnableSoakCalc"),
@@ -42,6 +59,17 @@ export default class SettingsHelpers {
       config: true,
       default: true,
       type: Boolean,
+      onChange: (rule) => window.location.reload(),
+    });
+
+    // Name default healing item
+    game.settings.register("starwarsffg", "medItemName", {
+      name: game.i18n.localize("SWFFG.MedicalItemName"),
+      hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
+      scope: "world",
+      config: true,
+      default: game.i18n.localize("SWFFG.DefaultMedicalItemName"),
+      type: String,
       onChange: (rule) => window.location.reload(),
     });
 

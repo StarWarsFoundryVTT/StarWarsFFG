@@ -4,22 +4,37 @@
 
   .charname {
     input {
-      color: $swffg-armor-color
+      color: $swffg-armor-color;
     }
   }
 
   .characteristic-item {
     .characteristic-label {
-      background-color: $swffg-armor-color
+      background-color: $swffg-armor-color;
     }
 
     .characteristic {
-      border: 5px double $swffg-armor-color
+      border: 5px double $swffg-armor-color;
+
+      .adjustedvalues-left {
+        position: absolute;
+        top: 0;
+        right: 2px;
+        color: red;
+        &.positive {
+          color: green;
+        }
+      }
     }
   }
 
+  .adjustedvalue {
+    color: red;
+    
+  }
+
   .block-background {
-    background-color: $swffg-armor-color-light
+    background-color: $swffg-armor-color-light;
   }
 
   .attribute {
@@ -30,6 +45,21 @@
 
   .sheet-body {
     height: calc(100% - 21.3125rem);
+  }
+
+  .pills {
+    &.itemmodifier, &.itemattachment {
+      width: auto;
+      max-width: 50%;
+      width: 50%;
+
+      .item-pill-list {
+        max-height: 75px;
+        height: 75px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+      }
+    }
   }
 }
 

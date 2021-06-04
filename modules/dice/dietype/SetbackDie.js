@@ -58,6 +58,7 @@ export class SetbackDie extends DiceTerm {
   /* -------------------------------------------- */
   /** @override */
   static getResultLabel(result) {
-    return CONFIG.FFG.SETBACK_RESULTS[result].label;
+    const die = CONFIG.FFG.SETBACK_RESULTS[result];
+    return `<img src='${die.image}' title='${game.i18n.localize(die.label)}' alt=''/>`;
   }
 }

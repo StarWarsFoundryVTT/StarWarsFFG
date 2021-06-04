@@ -46,15 +46,15 @@ export default class ModifierHelpers {
           if (item.type === "armour" || item.type === "weapon") {
             if (item?.data?.equippable?.equipped) {
               if (key === "Soak" && item.data?.soak) {
-                sources.push({ modtype, key, name: item.name, value: item.data.soak.value, type: item.type });
-                total += parseInt(item.data.soak.value, 10);
+                sources.push({ modtype, key, name: item.name, value: item.data.soak.adjusted, type: item.type });
+                total += parseInt(item.data.soak.adjusted, 10);
               }
               if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
                 // get the highest defense item
                 const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
                 if (shouldUse) {
-                  sources.push({ modtype, key, name: item.name, value: item.data.defence.value, type: item.type });
-                  total += parseInt(item.data.defence.value, 10);
+                  sources.push({ modtype, key, name: item.name, value: item.data.defence.adjusted, type: item.type });
+                  total += parseInt(item.data.defence.adjusted, 10);
                 }
               }
               if (attrsToApply.length > 0) {
@@ -188,11 +188,16 @@ export default class ModifierHelpers {
     let checked = false;
     let sources = [];
 
+    let rank = item.data.rank;
+    if(rank === null || rank === undefined) {
+      rank = 1;
+    }
+
     const filteredAttributes = Object.values(item.data.attributes).filter((a) => a.modtype === modtype && a.mod === key);
 
     filteredAttributes.forEach((attr) => {
-      sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
-      total += parseInt(attr.value, 10);
+      sources.push({ modtype, key, name: item.name, value: attr.value * rank, type: item.type });
+      total += parseInt(attr.value * rank, 10);
     });
 
     const itemsTotal = ModifierHelpers.getCalculatedValueFromItems(items, key, modtype, includeSource);
@@ -347,7 +352,7 @@ export default class ModifierHelpers {
   }
 
   static applyBrawnToDamage(data) {
-    if ((data.skill.value.includes("Melee") || data.skill.value.includes("Brawl") || data.skill.value.includes("Lightsaber")) && data.skill.useBrawn) {
+    if(data.characteristic?.value !== "" && data.characteristic?.value !== undefined) {
       return true;
     }
 

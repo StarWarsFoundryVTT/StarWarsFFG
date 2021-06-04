@@ -56,7 +56,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.isTemp = false;
-    if (this.object.data?.flags?.ffgTempId) {
+    if (this.object.data?.flags?.ffgIsOwned || this.object.data?.flags?.ffgIsTemp) {
       data.isTemp = true;
     }
 
@@ -69,6 +69,11 @@ export class ItemSheetFFG extends ItemSheet {
       case "itemattachment":
         this.position.width = 500;
         this.position.height = 450;
+        break;
+      case "itemmodifier":
+        this.position.width = 450;
+        this.position.height = 350;
+        break;
       case "armour":
       case "gear":
       case "shipattachment":
@@ -327,7 +332,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    if (["weapon", "armor", "itemattachment", "shipweapon"].includes(this.object.data.type)) {
+    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.data.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
         dropSelector: null,
@@ -859,14 +864,14 @@ export class ItemSheetFFG extends ItemSheet {
     }
     itemObject._id = randomID();
 
-    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && (obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.data.type === "shipweapon" && itemObject.data.type === "weapon") || obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
       let items = obj?.data?.data?.[itemObject.type];
       if (!items) {
         items = [];
       }
 
       const foundItem = items.find((i) => {
-        return i._id === itemObject._id || (i.flags?.ffgimportid?.length ? i.flags.ffgimportid === itemObject.flags.ffgimportid : false);
+        return i.name === itemObject.name || (i.flags?.ffgimportid?.length ? i.flags.ffgimportid === itemObject.flags.ffgimportid : false);
       });
 
       switch (itemObject.type) {
