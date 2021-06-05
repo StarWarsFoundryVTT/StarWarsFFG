@@ -467,7 +467,7 @@ export class ItemSheetFFG extends ItemSheet {
       let itemIndex = li.dataset.itemIndex;
 
       if ($(li).hasClass("adjusted")) {
-        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object., itemType, itemIndex, this.object?.actor?.id);
+        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object.id, itemType, itemIndex, this.object?.actor?.id);
       }
 
       if ($(li).hasClass("fa-edit")) {
