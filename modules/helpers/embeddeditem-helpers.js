@@ -50,7 +50,7 @@ export default class EmbeddedItemHelpers {
     }
 
     if (realItem) {
-      if (!item.data._id) {
+      if (!item.id) {
         data._id = randomID();
       }
 
@@ -58,7 +58,9 @@ export default class EmbeddedItemHelpers {
 
       if ((Object.values(data).length === 0 || parents.length > 1) && !entity) {
         parents.forEach((value, index) => {
-          dataPointer = dataPointer.data[parents[index].ffgTempItemType][parents[index].ffgTempItemIndex];
+          if (parents[index].ffgTempItemType && parents[index].ffgTempItemIndex) {
+            dataPointer = dataPointer.data[parents[index].ffgTempItemType][parents[index].ffgTempItemIndex];
+          }
         });
       } else if (entity === "Actor" && parents.length > 1) {
         dataPointer = dataPointer.data[parents[0].ffgTempItemType][parents[0].ffgTempItemIndex];
@@ -78,7 +80,11 @@ export default class EmbeddedItemHelpers {
       let formData = {};
       setProperty(formData, `data.${parents[0].ffgTempItemType}`, realItem.data.data[parents[0].ffgTempItemType]);
 
-      item.data = itemData;
+      if (item.data.constructor.name === "ItemData") {
+        item.data.update(data);
+      } else {
+        item.data = itemData;
+      }
 
       // because this could be a temporary item, item-ffg.js may not fire, we need to set the renderedDesc.
       if (item.data.data.renderedDesc) {

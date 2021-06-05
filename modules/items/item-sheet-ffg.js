@@ -427,7 +427,7 @@ export class ItemSheetFFG extends ItemSheet {
                       const name = input.attr("name");
                       const id = input[0].dataset.itemId;
 
-                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i.id === id);
+                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
 
                       if (arrayItem > -1) {
                         setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));

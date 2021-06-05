@@ -775,11 +775,11 @@
       }
     },
     "itemattachment": {
-      "templates": ["core", "basic", "hardpoints", "qualities"],
+      "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],
       "type": ""
     },
     "itemmodifier": {
-      "templates": ["core"],
+      "templates": ["core", "qualities"],
       "type": "",
       "rank": 0
     }
