@@ -371,7 +371,6 @@ export default class SWAImporter extends FormApplication {
                       enableCriticalInjuries: item.type === "Minion" ? false : true,
                     },
                   },
-                  flags: {},
                   data: {
                     attributes: {},
                     characteristics: {},
