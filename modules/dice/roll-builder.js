@@ -167,7 +167,7 @@ export default class RollBuilderFFG extends FormApplication {
         roll.toMessage({
           user: game.user.id,
           speaker: { actor: game.actors.get(this.roll.data?.actor?._id) },
-          flavor: `${game.i18n.localize("SWFFG.Rolling")} ${this.roll.skillName}...`,
+          flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(this.roll.skillName)}...`,
         });
         if (this.roll?.sound) {
           AudioHelper.play({ src: this.roll.sound }, true);
