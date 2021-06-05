@@ -154,7 +154,7 @@ export default class ImportHelpers {
         await pack.getIndex();
         entity = await pack.index.find((e) => e.id === id);
         if (entity) {
-          return await pack.getEntity(entity.id);
+          return await pack.getDocument(entity.id);
         }
       }
     }
