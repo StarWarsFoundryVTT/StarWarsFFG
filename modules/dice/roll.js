@@ -298,13 +298,15 @@ export class RollFFG extends Roll {
     );
     messageData.roll = this;
 
-    // Prepare message options
-    const messageOptions = { rollMode: rMode };
-
     Hooks.call("ffgDiceMessage", this);
 
     // Either create the message or just return the chat data
-    return create ? CONFIG.ChatMessage.documentClass.create(messageData, messageOptions) : messageData;
+    const cls = getDocumentClass("ChatMessage");
+    const msg = new cls(messageData);
+    if ( rMode ) msg.applyRollMode(rollMode);
+
+    // Either create or return the data
+    return create ? cls.create(msg.data) : msg.data;
   }
 
   /** @override */
