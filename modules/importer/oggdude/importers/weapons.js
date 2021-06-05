@@ -58,9 +58,9 @@ export default class Weapons {
 
             //New setting to be able to use a characteristic as base damage for any weapon.
             if (data.data.skill.useBrawn) {
-              data.data.characteristic.value = "Brawn";
+              data.data.characteristic = mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: "Brawn"});
             } else {
-              data.data.characteristic.value = "";
+              data.data.characteristic = mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: ""});
             }
 
             const mods = await ImportHelpers.processMods(item);

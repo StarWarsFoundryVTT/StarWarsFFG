@@ -233,7 +233,7 @@ export default class PopoutEditor extends FormApplication {
     ];
 
     replaceValues.forEach((item) => {
-      html = html.replace(item.pattern, `<span class='dietype ${item.class} ${item.type}'>${item.character}</span>`);
+      html = html.toString().replace(item.pattern, `<span class='dietype ${item.class} ${item.type}'>${item.character}</span>`);
     });
 
     const regex = /:([\w]*)-(\d):/gim;
@@ -274,7 +274,7 @@ export default class PopoutEditor extends FormApplication {
         }
       }
 
-      html = html.replace(m[0], replaceString);
+      html = html.toString().replace(m[0], replaceString);
     }
 
     const oggdudeTags = [
@@ -321,7 +321,7 @@ export default class PopoutEditor extends FormApplication {
     ];
 
     oggdudeTags.forEach((item) => {
-      html = html.replace(item.pattern, `${item.startTag}$2${item.endTag}`);
+      html = html.toString().replace(item.pattern, `${item.startTag}$2${item.endTag}`);
     });
 
     return html;
@@ -329,7 +329,7 @@ export default class PopoutEditor extends FormApplication {
 
   static replaceRollTags(html, actorData) {
     const rollTag = /(\[ROLL\])(.[^\[]*)\[\/ROLL\]/gm;
-    const formula = html.replace(rollTag, function (content) {
+    const formula = html.toString().replace(rollTag, function (content) {
       content = content.replace(rollTag, `$2`);
       const args = content.split(",").map(function (arg) {
         return arg.trim();

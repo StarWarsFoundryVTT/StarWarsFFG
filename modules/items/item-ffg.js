@@ -66,7 +66,9 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
-            modifier.data.rank_current = modifier.data.rank;
+            if (modifier?.data) {
+              modifier.data.rank_current = modifier.data.rank;
+            }
             data.adjusteditemmodifier.push({ ...modifier });
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
             data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "critical", "Weapon Stat");
@@ -161,7 +163,9 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
-            modifier.data.rank_current = modifier.data.rank;
+            if (modifier?.data) {
+              modifier.data.rank_current = modifier.data.rank;
+            }
             data.adjusteditemmodifier.push({ ...modifier });
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
             data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "defence", "Armor Stat");

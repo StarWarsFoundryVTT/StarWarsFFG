@@ -150,7 +150,7 @@ export default class ImportHelpers {
     for (let i = 0; i < packs.length; i += 1) {
       let packId = packs[i];
       const pack = await game.packs.get(packId);
-      if (pack.entity === type) {
+      if (pack.documentName === type) {
         await pack.getIndex();
         entity = await pack.index.find((e) => e.id === id);
         if (entity) {
@@ -170,11 +170,11 @@ export default class ImportHelpers {
     const cachePack = async (packid) => {
       if (!CONFIG.temporary[packid]) {
         const pack = await game.packs.get(packid);
-        if (pack.entity === type && !pack.locked) {
+        if (pack.documentName === type && !pack.locked) {
           CONFIG.logger.debug(`Caching pack content ${packid}`);
           CONFIG.temporary[packid] = {};
 
-          const content = await pack.getContent();
+          const content = await pack.getDocuments();
           for (var i = 0; i < content.length; i++) {
             CONFIG.temporary[packid][content[i].data.flags.ffgimportid] = duplicate(content[i]);
           }
@@ -1375,9 +1375,21 @@ export default class ImportHelpers {
     if (!entry) {
       let compendiumItem;
       CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
-      compendiumItem = new objClass(data, { temporary: true });
+      switch (type) {
+        case "Item":
+          compendiumItem = await new CONFIG.Item.documentClass(data, { temporary: true });
+          break;
+        case "Actor":
+          compendiumItem = await new CONFIG.Actor.documentClass(data, { temporary: true });
+          break;
+        case "JournalEntry":
+          compendiumItem = await new CONFIG.JournalEntry.documentClass(data, { temporary: true });
+          break;
+        default:
+          CONFIG.logger.error(`Unable to import item type ${type}, unhandled type.`);
+      }
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
-      const crt = await pack.importEntity(compendiumItem);
+      const crt = await pack.importDocument(compendiumItem);
       CONFIG.temporary[pack.collection][data.flags.ffgimportid] = duplicate(crt);
     } else {
       let upd;
@@ -1385,9 +1397,21 @@ export default class ImportHelpers {
         await pack.deleteEntity(entry.id);
         let compendiumItem;
         CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
-        compendiumItem = new objClass(data, { temporary: true });
+        switch (type) {
+          case "Item":
+            compendiumItem = await new CONFIG.Item.documentClass(data, { temporary: true });
+            break;
+          case "Actor":
+            compendiumItem = await new CONFIG.Actor.documentClass(data, { temporary: true });
+            break;
+          case "JournalEntry":
+            compendiumItem = await new CONFIG.JournalEntry.documentClass(data, { temporary: true });
+            break;
+          default:
+            CONFIG.logger.error(`Unable to import item type ${type}, unhandled type.`);
+        }
         CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
-        upd = await pack.importEntity(compendiumItem);
+        upd = await pack.importDocument(compendiumItem);
       } else {
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
 
@@ -1404,7 +1428,7 @@ export default class ImportHelpers {
         }
 
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
-        await pack.updateEntity(updateData);
+        await pack.get(updateData._id)?.update(updateData);
         upd = duplicate(entry);
         if (upd.data) {
           upd.data = mergeObject(upd.data, data.data);
@@ -1421,7 +1445,7 @@ export default class ImportHelpers {
     });
     if (!pack) {
       CONFIG.logger.debug(`Compendium pack ${name} not found, creating new`);
-      pack = await Compendium.create({ entity: type, label: name });
+      pack = await CompendiumCollection.createCompendium({ entity: type, label: name });
     } else {
       CONFIG.logger.debug(`Existing compendium pack ${name} found`);
     }
@@ -1641,8 +1665,8 @@ export default class ImportHelpers {
               rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
             },
           };
-          const descriptor = new Item(unique, { temporary: true });
-          descriptor.data._id = randomID();
+          const descriptor = Item.create(unique, { temporary: true });
+          descriptor.id = randomID();
           let rank = "";
           if (unique.data.rank > 1) {
             rank = `${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}`;

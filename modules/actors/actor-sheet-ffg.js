@@ -416,7 +416,7 @@ export class ActorSheetFFG extends ActorSheet {
     // Delete Inventory Item
     html.find(".item-delete").click((ev) => {
       const li = $(ev.currentTarget).parents(".item");
-      this.actor.deleteOwnedItem(li.data("itemId"));
+      this.actor.items.get(li.data("itemId"))?.delete();
       li.slideUp(200, () => this.render(false));
     });
 
@@ -464,7 +464,7 @@ export class ActorSheetFFG extends ActorSheet {
 
                 for (let i = 0; i < talentsToRemove.length; i += 1) {
                   const id = $(talentsToRemove[i]).val();
-                  this.actor.deleteOwnedItem(id);
+                  this.actor.items.get(id)?.delete();
                 }
               },
             },
@@ -979,9 +979,9 @@ export class ActorSheetFFG extends ActorSheet {
       let sameActor = data.actorId === this.actor.id;
       if (!sameActor) {
         try {
-          this.actor.createEmbeddedEntity("OwnedItem", duplicate(data.data)); // Create a new Item
+          this.actor.createEmbeddedDocuments("Item", [duplicate(data.data)]); // Create a new Item
           const actor = game.actors.get(data.actorId);
-          await actor.deleteOwnedItem(data.data._id); // Delete originating item from other actor
+          await actor.items.get(data.data._id)?.delete(); // Delete originating item from other actor
         } catch (err) {
           CONFIG.logger.error(`Error transfering item between actors.`, err);
         }

@@ -613,7 +613,7 @@ Hooks.once("ready", async () => {
       game.packs.entries.forEach((pack) => {
         pro.push(
           new Promise(async (resolve, reject) => {
-            const content = await pack.getContent();
+            const content = await pack.getDocuments();
             CONFIG.logger.log(`Migrating ${pack.metadata.label} - ${content.length} Entries`);
 
             const isLocked = pack.locked;

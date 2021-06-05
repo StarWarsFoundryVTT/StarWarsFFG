@@ -604,13 +604,13 @@ export default class SWAImporter extends FormApplication {
                               rank: wRank ? parseInt(wRank[0].replace(" ", ""), 10) : 1,
                             },
                           };
-                          const descriptor = new Item(unique, { temporary: true });
+                          const descriptor = Item.create(unique, { temporary: true });
                           descriptor.data._id = randomID();
                           templatedData.data.itemmodifier.push(descriptor.data);
                         });
                       }
 
-                      let w = new Item(templatedData, { temporary: true });
+                      let w = Item.create(templatedData, { temporary: true });
                       adversary.items.push(duplicate(w));
                     }
                   });
@@ -760,16 +760,16 @@ export default class SWAImporter extends FormApplication {
 
                 if (!entry) {
                   CONFIG.logger.debug(`Importing Adversary - Actor`);
-                  compendiumItem = new Actor(adversary, { temporary: true });
+                  compendiumItem = Actor.create(adversary, { temporary: true });
                   this._importLogger(`New Adversary ${name} : ${JSON.stringify(compendiumItem)}`);
-                  await pack.importEntity(compendiumItem);
+                  await pack.importDocument(compendiumItem);
                 } else {
                   CONFIG.logger.debug(`Update Adversary - Actor`);
                   //let updateData = ImportHelpers.buildUpdateData(item);
                   let updateData = adversary;
                   updateData["_id"] = entry.id;
                   this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
-                  await pack.updateEntity(updateData);
+                  await pack.get(updateData._id)?.update(updateData);
                 }
               } catch (err) {
                 CONFIG.logger.error(`Error importing ${item.name} from ${f.name}`, err);
@@ -828,7 +828,7 @@ export default class SWAImporter extends FormApplication {
     });
     if (!pack) {
       this._importLogger(`Compendium pack ${name} not found, creating new`);
-      pack = await Compendium.create({ entity: type, label: name });
+      pack = await CompendiumCollection.createCompendium({ entity: type, label: name });
     } else {
       this._importLogger(`Existing compendium pack ${name} found`);
     }
