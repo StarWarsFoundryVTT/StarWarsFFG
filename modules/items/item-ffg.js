@@ -25,7 +25,8 @@ export class ItemFFG extends ItemBaseFFG {
 
     if (this.compendium) {
       itemData.flags.isCompendium = true;
-      itemData.flags.ffgUuid = this.uuid;
+      // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
+      if (this.parent.data) itemData.flags.ffgUuid = this.uuid;
     } else {
       itemData.flags.isCompendium = false;
       itemData.flags.ffgIsOwned = false;

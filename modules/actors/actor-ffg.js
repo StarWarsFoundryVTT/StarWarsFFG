@@ -138,20 +138,20 @@ export class ActorFFG extends Actor {
       const item = {
         name: element.name,
         itemId: element.id,
-        description: element.data.description,
-        activation: element.data.activation.value,
-        activationLabel: element.data.activation.label,
-        isRanked: element.data.ranks.ranked,
+        description: element.data?.description,
+        activation: element.data?.activation?.value,
+        activationLabel: element.data?.activation?.label,
+        isRanked: element.data?.ranks?.ranked,
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
       };
       if (item.isRanked) {
-        item.rank = element.data.ranks.current;
+        item.rank = element.data?.ranks?.current;
       } else {
         item.rank = "N/A";
       }
 
       if (CONFIG.FFG.theme !== "starwars") {
-        item.tier = element.data.tier;
+        item.tier = element.data?.tier;
       }
 
       let index = globalTalentList.findIndex((obj) => {
@@ -162,7 +162,7 @@ export class ActorFFG extends Actor {
         globalTalentList.push(item);
       } else {
         globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
-        globalTalentList[index].rank += element.data.ranks.current;
+        globalTalentList[index].rank += element.data?.ranks?.current;
         if (CONFIG.FFG.theme !== "starwars") {
           globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));
         }

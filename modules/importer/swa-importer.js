@@ -604,13 +604,13 @@ export default class SWAImporter extends FormApplication {
                               rank: wRank ? parseInt(wRank[0].replace(" ", ""), 10) : 1,
                             },
                           };
-                          const descriptor = Item.create(unique, { temporary: true });
+                          const descriptor = new CONFIG.Item.documentClass(unique, { temporary: true });
                           descriptor.data._id = randomID();
                           templatedData.data.itemmodifier.push(descriptor.data);
                         });
                       }
 
-                      let w = Item.create(templatedData, { temporary: true });
+                      let w = new CONFIG.Item.documentClass(templatedData, { temporary: true });
                       adversary.items.push(duplicate(w));
                     }
                   });
@@ -760,7 +760,7 @@ export default class SWAImporter extends FormApplication {
 
                 if (!entry) {
                   CONFIG.logger.debug(`Importing Adversary - Actor`);
-                  compendiumItem = Actor.create(adversary, { temporary: true });
+                  compendiumItem = new CONFIG.Actor.documentClass(adversary, { temporary: true });
                   this._importLogger(`New Adversary ${name} : ${JSON.stringify(compendiumItem)}`);
                   await pack.importDocument(compendiumItem);
                 } else {
