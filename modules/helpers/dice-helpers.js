@@ -55,7 +55,7 @@ export default class DiceHelpers {
       characteristic = data.data.characteristics[skill.characteristic];
     }
 
-    const actor = await game.actors.get(data.actor.id);
+    const actor = await game.actors.get(data.actor._id);
 
     // Determine if this roll is triggered by an item.
     let item = {};
@@ -64,7 +64,7 @@ export default class DiceHelpers {
       if (obj.actor.token === null) {
         let itemID = row.parentElement.dataset["itemId"];
         const item1 = actor.items.get(itemID);
-        item = Object.entries(data.items).filter((item) => item[1].id === itemID);
+        item = Object.entries(data.items).filter((item) => item[1]._id === itemID);
         item = item[0][1];
         item.flags.uuid = item1.uuid;
       } else {
