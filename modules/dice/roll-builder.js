@@ -107,9 +107,9 @@ export default class RollBuilderFFG extends FormApplication {
             let entity;
             let entityData;
             if (!this?.roll?.item?.flags?.uuid) {
-              entity = CONFIG["Actor"].documentClass.collection.get(this.roll.data.actor._id);
+              entity = CONFIG["Actor"].documentClass.collection.get(this.roll.data.actor.id);
               entityData = {
-                _id: this.roll.item._id,
+                _id: this.roll.item.id,
               };
             } else {
               const parts = this.roll.item.flags.uuid.split(".");
@@ -146,7 +146,7 @@ export default class RollBuilderFFG extends FormApplication {
         </div>`;
 
         let chatOptions = {
-          user: game.user._id,
+          user: game.user.id,
           content: messageText,
           flags: {
             ffg: {
@@ -165,7 +165,7 @@ export default class RollBuilderFFG extends FormApplication {
       } else {
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
         roll.toMessage({
-          user: game.user._id,
+          user: game.user.id,
           speaker: this.roll.data,
           flavor: `${game.i18n.localize("SWFFG.Rolling")} ${this.roll.skillName}...`,
         });

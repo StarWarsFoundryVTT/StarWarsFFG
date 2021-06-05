@@ -768,7 +768,7 @@ export default class SWAImporter extends FormApplication {
                   CONFIG.logger.debug(`Update Adversary - Actor`);
                   //let updateData = ImportHelpers.buildUpdateData(item);
                   let updateData = adversary;
-                  updateData["_id"] = entry._id;
+                  updateData["_id"] = entry.id;
                   this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
                   await pack.updateEntity(updateData);
                 }

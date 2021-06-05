@@ -513,13 +513,13 @@ Hooks.once("ready", async () => {
       if (actor.data.type === "character" || actor.data.type === "minion") {
         if (actor.data.data.stats.wounds.real_value != null) {
           actor.data.data.stats.wounds.value = actor.data.data.stats.wounds.real_value;
-          game.actors.get(actor._id).update({ ["data.stats.wounds.real_value"]: null });
+          game.actors.get(actor.id).update({ ["data.stats.wounds.real_value"]: null });
           CONFIG.logger.log("Migrated stats.wounds.value from stats.wounds.real_value");
           CONFIG.logger.log(actor.data.data.stats.wounds);
         }
         if (actor.data.data.stats.strain.real_value != null) {
           actor.data.data.stats.strain.value = actor.data.data.stats.strain.real_value;
-          game.actors.get(actor._id).update({ ["data.stats.strain.real_value"]: null });
+          game.actors.get(actor.id).update({ ["data.stats.strain.real_value"]: null });
           CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
           CONFIG.logger.log(actor.data.data.stats.strain);
         }
@@ -707,7 +707,7 @@ Hooks.once("ready", async () => {
         CONFIG.FFG.DestinyGM = game.user.id;
 
         ChatMessage.create({
-          user: game.user._id,
+          user: game.user.id,
           content: messageText,
         });
       },

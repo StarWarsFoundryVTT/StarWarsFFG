@@ -161,7 +161,7 @@ export class ActorSheetFFG extends ActorSheet {
           // we only allow one species and one career, find any other species and remove them.
           const itemToDelete = actor.items.filter((i) => i.type === item.type);
           itemToDelete.forEach((i) => {
-            this.actor.deleteOwnedItem(i._id);
+            this.actor.items.get(i.id).delete();
           });
         } else {
           return false;
@@ -391,7 +391,7 @@ export class ActorSheetFFG extends ActorSheet {
           let modifierType = li.dataset.modifierType;
           let modifierId = li.dataset.modifierId;
 
-          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor._id, this.actor.compendium);
+          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor.id, this.actor.compendium);
         });
       }
     });
@@ -703,11 +703,11 @@ export class ActorSheetFFG extends ActorSheet {
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
-      user: game.user._id,
+      user: game.user.id,
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: {
-        actor: this.actor._id,
+        actor: this.actor.id,
         token: this.actor.token,
         alias: this.actor.name,
       },
@@ -733,11 +733,11 @@ export class ActorSheetFFG extends ActorSheet {
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
-      user: game.user._id,
+      user: game.user.id,
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,
       content: html,
       speaker: {
-        actor: this.actor._id,
+        actor: this.actor.id,
         token: this.actor.token,
         alias: this.actor.name,
       },
@@ -976,7 +976,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     if (data.data) {
-      let sameActor = data.actorId === this.actor._id;
+      let sameActor = data.actorId === this.actor.id;
       if (!sameActor) {
         try {
           this.actor.createEmbeddedEntity("OwnedItem", duplicate(data.data)); // Create a new Item
@@ -1009,11 +1009,11 @@ export class ActorSheetFFG extends ActorSheet {
           const pack = await game.packs.get(specializationTalents[talent]?.pack);
           if (pack) {
             await pack.getIndex();
-            let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+            let entry = await pack.index.find((e) => e.id === specializationTalents[talent].itemId);
             if (!entry) {
               entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
             }
-            gameItem = await pack.getEntity(entry._id);
+            gameItem = await pack.getEntity(entry.id);
           }
         } else {
           gameItem = await game.items.get(specializationTalents[talent].itemId);
@@ -1028,7 +1028,7 @@ export class ActorSheetFFG extends ActorSheet {
       if (spec?.talentList && spec.talentList.length > 0) {
         spec.talentList.forEach((talent) => {
           const item = talent;
-          item.firstSpecialization = spec._id;
+          item.firstSpecialization = spec.id;
 
           if (item.isRanked) {
             item.rank = typeof talent.rank === "number" ? talent.rank : 1;

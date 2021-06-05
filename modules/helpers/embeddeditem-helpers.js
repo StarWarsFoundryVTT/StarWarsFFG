@@ -86,7 +86,7 @@ export default class EmbeddedItemHelpers {
       }
 
       if (realItem?.compendium) {
-        formData._id = realItem._id;
+        formData.id = realItem.id;
         await realItem.update(formData);
         await realItem.sheet.render(true, { action: "update", data: formData });
       } else {
@@ -120,14 +120,14 @@ export default class EmbeddedItemHelpers {
       let modifierIndex;
       let item;
       if (ownedItem?.data?.data?.[modifierType]) {
-        modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
+        modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i.id === modifierId);
         item = ownedItem.data.data[modifierType][modifierIndex];
       }
 
       if (!item) {
         // this is a modifier on an attachment
         ownedItem.data.data.itemattachment.forEach((a) => {
-          modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
+          modifierIndex = a.data[modifierType].findIndex((m) => m.id === modifierId);
           if (modifierIndex > -1) {
             item = a.data[modifierType][modifierIndex];
           }
@@ -165,7 +165,7 @@ export default class EmbeddedItemHelpers {
     if (!isNaN(modifierId)) {
       modifierIndex = modifierId;
     } else {
-      modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
+      modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i.id === modifierId);
     }
 
     let item;
@@ -179,7 +179,7 @@ export default class EmbeddedItemHelpers {
         if (!isNaN(modifierId)) {
           modifierIndex = modifierId;
         } else {
-          modifierIndex = a.data[modifierType].findIndex((m) => m._id === modifierId);
+          modifierIndex = a.data[modifierType].findIndex((m) => m.id === modifierId);
         }
         if (modifierIndex > -1) {
           item = a.data[modifierType][modifierIndex];
@@ -199,9 +199,9 @@ export default class EmbeddedItemHelpers {
     };
 
     let tempItem = await Item.create(temp, { temporary: true });
-    tempItem.data._id = temp._id;
+    tempItem.data._id = temp.id;
     tempItem.data.flags.readonly = true;
-    if (!temp._id) {
+    if (!temp.id) {
       tempItem.data._id = randomID();
     }
     tempItem.sheet.render(true);
@@ -222,8 +222,8 @@ export default class EmbeddedItemHelpers {
 
     let tempItem = await Item.create(temp, { temporary: true });
 
-    tempItem.data._id = temp._id;
-    if (!temp._id) {
+    tempItem.data._id = temp.id;
+    if (!temp.id) {
       tempItem.data._id = randomID();
     }
 

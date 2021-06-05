@@ -129,9 +129,9 @@ export class ItemSheetFFG extends ItemSheet {
                   gameItem = await ImportHelpers.findCompendiumEntityById("Item", specializationTalents[talent].itemId);
                 } else {
                   await pack.getIndex();
-                  const entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
+                  const entry = await pack.index.find((e) => e.id === specializationTalents[talent].itemId);
                   if (entry) {
-                    gameItem = await pack.getEntity(entry._id);
+                    gameItem = await pack.getEntity(entry.id);
                   }
                 }
               } catch (err) {
@@ -258,12 +258,12 @@ export class ItemSheetFFG extends ItemSheet {
           await pack.getIndex();
           const entity = await pack.index.find((e) => e.name === talentName);
           if (entity) {
-            item = await pack.getEntity(entity._id);
+            item = await pack.getEntity(entity.id);
 
             let updateData = {};
             // build dataset if needed
             if (!pack.locked) {
-              setProperty(updateData, `data.talents.${parent.id}.itemId`, entity._id);
+              setProperty(updateData, `data.talents.${parent.id}.itemId`, entity.id);
               this.object.update(updateData);
             }
           }
@@ -427,7 +427,7 @@ export class ItemSheetFFG extends ItemSheet {
                       const name = input.attr("name");
                       const id = input[0].dataset.itemId;
 
-                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
+                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i.id === id);
 
                       if (arrayItem > -1) {
                         setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
@@ -467,7 +467,7 @@ export class ItemSheetFFG extends ItemSheet {
       let itemIndex = li.dataset.itemIndex;
 
       if ($(li).hasClass("adjusted")) {
-        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object._id, itemType, itemIndex, this.object?.actor?._id);
+        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object., itemType, itemIndex, this.object?.actor?.id);
       }
 
       if ($(li).hasClass("fa-edit")) {
@@ -507,8 +507,8 @@ export class ItemSheetFFG extends ItemSheet {
 
       let tempItem = await Item.create(temp, { temporary: true });
 
-      tempItem.data._id = temp._id;
-      if (!temp._id) {
+      tempItem.data._id = temp.id;
+      if (!temp.id) {
         tempItem.data._id = randomID();
       }
       tempItem.sheet.render(true);
@@ -572,8 +572,8 @@ export class ItemSheetFFG extends ItemSheet {
       };
 
       let tempItem = await Item.create(temp, { temporary: true });
-      tempItem.data._id = temp._id;
-      if (!temp._id) {
+      tempItem.data._id = temp.id;
+      if (!temp.id) {
         tempItem.data._id = randomID();
       }
 
@@ -582,7 +582,7 @@ export class ItemSheetFFG extends ItemSheet {
       setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
       await this.object.update(data);
 
-      tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i._id === tempItem.data._id);
+      tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i.id === tempItem.data._id);
 
       tempItem.sheet.render(true);
     });
@@ -868,7 +868,7 @@ export class ItemSheetFFG extends ItemSheet {
       itemObject = duplicate(await game.items.get(data.id));
       if (!itemObject) return;
     }
-    itemObject._id = randomID();
+    itemObject.id = randomID();
 
     if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.data.type === "shipweapon" && itemObject.data.type === "weapon") || obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
       let items = obj?.data?.data?.[itemObject.type];

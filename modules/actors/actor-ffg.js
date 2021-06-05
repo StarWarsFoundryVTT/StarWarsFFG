@@ -137,12 +137,12 @@ export class ActorFFG extends Actor {
     talents.forEach((element) => {
       const item = {
         name: element.name,
-        itemId: element._id,
+        itemId: element.id,
         description: element.data.description,
         activation: element.data.activation.value,
         activationLabel: element.data.activation.label,
         isRanked: element.data.ranks.ranked,
-        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
+        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
       };
       if (item.isRanked) {
         item.rank = element.data.ranks.current;
@@ -161,7 +161,7 @@ export class ActorFFG extends Actor {
       if (index < 0 || !item.isRanked) {
         globalTalentList.push(item);
       } else {
-        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id });
+        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
         globalTalentList[index].rank += element.data.ranks.current;
         if (CONFIG.FFG.theme !== "starwars") {
           globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));
@@ -212,8 +212,8 @@ export class ActorFFG extends Actor {
 
       learnedTalents.forEach((talent) => {
         const item = JSON.parse(JSON.stringify(element.data.data.talents[talent]));
-        item.firstSpecialization = element._id;
-        item.source = [{ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id }];
+        item.firstSpecialization = element.id;
+        item.source = [{ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element.id }];
         if (item.isRanked) {
           item.rank = element.data.data.talents[talent]?.rank ? element.data.data.talents[talent].rank : 1;
         } else {
@@ -226,7 +226,7 @@ export class ActorFFG extends Actor {
         if (index < 0 || !item.isRanked) {
           globalTalentList.push(item);
         } else {
-          globalTalentList[index].source.push({ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element._id });
+          globalTalentList[index].source.push({ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element.id });
           globalTalentList[index].rank += element.data.data.talents[talent]?.rank ? element.data.data.talents[talent].rank : 1;
         }
       });
@@ -239,12 +239,12 @@ export class ActorFFG extends Actor {
     talents.forEach((element) => {
       const item = {
         name: element.name,
-        itemId: element._id,
+        itemId: element.id,
         description: element.data.data.description,
         activation: element.data.data.activation.value,
         activationLabel: element.data.data.activation.label,
         isRanked: element.data.data.ranks.ranked,
-        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id }],
+        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
       };
 
       if (item.isRanked) {
@@ -264,7 +264,7 @@ export class ActorFFG extends Actor {
       if (index < 0 || !item.isRanked) {
         globalTalentList.push(item);
       } else {
-        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element._id });
+        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
         globalTalentList[index].rank += element.data.data.ranks.current;
         if (CONFIG.FFG.theme !== "starwars") {
           globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));

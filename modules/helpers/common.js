@@ -24,9 +24,9 @@ export default class Helpers {
     } else {
       const pack = await game.packs.get(packName);
       await pack.getIndex();
-      const entry = await pack.index.find((e) => e._id === itemId);
+      const entry = await pack.index.find((e) => e.id === itemId);
       if (entry) {
-        return await pack.getEntity(entry._id);
+        return await pack.getEntity(entry.id);
       }
     }
   }

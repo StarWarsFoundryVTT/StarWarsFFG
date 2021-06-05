@@ -102,7 +102,7 @@ export class CombatFFG extends Combat {
             label: game.i18n.localize("InitiativeRoll"),
             callback: async () => {
               const container = document.getElementById(id);
-              const currentId = initiative.combatant._id;
+              const currentId = initiative.combatant.id;
 
               const baseFormulaType = container.querySelector('input[name="skill"]:checked').value;
 
@@ -143,9 +143,9 @@ export class CombatFFG extends Combat {
                   let messageData = mergeObject(
                     {
                       speaker: {
-                        scene: canvas.scene._id,
-                        actor: c.actor ? c.actor._id : null,
-                        token: c.token._id,
+                        scene: canvas.scene.id,
+                        actor: c.actor ? c.actor.id : null,
+                        token: c.token.id,
                         alias: c.token.name,
                       },
                       flavor: `${c.token.name} ${game.i18n.localize("SWFFG.InitiativeRoll")} (${game.i18n.localize(`SWFFG.SkillsName${baseFormulaType.replace(/[: ]/g, "")}`)})`,
@@ -171,7 +171,7 @@ export class CombatFFG extends Combat {
 
               // Ensure the turn order remains with the same combatant
               if (updateTurn) {
-                await initiative.update({ turn: initiative.turns.findIndex((t) => t._id === currentId) });
+                await initiative.update({ turn: initiative.turns.findIndex((t) => t.id === currentId) });
               }
 
               // Create multiple chat messages

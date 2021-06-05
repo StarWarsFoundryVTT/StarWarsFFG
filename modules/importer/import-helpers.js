@@ -152,9 +152,9 @@ export default class ImportHelpers {
       const pack = await game.packs.get(packId);
       if (pack.entity === type) {
         await pack.getIndex();
-        entity = await pack.index.find((e) => e._id === id);
+        entity = await pack.index.find((e) => e.id === id);
         if (entity) {
-          return await pack.getEntity(entity._id);
+          return await pack.getEntity(entity.id);
         }
       }
     }
@@ -1211,7 +1211,7 @@ export default class ImportHelpers {
       if (exists) {
         //let updateData = ImportHelpers.buildUpdateData(character);
         let updateData = character;
-        updateData["_id"] = exists._id;
+        updateData["_id"] = exists.id;
         await Actor.update(updateData);
       } else {
         await Actor.create(character);
@@ -1382,7 +1382,7 @@ export default class ImportHelpers {
     } else {
       let upd;
       if (removeFirst) {
-        await pack.deleteEntity(entry._id);
+        await pack.deleteEntity(entry.id);
         let compendiumItem;
         CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
         compendiumItem = new objClass(data, { temporary: true });
@@ -1392,7 +1392,7 @@ export default class ImportHelpers {
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
 
         let updateData = data;
-        updateData["_id"] = entry._id;
+        updateData["_id"] = entry.id;
 
         if (updateData?.data?.attributes) {
           // Remove and repopulate all modifiers
@@ -1606,7 +1606,7 @@ export default class ImportHelpers {
             if (compendiumEntry) {
               if (compendiumEntry?.type === "itemmodifier") {
                 const descriptor = duplicate(compendiumEntry);
-                descriptor._id = randomID();
+                descriptor.id = randomID();
                 descriptor.data.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
                 output.itemmodifier.push(descriptor);
                 let rank = "";
