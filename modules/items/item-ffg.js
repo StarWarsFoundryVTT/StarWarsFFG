@@ -177,7 +177,7 @@ export class ItemFFG extends ItemBaseFFG {
         }
 
         if (this.isEmbedded && this.actor && this.actor.data) {
-          let soakAdd = 0, defenceAdd = 0, encumbranceAdd;
+          let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].modtype === "Armor Stat") {
               switch (data.attributes[attr].mod) {
