@@ -29,32 +29,39 @@
           "wounds": {
             "value": 0,
             "min": 0,
-            "max": 0
+            "max": 0,
+            "adjusted": 0
           },
           "strain": {
             "value": 0,
             "min": 0,
-            "max": 0
+            "max": 0,
+            "adjusted": 0
           },
           "soak": {
-            "value": 0
+            "value": 0,
+            "adjusted": 0
           },
           "defence": {
             "ranged": 0,
-            "melee": 0
+            "melee": 0,
+            "adjusted": 0
           },
           "encumbrance": {
             "value": 0,
-            "max": 0
+            "max": 0,
+            "adjusted": 0
           },
           "forcePool": {
             "value": 0,
-            "max": 0
+            "max": 0,
+            "adjusted": 0
           },
           "credits": {
             "value": 0,
             "type": "Number",
-            "label": "Credits"
+            "label": "Credits",
+            "adjusted": 0
           }
         }
       },
@@ -386,7 +393,8 @@
         "value": 0,
         "type": "Number",
         "label": "Encumbrance",
-        "abrev": "Encum"
+        "abrev": "Encum",
+        "adjusted": 0
       },
       "obligation": {
         "value": 0,
@@ -469,7 +477,8 @@
         "armour": {
           "value": 0,
           "type": "Number",
-          "label": "Armour"
+          "label": "Armour",
+          "adjusted": 0
         },
         "sensorRange": {
           "value": "Short",
@@ -484,23 +493,27 @@
         "encumbrance": {
           "value": 0,
           "min": 0,
-          "max": 10
+          "max": 10,
+          "adjusted": 0
         },
         "cost": {
           "value": 0,
           "type": "Number",
-          "label": "Cost"
+          "label": "Cost",
+          "adjusted": 0
         },
         "rarity": {
           "value": 0,
           "isrestricted": false,
           "type": "Number",
-          "label": "Rarity"
+          "label": "Rarity",
+          "adjusted": 0
         },
         "customizationHardPoints": {
           "value": 0,
           "type": "Number",
-          "label": "Hard Points"
+          "label": "Hard Points",
+          "adjusted": 0
         },
         "hyperdrive" : {
           "value" : 1,
@@ -535,17 +548,20 @@
           "value": 0,
           "type": "Number",
           "label": "Encumbrance",
-          "abrev": "Encum"
+          "abrev": "Encum",
+          "adjusted": 0
         },
         "price": {
           "value": 0,
           "type": "Number",
-          "label": "Price"
+          "label": "Price",
+          "adjusted": 0
         },
         "rarity": {
           "value": 0,
           "type": "Number",
-          "label": "Rarity"
+          "label": "Rarity",
+          "adjusted": 0
         }
       },
       "hardpoints": {
@@ -553,7 +569,8 @@
           "value": 0,
           "type": "Number",
           "label": "Hard Points",
-          "abrev": "HP"
+          "abrev": "HP",
+          "adjusted": 0
         }
       },
       "equippable": {
@@ -584,18 +601,21 @@
         "value": 0,
         "type": "Number",
         "label": "Damage",
-        "abrev": "Dam"
+        "abrev": "Dam",
+        "adjusted": 0
       },
       "crit": {
         "value": 0,
         "type": "Number",
         "label": "Critical Rating",
-        "abrev": "Crit"
+        "abrev": "Crit",
+        "adjusted": 0
       },
       "range": {
         "value": "Short",
         "type": "String",
-        "label": "Range"
+        "label": "Range",
+        "adjusted": "Short"
       },
       "special": {
         "value": "",
@@ -609,12 +629,14 @@
         "value": 0,
         "type": "Number",
         "label": "Defence",
-        "abrev": "Def"
+        "abrev": "Def",
+        "adjusted": 0
       },
       "soak": {
         "value": 0,
         "type": "Number",
-        "label": "Soak"
+        "label": "Soak",
+        "adjusted": 0
       }
     },
     "talent": {
@@ -649,18 +671,21 @@
         "value": 0,
         "type": "Number",
         "label": "Damage",
-        "abrev": "Dam"
+        "abrev": "Dam",
+        "adjusted": 0
       },
       "crit": {
         "value": 0,
         "type": "Number",
         "label": "Critical Rating",
-        "abrev": "Crit"
+        "abrev": "Crit",
+        "adjusted": 0
       },
       "range": {
         "value": "Short",
         "type": "String",
-        "label": "Range"
+        "label": "Range",
+        "adjusted": "Short"
       },
       "special": {
         "value": "",
