@@ -26,14 +26,14 @@ export class ItemFFG extends ItemBaseFFG {
     if (this.compendium) {
       itemData.flags.isCompendium = true;
       // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-      if (this.parent.data) itemData.flags.ffgUuid = this.uuid;
+      if (this.parent?.data) itemData.flags.ffgUuid = this.uuid;
     } else {
       itemData.flags.isCompendium = false;
       itemData.flags.ffgIsOwned = false;
       if (this.isEmbedded) {
         itemData.flags.ffgIsOwned = true;
         // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-        if (this.parent.data) itemData.flags.ffgUuid = this.uuid;
+        if (this.parent?.data) itemData.flags.ffgUuid = this.uuid;
       } else if (itemData._id) {
         itemData.flags.ffgTempId = itemData._id;
       }

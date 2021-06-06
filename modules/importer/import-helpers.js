@@ -1394,7 +1394,7 @@ export default class ImportHelpers {
     } else {
       let upd;
       if (removeFirst) {
-        await pack.deleteEntity(entry.id);
+        await pack.delete(entry.id);
         let compendiumItem;
         CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
         switch (type) {
@@ -1440,9 +1440,8 @@ export default class ImportHelpers {
 
   static async getCompendiumPack(type, name) {
     CONFIG.logger.debug(`Checking for existing compendium pack ${name}`);
-    let pack = game.packs.find((p) => {
-      return p.metadata.label === name;
-    });
+    const searchName = "world." + name.toString().replaceAll(".", "").toLowerCase();
+    let pack = game.packs.get(searchName);
     if (!pack) {
       CONFIG.logger.debug(`Compendium pack ${name} not found, creating new`);
       pack = await CompendiumCollection.createCompendium({ entity: type, label: name });
