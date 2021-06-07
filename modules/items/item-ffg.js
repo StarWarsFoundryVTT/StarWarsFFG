@@ -11,45 +11,6 @@ import Helpers from "../helpers/common.js";
  */
 export class ItemFFG extends ItemBaseFFG {
 
-  /** @override */
-  async _preCreate(data, options, user) {
-    // Check that we are dealing with an Embedded Document
-    if (this.isEmbedded && this.parent.documentName === "Actor")
-    {
-      const item = this;
-      const actor = this.actor;
-
-      // we only allow one species and one career, find any other species and remove them.
-      if (item.type === "species" || item.type === "career") {
-        if (actor.type === "character") {
-          const itemToDelete = actor.items.filter((i) => i.type === item.type);
-          itemToDelete.forEach((i) => {
-            actor.items.get(i.id).delete();
-          });
-        } else {
-          return false;
-        }
-      }
-
-      // Critical Damage can only be added to "vehicle" actors and Critical Injury can only be added to "character" actors.
-      if (item.type === "criticaldamage" && actor.data.type !== "vehicle") {
-        ui.notifications.warn("Critical Damage can only be added to 'vehicle' actor types.");
-        return false;
-      }
-      if (item.type === "criticalinjury" && actor.data.type !== "character") {
-        ui.notifications.warn("Critical Injuries can only be added to 'character' actor types.");
-        return false;
-      }
-
-      // Prevent adding of character data type items to vehicles
-      if (["career", "forcepower", "talent", "signatureability", "specialization", "species"].includes(item.type) && actor.type === "vehicle") {
-        ui.notifications.warn(`Item type ${item.type} cannot be added to 'vehicle' actor types.`);
-        return false;
-      }
-    }
-    await super._preCreate(data, options, user);
-  }
-
   /**
    * Augment the basic Item data model with additional dynamic data.
    */

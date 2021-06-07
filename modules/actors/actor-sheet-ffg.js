@@ -155,6 +155,42 @@ export class ActorSheetFFG extends ActorSheet {
       // Save persistent sheet height and width for future use.
       this.sheetWidth = this.position.width;
       this.sheetHeight = this.position.height;
+
+      // Check that we are dealing with an Embedded Document
+      if (this.isEmbedded && this.parent.documentName === "Actor")
+      {
+        const item = this;
+        const actor = this.actor;
+
+        // we only allow one species and one career, find any other species and remove them.
+        if (item.type === "species" || item.type === "career") {
+          if (actor.type === "character") {
+            const itemToDelete = actor.items.filter((i) => i.type === item.type);
+            itemToDelete.forEach((i) => {
+              actor.items.get(i.id).delete();
+            });
+          } else {
+            return false;
+          }
+        }
+
+        // Critical Damage can only be added to "vehicle" actors and Critical Injury can only be added to "character" actors.
+        if (item.type === "criticaldamage" && actor.data.type !== "vehicle") {
+          ui.notifications.warn("Critical Damage can only be added to 'vehicle' actor types.");
+          return false;
+        }
+        if (item.type === "criticalinjury" && actor.data.type !== "character") {
+          ui.notifications.warn("Critical Injuries can only be added to 'character' actor types.");
+          return false;
+        }
+
+        // Prevent adding of character data type items to vehicles
+        if (["career", "forcepower", "talent", "signatureability", "specialization", "species"].includes(item.type.toString()) && actor.type === "vehicle") {
+          console.log(item.type, actor.type);
+          ui.notifications.warn(`Item type '${item.type}' cannot be added to 'vehicle' actor types.`);
+          return false;
+        }
+      }
     });
 
     Hooks.on("preDeleteItem", (actor, item, options, userid) => {
