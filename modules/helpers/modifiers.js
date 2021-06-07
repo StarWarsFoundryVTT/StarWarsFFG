@@ -71,7 +71,7 @@ export default class ModifierHelpers {
                 });
               }
             }
-          } else if (item.type === "forcepower" || item.type === "specialization") {
+          } else if (item.type === "forcepower" || item.type === "specialization" || item.type === "signatureability") {
             // apply basic force power/specialization modifiers
             if (attrsToApply.length > 0) {
               attrsToApply.forEach((attr) => {
@@ -89,7 +89,7 @@ export default class ModifierHelpers {
               });
             }
             let upgrades;
-            if (item.type === "forcepower") {
+            if (item.type === "forcepower" || item.type === "signatureability") {
               // apply force power upgrades
               upgrades = Object.keys(item.data.upgrades)
                 .filter((k) => item.data.upgrades[k].islearned)
