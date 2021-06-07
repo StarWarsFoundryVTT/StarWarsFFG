@@ -2605,6 +2605,7 @@ img {
   height: 100%;
   width: auto;
   text-align: center;
+  overflow-y: auto;
 }
 
 .starwarsffg .group-manager .PC-list {
