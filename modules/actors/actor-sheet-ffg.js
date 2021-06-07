@@ -151,33 +151,19 @@ export class ActorSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.options.editable) return;
 
-    Hooks.on("preCreateOwnedItem", (actor, item, options, userid) => {
-      // Save persistent sheet height and width for future use.
-      this.sheetWidth = this.position.width;
-      this.sheetHeight = this.position.height;
-
-      if (item.type === "species" || item.type === "career") {
-        if (actor.data.type === "character") {
-          // we only allow one species and one career, find any other species and remove them.
-          const itemToDelete = actor.items.filter((i) => i.type === item.type);
-          itemToDelete.forEach((i) => {
-            this.actor.items.get(i.id).delete();
-          });
-        } else {
-          return false;
-        }
-      }
-
-      return true;
-    });
-
-    Hooks.on("preDeleteOwnedItem", (actor, item, options, userid) => {
+    Hooks.on("preCreateItem", (actor, item, options, userid) => {
       // Save persistent sheet height and width for future use.
       this.sheetWidth = this.position.width;
       this.sheetHeight = this.position.height;
     });
 
-    Hooks.on("preUpdateOwnedItem", (actor, item, options, userid) => {
+    Hooks.on("preDeleteItem", (actor, item, options, userid) => {
+      // Save persistent sheet height and width for future use.
+      this.sheetWidth = this.position.width;
+      this.sheetHeight = this.position.height;
+    });
+
+    Hooks.on("preUpdateItem", (actor, item, options, userid) => {
       // Save persistent sheet height and width for future use.
       this.sheetWidth = this.position.width;
       this.sheetHeight = this.position.height;
