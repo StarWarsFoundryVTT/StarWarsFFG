@@ -18,10 +18,10 @@ export class ItemFFG extends ItemBaseFFG {
     {
       const item = this;
       const actor = this.actor;
-      console.log(this);
+
       // we only allow one species and one career, find any other species and remove them.
       if (item.type === "species" || item.type === "career") {
-        if (actor.data.type === "character") {
+        if (actor.type === "character") {
           const itemToDelete = actor.items.filter((i) => i.type === item.type);
           itemToDelete.forEach((i) => {
             actor.items.get(i.id).delete();
@@ -38,6 +38,12 @@ export class ItemFFG extends ItemBaseFFG {
       }
       if (item.type === "criticalinjury" && actor.data.type !== "character") {
         ui.notifications.warn("Critical Injuries can only be added to 'character' actor types.");
+        return false;
+      }
+
+      // Prevent adding of character data type items to vehicles
+      if (["career", "forcepower", "talent", "signatureability", "specialization", "species"].includes(item.type) && actor.type === "vehicle") {
+        ui.notifications.warn(`Item type ${item.type} cannot be added to 'vehicle' actor types.`);
         return false;
       }
     }
