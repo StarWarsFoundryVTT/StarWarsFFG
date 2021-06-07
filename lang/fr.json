@@ -176,6 +176,7 @@
   "SWFFG.WeaponRangeLong": "Longue",
   "SWFFG.WeaponRangeExtreme": "Extrême",
   "SWFFG.VehicleRangeNone": "Aucune",
+  "SWFFG.VehicleRangeEngaged": "Engaged (Translate)",
   "SWFFG.VehicleRangeClose": "Proche",
   "SWFFG.VehicleRangeShort": "Courte",
   "SWFFG.VehicleRangeMedium": "Moyenne",

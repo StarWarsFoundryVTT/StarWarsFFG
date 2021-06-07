@@ -176,6 +176,7 @@
   "SWFFG.WeaponRangeLong": "Long",
   "SWFFG.WeaponRangeExtreme": "Extreme",
   "SWFFG.VehicleRangeNone": "None",
+  "SWFFG.VehicleRangeEngaged": "Engaged",
   "SWFFG.VehicleRangeClose": "Close",
   "SWFFG.VehicleRangeShort": "Short",
   "SWFFG.VehicleRangeMedium": "Medium",
