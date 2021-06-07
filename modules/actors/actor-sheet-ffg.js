@@ -151,7 +151,7 @@ export class ActorSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
-    Hooks.on("preCreateItem", (actor, item, options, userid) => {
+    Hooks.on("preCreateItem", (item, createData, options, userId) => {
       // Save persistent sheet height and width for future use.
       this.sheetWidth = this.position.width;
       this.sheetHeight = this.position.height;
@@ -159,14 +159,17 @@ export class ActorSheetFFG extends ActorSheet {
       // Check that we are dealing with an Embedded Document
       if (item.isEmbedded && item.parent.documentName === "Actor")
       {
+        const actor = item.actor
         // we only allow one species and one career, find any other species and remove them.
         if (item.type === "species" || item.type === "career") {
           if (actor.type === "character") {
-            const itemToDelete = actor.items.filter((i) => i.type === item.type);
+            const itemToDelete = actor.items.filter((i) => (i.type === item.type) && (i.id !== item.id));
             itemToDelete.forEach((i) => {
-              actor.items.get(i.id).delete();
+                actor.items.get(i.id).delete();
             });
-          } else {
+          }
+          else if (actor.type === "minion") {
+            ui.notifications.warn(`Item type '${item.type}' cannot be added to 'minion' actor types.`);
             return false;
           }
         }
@@ -190,13 +193,13 @@ export class ActorSheetFFG extends ActorSheet {
       }
     });
 
-    Hooks.on("preDeleteItem", (actor, item, options, userid) => {
+    Hooks.on("preDeleteItem", (item, createData, options, userId) => {
       // Save persistent sheet height and width for future use.
       this.sheetWidth = this.position.width;
       this.sheetHeight = this.position.height;
     });
 
-    Hooks.on("preUpdateItem", (actor, item, options, userid) => {
+    Hooks.on("preUpdateItem", (item, createData, options, userId) => {
       // Save persistent sheet height and width for future use.
       this.sheetWidth = this.position.width;
       this.sheetHeight = this.position.height;
