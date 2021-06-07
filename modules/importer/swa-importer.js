@@ -80,7 +80,14 @@ export default class SWAImporter extends FormApplication {
           CONFIG.logger.debug(`Caching file: ${f.name}`);
           this._importLogger(`Caching ancillary data file ${f.name}`);
 
-          const file = await zip.file(f.file).async("text");
+          let file;
+          try {
+            file = await zip.file(f.file).async("text");
+          } catch(e) {
+            ui.notifications.error(`Failed to process data file ${f.name}! Import failed.`);
+            console.error(e);
+            return;
+          }
           const data = JSON.parse(file);
 
           if (data.length > 0) {
