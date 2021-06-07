@@ -149,7 +149,7 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     // Everything below here is only needed if the sheet is editable
-    if (!this.options.editable) return;
+    if (!this.isEditable) return;
 
     Hooks.on("preCreateItem", (actor, item, options, userid) => {
       // Save persistent sheet height and width for future use.
@@ -159,9 +159,6 @@ export class ActorSheetFFG extends ActorSheet {
       // Check that we are dealing with an Embedded Document
       if (this.isEmbedded && this.parent.documentName === "Actor")
       {
-        const item = this;
-        const actor = this.actor;
-
         // we only allow one species and one career, find any other species and remove them.
         if (item.type === "species" || item.type === "career") {
           if (actor.type === "character") {
