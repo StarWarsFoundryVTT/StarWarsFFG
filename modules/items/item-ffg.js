@@ -10,6 +10,17 @@ import Helpers from "../helpers/common.js";
  * @extends {Item}
  */
 export class ItemFFG extends ItemBaseFFG {
+  /** @override */
+  async _onCreate(data, options, user) {
+    // Ensure we're dealing with an embedded item
+    if (this.isEmbedded && this.actor) {
+      // If this is a weapon or armour item we must ensure its modifier-adjusted values are saved to the database
+      if (["weapon", "shipweapon", "armour"].includes(this.type)) {
+        this.data.update(this.data);
+      }
+    }
+    await super._onCreate(data, options, user);
+  }
 
   /**
    * Augment the basic Item data model with additional dynamic data.
@@ -400,7 +411,7 @@ export class ItemFFG extends ItemBaseFFG {
     // General equipment properties
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
-        const qualities = data.adjusteditemmodifier.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m.id}' data-modifier-type='${m.type}'>${m.name} ${m.data.rank_current > 0 ? m.data.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = data.adjusteditemmodifier?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m.id}' data-modifier-type='${m.type}'>${m.name} ${m.data?.rank_current > 0 ? m.data.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
