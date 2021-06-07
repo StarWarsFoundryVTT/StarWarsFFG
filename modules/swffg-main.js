@@ -215,9 +215,7 @@ Hooks.once("init", async function () {
         config: true,
         default: "starwars",
         type: String,
-        onChange: (rule) => {
-          window.location.reload();
-        },
+        onChange: SettingsHelpers.debouncedReload,
         choices: skillChoices,
       });
 

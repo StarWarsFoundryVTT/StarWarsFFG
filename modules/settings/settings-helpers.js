@@ -26,7 +26,7 @@ export default class SettingsHelpers {
         if (rule === "starwars") {
           game.settings.set("starwarsffg", "enableForceDie", true);
         }
-        return window.location.reload();
+        return this.debouncedReload();
       },
       choices: {
         starwars: "starwars",
@@ -43,7 +43,7 @@ export default class SettingsHelpers {
       default: "starwars",
       type: String,
       onChange: () => {
-        return window.location.reload();
+        return this.debouncedReload();
       },
       choices: {
         starwars: "starwars",
@@ -59,7 +59,7 @@ export default class SettingsHelpers {
       config: true,
       default: true,
       type: Boolean,
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
     });
 
     // Name default healing item
@@ -70,7 +70,7 @@ export default class SettingsHelpers {
       config: true,
       default: game.i18n.localize("SWFFG.DefaultMedicalItemName"),
       type: String,
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
     });
 
     // Enable auto Soak calculation
@@ -81,7 +81,7 @@ export default class SettingsHelpers {
       config: true,
       default: true,
       type: Boolean,
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
     });
 
     // Register grouping talents so people can let them be ordered by purchase history
@@ -92,7 +92,7 @@ export default class SettingsHelpers {
       config: true,
       default: false,
       type: Boolean,
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
     });
 
     // Register skill sorting by localised value setting
@@ -103,7 +103,7 @@ export default class SettingsHelpers {
       config: true,
       default: false,
       type: Boolean,
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
     });
 
     // Register setting for group manager Player Character List display mode
@@ -202,7 +202,7 @@ export default class SettingsHelpers {
       config: true,
       default: false,
       type: Boolean,
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
     });
 
     game.settings.registerMenu("starwarsffg", "uiSettings", {
@@ -229,7 +229,7 @@ export default class SettingsHelpers {
       config: false,
       default: "default",
       type: String,
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
       choices: {
         default: "Default",
         mandar: "Mandar",
@@ -244,7 +244,7 @@ export default class SettingsHelpers {
       default: "",
       type: String,
       valueType: "FilePicker",
-      onChange: (rule) => window.location.reload(),
+      onChange: this.debouncedReload,
     });
 
     game.settings.register("starwarsffg", "destiny-pool-light", {
@@ -258,7 +258,7 @@ export default class SettingsHelpers {
         if (rule === "") {
           game.settings.set("starwarsffg", "destiny-pool-light", "SWFFG.Lightside");
         }
-        return window.location.reload();
+        return this.debouncedReload();
       },
     });
 
@@ -273,7 +273,7 @@ export default class SettingsHelpers {
         if (rule === "") {
           game.settings.set("starwarsffg", "destiny-pool-dark", "SWFFG.Darkside");
         }
-        return window.location.reload();
+        return this.debouncedReload();
       },
     });
 
@@ -290,7 +290,7 @@ export default class SettingsHelpers {
             game.settings.set("starwarsffg", "enableForceDie", true);
           }
         }
-        return window.location.reload();
+        return this.debouncedReload();
       },
     });
   }
@@ -325,4 +325,6 @@ export default class SettingsHelpers {
       choices: playlists,
     });
   }
+
+  static debouncedReload = debounce(() => window.location.reload(), 100);
 }

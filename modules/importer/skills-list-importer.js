@@ -56,7 +56,7 @@ export default class SkillListImporter extends FormApplication {
       game.settings.set("starwarsffg", "arraySkillList", defaultSkillArrayString);
       game.settings.set("starwarsffg", "skilltheme", "starwars");
 
-      window.location.reload();
+      debounce(() => window.location.reload(), 100);
 
       this.close();
     });
@@ -104,7 +104,7 @@ export default class SkillListImporter extends FormApplication {
 
       const newMasterSkillListData = JSON.stringify(currentSkillList);
       await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
-      window.location.reload();
+      debounce(() => window.location.reload(), 100);
 
       this.close();
     });
