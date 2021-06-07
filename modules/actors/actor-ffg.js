@@ -138,14 +138,14 @@ export class ActorFFG extends Actor {
       const item = {
         name: element.name,
         itemId: element.id,
-        description: element.data?.description,
-        activation: element.data?.activation?.value,
-        activationLabel: element.data?.activation?.label,
-        isRanked: element.data?.ranks?.ranked,
+        description: element.data?.data?.description,
+        activation: element.data?.data?.activation?.value,
+        activationLabel: element.data?.data?.activation?.label,
+        isRanked: element.data?.data?.ranks?.ranked,
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
       };
       if (item.isRanked) {
-        item.rank = element.data?.ranks?.current;
+        item.rank = element.data?.data?.ranks?.current;
       } else {
         item.rank = "N/A";
       }
@@ -162,9 +162,9 @@ export class ActorFFG extends Actor {
         globalTalentList.push(item);
       } else {
         globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
-        globalTalentList[index].rank += element.data?.ranks?.current;
+        globalTalentList[index].rank += element.data?.data?.ranks?.current;
         if (CONFIG.FFG.theme !== "starwars") {
-          globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data.tier, 10) - 1));
+          globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data?.data?.tier, 10) - 1));
         }
       }
     });
@@ -240,10 +240,10 @@ export class ActorFFG extends Actor {
       const item = {
         name: element.name,
         itemId: element.id,
-        description: element.data.data.description,
-        activation: element.data.data.activation.value,
-        activationLabel: element.data.data.activation.label,
-        isRanked: element.data.data.ranks.ranked,
+        description: element.data?.data?.description,
+        activation: element.data?.data?.activation?.value,
+        activationLabel: element.data?.data?.activation?.label,
+        isRanked: element.data?.data?.ranks?.ranked,
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
       };
 
