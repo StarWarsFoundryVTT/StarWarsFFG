@@ -157,7 +157,7 @@ export class ActorSheetFFG extends ActorSheet {
       this.sheetHeight = this.position.height;
 
       // Check that we are dealing with an Embedded Document
-      if (this.isEmbedded && this.parent.documentName === "Actor")
+      if (item.isEmbedded && item.parent.documentName === "Actor")
       {
         // we only allow one species and one career, find any other species and remove them.
         if (item.type === "species" || item.type === "career") {
