@@ -343,7 +343,7 @@ export class ActorFFG extends Actor {
             if (item.data?.quantity?.value) {
               count = item.data.quantity.value;
             }
-            encum += ((item.data?.encumbrance?.adjusted) ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
+            encum += ((item.data?.encumbrance?.adjusted >= 0) ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
           }
         }
       } catch (err) {
