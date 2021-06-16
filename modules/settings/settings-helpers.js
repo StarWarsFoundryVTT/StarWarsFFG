@@ -62,17 +62,6 @@ export default class SettingsHelpers {
       onChange: this.debouncedReload,
     });
 
-    // Name default healing item
-    game.settings.register("starwarsffg", "medItemName", {
-      name: game.i18n.localize("SWFFG.MedicalItemName"),
-      hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
-      scope: "world",
-      config: true,
-      default: game.i18n.localize("SWFFG.DefaultMedicalItemName"),
-      type: String,
-      onChange: this.debouncedReload,
-    });
-
     // Enable auto Soak calculation
     game.settings.register("starwarsffg", "privateTriggers", {
       name: game.i18n.localize("SWFFG.EnablePrivateTriggers"),
@@ -323,6 +312,17 @@ export default class SettingsHelpers {
       config: true,
       type: String,
       choices: playlists,
+    });
+
+    // Name default healing item
+    game.settings.register("starwarsffg", "medItemName", {
+      name: game.i18n.localize("SWFFG.MedicalItemName"),
+      hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
+      scope: "world",
+      config: true,
+      default: game.i18n.localize("SWFFG.DefaultMedicalItemName"),
+      type: String,
+      onChange: this.debouncedReload,
     });
   }
 
