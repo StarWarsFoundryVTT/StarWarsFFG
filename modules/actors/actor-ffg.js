@@ -334,7 +334,7 @@ export class ActorFFG extends Actor {
     for (let [key, item] of Object.entries(items)) {
       try {
         // Calculate encumbrance, only if encumbrance value exists
-        if (item.data?.encumbrance?.adjusted || item.data?.encumbrance?.value) {
+        if (item.data?.encumbrance?.adjusted !== undefined || item.data?.encumbrance?.value !== undefined) {
           if (item.type === "armour" && item?.data?.equippable?.equipped) {
             const equippedEncumbrance = +item.data.encumbrance.adjusted - 3;
             encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
@@ -343,7 +343,7 @@ export class ActorFFG extends Actor {
             if (item.data?.quantity?.value) {
               count = item.data.quantity.value;
             }
-            encum += ((item.data?.encumbrance?.adjusted) ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
+            encum += (item.data?.encumbrance?.adjusted !== undefined ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
           }
         }
       } catch (err) {
