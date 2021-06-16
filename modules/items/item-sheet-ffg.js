@@ -38,7 +38,6 @@ export class ItemSheetFFG extends ItemSheet {
     data.item = itemData;
     data.data = itemData.data;
 
-
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
     } else if (options?.action === "ffgUpdate") {
@@ -402,61 +401,63 @@ export class ItemSheetFFG extends ItemSheet {
       const itemIndex = li.dataset.itemIndex;
 
       const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
-      const title = `${this.object.name} ${item.name}`;
+      if (item) {
+        const title = `${this.object.name} ${item.name}`;
 
-      new Dialog(
-        {
-          title,
-          content: {
-            item,
-            type: itemType,
-            parenttype: this.object.data.type,
-          },
-          buttons: {
-            done: {
-              icon: '<i class="fas fa-check"></i>',
-              label: game.i18n.localize("SWFFG.ButtonAccept"),
-              callback: (html) => {
-                switch (itemType) {
-                  case "itemmodifier": {
-                    const formData = {};
-                    const items = $(html).find("input");
+        new Dialog(
+          {
+            title,
+            content: {
+              item,
+              type: itemType,
+              parenttype: this.object.data.type,
+            },
+            buttons: {
+              done: {
+                icon: '<i class="fas fa-check"></i>',
+                label: game.i18n.localize("SWFFG.ButtonAccept"),
+                callback: (html) => {
+                  switch (itemType) {
+                    case "itemmodifier": {
+                      const formData = {};
+                      const items = $(html).find("input");
 
-                    items.each((index) => {
-                      const input = $(items[index]);
-                      const name = input.attr("name");
-                      const id = input[0].dataset.itemId;
+                      items.each((index) => {
+                        const input = $(items[index]);
+                        const name = input.attr("name");
+                        const id = input[0].dataset.itemId;
 
-                      let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
+                        let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
 
-                      if (arrayItem > -1) {
-                        setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
-                      }
-                    });
+                        if (arrayItem > -1) {
+                          setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
+                        }
+                      });
 
-                    setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
-                    this.object.update(formData);
+                      setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+                      this.object.update(formData);
 
-                    break;
+                      break;
+                    }
+                    case "itemattachment": {
+                      console.log(itemType);
+                      break;
+                    }
                   }
-                  case "itemattachment": {
-                    console.log(itemType);
-                    break;
-                  }
-                }
+                },
+              },
+              cancel: {
+                icon: '<i class="fas fa-times"></i>',
+                label: game.i18n.localize("SWFFG.Cancel"),
               },
             },
-            cancel: {
-              icon: '<i class="fas fa-times"></i>',
-              label: game.i18n.localize("SWFFG.Cancel"),
-            },
           },
-        },
-        {
-          classes: ["dialog", "starwarsffg"],
-          template: `systems/starwarsffg/templates/items/dialogs/ffg-edit-${itemType}.html`,
-        }
-      ).render(true);
+          {
+            classes: ["dialog", "starwarsffg"],
+            template: `systems/starwarsffg/templates/items/dialogs/ffg-edit-${itemType}.html`,
+          }
+        ).render(true);
+      }
     });
 
     html.find(".item-pill, .additional .add-modifier .fa-edit").on("click", async (event) => {

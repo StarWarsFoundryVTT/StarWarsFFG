@@ -183,9 +183,9 @@ export default class EmbeddedItemHelpers {
       // this is a modifier on an attachment
       ownedItem.data.data.itemattachment.forEach((a) => {
         if (!isNaN(modifierId)) {
-          modifierIndex = modifierId;
+          modifierIndex = modifierId - ownedItem.data.data[modifierType].length;
         } else {
-          modifierIndex = a.data[modifierType].findIndex((m) => m.id === modifierId);
+          modifierIndex = a.data[modifierType].findIndex((m) => m.id === parseInt(modifierId, 10) - ownedItem.data.data[modifierType].length);
         }
         if (modifierIndex > -1) {
           item = a.data[modifierType][modifierIndex];
