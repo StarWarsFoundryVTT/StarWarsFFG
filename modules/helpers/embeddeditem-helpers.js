@@ -39,7 +39,7 @@ export default class EmbeddedItemHelpers {
         if (entityName === "Compendium") {
           realItem = await fromUuid(flags.ffgUuid);
         } else if (entityName === "Actor") {
-          owner = CONFIG[entityName].documentClass.collection.get(entityId);
+          owner = game.actors.get(entityId);
           realItem = await owner.items.get(embeddedId);
         } else {
           realItem = await game.items.get(ffgTempId);
