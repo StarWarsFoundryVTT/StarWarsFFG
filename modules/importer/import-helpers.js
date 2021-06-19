@@ -419,6 +419,1025 @@ export default class ImportHelpers {
 
   static characteristicKeyToName(key) {}
 
+  static minionTemplate = {
+    name: "no name",
+    type: "minion",
+    data: {
+      biography: "",
+      stats: {
+        forcePool: {
+          max: 0
+        },
+        credits: {
+          value: 0,
+        }
+      },
+      characteristics: {
+        Brawn: {
+          value: 0,
+        },
+        Agility: {
+          value: 0,
+        },
+        Intellect: {
+          value: 0,
+        },
+        Cunning: {
+          value: 0,
+        },
+        Willpower: {
+          value: 0,
+        },
+        Presence: {
+          value: 0,
+        }
+      },
+      skills: {
+          "Astrogation": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "ASTRO",
+          },
+          "Athletics": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "ATHL",
+          },
+          "Brawl": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "BRAWL",
+          },
+          "Charm": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "CHARM",
+          },
+          "Coercion": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "COERC",
+          },
+          "Computers": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "COMP",
+          },
+          "Cool": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "COOL",
+          },
+          "Coordination": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "COORD",
+          },
+          "Deception": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "DECEP",
+          },
+          "Discipline": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "DISC",
+          },
+          "Gunnery": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "GUNN",
+          },
+          "Leadership": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "LEAD",
+          },
+          "Lightsaber": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "LTSABER",
+          },
+          "Mechanics": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "MECH",
+          },
+          "Medicine": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "MED",
+          },
+          "Melee": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "MELEE",
+          },
+          "Negotiation": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "NEG",
+          },
+          "Perception": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "PERC",
+          },
+          "Piloting: Planetary": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "PILOTPL",
+          },
+          "Piloting: Space": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "PILOTSP",
+          },
+          "Ranged: Heavy": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "RANGHVY",
+          },
+          "Ranged: Light": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "RANGLT",
+          },
+          "Resilience": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "RESIL",
+          },
+          "Skulduggery": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "SKUL",
+          },
+          "Stealth": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "STEAL",
+          },
+          "Streetwise": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "SW",
+          },
+          "Survival": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "SURV",
+          },
+          "Vigilance": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "VIGIL",
+          },
+          "Knowledge: Core Worlds": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "CORE",
+          },
+          "Knowledge: Education": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "EDU",
+          },
+          "Knowledge: Lore": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "LORE",
+          },
+          "Knowledge: Outer Rim": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "OUT",
+          },
+          "Knowledge: Underworld": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "UND",
+          },
+          "Knowledge: Warfare": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "WARF",
+          },
+          "Knowledge: Xenology": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "XEN",
+          },
+          "Cybernetics": {
+            "rank": 0,
+            "groupskill": false,
+            "Key": "CYBERNETICS",
+            "custom": true,
+            "type": "General",
+            "characteristic": "Intellect",
+            "label": "Cybernetics",
+          },
+      },
+      attributes: {},
+      quantity: {
+        value: 1,
+        max: 1,
+      },
+    },
+    flags: {
+    },
+    items: [],
+  };
+  static characterTemplate = {
+    name: "No Name",
+    type: "character",
+    flags: {
+    },
+    data: {
+      attributes: {},
+      characteristics: {
+        "Brawn": {
+          "value": 0,
+        },
+        "Agility": {
+          "value": 0,
+        },
+        "Intellect": {
+          "value": 0,
+        },
+        "Cunning": {
+          "value": 0,
+        },
+        "Willpower": {
+          "value": 0,
+        },
+        "Presence": {
+          "value": 0,
+        },
+      },
+      skills: {
+        "Astrogation": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "ASTRO",
+        },
+        "Athletics": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "ATHL",
+        },
+        "Brawl": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "BRAWL",
+        },
+        "Charm": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "CHARM",
+        },
+        "Coercion": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "COERC",
+        },
+        "Computers": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "COMP",
+        },
+        "Cool": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "COOL",
+        },
+        "Coordination": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "COORD",
+        },
+        "Deception": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "DECEP",
+        },
+        "Discipline": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "DISC",
+        },
+        "Gunnery": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "GUNN",
+        },
+        "Leadership": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "LEAD",
+        },
+        "Lightsaber": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "LTSABER",
+        },
+        "Mechanics": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "MECH",
+        },
+        "Medicine": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "MED",
+        },
+        "Melee": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "MELEE",
+        },
+        "Negotiation": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "NEG",
+        },
+        "Perception": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "PERC",
+        },
+        "Piloting: Planetary": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "PILOTPL",
+        },
+        "Piloting: Space": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "PILOTSP",
+        },
+        "Ranged: Heavy": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "RANGHVY",
+        },
+        "Ranged: Light": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "RANGLT",
+        },
+        "Resilience": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "RESIL",
+        },
+        "Skulduggery": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "SKUL",
+        },
+        "Stealth": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "STEAL",
+        },
+        "Streetwise": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "SW",
+        },
+        "Survival": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "SURV",
+        },
+        "Vigilance": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "VIGIL",
+        },
+        "Knowledge: Core Worlds": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "CORE",
+        },
+        "Knowledge: Education": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "EDU",
+        },
+        "Knowledge: Lore": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "LORE",
+        },
+        "Knowledge: Outer Rim": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "OUT",
+        },
+        "Knowledge: Underworld": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "UND",
+        },
+        "Knowledge: Warfare": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "WARF",
+        },
+        "Knowledge: Xenology": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "XEN",
+        },
+        "Cybernetics": {
+          "rank": 0,
+          "careerskill": false,
+          "Key": "CYBERNETICS",
+          "custom": true,
+          "type": "General",
+          "characteristic": "Intellect",
+          "label": "Cybernetics",
+        },
+      },
+      stats: {
+        forcePool: {
+          max: 0,
+        },
+        credits: {
+          value: 0,
+        },
+      },
+      experience: {
+      },
+      obligationlist: {},
+      dutylist: {},
+      morality: {},
+      biography: "",
+      general: {},
+    },
+    items: [],
+  };
+
+  static async extractAdversaryCharacteristic(adversaryData, adversary)
+  {
+    adversaryData.Characteristics.CharCharacteristic.forEach((char) =>{
+      const name = ImportHelpers.convertOGCharacteristic(char.Key);
+      if (!adversary.data.attributes?.[name]) {
+        adversary.data.attributes[name] = {
+          key: name,
+          mod: name,
+          modtype: "Characteristic",
+          value: 0,
+        };
+      }
+      if (char.Rank?.PurchasedRanks) {
+        let val = parseInt(char.Rank.PurchasedRanks, 10) + parseInt(char.Rank.StartingRanks, 10);
+        adversary.data.characteristics[name].value = val;
+        adversary.data.attributes[name].value = val;
+      }
+    });
+
+    return adversary;
+  }
+
+  static async extractAdversaryAbilities(adversaryData, adversary)
+  {
+    // hacky way to get magic adversary abilities out of OggDude's and into VTT
+    if(adversaryData.Abilities?.AdvAbility) {
+      if (!Array.isArray(adversaryData.Abilities.AdvAbility)) {
+        adversaryData.Abilities.AdvAbility = [adversaryData.Abilities.AdvAbility];
+      }
+
+      adversary.data.biography += "<p>&nbsp;</p>"
+      adversary.data.biography += "<h3>Abilities</h3>"
+      adversaryData.Abilities.AdvAbility.forEach((ability) => {
+        adversary.data.biography += "<h4>"+ability.Name+"</h4>";
+        adversary.data.biography += "<p>"+ability.Description+"</p>";
+      }); 
+    }
+    return adversary;
+  }
+
+  static async extractAdversaryAttrs(adversaryData, adversary)
+  {
+    const attrs = adversaryData.Attributes;
+
+    if (attrs.DefenseMelee) {
+      var meledef = parseInt(attrs.DefenceMelee, 10);
+      adversary.data.attributes["Defence-Melee"] = {value: meledef};
+    }
+
+    if (attrs.DefenseRanged) {
+      var rangeddef = parseInt(attrs.DefenseRanged, 10);
+      adversary.data.attributes["Ranged-Melee"] = {value: rangeddef};
+    }
+
+    if (attrs.ForceRating) {
+      var forcerating = parseInt(attrs.ForceRating, 10);
+      adversary.data.attributes["ForcePool"] = {value: forcerating};
+    }
+
+    var soak = 0;
+    // can ignore, based on BRAWN
+    // if(attrs.SoakValue?.CharRanks) {
+    //   soak = parseInt(attrs.SoakValue.CharRanks, 10);
+    // }
+    if(attrs.SoakValue?.ItemRanks) {
+      soak += parseInt(attrs.SoakValue.ItemRanks, 10);
+    }
+    if(attrs.SoakValue?.PurchasedRanks) {
+      soak += parseInt(attrs.SoakValue.PurchasedRanks, 10);
+    }
+    adversary.data.attributes.Soak = {value: soak};
+
+    // Minions don't have strain so can skip in this case
+    if(adversaryData.Type !== "Minion")
+    {
+      var strain = 0;
+      if(attrs.StrainThreshold?.StartingRanks) {
+        strain += parseInt(attrs.StrainThreshold.StartingRanks, 10);
+      }
+      if(attrs.StrainThreshold?.ItemRanks) {
+        strain += parseInt(attrs.StrainThreshold.ItemRanks, 10);
+      }
+      if(attrs.StrainThreshold?.PurchasedRanks) {
+        strain += parseInt(attrs.StrainThreshold.PurchasedRanks, 10);
+      }
+      if(attrs.StrainThreshold?.CharRanks) {
+        strain += parseInt(attrs.StrainThreshold.CharRanks, 10);
+      }
+      adversary.data.attributes.Strain = {value: strain};
+    }
+    
+    var wounds = 0;
+    if(attrs.WoundThreshold?.StartingRanks) {
+      wounds += parseInt(attrs.WoundThreshold.StartingRanks, 10);
+    }
+    if(attrs.WoundThreshold?.ItemRanks) {
+      wounds += parseInt(attrs.WoundThreshold.ItemRanks, 10);
+    }
+    if(attrs.WoundThreshold?.PurchasedRanks) {
+      wounds += parseInt(attrs.WoundThreshold.PurchasedRanks, 10);
+    }
+    if(attrs.WoundThreshold?.CharRanks) {
+      wounds += parseInt(attrs.WoundThreshold.CharRanks, 10);
+    }
+    adversary.data.unit_wounds = {value: wounds};
+    adversary.data.attributes.Wounds = {value: wounds};
+
+    return adversary;
+  }
+
+  static async extractAdversaryWeapons(adversaryData, adversary)
+  {
+    if (adversaryData.Weapons?.CharWeapon) {
+      if (!Array.isArray(adversaryData.Weapons.CharWeapon)) {
+        adversaryData.Weapons.CharWeapon = [adversaryData.Weapons.CharWeapon];
+      }
+      await this.asyncForEach(adversaryData.Weapons.CharWeapon, async (w) => {
+        try {
+          const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "weapon")));
+          delete weapon._id;
+    
+          const weaponItems = adversary.items.filter((s) => s.flags.ffgimportid === weapon.flags.ffgimportid);
+    
+          if (weaponItems.length > 0) {
+            for (let i = 0; i < adversary.items.length; i += 1) {
+              if (adversary.items[i].type === "weapon" && adversary.items[i].flags.ffgimportid === weapon.flags.ffgimportid) {
+                adversary.items[i] = mergeObject(weapon, adversary.items[i]);
+              }
+            }
+          } else {
+            if (w?.Count) {
+              w.Count = parseInt(w.Count, 10);
+            } else {
+              w.Count = 1;
+            }
+    
+            await this.asyncForEach(new Array(parseInt(w.Count, 10)), () => {
+              adversary.items.push(weapon);
+            });
+          }
+        } catch (err) {
+          if (w.ItemKey?.length) {
+            CONFIG.logger.error(`Unable to add weapon (${w.ItemKey}) to adversary.`, err);
+          }
+        }
+      });
+    }
+
+    return adversary;
+  }
+
+  static async extractAdversaryTalents(adversaryData, adversary)
+  {
+    // cheese my way around getting the talents on the Adv sheet into the VTT sheet by following much the same formula
+    // that we do for weapons/gear.
+    if(adversaryData.Talents?.CharTalent)
+    {
+      if (!Array.isArray(adversaryData.Talents.CharTalent)) {
+        adversaryData.Talents.CharTalent = [adversaryData.Talents.CharTalent];
+      }
+        
+      await this.asyncForEach(adversaryData.Talents.CharTalent, async (t) => {
+        try{
+          const compTalent = await this.findCompendiumEntityByImportId("Item", t.Key, undefined, "talent");
+          if(!compTalent){
+            return;
+          }
+          const talent = JSON.parse(JSON.stringify(compTalent));
+          delete talent._id;
+          const talentItems = adversary.items.filter((s) => s.flags.ffgimportid === talent.flags.ffgimportid);
+          if (talentItems.length > 0) {
+            for (let i = 0; i < adversary.items.length; i += 1) {
+              if (adversary.items[i].type === "talent" && adversary.items[i].flags.ffgimportid === talent.flags.ffgimportid) {
+                adversary.items[i] = mergeObject(talent, adversary.items[i]);
+              }
+            }
+          } else {
+            if(t.Ranks) {
+              if(talent.data?.ranks)
+              {
+                let ranks = parseInt(t.Ranks, 10);
+                talent.data.ranks.current = ranks;
+              }
+            }
+            adversary.items.push(talent);
+          }
+        } catch (err) {
+          CONFIG.logger.error(`Unable to add talent (${t.ItemKey}) to adversary.`, err);
+        }
+      });
+    }
+    return adversary;
+  }
+
+  static async extractAdversaryArmor(adversaryData, adversary)
+  {
+    if (adversaryData.Armor?.CharArmor) {
+      if (!Array.isArray(adversaryData.Armor.CharArmor)) {
+        adversaryData.Armor.CharArmor = [adversaryData.Armor.CharArmor];
+      }
+    
+      await this.asyncForEach(adversaryData.Armor.CharArmor, async (w) => {
+        try {
+          const compArmor = await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "armour");
+          if(compArmor) {
+            const armor = JSON.parse(JSON.stringify(compArmor));
+            delete armor._id;
+            const armorItems = adversary.items.filter((s) => s.flags.ffgimportid === armor.flags.ffgimportid);
+      
+            if (armorItems.length > 0) {
+              for (let i = 0; i < adversary.items.length; i += 1) {
+                if (adversary.items[i].type === "armor" && adversary.items[i].flags.ffgimportid === armor.flags.ffgimportid) {
+                  adversary.items[i] = mergeObject(armor, adversary.items[i]);
+                }
+              }
+            } else {
+              if (w?.Count) {
+                w.Count = parseInt(w.Count, 10);
+              } else {
+                w.Count = 1;
+              }
+      
+              await this.asyncForEach(new Array(parseInt(w.Count, 10)), () => {
+                adversary.items.push(armor);
+              });
+            }
+          }
+        } catch (err) {
+          CONFIG.logger.error(`Unable to add armor (${w.ItemKey}) to adversary.`, err);
+        }
+      });
+    }
+    return adversary;
+  }
+
+  static async extractAdversaryGear(adversaryData, adversary)
+  {
+    if (adversaryData.Gear?.CharGear) {
+      if (!Array.isArray(adversaryData.Gear.CharGear)) {
+        adversaryData.Gear.CharGear = [adversaryData.Gear.CharGear];
+      }
+      await this.asyncForEach(adversaryData.Gear.CharGear, async (w) => {
+        try {
+          const compGear = await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "gear");
+          if(compGear){
+            const gear = JSON.parse(JSON.stringify(compGear));
+            delete gear._id;
+      
+            let gearItem = adversary.items.find((s) => s.flags.ffgimportid === gear.flags.ffgimportid);
+      
+            let gearCount = 1;
+            if (w?.Count) {
+              gearCount = parseInt(w.Count, 10);
+              gear.data.quantity = {
+                value: gearCount,
+              };
+            }
+      
+            if (gearItem) {
+              gearItem = mergeObject(gear, gearItem);
+              gear.data.quantity.value = gearCount;
+            } else {
+              adversary.items.push(gear);
+            }
+          }
+        } catch (err) {
+          CONFIG.logger.error(`Unable to add gear (${w.ItemKey}) to adversary.`, err);
+        }
+      });
+    }
+    return adversary
+  }
+
+  static async extractAdversaryPowers(adversaryData, adversary)
+  {
+    let forcepowers = [];
+    if (adversaryData.ForceAbilities?.CharForceAbility) {
+      if (Array.isArray(adversaryData.ForceAbilities.CharForceAbility)) {
+        forcepowers = adversaryData.ForceAbilities.CharForceAbility;
+      } else {
+        forcepowers.push(adversaryData.ForceAbilities.CharForceAbility);
+      }
+    }
+
+    let basicPowers = forcepowers.filter((power) => power.Key.endsWith("BASIC"));
+
+    await this.asyncForEach(basicPowers, async (power) => {
+      try{
+      let powerKey = power.Key.slice(0, -5);
+      
+      const comForceAbility = await this.findCompendiumEntityByImportId("Item", powerKey, undefined, "forcepower");
+      if(comForceAbility)
+      {
+        let force = JSON.parse(JSON.stringify(comForceAbility));
+        // Just add all upgrades since there's no good way of mapping the NPC upgrades to their Character-sheet Counterparts
+        // todo : find a solution to this known issue.
+        Object.keys(force.data.upgrades).forEach((key) => {
+          force.data.upgrades[key].islearned = true;
+        });
+
+        let forceItem = adversary.items.find((s) => s.flags.ffgimportid === force.flags.ffgimportid);
+        if (forceItem) {
+          forceItem = mergeObject(force, forceItem);
+        } else {
+          adversary.items.push(force);
+        }
+      }
+      } catch (err)
+      {
+        CONFIG.logger.error(`Unable to add force power ${power.Key} to adversary.`, err);
+      }
+    });
+    return adversary;
+  }
+
+  static async appendKnownIssuesAndNotesToDesc(adversary)
+  {
+    adversary.data.biography += `<p>&nbsp;</p>
+    <h1>Importer Notes</h1>
+    <p>This Adversary sheet was imported from OggDude's GMTools with DrMattsuu's NPC importer for SWFVTT, there are currently a number of known issues with this process.&nbsp;</p>
+    <ul>
+    <li>This sheet may be missing alot of data if you skipped the Importing Data step of StarWarsFFG's <a href="https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki/Getting-started#importing-data" target="_blank" rel="noopener">Getting Started Guide</a>. It is strongly recommended that you follow that guide before attempting to import NPCs/PCs into your game</li>
+    <li>Adversaries do not currently have any of the items created on the Custom Weapons, Custom Armor, or Custom Items tabs of GMTools, this is because those items do not exist in the compendium of imported items.</li>
+    <li>In order for Adversary's Soak values to be displayed properly it is strongly recommended that you disable "Enable Soak Auto Calculation" in the Sheet Options.</li>
+    <li>Adversaries with Force Powers are automatically granted every upgrade in the power-tree they are granted. This is because there's no good way to map the OggDude's exported Adversary force-power upgrades to the SWFVTT character ones.</li>
+    <li>Adversaries Misc. abilities are currently written in the Biography section of the character sheet. This is because the Abilities are not provided in a format that can be easily mapped to Character Abilities.</li>
+    <li>Talents that allow the character to exchange the characteristic used for a skill check (Lightsaber Mastery, for example) are not currently reflected on the character sheet and will need to be manually applied.</li>
+    </ul>
+    <p>&nbsp;</p>`;
+
+    return adversary;
+  }
+
+  static async nemesisImport(adversaryData, updateDialog)
+  {
+    const npcName = adversaryData.Name;
+    const npcKey = adversaryData.Key;
+    const exists = game.data.actors.find((actor) => actor.flags.ffgimportid == npcKey);
+
+    // copy template character json
+    let adversary = JSON.parse(JSON.stringify(ImportHelpers.characterTemplate));
+    adversary.name = npcName;
+    if(adversaryData.Description)
+      adversary.data.biography = adversaryData.Description; 
+    adversary.flags.ffgimportid = npcKey;
+
+    adversary = await ImportHelpers.extractAdversaryCharacteristic(adversaryData, adversary)
+
+    if(exists?.items)
+    {
+      adversary.items = exists.items;
+    }
+
+    if(adversaryData.Skills?.CharSkill)
+    {
+      const skills = adversaryData.Skills.CharSkill;
+      skills.forEach((skill) => {
+        let charSkill = Object.keys(adversary.data.skills).find((s) => adversary.data.skills[s].Key === skill.Key);
+
+        if (!adversary.data.attributes?.[charSkill]) {
+          adversary.data.attributes[charSkill] = {
+            key: charSkill,
+            mod: charSkill,
+            modtype: "Skill Rank",
+            value: 0,
+          };
+        }
+
+        // Characteristic override
+        if(skill.CharKeyOverride) {
+          const characteristicName = ImportHelpers.convertOGCharacteristic(skill.CharKeyOverride);
+          adversary.data.skills[charSkill].characteristic = characteristicName;
+        }
+
+        // add ranked skills
+        if(skill.Rank) {
+          adversary.data.skills[charSkill].rank = parseInt(skill.Rank.PurchasedRanks, 10);
+          adversary.data.attributes[charSkill].value = parseInt(skill.Rank.PurchasedRanks, 10);
+        }
+        // don't need to bother with class skills, or specs/careers as adv don't have them.
+      });
+    }
+    updateDialog(10);
+
+    adversary = await ImportHelpers.extractAdversaryAbilities(adversaryData, adversary);
+
+    updateDialog(20);
+
+    adversary = await ImportHelpers.extractAdversaryAttrs(adversaryData, adversary);
+
+    updateDialog(30);
+
+    adversary = await ImportHelpers.extractAdversaryPowers(adversaryData, adversary);
+
+    updateDialog(40);
+    
+    adversary = await ImportHelpers.extractAdversaryWeapons(adversaryData, adversary);
+
+    updateDialog(50);
+
+    adversary = await ImportHelpers.extractAdversaryTalents(adversaryData, adversary);
+    
+    updateDialog(60);
+    
+    adversary = await ImportHelpers.extractAdversaryArmor(adversaryData, adversary);
+    
+    updateDialog(70);
+    
+    adversary = await ImportHelpers.extractAdversaryGear(adversaryData, adversary);
+
+    updateDialog(90);
+
+    adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
+
+    if (exists) {
+      let updateData = adversary;
+      adversary["_id"] = exists._id;
+      await Actor.update(updateData);
+    } else {
+      await Actor.create(adversary);
+    }
+    updateDialog(100);
+  }
+
+  static async minionImport(adversaryData, updateDialog)
+  {
+    const npcName = adversaryData.Name;
+    const npcKey = adversaryData.Key;
+    const exists = game.data.actors.find((actor) => actor.flags.ffgimportid == npcKey);
+
+    // minion sheet data obtained from an export and reformed for importing here.
+    // Deep copy our template so we don't have to have a bunch of json sat here
+    let adversary = JSON.parse(JSON.stringify(ImportHelpers.minionTemplate));
+    adversary.name = npcName;
+    if(adversaryData.Description)
+      adversary.data.biography = adversaryData.Description; 
+    adversary.flags.ffgimportid = npcKey;
+
+    adversary = await ImportHelpers.extractAdversaryCharacteristic(adversaryData, adversary)
+
+    if(exists?.items)
+    {
+      adversary.items = exists.items;
+    }
+
+    if(adversaryData.Skills?.CharSkill)
+    {
+      const skills = adversaryData.Skills.CharSkill;
+      skills.forEach((skill) => {
+        let charSkill = Object.keys(adversary.data.skills).find((s) => adversary.data.skills[s].Key === skill.Key);
+
+        if (!adversary.data.attributes?.[charSkill]) {
+          adversary.data.attributes[charSkill] = {
+            key: charSkill,
+            mod: charSkill,
+            modtype: "Skill Rank",
+            value: 0,
+          };
+        }
+
+        // Characteristic override
+        if(skill.CharKeyOverride) {
+          const characteristicName = ImportHelpers.convertOGCharacteristic(skill.CharKeyOverride);
+          adversary.data.skills[charSkill].characteristic = characteristicName;
+        }
+
+        // check for purchased ranks, a sure sign of a rival class
+        if(skill.Rank) {
+          adversary.data.skills[charSkill].rank = parseInt(skill.Rank.PurchasedRanks, 10);
+          adversary.data.attributes[charSkill].value = parseInt(skill.Rank.PurchasedRanks, 10);
+        }
+        else {
+          // minion types don't expose data unless they are group skills
+          adversary.data.skills[charSkill].groupskill = true;
+        }
+      });
+    }
+
+    updateDialog(10);
+
+    adversary = await ImportHelpers.extractAdversaryAbilities(adversaryData, adversary);
+
+    updateDialog(20);
+
+    adversary = await ImportHelpers.extractAdversaryAttrs(adversaryData, adversary);
+
+    updateDialog(30);
+
+    adversary = await ImportHelpers.extractAdversaryPowers(adversaryData, adversary);
+
+    updateDialog(40);
+    
+    adversary = await ImportHelpers.extractAdversaryWeapons(adversaryData, adversary);
+
+    updateDialog(50);
+
+    adversary = await ImportHelpers.extractAdversaryTalents(adversaryData, adversary);
+    
+    updateDialog(60);
+    
+    adversary = await ImportHelpers.extractAdversaryArmor(adversaryData, adversary);
+    
+    updateDialog(70);
+    
+    adversary = await ImportHelpers.extractAdversaryGear(adversaryData, adversary);
+
+    updateDialog(90);
+    
+    adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
+
+    if (exists) {
+      let updateData = adversary;
+      adversary["_id"] = exists._id;
+      await Actor.update(updateData);
+    } else {
+      await Actor.create(adversary);
+    }
+    updateDialog(100);
+  }
+
+  static async npcImport(data)
+  {
+    try{
+      $(".import-progress.current").toggleClass("import-hidden");
+
+      const updateDialog = (value, total = 100) => {
+        $(".current .import-progress-bar")
+          .width(`${Math.trunc((value / total) * 100)}%`)
+          .html(`<span>${Math.trunc((value / total) * 100)}%</span>`);
+      };
+
+      const domparser = new DOMParser();
+      const xmlDoc = domparser.parseFromString(data, "text/xml");
+      const npcData = JXON.xmlToJs(xmlDoc);
+
+      const adversaryData = npcData.Adversary;
+      if(adversaryData === undefined){
+        throw "This is not an Adversary ogd exported XML file.";
+      }
+
+      const type = adversaryData.Type;
+      if(type === "Minion") {
+        console.log("minion type detected");
+        await ImportHelpers.minionImport(adversaryData, updateDialog);
+      } else if(type === "Rival") {
+        console.log("Rival type detected");
+        await ImportHelpers.minionImport(adversaryData, updateDialog);
+      } else if(type === "Nemesis") {
+        console.log("Nemesis type detected");
+        await ImportHelpers.nemesisImport(adversaryData, updateDialog);
+      }
+
+    } catch (err) {
+      CONFIG.logger.error(`Error while importing NPC`, err);
+      ui.notifications.error("An error occured while importing NPC!");
+    }
+  }
+
   static async characterImport(data) {
     try {
       $(".import-progress.current").toggleClass("import-hidden");
@@ -441,254 +1460,42 @@ export default class ImportHelpers {
 
       const exists = game.data.actors.find((actor) => actor.flags.ffgimportid === characterData.Character.Key);
 
-      let character = {
-        name: characterName ? characterName : "No Name",
-        type: "character",
-        flags: {
-          ffgimportid: characterData.Character.Key,
-        },
-        data: {
-          attributes: {},
-          characteristics: {
-            "Brawn": {
-              "value": 0,
-            },
-            "Agility": {
-              "value": 0,
-            },
-            "Intellect": {
-              "value": 0,
-            },
-            "Cunning": {
-              "value": 0,
-            },
-            "Willpower": {
-              "value": 0,
-            },
-            "Presence": {
-              "value": 0,
-            },
-          },
-          skills: {
-            "Astrogation": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "ASTRO",
-            },
-            "Athletics": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "ATHL",
-            },
-            "Brawl": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "BRAWL",
-            },
-            "Charm": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "CHARM",
-            },
-            "Coercion": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "COERC",
-            },
-            "Computers": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "COMP",
-            },
-            "Cool": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "COOL",
-            },
-            "Coordination": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "COORD",
-            },
-            "Deception": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "DECEP",
-            },
-            "Discipline": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "DISC",
-            },
-            "Gunnery": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "GUNN",
-            },
-            "Leadership": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "LEAD",
-            },
-            "Lightsaber": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "LTSABER",
-            },
-            "Mechanics": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "MECH",
-            },
-            "Medicine": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "MED",
-            },
-            "Melee": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "MELEE",
-            },
-            "Negotiation": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "NEG",
-            },
-            "Perception": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "PERC",
-            },
-            "Piloting: Planetary": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "PILOTPL",
-            },
-            "Piloting: Space": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "PILOTSP",
-            },
-            "Ranged: Heavy": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "RANGHVY",
-            },
-            "Ranged: Light": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "RANGLT",
-            },
-            "Resilience": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "RESIL",
-            },
-            "Skulduggery": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "SKUL",
-            },
-            "Stealth": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "STEAL",
-            },
-            "Streetwise": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "SW",
-            },
-            "Survival": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "SURV",
-            },
-            "Vigilance": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "VIGIL",
-            },
-            "Knowledge: Core Worlds": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "CORE",
-            },
-            "Knowledge: Education": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "EDU",
-            },
-            "Knowledge: Lore": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "LORE",
-            },
-            "Knowledge: Outer Rim": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "OUT",
-            },
-            "Knowledge: Underworld": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "UND",
-            },
-            "Knowledge: Warfare": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "WARF",
-            },
-            "Knowledge: Xenology": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "XEN",
-            },
-            "Cybernetics": {
-              "rank": 0,
-              "careerskill": false,
-              "Key": "CYBERNETICS",
-              "custom": true,
-              "type": "General",
-              "characteristic": "Intellect",
-              "label": "Cybernetics",
-            },
-          },
-          stats: {
-            forcePool: {
-              max: 0,
-            },
-            credits: {
-              value: parseInt(characterData.Character.Credits, 10),
-            },
-          },
-          experience: {
-            total: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10),
-            available: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10) - parseInt(characterData.Character.Experience.UsedExperience ?? 0, 10),
-          },
-          obligationlist: {},
-          dutylist: {},
-          morality: {
-            label: "Morality",
-            strength: characterData.Character.Morality?.MoralityPairs?.MoralityPair?.StrengthKey,
-            type: "Number",
-            value: parseInt(characterData.Character.Morality.MoralityValue ?? 0, 10),
-            weakness: characterData.Character.Morality?.MoralityPairs?.MoralityPair?.WeaknessKey,
-          },
-          biography: characterData.Character.Story,
-          general: {
-            age: characterData.Character.Description.Age,
-            build: characterData.Character.Description.Build,
-            eyes: characterData.Character.Description.Eyes,
-            hair: characterData.Character.Description.Hair,
-            features: characterData.Character.Description.OtherFeatures,
-            height: characterData.Character.Description.Height,
-            gender: characterData.Character.Description.Gender,
-          },
-        },
-        items: exists?.items ? exists.items : [],
+      // copy template character json
+      let character = JSON.parse(JSON.stringify(ImportHelpers.characterTemplate));
+
+      if(characterName) {
+        character.name = characterName;
+      }
+      
+      character.flags.ffgimportid = characterData.Character.Key;
+      character.data.stats.credits.value = parseInt(characterData.Character.Credits, 10);
+      character.data.experience = {
+        total: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10),
+        available: parseInt(characterData.Character.Experience.ExperienceRanks.StartingRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.SpeciesRanks ?? 0, 10) + parseInt(characterData.Character.Experience.ExperienceRanks.PurchasedRanks ?? 0, 10) - parseInt(characterData.Character.Experience.UsedExperience ?? 0, 10),
       };
+      character.data.morality = {
+        label: "Morality",
+        strength: characterData.Character.Morality?.MoralityPairs?.MoralityPair?.StrengthKey,
+        type: "Number",
+        value: parseInt(characterData.Character.Morality.MoralityValue ?? 0, 10),
+        weakness: characterData.Character.Morality?.MoralityPairs?.MoralityPair?.WeaknessKey,
+      };
+      character.data.general = {
+        age: characterData.Character.Description.Age,
+        build: characterData.Character.Description.Build,
+        eyes: characterData.Character.Description.Eyes,
+        hair: characterData.Character.Description.Hair,
+        features: characterData.Character.Description.OtherFeatures,
+        height: characterData.Character.Description.Height,
+        gender: characterData.Character.Description.Gender,
+      }
+
+      character.data.biography = characterData.Character.Story;
+
+      if(exists?.items)
+      {
+        character.items = exists.items;
+      }
 
       characterData.Character.Characteristics.CharCharacteristic.forEach((char) => {
         const name = ImportHelpers.convertOGCharacteristic(char.Key);
