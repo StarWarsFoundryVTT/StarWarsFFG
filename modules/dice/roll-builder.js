@@ -249,6 +249,9 @@ export default class RollBuilderFFG extends FormApplication {
         input = $(event.currentTarget).find(".pool-value input")[0];
       } else {
         input = $(event.currentTarget).find("input")[0];
+        if(!input) {
+          input = $(event.currentTarget.nextElementSibling).find("input")[0];
+        }
       }
 
       input.value++;
@@ -263,6 +266,9 @@ export default class RollBuilderFFG extends FormApplication {
         input = $(event.currentTarget).find(".pool-value input")[0];
       } else {
         input = $(event.currentTarget).find("input")[0];
+        if(!input) {
+          input = $(event.currentTarget.nextElementSibling).find("input")[0];
+        }
       }
 
       const allowNegative = $(input).attr("allowNegative");
