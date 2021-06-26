@@ -18,15 +18,15 @@ export default class Helpers {
 
   static async getSpecializationTalent(itemId, packName) {
     let item = game.items.get(itemId);
-
     if (item) {
       return item;
     } else {
       const pack = await game.packs.get(packName);
-      await pack.getIndex();
-      const entry = await pack.index.find((e) => e.id === itemId);
+      if ( !pack.indexed ) await pack.getIndex();
+      const entry = await pack.getIndex({fields: ["name", "type"]});
       if (entry) {
-        return await pack.getEntity(entry.id);
+        const entryId = entry.filter((i) => i._id === itemId);
+        return await pack.getDocument(entryId[0]._id);
       }
     }
   }
