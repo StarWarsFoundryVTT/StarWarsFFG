@@ -189,6 +189,33 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
+        if (data?.itemattachment) {
+          data.itemattachment.forEach((attachment) => {
+            const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+            data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
+            data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
+            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Armor Stat");
+            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Armor Stat");
+            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Armor Stat");
+            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Armor Stat");
+
+            if (attachment?.data?.itemmodifier) {
+              const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
+
+              activeMods.forEach((am) => {
+                const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
+
+                if (foundItem) {
+                  foundItem.data.rank_current = parseInt(foundItem.data.rank_current, 10) + 1;
+                } else {
+                  am.data.rank_current = 1;
+                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
+                }
+              });
+            }
+          });
+        }
+
         if (this.isEmbedded && this.actor && this.actor.data) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
           for (let attr in data.attributes) {
