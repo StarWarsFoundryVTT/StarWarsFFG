@@ -57,8 +57,8 @@ export class BoostDie extends DiceTerm {
 
   /* -------------------------------------------- */
   /** @override */
-  static getResultLabel(result) {
-    const die = CONFIG.FFG.BOOST_RESULTS[result];
+  getResultLabel(result) {
+    const die = CONFIG.FFG.BOOST_RESULTS[result.result];
     return `<img src='${die.image}' title='${game.i18n.localize(die.label)}' alt=''/>`;
   }
 }

@@ -125,7 +125,7 @@ export class RollFFG extends Roll {
     this.results = this.terms.map((term) => {
       if (!game.ffg.diceterms.includes(term.constructor)) {
         if (term.evaluate) {
-          if (!term instanceof OperatorTerm) this.hasStandard = true;
+          if (!(term instanceof OperatorTerm)) this.hasStandard = true;
           return term.evaluate({ minimize, maximize }).total;
         } else return term;
       } else {
@@ -201,8 +201,8 @@ export class RollFFG extends Roll {
         notFFG: !game.ffg.diceterms.includes(cls),
         rolls: d.results.map((r) => {
           return {
-            result: cls.getResultLabel(r.result),
-            classes: [cls.name.toLowerCase(), isFFG, "d" + d.faces, r.rerolled ? "rerolled" : null, r.exploded ? "exploded" : null, r.discarded ? "discarded" : null, r.result === 1 ? "min" : null, r.result === d.faces ? "max" : null].filter((c) => c).join(" "),
+            result: d.getResultLabel(r),
+            classes: [cls.name.toLowerCase(), isFFG, "d" + d.faces, r.rerolled ? "rerolled" : null, r.exploded ? "exploded" : null, r.discarded ? "discarded" : null, r.result === 1 ? "min" : null, r.result === d.faces ? "max" : null].filterJoin(" "),
           };
         }),
       };
@@ -253,7 +253,7 @@ export class RollFFG extends Roll {
               isFFG: game.ffg.diceterms.includes(cls),
               rolls: d.results.map((r) => {
                 return {
-                  result: cls.getResultLabel(r.result),
+                  result: d.getResultLabel(r),
                 };
               }),
             };
@@ -303,7 +303,7 @@ export class RollFFG extends Roll {
     // Either create the message or just return the chat data
     const cls = getDocumentClass("ChatMessage");
     const msg = new cls(messageData);
-    if ( rMode ) msg.applyRollMode(rollMode);
+    if (rMode) msg.applyRollMode(rollMode);
 
     // Either create or return the data
     return create ? cls.create(msg.data) : msg.data;
