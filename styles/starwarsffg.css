@@ -2863,6 +2863,7 @@ img {
 .starwarsffg .item-sheet-specialization .sheet-body {
   margin: 0;
   height: calc(100% - 9rem);
+  word-break: break-word;
 }
 
 .starwarsffg .item-sheet-specialization input.conflict {
