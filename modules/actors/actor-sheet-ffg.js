@@ -353,6 +353,22 @@ export class ActorSheetFFG extends ActorSheet {
       });
     }
 
+    if (this.actor.data.type === "vehicle") {
+      this.sheetoptions = new ActorOptions(this, html);
+      this.sheetoptions.register("enableHyperdrive", {
+        name: game.i18n.localize("SWFFG.EnableHyperdrive"),
+        hint: game.i18n.localize("SWFFG.EnableHyperdriveHint"),
+        type: "Boolean",
+        default: true,
+      });
+      this.sheetoptions.register("enableSensors", {
+        name: game.i18n.localize("SWFFG.EnableSensors"),
+        hint: game.i18n.localize("SWFFG.EnableSensorsHint"),
+        type: "Boolean",
+        default: true,
+      });
+    }
+
     html.find(".medical").click(async (ev) => {
       const item = await $(ev.currentTarget);
       let prevUses = (this.object.data?.data?.stats?.medical?.uses === undefined) ? 0 : this.object.data.data.stats.medical.uses;
