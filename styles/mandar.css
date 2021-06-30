@@ -2359,22 +2359,22 @@ img {
   height: 100%;
 }
 
+.starwarsffg.actor .vehicle .biography .biography-editor {
+  height: 42%;
+}
+
 .starwarsffg.actor .vehicle .biography .container.biography-values {
-  height: 30%;
-  display: grid;
-  grid-auto-flow: column;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: initial;
 }
 
 .starwarsffg.actor .vehicle .biography .container.biography-values .block-title {
   font-size: 0.6rem;
 }
 
-.starwarsffg.actor .vehicle .biography .container.biography-values .resource:nth-child(1), .starwarsffg.actor .vehicle .biography .container.biography-values .resource:nth-child(4) {
-  width: 5rem;
-}
-
-.starwarsffg.actor .vehicle .biography .container.biography-values .resource:nth-child(6) {
-  width: 7rem;
+.starwarsffg.actor .vehicle .biography .container.biography-values .resource {
+  flex: 15%;
 }
 
 .starwarsffg .item-sheet-weapon .charname {
