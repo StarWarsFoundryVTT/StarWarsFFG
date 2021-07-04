@@ -144,7 +144,7 @@ export default class EmbeddedItemHelpers {
         name: item.name,
         content: item.data.description,
         permission: {
-          default: ENTITY_PERMISSIONS.OBSERVER,
+          default: CONST.ENTITY_PERMISSIONS.OBSERVER,
         },
       };
 
