@@ -15,6 +15,7 @@
         </div>
       </div>
       {{else}}
+      {{#if (ne skill.label undefined)}}
       <div class="skillTable" data-type="{{skill.type}}">
         <div data-ability="{{skill.name}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill" draggable="true">
           <div class="pure-u-12-24">
@@ -33,7 +34,7 @@
           <div class="pure-u-6-24"><div class="roll-button dice-pool"></div></div>
         </div>
       </div>
-      {{/if}} {{/each}}
+      {{/if}} {{/if}} {{/each}}
     </div>
     {{/each}}
   </div>
