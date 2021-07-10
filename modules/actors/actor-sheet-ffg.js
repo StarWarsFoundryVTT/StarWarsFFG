@@ -87,9 +87,9 @@ export class ActorSheetFFG extends ActorSheet {
 
     switch (this.actor.data.type) {
       case "character":
-        if (data.limited) {
+        /* if (data.limited) {
           this.position.height = 165;
-        }
+        } */
         // we need to update all specialization talents with the latest talent information
         if (!this.actor.data.flags.loaded) {
           this._updateSpecialization(data);

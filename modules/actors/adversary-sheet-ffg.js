@@ -30,9 +30,9 @@ export class AdversarySheetFFG extends ActorSheetFFG {
       case "character":
         this.position.width = 595;
         this.position.height = 783;
-        if (data.limited) {
+        /* if (data.limited) {
           this.position.height = 165;
-        }
+        } */
 
         // we need to update all specialization talents with the latest talent information
         if (!this.actor.data.flags.loaded) {

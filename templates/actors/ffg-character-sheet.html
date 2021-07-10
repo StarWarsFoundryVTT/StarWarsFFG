@@ -64,9 +64,9 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) (object tab="obligation" label="SWFFG.TabObligationDutyMorality" icon="fas fa-balance-scale" cls=classType isHidden=true isHiddenV2=hideObligationDutyMoralityConflictTab) )}} {{!-- Sheet Body --}}
-  <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
+  <section class="sheet-body">
     {{!-- Characteristics Tab --}}
-    <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
+    <div class="tab characteristics active" data-group="primary" data-tab="characteristics" style="{{#if limited}}display:none;{{/if}}">
       {{!-- Characteristics Scores --}}
 
       <div class="grid grid-6col">
@@ -88,7 +88,7 @@
     </div>
 
     {{!-- Owned Items Tab --}}
-    <div class="tab items" data-group="primary" data-tab="items">
+    <div class="tab items" data-group="primary" data-tab="items" style="{{#if limited}}display:none;{{/if}}">
       <div class="container flex-group-center item-values">
         {{!-- Medical Box --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html" (object title=actor.flags.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
         {{!-- Encumbrance Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Encumbrance" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold") (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}} 
@@ -100,13 +100,15 @@
 
     {{!-- Talents Tab --}}
 
-    <div class="tab talents items" data-group="primary" data-tab="talents">
+    <div class="tab talents items" data-group="primary" data-tab="talents" style="{{#if limited}}display:none;{{/if}}">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
         {{!-- Force Box --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
       </div>
 
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} 
+      {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} 
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}
@@ -118,18 +120,22 @@
       <div class="container flex-group-center biography-values">
         {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}} {{!-- Experience Box --}}
 
-        <div class="grid bio-grid">
-          {{!-- Experience Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}} {{!-- Obligation Box --}} {{#if (or (eq actor.flags.config.enableObligation undefined) (eq actor.flags.config.enableObligation true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" type="Number" name="data.obligation.value" value=data.obligation.value )}} {{/if}} {{!-- Duty Box --}} {{#if (or (eq actor.flags.config.enableDuty undefined) (eq actor.flags.config.enableDuty true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'")}} {{/if}} {{!-- Morality Box --}} {{#if (or (eq actor.flags.config.enableMorality undefined) (eq actor.flags.config.enableMorality true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}} {{!-- Conflict Box --}} {{#if (or (eq actor.flags.config.enableConflict undefined) (eq actor.flags.config.enableConflict true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}}
+        <div class="grid bio-grid" style="{{#if limited}}display:none;{{/if}}">
+          {{!-- Experience Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}} 
+          {{!-- Obligation Box --}} {{#if (or (eq actor.flags.config.enableObligation undefined) (eq actor.flags.config.enableObligation true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" type="Number" name="data.obligation.value" value=data.obligation.value )}} {{/if}} 
+          {{!-- Duty Box --}} {{#if (or (eq actor.flags.config.enableDuty undefined) (eq actor.flags.config.enableDuty true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'")}} {{/if}} 
+          {{!-- Morality Box --}} {{#if (or (eq actor.flags.config.enableMorality undefined) (eq actor.flags.config.enableMorality true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}} 
+          {{!-- Conflict Box --}} {{#if (or (eq actor.flags.config.enableConflict undefined) (eq actor.flags.config.enableConflict true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}}
         </div>
       </div>
     </div>
 
     {{!-- Modifiers Tab --}}
-    <div class="tab attributes" data-group="primary" data-tab="attributes">
+    <div class="tab attributes" data-group="primary" data-tab="attributes" style="{{#if limited}}display:none;{{/if}}">
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
 
-    <div class="tab general" data-group="primary" data-tab="general">
+    <div class="tab general" data-group="primary" data-tab="general" style="{{#if limited}}display:none;{{/if}}">
       <div class="grid grid-2col">
         <div>
           <div class="grid grid-2col">
@@ -182,7 +188,7 @@
       </div>
     </div>
 
-    <div class="tab obligation" data-group="primary" data-tab="obligation">
+    <div class="tab obligation" data-group="primary" data-tab="obligation" style="{{#if limited}}display:none;{{/if}}">
       {{#if (or (eq actor.flags.config.enableObligation undefined) (eq actor.flags.config.enableObligation true) )}}
       <div class="resource full">
         <div class="attribute flex-group-center">

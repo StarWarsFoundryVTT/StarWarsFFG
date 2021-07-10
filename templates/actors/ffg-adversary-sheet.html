@@ -61,9 +61,9 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) )}} {{!-- Sheet Body --}}
-  <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
+  <section class="sheet-body">
     {{!-- Characteristics Tab --}}
-    <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
+    <div class="tab characteristics active" data-group="primary" data-tab="characteristics" style="{{#if limited}}display:none;{{/if}}">
       {{!-- Characteristics Scores --}}
 
       <div class="grid grid-6col">
@@ -85,7 +85,7 @@
     </div>
 
     {{!-- Owned Items Tab --}}
-    <div class="tab items" data-group="primary" data-tab="items">
+    <div class="tab items" data-group="primary" data-tab="items" style="{{#if limited}}display:none;{{/if}}">
       <div class="container flex-group-center item-values">
         {{!-- Medical Box --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html" (object title=actor.flags.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
         {{!-- Credits Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.DescriptionCredits" type="Number" name="data.stats.credits.value" value=data.stats.credits.value disabled=this.settings.enableSoakCalculation)}}
@@ -96,13 +96,15 @@
 
     {{!-- Talents Tab --}}
 
-    <div class="tab talents items" data-group="primary" data-tab="talents">
+    <div class="tab talents items" data-group="primary" data-tab="talents" style="{{#if limited}}display:none;{{/if}}">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
         {{!-- Force Box --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
       </div>
 
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} 
+      {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} 
+      {{!-- Signature Ability List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}
