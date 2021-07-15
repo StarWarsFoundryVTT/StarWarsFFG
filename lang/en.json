@@ -518,6 +518,8 @@
   "SWFFG.DicePoolAddsHint": "Left click to increase dice, right click to decrease.",
   "SWFFG.RollSucceeded": "Check succeeded!",
   "SWFFG.RollFailure": "Check failed!",
+  "SWFFG.DestinyFlipMessage": "Point Flipped",
+  "SWFFG.DestinyFlipRemaining": "Remaining",
   "SWFFG.DestinyTrackerHint": "Left click to flip, SHIFT+left click to add, CTRL+left click to remove.",
   "SWFFG.DiceResult.Blank": "blank",
   "SWFFG.DiceResult.OneSuccess": "1 success",

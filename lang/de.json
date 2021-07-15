@@ -470,6 +470,8 @@
   "SWFFG.DestinyRemainD" : "Dunkle Punkte verbleibend: ",
   "SWFFG.RollSucceeded" : "Probe erfolgreich!",
   "SWFFG.RollFailure" : "Probe misslungen!",
+  "SWFFG.DestinyFlipMessage": "Point Flipped (Translate)",
+  "SWFFG.DestinyFlipRemaining": "Remaining (Translate)",
   "SWFFG.DiceResult.Blank": "blank",
   "SWFFG.DiceResult.OneSuccess": "1 Erfolg",
   "SWFFG.DiceResult.TwoSuccess": "2 Erfolge",

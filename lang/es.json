@@ -506,6 +506,8 @@
   "SWFFG.SettingsEnableForceDieHint" : "Activa/Desactiva Dado Blanco de la Fuerza en tiradas (NOTA: Si el tema de dados es Star Wars el Dado de la Fuerza se activa automáticamente)",
   "SWFFG.SettingsPausedImage": "Icono de Pausa",
   "SWFFG.SettingsPausedImageHint": "Cambia el icono de la pausa seleccionando una nueva imagen.",
+  "SWFFG.DestinyFlipMessage": "Point Flipped (Translate)",
+  "SWFFG.DestinyFlipRemaining": "Remaining (Translate)",
   "SWFFG.Triumph" : "Triunfo",
   "SWFFG.Despair" : "Desesperación",
   "SWFFG.EnableCriticalInjuries" : "Activa Heridas Críticas",

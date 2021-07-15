@@ -518,6 +518,8 @@
   "SWFFG.DicePoolAddsHint": "Clic gauche pour augmenter les dés, clic droit pour les diminuer.",
   "SWFFG.RollSucceeded": "Test réussi !",
   "SWFFG.RollFailure": "Test échoué !",
+  "SWFFG.DestinyFlipMessage": "Point Flipped (Translate)",
+  "SWFFG.DestinyFlipRemaining": "Remaining (Translate)",
   "SWFFG.DestinyTrackerHint": "Clic gauche pour inverser, SHIFT+clic gauche pour ajouter, CTRL+clic gauche pour enlever.",
   "SWFFG.DiceResult.Blank": "vide",
   "SWFFG.DiceResult.OneSuccess": "1 succès",
