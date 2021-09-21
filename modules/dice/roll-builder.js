@@ -166,7 +166,11 @@ export default class RollBuilderFFG extends FormApplication {
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
         roll.toMessage({
           user: game.user.id,
-          speaker: { actor: game.actors.get(this.roll.data?.actor?._id) },
+          speaker: {
+            actor: game.actors.get(this.roll.data?.actor?._id),
+            alias: this.roll.data?.token?.name,
+            token: this.roll.data?.token?._id,
+          },
           flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(this.roll.skillName)}...`,
         });
         if (this.roll?.sound) {

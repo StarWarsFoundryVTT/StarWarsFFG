@@ -56,6 +56,7 @@ export class ActorSheetFFG extends ActorSheet {
     data.data = actorData.data;
     data.rollData = this.actor.getRollData.bind(this.actor);
 
+    data.token = this.token?.data;
     data.items = this.actor.items.map((item) => item.data);
 
     if (options?.action === "update" && this.object.compendium) {
