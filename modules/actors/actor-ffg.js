@@ -20,7 +20,7 @@ export class ActorFFG extends Actor {
 
     // if the actor has skills, add custom skills and sort by abbreviation
     if (data.skills) {
-      let actorSkills = data.skills;
+      let actorSkills = [];
 
       Object.keys(data.skills)
         .filter((skill) => {
