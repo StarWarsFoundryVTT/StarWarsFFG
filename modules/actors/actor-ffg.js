@@ -24,7 +24,7 @@ export class ActorFFG extends Actor {
 
       Object.keys(data.skills)
         .filter((skill) => {
-          return data.skills[skill].custom;
+          return data.skills[skill].custom || data.skills[skill].careerskill;
         })
         .forEach((skill) => {
           actorSkills[skill] = {
