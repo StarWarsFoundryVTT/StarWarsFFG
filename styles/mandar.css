@@ -1730,6 +1730,13 @@ img {
   color: rgba(0, 0, 0, 0.5);
 }
 
+.starwarsffg .header-fields .row.card {
+  position: absolute;
+  top: 2rem;
+  right: 1rem;
+  width: auto !important;
+}
+
 .starwarsffg .header-fields .profile-block {
   margin: 0 0.25rem 0 0;
   height: 130px;
@@ -2349,7 +2356,7 @@ img {
 }
 
 .starwarsffg.actor .biography .container.biography-values {
-  height: 30%;
+  height: auto;
   display: flex;
   flex-direction: column-reverse;
   flex-wrap: initial;
@@ -2447,10 +2454,6 @@ img {
 
 .starwarsffg .item-sheet-armor .charname input {
   color: #553113;
-}
-
-.starwarsffg .item-sheet-armor .characteristic-item .characteristic-label {
-  background-color: #553113;
 }
 
 .starwarsffg .item-sheet-armor .characteristic-item .characteristic {
@@ -2906,7 +2909,7 @@ img {
 }
 
 .starwarsffg .item-sheet-vehicle-weapon .attribute .block-title {
-  background-color: #bffebf;
+  background-color: #134103;
 }
 
 .starwarsffg .item-sheet-vehicle-weapon .firing-arcs {
