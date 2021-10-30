@@ -339,13 +339,13 @@ export class ActorFFG extends Actor {
             const equippedEncumbrance = +item.data.encumbrance.adjusted - 3;
             encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
           } else if (item.type === "armour" || item.type === "weapon" || item.type === "shipweapon") {
-            let count = 1;
+            let count = 0;
             if (item.data?.quantity?.value) {
               count = item.data.quantity.value;
             }
             encum += ((item.data?.encumbrance?.adjusted !== undefined) ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
           } else {
-            let count = 1;
+            let count = 0;
             if (item.data?.quantity?.value) {
               count = item.data.quantity.value;
             }
