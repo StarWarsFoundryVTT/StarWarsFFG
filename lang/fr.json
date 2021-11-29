@@ -463,6 +463,7 @@
   "SWFFG.ModTypeRollModifiers": "Jets des Mods",
   "SWFFG.ModTypeAddBoost": "Ajouter une fortune",
   "SWFFG.ModTypeAddSetback": "Ajouter une infortune",
+  "SWFFG.ModTypeRemSetback": "Retirer une infortune",
   "SWFFG.ModTypeAddDifficulty": "Ajouter de la Difficulté",
   "SWFFG.ModTypeUpgradeDifficulty": "Augmenter la diffculté",
   "SWFFG.ModTypeDowngradeDifficulty": "Diminuer la difficulté",
