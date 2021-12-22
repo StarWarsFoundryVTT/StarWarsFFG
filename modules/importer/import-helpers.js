@@ -144,17 +144,14 @@ export default class ImportHelpers {
    * @returns {object} - Entity Object Data
    */
   static async findCompendiumEntityById(type, id) {
-    let entity;
-
     let packs = Array.from(await game.packs.keys());
     for (let i = 0; i < packs.length; i += 1) {
       let packId = packs[i];
       const pack = await game.packs.get(packId);
       if (pack.documentName === type) {
-        await pack.getIndex();
-        entity = await pack.index.find((e) => e.id === id);
+        const entity = await pack.getDocument(id);
         if (entity) {
-          return await pack.getDocument(entity.id);
+          return entity;
         }
       }
     }
