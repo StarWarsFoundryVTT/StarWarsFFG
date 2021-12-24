@@ -476,6 +476,7 @@
   "SWFFG.ModTypeRollModifiers": "Roll Mods",
   "SWFFG.ModTypeAddBoost": "Add Boost",
   "SWFFG.ModTypeAddSetback": "Add Setback",
+  "SWFFG.ModTypeRemSetback": "Remove Setback",
   "SWFFG.ModTypeAddDifficulty": "Add Diffculty",
   "SWFFG.ModTypeUpgradeDifficulty": "Upgrade Diffculty",
   "SWFFG.ModTypeDowngradeDifficulty": "Downgrade Diffculty",

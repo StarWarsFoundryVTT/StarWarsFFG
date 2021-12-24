@@ -476,6 +476,7 @@
   "SWFFG.ModTypeRollModifiers": "Mods Tirada",
   "SWFFG.ModTypeAddBoost": "Añade Beneficio",
   "SWFFG.ModTypeAddSetback": "Añade Complicación",
+  "SWFFG.ModTypeRemSetback": "Borrar Complicación",
   "SWFFG.ModTypeAddDifficulty": "Añade Dificultad",
   "SWFFG.ModTypeUpgradeDifficulty": "Aumenta Dificultad",
   "SWFFG.ModTypeDowngradeDifficulty": "Disminuye Dificultad",
