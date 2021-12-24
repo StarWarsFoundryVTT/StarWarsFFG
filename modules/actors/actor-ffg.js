@@ -20,11 +20,11 @@ export class ActorFFG extends Actor {
 
     // if the actor has skills, add custom skills and sort by abbreviation
     if (data.skills) {
-      let actorSkills = data.skills;
+      let actorSkills = [];
 
       Object.keys(data.skills)
         .filter((skill) => {
-          return data.skills[skill].custom;
+          return data.skills[skill].custom || data.skills[skill].careerskill;
         })
         .forEach((skill) => {
           actorSkills[skill] = {
@@ -338,12 +338,18 @@ export class ActorFFG extends Actor {
           if (item.type === "armour" && item?.data?.equippable?.equipped) {
             const equippedEncumbrance = +item.data.encumbrance.adjusted - 3;
             encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
-          } else {
-            let count = 1;
+          } else if (item.type === "armour" || item.type === "weapon" || item.type === "shipweapon") {
+            let count = 0;
             if (item.data?.quantity?.value) {
               count = item.data.quantity.value;
             }
-            encum += (item.data?.encumbrance?.adjusted !== undefined ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
+            encum += ((item.data?.encumbrance?.adjusted !== undefined) ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
+          } else {
+            let count = 0;
+            if (item.data?.quantity?.value) {
+              count = item.data.quantity.value;
+            }
+            encum += item.data?.encumbrance?.value * count;
           }
         }
       } catch (err) {

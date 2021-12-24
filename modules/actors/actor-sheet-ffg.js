@@ -56,6 +56,7 @@ export class ActorSheetFFG extends ActorSheet {
     data.data = actorData.data;
     data.rollData = this.actor.getRollData.bind(this.actor);
 
+    data.token = this.token?.data;
     data.items = this.actor.items.map((item) => item.data);
 
     if (options?.action === "update" && this.object.compendium) {
@@ -350,6 +351,22 @@ export class ActorSheetFFG extends ActorSheet {
         type: "Array",
         default: 0,
         options: [game.i18n.localize("SWFFG.UseGlobalSetting"), game.i18n.localize("SWFFG.OptionValueYes"), game.i18n.localize("SWFFG.OptionValueNo")],
+      });
+    }
+
+    if (this.actor.data.type === "vehicle") {
+      this.sheetoptions = new ActorOptions(this, html);
+      this.sheetoptions.register("enableHyperdrive", {
+        name: game.i18n.localize("SWFFG.EnableHyperdrive"),
+        hint: game.i18n.localize("SWFFG.EnableHyperdriveHint"),
+        type: "Boolean",
+        default: true,
+      });
+      this.sheetoptions.register("enableSensors", {
+        name: game.i18n.localize("SWFFG.EnableSensors"),
+        hint: game.i18n.localize("SWFFG.EnableSensorsHint"),
+        type: "Boolean",
+        default: true,
       });
     }
 

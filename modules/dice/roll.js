@@ -13,7 +13,7 @@ export class RollFFG extends Roll {
     this.addedResults = [];
 
     if (args[2]?.success) {
-      this.ffg.success = +args[2].success;
+      this.ffg.success += +args[2].success;
       this.addedResults.push({
         type: "Success",
         symbol: PopoutEditor.renderDiceImages("[SU]"),
@@ -22,7 +22,7 @@ export class RollFFG extends Roll {
       });
     }
     if (args[2]?.failure) {
-      this.ffg.failure = +args[2].failure;
+      this.ffg.failure += +args[2].failure;
       this.addedResults.push({
         type: "Failure",
         symbol: PopoutEditor.renderDiceImages("[FA]"),
@@ -31,7 +31,7 @@ export class RollFFG extends Roll {
       });
     }
     if (args[2]?.advantage) {
-      this.ffg.advantage = +args[2].advantage;
+      this.ffg.advantage += +args[2].advantage;
       this.addedResults.push({
         type: "Advantage",
         symbol: PopoutEditor.renderDiceImages("[AD]"),
@@ -40,7 +40,7 @@ export class RollFFG extends Roll {
       });
     }
     if (args[2]?.threat) {
-      this.ffg.threat = +args[2].threat;
+      this.ffg.threat += +args[2].threat;
       this.addedResults.push({
         type: "Threat",
         symbol: PopoutEditor.renderDiceImages("[TH]"),
@@ -49,7 +49,7 @@ export class RollFFG extends Roll {
       });
     }
     if (args[2]?.light) {
-      this.ffg.light = +args[2].light;
+      this.ffg.light += +args[2].light;
       this.addedResults.push({
         type: "Light",
         symbol: PopoutEditor.renderDiceImages("[LI]"),
@@ -58,7 +58,7 @@ export class RollFFG extends Roll {
       });
     }
     if (args[2]?.dark) {
-      this.ffg.dark = +args[2].dark;
+      this.ffg.dark += +args[2].dark;
       this.addedResults.push({
         type: "Dark",
         symbol: PopoutEditor.renderDiceImages("[DA]"),
@@ -67,8 +67,8 @@ export class RollFFG extends Roll {
       });
     }
     if (args[2]?.triumph) {
-      this.ffg.triumph = +args[2].triumph;
-      this.ffg.success = +args[2].triumph;
+      this.ffg.triumph += +args[2].triumph;
+      this.ffg.success += +args[2].triumph;
       this.addedResults.push({
         type: "Triumph",
         symbol: PopoutEditor.renderDiceImages("[TR]"),
@@ -77,8 +77,8 @@ export class RollFFG extends Roll {
       });
     }
     if (args[2]?.despair) {
-      this.ffg.despair = +args[2].despair;
-      this.ffg.failure = +args[2].despair;
+      this.ffg.despair += +args[2].despair;
+      this.ffg.failure += +args[2].despair;
       this.addedResults.push({
         type: "Despair",
         symbol: PopoutEditor.renderDiceImages("[DE]"),
