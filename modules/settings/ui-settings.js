@@ -20,7 +20,7 @@ export default class UISettings extends FormApplication {
     // Classify all settings
     for (let setting of gs.settings.values()) {
       // Exclude settings the user cannot change
-      if ((!setting.config && !setting.key.includes("ui-")) || (!canConfigure && setting.scope !== "client")) continue;
+      if (!setting.key.includes("ui-") || (!canConfigure && setting.scope !== "client")) continue;
 
       // Update setting data
       const s = duplicate(setting);
