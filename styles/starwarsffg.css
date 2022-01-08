@@ -1634,7 +1634,8 @@ img {
   position: absolute;
   width: 40px;
   right: -20px;
-  top: 30px;
+  top: 160px;
+  flex-direction: column;
 }
 
 .starwarsffg.v2 .tabs .item {
