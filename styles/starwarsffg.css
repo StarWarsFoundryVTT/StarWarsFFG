@@ -256,6 +256,8 @@ img {
 
 .starwarsffg.sheet.actor .tabs .item {
   line-height: 15px;
+  width: 100%;
+  padding: 0 1px;
 }
 
 .starwarsffg.sheet.actor .characteristic-item .characteristic-label {
@@ -1611,7 +1613,7 @@ img {
   background-color: #aaa;
   padding: 3px;
   margin: 0 5px;
-  --notchSize: 10px;
+  --notchSize: 8px;
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 }
