@@ -1,4 +1,6 @@
-export class ChallengeDie extends DiceTerm {
+import { DiceTermFFG } from '../diceterm.js';
+
+export class ChallengeDie extends DiceTermFFG {
   constructor(termData) {
     super(termData);
     this.faces = 12;

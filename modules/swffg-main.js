@@ -35,6 +35,7 @@ import { createFFGMacro } from "./helpers/macros.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
 import PauseFFG from "./apps/pause-ffg.js";
+import { DiceTermFFG } from './dice/diceterm.js';
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -68,6 +69,7 @@ Hooks.once("init", async function () {
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
   CONFIG.Dice.rolls[0] = RollFFG;
+  CONFIG.Dice.termTypes.DiceTerm = DiceTermFFG;
 
   // Define DiceTerms
   CONFIG.Dice.terms["a"] = AbilityDie;
