@@ -104,6 +104,11 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     if (this.actor.data.type !== "vehicle") {
+      // Filter out skills that are not custom (manually added) or part of the current system skill list
+      Object.keys(data.data.skills)
+      .filter(s => !data.data.skills[s].custom && !CONFIG.FFG.skills[s])
+      .forEach(s => delete data.data.skills[s]);
+
       data.data.skilllist = this._createSkillColumns(data);
     }
 

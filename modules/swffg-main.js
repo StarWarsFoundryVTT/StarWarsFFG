@@ -233,8 +233,8 @@ Hooks.once("init", async function () {
         });
 
         const sorted = Object.keys(skills).sort(function (a, b) {
-          const x = game.i18n.localize(skills[a].abrev);
-          const y = game.i18n.localize(skills[b].abrev);
+          const x = game.i18n.localize(skills[a].label);
+          const y = game.i18n.localize(skills[b].label);
 
           return x < y ? -1 : x > y ? 1 : 0;
         });
@@ -249,43 +249,27 @@ Hooks.once("init", async function () {
     } catch (err) {}
 
     Hooks.on("createActor", (actor) => {
-      let skilllist = game.settings.get("starwarsffg", "skilltheme");
+      if (actor.type !== "vehicle") {
+        if (CONFIG.FFG?.alternateskilllists?.length) {
+          let skilllist = game.settings.get("starwarsffg", "skilltheme");
+          try {
+            let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
+            CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
-      if (CONFIG.FFG?.alternateskilllists?.length) {
-        try {
-          let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
-          CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
-
-          if (actor.type !== "vehicle") {
-            Object.keys(actor.data.data.skills).forEach((skill) => {
-              if (!skills.skills[skill] && !skills?.skills[skill]?.nontheme) {
-                skills.skills[`-=${skill}`] = null;
-              } else {
-                skills.skills[skill] = {
-                  ...actor.data.data.skills[skill],
-                  ...skills.skills[skill],
-                };
-
-                skills.skills[skill].rank = actor.data.data.skills[skill].rank;
-                skills.skills[skill].careerskill = actor.data.data.skills[skill].careerskill;
-                skills.skills[skill].groupskill = actor.data.data.skills[skill].groupskill;
-              }
+            actor.update({
+              data: {
+                skills: skills.skills,
+              },
             });
+          } catch (err) {
+            CONFIG.logger.warn(err);
           }
-
-          actor.update({
-            data: {
-              skills: skills.skills,
-            },
-          });
-        } catch (err) {
-          CONFIG.logger.warn(err);
         }
       }
     });
   }
 
-  gameSkillsList();
+  await gameSkillsList();
 
   FFG.configureDice();
   FFG.configureVehicleRange();
