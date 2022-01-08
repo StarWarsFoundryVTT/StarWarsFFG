@@ -143,7 +143,7 @@ export class DicePoolFFG {
    * @returns {string} a dice expression that can be used to roll the dice pool
    */
   renderDiceExpression() {
-    let dicePool = [this.proficiency + "dp", this.ability + "da", this.challenge + "dc", this.difficulty + "dd", this.boost + "db", this.setback + "ds", this.force + "df"];
+    let dicePool = [this.proficiency + "dp", this.ability + "da", this.challenge + "dc", this.difficulty + "di", this.boost + "db", this.setback + "ds", this.force + "df"];
     let finalPool = dicePool.filter((d) => {
       const test = d.split(/([0-9]+)/);
       return test[1] > 0;
