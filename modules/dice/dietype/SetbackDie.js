@@ -1,4 +1,6 @@
-export class SetbackDie extends DiceTerm {
+import { DiceTermFFG } from '../diceterm.js';
+
+export class SetbackDie extends DiceTermFFG {
   constructor(termData) {
     super(termData);
     this.faces = 6;
