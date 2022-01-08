@@ -54,7 +54,7 @@ export default class Armor {
             }
 
             // does an image exist?
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", data.flags.ffgimportid);
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Armor", data.flags.starwarsffg.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }

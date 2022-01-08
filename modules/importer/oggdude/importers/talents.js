@@ -63,7 +63,7 @@ export default class Talents {
               data.data.attributes = mergeObject(data.data.attributes, dieModifiers.attributes);
             }
 
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", data.flags.ffgimportid);
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", data.flags.starwarsffg.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }

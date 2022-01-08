@@ -62,16 +62,16 @@ export default class ActorOptions {
     ).render(true);
   }
 
-  register(optionName, options) {
+  async register(optionName, options) {
     if (!this.options[optionName]) {
       this.options[optionName] = { ...options };
     }
-    if (typeof this.data.object.data.flags.config == "undefined") {
-      this.data.object.data.flags["config"] = {};
+    if (typeof this.data.object.data.flags?.starwarsffg?.config == "undefined") {
+      await this.data.object.setFlag("starwarsffg", "config", {});
     }
 
-    if (typeof this.data.object.data.flags.config[optionName] !== "undefined") {
-      this.options[optionName].value = this.data.object.data.flags.config[optionName];
+    if (typeof this.data.object.flags?.starwarsffg?.config[optionName] !== "undefined") {
+      this.options[optionName].value = this.data.object.flags?.starwarsffg?.config[optionName];
     } else {
       this.options[optionName].value = this.options[optionName].default;
     }

@@ -61,7 +61,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.isTemp = false;
-    if (this.object.data?.flags?.ffgIsOwned || this.object.data?.flags?.ffgIsTemp) {
+    if (this.object.data?.flags?.starwarsffg?.ffgIsOwned || this.object.data?.flags?.starwarsffg?.ffgIsTemp) {
       data.isTemp = true;
     }
 
@@ -111,9 +111,9 @@ export class ItemSheetFFG extends ItemSheet {
           data.data.isReadOnly = true;
         }
 
-        if (!this.item.data.flags.loaded) {
+        if (!this.item.data.flags?.starwarsffg?.loaded) {
           CONFIG.logger.debug(`Running Item initial load`);
-          this.item.data.flags.loaded = true;
+          this.item.data.flags.starwarsffg.loaded = true;
 
           const specializationTalents = data.data.talents;
 
@@ -482,12 +482,14 @@ export class ItemSheetFFG extends ItemSheet {
       let temp = {
         ...item,
         flags: {
-          ffgTempId: this.object.id,
-          ffgTempItemType: itemType,
-          ffgTempItemIndex: itemIndex,
-          ffgIsTemp: true,
-          ffgParent: this.object.data.flags,
-          ffgParentApp: this.appId,
+          starwarsffg: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: itemType,
+            ffgTempItemIndex: itemIndex,
+            ffgIsTemp: true,
+            ffgParent: this.object.data.flags,
+            ffgParentApp: this.appId,
+          }
         },
       };
       if (this.object.isEmbedded) {
@@ -496,12 +498,14 @@ export class ItemSheetFFG extends ItemSheet {
         temp = {
           ...item,
           flags: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: itemType,
-            ffgTempItemIndex: itemIndex,
-            ffgIsTemp: true,
-            ffgUuid: this.object.uuid,
-            ffgIsOwned: this.object.isEmbedded,
+            starwarsffg: {
+              ffgTempId: this.object.id,
+              ffgTempItemType: itemType,
+              ffgTempItemIndex: itemIndex,
+              ffgIsTemp: true,
+              ffgUuid: this.object.uuid,
+              ffgIsOwned: this.object.isEmbedded,
+            }
           },
         };
       }
@@ -525,15 +529,17 @@ export class ItemSheetFFG extends ItemSheet {
       const item = this.object.data.data[itemType][itemIndex];
       item.data.active = !item.data.active;
 
-      if (this.object.data.flags.ffgTempId) {
+      if (this.object.data.flags.starwarsffg.ffgTempId) {
         // this is a temporary sheet for an embedded item
 
         item.flags = {
-          ffgTempId: this.object.id,
-          ffgTempItemType: itemType,
-          ffgTempItemIndex: itemIndex,
-          ffgParent: this.object.data.flags,
-          ffgIsTemp: true,
+          starwarsffg: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: itemType,
+            ffgTempItemIndex: itemIndex,
+            ffgParent: this.object.data.flags.starwarsffg,
+            ffgIsTemp: true
+          }
         };
 
         await EmbeddedItemHelpers.updateRealObject({ data: item }, {});
@@ -557,14 +563,16 @@ export class ItemSheetFFG extends ItemSheet {
         name: "Item Mod",
         type: itemType,
         flags: {
-          ffgTempId: this.object.id,
-          ffgTempItemType: itemType,
-          ffgTempItemIndex: -1,
-          ffgParent: this.object.data.flags,
-          ffgIsTemp: true,
-          ffgUuid: this.object.uuid,
-          ffgParentApp: this.appId,
-          ffgIsOwned: this.object.isEmbedded,
+          starwarsffg: {
+            ffgTempId: this.object.id,
+            ffgTempItemType: itemType,
+            ffgTempItemIndex: -1,
+            ffgParent: this.object.data.flags.starwarsffg,
+            ffgIsTemp: true,
+            ffgUuid: this.object.uuid,
+            ffgParentApp: this.appId,
+            ffgIsOwned: this.object.isEmbedded,
+          }
         },
         data: {
           attributes: {},
@@ -583,7 +591,7 @@ export class ItemSheetFFG extends ItemSheet {
       setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
       await this.object.update(data);
 
-      tempItem.data.flags.ffgTempItemIndex = this.object.data.data[itemType].findIndex((i) => i.id === tempItem.data._id);
+      await tempItem.setFlag("starwarsffg", "ffgTempItemIndex", this.object.data.data[itemType].findIndex((i) => i.id === tempItem.data._id));
 
       tempItem.sheet.render(true);
     });
@@ -731,8 +739,8 @@ export class ItemSheetFFG extends ItemSheet {
 
   importItemFromCollection(collection, entryId) {
     const pack = game.packs.get(collection);
-    if (pack.metadata.entity !== "Item") return;
-    return pack.getEntity(entryId).then((ent) => {
+    if (pack.documentName !== "Item") return;
+    return pack.getDocument(entryId).then((ent) => {
       CONFIG.logger.debug(`Importing Item ${ent.name} from ${collection}`);
       return ent;
     });
@@ -878,7 +886,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       const foundItem = items.find((i) => {
-        return i.name === itemObject.name || (i.flags?.ffgimportid?.length ? i.flags.ffgimportid === itemObject.flags.ffgimportid : false);
+        return i.name === itemObject.name || (i.flags?.starwarsffg?.ffgimportid?.length ? i.flags.starwarsffg.ffgimportid === itemObject.flags.starwarsffg.ffgimportid : false);
       });
 
       switch (itemObject.type) {

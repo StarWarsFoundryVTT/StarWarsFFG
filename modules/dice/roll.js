@@ -231,6 +231,12 @@ export class RollFFG extends Roll {
 
     // Define chat data
     if (this?.data) {
+      if (this.data.flags?.starwarsffg?.ffgUuid) {
+        const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
+        if (item?.data) {
+          this.data = item.data;
+        }
+      }
       this.data.additionalFlavorText = this.flavorText;
     } else {
       this.data = {

@@ -372,11 +372,13 @@ export default class SWAImporter extends FormApplication {
                   name: item.name,
                   type: item.type === "Nemesis" ? "character" : "minion",
                   flags: {
-                    ffgimportid: `${f.name}-${item.type}-${item.name}`,
-                    config: {
-                      enableAutoSoakCalculation: false,
-                      enableCriticalInjuries: item.type === "Minion" ? false : true,
-                    },
+                    starwarsffg: {
+                      ffgimportid: `${f.name}-${item.type}-${item.name}`,
+                      config: {
+                        enableAutoSoakCalculation: false,
+                        enableCriticalInjuries: item.type !== "Minion",
+                      }
+                    }
                   },
                   data: {
                     attributes: {},

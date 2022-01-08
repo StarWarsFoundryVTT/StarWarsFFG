@@ -38,7 +38,7 @@ export default class RollBuilderFFG extends FormApplication {
       game.playlists.contents.forEach((playlist) => {
         playlist.sounds.forEach((sound) => {
           let selected = false;
-          const s = this.roll?.sound ?? this.roll?.item?.flags?.ffgsound;
+          const s = this.roll?.sound ?? this.roll?.item?.flags?.starwarsffg?.ffgsound;
           if (s === sound.path) {
             selected = true;
           }
@@ -52,7 +52,7 @@ export default class RollBuilderFFG extends FormApplication {
       if (playlist) {
         playlist.sounds.forEach((sound) => {
           let selected = false;
-          const s = this.roll?.sound ?? this.roll?.item?.flags?.ffgsound;
+          const s = this.roll?.sound ?? this.roll?.item?.flags?.starwarsffg?.ffgsound;
           if (s === sound.path) {
             selected = true;
           }
@@ -106,13 +106,13 @@ export default class RollBuilderFFG extends FormApplication {
           if (this?.roll?.item) {
             let entity;
             let entityData;
-            if (!this?.roll?.item?.flags?.uuid) {
+            if (!this?.roll?.item?.flags?.starwarsffg?.uuid) {
               entity = CONFIG["Actor"].documentClass.collection.get(this.roll.data.actor.id);
               entityData = {
                 _id: this.roll.item.id,
               };
             } else {
-              const parts = this.roll.item.flags.uuid.split(".");
+              const parts = this.roll.item.flags.starwarsffg?.uuid.split(".");
               const [entityName, entityId, embeddedName, embeddedId] = parts;
               entity = CONFIG[entityName].documentClass.collection.get(entityId);
               if (parts.length === 4) {
@@ -121,7 +121,7 @@ export default class RollBuilderFFG extends FormApplication {
                 };
               }
             }
-            setProperty(entityData, "flags.ffgsound", sound);
+            setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
             entity.updateOwnedItem(entityData);
           }
         }
