@@ -56,7 +56,7 @@ export default class Specializations {
                   rowTalent.size = "single";
                   rowTalent.canLinkTop = true;
                   rowTalent.canLinkRight = true;
-                  rowTalent.itemId = talentItem.id;
+                  rowTalent.itemId = talentItem._id;
                   rowTalent.attributes = talentItem.data.attributes;
 
                   if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
