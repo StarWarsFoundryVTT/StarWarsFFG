@@ -79,7 +79,7 @@ export default class Specializations {
               });
             }
 
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", data.flags.ffgimportid);
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", data.flags.starwarsffg.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }

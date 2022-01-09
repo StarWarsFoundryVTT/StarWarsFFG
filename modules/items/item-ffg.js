@@ -25,7 +25,7 @@ export class ItemFFG extends ItemBaseFFG {
   /**
    * Augment the basic Item data model with additional dynamic data.
    */
-  prepareData() {
+  async prepareData() {
     super.prepareData();
 
     CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
@@ -35,19 +35,32 @@ export class ItemFFG extends ItemBaseFFG {
     const actorData = this.actor ? this.actor.data : {};
     const data = itemData.data;
 
-    if (this.compendium) {
-      itemData.flags.isCompendium = true;
-      // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-      if (this.parent?.data) itemData.flags.ffgUuid = this.uuid;
+    if (!itemData.flags.starwarsffg) {
+      this.update({
+        flags: {
+          starwarsffg: {
+            isCompendium: this.compendium,
+            ffgUuid: this.uuid || null,
+            ffgIsOwned: this.isEmbedded,
+            loaded: false
+          }
+        }
+      });
     } else {
-      itemData.flags.isCompendium = false;
-      itemData.flags.ffgIsOwned = false;
-      if (this.isEmbedded) {
-        itemData.flags.ffgIsOwned = true;
+      if (this.compendium) {
+        itemData.flags.starwarsffg.isCompendium = true;
         // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-        if (this.parent?.data) itemData.flags.ffgUuid = this.uuid;
-      } else if (itemData._id) {
-        itemData.flags.ffgTempId = itemData._id;
+        if (this.parent?.data) itemData.flags.starwarsffg.ffgUuid = this.uuid;
+      } else {
+        itemData.flags.starwarsffg.isCompendium = false;
+        itemData.flags.starwarsffg.ffgIsOwned = false;
+        if (this.isEmbedded) {
+          itemData.flags.starwarsffg.ffgIsOwned = true;
+          // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
+          if (this.parent?.data) itemData.flags.starwarsffg.ffgUuid = this.uuid;
+        } else if (itemData._id) {
+          itemData.flags.starwarsffg.ffgTempId = itemData._id;
+        }
       }
     }
 

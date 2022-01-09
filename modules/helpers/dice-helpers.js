@@ -58,23 +58,20 @@ export default class DiceHelpers {
     const actor = await game.actors.get(data.actor._id);
 
     // Determine if this roll is triggered by an item.
-    let item = {};
+    let item;
     if ($(row.parentElement).hasClass("item")) {
       //Check if token is linked to actor
       if (obj.actor.token === null) {
         let itemID = row.parentElement.dataset["itemId"];
-        const item1 = actor.items.get(itemID);
-        item = Object.entries(data.items).filter((item) => item[1]._id === itemID);
-        item = item[0][1];
-        item.flags.uuid = item1.uuid;
+        item = actor.items.get(itemID);
       } else {
         //Rolls this if unlinked
         let itemID = row.parentElement.dataset["itemId"];
-        item = obj.actor.token.actor.items.filter((i) => i.id === itemID);
-        item = item[0].data;
+        item = obj.actor.token.actor.items.get(itemID);
       }
     }
-    const status = this.getWeaponStatus(item);
+    const itemData = item?.data || {};
+    const status = this.getWeaponStatus(itemData);
 
     // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
 
@@ -102,8 +99,8 @@ export default class DiceHelpers {
       dicePool.upgradeDifficulty();
     }
 
-    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, item));
-    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(skill.label)}`, skill.label, item, flavorText, sound);
+    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, itemData));
+    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(skill.label)}`, skill.label, itemData, flavorText, sound);
   }
 
   static async displayRollDialog(data, dicePool, description, skillName, item, flavorText, sound) {
@@ -155,12 +152,13 @@ export default class DiceHelpers {
     const actor = game.actors.get(actorId);
     const actorSheet = actor.sheet.getData();
 
-    const item = actor.items.get(itemId).data;
-    item.flags.uuid = item.uuid;
+    const item = actor.items.get(itemId);
+    const itemData = item.data;
+    await item.setFlag("starwarsffg", "uuid", item.uuid);
 
-    const status = this.getWeaponStatus(item);
+    const status = this.getWeaponStatus(itemData);
 
-    const skill = actor.data.data.skills[item.data.skill.value];
+    const skill = actor.data.data.skills[itemData.data.skill.value];
     const characteristic = actor.data.data.characteristics[skill.characteristic];
 
     let dicePool = new DicePoolFFG({
@@ -181,9 +179,9 @@ export default class DiceHelpers {
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
-    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, item));
+    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, itemData));
 
-    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
+    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, itemData, flavorText, sound);
   }
 
   // Takes a skill object, characteristic object, difficulty number and ActorSheetFFG.getData() object and creates the appropriate roll dialog.

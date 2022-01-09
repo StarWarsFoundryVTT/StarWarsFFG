@@ -2,7 +2,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
-    if (!this.data?.flags?.ffgTempId || (this.data?.flags?.ffgTempId === this.data._id && !this.data.isTemp) || this.data?.flags?.ffgIsOwned) {
+    if (!this.data?.flags?.starwarsffg?.ffgTempId || (this.data?.flags?.starwarsffg?.ffgTempId === this.data._id && !this.data.isTemp) || this.data?.flags?.starwarsffg?.ffgIsOwned) {
       super.update(data, options);
       // if (this.compendium) {
       //   return this.sheet.render(true);
@@ -13,8 +13,8 @@ export default class ItemBaseFFG extends Item {
 
       await EmbeddedItemHelpers.updateRealObject(this, data);
 
-      if (this.data.flags?.ffgParent?.isCompendium || Object.values(this.apps)[0]._state !== preState) {
-        if (this.data.flags?.ffgParent?.ffgUuid) {
+      if (this.flags?.starwarsffg?.ffgParent?.isCompendium || Object.values(this.apps)[0]._state !== preState) {
+        if (this.flags?.starwarsffg?.ffgParent?.ffgUuid) {
           this.sheet.render(false);
         }
       } else {
@@ -22,10 +22,10 @@ export default class ItemBaseFFG extends Item {
 
         // we're working on an embedded item
         await this.sheet.render(true);
-        const appId = this.data?.flags?.ffgParentApp;
+        const appId = this.data?.flags?.starwarsffg?.ffgParentApp;
         if (appId) {
           const newData = ui.windows[appId].object.data.data;
-          newData[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex] = mergeObject(newData[this.data.flags.ffgTempItemType][this.data.flags.ffgTempItemIndex], this.data);
+          newData[this.data.flags.starwarsffg.ffgTempItemType][this.data.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.data.flags.starwarsffg.ffgTempItemType][this.data.flags.starwarsffg.ffgTempItemIndex], this.data);
           await ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
         }
         return;

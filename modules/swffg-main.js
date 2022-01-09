@@ -593,7 +593,7 @@ Hooks.once("ready", async () => {
       }
     }
 
-    if (currentVersion === "null" || parseFloat(currentVersion) < 1.3) {
+    if (currentVersion === "null" || parseFloat(currentVersion) < 1.61) {
       ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
       const pro = [];
@@ -611,11 +611,13 @@ Hooks.once("ready", async () => {
             }
 
             for (var i = 0; i < content.length; i++) {
-              if (!content[i]?.data?.flags?.ffgimportid && content[i]?.data?.flags?.importid) {
+              if (!content[i]?.data?.flags?.starwarsffg && content[i]?.data?.flags?.ffgimportid) {
                 CONFIG.logger.debug(`Migrating (${content[i].data._id}) ${content[i].data.name}`);
                 content[i].update({
                   flags: {
-                    ffgimportid: content[i].data.flags.importid,
+                    starwarsffg: {
+                      ffgimportid: content[i].data.flags.starwarsffg.importid,
+                    }
                   },
                 });
               }

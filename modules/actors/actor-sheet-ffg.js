@@ -74,12 +74,12 @@ export class ActorSheetFFG extends ActorSheet {
     if (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined") {
       autoSoakCalculation = game.settings.get("starwarsffg", "enableSoakCalc");
     } else {
-      autoSoakCalculation = this.actor.data.flags.config.enableAutoSoakCalculation;
+      autoSoakCalculation = this.actor.data?.flags?.starwarsffg?.config?.enableAutoSoakCalculation;
     }
 
     data.settings = {
       enableSoakCalculation: autoSoakCalculation,
-      enableCriticalInjuries: this.actor.data?.flags?.config?.enableCriticalInjuries,
+      enableCriticalInjuries: this.actor.data?.flags?.starwarsffg?.config?.enableCriticalInjuries,
     };
 
     // Establish sheet width and height using either saved persistent values or default values defined in swffg-config.js
@@ -92,7 +92,7 @@ export class ActorSheetFFG extends ActorSheet {
           this.position.height = 165;
         }
         // we need to update all specialization talents with the latest talent information
-        if (!this.actor.data.flags.loaded) {
+        if (!this.actor.data.flags.starwarsffg?.loaded) {
           this._updateSpecialization(data);
         }
 
@@ -1039,7 +1039,7 @@ export class ActorSheetFFG extends ActorSheet {
    */
   async _updateSpecialization(data) {
     CONFIG.logger.debug(`Running Actor initial load`);
-    this.actor.data.flags.loaded = true;
+    this.actor.data.flags.starwarsffg.loaded = true;
 
     const specializations = this.actor.data.items.filter((item) => {
       return item.type === "specialization";
@@ -1057,7 +1057,7 @@ export class ActorSheetFFG extends ActorSheet {
             if (!entry) {
               entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
             }
-            gameItem = await pack.getEntity(entry.id);
+            gameItem = await pack.getDocument(entry.id);
           }
         } else {
           gameItem = await game.items.get(specializationTalents[talent].itemId);

@@ -12,7 +12,7 @@
   <div class="specials">
     <h5>
       {{#each data.data.adjusteditemmodifier as |item id|}}
-      <li class="item-pill" data-item-id="{{../data.flags.uuid}}" data-modifier-id="{{item._id}}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank_current 0)}}{{item.data.rank_current}}{{else}}{{/if}}</li>
+      <li class="item-pill" data-item-id="{{../data.flags.starwarsffg.ffgUuid}}" data-modifier-id="{{item._id}}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank_current 0)}}{{item.data.rank_current}}{{else}}{{/if}}</li>
       {{/each}}
     </h5>
   </div>
