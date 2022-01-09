@@ -440,7 +440,6 @@ export class ItemSheetFFG extends ItemSheet {
                       break;
                     }
                     case "itemattachment": {
-                      console.log(itemType);
                       break;
                     }
                   }

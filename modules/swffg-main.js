@@ -598,7 +598,6 @@ Hooks.once("ready", async () => {
       try {
         for (let pack of game.packs) {
           if (pack.metadata.documentName == "Item" && pack.metadata.package == "world") {
-            console.log(pack.metadata);
             const isLocked = pack.locked;
 
             if (isLocked) {
