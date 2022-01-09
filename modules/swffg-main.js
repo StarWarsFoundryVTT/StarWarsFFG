@@ -488,8 +488,7 @@ Hooks.once("ready", async () => {
 
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
-  const pattern = /([1-9].[1-9])/gim;
-  const version = game.system.data.version.match(pattern);
+  const version = game.system.data.version;
   const isAlpha = game.system.data.version.includes("alpha");
 
   if ((isAlpha || currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.data.version)) && game.user.isGM) {
@@ -596,24 +595,25 @@ Hooks.once("ready", async () => {
     if (currentVersion === "null" || parseFloat(currentVersion) < 1.61) {
       ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
-      const pro = [];
-
-      game.packs.entries.forEach((pack) => {
-        pro.push(
-          new Promise(async (resolve, reject) => {
-            const content = await pack.getDocuments();
-            CONFIG.logger.log(`Migrating ${pack.metadata.label} - ${content.length} Entries`);
-
+      try {
+        for (let pack of game.packs) {
+          if (pack.metadata.documentName == "Item" && pack.metadata.package == "world") {
+            console.log(pack.metadata);
             const isLocked = pack.locked;
 
             if (isLocked) {
-              await pack.configure({ locked: false });
+              await pack.configure({locked: false});
             }
+
+            await pack.migrate();
+            const content = await pack.getDocuments();
+
+            CONFIG.logger.log(`Migrating ${pack.metadata.label} - ${content.length} Entries`);
 
             for (var i = 0; i < content.length; i++) {
               if (!content[i]?.data?.flags?.starwarsffg && content[i]?.data?.flags?.ffgimportid) {
                 CONFIG.logger.debug(`Migrating (${content[i].data._id}) ${content[i].data.name}`);
-                content[i].update({
+                content[i].data.update({
                   flags: {
                     starwarsffg: {
                       ffgimportid: content[i].data.flags.starwarsffg.importid,
@@ -622,24 +622,17 @@ Hooks.once("ready", async () => {
                 });
               }
             }
-            resolve();
 
             if (isLocked) {
-              await pack.configure({ locked: true });
+              await pack.configure({locked: true});
             }
-          })
-        );
-      });
-
-      Promise.all(pro)
-        .then(() => {
-          ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
-        })
-        .catch((err) => {
-          CONFIG.logger.error(`Error during system migration`, err);
-        });
+          }
+        }
+        ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+      } catch (err) {
+        CONFIG.logger.error(`Error during system migration`, err);
+      }
     }
-
     game.settings.set("starwarsffg", "systemMigrationVersion", version);
   }
 

@@ -36,11 +36,11 @@ export class ItemFFG extends ItemBaseFFG {
     const data = itemData.data;
 
     if (!itemData.flags.starwarsffg) {
-      this.update({
+      itemData.update({
         flags: {
           starwarsffg: {
             isCompendium: this.compendium,
-            ffgUuid: this.uuid || null,
+            ffgUuid: this.parent?.data ? this.uuid : null,
             ffgIsOwned: this.isEmbedded,
             loaded: false
           }
