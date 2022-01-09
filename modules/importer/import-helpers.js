@@ -2026,10 +2026,9 @@ export default class ImportHelpers {
       updateDialog(90);
 
       if (exists) {
-        //let updateData = ImportHelpers.buildUpdateData(character);
-        let updateData = character;
-        updateData["_id"] = exists.id;
-        await Actor.update(updateData);
+        const actor = await game.actors.get(exists._id);
+        const newData = mergeObject(actor.data, character);
+        await actor.data.update(newData);
       } else {
         await Actor.create(character);
       }
