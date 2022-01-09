@@ -126,7 +126,7 @@ export default class EmbeddedItemHelpers {
       let modifierIndex;
       let item;
       if (ownedItem?.data?.data?.[modifierType]) {
-        modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId);
+        modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId || i.id === modifierId);
         item = ownedItem.data.data[modifierType][modifierIndex];
       }
 
