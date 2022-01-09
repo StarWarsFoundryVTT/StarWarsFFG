@@ -263,6 +263,11 @@ export class ItemFFG extends ItemBaseFFG {
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
         data.activation.label = activationId;
         break;
+      
+      case "gear":
+        data.encumbrance.value = parseInt(data.encumbrance.value, 10);
+        break;
+      
       default:
     }
 
