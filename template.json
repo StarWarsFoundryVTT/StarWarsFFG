@@ -584,7 +584,8 @@
         "itemattachment":[]
       },
       "qualities" : {
-        "itemmodifier": []
+        "itemmodifier": [],
+        "adjusteditemmodifer": []
       }
     },
     "gear": {
