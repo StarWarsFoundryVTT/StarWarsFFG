@@ -1038,7 +1038,12 @@ export class ActorSheetFFG extends ActorSheet {
    */
   async _updateSpecialization(data) {
     CONFIG.logger.debug(`Running Actor initial load`);
-    this.actor.data.flags.starwarsffg.loaded = true;
+    
+    if (this.actor.data.flags.starwarsffg) {
+      this.actor.data.flags.starwarsffg.loaded = true;
+    } else {
+      this.actor.data.flags.starwarsffg = { loaded: true };
+    }
 
     const specializations = this.actor.data.items.filter((item) => {
       return item.type === "specialization";
