@@ -1,5 +1,5 @@
 const createMacroItem = async (macro) => {
-  const macroExists = game.macros.entities.find((m) => m.name === macro.name && m.command === macro.command);
+  const macroExists = game.macros.find((m) => m.name === macro.name && m.command === macro.command);
   if (!macroExists) {
     return await Macro.create(macro);
   }
