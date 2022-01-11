@@ -455,7 +455,7 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
   content[0].innerHTML = PopoutEditor.renderDiceImages(content[0].innerHTML);
 
   html.on("click", ".ffg-pool-to-player", () => {
-    const poolData = messageData.message.flags.ffg;
+    const poolData = messageData.message.flags.starwarsffg;
 
     const dicePool = new DicePoolFFG(poolData.dicePool);
 
