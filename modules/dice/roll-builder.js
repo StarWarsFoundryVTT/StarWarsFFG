@@ -149,7 +149,7 @@ export default class RollBuilderFFG extends FormApplication {
           user: game.user.id,
           content: messageText,
           flags: {
-            ffg: {
+            starwarsffg: {
               roll: this.roll,
               dicePool: this.dicePool,
               description: this.description,
