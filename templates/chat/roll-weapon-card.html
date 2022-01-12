@@ -17,5 +17,15 @@
     </h5>
   </div>
   {{/if}}
+  {{#if data.data.itemmodifier}}
+  {{#iff data.data.adjusteditemmodifier '==' undefined }}
+  <div class="specials">
+    <h5>
+      {{#each data.data.itemmodifier as |item id|}}
+      <li class="item-pill" data-item-id="{{../data.flags.starwarsffg.ffgUuid}}" data-modifier-id="{{item.id}}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank 0)}}{{item.data.rank}}{{else}}{{/if}}</li>
+      {{/each}}
+    </h5>
+  </div>
+  {{/iff}}{{/if}}
   {{#if data.data.special.value}}{{{ffgDiceSymbols data.data.special.value}}}{{/if}}
 </div>
