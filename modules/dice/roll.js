@@ -272,7 +272,7 @@ export class RollFFG extends Roll {
       addedResults: this.addedResults,
       publicRoll: !chatOptions.isPrivate,
     };
-    if (chatData.data.data.adjusteditemmodifier === undefined) {
+    if (chatData.data.hasOwnProperty('data') && chatData.data.data.adjusteditemmodifier === undefined) {
       // extended metadata is missing, lookup the actor ID so we can embed it for future lookups
       let candidate_actors = game.actors.filter(actor => actor.items.filter(item => item.id === chatData.data._id).length > 0);
       if (candidate_actors.length > 0) {
