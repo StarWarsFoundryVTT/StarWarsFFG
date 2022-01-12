@@ -1600,6 +1600,7 @@ img {
   width: 2.5rem;
   right: -2rem;
   top: 2rem;
+  flex-direction: column;
 }
 
 .starwarsffg.v2 .tabs .item {
@@ -1608,6 +1609,7 @@ img {
   margin: 0.25rem;
   font-size: 1rem;
   height: 2.5rem;
+  width: 2.5rem;
   flex: 0 0 2.5rem;
   -webkit-clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
   clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
