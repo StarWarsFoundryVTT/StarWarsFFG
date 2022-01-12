@@ -35,6 +35,7 @@ import { createFFGMacro } from "./helpers/macros.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
 import PauseFFG from "./apps/pause-ffg.js";
+import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -596,37 +597,15 @@ Hooks.once("ready", async () => {
       ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
       try {
+        
+        // Update old pack to latest data model
         for (let pack of game.packs) {
-          if (pack.metadata.documentName == "Item" && pack.metadata.package == "world") {
-            const isLocked = pack.locked;
-
-            if (isLocked) {
-              await pack.configure({locked: false});
-            }
-
-            await pack.migrate();
-            const content = await pack.getDocuments();
-
-            CONFIG.logger.log(`Migrating ${pack.metadata.label} - ${content.length} Entries`);
-
-            for (var i = 0; i < content.length; i++) {
-              if (!content[i]?.data?.flags?.starwarsffg && content[i]?.data?.flags?.ffgimportid) {
-                CONFIG.logger.debug(`Migrating (${content[i].data._id}) ${content[i].data.name}`);
-                content[i].data.update({
-                  flags: {
-                    starwarsffg: {
-                      ffgimportid: content[i].data.flags.starwarsffg.importid,
-                    }
-                  },
-                });
-              }
-            }
-
-            if (isLocked) {
-              await pack.configure({locked: true});
-            }
-          }
+          await pack.migrate();
         }
+        
+        // Copy old flags to new system scope
+        FlagMigrationHelpers.migrateFlags()
+
         ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
       } catch (err) {
         CONFIG.logger.error(`Error during system migration`, err);
