@@ -281,6 +281,8 @@ export class RollFFG extends Roll {
       }
     }
 
+    console.log(chatData)
+
     // Render the roll display template
     return renderTemplate(chatOptions.template, chatData);
   }
