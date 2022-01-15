@@ -534,6 +534,8 @@
   "SWFFG.DiceResult.OneThreat": "1 threat",
   "SWFFG.DiceResult.TwoThreat": "1 threats",
   "SWFFG.DiceResult.OneFailureOneThreat": "1 failure, 1 threat",
-  "SWFFG.DiceResult.OneDespair": "1 despair"
+  "SWFFG.DiceResult.OneDespair": "1 despair",
+  "SWFFG.OldWorld.CompatLabel": "Enable Old World Compatability",
+  "SWFFG.OldWorld.CompatHint": "Enables helpers designed for worlds ported from old versions of the system. May negatively impact the play experience in some cases."
 }
 
