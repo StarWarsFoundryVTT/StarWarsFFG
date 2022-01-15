@@ -223,6 +223,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.FFG = CONFIG.FFG;
+    data.data.renderedDesc = PopoutEditor.renderDiceImages(data.data.description, this.actor ? this.actor.data : {});
 
     return data;
   }
