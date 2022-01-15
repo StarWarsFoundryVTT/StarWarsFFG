@@ -699,7 +699,7 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
 
     dice3d.addDicePreset(
       {
-        type: "dd",
+        type: "di",
         labels: ["", "f", "f\nf", "t", "t", "t", "t\nt", "f\nt"],
         font: "SWRPG-Symbol-Regular",
         colorset: "purple",
