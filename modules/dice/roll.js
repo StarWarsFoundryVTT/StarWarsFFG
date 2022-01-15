@@ -272,16 +272,27 @@ export class RollFFG extends Roll {
       addedResults: this.addedResults,
       publicRoll: !chatOptions.isPrivate,
     };
-    if (chatData.data.hasOwnProperty('data') && chatData.data.data.adjusteditemmodifier === undefined) {
+    if (chatData.data.hasOwnProperty('data') && (chatData.data.data.adjusteditemmodifier === undefined || chatData.data.data.adjusteditemmodifier.length === 0)) {
       // extended metadata is missing, lookup the actor ID so we can embed it for future lookups
       let candidate_actors = game.actors.filter(actor => actor.items.filter(item => item.id === chatData.data._id).length > 0);
       if (candidate_actors.length > 0) {
+        if (game.settings.get("starwarsffg", "oldWorldCompatability")) {
+          let test_item = game.actors.get(candidate_actors[0].id).items.get(chatData.data._id);
+          // for whatever reason, sometimes the item we read doesn't have modifiers even though the chat item does
+          // check if this is the case and correct it if it is
+          try {
+            if (test_item.data?.data?.itemmodifier.length === 0 && chatData.data?.data?.itemmodifier) {
+              // there aren't any modifiers on the object, try copying the temp object to it so the link works
+              test_item.data.data.itemmodifier = chatData.data.data.itemmodifier;
+            }
+          } catch (exception) {
+            // required data was missing - best to just move along, citizen
+          }
+        }
         // fake the UUID flag so we can do the lookup within chat messages
         chatData.data.flags.starwarsffg.ffgUuid = 'Actor.' + candidate_actors[0].id + '.Item.' + chatData.data._id;
       }
     }
-
-    console.log(chatData)
 
     // Render the roll display template
     return renderTemplate(chatOptions.template, chatData);

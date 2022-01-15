@@ -285,6 +285,18 @@ export default class SettingsHelpers {
         return this.debouncedReload();
       },
     });
+
+
+    // Increase compatibility with old versions (likely to make new games kinda weird as it updates items from chat data)
+    game.settings.register("starwarsffg", "oldWorldCompatability", {
+      name: game.i18n.localize("SWFFG.OldWorld.CompatLabel"),
+      hint: game.i18n.localize("SWFFG.OldWorld.CompatHint"),
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean,
+      onChange: this.debouncedReload,
+    });
   }
 
   // Initialize System Settings after the Ready Hook

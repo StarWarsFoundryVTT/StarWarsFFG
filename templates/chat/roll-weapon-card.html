@@ -24,7 +24,7 @@
   <div class="specials">
     <h5>
       {{#each data.data.itemmodifier as |item id|}}
-      <li class="item-pill" data-item-id="{{../data.flags.starwarsffg.ffgUuid}}" data-modifier-id="{{item.id}}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank 0)}}{{item.data.rank}}{{else}}{{/if}}</li>
+      <li class="item-pill" data-item-id="{{../data.flags.starwarsffg.ffgUuid}}" data-modifier-id="{{#if item.id }}{{item.id}}{{else}}{{item._id}}{{/if}}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank 0)}}{{item.data.rank}}{{else}}{{/if}}</li>
       {{/each}}
     </h5>
   </div>
