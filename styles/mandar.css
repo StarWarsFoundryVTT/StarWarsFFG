@@ -1563,9 +1563,10 @@ img {
 .starwarsffg .tabs .item {
   line-height: 1.5rem;
   height: 2rem;
+  width: 100%;
   background-color: #535d60;
   color: rgba(255, 255, 255, 0.9);
-  text-transform: Capitalise;
+  text-transform: uppercase;
   text-shadow: black 1px 2px 0;
   padding: 0.25rem;
   margin: 0 0.25rem;
