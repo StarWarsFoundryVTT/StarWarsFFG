@@ -82,7 +82,7 @@ export default class PopoutEditor extends FormApplication {
       },
       {
         type: "difficulty",
-        character: "dd",
+        character: "di",
         class: "starwars",
         pattern: /:(average):/gim,
       },
