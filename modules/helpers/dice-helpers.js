@@ -104,7 +104,7 @@ export default class DiceHelpers {
   }
 
   static async displayRollDialog(data, dicePool, description, skillName, item, flavorText, sound) {
-    new RollBuilderFFG(data, dicePool, description, skillName, item, flavorText, sound).render(true);
+    return new RollBuilderFFG(data, dicePool, description, skillName, item, flavorText, sound).render(true);
   }
 
   static async addSkillDicePool(obj, elem) {

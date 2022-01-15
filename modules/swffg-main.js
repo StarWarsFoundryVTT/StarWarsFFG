@@ -36,6 +36,7 @@ import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
 import PauseFFG from "./apps/pause-ffg.js";
 import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
+import RollBuilderFFG from "./dice/roll-builder.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -50,6 +51,7 @@ Hooks.once("init", async function () {
     CombatFFG,
     RollFFG,
     DiceHelpers,
+    RollBuilderFFG,
     addons: {
       PopoutEditor,
     },
