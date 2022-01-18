@@ -1664,7 +1664,6 @@ img {
   border-radius: 0;
   font-family: "Elektra", sans-serif;
   font-size: 1rem;
-  text-transform: uppercase;
 }
 
 .starwarsffg .header-fields .header-name input:focus, .starwarsffg .header-fields .minion-name input:focus {
