@@ -222,6 +222,12 @@ export class ItemSheetFFG extends ItemSheet {
       default:
     }
 
+    // Render the description if not initialized
+    // May happen on item import
+    if (!data.data.renderedDesc){
+      data.data.renderedDesc = PopoutEditor.renderDiceImages(data.data.description, {});
+    }
+
     data.FFG = CONFIG.FFG;
 
     return data;
