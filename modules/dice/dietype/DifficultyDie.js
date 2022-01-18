@@ -5,7 +5,7 @@ export class DifficultyDie extends DiceTerm {
   }
   /* -------------------------------------------- */
   /** @override */
-  static DENOMINATION = "d";
+  static DENOMINATION = "i";
 
   /* -------------------------------------------- */
   /** @override */
