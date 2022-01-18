@@ -1,7 +1,7 @@
 <div class="item-display" data-item-id="{{data._id}}">
-  {{#if (ne data.img "icons/svg/mystery-man.svg")}}
-  <img class="item-image" src="{{data.img}}" />
-  {{/if}}
+  {{#iff (defaultImage data.img) '!=' true}}
+    <img class="item-image" src="{{data.img}}" />
+  {{/iff}}
   <h2 class="item-name">{{data.name}}</h2>
   <div class="item-details">
     {{{ffgDiceSymbols data.data.description}}}

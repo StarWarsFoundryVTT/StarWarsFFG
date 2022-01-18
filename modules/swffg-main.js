@@ -395,6 +395,10 @@ Hooks.once("init", async function () {
     return Array.from(arguments).slice(0, arguments.length - 1);
   });
 
+  Handlebars.registerHelper("defaultImage", function(img) {
+    return ["icons/svg/mystery-man.svg", "icons/svg/item-bag.svg"].includes(img);
+  });
+
   TemplateHelpers.preload();
 });
 
