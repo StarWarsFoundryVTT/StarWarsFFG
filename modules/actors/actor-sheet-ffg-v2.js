@@ -13,7 +13,7 @@ export class ActorSheetFFGV2 extends ActorSheetFFG {
       width: 710,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],
-      scrollY: [".tableWithHeader", ".tab", ".skillsGrid"],
+      scrollY: [".tableWithHeader", ".tab", ".skillsGrid", ".skillsTablesGrid"],
     });
   }
 
