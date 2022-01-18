@@ -90,13 +90,6 @@ section {
   cursor: pointer;
 }
 
-input[type="checkbox"] {
-  height: auto;
-  margin: 0;
-  padding: 0;
-  line-height: 1rem;
-}
-
 #chat-log .message {
   background: #eeeeee;
 }
