@@ -254,7 +254,8 @@ export class GroupManager extends FormApplication {
   }
 
   async _rollTable(table, type) {
-    let r = new Roll("1d100").roll();
+    let r = new Roll("1d100");
+    await r.evaluate();
     let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? { rollMode: "gmroll" } : {};
     r.toMessage(
       {
