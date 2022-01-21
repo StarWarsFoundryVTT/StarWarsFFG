@@ -95,7 +95,6 @@ export default class DestinyTracker extends FormApplication {
 
       const index = event.currentTarget.dataset.value;
       this.menu[index].callback();
-      $(event.currentTarget).parent().toggleClass("show");
     });
 
     html.find(".destiny-points").click(async (event) => {

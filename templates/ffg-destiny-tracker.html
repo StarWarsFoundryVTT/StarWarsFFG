@@ -3,15 +3,10 @@
     <div class="swffg-destiny {{#if isGM}}swffg-groupmanager{{/if}}" title="{{localize 'SWFFG.DestinyTrackerHint'}}">
       {{#if isGM}}
       <section id="destinyMenu" class="group-manager">
-        <div class="dropdown">
-          <button id="menuDropdown" class="dropbtn"><i class="fas fa-bars"></i></button>
-          <div id="menuDropdownContent" class="dropdown-content">
-            {{#each menu as |item id|}}
-            <a href="#" data-value="{{id}}" title="{{item.name}}">
-              {{{item.icon}}}
-            </a>
-            {{/each}}
-          </div>
+        <div class="dropdown-content">
+          {{#each menu as |item id|}}
+          <a href="#" data-value="{{id}}" title="{{item.name}}">{{{item.icon}}}</a>
+          {{/each}}
         </div>
       </section>
       {{/if}}
