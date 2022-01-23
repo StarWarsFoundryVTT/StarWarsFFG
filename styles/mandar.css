@@ -2979,6 +2979,9 @@ img {
 }
 
 .starwarsffg .group-manager {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
   font-family: Roboto, sans-serif;
   color: #222222;
   height: 100%;
@@ -3836,7 +3839,7 @@ img {
 }
 
 #destiny-tracker .dropdown-content {
-  display: none;
+  display: contents;
   position: absolute;
   background: url("../../../ui/denim075.png") repeat;
   max-width: 50px;
