@@ -536,5 +536,20 @@
   "SWFFG.DiceResult.OneFailureOneThreat": "1 Fehlschlag, 1 Bedrohung",
   "SWFFG.DiceResult.OneDespair": "1 Verzweiflung",
   "SWFFG.OldWorld.CompatLabel": "Aktiviere Kompatibilität mit Welten älterer Versionen.",
-  "SWFFG.OldWorld.CompatHint": "Aktiviert Helfer für Welten aus älteren Versionen des Systems. Könnte in Ausnahmefällen das Spielerlebnis negativ beeinflussen."
+  "SWFFG.OldWorld.CompatHint": "Aktiviert Helfer für Welten aus älteren Versionen des Systems. Könnte in Ausnahmefällen das Spielerlebnis negativ beeinflussen.",
+  "ITEM.TypeArmour": "Rüstung",
+  "ITEM.TypeCareer": "Beruf",
+  "ITEM.TypeCriticaldamage": "Kritischer Schaden",
+  "ITEM.TypeCriticalinjury": "Kritische Verletzung",
+  "ITEM.TypeForcepower": "Machtfähigkeit",
+  "ITEM.TypeGear": "Ausrüstung",
+  "ITEM.TypeItemattachment": "Gegenstand-Zubehör",
+  "ITEM.TypeItemmodifier": "Gegenstand-Modifikator",
+  "ITEM.TypeTalent": "Talent",
+  "ITEM.TypeShipattachment": "Schiffszubehör",
+  "ITEM.TypeShipweapon": "Schiffsbewaffnung",
+  "ITEM.TypeSignatureability": "Expertenfähigkeit",
+  "ITEM.TypeSpecialization": "Spezialisierung",
+  "ITEM.TypeSpecies": "Spezies",
+  "ITEM.TypeWeapon": "Waffe"
 }
