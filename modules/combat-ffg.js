@@ -102,7 +102,7 @@ export class CombatFFG extends Combat {
         buttons: {
           one: {
             icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize("InitiativeRoll"),
+            label: game.i18n.localize("SWFFG.InitiativeRoll"),
             callback: async () => {
               const container = document.getElementById(id);
               const currentId = initiative.combatant.id;
