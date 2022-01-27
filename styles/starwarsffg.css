@@ -229,6 +229,7 @@ img {
   height: 15px;
   margin-bottom: 10px;
   border: 0;
+  padding: 0;
 }
 .starwarsffg.sheet.actor .tabs .item {
   line-height: 15px;
@@ -524,6 +525,7 @@ img {
 .starwarsffg.sheet.item .tabs {
   height: 20px;
   border: 0;
+  padding: 0;
 }
 .starwarsffg.sheet.item .tabs .item {
   line-height: 15px;
