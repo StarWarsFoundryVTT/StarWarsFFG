@@ -101,7 +101,7 @@ export default class DestinyTracker extends FormApplication {
       const pointType = event.currentTarget.dataset.group;
       var typeName = null;
       const add = event.shiftKey;
-      const remove = event.ctrlKey;
+      const remove = event.ctrlKey || event.metaKey;
       var flipType = null;
       var actionType = null;
       if (pointType == "dPoolLight") {
