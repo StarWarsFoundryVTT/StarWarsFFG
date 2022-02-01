@@ -456,6 +456,37 @@ export class ActorSheetFFG extends ActorSheet {
       }
     });
 
+    // Add Inventory Item
+    html.find(".item-add").click((ev) => {
+
+      let itemType = "";
+      switch (ev.currentTarget.classList[1]) {
+        case "armour":
+          itemType = game.i18n.localize("ITEM.TypeArmour");
+          break;
+        case "weapon":
+          itemType = game.i18n.localize("ITEM.TypeWeapon");
+          break;
+        case "shipattachment":
+          itemType = game.i18n.localize("ITEM.TypeShipattachment");
+          break;
+        case "shipweapon":
+          itemType = game.i18n.localize("ITEM.TypeShipweapon");
+          break;
+
+        default:
+          itemType = game.i18n.localize("ITEM.TypeGear");
+          break;
+      }
+
+      let itemdata = {
+        name: itemType,
+        type: ev.currentTarget.classList[1]
+      };
+
+      this.actor.createEmbeddedDocuments("Item", [itemdata]);
+    });
+
     // Delete Inventory Item
     html.find(".item-delete").click((ev) => {
       const li = $(ev.currentTarget).parents(".item");
