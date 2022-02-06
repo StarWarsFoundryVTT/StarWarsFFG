@@ -32,6 +32,11 @@
       "lang": "es",
       "name": "Español (Spanish)",
       "path": "lang/es.json"
+    },
+    {
+      "lang": "pt-BR",
+      "name": "Português (BR)",
+      "path": "lang/pt-BR.json"
     }
   ],
   "gridDistance": 5,
