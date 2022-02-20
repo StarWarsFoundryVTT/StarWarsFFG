@@ -1309,7 +1309,7 @@ export default class ImportHelpers {
   {
     const npcName = adversaryData.Name;
     const npcKey = adversaryData.Key;
-    const exists = game.data.actors.find((actor) => actor.flags.starwarsffg.ffgimportid == npcKey);
+    const exists = game.data.actors.find((actor) => actor.flags.starwarsffg?.ffgimportid == npcKey);
 
     // minion sheet data obtained from an export and reformed for importing here.
     // Deep copy our template so we don't have to have a bunch of json sat here
