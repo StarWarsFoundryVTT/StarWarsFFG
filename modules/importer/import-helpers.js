@@ -1214,7 +1214,7 @@ export default class ImportHelpers {
   {
     const npcName = adversaryData.Name;
     const npcKey = adversaryData.Key;
-    const exists = game.data.actors.find((actor) => actor.flags.starwarsffg.ffgimportid == npcKey);
+    const exists = game.data.actors.find((actor) => actor.flags.starwarsffg?.ffgimportid == npcKey);
 
     // copy template character json
     let adversary = JSON.parse(JSON.stringify(ImportHelpers.characterTemplate));
