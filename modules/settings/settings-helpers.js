@@ -31,6 +31,7 @@ export default class SettingsHelpers {
       choices: {
         starwars: "starwars",
         genesys: "genesys",
+        custom: "custom",
       },
     });
 
