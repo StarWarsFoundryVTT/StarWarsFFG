@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character", "minion", "vehicle"],
+    "types": ["character", "minion", "vehicle", "homestead"],
     "templates": {
       "biography": {
         "biography": ""
@@ -527,6 +527,9 @@
           "label": "SWFFG.Consumables"
         }
       }
+    },
+    "homestead": {
+      "templates": ["biography"]
     }
   },
   "Item": {

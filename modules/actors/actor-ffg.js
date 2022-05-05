@@ -51,7 +51,7 @@ export class ActorFFG extends Actor {
     data.biography = PopoutEditor.renderDiceImages(data.biography, actorData);
 
     // localize characteristic names
-    if (actorData.type !== "vehicle") {
+    if (actorData.type !== "vehicle" && actorData.type !== "homestead") {
       for (let characteristic of Object.keys(data.characteristics)) {
         const strId = `SWFFG.Characteristic${this._capitalize(characteristic)}`;
         const localizedField = game.i18n.localize(strId);
