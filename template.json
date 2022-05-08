@@ -529,7 +529,19 @@
       }
     },
     "homestead": {
-      "templates": ["biography"]
+      "templates": ["biography", "attributes"],
+      "cost": {
+        "value": 0,
+        "type": "Number",
+        "label": "Cost",
+        "adjusted": 0
+      },
+      "consumables" : {
+        "value" : 1,
+        "duration" : "months",
+        "type": "Number",
+        "label": "SWFFG.Consumables"
+      }
     }
   },
   "Item": {

@@ -1,4 +1,4 @@
-{{!-- Cargo Hold --}}
+{{!-- Storage --}}
 <ul class="items">
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.ItemsStorage"}}</div>
@@ -7,7 +7,7 @@
   </li>
 
   <ul class="items-list">
-    {{#each items as |item id|}}
+    {{#each items as |item id|}} {{#if (ne item.type "homesteadupgrade") }}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">
         <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
@@ -27,6 +27,6 @@
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
       </div>
     </li>
-    {{/each}}
+    {{/if}} {{/each}}
   </ul>
 </ul>
