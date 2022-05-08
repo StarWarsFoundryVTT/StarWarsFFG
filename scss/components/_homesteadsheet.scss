@@ -3,7 +3,7 @@
     .homestead {
 
       .sheet-header .homestead-img {
-        height: auto;
+        height: 20vmin;
       }
 
       .biography-values {
@@ -15,7 +15,7 @@
         overflow:auto;
 
         .biography {
-          height: calc(100% - 6.5rem);
+          height: calc(100% - 1.5rem);
           overflow:auto;
         }
       }
