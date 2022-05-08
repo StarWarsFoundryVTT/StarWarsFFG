@@ -4,8 +4,15 @@
       <div class="container flex-group-center">
         <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
       </div>
-      <div class="container flex-group-center item-name">
-        <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+      <div class="container flex-group-center">
+        <div class="container flex-group-center item-name">
+          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+        </div>
+        <div class="container flex-group-center">
+          <div class="container flex-group-center weapon-values">
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
+          </div>
+        </div>
       </div>
     </div>
   </header>
