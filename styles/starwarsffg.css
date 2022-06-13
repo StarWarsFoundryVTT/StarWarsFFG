@@ -2043,6 +2043,20 @@ img {
 .starwarsffg.sheet.actor .vehicle .injuries .resource.full {
   width: 100%;
 }
+.starwarsffg.sheet.actor .homestead .sheet-header .homestead-img {
+  height: 20vmin;
+}
+.starwarsffg.sheet.actor .homestead .biography-values {
+  border: 0;
+}
+.starwarsffg.sheet.actor .homestead .sheet-body {
+  height: calc(100% - 28.875rem);
+  overflow: auto;
+}
+.starwarsffg.sheet.actor .homestead .sheet-body .biography {
+  height: calc(100% - 1.5rem);
+  overflow: auto;
+}
 .starwarsffg .item-sheet-vehicle-weapon .charname input {
   color: #1f1c37;
 }
