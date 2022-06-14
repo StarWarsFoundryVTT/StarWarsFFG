@@ -348,7 +348,7 @@ export default class SettingsHelpers {
     game.settings.register("starwarsffg", "HealingItemAction", {
       name: game.i18n.localize("SWFFG.MedicalItemSetting"),
       scope: "world",
-      default: 'Prompt',
+      default: '0',
       config: true,
       type: String,
       choices: stimpackChoices,
