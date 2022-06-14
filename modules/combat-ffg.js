@@ -43,7 +43,7 @@ export class CombatFFG extends Combat {
     let promise = new Promise(async function (resolve, reject) {
       const id = randomID();
 
-      let whosInitiative = initiative.combatant.name;
+      let whosInitiative = initiative.combatant?.name;
       let dicePools = [];
       let vigilanceDicePool = new DicePoolFFG({});
       let coolDicePool = new DicePoolFFG({});
@@ -105,7 +105,7 @@ export class CombatFFG extends Combat {
             label: game.i18n.localize("SWFFG.InitiativeRoll"),
             callback: async () => {
               const container = document.getElementById(id);
-              const currentId = initiative.combatant.id;
+              const currentId = initiative.combatant?.id;
 
               const baseFormulaType = container.querySelector('input[name="skill"]:checked').value;
 
@@ -175,8 +175,8 @@ export class CombatFFG extends Combat {
               // Update multiple combatants
               await initiative.updateEmbeddedDocuments("Combatant", updates);
 
-              // Ensure the turn order remains with the same combatant
-              if (updateTurn) {
+              // Ensure the turn order remains with the same combatant if there was one active
+              if (updateTurn && !!currentId) {
                 await initiative.update({ turn: initiative.turns.findIndex((t) => t.id === currentId) });
               }
 

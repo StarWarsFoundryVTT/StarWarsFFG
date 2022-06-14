@@ -1,0 +1,26 @@
+&.sheet {
+  &.actor {
+    .homestead {
+
+      .sheet-header .homestead-img {
+        height: 20vmin;
+      }
+
+      .biography-values {
+        border: 0;
+      }
+
+      .sheet-body {
+        height: calc(100% - 28.875rem);
+        overflow:auto;
+
+        .biography {
+          height: calc(100% - 1.5rem);
+          overflow:auto;
+        }
+      }
+
+    }
+  }
+}
+

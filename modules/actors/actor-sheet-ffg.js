@@ -103,7 +103,7 @@ export class ActorSheetFFG extends ActorSheet {
       default:
     }
 
-    if (this.actor.data.type !== "vehicle") {
+    if (this.actor.data.type !== "vehicle" && this.actor.data.type !== "homestead") {
       // Filter out skills that are not custom (manually added) or part of the current system skill list
       Object.keys(data.data.skills)
       .filter(s => !data.data.skills[s].custom && !CONFIG.FFG.skills[s])

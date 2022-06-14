@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character", "minion", "vehicle"],
+    "types": ["character", "minion", "vehicle", "homestead"],
     "templates": {
       "biography": {
         "biography": ""
@@ -527,11 +527,26 @@
           "label": "SWFFG.Consumables"
         }
       }
+    },
+    "homestead": {
+      "templates": ["biography", "attributes"],
+      "cost": {
+        "value": 0,
+        "type": "Number",
+        "label": "Cost",
+        "adjusted": 0
+      },
+      "consumables" : {
+        "value" : 1,
+        "duration" : "months",
+        "type": "Number",
+        "label": "SWFFG.Consumables"
+      }
     }
   },
   "Item": {
     "types": [
-      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "signatureability", "specialization", "species", "weapon"],
+      "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon"],
     "templates": {
       "core": {
         "description": "",

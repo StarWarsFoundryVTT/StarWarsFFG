@@ -252,7 +252,7 @@ Hooks.once("init", async function () {
     } catch (err) {}
 
     Hooks.on("createActor", (actor) => {
-      if (actor.type !== "vehicle") {
+      if (actor.type !== "vehicle" && actor.type !== "homestead") {
         if (CONFIG.FFG?.alternateskilllists?.length) {
           let skilllist = game.settings.get("starwarsffg", "skilltheme");
           try {
