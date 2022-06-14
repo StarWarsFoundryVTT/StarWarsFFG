@@ -339,6 +339,20 @@ export default class SettingsHelpers {
       type: String,
       onChange: this.debouncedReload,
     });
+
+    let stimpackChoices = [
+        game.i18n.localize("SWFFG.MedicalItemNameUsePrompt"),
+        game.i18n.localize("SWFFG.MedicalItemNameUseRest"),
+        game.i18n.localize("SWFFG.MedicalItemNameUseReset"),
+    ];
+    game.settings.register("starwarsffg", "HealingItemAction", {
+      name: game.i18n.localize("SWFFG.MedicalItemSetting"),
+      scope: "world",
+      default: 'Prompt',
+      config: true,
+      type: String,
+      choices: stimpackChoices,
+    });
   }
 
   static debouncedReload = debounce(() => window.location.reload(), 100);

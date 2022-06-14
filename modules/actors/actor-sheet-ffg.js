@@ -393,9 +393,54 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     html.find(".resetMedical").click(async (ev) => {
-      let updateData = {};
-      setProperty(updateData, `data.stats.medical.uses`, 0);
-      this.object.update(updateData);
+      if (game.settings.get("starwarsffg", "HealingItemAction") === '0') {
+          // prompt
+          // show a prompt asking what the user wants to do
+          new Dialog(
+              {
+                  title: game.i18n.localize("SWFFG.MedicalItemNameUseTitle"),
+                  buttons: {
+                      done: {
+                          icon: '<i class="fas fa-hourglass"></i>',
+                          label: game.i18n.localize("SWFFG.MedicalItemNameUseRest"),
+                          callback: (that) => {
+                              // rest
+                              let updateData = {};
+                              setProperty(updateData, `data.stats.medical.uses`, 0);
+                              setProperty(updateData, `data.stats.strain.value`, 0);
+                              setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.data.data.stats.wounds.value - 1));
+                              this.object.update(updateData);
+                          },
+                      },
+                      cancel: {
+                          icon: '<i class="fas fa-recycle"></i>',
+                          label: game.i18n.localize("SWFFG.MedicalItemNameUseReset"),
+                          callback: (that) => {
+                              // reset
+                              let updateData = {};
+                              setProperty(updateData, `data.stats.medical.uses`, 0);
+                              this.object.update(updateData);
+                          },
+                      },
+                  },
+              },
+              {
+                  classes: ["dialog", "starwarsffg"],
+              }
+          ).render(true);
+      } else if (game.settings.get("starwarsffg", "HealingItemAction") === '1') {
+        // rest
+        let updateData = {};
+        setProperty(updateData, `data.stats.medical.uses`, 0);
+        setProperty(updateData, `data.stats.strain.value`, 0);
+        setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.data.data.stats.wounds.value - 1));
+        this.object.update(updateData);
+      } else if (game.settings.get("starwarsffg", "HealingItemAction") === '2') {
+        // reset
+        let updateData = {};
+        setProperty(updateData, `data.stats.medical.uses`, 0);
+        this.object.update(updateData);
+      }
     });
 
     // Toggle item equipped

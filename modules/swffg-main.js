@@ -603,12 +603,12 @@ Hooks.once("ready", async () => {
       ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
       try {
-        
+
         // Update old pack to latest data model
         for (let pack of game.packs) {
           await pack.migrate();
         }
-        
+
         // Copy old flags to new system scope
         FlagMigrationHelpers.migrateFlags()
 
