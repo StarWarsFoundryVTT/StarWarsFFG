@@ -20,7 +20,7 @@
   "ITEM.TypeSpecialization": "Specialization",
   "ITEM.TypeSpecies": "Species",
   "ITEM.TypeWeapon": "Weapon",
-  
+
   "SWFFG.Name": "Name",
   "SWFFG.Species": "Species",
   "SWFFG.Career": "Career",
@@ -308,6 +308,11 @@
   "SWFFG.DefaultMedicalItemName": "Stimpacks",
   "SWFFG.MedicalItemName": "Healing Item Name",
   "SWFFG.MedicalItemNameHint": "Name of the item characters use to heal.",
+  "SWFFG.MedicalItemNameUseTitle": "Choose Action",
+  "SWFFG.MedicalItemNameUseRest": "Rest",
+  "SWFFG.MedicalItemNameUseReset": "Reset Only",
+  "SWFFG.MedicalItemNameUsePrompt": "Prompt",
+  "SWFFG.MedicalItemSetting": "Healing Item Action",
   "SWFFG.EnablePrivateTriggers": "Enable Private Group Manager Table Rolls",
   "SWFFG.EnablePrivateTriggersHint": "Enable making Obligation/Duty/Morality Table Rolls from group manager private so that players do not see the result",
   "SWFFG.EnableDebug": "Enable console debugging",
