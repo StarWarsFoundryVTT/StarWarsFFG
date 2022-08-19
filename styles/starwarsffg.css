@@ -233,6 +233,7 @@ img {
 }
 .starwarsffg.sheet.actor .tabs .item {
   line-height: 15px;
+  padding: 0;
 }
 .starwarsffg.sheet.actor .characteristic-item .characteristic-label {
   background-color: #490c0b;
@@ -529,6 +530,7 @@ img {
 }
 .starwarsffg.sheet.item .tabs .item {
   line-height: 15px;
+  padding: 0;
 }
 .starwarsffg.sheet.item .characteristic .characteristic-value.restricted::after {
   content: "R";

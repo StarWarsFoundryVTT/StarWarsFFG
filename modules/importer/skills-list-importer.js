@@ -1,5 +1,5 @@
 import Helpers from "../helpers/common.js";
-import { defaultSkillArrayString } from "../config/ffg-skillslist.js";
+import { defaultSkillList } from "../config/ffg-skillslist.js";
 
 export default class SkillListImporter extends FormApplication {
   /** @override */
@@ -53,7 +53,7 @@ export default class SkillListImporter extends FormApplication {
       event.preventDefault();
       event.stopPropagation();
 
-      game.settings.set("starwarsffg", "arraySkillList", defaultSkillArrayString);
+      game.settings.set("starwarsffg", "arraySkillList", defaultSkillList);
       game.settings.set("starwarsffg", "skilltheme", "starwars");
 
       debounce(() => window.location.reload(), 100);

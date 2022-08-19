@@ -26,7 +26,7 @@
         </div>
       </div>
       <div>
-        {{#if item.data.equippable.equipped}}
+        {{#if item.system.equippable.equipped}}
         <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
         {{else}}
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
@@ -68,7 +68,7 @@
         </div>
       </div>
       <div>
-        {{#if item.data.equippable.equipped}}
+        {{#if item.system.equippable.equipped}}
         <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
         {{else}}
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>

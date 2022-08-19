@@ -31,12 +31,12 @@ export class ItemFFG extends ItemBaseFFG {
     CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
 
     // Get the Item's data
-    const itemData = this.data;
-    const actorData = this.actor ? this.actor.data : {};
-    const data = itemData.data;
+    const item = this;
+    const actor = this.actor ? this.actor : {};
+    const data = item.system;
 
-    if (!itemData.flags.starwarsffg) {
-      itemData.update({
+    if (!item.flags.starwarsffg) {
+      await item.update({
         flags: {
           starwarsffg: {
             isCompendium: !!this.compendium,
@@ -48,23 +48,23 @@ export class ItemFFG extends ItemBaseFFG {
       });
     } else {
       if (this.compendium) {
-        itemData.flags.starwarsffg.isCompendium = true;
+        item.flags.starwarsffg.isCompendium = true;
         // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-        if (this.parent?.data) itemData.flags.starwarsffg.ffgUuid = this.uuid;
+        if (this.parent?.data) item.flags.starwarsffg.ffgUuid = this.uuid;
       } else {
-        itemData.flags.starwarsffg.isCompendium = false;
-        itemData.flags.starwarsffg.ffgIsOwned = false;
+        item.flags.starwarsffg.isCompendium = false;
+        item.flags.starwarsffg.ffgIsOwned = false;
         if (this.isEmbedded) {
-          itemData.flags.starwarsffg.ffgIsOwned = true;
+          item.flags.starwarsffg.ffgIsOwned = true;
           // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-          if (this.parent?.data) itemData.flags.starwarsffg.ffgUuid = this.uuid;
-        } else if (itemData._id) {
-          itemData.flags.starwarsffg.ffgTempId = itemData._id;
+          if (this.parent) item.flags.starwarsffg.ffgUuid = this.uuid;
+        } else if (item._id) {
+          item.flags.starwarsffg.ffgTempId = item._id;
         }
       }
     }
 
-    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actorData);
+    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actor);
 
     // perform localisation of dynamic values
     switch (this.type) {
@@ -147,7 +147,7 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isEmbedded && this.actor && this.actor.data) {
+        if (this.isEmbedded && this.actor) {
           let damageAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
@@ -157,7 +157,7 @@ export class ItemFFG extends ItemBaseFFG {
           if (this.actor.type !== "vehicle") {
             if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
-              data.damage.value = parseInt(actorData.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
+              data.damage.value = parseInt(actor.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
               data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
@@ -306,8 +306,8 @@ export class ItemFFG extends ItemBaseFFG {
   }
 
   _prepareTalentTrees(collection, itemType, listProperty, hasGlobalList) {
-    const itemData = this.data;
-    const talents = itemData.data[collection];
+    const item = this;
+    const talents = item.system[collection];
     let rowcount = 0;
     const controls = Object.keys(talents).filter((item) => {
       return item.includes(itemType);
@@ -380,7 +380,7 @@ export class ItemFFG extends ItemBaseFFG {
       return a.name - b.name;
     });
 
-    itemData[listProperty] = itemList;
+    item[listProperty] = itemList;
   }
 
   async _prepareSpecializations() {
@@ -414,12 +414,12 @@ export class ItemFFG extends ItemBaseFFG {
    * Prepare and return details of the item for display in inventory or chat.
    */
   getItemDetails() {
-    const data = duplicate(this.data.data);
+    const data = duplicate(this.system);
 
     // Item type specific properties
     const props = [];
 
-    data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor?.data);
+    data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor);
 
     if (this.type === "forcepower") {
       //Display upgrades

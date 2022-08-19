@@ -26,7 +26,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
 
   getData() {
     const data = super.getData();
-    switch (this.actor.data.type) {
+    switch (this.actor.type) {
       case "character":
         this.position.width = 595;
         this.position.height = 783;
@@ -35,7 +35,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
         }
 
         // we need to update all specialization talents with the latest talent information
-        if (!this.actor.data.flags.starwarsffg?.loaded) {
+        if (!this.actor.flags.starwarsffg?.loaded) {
           super._updateSpecialization(data);
         }
 

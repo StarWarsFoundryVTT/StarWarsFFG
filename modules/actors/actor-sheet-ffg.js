@@ -40,7 +40,7 @@ export class ActorSheetFFG extends ActorSheet {
   /** @override */
   get template() {
     const path = "systems/starwarsffg/templates/actors";
-    return `${path}/ffg-${this.actor.data.type}-sheet.html`;
+    return `${path}/ffg-${this.actor.type}-sheet.html`;
   }
 
   /* -------------------------------------------- */
@@ -51,13 +51,13 @@ export class ActorSheetFFG extends ActorSheet {
     data.classType = this.constructor.name;
 
     // Compatibility for Foundry 0.8.x with backwards compatibility (hopefully) for 0.7.x
-    const actorData = this.actor.data.toObject(false);
+    const actorData = this.actor.toObject(false);
     data.actor = actorData;
-    data.data = actorData.data;
+    data.data = actorData.system;
     data.rollData = this.actor.getRollData.bind(this.actor);
 
-    data.token = this.token?.data;
-    data.items = this.actor.items.map((item) => item.data);
+    data.token = this.token;
+    data.items = this.actor.items;
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.actor, options.data);
@@ -71,28 +71,28 @@ export class ActorSheetFFG extends ActorSheet {
 
     let autoSoakCalculation = true;
 
-    if (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined") {
+    if (typeof this.actor.flags?.config?.enableAutoSoakCalculation === "undefined") {
       autoSoakCalculation = game.settings.get("starwarsffg", "enableSoakCalc");
     } else {
-      autoSoakCalculation = this.actor.data?.flags?.starwarsffg?.config?.enableAutoSoakCalculation;
+      autoSoakCalculation = this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation;
     }
 
     data.settings = {
       enableSoakCalculation: autoSoakCalculation,
-      enableCriticalInjuries: this.actor.data?.flags?.starwarsffg?.config?.enableCriticalInjuries,
+      enableCriticalInjuries: this.actor.flags?.starwarsffg?.config?.enableCriticalInjuries,
     };
 
     // Establish sheet width and height using either saved persistent values or default values defined in swffg-config.js
-    this.position.width = this.sheetWidth || CONFIG.FFG.sheets.defaultWidth[this.actor.data.type];
-    this.position.height = this.sheetHeight || CONFIG.FFG.sheets.defaultHeight[this.actor.data.type];
+    this.position.width = this.sheetWidth || CONFIG.FFG.sheets.defaultWidth[this.actor.type];
+    this.position.height = this.sheetHeight || CONFIG.FFG.sheets.defaultHeight[this.actor.type];
 
-    switch (this.actor.data.type) {
+    switch (this.actor.type) {
       case "character":
         if (data.limited) {
           this.position.height = 165;
         }
         // we need to update all specialization talents with the latest talent information
-        if (!this.actor.data.flags.starwarsffg?.loaded) {
+        if (!this.actor.flags.starwarsffg?.loaded) {
           this._updateSpecialization(data);
         }
 
@@ -103,7 +103,7 @@ export class ActorSheetFFG extends ActorSheet {
       default:
     }
 
-    if (this.actor.data.type !== "vehicle" && this.actor.data.type !== "homestead") {
+    if (this.actor.type !== "vehicle" && this.actor.type !== "homestead") {
       // Filter out skills that are not custom (manually added) or part of the current system skill list
       Object.keys(data.data.skills)
       .filter(s => !data.data.skills[s].custom && !CONFIG.FFG.skills[s])
@@ -112,7 +112,7 @@ export class ActorSheetFFG extends ActorSheet {
       data.data.skilllist = this._createSkillColumns(data);
     }
 
-    if (this.actor.data?.flags?.config?.enableObligation === false && this.actor.data?.flags?.config?.enableDuty === false && this.actor.data?.flags?.config?.enableMorality === false && this.actor.data?.flags?.config?.enableConflict === false) {
+    if (this.actor.flags?.config?.enableObligation === false && this.actor.flags?.config?.enableDuty === false && this.actor.flags?.config?.enableMorality === false && this.actor.flags?.config?.enableConflict === false) {
       data.hideObligationDutyMoralityConflictTab = true;
     }
 
@@ -267,7 +267,7 @@ export class ActorSheetFFG extends ActorSheet {
         if (!item) {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
         }
-        const forcedice = this.actor.data.data.stats.forcePool.max - this.actor.data.data.stats.forcePool.value;
+        const forcedice = this.actor.data.stats.forcePool.max - this.actor.data.stats.forcePool.value;
         if (forcedice > 0) {
           let sheet = this.getData();
           const dicePool = new DicePoolFFG({
@@ -282,7 +282,7 @@ export class ActorSheetFFG extends ActorSheet {
     new ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
     new ContextMenu(html, "div.item", [sendToChatContextItem]);
 
-    if (this.actor.data.type === "character") {
+    if (this.actor.type === "character") {
       this.sheetoptions = new ActorOptions(this, html);
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
@@ -335,7 +335,7 @@ export class ActorSheetFFG extends ActorSheet {
       });
     }
 
-    if (this.actor.data.type === "minion") {
+    if (this.actor.type === "minion") {
       this.sheetoptions = new ActorOptions(this, html);
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),
@@ -358,7 +358,7 @@ export class ActorSheetFFG extends ActorSheet {
       });
     }
 
-    if (this.actor.data.type === "vehicle") {
+    if (this.actor.type === "vehicle") {
       this.sheetoptions = new ActorOptions(this, html);
       this.sheetoptions.register("enableHyperdrive", {
         name: game.i18n.localize("SWFFG.EnableHyperdrive"),
@@ -448,7 +448,7 @@ export class ActorSheetFFG extends ActorSheet {
       const li = $(ev.currentTarget);
       const item = this.actor.items.get(li.data("itemId"));
       if (item) {
-        item.update({ ["data.equippable.equipped"]: !item.data.data.equippable.equipped });
+        item.update({ ["system.equippable.equipped"]: !item.system.equippable.equipped });
       }
     });
 
@@ -561,7 +561,7 @@ export class ActorSheetFFG extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
 
-      const item = this.actor.data.data.talentList.find((talent) => {
+      const item = this.actor.data.talentList.find((talent) => {
         return talent.itemId === itemId;
       });
 
@@ -758,7 +758,7 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(itemDetails.description, this.actor.data)}</div>`);
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(itemDetails.description, this.actor)}</div>`);
       let props = $(`<div class="item-properties"></div>`);
       itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
@@ -1058,11 +1058,11 @@ export class ActorSheetFFG extends ActorSheet {
     const item = this.actor.items.get(li.dataset.itemId);
 
     // limit transfer on personal weapons/armour/gear
-    if (["weapon", "armour", "gear"].includes(item.data.type)) {
+    if (["weapon", "armour", "gear"].includes(item.type)) {
       const dragData = {
         type: "Transfer",
         actorId: this.actor.id,
-        data: item.data,
+        data: item,
       };
       if (this.actor.isToken) dragData.tokenId = this.actor.token.id;
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
@@ -1114,17 +1114,17 @@ export class ActorSheetFFG extends ActorSheet {
    */
   async _updateSpecialization(data) {
     CONFIG.logger.debug(`Running Actor initial load`);
-    if (this.actor.data.flags.starwarsffg === undefined) {
-        this.actor.data.flags.starwarsffg = {};
+    if (this.actor.flags.starwarsffg === undefined) {
+        this.actor.flags.starwarsffg = {};
     }
-    this.actor.data.flags.starwarsffg.loaded = true;
+    this.actor.flags.starwarsffg.loaded = true;
 
-    const specializations = this.actor.data.items.filter((item) => {
+    const specializations = this.actor.items.filter((item) => {
       return item.type === "specialization";
     });
 
-    specializations.forEach(async (spec) => {
-      const specializationTalents = spec.data.talents;
+    for (const spec of specializations) {
+      const specializationTalents = spec.talents;
       for (let talent in specializationTalents) {
         let gameItem;
         if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
@@ -1170,8 +1170,8 @@ export class ActorSheetFFG extends ActorSheet {
         });
       }
 
-      data.actor.data.talentList = mergeObject(data.actor.data.talentList, globalTalentList);
-    });
+      data.data.talentList = mergeObject(data.data.talentList ? data.data.talentList : [], globalTalentList);
+    }
   }
 
   /**

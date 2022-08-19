@@ -33,10 +33,7 @@ export class ItemSheetFFG extends ItemSheet {
   async getData(options) {
     let data = super.getData(options);
 
-    const itemData = data.data;
-
-    data.item = itemData;
-    data.data = itemData.data;
+    data.data = data.item.system;
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
@@ -61,11 +58,11 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.isTemp = false;
-    if (this.object.data?.flags?.starwarsffg?.ffgIsOwned || this.object.data?.flags?.starwarsffg?.ffgIsTemp) {
+    if (this.object.flags?.starwarsffg?.ffgIsOwned || this.object.flags?.starwarsffg?.ffgIsTemp) {
       data.isTemp = true;
     }
 
-    switch (this.object.data.type) {
+    switch (this.object.type) {
       case "weapon":
       case "shipweapon":
         this.position.width = 550;
@@ -98,25 +95,25 @@ export class ItemSheetFFG extends ItemSheet {
       case "forcepower":
         this.position.width = 720;
         this.position.height = 840;
-        data.data.isReadOnly = false;
+        data.isReadOnly = false;
         if (!this.options.editable) {
-          data.data.isEditing = false;
-          data.data.isReadOnly = true;
+          data.isEditing = false;
+          data.isReadOnly = true;
         }
         break;
       case "specialization":
         this.position.width = 715;
-        data.data.isReadOnly = false;
+        data.isReadOnly = false;
         if (!this.options.editable) {
-          data.data.isEditing = false;
-          data.data.isReadOnly = true;
+          data.isEditing = false;
+          data.isReadOnly = true;
         }
 
-        if (!this.item.data.flags?.starwarsffg?.loaded) {
+        if (!this.item.flags?.starwarsffg?.loaded) {
           CONFIG.logger.debug(`Running Item initial load`);
-          this.item.data.flags.starwarsffg.loaded = true;
+          this.item.flags.starwarsffg.loaded = true;
 
-          const specializationTalents = data.data.talents;
+          const specializationTalents = data.system.talents;
 
           await ImportHelpers.asyncForEach(Object.keys(specializationTalents), async (talent) => {
             let gameItem;
@@ -142,7 +139,7 @@ export class ItemSheetFFG extends ItemSheet {
             }
 
             if (gameItem) {
-              this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
+              this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
             }
           });
         }
@@ -224,7 +221,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.FFG = CONFIG.FFG;
-    data.data.renderedDesc = PopoutEditor.renderDiceImages(data.data.description, this.actor ? this.actor.data : {});
+    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
 
     return data;
   }

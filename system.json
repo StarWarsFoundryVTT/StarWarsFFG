@@ -3,8 +3,8 @@
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
   "version": "1.72",
-  "minimumCoreVersion": "0.8.9",
-  "compatibleCoreVersion": "9",
+  "minimumCoreVersion": "10.278",
+  "compatibleCoreVersion": "10.278",
   "templateVersion": 1,
   "author": "Esrin, CStadther and Jaxxa",
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
@@ -44,7 +44,7 @@
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG",
-  "manifest": "https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/v1.72/system.json",
-  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.72/starwarsffg_1.72.zip",
+  "manifest": "https://raw.githubusercontent.com/StarWarsFoundryVTT/StarWarsFFG/v1.8-alpha1/system.json",
+  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.8-alpha1/starwarsffg_1.8.alpha1.zip",
   "license": "LICENSE.txt"
 }

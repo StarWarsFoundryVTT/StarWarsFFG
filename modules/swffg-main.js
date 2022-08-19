@@ -26,7 +26,7 @@ import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
 import SkillListImporter from "./importer/skills-list-importer.js";
 import DestinyTracker from "./ffg-destiny-tracker.js";
-import { defaultSkillArrayString } from "./config/ffg-skillslist.js";
+import { defaultSkillList } from "./config/ffg-skillslist.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
 
 // Import Dice Types
@@ -197,12 +197,12 @@ Hooks.once("init", async function () {
     game.settings.register("starwarsffg", "arraySkillList", {
       name: "Skill List",
       scope: "world",
-      default: defaultSkillArrayString,
+      default: defaultSkillList,
       config: false,
-      type: String,
+      type: Object,
     });
 
-    let skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+    let skillList = game.settings.get("starwarsffg", "arraySkillList");
     try {
       CONFIG.FFG.alternateskilllists = skillList;
 
@@ -249,7 +249,9 @@ Hooks.once("init", async function () {
 
         CONFIG.FFG.skills = ordered;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
 
     Hooks.on("createActor", (actor) => {
       if (actor.type !== "vehicle" && actor.type !== "homestead") {
@@ -495,10 +497,10 @@ Hooks.once("ready", async () => {
 
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
-  const version = game.system.data.version;
-  const isAlpha = game.system.data.version.includes("alpha");
+  const version = game.system.version;
+  const isAlpha = game.system.version.includes("alpha");
 
-  if ((isAlpha || currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.data.version)) && game.user.isGM) {
+  if ((isAlpha || currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
     CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.data.version}`);
 
     // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
@@ -558,7 +560,7 @@ Hooks.once("ready", async () => {
         if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
           // if the skills.json file is found AND the skillsList in setting is the default skill list then read the data from the file.
           // This will make sure that the data from the JSON file overwrites the data in the setting.
-          if ((await game.settings.get("starwarsffg", "arraySkillList")) === defaultSkillArrayString) {
+          if ((await game.settings.get("starwarsffg", "arraySkillList")) === defaultSkillList) {
             const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
             await game.settings.set("starwarsffg", "arraySkillList", JSON.stringify(fileData));
             skillList = fileData;

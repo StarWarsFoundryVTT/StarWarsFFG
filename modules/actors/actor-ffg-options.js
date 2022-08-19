@@ -66,7 +66,7 @@ export default class ActorOptions {
     if (!this.options[optionName]) {
       this.options[optionName] = { ...options };
     }
-    if (typeof this.data.object.data.flags?.starwarsffg?.config == "undefined") {
+    if (typeof this.data.object.flags?.starwarsffg?.config == "undefined") {
       await this.data.object.setFlag("starwarsffg", "config", {});
     }
 

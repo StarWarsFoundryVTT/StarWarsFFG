@@ -67,7 +67,7 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
       </div>
       {{#if this.settings.enableCriticalInjuries}}
       <div class="container flex-group-center biography-values">

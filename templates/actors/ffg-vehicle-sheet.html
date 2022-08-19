@@ -97,7 +97,7 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}}
+        {{editor data.biography target="data.biography" button=true owner=owner editable=editable}}
       </div>
       <div class="container flex-group-center biography-values">
         {{!-- Hyperdrive Box --}} {{#if (or (eq actor.flags.config.enableHyperdrive undefined) (eq actor.flags.config.enableHyperdrive true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Hyperdrive" fields=(array (object name="data.stats.hyperdrive.value" value=data.stats.hyperdrive.value type="Number" label="SWFFG.HyperdrivePrimary") (object name="data.stats.hyperdrive.backup" value=data.stats.hyperdrive.backup type="Number" label="SWFFG.HyperdriveBackup") ))}} {{/if}}

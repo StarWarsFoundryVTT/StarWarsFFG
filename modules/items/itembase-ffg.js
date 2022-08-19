@@ -2,7 +2,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
-    if (!this.data?.flags?.starwarsffg?.ffgTempId || (this.data?.flags?.starwarsffg?.ffgTempId === this.data._id && !this.data.isTemp) || this.data?.flags?.starwarsffg?.ffgIsOwned) {
+    if (!this.flags?.starwarsffg?.ffgTempId || (this.flags?.starwarsffg?.ffgTempId === this._id && !this.isTemp) || this.flags?.starwarsffg?.ffgIsOwned) {
       super.update(data, options);
       // if (this.compendium) {
       //   return this.sheet.render(true);

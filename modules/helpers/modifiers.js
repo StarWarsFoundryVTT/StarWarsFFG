@@ -38,23 +38,23 @@ export default class ModifierHelpers {
 
     try {
       items.forEach((item) => {
-        if (item.data.attributes) {
-          const attrsToApply = Object.keys(item.data.attributes)
-            .filter((id) => (item.data.attributes[id].mod === key || item.data.attributes[id].mod === "*") && item.data.attributes[id].modtype === modtype)
-            .map((i) => item.data.attributes[i]);
+        if (item.system?.attributes) {
+          const attrsToApply = Object.keys(item.system.attributes)
+            .filter((id) => (item.system.attributes[id].mod === key || item.system.attributes[id].mod === "*") && item.system.attributes[id].modtype === modtype)
+            .map((i) => item.system.attributes[i]);
 
           if (item.type === "armour" || item.type === "weapon") {
-            if (item?.data?.equippable?.equipped) {
-              if (key === "Soak" && item.data?.soak) {
-                sources.push({ modtype, key, name: item.name, value: item.data.soak.adjusted, type: item.type });
-                total += parseInt(item.data.soak.adjusted, 10);
+            if (item?.system?.equippable?.equipped) {
+              if (key === "Soak" && item.system?.soak) {
+                sources.push({ modtype, key, name: item.name, value: item.system.soak.adjusted, type: item.type });
+                total += parseInt(item.system.soak.adjusted, 10);
               }
-              if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.data?.defence) {
+              if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.system?.defence) {
                 // get the highest defense item
-                const shouldUse = items.filter((i) => item.data.defence >= i.data.defence).length >= 0;
+                const shouldUse = items.filter((i) => item.system.defence >= i.data.defence).length >= 0;
                 if (shouldUse) {
-                  sources.push({ modtype, key, name: item.name, value: item.data.defence.adjusted, type: item.type });
-                  total += parseInt(item.data.defence.adjusted, 10);
+                  sources.push({ modtype, key, name: item.name, value: item.system.defence.adjusted, type: item.type });
+                  total += parseInt(item.system.defence.adjusted, 10);
                 }
               }
               if (attrsToApply.length > 0) {
@@ -91,14 +91,14 @@ export default class ModifierHelpers {
             let upgrades;
             if (item.type === "forcepower" || item.type === "signatureability") {
               // apply force power upgrades
-              upgrades = Object.keys(item.data.upgrades)
-                .filter((k) => item.data.upgrades[k].islearned)
+              upgrades = Object.keys(item.system.upgrades)
+                .filter((k) => item.system.upgrades[k].islearned)
                 .map((k) => {
                   return {
                     type: "talent",
-                    name: `${item.name}: ${item.data.upgrades[k].name}`,
+                    name: `${item.name}: ${item.system.upgrades[k].name}`,
                     data: {
-                      attributes: item.data.upgrades[k]?.attributes ? item.data.upgrades[k]?.attributes : {},
+                      attributes: item.system.upgrades[k]?.attributes ? item.system.upgrades[k]?.attributes : {},
                       ranks: {
                         ranked: false,
                         current: 1,
@@ -108,16 +108,16 @@ export default class ModifierHelpers {
                 });
             } else if (item.type === "specialization") {
               // apply specialization talent modifiers
-              upgrades = Object.keys(item.data.talents)
-                .filter((k) => item.data.talents[k].islearned)
+              upgrades = Object.keys(item.system.talents)
+                .filter((k) => item.system.talents[k].islearned)
                 .map((k) => {
                   return {
                     type: "talent",
-                    name: `${item.name}: ${item.data.talents[k].name}`,
+                    name: `${item.name}: ${item.system.talents[k].name}`,
                     data: {
-                      attributes: item.data.talents[k].attributes,
+                      attributes: item.system.talents[k].attributes,
                       ranks: {
-                        ranked: item.data.talents[k].isRanked,
+                        ranked: item.system.talents[k].isRanked,
                         current: 1,
                       },
                     },
@@ -150,8 +150,8 @@ export default class ModifierHelpers {
                 } else {
                   if (item.type === "talent") {
                     let multiplier = 1;
-                    if (item.data.ranks.ranked) {
-                      multiplier = item.data.ranks.current;
+                    if (item.system.ranks.ranked) {
+                      multiplier = item.system.ranks.current;
                     }
                     sources.push({ modtype, key, name: item.name, value: attr.value * multiplier, type: item.type });
                     total += parseInt(attr.value, 10) * multiplier;
