@@ -13,7 +13,7 @@
 
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'weapon'}}
-    <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.data.skill.value}}">
+    <li class="item flexrow" data-item-id="{{item._id}}" data-ability="{{item.system.skill.value}}">
       <div class="item-name">
         <div class="roll-button">
           <!-- Create define a button with mouseover events to update the icon and generate rolls when clicked and moused over -->
