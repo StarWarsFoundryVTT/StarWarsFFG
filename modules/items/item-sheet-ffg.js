@@ -274,30 +274,30 @@ export class ItemSheetFFG extends ItemSheet {
       item.sheet.render(true);
     });
 
-    if (this.object.data.type === "talent") {
-      if (!Hooks?._hooks[`closeAssociatedTalent_${this.object.data._id}`]?.length && typeof this._submitting === "undefined") {
-        Hooks.once(`closeAssociatedTalent_${this.object.data._id}`, (item) => {
-          item.object.data.flags.clickfromparent = [];
-          delete Hooks._hooks[`closeAssociatedTalent_${item.object.data._id}`];
+    if (this.object.type === "talent") {
+      if (!Hooks?.events[`closeAssociatedTalent_${this.object._id}`]?.length && typeof this._submitting === "undefined") {
+        Hooks.once(`closeAssociatedTalent_${this.object._id}`, (item) => {
+          item.object.flags.clickfromparent = [];
+          Hooks.off(`closeAssociatedTalent_${item.object._id}`);
         });
       }
     }
 
     // Everything below here is only needed if the sheet is editable
-    if (this.object.data.flags.readonly) this.options.editable = false;
+    if (this.object.flags.readonly) this.options.editable = false;
     if (!this.options.editable) return;
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
-    if (["forcepower", "specialization", "signatureability"].includes(this.object.data.type)) {
+    if (["forcepower", "specialization", "signatureability"].includes(this.object.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
       html.find(".talent-name.talent-modifiers").on("click", ModifierHelpers.popoutModiferWindowSpecTalents.bind(this));
     }
 
-    if (this.object.data.type === "specialization") {
+    if (this.object.type === "specialization") {
       try {
         const dragDrop = new DragDrop({
           dragSelector: ".item",
@@ -336,7 +336,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.data.type)) {
+    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
         dropSelector: null,
@@ -383,7 +383,7 @@ export class ItemSheetFFG extends ItemSheet {
       const itemType = parent.dataset.itemName;
       const itemIndex = parent.dataset.itemIndex;
 
-      const items = this.object.data.data[itemType];
+      const items = this.object.system[itemType];
       items.splice(itemIndex, 1);
 
       let formData = {};
@@ -399,7 +399,7 @@ export class ItemSheetFFG extends ItemSheet {
       const itemType = li.dataset.itemName;
       const itemIndex = li.dataset.itemIndex;
 
-      const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
+      const item = this.object.system[itemType][parseInt(itemIndex, 10)];
       if (item) {
         const title = `${this.object.name} ${item.name}`;
 
@@ -426,14 +426,14 @@ export class ItemSheetFFG extends ItemSheet {
                         const name = input.attr("name");
                         const id = input[0].dataset.itemId;
 
-                        let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
+                        let arrayItem = this.object.system[itemType].findIndex((i) => i._id === id);
 
                         if (arrayItem > -1) {
-                          setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
+                          setProperty(this.object.system[itemType][arrayItem], name, parseInt(input.val(), 10));
                         }
                       });
 
-                      setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+                      setProperty(formData, `data.${itemType}`, this.object.system[itemType]);
                       this.object.update(formData);
 
                       break;
@@ -475,7 +475,7 @@ export class ItemSheetFFG extends ItemSheet {
         itemIndex = parent.dataset.itemIndex;
       }
 
-      const item = this.object.data.data[itemType][itemIndex];
+      const item = this.object.system[itemType][itemIndex];
 
       let temp = {
         ...item,
@@ -485,7 +485,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempItemType: itemType,
             ffgTempItemIndex: itemIndex,
             ffgIsTemp: true,
-            ffgParent: this.object.data.flags,
+            ffgParent: this.object.flags,
             ffgParentApp: this.appId,
           }
         },
@@ -510,10 +510,6 @@ export class ItemSheetFFG extends ItemSheet {
 
       let tempItem = await Item.create(temp, { temporary: true });
 
-      tempItem.data._id = temp.id;
-      if (!temp.id) {
-        tempItem.data._id = randomID();
-      }
       tempItem.sheet.render(true);
     });
 
@@ -565,31 +561,28 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempId: this.object.id,
             ffgTempItemType: itemType,
             ffgTempItemIndex: -1,
-            ffgParent: this.object.data.flags.starwarsffg,
+            ffgParent: this.object.flags.starwarsffg,
             ffgIsTemp: true,
             ffgUuid: this.object.uuid,
             ffgParentApp: this.appId,
             ffgIsOwned: this.object.isEmbedded,
           }
         },
-        data: {
+        system: {
           attributes: {},
           description: "",
         },
       };
 
       let tempItem = await Item.create(temp, { temporary: true });
-      tempItem.data._id = temp.id;
-      if (!temp.id) {
-        tempItem.data._id = randomID();
-      }
+      //tempItem.data._id = randomID();
 
       let data = {};
-      this.object.data.data[itemType].push(tempItem);
-      setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
+      this.object.system[itemType].push(tempItem);
+      setProperty(data, `system.${itemType}`, this.object.system[itemType]);
       await this.object.update(data);
 
-      await tempItem.setFlag("starwarsffg", "ffgTempItemIndex", this.object.data.data[itemType].findIndex((i) => i.id === tempItem.data._id));
+      await tempItem.setFlag("starwarsffg", "ffgTempItemIndex", this.object.system[itemType].findIndex((i) => i.id === tempItem._id));
 
       tempItem.sheet.render(true);
     });
@@ -609,11 +602,11 @@ export class ItemSheetFFG extends ItemSheet {
     const action = a.dataset.action;
     const key = a.dataset.key;
 
-    let attrs = this.object.data.data.upgrades;
+    let attrs = this.object.system.upgrades;
     let itemType = "upgrades";
 
     if ($(a).parents(".specialization-talent").length > 0) {
-      attrs = this.object.data.data.talents;
+      attrs = this.object.system.talents;
       itemType = "talents";
     }
 

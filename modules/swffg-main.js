@@ -647,7 +647,7 @@ Hooks.once("ready", async () => {
   Hooks.on("hotbarDrop", (bar, data, slot) => createFFGMacro(data, slot));
 
   Hooks.on("closeItemSheetFFG", (item) => {
-    Hooks.call(`closeAssociatedTalent_${item.object.data._id}`, item);
+    Hooks.call(`closeAssociatedTalent_${item.object._id}`, item);
   });
 
   // Display Destiny Pool

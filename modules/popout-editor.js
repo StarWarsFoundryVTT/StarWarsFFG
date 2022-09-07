@@ -26,7 +26,7 @@ export default class PopoutEditor extends FormApplication {
   /** @override */
   getData() {
     // Get current value
-    let attr = getProperty(this.object.data, this.attribute);
+    let attr = getProperty(this.object.system, this.attribute);
 
     // Return data
     return {

@@ -11,7 +11,7 @@ export default class ItemHelpers {
     }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
-    if (this.object.data.type === "weapon") {
+    if (this.object.type === "weapon") {
       if (ModifierHelpers.applyBrawnToDamage(formData.data)) {
         setProperty(formData, `data.damage.value`, 0);
       }
@@ -27,8 +27,8 @@ export default class ItemHelpers {
     }, {});
 
     // Remove attributes which are no longer used
-    if (this.object.data?.data?.attributes) {
-      for (let k of Object.keys(this.object.data.data.attributes)) {
+    if (this.object.system?.attributes) {
+      for (let k of Object.keys(this.object.system.attributes)) {
         if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
       }
     }
@@ -42,9 +42,9 @@ export default class ItemHelpers {
     setProperty(formData, `flags.starwarsffg.loaded`, false)
     await this.object.update(formData);
 
-    if (this.object.data.type === "talent") {
-      if (this.object.data.flags?.clickfromparent?.length) {
-        let listofparents = JSON.parse(JSON.stringify(this.object.data.flags.starwarsffg.clickfromparent));
+    if (this.object.type === "talent") {
+      if (this.object.flags?.clickfromparent?.length) {
+        let listofparents = JSON.parse(JSON.stringify(this.object.flags.starwarsffg.clickfromparent));
         while (listofparents.length > 0) {
           const parent = listofparents.shift();
           const spec = await fromUuid(parent.id);

@@ -241,7 +241,6 @@ export default class ModifierHelpers {
     event.preventDefault();
     const a = event.currentTarget;
     const action = a.dataset.action;
-    const attrs = this.object.data.data.attributes;
     const form = this.form;
 
     // Add new attribute
@@ -287,14 +286,14 @@ export default class ModifierHelpers {
     const a = event.currentTarget.parentElement;
     const keyname = a.dataset.itemid;
 
-    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.data.data.upgrades[keyname].name}`;
+    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.system.upgrades[keyname].name}`;
 
     const data = {
       parent: this.object,
       keyname,
       data: {
         data: {
-          ...this.object.data.data.upgrades[keyname],
+          ...this.object.system.upgrades[keyname],
         },
       },
       isUpgrade: true,
@@ -310,14 +309,14 @@ export default class ModifierHelpers {
     const a = $(event.currentTarget).parents(".talent-block")?.[0];
     const keyname = $(a).attr("id");
 
-    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.data.data.talents[keyname].name}`;
+    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.system.talents[keyname].name}`;
 
     const data = {
       parent: this.object,
       keyname,
       data: {
         data: {
-          ...this.object.data.data.talents[keyname],
+          ...this.object.system.talents[keyname],
         },
       },
       isUpgrade: false,

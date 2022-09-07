@@ -211,8 +211,8 @@ export default class DiceHelpers {
     let setback = 0;
     let difficulty = 0;
 
-    if (item.type === "weapon" && item?.data?.status && item.data.status !== "None") {
-      const status = CONFIG.FFG.itemstatus[item.data.status].attributes.find((i) => i.mod === "Setback");
+    if (item.type === "weapon" && item?.system?.status && item.system.status !== "None") {
+      const status = CONFIG.FFG.itemstatus[item.system.status].attributes.find((i) => i.mod === "Setback");
 
       if (status.value < 99) {
         if (status.value === 1) {
@@ -221,7 +221,7 @@ export default class DiceHelpers {
           difficulty = 1;
         }
       } else {
-        ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.data.status].label)}).`);
+        ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.system.status].label)}).`);
         return;
       }
     }

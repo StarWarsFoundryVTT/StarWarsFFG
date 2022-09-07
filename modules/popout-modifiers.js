@@ -34,9 +34,9 @@ export default class PopoutModifiers extends FormApplication {
     const data = this.object.data;
 
     if (this.object.isUpgrade) {
-      data.data = this.object.parent.data.data.upgrades[this.object.keyname];
+      data.data = this.object.parent.system.upgrades[this.object.keyname];
     } else if (this.object.isTalent) {
-      data.data = this.object.parent.data.data.talents[this.object.keyname];
+      data.data = this.object.parent.system.talents[this.object.keyname];
     }
 
     data.FFG = CONFIG.FFG;

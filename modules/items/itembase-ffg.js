@@ -3,7 +3,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
     if (!this.flags?.starwarsffg?.ffgTempId || (this.flags?.starwarsffg?.ffgTempId === this._id && !this.isTemp) || this.flags?.starwarsffg?.ffgIsOwned) {
-      super.update(data, options);
+      await super.update(data, options);
       // if (this.compendium) {
       //   return this.sheet.render(true);
       // }
@@ -24,8 +24,8 @@ export default class ItemBaseFFG extends Item {
         await this.sheet.render(true);
         const appId = this.data?.flags?.starwarsffg?.ffgParentApp;
         if (appId) {
-          const newData = ui.windows[appId].object.data.data;
-          newData[this.data.flags.starwarsffg.ffgTempItemType][this.data.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.data.flags.starwarsffg.ffgTempItemType][this.data.flags.starwarsffg.ffgTempItemIndex], this.data);
+          const newData = ui.windows[appId].object;
+          newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex], this);
           await ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
         }
         return;

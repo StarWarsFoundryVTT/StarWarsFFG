@@ -3,13 +3,13 @@ import ModifierHelpers from "./modifiers.js";
 export default class ActorHelpers {
   static updateActor(event, formData) {
     formData = expandObject(formData);
-    const ownedItems = this.actor.items.map((item) => item.data);
+    const ownedItems = this.actor.items.map((item) => item.system);
 
-    if (this.object.data.type !== "homestead") {
-      if (this.object.data.type !== "vehicle") {
+    if (this.object.type !== "homestead") {
+      if (this.object.type !== "vehicle") {
         // Handle characteristic updates
         Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
-          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, ownedItems, "Characteristic");
+          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Characteristic");
           let x = parseInt(formData.data.characteristics[key].value, 10) - total;
           let y = parseInt(formData.data.attributes[key].value, 10) + x;
           if (y > 0) {
@@ -22,7 +22,7 @@ export default class ActorHelpers {
         Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
           const key = CONFIG.FFG.character_stats[k].value;
 
-          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, ownedItems, "Stat");
+          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Stat");
 
           let statValue = 0;
           let isFormValueVisible = true;
@@ -61,7 +61,7 @@ export default class ActorHelpers {
 
           let y = parseInt(formData.data.attributes[key].value, 10) + x;
           if (key === "Soak") {
-            const autoSoakCalculation = (typeof this.actor.data?.flags?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.data.flags.starwarsffg?.config.enableAutoSoakCalculation;
+            const autoSoakCalculation = (typeof this.actor.flags?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.flags.starwarsffg?.config.enableAutoSoakCalculation;
 
             if (autoSoakCalculation) {
               y = 0;
@@ -76,7 +76,7 @@ export default class ActorHelpers {
         });
         // Handle skill rank updates
         Object.keys(this.object.data.data.skills).forEach((key) => {
-          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, ownedItems, "Skill Rank");
+          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Skill Rank");
           let x = parseInt(formData.data.skills[key]?.rank, 10) - total;
           let y = parseInt(formData.data.attributes[key]?.value, 10) + x;
           if (y > 0) {
@@ -100,7 +100,7 @@ export default class ActorHelpers {
         Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
           const key = CONFIG.FFG.vehicle_stats[k].value;
 
-          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.data.data.attributes, ownedItems, "Stat");
+          let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Stat");
 
           let statValue = 0;
           let isFormValueVisible = true;
@@ -155,8 +155,8 @@ export default class ActorHelpers {
     }, {});
 
     // Remove attributes which are no longer used
-    if (this.object.data?.data?.attributes) {
-      for (let k of Object.keys(this.object.data.data.attributes)) {
+    if (this.object.system?.attributes) {
+      for (let k of Object.keys(this.object.system.attributes)) {
         if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
       }
     }

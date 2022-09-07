@@ -26,7 +26,7 @@ export class ItemFFG extends ItemBaseFFG {
    * Augment the basic Item data model with additional dynamic data.
    */
   async prepareData() {
-    super.prepareData();
+    await super.prepareData();
 
     CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
 
@@ -34,6 +34,11 @@ export class ItemFFG extends ItemBaseFFG {
     const item = this;
     const actor = this.actor ? this.actor : {};
     const data = item.system;
+
+    if (!item._id) {
+        // the item is not being done prepared
+        return;
+    }
 
     if (!item.flags.starwarsffg) {
       await item.update({
@@ -263,11 +268,11 @@ export class ItemFFG extends ItemBaseFFG {
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
         data.activation.label = activationId;
         break;
-      
+
       case "gear":
         data.encumbrance.value = parseInt(data.encumbrance.value, 10);
         break;
-      
+
       default:
     }
 
