@@ -2449,8 +2449,6 @@ export default class ImportHelpers {
             if (compendiumEntry) {
               if (compendiumEntry?.type === "itemmodifier") {
                 const descriptor = duplicate(compendiumEntry);
-                console.log("this is a log")
-                  console.log(descriptor)
                 descriptor.id = randomID();
                 descriptor.system.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
                 output.itemmodifier.push(descriptor);
