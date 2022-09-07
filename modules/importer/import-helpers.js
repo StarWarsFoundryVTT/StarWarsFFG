@@ -2487,7 +2487,7 @@ export default class ImportHelpers {
           const descriptor = Item.create(unique, { temporary: true });
           descriptor.id = randomID();
           // TODO: should this really be a different value, or should it be the same thing?
-          descriptor._id = randomID();
+          descriptor._id = descriptor.id;
           let rank = "";
           if (unique.data.rank > 1) {
             rank = `${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}`;
