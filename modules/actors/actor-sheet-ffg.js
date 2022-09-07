@@ -54,6 +54,7 @@ export class ActorSheetFFG extends ActorSheet {
     const actorData = this.actor.toObject(false);
     data.actor = actorData;
     data.data = actorData.system;
+    data.data.talentList = this.actor.talentList;
     data.rollData = this.actor.getRollData.bind(this.actor);
 
     data.token = this.token;
@@ -181,11 +182,11 @@ export class ActorSheetFFG extends ActorSheet {
         }
 
         // Critical Damage can only be added to "vehicle" actors and Critical Injury can only be added to "character" actors.
-        if (item.type === "criticaldamage" && actor.data.type !== "vehicle") {
+        if (item.type === "criticaldamage" && actor.system.type !== "vehicle") {
           ui.notifications.warn("Critical Damage can only be added to 'vehicle' actor types.");
           return false;
         }
-        if (item.type === "criticalinjury" && actor.data.type !== "character") {
+        if (item.type === "criticalinjury" && actor.system.type !== "character") {
           ui.notifications.warn("Critical Injuries can only be added to 'character' actor types.");
           return false;
         }
@@ -267,7 +268,7 @@ export class ActorSheetFFG extends ActorSheet {
         if (!item) {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
         }
-        const forcedice = this.actor.data.stats.forcePool.max - this.actor.data.stats.forcePool.value;
+        const forcedice = this.actor.system.stats.forcePool.max - this.actor.system.stats.forcePool.value;
         if (forcedice > 0) {
           let sheet = this.getData();
           const dicePool = new DicePoolFFG({
@@ -376,7 +377,7 @@ export class ActorSheetFFG extends ActorSheet {
 
     html.find(".medical").click(async (ev) => {
       const item = await $(ev.currentTarget);
-      let prevUses = (this.object.data?.data?.stats?.medical?.uses === undefined) ? 0 : this.object.data.data.stats.medical.uses;
+      let prevUses = (this.object.system?.stats?.medical?.uses === undefined) ? 0 : this.object.system.stats.medical.uses;
       let updateData = {};
       let newUses = 0;
       if (item[0].className === "fas fa-plus-circle medical") {
@@ -408,7 +409,7 @@ export class ActorSheetFFG extends ActorSheet {
                               let updateData = {};
                               setProperty(updateData, `data.stats.medical.uses`, 0);
                               setProperty(updateData, `data.stats.strain.value`, 0);
-                              setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.data.data.stats.wounds.value - 1));
+                              setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
                               this.object.update(updateData);
                           },
                       },
@@ -433,7 +434,7 @@ export class ActorSheetFFG extends ActorSheet {
         let updateData = {};
         setProperty(updateData, `data.stats.medical.uses`, 0);
         setProperty(updateData, `data.stats.strain.value`, 0);
-        setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.data.data.stats.wounds.value - 1));
+        setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
         this.object.update(updateData);
       } else if (game.settings.get("starwarsffg", "HealingItemAction") === '2') {
         // reset
@@ -561,7 +562,7 @@ export class ActorSheetFFG extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
 
-      const item = this.actor.data.talentList.find((talent) => {
+      const item = this.actor.talentList.find((talent) => {
         return talent.itemId === itemId;
       });
 
@@ -614,7 +615,7 @@ export class ActorSheetFFG extends ActorSheet {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
         }
       }
-      item.update({ ["data.quantity.value"]: item.data.data.quantity.value + 1 });
+      item.update({ ["data.quantity.value"]: item.system.quantity.value + 1 });
     });
 
     html.find(".item-quantity .quantity.decrease").click(async (ev) => {
@@ -629,7 +630,7 @@ export class ActorSheetFFG extends ActorSheet {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
         }
       }
-      let count = item.data.data.quantity.value - 1 > 0 ? item.data.data.quantity.value - 1 : 0;
+      let count = item.system.quantity.value - 1 > 0 ? item.system.quantity.value - 1 : 0;
       item.update({ ["data.quantity.value"]: count });
     });
 
@@ -797,7 +798,7 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc, this.actor.data)}</div>`);
+      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc, this.actor.system)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
@@ -985,11 +986,11 @@ export class ActorSheetFFG extends ActorSheet {
     let updateData = {};
 
     let useSkillForInitiative = false;
-    if (!this.object.data.data.skills[skill]?.useForInitiative) {
+    if (!this.object.system.skills[skill]?.useForInitiative) {
       useSkillForInitiative = true;
     }
 
-    setProperty(updateData, `data.skills.${skill}.useForInitiative`, useSkillForInitiative);
+    setProperty(updateData, `system.skills.${skill}.useForInitiative`, useSkillForInitiative);
     this.object.update(updateData);
   }
 
@@ -1169,8 +1170,7 @@ export class ActorSheetFFG extends ActorSheet {
           }
         });
       }
-
-      data.data.talentList = mergeObject(data.data.talentList ? data.data.talentList : [], globalTalentList);
+      data.system.talentList = mergeObject(data.system.talentList ? data.system.talentList : [], globalTalentList);
     }
   }
 

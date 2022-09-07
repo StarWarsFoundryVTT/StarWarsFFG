@@ -78,7 +78,7 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.VehicleTabFiringArc" type="Multicheckbox" fields=(array (object name="data.firingarc.fore" value=data.firingarc.fore label="SWFFG.VehicleFiringArcForward") (object name="data.firingarc.aft" value=data.firingarc.aft label="SWFFG.VehicleFiringArcAft") (object name="data.firingarc.port" value=data.firingarc.port label="SWFFG.VehicleFiringArcPort") (object name="data.firingarc.starboard" value=data.firingarc.starboard label="SWFFG.VehicleFiringArcStarboard") (object name="data.firingarc.dorsal" value=data.firingarc.dorsal label="SWFFG.VehicleFiringArcDorsal") (object name="data.firingarc.ventral" value=data.firingarc.ventral label="SWFFG.VehicleFiringArcVentral") )) }} 
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.VehicleTabFiringArc" type="Multicheckbox" fields=(array (object name="data.firingarc.fore" value=data.firingarc.fore label="SWFFG.VehicleFiringArcForward") (object name="data.firingarc.aft" value=data.firingarc.aft label="SWFFG.VehicleFiringArcAft") (object name="data.firingarc.port" value=data.firingarc.port label="SWFFG.VehicleFiringArcPort") (object name="data.firingarc.starboard" value=data.firingarc.starboard label="SWFFG.VehicleFiringArcStarboard") (object name="data.firingarc.dorsal" value=data.firingarc.dorsal label="SWFFG.VehicleFiringArcDorsal") (object name="data.firingarc.ventral" value=data.firingarc.ventral label="SWFFG.VehicleFiringArcVentral") )) }}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.vehicle_ranges adjusted=data.range.label)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
@@ -104,7 +104,7 @@
   <section class="sheet-body small">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
-      {{editor data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
+      {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}
     </div>
 
     {{!-- Modifiers Tab --}}

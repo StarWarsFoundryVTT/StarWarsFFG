@@ -6,10 +6,10 @@ export default class ActorOptions {
   }
 
   init(html) {
-    const options = $(`#actor-${this.data.object.id} .ffg-sheet-options`);
+    const options = $(`#ActorSheetFFG-Actor-${this.data.object.id} .ffg-sheet-options`);
     if (options.length === 0) {
       const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
-      button.insertBefore(`#actor-${this.data.object.id} header a:first`);
+      button.insertBefore(`#ActorSheetFFG-Actor-${this.data.object.id} header a:first`);
       button.on("click", this.handler.bind(this));
     }
   }

@@ -78,10 +78,10 @@
 
       <div class="container flex-group-center">
         <div class="grid grid-4col">
-          {{!-- Speed Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleSpeed" fields=(array (object name="data.stats.speed.max" value=data.stats.speed.max type="Number" label="SWFFG.Threshold") (object name="data.stats.speed.value" value=data.stats.speed.value type="Number" label="SWFFG.Current") ))}} 
-          {{!-- Hull Trauma Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleHullTrama" fields=(array (object name="data.stats.hullTrauma.max" value=data.stats.hullTrauma.max type="Number" label="SWFFG.Threshold") (object name="data.stats.hullTrauma.value" value=data.stats.hullTrauma.value type="Number" label="SWFFG.Current") ))}} 
+          {{!-- Speed Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleSpeed" fields=(array (object name="data.stats.speed.max" value=data.stats.speed.max type="Number" label="SWFFG.Threshold") (object name="data.stats.speed.value" value=data.stats.speed.value type="Number" label="SWFFG.Current") ))}}
+          {{!-- Hull Trauma Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleHullTrama" fields=(array (object name="data.stats.hullTrauma.max" value=data.stats.hullTrauma.max type="Number" label="SWFFG.Threshold") (object name="data.stats.hullTrauma.value" value=data.stats.hullTrauma.value type="Number" label="SWFFG.Current") ))}}
           {{!-- System Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleHullStrain" fields=(array (object name="data.stats.systemStrain.max" value=data.stats.systemStrain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.systemStrain.value" value=data.stats.systemStrain.value type="Number" label="SWFFG.Current") ))}}
-          {{!-- Encumbrance Capacity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleEncumbranceCapacity" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold") (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}} 
+          {{!-- Encumbrance Capacity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleEncumbranceCapacity" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold") (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}}
         </div>
       </div>
     </div>
@@ -97,13 +97,13 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor data.biography target="data.biography" button=true owner=owner editable=editable}}
+        {{editor data.biography target="system.biography" button=true owner=owner editable=editable}}
       </div>
       <div class="container flex-group-center biography-values">
         {{!-- Hyperdrive Box --}} {{#if (or (eq actor.flags.config.enableHyperdrive undefined) (eq actor.flags.config.enableHyperdrive true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Hyperdrive" fields=(array (object name="data.stats.hyperdrive.value" value=data.stats.hyperdrive.value type="Number" label="SWFFG.HyperdrivePrimary") (object name="data.stats.hyperdrive.backup" value=data.stats.hyperdrive.backup type="Number" label="SWFFG.HyperdriveBackup") ))}} {{/if}}
-        {{!-- Hard Points Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleHardPoints" type="Number" name="data.stats.customizationHardPoints.value" value=data.stats.customizationHardPoints.value )}} 
+        {{!-- Hard Points Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleHardPoints" type="Number" name="data.stats.customizationHardPoints.value" value=data.stats.customizationHardPoints.value )}}
         {{!-- Sensor Range Box --}} {{#if (or (eq actor.flags.config.enableSensors undefined) (eq actor.flags.config.enableSensors true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleSensorRange" type="Dropdown" name="data.stats.sensorRange.value" value=data.stats.sensorRange.value options=this.FFG.sensor_ranges)}} {{/if}}
-        {{!-- Passenger Capacity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehiclePassengerCapacity" type="Number" name="data.stats.passengerCapacity.value" value=data.stats.passengerCapacity.value )}} 
+        {{!-- Passenger Capacity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehiclePassengerCapacity" type="Number" name="data.stats.passengerCapacity.value" value=data.stats.passengerCapacity.value )}}
         {{!-- Consumables Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Consumables" fields=(array (object name="data.stats.consumables.value" value=data.stats.consumables.value type="Number" label="SWFFG.ConsumablesAmount") (object name="data.stats.consumables.duration" value=data.stats.consumables.duration type="String" label="SWFFG.ConsumablesDuration") ))}}
       </div>
     </div>

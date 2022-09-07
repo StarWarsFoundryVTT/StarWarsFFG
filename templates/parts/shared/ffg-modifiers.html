@@ -15,9 +15,9 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq ../item.type "weapon")}} {{#each ../this.FFG.weapon_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../item.data.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
-      {{else}} {{#if (and (eq ../../item.data.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
-      >{{/if}} {{#if (and (eq ../../item.data.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../item.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
+      {{else}} {{#if (and (eq ../../item.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (eq ../../item.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
       >{{/if}} {{#if (and (ne t.value "Armor Stat") (ne t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
       >{{/if}} {{/if}} {{/each}} {{/if}} {{/select}}
     </select>

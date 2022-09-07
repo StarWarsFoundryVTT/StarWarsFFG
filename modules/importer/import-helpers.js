@@ -912,7 +912,7 @@ export default class ImportHelpers {
       adversaryData.Abilities.AdvAbility.forEach((ability) => {
         adversary.data.biography += "<h4>"+ability.Name+"</h4>";
         adversary.data.biography += "<p>"+ability.Description+"</p>";
-      }); 
+      });
     }
     return adversary;
   }
@@ -967,7 +967,7 @@ export default class ImportHelpers {
       }
       adversary.data.attributes.Strain = {value: strain};
     }
-    
+
     var wounds = 0;
     if(attrs.WoundThreshold?.StartingRanks) {
       wounds += parseInt(attrs.WoundThreshold.StartingRanks, 10);
@@ -997,9 +997,9 @@ export default class ImportHelpers {
         try {
           const weapon = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "weapon")));
           delete weapon._id;
-    
+
           const weaponItems = adversary.items.filter((s) => s.flags.starwarsffg.ffgimportid === weapon.flags.starwarsffg.ffgimportid);
-    
+
           if (weaponItems.length > 0) {
             for (let i = 0; i < adversary.items.length; i += 1) {
               if (adversary.items[i].type === "weapon" && adversary.items[i].flags.starwarsffg.ffgimportid === weapon.flags.starwarsffg.ffgimportid) {
@@ -1012,7 +1012,7 @@ export default class ImportHelpers {
             } else {
               w.Count = 1;
             }
-    
+
             await this.asyncForEach(new Array(parseInt(w.Count, 10)), () => {
               adversary.items.push(weapon);
             });
@@ -1037,7 +1037,7 @@ export default class ImportHelpers {
       if (!Array.isArray(adversaryData.Talents.CharTalent)) {
         adversaryData.Talents.CharTalent = [adversaryData.Talents.CharTalent];
       }
-        
+
       await this.asyncForEach(adversaryData.Talents.CharTalent, async (t) => {
         try{
           const compTalent = await this.findCompendiumEntityByImportId("Item", t.Key, undefined, "talent");
@@ -1077,7 +1077,7 @@ export default class ImportHelpers {
       if (!Array.isArray(adversaryData.Armor.CharArmor)) {
         adversaryData.Armor.CharArmor = [adversaryData.Armor.CharArmor];
       }
-    
+
       await this.asyncForEach(adversaryData.Armor.CharArmor, async (w) => {
         try {
           const compArmor = await this.findCompendiumEntityByImportId("Item", w.ItemKey, undefined, "armour");
@@ -1085,7 +1085,7 @@ export default class ImportHelpers {
             const armor = JSON.parse(JSON.stringify(compArmor));
             delete armor._id;
             const armorItems = adversary.items.filter((s) => s.flags.starwarsffg.ffgimportid === armor.flags.starwarsffg.ffgimportid);
-      
+
             if (armorItems.length > 0) {
               for (let i = 0; i < adversary.items.length; i += 1) {
                 if (adversary.items[i].type === "armor" && adversary.items[i].flags.starwarsffg.ffgimportid === armor.flags.starwarsffg.ffgimportid) {
@@ -1098,7 +1098,7 @@ export default class ImportHelpers {
               } else {
                 w.Count = 1;
               }
-      
+
               await this.asyncForEach(new Array(parseInt(w.Count, 10)), () => {
                 adversary.items.push(armor);
               });
@@ -1124,9 +1124,9 @@ export default class ImportHelpers {
           if(compGear){
             const gear = JSON.parse(JSON.stringify(compGear));
             delete gear._id;
-      
+
             let gearItem = adversary.items.find((s) => s.flags.starwarsffg.ffgimportid === gear.flags.starwarsffg.ffgimportid);
-      
+
             let gearCount = 1;
             if (w?.Count) {
               gearCount = parseInt(w.Count, 10);
@@ -1134,7 +1134,7 @@ export default class ImportHelpers {
                 value: gearCount,
               };
             }
-      
+
             if (gearItem) {
               gearItem = mergeObject(gear, gearItem);
               gear.data.quantity.value = gearCount;
@@ -1166,7 +1166,7 @@ export default class ImportHelpers {
     await this.asyncForEach(basicPowers, async (power) => {
       try{
       let powerKey = power.Key.slice(0, -5);
-      
+
       const comForceAbility = await this.findCompendiumEntityByImportId("Item", powerKey, undefined, "forcepower");
       if(comForceAbility)
       {
@@ -1220,7 +1220,7 @@ export default class ImportHelpers {
     let adversary = JSON.parse(JSON.stringify(ImportHelpers.characterTemplate));
     adversary.name = npcName;
     if(adversaryData.Description)
-      adversary.data.biography = adversaryData.Description; 
+      adversary.data.biography = adversaryData.Description;
     adversary.flags = {
       starwarsffg: {
         ffgimportid: npcKey
@@ -1276,19 +1276,19 @@ export default class ImportHelpers {
     adversary = await ImportHelpers.extractAdversaryPowers(adversaryData, adversary);
 
     updateDialog(40);
-    
+
     adversary = await ImportHelpers.extractAdversaryWeapons(adversaryData, adversary);
 
     updateDialog(50);
 
     adversary = await ImportHelpers.extractAdversaryTalents(adversaryData, adversary);
-    
+
     updateDialog(60);
-    
+
     adversary = await ImportHelpers.extractAdversaryArmor(adversaryData, adversary);
-    
+
     updateDialog(70);
-    
+
     adversary = await ImportHelpers.extractAdversaryGear(adversaryData, adversary);
 
     updateDialog(90);
@@ -1316,7 +1316,7 @@ export default class ImportHelpers {
     let adversary = JSON.parse(JSON.stringify(ImportHelpers.minionTemplate));
     adversary.name = npcName;
     if(adversaryData.Description)
-      adversary.data.biography = adversaryData.Description; 
+      adversary.data.biography = adversaryData.Description;
     adversary.flags = {
       starwarsffg: {
         ffgimportid: npcKey
@@ -1376,23 +1376,23 @@ export default class ImportHelpers {
     adversary = await ImportHelpers.extractAdversaryPowers(adversaryData, adversary);
 
     updateDialog(40);
-    
+
     adversary = await ImportHelpers.extractAdversaryWeapons(adversaryData, adversary);
 
     updateDialog(50);
 
     adversary = await ImportHelpers.extractAdversaryTalents(adversaryData, adversary);
-    
+
     updateDialog(60);
-    
+
     adversary = await ImportHelpers.extractAdversaryArmor(adversaryData, adversary);
-    
+
     updateDialog(70);
-    
+
     adversary = await ImportHelpers.extractAdversaryGear(adversaryData, adversary);
 
     updateDialog(90);
-    
+
     adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
 
     if (exists) {
@@ -1471,7 +1471,7 @@ export default class ImportHelpers {
       if(characterName) {
         character.name = characterName;
       }
-      
+
       character.flags = {
         starwarsffg: {
           ffgimportid: characterData.Character.Key
@@ -2193,6 +2193,8 @@ export default class ImportHelpers {
     if (!entry) {
       let compendiumItem;
       CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
+      data._id = randomID();
+      data.id = randomID();
       switch (type) {
         case "Item":
           compendiumItem = await new CONFIG.Item.documentClass(data, { temporary: true });
@@ -2262,7 +2264,7 @@ export default class ImportHelpers {
     let pack = game.packs.get(searchName);
     if (!pack) {
       CONFIG.logger.debug(`Compendium pack ${name} not found, creating new`);
-      pack = await CompendiumCollection.createCompendium({ entity: type, label: name });
+      pack = await CompendiumCollection.createCompendium({ type: type, label: name });
     } else {
       CONFIG.logger.debug(`Existing compendium pack ${name} found`);
     }
@@ -2448,13 +2450,13 @@ export default class ImportHelpers {
               if (compendiumEntry?.type === "itemmodifier") {
                 const descriptor = duplicate(compendiumEntry);
                 descriptor.id = randomID();
-                descriptor.data.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
+                descriptor.system.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
                 output.itemmodifier.push(descriptor);
                 let rank = "";
-                if (descriptor.data.rank > 1) {
-                  rank = `${game.i18n.localize("SWFFG.Count")} ${descriptor.data.rank}`;
+                if (descriptor.system.rank > 1) {
+                  rank = `${game.i18n.localize("SWFFG.Count")} ${descriptor.system.rank}`;
                 }
-                output.description += `<div>${descriptor.name} - ${descriptor.data.description} ${rank}</div>`;
+                output.description += `<div>${descriptor.name} - ${descriptor.system.description} ${rank}</div>`;
               }
             } else if (Object.keys(CONFIG.temporary.skills).includes(modifier.Key)) {
               // this is a skill upgrade
@@ -2484,6 +2486,8 @@ export default class ImportHelpers {
           };
           const descriptor = Item.create(unique, { temporary: true });
           descriptor.id = randomID();
+          // TODO: should this really be a different value, or should it be the same thing?
+          descriptor._id = descriptor.id;
           let rank = "";
           if (unique.data.rank > 1) {
             rank = `${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}`;
