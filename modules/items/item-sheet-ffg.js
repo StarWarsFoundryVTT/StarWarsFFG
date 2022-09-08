@@ -111,9 +111,13 @@ export class ItemSheetFFG extends ItemSheet {
 
         if (!this.item.flags?.starwarsffg?.loaded) {
           CONFIG.logger.debug(`Running Item initial load`);
+          if (!Object.keys(this.item.flags).includes('starwarsffg')) {
+              // the object is not properly set up yet; bail to let it finish
+              return;
+          }
           this.item.flags.starwarsffg.loaded = true;
 
-          const specializationTalents = data.system.talents;
+          const specializationTalents = data.data.talents;
 
           await ImportHelpers.asyncForEach(Object.keys(specializationTalents), async (talent) => {
             let gameItem;
@@ -306,7 +310,7 @@ export class ItemSheetFFG extends ItemSheet {
           callbacks: { drop: this._onDropTalentToSpecialization.bind(this) },
         });
 
-        dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
+        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
       } catch (err) {
         CONFIG.logger.debug(err);
       }
