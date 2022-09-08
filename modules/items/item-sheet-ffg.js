@@ -413,7 +413,7 @@ export class ItemSheetFFG extends ItemSheet {
             content: {
               item,
               type: itemType,
-              parenttype: this.object.data.type,
+              parenttype: this.object.type,
             },
             buttons: {
               done: {

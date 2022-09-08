@@ -97,8 +97,8 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
-            if (modifier?.data) {
-              modifier.data.rank_current = modifier.data.rank;
+            if (modifier?.system) {
+              modifier.system.rank_current = modifier.system.rank;
             }
             data.adjusteditemmodifier.push({ ...modifier });
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
@@ -162,7 +162,7 @@ export class ItemFFG extends ItemBaseFFG {
           if (this.actor.type !== "vehicle") {
             if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
-              data.damage.value = parseInt(actor.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
+              data.damage.value = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
               data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
@@ -194,8 +194,8 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
-            if (modifier?.data) {
-              modifier.data.rank_current = modifier.data.rank;
+            if (modifier?.system) {
+              modifier.system.rank_current = modifier.system.rank;
             }
             data.adjusteditemmodifier.push({ ...modifier });
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
@@ -209,7 +209,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemattachment) {
           data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+            const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
             data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
             data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Armor Stat");
@@ -217,16 +217,16 @@ export class ItemFFG extends ItemBaseFFG {
             data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Armor Stat");
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Armor Stat");
 
-            if (attachment?.data?.itemmodifier) {
-              const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
+            if (attachment?.system?.itemmodifier) {
+              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
 
               activeMods.forEach((am) => {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.data.rank_current = parseInt(foundItem.data.rank_current, 10) + 1;
+                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
                 } else {
-                  am.data.rank_current = 1;
+                  am.system.rank_current = 1;
                   data.adjusteditemmodifier.push({ ...am, adjusted: true });
                 }
               });
@@ -453,7 +453,7 @@ export class ItemFFG extends ItemBaseFFG {
       upgradeDescriptions.forEach((upd) => {
         props.push(`<div class="ffg-sendtochat hover" onclick="">${upd.name} ${upd.rank}
           <div class="tooltip2">
-            ${PopoutEditor.renderDiceImages(upd.description, this?.actor?.data)}
+            ${PopoutEditor.renderDiceImages(upd.description, this?.actor?.system)}
           </div>
         </div>`);
       });
@@ -461,7 +461,7 @@ export class ItemFFG extends ItemBaseFFG {
     // General equipment properties
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
-        const qualities = data.adjusteditemmodifier?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m.id}' data-modifier-type='${m.type}'>${m.name} ${m.data?.rank_current > 0 ? m.data.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = data.adjusteditemmodifier?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m.id}' data-modifier-type='${m.type}'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }

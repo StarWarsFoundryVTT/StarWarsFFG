@@ -2,7 +2,7 @@
   <table>
     <tr>
       <td>{{#if (eq content.parenttype "itemattachment")}}{{localize "SWFFG.ModCount"}}{{else}}{{localize "SWFFG.SkillsRank"}}{{/if}}</td>
-      <td><input type="number" data-dtype="number" data-item-id="{{content.item._id}}" name="data.rank" value="{{content.item.data.rank}}" placeholder="0" /></td>
+      <td><input type="number" data-dtype="number" data-item-id="{{content.item._id}}" name="system.rank" value="{{content.item.system.rank}}" placeholder="0" /></td>
     </tr>
   </table>
 </div>
