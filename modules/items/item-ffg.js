@@ -16,7 +16,7 @@ export class ItemFFG extends ItemBaseFFG {
     if (this.isEmbedded && this.actor) {
       // If this is a weapon or armour item we must ensure its modifier-adjusted values are saved to the database
       if (["weapon", "shipweapon", "armour"].includes(this.type)) {
-        this.data.update(this.data);
+        this.update(this);
       }
     }
     await super._onCreate(data, options, user);
@@ -45,7 +45,7 @@ export class ItemFFG extends ItemBaseFFG {
         flags: {
           starwarsffg: {
             isCompendium: !!this.compendium,
-            ffgUuid: this.parent?.data ? this.uuid : null,
+            ffgUuid: this.parent?.system ? this.uuid : null,
             ffgIsOwned: this.isEmbedded,
             loaded: false
           }
@@ -234,7 +234,7 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isEmbedded && this.actor && this.actor.data) {
+        if (this.isEmbedded && this.actor && this.actor.system) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].modtype === "Armor Stat") {

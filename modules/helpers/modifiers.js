@@ -51,7 +51,7 @@ export default class ModifierHelpers {
               }
               if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.system?.defence) {
                 // get the highest defense item
-                const shouldUse = items.filter((i) => item.system.defence >= i.data.defence).length >= 0;
+                const shouldUse = items.filter((i) => item.system.defence >= i.system.defence).length >= 0;
                 if (shouldUse) {
                   sources.push({ modtype, key, name: item.name, value: item.system.defence.adjusted, type: item.type });
                   total += parseInt(item.system.defence.adjusted, 10);
@@ -188,12 +188,12 @@ export default class ModifierHelpers {
     let checked = false;
     let sources = [];
 
-    let rank = item?.data?.rank;
+    let rank = item?.system?.rank;
     if(rank === null || rank === undefined) {
       rank = 1;
     }
-    if (item?.data) {
-      const filteredAttributes = Object.values(item.data.attributes).filter((a) => a.modtype === modtype && a.mod === key);
+    if (item?.system) {
+      const filteredAttributes = Object.values(item.system.attributes).filter((a) => a.modtype === modtype && a.mod === key);
 
       filteredAttributes.forEach((attr) => {
         sources.push({ modtype, key, name: item.name, value: attr.value * rank, type: item.type });
