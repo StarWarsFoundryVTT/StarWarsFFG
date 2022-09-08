@@ -26,7 +26,7 @@ export default class Vehicles {
 
             let data = ImportHelpers.prepareBaseObject(item, "vehicle");
             data.items = [];
-            data.data = {
+            data.system = {
               biography: item.Description,
               stats: {
                 silhouette: {
@@ -84,7 +84,7 @@ export default class Vehicles {
               itemattachment: [],
             };
 
-            data.data.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
 
             if (item.VehicleWeapons?.VehicleWeapon) {
               if (!Array.isArray(item.VehicleWeapons.VehicleWeapon)) {
@@ -96,19 +96,19 @@ export default class Vehicles {
                   const weaponData = JSON.parse(JSON.stringify(weaponEntity));
                   delete weaponData._id;
 
-                  if (!Array.isArray(weaponData.data.itemmodifier)) {
-                    weaponData.data.itemmodifier = [];
+                  if (!Array.isArray(weaponData.system.itemmodifier)) {
+                    weaponData.system.itemmodifier = [];
                   }
                   const count = weapon.Count ? parseInt(weapon.Count, 10) : 1;
-                  if (!weaponData.data?.firingarc) weaponData.data.firingarc = {};
+                  if (!weaponData.system?.firingarc) weaponData.system.firingarc = {};
                   ["Fore", "Aft", "Port", "Starboard", "Dorsal", "Ventral"].forEach((location) => {
-                    weaponData.data.firingarc[location.toLowerCase()] = weapon?.FiringArcs?.[location] === "true" ? true : false;
+                    weaponData.system.firingarc[location.toLowerCase()] = weapon?.FiringArcs?.[location] === "true" ? true : false;
                   });
 
                   if (weapon?.Qualities) {
                     const mods = await ImportHelpers.processMods(weapon);
                     if (mods.qualities) {
-                      weaponData.data.itemmodifier = weaponData.data.itemmodifier.concat(mods.qualities.itemmodifier);
+                      weaponData.system.itemmodifier = weaponData.system.itemmodifier.concat(mods.qualities.itemmodifier);
                     }
                   }
 

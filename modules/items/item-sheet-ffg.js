@@ -862,6 +862,11 @@ export class ItemSheetFFG extends ItemSheet {
 
     // as of v10, "id" is not passed in - instead, "uuid" is. conver to the old format so we can go on
     data.id = data.uuid.split('.')[1];
+    if (data.uuid.includes('Compendium')) {
+        let tmp = data.uuid.split('.');
+        data.pack = tmp[1] + '.' + tmp[2];
+        data.id = tmp[3];
+    }
 
     // Case 1 - Import from a Compendium pack
     let itemObject;

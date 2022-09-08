@@ -22,7 +22,7 @@ export default class Specializations {
             const item = specializationData.Specialization;
 
             let data = ImportHelpers.prepareBaseObject(item, "specialization");
-            data.data = {
+            data.system = {
               attributes: {},
               description: item.Description,
               talents: {},
@@ -30,9 +30,9 @@ export default class Specializations {
               isReadOnly: true,
             };
 
-            data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
-            data.data.attributes = mergeObject(data.data.attributes, ImportHelpers.processStatMod(item?.Attributes));
-            data.data.attributes = mergeObject(data.data.attributes, ImportHelpers.processCareerSkills(item?.CareerSkills, true));
+            data.system.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            data.system.attributes = mergeObject(data.system.attributes, ImportHelpers.processStatMod(item?.Attributes));
+            data.system.attributes = mergeObject(data.system.attributes, ImportHelpers.processCareerSkills(item?.CareerSkills, true));
 
             for (let i = 0; i < item.TalentRows.TalentRow.length; i += 1) {
               const row = item.TalentRows.TalentRow[i];
@@ -47,17 +47,17 @@ export default class Specializations {
 
                 if (talentItem) {
                   rowTalent.name = talentItem.name;
-                  rowTalent.description = talentItem.data.description;
-                  rowTalent.activation = talentItem.data.activation.value;
-                  rowTalent.activationLabel = talentItem.data.activation.label;
-                  rowTalent.isForceTalent = talentItem?.data?.isForceTalent ? true : false;
-                  rowTalent.isConflictTalent = talentItem?.data?.isConflictTalent ? true : false;
-                  rowTalent.isRanked = talentItem?.data?.ranks?.ranked ? true : false;
+                  rowTalent.description = talentItem.system.description;
+                  rowTalent.activation = talentItem.system.activation.value;
+                  rowTalent.activationLabel = talentItem.system.activation.label;
+                  rowTalent.isForceTalent = talentItem?.system?.isForceTalent ? true : false;
+                  rowTalent.isConflictTalent = talentItem?.system?.isConflictTalent ? true : false;
+                  rowTalent.isRanked = talentItem?.system?.ranks?.ranked ? true : false;
                   rowTalent.size = "single";
                   rowTalent.canLinkTop = true;
                   rowTalent.canLinkRight = true;
                   rowTalent.itemId = talentItem._id;
-                  rowTalent.attributes = talentItem.data.attributes;
+                  rowTalent.attributes = talentItem.system.attributes;
 
                   if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
                     rowTalent["links-top-1"] = true;
@@ -72,7 +72,7 @@ export default class Specializations {
                   }
 
                   const talentKey = `talent${i * 4 + index}`;
-                  data.data.talents[talentKey] = rowTalent;
+                  data.system.talents[talentKey] = rowTalent;
                 } else {
                   CONFIG.logger.warn(`Unable to find ${keyName}`);
                 }
