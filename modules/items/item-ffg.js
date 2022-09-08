@@ -119,7 +119,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemattachment) {
           data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+            const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
             data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
             if (data.crit.adjusted < 1) data.crit.adjusted = 1;
@@ -135,16 +135,16 @@ export class ItemFFG extends ItemBaseFFG {
 
             data.range.adjusted = Object.values(rangeSetting)[newRange].value;
 
-            if (attachment?.data?.itemmodifier) {
-              const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
+            if (attachment?.system?.itemmodifier) {
+              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
 
               activeMods.forEach((am) => {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.data.rank_current = parseInt(foundItem.data.rank_current, 10) + 1;
+                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
                 } else {
-                  am.data.rank_current = 1;
+                  am.system.rank_current = 1;
                   data.adjusteditemmodifier.push({ ...am, adjusted: true });
                 }
               });
@@ -282,7 +282,7 @@ export class ItemFFG extends ItemBaseFFG {
 
       if (data?.itemattachment?.length) {
         data.itemattachment.forEach((attachment) => {
-          totalHPUsed += attachment.data.hardpoints.value;
+          totalHPUsed += attachment.system.hardpoints.value;
         });
       }
 
@@ -406,13 +406,13 @@ export class ItemFFG extends ItemBaseFFG {
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
     CONFIG.logger.debug(`Updating Specializations Talent ${specializationTalentItem.name} with ${talentItem.name}`);
     specializationTalentItem.name = talentItem.name;
-    specializationTalentItem.description = talentItem.data.description;
-    specializationTalentItem.activation = talentItem.data.activation.value;
-    specializationTalentItem.activationLabel = talentItem.data.activation.label;
-    specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
-    specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
-    specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
-    specializationTalentItem.attributes = talentItem.data.attributes;
+    specializationTalentItem.description = talentItem.system.description;
+    specializationTalentItem.activation = talentItem.system.activation.value;
+    specializationTalentItem.activationLabel = talentItem.system.activation.label;
+    specializationTalentItem.isRanked = talentItem.system.ranks.ranked;
+    specializationTalentItem.isForceTalent = talentItem.system.isForceTalent;
+    specializationTalentItem.isConflictTalent = talentItem.system.isConflictTalent;
+    specializationTalentItem.attributes = talentItem.system.attributes;
   }
 
   /**
