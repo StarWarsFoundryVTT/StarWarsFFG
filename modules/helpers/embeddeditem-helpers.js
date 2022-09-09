@@ -127,15 +127,15 @@ export default class EmbeddedItemHelpers {
 
       let modifierIndex;
       let item;
-      if (ownedItem?.data?.data?.[modifierType]) {
-        modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId || i.id === modifierId);
-        item = ownedItem.data.data[modifierType][modifierIndex];
+      if (ownedItem?.system[modifierType]) {
+        modifierIndex = ownedItem.system[modifierType].findIndex((i) => i._id === modifierId || i.id === modifierId);
+        item = ownedItem.system[modifierType][modifierIndex];
       }
 
       if (!item) {
         // this is a modifier on an attachment
-        ownedItem.data.data.itemattachment.forEach((a) => {
-          modifierIndex = a.data[modifierType].findIndex((m) => m.id === modifierId);
+        ownedItem.system.itemattachment.forEach((a) => {
+          modifierIndex = a.system[modifierType].findIndex((m) => m.id === modifierId);
           if (modifierIndex > -1) {
             item = a.data[modifierType][modifierIndex];
           }
@@ -144,9 +144,9 @@ export default class EmbeddedItemHelpers {
 
       const readonlyItem = {
         name: item.name,
-        content: item.data.description,
+        content: item.system.description,
         permission: {
-          default: CONST.ENTITY_PERMISSIONS.OBSERVER,
+          default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
         },
       };
 
