@@ -43,7 +43,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
       default:
     }
 
-    data.items = this.actor.items.map((item) => item.data);
+    data.items = this.actor.items.map((item) => item);
 
     return data;
   }
@@ -54,7 +54,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
 
     if (!this.options.editable) return;
 
-    if (this.actor.data.type === "character") {
+    if (this.actor.type === "character") {
       this.sheetoptions.clear();
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),

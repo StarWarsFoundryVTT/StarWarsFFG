@@ -14,7 +14,7 @@ export default class UISettings extends FormApplication {
     const canConfigure = game.user.can("SETTINGS_MODIFY");
 
     const data = {
-      system: { title: game.system.data.title, menus: [], settings: [] },
+      system: { title: game.system.title, menus: [], settings: [] },
     };
 
     // Classify all settings
@@ -42,7 +42,7 @@ export default class UISettings extends FormApplication {
     return {
       user: game.user,
       canConfigure: canConfigure,
-      systemTitle: game.system.data.title,
+      systemTitle: game.system.title,
       data: data,
     };
   }

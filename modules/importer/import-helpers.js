@@ -173,7 +173,7 @@ export default class ImportHelpers {
 
           const content = await pack.getDocuments();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].data?.flags?.starwarsffg?.ffgimportid] = duplicate(content[i]);
+            CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = duplicate(content[i]);
           }
         }
       } else {
@@ -2376,7 +2376,7 @@ export default class ImportHelpers {
       } else if (dieMod.SkillChar) {
         // this is a skill modifier based on characteristic (ex all Brawn skills);
         const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
-        const allSkillsLists = JSON.parse(await game.settings.get("starwarsffg", "arraySkillList"));
+        const allSkillsLists = await game.settings.get("starwarsffg", "arraySkillList");
         const skills = allSkillsLists.find((i) => i.id === skillTheme).skills;
         const characteristicSkills = Object.keys(skills).filter((s) => skills[s].characteristic === ImportHelpers.convertOGCharacteristic(dieMod.SkillChar));
 
@@ -2391,7 +2391,7 @@ export default class ImportHelpers {
         });
       } else if (dieMod.SkillType) {
         const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
-        const allSkillsLists = JSON.parse(await game.settings.get("starwarsffg", "arraySkillList"));
+        const allSkillsLists = await game.settings.get("starwarsffg", "arraySkillList");
         const skills = allSkillsLists.find((i) => i.id === skillTheme).skills;
         const characteristicSkills = Object.keys(skills).filter((s) => skills[s].type.toLowerCase() === dieMod.SkillType.toLowerCase());
 

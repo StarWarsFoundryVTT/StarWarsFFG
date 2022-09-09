@@ -111,9 +111,13 @@ export class ItemSheetFFG extends ItemSheet {
 
         if (!this.item.flags?.starwarsffg?.loaded) {
           CONFIG.logger.debug(`Running Item initial load`);
+          if (!Object.keys(this.item.flags).includes('starwarsffg')) {
+              // the object is not properly set up yet; bail to let it finish
+              return;
+          }
           this.item.flags.starwarsffg.loaded = true;
 
-          const specializationTalents = data.system.talents;
+          const specializationTalents = data.data.talents;
 
           await ImportHelpers.asyncForEach(Object.keys(specializationTalents), async (talent) => {
             let gameItem;
@@ -306,7 +310,7 @@ export class ItemSheetFFG extends ItemSheet {
           callbacks: { drop: this._onDropTalentToSpecialization.bind(this) },
         });
 
-        dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
+        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
       } catch (err) {
         CONFIG.logger.debug(err);
       }
@@ -409,7 +413,7 @@ export class ItemSheetFFG extends ItemSheet {
             content: {
               item,
               type: itemType,
-              parenttype: this.object.data.type,
+              parenttype: this.object.type,
             },
             buttons: {
               done: {
@@ -856,6 +860,14 @@ export class ItemSheetFFG extends ItemSheet {
       return false;
     }
 
+    // as of v10, "id" is not passed in - instead, "uuid" is. conver to the old format so we can go on
+    data.id = data.uuid.split('.')[1];
+    if (data.uuid.includes('Compendium')) {
+        let tmp = data.uuid.split('.');
+        data.pack = tmp[1] + '.' + tmp[2];
+        data.id = tmp[3];
+    }
+
     // Case 1 - Import from a Compendium pack
     let itemObject;
     if (data.pack) {
@@ -870,8 +882,8 @@ export class ItemSheetFFG extends ItemSheet {
     }
     itemObject.id = randomID();
 
-    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.data.type === "shipweapon" && itemObject.data.type === "weapon") || obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
-      let items = obj?.data?.data?.[itemObject.type];
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.type === "shipweapon" && itemObject.system.type === "weapon") || obj.type === itemObject.system.type || itemObject.system.type === "all" || obj.type === "itemattachment")) {
+      let items = obj?.system[itemObject.type];
       if (!items) {
         items = [];
       }
@@ -882,22 +894,22 @@ export class ItemSheetFFG extends ItemSheet {
 
       switch (itemObject.type) {
         case "itemmodifier": {
-          if (parseInt(itemObject.data.rank, 10) === 0) {
-            itemObject.data.rank = 1;
+          if (parseInt(itemObject.system.rank, 10) === 0) {
+            itemObject.system.rank = 1;
           }
 
           if (foundItem && this.object.type !== "itemattachment") {
-            foundItem.data.rank += itemObject.data.rank;
+            foundItem.system.rank += itemObject.system.rank;
           } else {
             items.push(itemObject);
           }
           break;
         }
         case "itemattachment": {
-          if (this.object.data.data.hardpoints.current - itemObject.data.hardpoints.value >= 0) {
+          if (this.object.system.hardpoints.current - itemObject.system.hardpoints.value >= 0) {
             items.push(itemObject);
           } else {
-            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.data.data.hardpoints.current} left)`);
+            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.system.hardpoints.current} left)`);
           }
           break;
         }

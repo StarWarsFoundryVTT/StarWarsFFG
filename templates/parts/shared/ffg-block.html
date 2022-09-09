@@ -11,8 +11,8 @@
         <ul class="item-pill-list">
           {{#each fields as |item id|}}
           <li class="item-pill {{#if adjusted}}adjusted{{/if}}" data-item-name="{{../name}}" data-item-index="{{id}}">
-            {{item.name}} {{#if item.data.rank_current}}
-            <i class="rank">{{item.data.rank_current}}</i>
+            {{item.name}} {{#if item.system.rank}}
+            <i class="rank">{{item.system.rank}}</i>
             {{/if}} {{#if adjusted}}{{else}}<i class="fas fa-times item-delete"></i>{{/if}}
           </li>
           {{/each}}

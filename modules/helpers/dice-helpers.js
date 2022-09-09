@@ -70,7 +70,7 @@ export default class DiceHelpers {
         item = obj.actor.token.actor.items.get(itemID);
       }
     }
-    const itemData = item?.data || {};
+    const itemData = item || {};
     const status = this.getWeaponStatus(itemData);
 
     // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
@@ -233,16 +233,16 @@ export default class DiceHelpers {
     if (item.type === "weapon") {
       dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
 
-      if (item?.data?.itemattachment) {
-        await ImportHelpers.asyncForEach(item.data.itemattachment, async (attachment) => {
+      if (item?.system?.itemattachment) {
+        await ImportHelpers.asyncForEach(item.system.itemattachment, async (attachment) => {
           //get base mods and additional mods totals
-          const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+          const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
 
           dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, attachment, activeModifiers);
         });
       }
-      if (item?.data?.itemmodifier) {
-        await ImportHelpers.asyncForEach(item.data.itemmodifier, async (modifier) => {
+      if (item?.system?.itemmodifier) {
+        await ImportHelpers.asyncForEach(item.system.itemmodifier, async (modifier) => {
           dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, modifier, []);
         });
       }

@@ -333,7 +333,7 @@ export class RollFFG extends Roll {
     if (rMode) msg.applyRollMode(rollMode);
 
     // Either create or return the data
-    return create ? cls.create(msg.data) : msg.data;
+    return create ? cls.create(msg) : msg;
   }
 
   /** @override */
