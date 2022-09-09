@@ -380,7 +380,7 @@ export default class SWAImporter extends FormApplication {
                       }
                     }
                   },
-                  data: {
+                  system: {
                     attributes: {},
                     characteristics: {},
                     skills,
@@ -390,7 +390,7 @@ export default class SWAImporter extends FormApplication {
                 };
 
                 Object.values(CONFIG.FFG.characteristics).forEach((char) => {
-                  adversary.data.characteristics[char.value] = {
+                  adversary.system.characteristics[char.value] = {
                     value: item?.characteristics?.[char.value] ? item?.characteristics?.[char.value] : 0,
                     label: game.i18n.localize(char.label),
                     abrev: game.i18n.localize(char.abrev),
@@ -400,27 +400,27 @@ export default class SWAImporter extends FormApplication {
                 if (item.derived) {
                   ["soak", "wounds", "strain"].forEach((stat) => {
                     if (stat === "soak") {
-                      adversary.data.stats[stat] = {
+                      adversary.system.stats[stat] = {
                         value: parseInt(item.derived[stat], 10),
                       };
 
-                      adversary.data.attributes.Soak = {
+                      adversary.system.attributes.Soak = {
                         mod: "Soak",
                         modtype: "Stat",
-                        value: Math.abs(adversary.data.stats[stat].value - parseInt(adversary.data.characteristics.Brawn.value, 10)),
+                        value: Math.abs(adversary.system.stats[stat].value - parseInt(adversary.system.characteristics.Brawn.value, 10)),
                       };
                     } else {
                       if (stat === "wounds" && adversary.type === "minion") {
-                        adversary.data.quantity = {
+                        adversary.system.quantity = {
                           value: 1,
                           max: 1,
                         };
 
-                        adversary.data["unit_wounds"] = {
+                        adversary.system["unit_wounds"] = {
                           value: item.derived[stat],
                         };
                       } else {
-                        adversary.data.stats[stat] = {
+                        adversary.system.stats[stat] = {
                           value: 0,
                           min: 0,
                           max: item.derived[stat],
@@ -441,29 +441,29 @@ export default class SWAImporter extends FormApplication {
                     const ffgSkill = Object.keys(skills).find((s) => skill.toLowerCase() === s.toLowerCase());
 
                     if (ffgSkill) {
-                      adversary.data.skills[ffgSkill].groupskill = isMinion ? true : false;
+                      adversary.system.skills[ffgSkill].groupskill = isMinion ? true : false;
                       if (!isMinion) {
-                        adversary.data.attributes[skill] = {
+                        adversary.system.attributes[skill] = {
                           key: skill,
                           mod: skill,
                           modType: 'Skill Rank',
                           value: item.skills[skill],
                         };
-                        adversary.data.skills[ffgSkill].rank = item.skills[skill];
+                        adversary.system.skills[ffgSkill].rank = item.skills[skill];
                       }
                       if (CONFIG.temporary.swa.skills?.[skill]?.characteristic) {
                         if (alternateCharacteristic) {
-                          adversary.data.skills[ffgSkill].characteristic = alternateCharacteristic;
+                          adversary.system.skills[ffgSkill].characteristic = alternateCharacteristic;
                         } else {
-                          adversary.data.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
+                          adversary.system.skills[ffgSkill].characteristic = CONFIG.temporary.swa.skills[skill].characteristic;
                         }
                       }
 
-                      if ((!adversary.data.skills[ffgSkill]?.type && skilltheme !== "starwars") || (skilltheme === "starwars" && !CONFIG.FFG.skills[ffgSkill])) {
-                        adversary.data.skills[ffgSkill].Key = ffgSkill.toUpperCase();
-                        adversary.data.skills[ffgSkill].custom = true;
-                        adversary.data.skills[ffgSkill].type = "General";
-                        adversary.data.skills[ffgSkill].label = ffgSkill;
+                      if ((!adversary.system.skills[ffgSkill]?.type && skilltheme !== "starwars") || (skilltheme === "starwars" && !CONFIG.FFG.skills[ffgSkill])) {
+                        adversary.system.skills[ffgSkill].Key = ffgSkill.toUpperCase();
+                        adversary.system.skills[ffgSkill].custom = true;
+                        adversary.system.skills[ffgSkill].type = "General";
+                        adversary.system.skills[ffgSkill].label = ffgSkill;
                       }
                     }
                   });
@@ -533,7 +533,7 @@ export default class SWAImporter extends FormApplication {
                         name: weapon.name,
                         type: "weapon",
                         flags: {},
-                        data: {
+                        system: {
                           attributes: {},
                           description: "No description provided",
                           damage: {
@@ -553,9 +553,9 @@ export default class SWAImporter extends FormApplication {
                           },
                         },
                       };
-                      weaponData.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.data.skill.value.includes(element)) && (!weapon.damage || weapon.damage === "0");
+                      weaponData.system.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.system.skill.value.includes(element)) && (!weapon.damage || weapon.damage === "0");
                       if (weapon?.["plus-damage"] && parseInt(weapon["plus-damage"], 10) > 0) {
-                        weaponData.data.attributes[randomID()] = {
+                        weaponData.system.attributes[randomID()] = {
                           isCheckbox: false,
                           mod: "damage",
                           modtype: "Weapon Stat",
@@ -571,7 +571,7 @@ export default class SWAImporter extends FormApplication {
                           name: swaWeapon.name,
                           type: "weapon",
                           flags: {},
-                          data: {
+                          system: {
                             attributes: {},
                             description: "No description provided",
                             damage: {
@@ -592,10 +592,10 @@ export default class SWAImporter extends FormApplication {
                           },
                         };
 
-                        weaponData.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.data.skill.value.includes(element)) && (!swaWeapon.damage || swaWeapon.damage === "0");
+                        weaponData.system.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => weaponData.system.skill.value.includes(element)) && (!swaWeapon.damage || swaWeapon.damage === "0");
 
                         if (swaWeapon?.["plus-damage"] && parseInt(swaWeapon["plus-damage"], 10) > 0) {
-                          weaponData.data.attributes[randomID()] = {
+                          weaponData.system.attributes[randomID()] = {
                             isCheckbox: false,
                             mod: "damage",
                             modtype: "Weapon Stat",
@@ -607,10 +607,10 @@ export default class SWAImporter extends FormApplication {
 
                     if (weaponData) {
                       const templatedData = weaponData;
-                      templatedData.data = mergeObject(data, weaponData.data);
+                      templatedData.system = mergeObject(data, weaponData.system);
 
-                      if (templatedData.data.special?.value?.length > 0) {
-                        templatedData.data.special.value.split(",").forEach((w) => {
+                      if (templatedData.system.special?.value?.length > 0) {
+                        templatedData.system.special.value.split(",").forEach((w) => {
                           const wName = w.match(/^.*([^0-9\s]+)/gim);
                           const wRank = w.match(/[^\w][0-9]/gim);
 
@@ -618,7 +618,7 @@ export default class SWAImporter extends FormApplication {
                             name: wName[0],
                             type: "itemmodifier",
                             flags: {},
-                            data: {
+                            system: {
                               description: CONFIG.temporary.swa?.qualities?.[wName]?.description ? CONFIG.temporary.swa.qualities[wName].description : "No description provided",
                               attributes: {},
                               type: "all",
@@ -626,8 +626,8 @@ export default class SWAImporter extends FormApplication {
                             },
                           };
                           const descriptor = new CONFIG.Item.documentClass(unique, { temporary: true });
-                          descriptor.data._id = randomID();
-                          templatedData.data.itemmodifier.push(descriptor.data);
+                          descriptor.system._id = randomID();
+                          templatedData.system.itemmodifier.push(descriptor.system);
                         });
                       }
 
@@ -645,7 +645,7 @@ export default class SWAImporter extends FormApplication {
                           name: gear.slice(0, gear.indexOf("(") - 1).trim(),
                           type: "armour",
                           flags: {},
-                          data: {
+                          system: {
                             description: "No description provided",
                             defence: {
                               value: gear.charAt(gear.indexOf("Defence") - 2),
@@ -661,7 +661,7 @@ export default class SWAImporter extends FormApplication {
                           name: gear.slice(0, gear.indexOf("(") - 1).trim(),
                           type: "armour",
                           flags: {},
-                          data: {
+                          system: {
                             description: "No description provided",
 
                             soak: {
@@ -675,7 +675,7 @@ export default class SWAImporter extends FormApplication {
                           name: gear.slice(0, gear.indexOf("(") - 1).trim(),
                           type: "armour",
                           flags: {},
-                          data: {
+                          system: {
                             description: "No description provided",
                             defence: {
                               value: gear.charAt(gear.indexOf("Defence") - 2),
@@ -688,7 +688,7 @@ export default class SWAImporter extends FormApplication {
                           name: gear,
                           type: "gear",
                           flags: {},
-                          data: {
+                          system: {
                             description: "No description provided",
                           },
                         };
@@ -700,7 +700,7 @@ export default class SWAImporter extends FormApplication {
                       name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
                       type: "armour",
                       flags: {},
-                      data: {
+                      system: {
                         description: "No description provided",
                         defence: {
                           value: item.gear.charAt(item.gear.indexOf("Defence") - 2),
@@ -716,7 +716,7 @@ export default class SWAImporter extends FormApplication {
                       name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
                       type: "armour",
                       flags: {},
-                      data: {
+                      system: {
                         description: "No description provided",
 
                         soak: {
@@ -730,7 +730,7 @@ export default class SWAImporter extends FormApplication {
                       name: item.gear.slice(0, item.gear.indexOf("(") - 1).trim(),
                       type: "armour",
                       flags: {},
-                      data: {
+                      system: {
                         description: "No description provided",
                         defence: {
                           value: item.gear.charAt(item.gear.indexOf("Defence") - 2),
@@ -743,7 +743,7 @@ export default class SWAImporter extends FormApplication {
                       name: item.gear,
                       type: "gear",
                       flags: {},
-                      data: {
+                      system: {
                         description: "No description provided",
                       },
                     };
@@ -773,7 +773,7 @@ export default class SWAImporter extends FormApplication {
                   });
                 }
 
-                adversary.data.biography = biography;
+                adversary.system.biography = biography;
 
                 let compendiumItem;
                 await pack.getIndex();

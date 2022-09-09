@@ -41,7 +41,7 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     if (!item.flags.starwarsffg) {
-      await item.update({
+      await item.updateSource({
         flags: {
           starwarsffg: {
             isCompendium: !!this.compendium,
