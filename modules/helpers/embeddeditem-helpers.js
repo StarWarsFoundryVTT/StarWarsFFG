@@ -1,5 +1,4 @@
 import PopoutEditor from "../popout-editor.js";
-import JournalEntryFFG from "../items/journalentry-ffg.js";
 
 export default class EmbeddedItemHelpers {
   static async updateRealObject(item, data) {
@@ -144,14 +143,21 @@ export default class EmbeddedItemHelpers {
 
       const readonlyItem = {
         name: item.name,
-        content: item.system.description,
-        permission: {
+        pages: [{
+            name: item.name,
+            type: 'text',
+            text: {
+                content: item.system.description,
+                format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML
+            },
+        }],
+        ownership: {
           default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
         },
       };
 
-      const readonlyItemJournalEntry = new JournalEntryFFG(readonlyItem, { temporary: true });
-      readonlyItemJournalEntry.sheet.render(true);
+      let readonlyItemJournalEntry = await JournalEntry.create(readonlyItem, {temporary: true});
+      readonlyItemJournalEntry.sheet.render(true)
     } catch (err) {
       ui.notifications.warn(`The item or quality has been removed or can not be found!`);
       CONFIG.logger.warn(`Error loading Read-Only Journal Item`, err);
