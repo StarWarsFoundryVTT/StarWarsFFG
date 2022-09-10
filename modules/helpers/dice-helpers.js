@@ -153,13 +153,13 @@ export default class DiceHelpers {
     const actorSheet = actor.sheet.getData();
 
     const item = actor.items.get(itemId);
-    const itemData = item.data;
+    const itemData = item.system;
     await item.setFlag("starwarsffg", "uuid", item.uuid);
 
-    const status = this.getWeaponStatus(itemData);
+    const status = this.getWeaponStatus(item);
 
-    const skill = actor.data.data.skills[itemData.data.skill.value];
-    const characteristic = actor.data.data.characteristics[skill.characteristic];
+    const skill = actor.system.skills[itemData.skill.value];
+    const characteristic = actor.system.characteristics[skill.characteristic];
 
     let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
@@ -179,9 +179,9 @@ export default class DiceHelpers {
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank));
 
-    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, itemData));
+    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, item));
 
-    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, itemData, flavorText, sound);
+    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
   }
 
   // Takes a skill object, characteristic object, difficulty number and ActorSheetFFG.getData() object and creates the appropriate roll dialog.
