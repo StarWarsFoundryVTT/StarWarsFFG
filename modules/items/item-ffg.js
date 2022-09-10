@@ -119,7 +119,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemattachment) {
           data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
+            const activeModifiers = attachment.system.itemmodifier?.filter((i) => i.system?.active);
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
             data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
             if (data.crit.adjusted < 1) data.crit.adjusted = 1;
