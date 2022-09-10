@@ -670,7 +670,7 @@ Hooks.once("ready", async () => {
         const messageText = `<button class="ffg-destiny-roll">${game.i18n.localize("SWFFG.DestinyPoolRoll")}</button>`;
 
         new Map([...game.settings.settings].filter(([k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
-          game.settings.set(i.module, i.key, undefined);
+          game.settings.set(i.namespace, i.key, undefined);
         });
 
         CONFIG.FFG.DestinyGM = game.user.id;

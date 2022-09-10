@@ -41,10 +41,10 @@
         {{#if players.connected}} {{#each characters as |c key|}}
         <tr class="player-character" data-character="{{c.id}}">
           <td style="width: 100px;">{{c.name}}</td>
-          <td><input type="text" value="{{c.data.data.stats.wounds.value}}" disabled /></td>
-          <td><input type="text" value="{{c.data.data.stats.strain.value}}" disabled /></td>
-          <td><input type="text" value="{{c.data.data.stats.soak.value}}" disabled /></td>
-          <!-- <td><input type="text" value="{{c.data.data.obligation.value}}" disabled /></td> -->
+          <td><input type="text" value="{{c.system.stats.wounds.value}}" disabled /></td>
+          <td><input type="text" value="{{c.system.stats.strain.value}}" disabled /></td>
+          <td><input type="text" value="{{c.system.stats.soak.value}}" disabled /></td>
+          <!-- <td><input type="text" value="{{c.system.obligation.value}}" disabled /></td> -->
           {{#if ../isGM}}
           <td>
             <button class="add-to-combat" data-character="{{c.id}}"><i class="fas fa-fist-raised"></i></button>
