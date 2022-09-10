@@ -1,5 +1,4 @@
 import ImportHelpers from "../importer/import-helpers.js";
-import JournalEntryFFG from "../items/journalentry-ffg.js";
 import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
