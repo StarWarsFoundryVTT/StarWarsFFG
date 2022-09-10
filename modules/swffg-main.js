@@ -501,23 +501,23 @@ Hooks.once("ready", async () => {
   const isAlpha = game.system.version.includes("alpha");
 
   if ((isAlpha || currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
-    CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.data.version}`);
+    CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.version}`);
 
     // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
     // This is a temporary migration check to transfer existing actors .real_value back into the correct .value location.
     game.actors.forEach((actor) => {
-      if (actor.data.type === "character" || actor.data.type === "minion") {
-        if (actor.data.data.stats.wounds.real_value != null) {
-          actor.data.data.stats.wounds.value = actor.data.data.stats.wounds.real_value;
-          game.actors.get(actor.id).update({ ["data.stats.wounds.real_value"]: null });
+      if (actor.type === "character" || actor.type === "minion") {
+        if (actor.system.stats.wounds.real_value != null) {
+          actor.system.stats.wounds.value = actor.system.stats.wounds.real_value;
+          game.actors.get(actor.id).update({ ["system.stats.wounds.real_value"]: null });
           CONFIG.logger.log("Migrated stats.wounds.value from stats.wounds.real_value");
-          CONFIG.logger.log(actor.data.data.stats.wounds);
+          CONFIG.logger.log(actor.system.stats.wounds);
         }
-        if (actor.data.data.stats.strain.real_value != null) {
-          actor.data.data.stats.strain.value = actor.data.data.stats.strain.real_value;
-          game.actors.get(actor.id).update({ ["data.stats.strain.real_value"]: null });
+        if (actor.system.stats.strain.real_value != null) {
+          actor.system.stats.strain.value = actor.system.stats.strain.real_value;
+          game.actors.get(actor.id).update({ ["system.stats.strain.real_value"]: null });
           CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
-          CONFIG.logger.log(actor.data.data.stats.strain);
+          CONFIG.logger.log(actor.system.stats.strain);
         }
 
         // migrate all character to using current skill list if not default.
@@ -528,13 +528,13 @@ Hooks.once("ready", async () => {
             let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
             CONFIG.logger.log(`Applying skill theme ${skilllist} to actor ${actor.name}`);
 
-            Object.keys(actor.data.data.skills).forEach((skill) => {
-              if (!skills.skills[skill] && !actor.data.data.skills?.[skill]?.nontheme) {
+            Object.keys(actor.system.skills).forEach((skill) => {
+              if (!skills.skills[skill] && !actor.system.skills?.[skill]?.nontheme) {
                 skills.skills[`-=${skill}`] = null;
               } else {
                 skills.skills[skill] = {
                   ...skills.skills[skill],
-                  ...actor.data.data.skills[skill],
+                  ...actor.system.skills[skill],
                 };
               }
             });
