@@ -500,7 +500,7 @@ Hooks.once("ready", async () => {
   const version = game.system.version;
   const isAlpha = game.system.version.includes("alpha");
 
-  if ((isAlpha || currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
+  if ((isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
     CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.version}`);
 
     // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
@@ -551,7 +551,7 @@ Hooks.once("ready", async () => {
       }
     });
 
-    if (currentVersion === "null" || parseFloat(currentVersion) < 1.1) {
+    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.1) {
       // Migrate alternate skill lists from file if found
       try {
         let skillList = [];
@@ -566,7 +566,7 @@ Hooks.once("ready", async () => {
             skillList = fileData;
           }
         } else {
-          skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+          skillList = game.settings.get("starwarsffg", "arraySkillList");
         }
 
         CONFIG.FFG.alternateskilllists = skillList;
@@ -600,21 +600,83 @@ Hooks.once("ready", async () => {
         CONFIG.logger.error(err);
       }
     }
+    // migrate embedded items
+    if (isAlpha || currentVersion === "null" || currentVersion === '') {
+      ui.notifications.info(`Migrating Star Wars FFG System Deep Embedded Items`)
+      CONFIG.logger.debug('Migrating Star Wars FFG System Deep Embedded Items')
 
-    if (currentVersion === "null" || parseFloat(currentVersion) < 1.61) {
-      ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
+      // start with items on actors
+      game.actors.forEach((actor) => {
+        actor.items.forEach((item) => {
+          if (["weapon", "armour"].includes(item.type)) {
+            // iterate over attachments and modifiers on the item
+            item.system.itemmodifier.forEach((modifier) => {
+              if (modifier.hasOwnProperty('data')) {
+                modifier.system = modifier.data;
+                delete modifier.data;
+              }
+            });
+
+            item.system.itemattachment.forEach((attachment) => {
+              if (attachment.hasOwnProperty('data')) {
+                attachment.system = attachment.data;
+                delete attachment.data;
+              }
+            });
+            // copy the item, so we can delete the ID field (we can't update if we include an ID)
+            let item_migrated = structuredClone(item);
+            let item_id = item._id;
+            delete item_migrated._id;
+            // persist the changes to the DB
+            actor.items.filter(i => i._id === item_id)[0].update(item_migrated);
+          }
+        });
+      });
+      // move on to items in the world
+      game.items.forEach((item) => {
+        if (["weapon", "armour"].includes(item.type)) {
+          // iterate over attachments and modifiers on the item
+          item.system.itemmodifier.forEach((modifier) => {
+            if (modifier.hasOwnProperty('data')) {
+              modifier.system = modifier.data;
+              delete modifier.data;
+            }
+          });
+
+          item.system.itemattachment.forEach((attachment) => {
+            if (attachment.hasOwnProperty('data')) {
+              attachment.system = attachment.data;
+              delete attachment.data;
+            }
+          });
+          // copy the item, so we can delete the ID field (we can't update if we include an ID)
+          let item_migrated = structuredClone(item);
+          let item_id = item._id;
+          delete item_migrated._id;
+          // persist the changes to the DB
+          game.items.filter(i => i._id === item_id)[0].update(item_migrated);
+        }
+      });
+      CONFIG.logger.debug('Migration of Star Wars FFG System Deep Embedded Items completed!')
+      ui.notifications.info(`Migration of Star Wars FFG System Deep Embedded Items completed!`)
+    }
+
+    // migrate compendiums and flags
+    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.61) {
+      ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
       try {
 
         // Update old pack to latest data model
-        for (let pack of game.packs) {
-          await pack.migrate();
-        }
+          // TODO: uncomment
+        //for (let pack of game.packs) {
+        //  await pack.migrate();
+        //}
 
         // Copy old flags to new system scope
         FlagMigrationHelpers.migrateFlags()
 
-        ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+        ui.notifications.info(`Starwars FFG System Migration to version ${game.system.version} completed!`, { permanent: true });
       } catch (err) {
         CONFIG.logger.error(`Error during system migration`, err);
       }
