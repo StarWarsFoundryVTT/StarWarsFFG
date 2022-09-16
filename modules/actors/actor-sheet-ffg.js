@@ -1170,7 +1170,7 @@ export class ActorSheetFFG extends ActorSheet {
           }
         });
       }
-      data.system.talentList = mergeObject(data.system.talentList ? data.system.talentList : [], globalTalentList);
+      data.data.talentList = mergeObject(data.data.talentList ? data.data.talentList : [], globalTalentList);
     }
   }
 
