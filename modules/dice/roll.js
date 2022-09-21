@@ -233,8 +233,8 @@ export class RollFFG extends Roll {
     if (this?.data) {
       if (this.data.flags?.starwarsffg?.ffgUuid) {
         const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
-        if (item?.data) {
-          this.data = item.data;
+        if (item?.system) {
+          this.data = item.system;
         }
       }
       this.data.additionalFlavorText = this.flavorText;
