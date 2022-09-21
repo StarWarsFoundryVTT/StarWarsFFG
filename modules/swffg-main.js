@@ -415,7 +415,7 @@ Hooks.on("renderSidebarTab", (app, html, data) => {
     const dicePool = new DicePoolFFG();
 
     let user = {
-      data: game.user.data,
+      data: game.user.system,
     };
 
     await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
