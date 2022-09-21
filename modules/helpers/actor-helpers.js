@@ -3,7 +3,7 @@ import ModifierHelpers from "./modifiers.js";
 export default class ActorHelpers {
   static updateActor(event, formData) {
     formData = expandObject(formData);
-    const ownedItems = this.actor.items.map((item) => item.system);
+    const ownedItems = this.actor.items.map((item) => item);
 
     if (this.object.type !== "homestead") {
       if (this.object.type !== "vehicle") {
