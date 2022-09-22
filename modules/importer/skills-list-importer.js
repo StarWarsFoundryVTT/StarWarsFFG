@@ -67,7 +67,7 @@ export default class SkillListImporter extends FormApplication {
 
       const target = event.currentTarget;
       const skilltheme = target.dataset.id;
-      const currentSkillList = await JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+      const currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
 
       const data = currentSkillList.find((i) => i.id === skilltheme);
 
@@ -84,7 +84,7 @@ export default class SkillListImporter extends FormApplication {
       if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
       const text = await readTextFromFile(form.data.files[0]);
 
-      let currentSkillList = await JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+      let currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
 
       const newSkillList = JSON.parse(text);
 
@@ -102,7 +102,7 @@ export default class SkillListImporter extends FormApplication {
         currentSkillList.push(newSkillList);
       }
 
-      const newMasterSkillListData = JSON.stringify(currentSkillList);
+      const newMasterSkillListData = currentSkillList;
       await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
       debounce(() => window.location.reload(), 100);
 

@@ -200,6 +200,7 @@ Hooks.once("init", async function () {
       default: defaultSkillList,
       config: false,
       type: Object,
+      onChange: SettingsHelpers.debouncedReload,
     });
 
     let skillList = game.settings.get("starwarsffg", "arraySkillList");
