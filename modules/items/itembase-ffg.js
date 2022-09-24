@@ -22,7 +22,7 @@ export default class ItemBaseFFG extends Item {
 
         // we're working on an embedded item
         await this.sheet.render(true);
-        const appId = this.data?.flags?.starwarsffg?.ffgParentApp;
+        const appId = this.system?.flags?.starwarsffg?.ffgParentApp;
         if (appId) {
           const newData = ui.windows[appId].object;
           newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex], this);

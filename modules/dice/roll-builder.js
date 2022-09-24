@@ -68,7 +68,7 @@ export default class RollBuilderFFG extends FormApplication {
     if (game.user.isGM) {
       game.users.contents.forEach((user) => {
         if (user.visible && user.id !== game.user.id) {
-          users.push({ name: user.data.name, id: user.id });
+          users.push({ name: user.name, id: user.id });
         }
       });
     }

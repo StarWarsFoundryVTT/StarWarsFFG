@@ -21,7 +21,7 @@ export default class FlagMigrationHelpers {
   // and copy old flags into new scope
   static rescopeItemFlags() {
     for (let doc of game.items) {
-      for (let flag in doc.data.flags) {
+      for (let flag in doc.system.flags) {
         this.rescopeFlag(doc, flag);
       }
     }
@@ -30,7 +30,7 @@ export default class FlagMigrationHelpers {
   // Actors
   static rescopeActorFlags() {
     for (let doc of game.actors) {
-      for (let flag in doc.data.flags) {
+      for (let flag in doc.system.flags) {
         this.rescopeFlag(doc, flag);
       }
     }
@@ -67,7 +67,7 @@ export default class FlagMigrationHelpers {
         switch (documentName) {
           case "Actor":
           case "Item":
-            for (let flag in doc.data.flags) {
+            for (let flag in doc.system.flags) {
               this.rescopeFlag(doc, flag);
             }
         }
@@ -94,9 +94,9 @@ export default class FlagMigrationHelpers {
   static rescopeFlag(doc, flag) {
     if (this.oldFlagScopes.includes(flag)) {
       try {
-        doc.setFlag("starwarsffg", flag, doc.data.flags[flag]);
+        doc.setFlag("starwarsffg", flag, doc.system.flags[flag]);
         console.debug(
-          `Copied flag into starwarsffg scope: ${doc.name}.data.flags.${flag}`
+          `Copied flag into starwarsffg scope: ${doc.name}.system.flags.${flag}`
         );
       } catch (err) {
         console.log(`Flag migration error at document: ${doc.name}`);
