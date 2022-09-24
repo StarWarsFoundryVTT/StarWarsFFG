@@ -668,10 +668,9 @@ Hooks.once("ready", async () => {
           });
           // copy the item, so we can delete the ID field (we can't update if we include an ID)
           let item_migrated = JSON.parse(JSON.stringify(item));
-          let item_id = item._id;
           delete item_migrated._id;
           // persist the changes to the DB
-          game.items.filter(i => i._id === item_id)[0].update(item_migrated);
+          item.update(item_migrated);
         }
       });
       CONFIG.logger.debug('Migration of Star Wars FFG System Deep Embedded Items completed!')
