@@ -42,6 +42,15 @@ import RollBuilderFFG from "./dice/roll-builder.js";
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
 
+async function parseSkillList() {
+  try {
+    return JSON.parse(await game.settings.get("starwarsffg", "arraySkillList"));
+  } catch (e) {
+    CONFIG.logger.log("Could not parse custom skill list, returning raw setting");
+    return await game.settings.get("starwarsffg", "arraySkillList");
+  }
+}
+
 Hooks.once("init", async function () {
   console.log(`Initializing SWFFG System`);
   // Place our classes in their own namespace for later reference.
@@ -99,7 +108,7 @@ Hooks.once("init", async function () {
 
     const pct = Math.clamped(val, 0, data.max) / data.max;
     let h = Math.max(canvas.dimensions.size / 12, 8);
-    if (this.data.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
+    if (this.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
     // Draw the bar
     let color = number === 0 ? [1 - pct / 2, pct, 0] : [0.5 * pct, 0.7 * pct, 0.5 + pct / 2];
     bar
@@ -202,7 +211,7 @@ Hooks.once("init", async function () {
       type: Object,
     });
 
-    let skillList = game.settings.get("starwarsffg", "arraySkillList");
+    let skillList = await parseSkillList();
     try {
       CONFIG.FFG.alternateskilllists = skillList;
 
@@ -575,7 +584,7 @@ Hooks.once("ready", async () => {
             skillList = fileData;
           }
         } else {
-          skillList = game.settings.get("starwarsffg", "arraySkillList");
+          skillList = await parseSkillList();
         }
 
         CONFIG.FFG.alternateskilllists = skillList;
@@ -620,7 +629,7 @@ Hooks.once("ready", async () => {
           if (["weapon", "armour"].includes(item.type)) {
             // iterate over attachments and modifiers on the item
             item.system.itemmodifier.forEach((modifier) => {
-              if (modifier.hasOwnProperty('data')) {
+              if (modifier?.hasOwnProperty('data')) {
                 modifier.system = modifier.data;
                 delete modifier.data;
               }
@@ -633,11 +642,10 @@ Hooks.once("ready", async () => {
               }
             });
             // copy the item, so we can delete the ID field (we can't update if we include an ID)
-            let item_migrated = structuredClone(item);
-            let item_id = item._id;
+            let item_migrated = JSON.parse(JSON.stringify(item));
             delete item_migrated._id;
             // persist the changes to the DB
-            actor.items.filter(i => i._id === item_id)[0].update(item_migrated);
+            item.update(item_migrated);
           }
         });
       });
@@ -646,7 +654,7 @@ Hooks.once("ready", async () => {
         if (["weapon", "armour"].includes(item.type)) {
           // iterate over attachments and modifiers on the item
           item.system.itemmodifier.forEach((modifier) => {
-            if (modifier.hasOwnProperty('data')) {
+            if (modifier?.hasOwnProperty('data')) {
               modifier.system = modifier.data;
               delete modifier.data;
             }
@@ -659,7 +667,7 @@ Hooks.once("ready", async () => {
             }
           });
           // copy the item, so we can delete the ID field (we can't update if we include an ID)
-          let item_migrated = structuredClone(item);
+          let item_migrated = JSON.parse(JSON.stringify(item));
           let item_id = item._id;
           delete item_migrated._id;
           // persist the changes to the DB
