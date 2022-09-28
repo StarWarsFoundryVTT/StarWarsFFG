@@ -1586,11 +1586,11 @@ export default class ImportHelpers {
           for (let i = 0; i < speciesSkills.length; i += 1) {
             // first determine if the modifier exists, oggdudes doesn't differentiate between chosen skills (ie human) vs static skill (ie Nautolan)
 
-            const found = Object.values(species.data.attributes).filter((attr) => attr.mod === speciesSkills[i].mod && attr.modtype === speciesSkills[i].modtype && attr.value === speciesSkills[i].value);
+            const found = Object.values(species.system.attributes).filter((attr) => attr.mod === speciesSkills[i].mod && attr.modtype === speciesSkills[i].modtype && attr.value === speciesSkills[i].value);
 
             if (!found?.length) {
-              let attrId = Object.keys(species.data.attributes).length + 1;
-              species.data.attributes[attrId] = speciesSkills[i];
+              let attrId = Object.keys(species.system.attributes).length + 1;
+              species.system.attributes[attrId] = speciesSkills[i];
             }
           }
 
@@ -1675,16 +1675,16 @@ export default class ImportHelpers {
           if (characterData.Character.Career.CareerSkills?.Key) {
             characterData.Character.Career.CareerSkills.Key.forEach((key) => {
               let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
-              let attrId = Object.keys(career.data.attributes).find((attr) => career.data.attributes[attr].modtype === "Skill Rank" && career.data.attributes[attr].mod === charSkill);
+              let attrId = Object.keys(career.system.attributes).find((attr) => career.system.attributes[attr].modtype === "Skill Rank" && career.system.attributes[attr].mod === charSkill);
 
-              if (career.data.attributes?.[attrId]?.value) {
-                const careerValue = parseInt(career.data.attributes[attrId].value, 10);
-                career.data.attributes[attrId].value = careerValue + 1;
-                if (!career.data.attributes[attrId].key) {
-                  career.data.attributes[attrId].key = charSkill;
+              if (career.system.attributes?.[attrId]?.value) {
+                const careerValue = parseInt(career.system.attributes[attrId].value, 10);
+                career.system.attributes[attrId].value = careerValue + 1;
+                if (!career.system.attributes[attrId].key) {
+                  career.system.attributes[attrId].key = charSkill;
                 }
               } else {
-                career.data.attributes[attrId] = {
+                career.system.attributes[attrId] = {
                   key: charSkill,
                   mod: charSkill,
                   modtype: "Skill Rank",
@@ -1714,16 +1714,16 @@ export default class ImportHelpers {
           if (characterData.Character.Career.CareerSpecSkills?.Key) {
             characterData.Character.Career.CareerSpecSkills.Key.forEach((key) => {
               let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
-              let attrId = Object.keys(specialization.data.attributes).find((attr) => specialization.data.attributes[attr].modtype === "Skill Rank" && specialization.data.attributes[attr].mod === charSkill);
+              let attrId = Object.keys(specialization.system.attributes).find((attr) => specialization.system.attributes[attr].modtype === "Skill Rank" && specialization.system.attributes[attr].mod === charSkill);
 
-              if (specialization.data.attributes?.[attrId]?.value) {
-                const specializationValue = parseInt(specialization.data.attributes[attrId].value, 10);
-                specialization.data.attributes[attrId].value = specializationValue + 1;
-                if (!specialization.data.attributes[attrId].key) {
-                  specialization.data.attributes[attrId].key = charSkill;
+              if (specialization.system.attributes?.[attrId]?.value) {
+                const specializationValue = parseInt(specialization.system.attributes[attrId].value, 10);
+                specialization.system.attributes[attrId].value = specializationValue + 1;
+                if (!specialization.system.attributes[attrId].key) {
+                  specialization.system.attributes[attrId].key = charSkill;
                 }
               } else {
-                specialization.data.attributes[attrId] = {
+                specialization.system.attributes[attrId] = {
                   key: charSkill,
                   mod: charSkill,
                   modtype: "Skill Rank",
@@ -1745,9 +1745,9 @@ export default class ImportHelpers {
               try {
                 const talent = await this.findCompendiumEntityById("Item", itemId);
                 if (talent) {
-                  output.isRanked = talent.data.data.ranks.ranked;
-                  output.rank = talent.data.data.ranks.current;
-                  output.activation = talent.data.data.activation.value;
+                  output.isRanked = talent.system.ranks.ranked;
+                  output.rank = talent.system.ranks.current;
+                  output.activation = talent.system.activation.value;
                 }
                 output.islearned = true;
               } catch (err) {
@@ -1776,16 +1776,16 @@ export default class ImportHelpers {
               if (spec.isStartingSpec && spec.isStartingSpec === "true") {
                 specTotal += spec.Talents.CharTalent.length;
                 for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
-                  const talent = await funcGetTalent(spec.Talents.CharTalent[i], specialization.data.talents[`talent${i}`].itemId);
+                  const talent = await funcGetTalent(spec.Talents.CharTalent[i], specialization.system.talents[`talent${i}`].itemId);
                   if (talent) {
-                    specialization.data.talents[`talent${i}`] = { ...specialization.data.talents[`talent${i}`], ...talent };
+                    specialization.system.talents[`talent${i}`] = { ...specialization.system.talents[`talent${i}`], ...talent };
 
                     if (spec.Talents.CharTalent[i]?.BonusChars?.BonusChar) {
                       if (Array.isArray(spec.Talents.CharTalent[i]?.BonusChars?.BonusChar)) {
                         await this.asyncForEach(spec.Talents.CharTalent[i].BonusChars.BonusChar, async (char) => {
-                          let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+                          let attrId = Object.keys(specialization.system.talents[`talent${i}`].attributes).length + 1;
 
-                          specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                          specialization.system.talents[`talent${i}`].attributes[`attr${attrId}`] = {
                             isCheckbox: false,
                             mod: this.convertOGCharacteristic(char.CharKey),
                             modtype: "Characteristic",
@@ -1793,9 +1793,9 @@ export default class ImportHelpers {
                           };
                         });
                       } else {
-                        let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+                        let attrId = Object.keys(specialization.system.talents[`talent${i}`].attributes).length + 1;
 
-                        specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                        specialization.system.talents[`talent${i}`].attributes[`attr${attrId}`] = {
                           isCheckbox: false,
                           mod: this.convertOGCharacteristic(spec.Talents.CharTalent[i].BonusChars.BonusChar.CharKey),
                           modtype: "Characteristic",
@@ -1883,7 +1883,7 @@ export default class ImportHelpers {
           let force = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", power.Key, undefined, "forcepower")));
           for (let i = 4; i < power.ForceAbilities.CharForceAbility.length; i += 1) {
             if (power.ForceAbilities.CharForceAbility[i].Purchased) {
-              force.data.upgrades[`upgrade${i - 4}`].islearned = true;
+              force.system.upgrades[`upgrade${i - 4}`].islearned = true;
             }
           }
 
@@ -1989,14 +1989,14 @@ export default class ImportHelpers {
             let gearCount = 1;
             if (w?.Count) {
               gearCount = parseInt(w.Count, 10);
-              gear.data.quantity = {
+              gear.system.quantity = {
                 value: gearCount,
               };
             }
 
             if (gearItem) {
               gearItem = mergeObject(gear, gearItem);
-              gear.data.quantity.value = gearCount;
+              gear.system.quantity.value = gearCount;
             } else {
               character.items.push(gear);
             }
@@ -2024,11 +2024,14 @@ export default class ImportHelpers {
       }
 
       updateDialog(90);
+      // migrate attributes to the v10 schema
+      character.system = character.data;
+      delete character.data;
 
       if (exists) {
         const actor = await game.actors.get(exists._id);
-        const newData = mergeObject(actor.data, character);
-        await actor.data.update(newData);
+        const newData = mergeObject(actor, character);
+        await actor.update(newData);
       } else {
         await Actor.create(character);
       }

@@ -218,9 +218,9 @@ export default class ModifierHelpers {
 
     items.forEach((item) => {
       if (item.type === "species") {
-        const attrsToApply = Object.keys(item.data.attributes)
-          .filter((id) => item.data.attributes[id].mod === key && item.data.attributes[id].modtype === modtype)
-          .map((i) => item.data.attributes[i]);
+        const attrsToApply = Object.keys(item.system.attributes)
+          .filter((id) => item.system.attributes[id].mod === key && item.system.attributes[id].modtype === modtype)
+          .map((i) => item.system.attributes[i]);
 
         if (attrsToApply.length > 0) {
           attrsToApply.forEach((attr) => {
