@@ -630,14 +630,14 @@ Hooks.once("ready", async () => {
           if (["weapon", "armour"].includes(item.type)) {
             // iterate over attachments and modifiers on the item
             item.system.itemmodifier.forEach((modifier) => {
-              if (modifier?.hasOwnProperty('data')) {
+              if (modifier !== null && modifier?.hasOwnProperty('data')) {
                 modifier.system = modifier.data;
                 delete modifier.data;
               }
             });
 
             item.system.itemattachment.forEach((attachment) => {
-              if (attachment.hasOwnProperty('data')) {
+              if (attachment !== null && attachment.hasOwnProperty('data')) {
                 attachment.system = attachment.data;
                 delete attachment.data;
               }

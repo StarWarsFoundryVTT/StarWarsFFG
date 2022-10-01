@@ -893,6 +893,10 @@ export default class ImportHelpers {
         let val = parseInt(char.Rank.PurchasedRanks, 10) + parseInt(char.Rank.StartingRanks, 10);
         adversary.data.characteristics[name].value = val;
         adversary.data.attributes[name].value = val;
+      } else {
+        let val = parseInt(char.Rank.StartingRanks, 10);
+        adversary.data.characteristics[name].value = val;
+        adversary.data.attributes[name].value = val;
       }
     });
 
@@ -2029,9 +2033,7 @@ export default class ImportHelpers {
       delete character.data;
 
       if (exists) {
-        const actor = await game.actors.get(exists._id);
-        const newData = mergeObject(actor, character);
-        await actor.update(newData);
+        CONFIG.logger.warn(`Skipping importing existing character`);
       } else {
         await Actor.create(character);
       }
