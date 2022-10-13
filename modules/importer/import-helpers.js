@@ -1398,14 +1398,15 @@ export default class ImportHelpers {
     updateDialog(90);
 
     adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
+    adversary.system = adversary.data;
 
     if (exists) {
-      let updateData = adversary;
-      adversary["_id"] = exists._id;
-      await Actor.update(updateData);
-    } else {
-      await Actor.create(adversary);
+      // v10 no longer allows you to clobber existing actors with mismatched items, so we rename the actor and make a new one
+      adversary.name += String(new Date().toLocaleString());
     }
+
+    await Actor.create(adversary);
+
     updateDialog(100);
   }
 
