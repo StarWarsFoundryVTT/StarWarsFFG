@@ -2029,13 +2029,15 @@ export default class ImportHelpers {
       }
 
       updateDialog(90);
+
       character = prep_for_v10(character);
 
       if (exists) {
-        CONFIG.logger.warn(`Skipping importing existing character`);
-      } else {
-        await Actor.create(character);
+        // v10 no longer allows you to clobber existing actors with mismatched items, so we rename the actor and make a new one
+        character.name += " " + String(new Date().toLocaleString());
       }
+
+      await Actor.create(character);
 
       updateDialog(100);
     } catch (err) {
