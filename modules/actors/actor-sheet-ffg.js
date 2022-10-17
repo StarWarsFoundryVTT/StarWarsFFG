@@ -54,7 +54,7 @@ export class ActorSheetFFG extends ActorSheet {
     const actorData = this.actor.toObject(false);
     data.actor = actorData;
     data.data = actorData.system;
-    data.data.talentList = this.actor.talentList;
+    data.talentList = this.actor.talentList;
     data.rollData = this.actor.getRollData.bind(this.actor);
 
     data.token = this.token;
