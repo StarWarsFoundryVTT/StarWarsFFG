@@ -1299,17 +1299,19 @@ export default class ImportHelpers {
 
     adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
 
+    adversary = prep_for_v10(adversary);
+
     if (exists) {
-      let updateData = adversary;
-      adversary["_id"] = exists._id;
-      await Actor.update(updateData);
-    } else {
-      await Actor.create(adversary);
+      // v10 no longer allows you to clobber existing actors with mismatched items, so we rename the actor and make a new one
+      adversary.name += " " + String(new Date().toLocaleString());
     }
+
+    await Actor.create(adversary);
+
     updateDialog(100);
   }
 
-  static async minionImport(adversaryData, updateDialog)
+  static async minionImport(adversaryData, updateDialog, subType)
   {
     const npcName = adversaryData.Name;
     const npcKey = adversaryData.Key;
@@ -1318,6 +1320,7 @@ export default class ImportHelpers {
     // minion sheet data obtained from an export and reformed for importing here.
     // Deep copy our template so we don't have to have a bunch of json sat here
     let adversary = JSON.parse(JSON.stringify(ImportHelpers.minionTemplate));
+    //adversary.type = subType;
     adversary.name = npcName;
     if(adversaryData.Description)
       adversary.data.biography = adversaryData.Description;
@@ -1328,11 +1331,6 @@ export default class ImportHelpers {
     }
 
     adversary = await ImportHelpers.extractAdversaryCharacteristic(adversaryData, adversary)
-
-    if(exists?.items)
-    {
-      adversary.items = exists.items;
-    }
 
     if(adversaryData.Skills?.CharSkill)
     {
@@ -1359,6 +1357,7 @@ export default class ImportHelpers {
         if(skill.Rank) {
           adversary.data.skills[charSkill].rank = parseInt(skill.Rank.PurchasedRanks, 10);
           adversary.data.attributes[charSkill].value = parseInt(skill.Rank.PurchasedRanks, 10);
+          adversary.data.skills[charSkill].careerskill = true;
         }
         else {
           // minion types don't expose data unless they are group skills
@@ -1398,11 +1397,12 @@ export default class ImportHelpers {
     updateDialog(90);
 
     adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
-    adversary.system = adversary.data;
+
+    adversary = prep_for_v10(adversary);
 
     if (exists) {
       // v10 no longer allows you to clobber existing actors with mismatched items, so we rename the actor and make a new one
-      adversary.name += String(new Date().toLocaleString());
+      adversary.name += " " + String(new Date().toLocaleString());
     }
 
     await Actor.create(adversary);
@@ -1433,10 +1433,10 @@ export default class ImportHelpers {
       const type = adversaryData.Type;
       if(type === "Minion") {
         console.log("minion type detected");
-        await ImportHelpers.minionImport(adversaryData, updateDialog);
+        await ImportHelpers.minionImport(adversaryData, updateDialog, "minion");
       } else if(type === "Rival") {
         console.log("Rival type detected");
-        await ImportHelpers.minionImport(adversaryData, updateDialog);
+        await ImportHelpers.minionImport(adversaryData, updateDialog, "rival");
       } else if(type === "Nemesis") {
         console.log("Nemesis type detected");
         await ImportHelpers.nemesisImport(adversaryData, updateDialog);
@@ -2029,9 +2029,7 @@ export default class ImportHelpers {
       }
 
       updateDialog(90);
-      // migrate attributes to the v10 schema
-      character.system = character.data;
-      delete character.data;
+      character = prep_for_v10(character);
 
       if (exists) {
         CONFIG.logger.warn(`Skipping importing existing character`);
@@ -2620,4 +2618,23 @@ export default class ImportHelpers {
 
     return item;
   }
+}
+
+/*
+  Rather than update the functions to reflect v10, simply modify the resulting data structure to reflect the expected
+    format
+ */
+function prep_for_v10(actor) {
+  actor.system = actor.data;
+  // iterate over items so we can iterate over their modifiers
+  actor.items.forEach(function (item) {
+    if (item.system.hasOwnProperty('itemmodifier')) {
+      item.system?.itemmodifier.forEach(function (modifier) {
+        if (modifier) { // handle null modifiers (often from bad input)
+          modifier.system = modifier.data;
+        }
+      });
+    }
+  });
+  return actor;
 }
