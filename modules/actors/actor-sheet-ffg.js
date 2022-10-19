@@ -182,11 +182,11 @@ export class ActorSheetFFG extends ActorSheet {
         }
 
         // Critical Damage can only be added to "vehicle" actors and Critical Injury can only be added to "character" actors.
-        if (item.type === "criticaldamage" && actor.system.type !== "vehicle") {
+        if (item.type === "criticaldamage" && actor.type !== "vehicle") {
           ui.notifications.warn("Critical Damage can only be added to 'vehicle' actor types.");
           return false;
         }
-        if (item.type === "criticalinjury" && actor.system.type !== "character") {
+        if (item.type === "criticalinjury" && actor.type !== "character") {
           ui.notifications.warn("Critical Injuries can only be added to 'character' actor types.");
           return false;
         }
