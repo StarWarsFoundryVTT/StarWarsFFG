@@ -893,6 +893,10 @@ export default class ImportHelpers {
         let val = parseInt(char.Rank.PurchasedRanks, 10) + parseInt(char.Rank.StartingRanks, 10);
         adversary.data.characteristics[name].value = val;
         adversary.data.attributes[name].value = val;
+      } else {
+        let val = parseInt(char.Rank.StartingRanks, 10);
+        adversary.data.characteristics[name].value = val;
+        adversary.data.attributes[name].value = val;
       }
     });
 
@@ -1295,17 +1299,19 @@ export default class ImportHelpers {
 
     adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
 
+    adversary = prep_for_v10(adversary);
+
     if (exists) {
-      let updateData = adversary;
-      adversary["_id"] = exists._id;
-      await Actor.update(updateData);
-    } else {
-      await Actor.create(adversary);
+      // v10 no longer allows you to clobber existing actors with mismatched items, so we rename the actor and make a new one
+      adversary.name += " " + String(new Date().toLocaleString());
     }
+
+    await Actor.create(adversary);
+
     updateDialog(100);
   }
 
-  static async minionImport(adversaryData, updateDialog)
+  static async minionImport(adversaryData, updateDialog, subType)
   {
     const npcName = adversaryData.Name;
     const npcKey = adversaryData.Key;
@@ -1314,6 +1320,7 @@ export default class ImportHelpers {
     // minion sheet data obtained from an export and reformed for importing here.
     // Deep copy our template so we don't have to have a bunch of json sat here
     let adversary = JSON.parse(JSON.stringify(ImportHelpers.minionTemplate));
+    //adversary.type = subType;
     adversary.name = npcName;
     if(adversaryData.Description)
       adversary.data.biography = adversaryData.Description;
@@ -1324,11 +1331,6 @@ export default class ImportHelpers {
     }
 
     adversary = await ImportHelpers.extractAdversaryCharacteristic(adversaryData, adversary)
-
-    if(exists?.items)
-    {
-      adversary.items = exists.items;
-    }
 
     if(adversaryData.Skills?.CharSkill)
     {
@@ -1355,6 +1357,7 @@ export default class ImportHelpers {
         if(skill.Rank) {
           adversary.data.skills[charSkill].rank = parseInt(skill.Rank.PurchasedRanks, 10);
           adversary.data.attributes[charSkill].value = parseInt(skill.Rank.PurchasedRanks, 10);
+          adversary.data.skills[charSkill].careerskill = true;
         }
         else {
           // minion types don't expose data unless they are group skills
@@ -1395,13 +1398,15 @@ export default class ImportHelpers {
 
     adversary = await ImportHelpers.appendKnownIssuesAndNotesToDesc(adversary);
 
+    adversary = prep_for_v10(adversary);
+
     if (exists) {
-      let updateData = adversary;
-      adversary["_id"] = exists._id;
-      await Actor.update(updateData);
-    } else {
-      await Actor.create(adversary);
+      // v10 no longer allows you to clobber existing actors with mismatched items, so we rename the actor and make a new one
+      adversary.name += " " + String(new Date().toLocaleString());
     }
+
+    await Actor.create(adversary);
+
     updateDialog(100);
   }
 
@@ -1428,10 +1433,10 @@ export default class ImportHelpers {
       const type = adversaryData.Type;
       if(type === "Minion") {
         console.log("minion type detected");
-        await ImportHelpers.minionImport(adversaryData, updateDialog);
+        await ImportHelpers.minionImport(adversaryData, updateDialog, "minion");
       } else if(type === "Rival") {
         console.log("Rival type detected");
-        await ImportHelpers.minionImport(adversaryData, updateDialog);
+        await ImportHelpers.minionImport(adversaryData, updateDialog, "rival");
       } else if(type === "Nemesis") {
         console.log("Nemesis type detected");
         await ImportHelpers.nemesisImport(adversaryData, updateDialog);
@@ -1586,11 +1591,11 @@ export default class ImportHelpers {
           for (let i = 0; i < speciesSkills.length; i += 1) {
             // first determine if the modifier exists, oggdudes doesn't differentiate between chosen skills (ie human) vs static skill (ie Nautolan)
 
-            const found = Object.values(species.data.attributes).filter((attr) => attr.mod === speciesSkills[i].mod && attr.modtype === speciesSkills[i].modtype && attr.value === speciesSkills[i].value);
+            const found = Object.values(species.system.attributes).filter((attr) => attr.mod === speciesSkills[i].mod && attr.modtype === speciesSkills[i].modtype && attr.value === speciesSkills[i].value);
 
             if (!found?.length) {
-              let attrId = Object.keys(species.data.attributes).length + 1;
-              species.data.attributes[attrId] = speciesSkills[i];
+              let attrId = Object.keys(species.system.attributes).length + 1;
+              species.system.attributes[attrId] = speciesSkills[i];
             }
           }
 
@@ -1675,16 +1680,16 @@ export default class ImportHelpers {
           if (characterData.Character.Career.CareerSkills?.Key) {
             characterData.Character.Career.CareerSkills.Key.forEach((key) => {
               let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
-              let attrId = Object.keys(career.data.attributes).find((attr) => career.data.attributes[attr].modtype === "Skill Rank" && career.data.attributes[attr].mod === charSkill);
+              let attrId = Object.keys(career.system.attributes).find((attr) => career.system.attributes[attr].modtype === "Skill Rank" && career.system.attributes[attr].mod === charSkill);
 
-              if (career.data.attributes?.[attrId]?.value) {
-                const careerValue = parseInt(career.data.attributes[attrId].value, 10);
-                career.data.attributes[attrId].value = careerValue + 1;
-                if (!career.data.attributes[attrId].key) {
-                  career.data.attributes[attrId].key = charSkill;
+              if (career.system.attributes?.[attrId]?.value) {
+                const careerValue = parseInt(career.system.attributes[attrId].value, 10);
+                career.system.attributes[attrId].value = careerValue + 1;
+                if (!career.system.attributes[attrId].key) {
+                  career.system.attributes[attrId].key = charSkill;
                 }
               } else {
-                career.data.attributes[attrId] = {
+                career.system.attributes[attrId] = {
                   key: charSkill,
                   mod: charSkill,
                   modtype: "Skill Rank",
@@ -1714,16 +1719,16 @@ export default class ImportHelpers {
           if (characterData.Character.Career.CareerSpecSkills?.Key) {
             characterData.Character.Career.CareerSpecSkills.Key.forEach((key) => {
               let charSkill = Object.keys(character.data.skills).find((s) => character.data.skills[s].Key === key);
-              let attrId = Object.keys(specialization.data.attributes).find((attr) => specialization.data.attributes[attr].modtype === "Skill Rank" && specialization.data.attributes[attr].mod === charSkill);
+              let attrId = Object.keys(specialization.system.attributes).find((attr) => specialization.system.attributes[attr].modtype === "Skill Rank" && specialization.system.attributes[attr].mod === charSkill);
 
-              if (specialization.data.attributes?.[attrId]?.value) {
-                const specializationValue = parseInt(specialization.data.attributes[attrId].value, 10);
-                specialization.data.attributes[attrId].value = specializationValue + 1;
-                if (!specialization.data.attributes[attrId].key) {
-                  specialization.data.attributes[attrId].key = charSkill;
+              if (specialization.system.attributes?.[attrId]?.value) {
+                const specializationValue = parseInt(specialization.system.attributes[attrId].value, 10);
+                specialization.system.attributes[attrId].value = specializationValue + 1;
+                if (!specialization.system.attributes[attrId].key) {
+                  specialization.system.attributes[attrId].key = charSkill;
                 }
               } else {
-                specialization.data.attributes[attrId] = {
+                specialization.system.attributes[attrId] = {
                   key: charSkill,
                   mod: charSkill,
                   modtype: "Skill Rank",
@@ -1745,9 +1750,9 @@ export default class ImportHelpers {
               try {
                 const talent = await this.findCompendiumEntityById("Item", itemId);
                 if (talent) {
-                  output.isRanked = talent.data.data.ranks.ranked;
-                  output.rank = talent.data.data.ranks.current;
-                  output.activation = talent.data.data.activation.value;
+                  output.isRanked = talent.system.ranks.ranked;
+                  output.rank = talent.system.ranks.current;
+                  output.activation = talent.system.activation.value;
                 }
                 output.islearned = true;
               } catch (err) {
@@ -1776,16 +1781,16 @@ export default class ImportHelpers {
               if (spec.isStartingSpec && spec.isStartingSpec === "true") {
                 specTotal += spec.Talents.CharTalent.length;
                 for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
-                  const talent = await funcGetTalent(spec.Talents.CharTalent[i], specialization.data.talents[`talent${i}`].itemId);
+                  const talent = await funcGetTalent(spec.Talents.CharTalent[i], specialization.system.talents[`talent${i}`].itemId);
                   if (talent) {
-                    specialization.data.talents[`talent${i}`] = { ...specialization.data.talents[`talent${i}`], ...talent };
+                    specialization.system.talents[`talent${i}`] = { ...specialization.system.talents[`talent${i}`], ...talent };
 
                     if (spec.Talents.CharTalent[i]?.BonusChars?.BonusChar) {
                       if (Array.isArray(spec.Talents.CharTalent[i]?.BonusChars?.BonusChar)) {
                         await this.asyncForEach(spec.Talents.CharTalent[i].BonusChars.BonusChar, async (char) => {
-                          let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+                          let attrId = Object.keys(specialization.system.talents[`talent${i}`].attributes).length + 1;
 
-                          specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                          specialization.system.talents[`talent${i}`].attributes[`attr${attrId}`] = {
                             isCheckbox: false,
                             mod: this.convertOGCharacteristic(char.CharKey),
                             modtype: "Characteristic",
@@ -1793,9 +1798,9 @@ export default class ImportHelpers {
                           };
                         });
                       } else {
-                        let attrId = Object.keys(specialization.data.talents[`talent${i}`].attributes).length + 1;
+                        let attrId = Object.keys(specialization.system.talents[`talent${i}`].attributes).length + 1;
 
-                        specialization.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                        specialization.system.talents[`talent${i}`].attributes[`attr${attrId}`] = {
                           isCheckbox: false,
                           mod: this.convertOGCharacteristic(spec.Talents.CharTalent[i].BonusChars.BonusChar.CharKey),
                           modtype: "Characteristic",
@@ -1883,7 +1888,7 @@ export default class ImportHelpers {
           let force = JSON.parse(JSON.stringify(await this.findCompendiumEntityByImportId("Item", power.Key, undefined, "forcepower")));
           for (let i = 4; i < power.ForceAbilities.CharForceAbility.length; i += 1) {
             if (power.ForceAbilities.CharForceAbility[i].Purchased) {
-              force.data.upgrades[`upgrade${i - 4}`].islearned = true;
+              force.system.upgrades[`upgrade${i - 4}`].islearned = true;
             }
           }
 
@@ -1989,14 +1994,14 @@ export default class ImportHelpers {
             let gearCount = 1;
             if (w?.Count) {
               gearCount = parseInt(w.Count, 10);
-              gear.data.quantity = {
+              gear.system.quantity = {
                 value: gearCount,
               };
             }
 
             if (gearItem) {
               gearItem = mergeObject(gear, gearItem);
-              gear.data.quantity.value = gearCount;
+              gear.system.quantity.value = gearCount;
             } else {
               character.items.push(gear);
             }
@@ -2025,13 +2030,14 @@ export default class ImportHelpers {
 
       updateDialog(90);
 
+      character = prep_for_v10(character);
+
       if (exists) {
-        const actor = await game.actors.get(exists._id);
-        const newData = mergeObject(actor.data, character);
-        await actor.data.update(newData);
-      } else {
-        await Actor.create(character);
+        // v10 no longer allows you to clobber existing actors with mismatched items, so we rename the actor and make a new one
+        character.name += " " + String(new Date().toLocaleString());
       }
+
+      await Actor.create(character);
 
       updateDialog(100);
     } catch (err) {
@@ -2614,4 +2620,23 @@ export default class ImportHelpers {
 
     return item;
   }
+}
+
+/*
+  Rather than update the functions to reflect v10, simply modify the resulting data structure to reflect the expected
+    format
+ */
+function prep_for_v10(actor) {
+  actor.system = actor.data;
+  // iterate over items so we can iterate over their modifiers
+  actor.items.forEach(function (item) {
+    if (item.system.hasOwnProperty('itemmodifier')) {
+      item.system?.itemmodifier.forEach(function (modifier) {
+        if (modifier) { // handle null modifiers (often from bad input)
+          modifier.system = modifier.data;
+        }
+      });
+    }
+  });
+  return actor;
 }

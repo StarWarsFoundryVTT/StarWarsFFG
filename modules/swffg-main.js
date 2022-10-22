@@ -271,11 +271,14 @@ Hooks.once("init", async function () {
             let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
             CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
-            actor.update({
-              data: {
-                skills: skills.skills,
-              },
-            });
+            if (!actor?.flags?.starwarsffg.hasOwnProperty('ffgimportid')) {
+              // only apply the skills if it wasn't an imported actor
+              actor.update({
+                system: {
+                  skills: skills.skills,
+                },
+              });
+            }
           } catch (err) {
             CONFIG.logger.warn(err);
           }
@@ -630,14 +633,14 @@ Hooks.once("ready", async () => {
           if (["weapon", "armour"].includes(item.type)) {
             // iterate over attachments and modifiers on the item
             item.system.itemmodifier.forEach((modifier) => {
-              if (modifier?.hasOwnProperty('data')) {
+              if (modifier !== null && modifier?.hasOwnProperty('data')) {
                 modifier.system = modifier.data;
                 delete modifier.data;
               }
             });
 
             item.system.itemattachment.forEach((attachment) => {
-              if (attachment.hasOwnProperty('data')) {
+              if (attachment !== null && attachment.hasOwnProperty('data')) {
                 attachment.system = attachment.data;
                 delete attachment.data;
               }
