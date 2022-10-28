@@ -318,7 +318,7 @@ export class ActorFFG extends Actor {
     var encum = 0;
 
     // Loop through all items
-    for (let [key, item] of Object.entries(items)) {
+    items.forEach(function(item) {
       try {
         // Calculate encumbrance, only if encumbrance value exists
         if (item.system?.encumbrance?.adjusted !== undefined || item.system?.encumbrance?.value !== undefined) {
@@ -342,7 +342,7 @@ export class ActorFFG extends Actor {
       } catch (err) {
         CONFIG.logger.error(`Error calculating derived Encumbrance`, err);
       }
-    }
+    });
 
     // Set Encumbrance value on character.
     data.stats.encumbrance.value = encum;
