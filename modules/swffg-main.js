@@ -623,69 +623,69 @@ Hooks.once("ready", async () => {
       }
     }
     // migrate embedded items
-    ///*
-    if (isAlpha || currentVersion === "null" || currentVersion === '') {
-      ui.notifications.info(`Migrating Star Wars FFG System Deep Embedded Items`)
-      CONFIG.logger.debug('Migrating Star Wars FFG System Deep Embedded Items')
+    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.8) {
+      ui.notifications.info(`Migrating Star Wars FFG System Deep Embedded Items`);
+      CONFIG.logger.debug('Migrating Star Wars FFG System Deep Embedded Items');
 
+      // items owned by actors
       game.actors.forEach((actor) => {
+        let update_data = [];
         actor.items.forEach((item) => {
+          let updated_item = item.toObject(true);
           if (["weapon", "armour"].includes(item.type)) {
             // iterate over attachments and modifiers on the item
-            item.system.itemmodifier.map((modifier) => {
+            updated_item.system.itemmodifier.map((modifier) => {
               if (modifier !== null && modifier?.hasOwnProperty('data')) {
                 modifier.system = modifier.data;
                 delete modifier.data;
               }
             });
 
-            item.system.itemattachment.map((attachment) => {
+            updated_item.system.itemattachment.map((attachment) => {
               if (attachment !== null && attachment.hasOwnProperty('data')) {
                 attachment.system = attachment.data;
                 delete attachment.data;
               }
             });
-            // copy the item, so we can delete the ID field (we can't update if we include an ID)
-            let item_migrated = JSON.parse(JSON.stringify(item));
-            delete item_migrated._id;
-
-            // persist the changes to the DB
-            item.update(item_migrated);
+            // push the updated items to the list of items to update
+            update_data.push(updated_item);
           }
         });
-        // persist the changes to the DB
-        Actor.updateDocuments([JSON.parse(JSON.stringify(actor))]);
+        if (!foundry.utils.isEmpty(update_data)) {
+          // persist the changes for items owned by this actor to the DB
+          actor.update({items: update_data});
+        }
       });
       // move on to items in the world
       game.items.forEach((item) => {
+        let updated = false;
+        let updated_item = item.toObject(true);
         if (["weapon", "armour"].includes(item.type)) {
           // iterate over attachments and modifiers on the item
-          item.system.itemmodifier.forEach((modifier) => {
+          updated_item.system.itemmodifier.map((modifier) => {
             if (modifier?.hasOwnProperty('data')) {
+              updated = true;
               modifier.system = modifier.data;
               delete modifier.data;
             }
           });
 
-          item.system.itemattachment.forEach((attachment) => {
+          updated_item.system.itemattachment.map((attachment) => {
             if (attachment.hasOwnProperty('data')) {
+              updated = true;
               attachment.system = attachment.data;
               delete attachment.data;
             }
           });
-          // copy the item, so we can delete the ID field (we can't update if we include an ID)
-          let item_migrated = JSON.parse(JSON.stringify(item));
-          //delete item_migrated._id;
+        }
+        if (updated && !foundry.utils.isEmpty(updated_item)) {
           // persist the changes to the DB
-          //item.update(item_migrated);
-          Item.updateDocuments([item_migrated]);
+          item.update(updated_item);
         }
       });
-      CONFIG.logger.debug('Migration of Star Wars FFG System Deep Embedded Items completed!')
-      ui.notifications.info(`Migration of Star Wars FFG System Deep Embedded Items completed!`)
+      CONFIG.logger.debug('Migration of Star Wars FFG System Deep Embedded Items completed!');
+      ui.notifications.info(`Migration of Star Wars FFG System Deep Embedded Items completed!`);
     }
-
-     //*/
 
     // migrate compendiums and flags
     if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.61) {
