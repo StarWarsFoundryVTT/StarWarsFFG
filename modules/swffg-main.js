@@ -623,23 +623,23 @@ Hooks.once("ready", async () => {
       }
     }
     // migrate embedded items
+    ///*
     if (isAlpha || currentVersion === "null" || currentVersion === '') {
       ui.notifications.info(`Migrating Star Wars FFG System Deep Embedded Items`)
       CONFIG.logger.debug('Migrating Star Wars FFG System Deep Embedded Items')
 
-      // start with items on actors
       game.actors.forEach((actor) => {
         actor.items.forEach((item) => {
           if (["weapon", "armour"].includes(item.type)) {
             // iterate over attachments and modifiers on the item
-            item.system.itemmodifier.forEach((modifier) => {
+            item.system.itemmodifier.map((modifier) => {
               if (modifier !== null && modifier?.hasOwnProperty('data')) {
                 modifier.system = modifier.data;
                 delete modifier.data;
               }
             });
 
-            item.system.itemattachment.forEach((attachment) => {
+            item.system.itemattachment.map((attachment) => {
               if (attachment !== null && attachment.hasOwnProperty('data')) {
                 attachment.system = attachment.data;
                 delete attachment.data;
@@ -648,10 +648,13 @@ Hooks.once("ready", async () => {
             // copy the item, so we can delete the ID field (we can't update if we include an ID)
             let item_migrated = JSON.parse(JSON.stringify(item));
             delete item_migrated._id;
+
             // persist the changes to the DB
             item.update(item_migrated);
           }
         });
+        // persist the changes to the DB
+        Actor.updateDocuments([actor]);
       });
       // move on to items in the world
       game.items.forEach((item) => {
@@ -672,14 +675,17 @@ Hooks.once("ready", async () => {
           });
           // copy the item, so we can delete the ID field (we can't update if we include an ID)
           let item_migrated = JSON.parse(JSON.stringify(item));
-          delete item_migrated._id;
+          //delete item_migrated._id;
           // persist the changes to the DB
-          item.update(item_migrated);
+          //item.update(item_migrated);
+          Item.updateDocuments([item_migrated]);
         }
       });
       CONFIG.logger.debug('Migration of Star Wars FFG System Deep Embedded Items completed!')
       ui.notifications.info(`Migration of Star Wars FFG System Deep Embedded Items completed!`)
     }
+
+     //*/
 
     // migrate compendiums and flags
     if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.61) {
