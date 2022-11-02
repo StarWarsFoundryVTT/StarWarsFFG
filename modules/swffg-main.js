@@ -654,7 +654,7 @@ Hooks.once("ready", async () => {
           }
         });
         // persist the changes to the DB
-        Actor.updateDocuments([actor]);
+        Actor.updateDocuments([JSON.parse(JSON.stringify(actor))]);
       });
       // move on to items in the world
       game.items.forEach((item) => {
