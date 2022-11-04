@@ -1120,13 +1120,14 @@ export class ActorSheetFFG extends ActorSheet {
     }
     this.actor.flags.starwarsffg.loaded = true;
 
-    const specializations = this.actor.items.filter((item) => {
+    let actor = await game.actors.get(this.actor.id);
+    const specializations = actor.items.filter((item) => {
       return item.type === "specialization";
     });
 
-    for (const spec of specializations) {
-      const specializationTalents = spec.talents;
-      for (let talent in specializationTalents) {
+    for await (const spec of specializations) {
+      const specializationTalents = spec.system.talents;
+      for (const talent in specializationTalents) {
         let gameItem;
         if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
           const pack = await game.packs.get(specializationTalents[talent]?.pack);
@@ -1170,7 +1171,7 @@ export class ActorSheetFFG extends ActorSheet {
           }
         });
       }
-      data.data.talentList = mergeObject(data.data.talentList ? data.data.talentList : [], globalTalentList);
+      data.talentList = mergeObject(data.talentList ? data.talentList : [], globalTalentList);
     }
   }
 
