@@ -1113,7 +1113,7 @@ export class ActorSheetFFG extends ActorSheet {
    * Update specialization talents
    * @param  {Object} data
    */
-  async _updateSpecialization(data, new_talent_list) {
+  async _updateSpecialization(data) {
     CONFIG.logger.debug(`Running Actor initial load`);
     if (this.actor.flags.starwarsffg === undefined) {
         this.actor.flags.starwarsffg = {};
