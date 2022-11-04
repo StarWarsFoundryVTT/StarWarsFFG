@@ -43,7 +43,7 @@ export default class ItemHelpers {
 
     if (this.object.type === "talent") {
       if (this.object.flags?.clickfromparent?.length) {
-        let listofparents = JSON.parse(JSON.stringify(this.object.flags.starwarsffg.clickfromparent));
+        let listofparents = JSON.parse(JSON.stringify(this.object.flags.clickfromparent));
         while (listofparents.length > 0) {
           const parent = listofparents.shift();
           const spec = await fromUuid(parent.id);
@@ -57,8 +57,8 @@ export default class ItemHelpers {
             setProperty(updateData, `data.talents.${parent.talent}.isConflictTalent`, formData.data.isConflictTalent);
 
             // Remove attributes which are no longer used
-            if (spec?.data?.data?.talents?.[parent.talent]?.attributes) {
-              for (let k of Object.keys(spec.data.data.talents[parent.talent].attributes)) {
+            if (spec?.system?.talents?.[parent.talent]?.attributes) {
+              for (let k of Object.keys(spec.system.talents[parent.talent].attributes)) {
                 if (!formData.data.attributes.hasOwnProperty(k)) formData.data.attributes[`-=${k}`] = null;
               }
             }

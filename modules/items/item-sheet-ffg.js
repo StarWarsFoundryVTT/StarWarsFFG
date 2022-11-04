@@ -271,10 +271,10 @@ export class ItemSheetFFG extends ItemSheet {
           }
         }
       }
-      if (!item.data.flags["clickfromparent"]) {
-        item.data.flags["clickfromparent"] = [];
+      if (!item.flags["clickfromparent"]) {
+        item.flags["clickfromparent"] = [];
       }
-      item.data.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
+      item.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
       item.sheet.render(true);
     });
 
@@ -753,6 +753,13 @@ export class ItemSheetFFG extends ItemSheet {
     } catch (err) {
       return false;
     }
+    // as of v10, "id" is not passed in - instead, "uuid" is. conver to the old format so we can go on
+    data.id = data.uuid.split('.')[1];
+    if (data.uuid.includes('Compendium')) {
+        let tmp = data.uuid.split('.');
+        data.pack = tmp[1] + '.' + tmp[2];
+        data.id = tmp[3];
+    }
 
     // Case 1 - Import from a Compendium pack
     let itemObject;
@@ -766,7 +773,7 @@ export class ItemSheetFFG extends ItemSheet {
       if (!itemObject) return;
     }
 
-    if (itemObject.data.type === "talent") {
+    if (itemObject.type === "talent") {
       // we need to remove if this is the last instance of the talent in the specialization
       const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
       const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
@@ -774,7 +781,7 @@ export class ItemSheetFFG extends ItemSheet {
         CONFIG.logger.debug("Non-compendium pack talent update");
 
         const talentList = [];
-        for (let talent in specialization.data.data.talents) {
+        for (let talent in specialization.system.talents) {
           if (talent.itemId === itemObject.id) {
             talentList.push(talent);
           }
@@ -782,7 +789,7 @@ export class ItemSheetFFG extends ItemSheet {
 
         // check if this is the last talent of the specializtion
         if (talentList.length === 1) {
-          let tree = itemObject.data.data.trees;
+          let tree = itemObject.system.trees;
 
           const index = tree.findIndex((tal) => {
             return tal === specialization.id;
@@ -799,19 +806,19 @@ export class ItemSheetFFG extends ItemSheet {
         }
       }
 
-      $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
-      $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
-      $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
-      $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
-      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.ranked);
-      $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.data.data.isForceTalent);
-      $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.data.data.isConflictTalent);
+      $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.name);
+      $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.system.description);
+      $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.system.activation.value);
+      $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.system.activation.label);
+      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.system.ranked);
+      $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.system.isForceTalent);
+      $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.system.isConflictTalent);
       $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(data.id);
       $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
 
       const fields = $(li).find(`input[name='data.talents.${talentId}.name']`).parent();
-      Object.keys(itemObject.data.data.attributes).forEach((attr) => {
-        const a = itemObject.data.data.attributes[attr];
+      Object.keys(itemObject.system.attributes).forEach((attr) => {
+        const a = itemObject.system.attributes[attr];
         $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.key" value="${attr}" />`);
         $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.value" value="${a.value}" />`);
         $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.modtype" value="${a.modtype}" />`);
@@ -819,9 +826,9 @@ export class ItemSheetFFG extends ItemSheet {
       });
 
       // check to see if the talent already has a reference to the specialization
-      if (!itemObject.data.data.trees.includes(specialization.id)) {
+      if (!itemObject.system.trees.includes(specialization.id)) {
         // the talent doesn't already have the reference, add it
-        let tree = itemObject.data.data.trees;
+        let tree = itemObject.system.trees;
         tree.push(specialization.id);
 
         if (!data.pack) {
@@ -839,13 +846,13 @@ export class ItemSheetFFG extends ItemSheet {
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
     CONFIG.logger.debug(`Updating Specializations Talent during sheet render`);
     specializationTalentItem.name = talentItem.name;
-    specializationTalentItem.description = talentItem.data.description;
-    specializationTalentItem.activation = talentItem.data.activation.value;
-    specializationTalentItem.activationLabel = talentItem.data.activation.label;
-    specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
-    specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
-    specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
-    specializationTalentItem.attributes = talentItem.data.attributes;
+    specializationTalentItem.description = talentItem.system.description;
+    specializationTalentItem.activation = talentItem.system.activation.value;
+    specializationTalentItem.activationLabel = talentItem.system.activation.label;
+    specializationTalentItem.isRanked = talentItem.system.ranks.ranked;
+    specializationTalentItem.isForceTalent = talentItem.system.isForceTalent;
+    specializationTalentItem.isConflictTalent = talentItem.system.isConflictTalent;
+    specializationTalentItem.attributes = talentItem.system.attributes;
   }
 
   async _onDropItem(event) {
