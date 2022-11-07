@@ -522,7 +522,7 @@ Hooks.once("ready", async () => {
   const version = game.system.version;
   const isAlpha = game.system.version.includes("alpha");
 
-  if (isAlpha) {
+  if (isAlpha && game.user.isGM) {
     let d = new Dialog({
       title: "Warning",
       content: "<p>This is an alpha release of the system.  It is not recommended for regular gameplay. <b>There will be bugs.</b> <br><br>Check Discord or the GitHub repo for the latest stable version.</p>",
