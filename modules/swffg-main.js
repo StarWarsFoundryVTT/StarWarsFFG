@@ -525,7 +525,7 @@ Hooks.once("ready", async () => {
   if (isAlpha) {
     let d = new Dialog({
       title: "Warning",
-      content: "<p>This is an alpha release of the system.  It is not recommended for regular gameplay. <b>There will be bugs.</b></p>",
+      content: "<p>This is an alpha release of the system.  It is not recommended for regular gameplay. <b>There will be bugs.</b> <br><br>Check Discord or the GitHub repo for the latest stable version.</p>",
       buttons: {
         one: {
           icon: '<i class="fas fa-check"></i>',
