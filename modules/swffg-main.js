@@ -522,6 +522,22 @@ Hooks.once("ready", async () => {
   const version = game.system.version;
   const isAlpha = game.system.version.includes("alpha");
 
+  if (isAlpha) {
+    let d = new Dialog({
+      title: "Warning",
+      content: "<p>This is an alpha release of the system.  It is not recommended for regular gameplay. <b>There will be bugs.</b></p>",
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "I understand",
+          callback: () => console.log("Chose One") // leaving in case I get feedback to update a game setting to not show this on every load
+        }
+      },
+      default: "one",
+    });
+    d.render(true);
+  }
+
   if ((isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
     CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.version}`);
 
