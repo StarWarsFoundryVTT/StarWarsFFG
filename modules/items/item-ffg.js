@@ -16,7 +16,9 @@ export class ItemFFG extends ItemBaseFFG {
     if (this.isEmbedded && this.actor) {
       // If this is a weapon or armour item we must ensure its modifier-adjusted values are saved to the database
       if (["weapon", "shipweapon", "armour"].includes(this.type)) {
-        this.update(this);
+        let that = this.toObject(true);
+        delete that._id;
+        await this.update(that);
       }
     }
     await super._onCreate(data, options, user);

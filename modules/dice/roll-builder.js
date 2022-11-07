@@ -97,7 +97,7 @@ export default class RollBuilderFFG extends FormApplication {
     this._initializeInputs(html);
     this._activateInputs(html);
 
-    html.find(".btn").click((event) => {
+    html.find(".btn").click(async (event) => {
       // if sound was not passed search for sound dropdown value
       if (!this.roll.sound) {
         const sound = html.find(".sound-selection")?.[0]?.value;
@@ -134,6 +134,13 @@ export default class RollBuilderFFG extends FormApplication {
         }
       }
 
+      // validate that required data is present
+      if (this.roll.hasOwnProperty('item') && !this.roll.item.flags.starwarsffg.uuid) {
+        // uuid is missing, look up the item and set it, so it's fixed going forward
+        let tmp_item = await fromUuid(this.roll.item.uuid);
+        await tmp_item.setFlag("starwarsffg", "uuid", this.roll.item.uuid);
+      }
+
       const sentToPlayer = html.find(".user-selection")?.[0]?.value;
       if (sentToPlayer) {
         let container = $(`<div class='dice-pool'></div>`)[0];
@@ -164,7 +171,7 @@ export default class RollBuilderFFG extends FormApplication {
         ChatMessage.create(chatOptions);
       } else {
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
-        roll.toMessage({
+        await roll.toMessage({
           user: game.user.id,
           speaker: {
             actor: game.actors.get(this.roll.data?.actor?._id),

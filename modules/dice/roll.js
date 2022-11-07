@@ -231,7 +231,13 @@ export class RollFFG extends Roll {
 
     // Define chat data
     if (this?.data) {
-      if (this.data.flags?.starwarsffg?.ffgUuid) {
+      if (this.data.flags?.starwarsffg?.uuid) {
+        const item = await fromUuid(this.data.flags.starwarsffg.uuid);
+        if (item) {
+          this.data = item;
+        }
+      }
+      else if (this.data.flags?.starwarsffg?.ffgUuid) {
         const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
         if (item) {
           this.data = item;
@@ -300,7 +306,7 @@ export class RollFFG extends Roll {
 
   /* -------------------------------------------- */
   /** @override */
-  toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
+  async toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) this.evaluate();
 
