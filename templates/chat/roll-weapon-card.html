@@ -14,7 +14,7 @@
   <div class="specials">
     <h5>
       {{#each data.system.adjusteditemmodifier as |item id|}}
-      <li class="item-pill" data-item-id="{{../data.flags.starwarsffg.ffgUuid}}" data-modifier-id="{{item._id}}"  data-uuid="{{ ../data.flags.starwarsffg.uuid }}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank_current 0)}}{{item.data.rank_current}}{{else}}{{/if}}</li>
+      <li class="item-pill" data-item-id="{{../data.flags.starwarsffg.ffgUuid}}" data-modifier-id="{{item._id}}"  data-uuid="{{ ../data.flags.starwarsffg.uuid }}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.system.rank_current 0)}}{{item.system.rank_current}}{{else}}{{/if}}</li>
       {{/each}}
     </h5>
   </div>
@@ -24,7 +24,7 @@
   <div class="specials">
     <h5>
       {{#each data.system.itemmodifier as |item id|}}
-      <li class="item-pill" data-item-id="{{../data._id}}" data-modifier-id="{{#if item.id }}{{item.id}}{{else}}{{item._id}}{{/if}}" data-uuid="{{ ../data.flags.starwarsffg.uuid }}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.data.rank 0)}}{{item.data.rank}}{{else}}{{/if}}</li>
+      <li class="item-pill" data-item-id="{{../data._id}}" data-modifier-id="{{#if item.id }}{{item.id}}{{else}}{{item._id}}{{/if}}" data-uuid="{{ ../data.flags.starwarsffg.uuid }}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.system.rank 0)}}{{item.system.rank}}{{else}}{{/if}}</li>
       {{/each}}
     </h5>
   </div>
