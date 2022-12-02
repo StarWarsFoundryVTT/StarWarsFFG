@@ -328,6 +328,8 @@
   "SWFFG.CharacterSheet": "Character Sheet",
   "SWFFG.Options": "Options",
   "SWFFG.TalentSource": "Talent Rank Sources for",
+  "SWFFG.EnableStrainThreshold": "Enable Strain Threshold",
+  "SWFFG.EnableStrainThresholdHint": "Enables the Strain Threshold field on the character sheet",
   "SWFFG.EnableObligation": "Enable Obligation",
   "SWFFG.EnableObligationHint": "Enables the Obligation fields on the character sheet",
   "SWFFG.EnableDuty": "Enable Duty",

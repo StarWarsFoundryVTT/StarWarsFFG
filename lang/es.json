@@ -317,6 +317,8 @@
   "SWFFG.CharacterSheet": "Hoja de Personaje",
   "SWFFG.Options": "Opciones",
   "SWFFG.TalentSource": "Fuente del Talento con Rango",
+  "SWFFG.EnableStrainThreshold": "Enable Strain Threshold",
+  "SWFFG.EnableStrainThresholdHint": "Enables the Strain Threshold field on the character sheet",
   "SWFFG.EnableObligation": "Activar Obligación",
   "SWFFG.EnableObligationHint": "Muestra el campo Obligación en la hoja de personaje",
   "SWFFG.EnableDuty": "Activar Deber",
