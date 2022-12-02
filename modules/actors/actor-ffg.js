@@ -110,6 +110,8 @@ export class ActorFFG extends Actor {
         // Check we don't go below 0.
         if (skill.rank < 0) {
           skill.rank = 0;
+        } else if (skill.rank > 5) {
+          skill.rank = 5;
         }
       } else if (!skill.groupskill) {
         skill.rank = data.attributes[key].value;
