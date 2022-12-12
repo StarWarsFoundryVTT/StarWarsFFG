@@ -879,7 +879,7 @@ export class ItemSheetFFG extends ItemSheet {
     let itemObject;
     if (data.pack) {
       const compendiumObject = await this.importItemFromCollection(data.pack, data.id);
-      itemObject = compendiumObject.data;
+      itemObject = compendiumObject.toObject(true);
     }
 
     // Case 2 - Import from World entity
