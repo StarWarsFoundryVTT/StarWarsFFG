@@ -37,9 +37,44 @@ export default class ItemHelpers {
       setProperty(formData, `data.attributes`, attributes);
     }
 
+    // migrate data to v10 structure
+    let updated_id = formData._id;
+    delete formData._id;
+
+    setProperty(formData, `flags.starwarsffg.loaded`, false);
+
     // Update the Item
-    setProperty(formData, `flags.starwarsffg.loaded`, false)
-    await this.object.update(formData);
+    try {
+      // v10 items are no longer created in the global scope if they exist only on an actor (or another item)
+      if (this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId) {
+        let parent_object = await game.items.get(this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId);
+
+        // search for the relevant attachment
+        let updated_items = [];
+        parent_object.system.itemattachment.forEach(function (i) {
+          if (i._id === updated_id) {
+              // this is the item we want to update, replace it
+              i = formData;
+          }
+          updated_items.push(i)
+        });
+        await parent_object.update({'system': {'itemattachment': updated_items}});
+
+        // search for the relevant quality
+        updated_items = [];
+        parent_object.system.itemmodifier.forEach(function (i) {
+          if (i._id === updated_id) {
+              // this is the item we want to update, replace it
+              i = formData;
+          }
+          updated_items.push(i)
+        });
+        await parent_object.update({'system': {'itemmodifier': updated_items}});
+
+      }
+    } catch (error) {
+        await this.object.update(formData);
+    }
 
     if (this.object.type === "talent") {
       if (this.object.flags?.clickfromparent?.length) {
