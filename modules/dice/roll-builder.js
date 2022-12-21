@@ -135,7 +135,7 @@ export default class RollBuilderFFG extends FormApplication {
       }
 
       // validate that required data is present
-      if (this.roll.hasOwnProperty('item') && !this.roll.item.flags.starwarsffg.uuid) {
+      if (this.roll.hasOwnProperty('item') && this.roll.item.hasOwnProperty('flags') && !this.roll.item.flags.starwarsffg.uuid) {
         // uuid is missing, look up the item and set it, so it's fixed going forward
         let tmp_item = await fromUuid(this.roll.item.uuid);
         await tmp_item.setFlag("starwarsffg", "uuid", this.roll.item.uuid);
