@@ -6,12 +6,12 @@ export default class ActorOptions {
   }
 
   init(html) {
-    const options = $(`#ActorSheetFFG-Actor-${this.data.object.id} .ffg-sheet-options`);
-    if (options.length === 0) {
-      const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
-      button.insertBefore(`#ActorSheetFFG-Actor-${this.data.object.id} header a:first`);
-      button.on("click", this.handler.bind(this));
-    }
+      const options = $(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] .ffg-sheet-options`);
+      if (options.length === 0) {
+        const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
+        button.insertBefore(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] header a:first`);
+        button.on("click", this.handler.bind(this));
+      }
   }
 
   handler(event) {

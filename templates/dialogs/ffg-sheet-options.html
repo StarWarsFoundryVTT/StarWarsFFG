@@ -5,11 +5,11 @@
       <label>{{option.name}}</label>
       <div class="form-fields">
         {{#if (eq option.type "Boolean")}}
-        <input type="checkbox" name="flags.config.{{id}}" id="{{id}}" data-dtype="Boolean" {{checked option.value}} />
+        <input type="checkbox" name="flags.starwarsffg.config.{{id}}" id="{{id}}" data-dtype="Boolean" {{checked option.value}} />
         {{/if}} {{#if (eq option.type "String")}}
-        <input type="text" name="flags.config.{{id}}" id="{{id}}" data-dtype="String" value="{{localize option.value}}" />
+        <input type="text" name="flags.starwarsffg.config.{{id}}" id="{{id}}" data-dtype="String" value="{{localize option.value}}" />
         {{/if}} {{#if (eq option.type "Array")}}
-        <select name="flags.config.{{id}}" id="{{id}}">
+        <select name="flags.starwarsffg.config.{{id}}" id="{{id}}">
           {{#select option.value }}{{#each option.options as |optionvalue id| }}
           <option value="{{id}}">{{optionvalue}}</option>
           {{/each}}{{/select}}
