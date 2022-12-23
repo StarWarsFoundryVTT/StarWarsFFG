@@ -72,7 +72,7 @@ export class ActorSheetFFG extends ActorSheet {
 
     let autoSoakCalculation = true;
 
-    if (typeof this.actor.flags?.config?.enableAutoSoakCalculation === "undefined") {
+    if (typeof this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined") {
       autoSoakCalculation = game.settings.get("starwarsffg", "enableSoakCalc");
     } else {
       autoSoakCalculation = this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation;
