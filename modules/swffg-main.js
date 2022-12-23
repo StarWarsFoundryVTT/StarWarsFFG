@@ -271,7 +271,7 @@ Hooks.once("init", async function () {
             let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
             CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
-            if (!actor?.flags?.starwarsffg.hasOwnProperty('ffgimportid')) {
+            if (!actor?.flags?.starwarsffg?.hasOwnProperty('ffgimportid')) {
               // only apply the skills if it wasn't an imported actor
               actor.update({
                 system: {
