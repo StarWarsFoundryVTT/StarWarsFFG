@@ -2,11 +2,11 @@
   "name": "starwarsffg",
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
-  "version": "1.80-alpha5",
+  "version": "1.80-alpha6",
   "minimumCoreVersion": "10",
   "compatibleCoreVersion": "10",
   "templateVersion": 1,
-  "author": "Esrin, CStadther and Jaxxa",
+  "author": "Esrin, CStadther, Wrycu and Jaxxa",
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
   "styles": ["styles/starwarsffg.css", "lib/select2/select2.min.css", "lib/pure/grids-min.css"],
   "scripts": ["lib/select2/select2.min.js", "lib/jszip/jszip.min.js", "lib/jxon/jxon.min.js"],
@@ -44,7 +44,7 @@
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG",
-  "manifest": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.8-alpha5/system.json",
-  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.8-alpha5/starwarsffg_1.8.alpha5.zip",
+  "manifest": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.8-alpha6/system.json",
+  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.8-alpha6/starwarsffg_1.8.alpha6.zip",
   "license": "LICENSE.txt"
 }
