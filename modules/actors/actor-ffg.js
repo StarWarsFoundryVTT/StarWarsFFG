@@ -447,7 +447,7 @@ export class ActorFFG extends Actor {
           value = [data[name][k].fore, data[name][k].port, data[name][k].starboard, data[name][k].aft];
         } else if (key === "Soak") {
           try {
-            if ((typeof actorData.flags?.config?.enableAutoSoakCalculation === undefined && game.settings.get("starwarsffg", "enableSoakCalc")) || actorData.flags?.config?.enableAutoSoakCalculation) {
+            if ((typeof actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation === undefined && game.settings.get("starwarsffg", "enableSoakCalc")) || actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation) {
               value = 0;
             }
           } catch (err) {
