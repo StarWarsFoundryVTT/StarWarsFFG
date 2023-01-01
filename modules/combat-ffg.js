@@ -8,9 +8,9 @@ import PopoutEditor from "./popout-editor.js";
 export class CombatFFG extends Combat {
   /** @override */
   _getInitiativeRoll(combatant, formula) {
-    const cData = duplicate(combatant.actor.data.data);
+    const cData = duplicate(combatant.actor.system);
 
-    if (combatant.actor.data.type === "vehicle") {
+    if (combatant.actor.type === "vehicle") {
       return new RollFFG("0");
     }
 
@@ -33,7 +33,7 @@ export class CombatFFG extends Combat {
 
   /** @override */
   _getInitiativeFormula(combatant) {
-    return CONFIG.Combat.initiative.formula || game.system.data.initiative;
+    return CONFIG.Combat.initiative.formula || game.system.initiative;
   }
 
   /** @override */
@@ -56,10 +56,10 @@ export class CombatFFG extends Combat {
         // Make sure we are dealing with an array of ids
         ids = typeof ids === "string" ? [ids] : ids;
         const c = initiative.getCombatantByToken(
-            initiative.data.combatants.map(combatant => combatant.data)
+            initiative.combatants.map(combatant => combatant)
             .filter(combatantData => combatantData._id == ids[0])[0]
             .tokenId);
-        const data = c.actor.data.data;
+        const data = c.actor.system;
         whosInitiative = c.actor.name;
 
         vigilanceDicePool = _buildInitiativePool(data, "Vigilance");
@@ -110,19 +110,18 @@ export class CombatFFG extends Combat {
               const baseFormulaType = container.querySelector('input[name="skill"]:checked').value;
 
               // Iterate over Combatants, performing an initiative roll for each
-              const [updates, messages] = ids.reduce(
-                (results, id, i) => {
+              const [updates, messages] = await ids.reduce(
+                async (results, id, i) => {
                   let [updates, messages] = results;
-
                   // Get Combatant data
                   const c = initiative.getCombatantByToken(
-                    initiative.data.combatants.map(combatant => combatant.data)
+                    initiative.combatants.map(combatant => combatant)
                     .filter(combatantData => combatantData._id == id)[0]
-                    .tokenId);;
+                    .tokenId);
                   if (!c || !c.isOwner) return resolve(results);
 
                   // Detemine Formula
-                  let pool = _buildInitiativePool(c.actor.data.data, baseFormulaType);
+                  let pool = _buildInitiativePool(c.actor.system, baseFormulaType);
 
                   const addPool = DicePoolFFG.fromContainer(container.querySelector(`.addDicePool`));
                   pool.success += +addPool.success;
@@ -159,7 +158,7 @@ export class CombatFFG extends Combat {
                     },
                     messageOptions
                   );
-                  const chatData = roll.toMessage(messageData, { create: false, rollMode });
+                  const chatData = await roll.toMessage(messageData, { create: false, rollMode });
 
                   // Play 1 sound for the whole rolled set
                   if (i > 0) chatData.sound = null;
