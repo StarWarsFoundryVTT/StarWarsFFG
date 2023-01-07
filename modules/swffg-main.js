@@ -414,6 +414,16 @@ Hooks.once("init", async function () {
     return ["icons/svg/mystery-man.svg", "icons/svg/item-bag.svg"].includes(img);
   });
 
+  Handlebars.registerHelper('each_when', function(list, propName, value, options) {
+    let result = '';
+    for(let i = 0; i < list.length; ++i)
+        if(list[i][propName] == value)
+            result += options.fn({item: list[i]});
+            
+    return result.length > 0 ? result : options.inverse();
+});
+
+
   TemplateHelpers.preload();
 });
 

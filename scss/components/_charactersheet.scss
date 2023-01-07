@@ -84,6 +84,12 @@ $swffg-table-header-color: rgb(145, 145, 145);
                 cursor: pointer;
               }
             }
+
+            .drag-note {
+              border: 2px dotted;
+              border-radius: 10px;
+              padding: 0 5px;
+            }
           
           }
       
