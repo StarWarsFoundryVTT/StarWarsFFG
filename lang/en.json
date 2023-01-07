@@ -128,6 +128,7 @@
   "SWFFG.VehicleTabDescription": "Biography",
   "SWFFG.VehicleTabShipWeapons": "Ship Weapon",
   "SWFFG.VehicleTabShipAttachments": "Ship Attachment",
+  "SWFFG.VehicleTabShipCrew": "Crew",
   "SWFFG.VehicleTabShipCargoHold": "Cargo Hold Item",
   "SWFFG.VehicleTabFiringArc": "Firing Arc",
   "SWFFG.VehicleTabDamage": "Damage",
@@ -569,6 +570,13 @@
   "SWFFG.DiceResult.OneFailureOneThreat": "1 failure, 1 threat",
   "SWFFG.DiceResult.OneDespair": "1 despair",
   "SWFFG.OldWorld.CompatLabel": "Enable Old World Compatability",
-  "SWFFG.OldWorld.CompatHint": "Enables helpers designed for worlds ported from old versions of the system. May negatively impact the play experience in some cases."
+  "SWFFG.OldWorld.CompatHint": "Enables helpers designed for worlds ported from old versions of the system. May negatively impact the play experience in some cases.",
+  "SWFFG.Crew.Title": "Crew",
+  "SWFFG.Crew.Role": "Select a role",
+  "SWFFG.Crew.Roles.Pilot_Space": "Pilot (Space)",
+  "SWFFG.Crew.Roles.Pilot_Planetary": "Pilot (Planetary)",
+  "SWFFG.Crew.Roles.Gunner.Name": "Gunner",
+  "SWFFG.Crew.Roles.Gunner.Title": "Select Weapon",
+  "SWFFG.Crew.Roles.Gunner.Description": "Choose the ship weapon to use",
+  "SWFFG.Crew.Roles.None": "(none)"
 }
-

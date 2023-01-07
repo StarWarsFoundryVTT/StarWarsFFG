@@ -251,3 +251,60 @@ export default class DiceHelpers {
     return dicePool;
   }
 }
+
+/**
+ * Helper function to build a dice pool
+ * @param actor_id ID of the actor making the check
+ * @param skill_name name of the string of the skill
+ * @param incoming_roll existing dice, e.g. difficulty dice
+ * @returns {DicePoolFFG}
+ */
+export function get_dice_pool(actor_id, skill_name, incoming_roll) {
+  let actor = game.actors.get(actor_id);
+  var parsed_skill_name = convert_skill_name(skill_name);
+  var skill = actor.system.skills[parsed_skill_name];
+  var characteristic = actor.system.characteristics[skill.characteristic];
+
+  let dicePool = new DicePoolFFG({
+    ability: (Math.max(characteristic.value, skill.rank) + incoming_roll.ability) - (Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency),
+    proficiency: Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency,
+    boost: skill.boost + incoming_roll.boost,
+    setback: skill.setback + incoming_roll.setback,
+    force: skill.force + incoming_roll.force,
+    advantage: skill.advantage + incoming_roll.advantage,
+    dark: skill.dark + incoming_roll.dark,
+    light: skill.light + incoming_roll.light,
+    failure: skill.failure + incoming_roll.failure,
+    threat: skill.threat + incoming_roll.threat,
+    success: skill.success + incoming_roll.success,
+    triumph: skill.triumph + incoming_roll.triumph,
+    despair: skill.despair + incoming_roll.despair,
+    difficulty: +incoming_roll.difficulty,
+  });
+  return dicePool;
+}
+
+/**
+ * Convert the skill name to how the game handles it
+ * @param pool_skill_name skill name to be converted
+ * @returns {null|string}
+ */
+function convert_skill_name(pool_skill_name) {
+  CONFIG.logger.debug(`Converting ${pool_skill_name} to skill name`);
+  let skills = CONFIG.FFG.skills;
+  for (var skill in skills) {
+    if (skills[skill]['label'] === pool_skill_name) {
+      CONFIG.logger.debug(`Found mapping to ${skill}`);
+      return skill;
+    }
+  }
+  // it would appear that sometimes it's value instead of label
+  for (var skill in skills) {
+    if (skills[skill]['value'] === pool_skill_name) {
+      CONFIG.logger.debug(`Found mapping to ${skill}`);
+      return skill;
+    }
+  }
+  CONFIG.logger.debug('WARNING: Found no mapping!');
+  return null;
+}
