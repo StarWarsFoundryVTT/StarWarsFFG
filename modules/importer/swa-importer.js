@@ -627,7 +627,7 @@ export default class SWAImporter extends FormApplication {
                           };
                           const descriptor = new CONFIG.Item.documentClass(unique, { temporary: true });
                           descriptor.system._id = randomID();
-                          templatedData.system.itemmodifier.push(descriptor.system);
+                          templatedData.system.itemmodifier.push(descriptor.data);
                         });
                       }
 
