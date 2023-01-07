@@ -767,7 +767,7 @@ export class ActorSheetFFG extends ActorSheet {
           that,
           pool,
           `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.SkillsNamePilotingSpace")}`,
-          `${game.i18n.localize("SWFFG.SkillsNamePilotingSpace")}&nbsp;on ${game.actors.get(roles[0]).name}`
+          `${game.i18n.localize("SWFFG.SkillsNamePilotingSpace")}`
         );
       } else if (roles[2] === 'Pilot (Planetary)') {
         let pool = new DicePoolFFG(starting_pool);
@@ -776,7 +776,7 @@ export class ActorSheetFFG extends ActorSheet {
           that,
           pool,
           `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.SkillsNamePilotingPlanetary")}`,
-          `${game.i18n.localize("SWFFG.SkillsNamePilotingPlanetary")}&nbsp;on ${game.actors.get(roles[0]).name}`
+          `${game.i18n.localize("SWFFG.SkillsNamePilotingPlanetary")}`
         );
       } else if (roles[2] === 'Gunner') {
         // gunnery needs to present a set of options for which weapon to roll
@@ -795,7 +795,7 @@ export class ActorSheetFFG extends ActorSheet {
                 that,
                 pool,
                 `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
-                skill + '&nbsp;on ' + game.actors.get(roles[0]).name,
+                skill,
                 raw_weapons[i]
               );
             }
