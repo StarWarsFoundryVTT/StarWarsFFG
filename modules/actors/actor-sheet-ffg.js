@@ -791,7 +791,7 @@ export class ActorSheetFFG extends ActorSheet {
 
         for (let i = 0; i < raw_weapons.length; i++) {
           weapons['weapon ' + i] = {
-            icon: '<img src=' + raw_weapons[i].img + '>',
+            icon: `<img src="${raw_weapons[i].img}" style="max-width: 24px; max-height: 24px">`,
             label: raw_weapons[i].name,
             callback: async(html) => {
               let skill = raw_weapons[i].system.skill.value;
