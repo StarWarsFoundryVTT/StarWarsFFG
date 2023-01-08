@@ -748,9 +748,9 @@ export class ActorSheetFFG extends ActorSheet {
         deregister_crew(roles[0], roles[1], roles[2]);
         return;
       }
-      let that = game.actors.get(roles[1]).sheet;
-      let starting_pool = {'difficulty': 2};
-      let handling = game.actors.get(roles[0]).system.stats.handling.value;
+      const crewSheet = game.actors.get(roles[1])?.sheet;
+      const starting_pool = {'difficulty': 2};
+      const handling = game.actors.get(roles[0])?.system?.stats?.handling?.value;
 
       // add modifiers from the vehicle handling
       if (handling > 0) {
@@ -765,7 +765,7 @@ export class ActorSheetFFG extends ActorSheet {
         pool = get_dice_pool(roles[1], 'Piloting: Space', pool);
         // actually display it
         await DiceHelpers.displayRollDialog(
-          that,
+          crewSheet,
           pool,
           `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.SkillsNamePilotingSpace")}`,
           `${game.i18n.localize("SWFFG.SkillsNamePilotingSpace")}`
@@ -774,7 +774,7 @@ export class ActorSheetFFG extends ActorSheet {
         let pool = new DicePoolFFG(starting_pool);
         pool = get_dice_pool(roles[1], 'Piloting: Planetary', pool);
         await DiceHelpers.displayRollDialog(
-          that,
+          crewSheet,
           pool,
           `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.SkillsNamePilotingPlanetary")}`,
           `${game.i18n.localize("SWFFG.SkillsNamePilotingPlanetary")}`
@@ -793,7 +793,7 @@ export class ActorSheetFFG extends ActorSheet {
               let pool = new DicePoolFFG({'difficulty': 2});
               pool = get_dice_pool(roles[1], skill, pool);
               await DiceHelpers.displayRollDialog(
-                that,
+                crewSheet,
                 pool,
                 `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
                 skill,
