@@ -6,7 +6,7 @@
 export async function register_crew(...args) {
     CONFIG.logger.debug("Got possible register crew request");
     // check if this is an actor being dragged onto a vehicle
-    let vehicle_actor = args[0];
+    const vehicle_actor = args[0];
     if (vehicle_actor.type !== 'vehicle' || args[2].type !== 'Actor') {
         // the target is not a vehicle or the actor being dragged onto it is a vehicle
         CONFIG.logger.debug("Not registering crew as item is not an actor or the target is not a vehicle");
