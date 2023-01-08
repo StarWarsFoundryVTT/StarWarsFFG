@@ -341,6 +341,12 @@ img {
   background-color: rgba(0, 0, 0, 0);
 }
 
+.starwarsffg.sheet.actor .character .header-fields .row .row-input .drag-note {
+  border: 2px dotted;
+  border-radius: 10px;
+  padding: 0 5px;
+}
+
 .starwarsffg.sheet.actor .character .header-fields .header-name input:focus {
   box-shadow: 0 0 5px #7da9c2;
   background-color: #7da9c2;
