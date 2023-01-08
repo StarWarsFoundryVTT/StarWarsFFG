@@ -112,7 +112,7 @@ export class ActorSheetFFG extends ActorSheet {
         if (crew) {
           for (let i = 0; i < crew.length; i++) {
             // iterate over the crew members in the flag data
-            let actor = game.actors.get(crew[i].actor_id);
+            const actor = game.actors.get(crew[i].actor_id);
             // pull the image from the actor to display it
             const img = actor?.img || 'icons/svg/mystery-man.svg';
             // translate the role to the current language
