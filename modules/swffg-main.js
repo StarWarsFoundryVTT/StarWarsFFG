@@ -28,6 +28,7 @@ import SkillListImporter from "./importer/skills-list-importer.js";
 import DestinyTracker from "./ffg-destiny-tracker.js";
 import { defaultSkillList } from "./config/ffg-skillslist.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
+import {register_crew} from "./helpers/crew.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
@@ -521,6 +522,11 @@ Hooks.on("renderJournalPageSheet", (...args) => {
     args[1][2].outerHTML = PopoutEditor.renderDiceImages(args[1][2].outerHTML, {});
   }
   return args;
+});
+
+// Handle crew registration
+Hooks.on("dropActorSheetData", (...args) => {
+    register_crew(...args);
 });
 
 // Handle migration duties
