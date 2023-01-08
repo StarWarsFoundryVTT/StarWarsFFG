@@ -782,7 +782,7 @@ export class ActorSheetFFG extends ActorSheet {
       } else if (roles[2] === 'Gunner') {
         // gunnery needs to present a set of options for which weapon to roll
         let weapons = {};
-        let raw_weapons = game.actors.get(roles[0]).collections.items.filter(i => i.type === 'shipweapon');
+        let raw_weapons = this.actor.items.filter(i => i.type === 'shipweapon');
 
         for (let i = 0; i < raw_weapons.length; i++) {
           weapons['weapon ' + i] = {
