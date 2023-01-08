@@ -747,6 +747,12 @@ export class ActorSheetFFG extends ActorSheet {
       let crew_id = $(event.currentTarget).parents(".item").data("itemId");
       let roles = crew_id.split('-'); // ship_id, crew_id, crew_role
       // look up the sheet for passing to the roller
+      let crew_member = game.actors.get(roles[1]);
+      if (crew_member === undefined) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Removed"));
+        deregister_crew(roles[0], roles[1], roles[2]);
+        return;
+      }
       let that = game.actors.get(roles[1]).sheet;
       let starting_pool = {'difficulty': 2};
       let handling = game.actors.get(roles[0]).system.stats.handling.value;

@@ -578,5 +578,6 @@
   "SWFFG.Crew.Roles.Gunner.Name": "Gunner",
   "SWFFG.Crew.Roles.Gunner.Title": "Select Weapon",
   "SWFFG.Crew.Roles.Gunner.Description": "Choose the ship weapon to use",
-  "SWFFG.Crew.Roles.None": "(none)"
+  "SWFFG.Crew.Roles.None": "(none)",
+  "SWFFG.Crew.Removed": "Actor representing this crew member was deleted, removing from role"
 }
