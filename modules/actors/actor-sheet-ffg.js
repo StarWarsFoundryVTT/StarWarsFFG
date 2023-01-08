@@ -108,7 +108,7 @@ export class ActorSheetFFG extends ActorSheet {
         // add the crew to the items of the vehicle
         data.crew = [];
         // look up the flag data
-        let crew = game.actors.get(data.actor._id).flags.starwarsffg.crew;
+        const crew = this.actor.getFlag('starwarsffg', 'crew');
         if (crew) {
           for (let i = 0; i < crew.length; i++) {
             // iterate over the crew members in the flag data
