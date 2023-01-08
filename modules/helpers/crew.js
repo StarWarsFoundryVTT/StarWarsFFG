@@ -68,14 +68,13 @@ export function deregister_crew(vehicle_id, crew_member, crew_role) {
         }
     }
 
-    if (new_flag_data.length === 0) {
-        // the last crew member was removed, delete the data
-        new_flag_data = null;
-    }
-
     CONFIG.logger.debug("Final updated flag data: ", new_flag_data);
-    // set the updated flag data
-    vehicle_actor.setFlag('starwarsffg', 'crew', new_flag_data);
+    if (new_flag_data.length === 0) {
+      // the last crew member was removed, delete the data
+      vehicle_actor.unsetFlag('starwarsffg', 'crew');
+    } else {
+      vehicle_actor.setFlag('starwarsffg', 'crew', new_flag_data);
+    }
 }
 
 /**
