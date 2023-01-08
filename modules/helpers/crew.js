@@ -27,7 +27,7 @@ export async function register_crew(...args) {
     });
 
     CONFIG.logger.debug("Looking up existing crew information");
-    let existing_data = vehicle_actor.getFlag('starwarsffg', 'crew');
+    const existing_data = vehicle_actor.getFlag('starwarsffg', 'crew');
     if (existing_data !== undefined && existing_data !== null) {
         // we already have crew data defined, check if this actor is already in the data
 
@@ -54,8 +54,8 @@ export async function register_crew(...args) {
  */
 export function deregister_crew(vehicle_id, crew_member, crew_role) {
     CONFIG.logger.debug("Got deregister crew request");
-    let vehicle_actor = game.actors.get(vehicle_id);
-    let flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
+    const vehicle_actor = game.actors.get(vehicle_id);
+    const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
     let new_flag_data = [];
 
     for (let i = 0; i < flag_data.length; i++) {
@@ -87,8 +87,8 @@ export function deregister_crew(vehicle_id, crew_member, crew_role) {
  */
 export function change_role(vehicle_id, crew_member, old_crew_role, new_crew_role) {
     CONFIG.logger.debug("Got role change request: ", vehicle_id, crew_member, old_crew_role, new_crew_role);
-    let vehicle_actor = game.actors.get(vehicle_id);
-    let flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
+    const vehicle_actor = game.actors.get(vehicle_id);
+    const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
     let new_flag_data = [];
 
     if (flag_data.filter(i => i.actor_id === crew_member && i.role === new_crew_role).length > 0) {
