@@ -12,6 +12,8 @@ export class RollFFG extends Roll {
     this.hasStandard = false;
     this.addedResults = [];
 
+    this.terms = this.parseShortHand(this.terms);    
+
     if (args[2]?.success) {
       this.ffg.success += +args[2].success;
       this.addedResults.push({
@@ -364,5 +366,29 @@ export class RollFFG extends Roll {
     roll.addedResults = data.addedResults;
     roll.flavorText = data.flavorText;
     return roll;
+  }
+
+  //If the main parser hands back a StringTerm attempt to turn it into a die.
+  parseShortHand(terms) {
+    return terms
+      .flatMap(t => {
+        if(!(t instanceof StringTerm) || /\d/.test(t.term))
+          return t;
+
+        return t.term.replaceAll('d', 'i').split('').reduce((acc, next) => {
+          if(next in CONFIG.Dice.terms)
+          {
+            let cls = CONFIG.Dice.terms[next];
+            acc.push(new cls(1));
+          }
+          else throw new Error(`Unknown die type '${next}'`)
+
+          return acc;
+        }, [])
+      })
+      .flatMap((value, index, array) => //Put addition operators between each die.
+        array.length - 1 !== index
+          ? [value, new OperatorTerm({operator: '+'})]
+          : value)
   }
 }
