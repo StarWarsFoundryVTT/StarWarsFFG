@@ -2192,6 +2192,7 @@ img {
 .starwarsffg .hover:hover .tooltip2 {
   opacity: 1;
   z-index: 500;
+  pointer-events: none;
 }
 .starwarsffg .hover:focus .tooltip2 {
   opacity: 1;
