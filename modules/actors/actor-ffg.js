@@ -178,7 +178,7 @@ export class ActorFFG extends Actor {
         return comparison;
       });
     }
-    data.talentList = globalTalentList;
+    actorData.talentList = globalTalentList;
   }
 
   /**
