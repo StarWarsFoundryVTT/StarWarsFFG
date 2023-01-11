@@ -546,6 +546,7 @@
   "SWFFG.EnableCriticalInjuries" : "Enable Critical Injuries",
   "SWFFG.EnableCriticalInjuriesHint" : "Enable the Critical Injuries section",
   "SWFFG.ModTypeSkillAddTriumph" : "Skill Add Triumph",
+  "SWFFG.ModTypeSkillAddUpgrade" : "Skill Add Upgrade",
   "SWFFG.ModTypeAddTriumph" : "Add Triumph",
   "SWFFG.ModTypeSkillAddDespair" : "Skill Add Despair",
   "SWFFG.ModTypeAddDespair" : "Add Despair",

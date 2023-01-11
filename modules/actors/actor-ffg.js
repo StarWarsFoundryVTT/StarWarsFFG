@@ -588,6 +588,10 @@ export class ActorFFG extends Actor {
       const setback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Setback", true);
       const remsetback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Remove Setback", true);
 
+      const upgradesValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Add Upgrade", true);
+      data.skills[key].upgrades = upgradesValues.total;
+      data.skills[key].upgradessource = upgradesValues.sources;
+
       const setValueAndSources = (modifiername, propertyname) => {
         const obj = ModifierHelpers.getCalculatedValueFromItems(items, key, modifiername, true);
         if (obj.total > 0) {
@@ -604,6 +608,7 @@ export class ActorFFG extends Actor {
       setValueAndSources("Skill Add Threat", "threat");
       setValueAndSources("Skill Add Triumph", "triumph");
       setValueAndSources("Skill Add Despair", "despair");
+      setValueAndSources("Skill Add Upgrade", "upgrades");
 
       const forceboost = ModifierHelpers.getCalculatedValueFromItems(items, key, "Force Boost", true);
       data.skills[key].force = 0;

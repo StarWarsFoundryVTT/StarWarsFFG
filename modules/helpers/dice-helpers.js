@@ -42,6 +42,7 @@ export default class DiceHelpers {
       success: 0,
       triumph: 0,
       despair: 0,
+      upgrades: 0,
       label: skillData?.label ? game.i18n.localize(skillData.label) : game.i18n.localize(skillName),
     };
     let characteristic = {
@@ -88,10 +89,11 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill.triumph,
       despair: skill.despair,
+      upgrades: skill.upgrades,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
     if (type === "ability") {
       dicePool.upgrade();
@@ -128,6 +130,7 @@ export default class DiceHelpers {
         success: skill.success,
         triumph: skill?.triumph ? skill.triumph : 0,
         despair: skill?.despair ? skill.despair : 0,
+        upgrades: skill?.upgrades ? skill.upgrades : 0,
         source: {
           skill: skill?.ranksource?.length ? skill.ranksource : [],
           boost: skill?.boostsource?.length ? skill.boostsource : [],
@@ -139,9 +142,10 @@ export default class DiceHelpers {
           failure: skill?.failuresource?.length ? skill.failuresource : [],
           threat: skill?.threatsource?.length ? skill.threatsource : [],
           success: skill?.successsource?.length ? skill.successsource : [],
+          upgrades: skill?.upgradessource?.length ? skill.upgradessource: [],
         },
       });
-      dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+      dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
       const rollButton = elem.querySelector(".roll-button");
       dicePool.renderPreview(rollButton);
@@ -174,10 +178,11 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill?.triumph ? skill.triumph : 0,
       despair: skill?.despair ? skill.despair : 0,
+      upgrades: skill?.upgrades ? skill.upgrades : 0,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
     dicePool = new DicePoolFFG(await this.getModifiers(dicePool, item));
 
@@ -200,9 +205,10 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill?.triumph ? skill.triumph : 0,
       despair: skill?.despair ? skill.despair : 0,
+      upgrades: skill?.upgrades ? skill.upgrades : 0,
     });
 
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
     this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, null, flavorText, sound);
   }
@@ -279,6 +285,7 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
     success: skill.success + incoming_roll.success,
     triumph: skill.triumph + incoming_roll.triumph,
     despair: skill.despair + incoming_roll.despair,
+    upgrades: skill.upgrades + incoming_roll.upgrades,
     difficulty: +incoming_roll.difficulty,
   });
   return dicePool;
