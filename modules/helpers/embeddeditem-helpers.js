@@ -116,7 +116,7 @@ export default class EmbeddedItemHelpers {
       let actor;
 
       if (compendium) {
-        actor = await compendium.getEntity(actorId);
+        actor = await compendium.get(actorId);
       } else {
         actor = await game.actors.get(actorId);
       }
