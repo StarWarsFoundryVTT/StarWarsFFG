@@ -25,20 +25,5 @@
       </div>
     </li>
     {{/each}}
-    {{#each data.talentList as |item id|}}
-    <li class="item specialization-talent-item flexrow" data-item-id="{{item.itemId}}">
-      <div class="item-name">
-        {{item.name}}
-      </div>
-      <div>{{localize item.activation}}</div>
-      <div>{{item.rank}}</div>
-      {{#if (ne ../this.FFG.theme "starwars" )}}
-      <div>{{item.tier}}</div>
-      {{/if}}
-      <div class="item-controls">
-        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-      </div>
-    </li>
-    {{/each}}
   </ul>
 </ul>
