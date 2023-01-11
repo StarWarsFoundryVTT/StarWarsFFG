@@ -13,6 +13,7 @@
     .tooltip2 {
       opacity: 1;
       z-index: 500;
+      pointer-events: none;
     }
   }
   &:focus {
