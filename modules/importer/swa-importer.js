@@ -614,8 +614,11 @@ export default class SWAImporter extends FormApplication {
                           const wName = w.match(/^.*([^0-9\s]+)/gim);
                           const wRank = w.match(/[^\w][0-9]/gim);
 
+                          const id = randomID();
                           const unique = {
                             name: wName[0],
+                            id: id,
+                            _id: id,
                             type: "itemmodifier",
                             flags: {},
                             system: {
@@ -626,8 +629,7 @@ export default class SWAImporter extends FormApplication {
                             },
                           };
                           const descriptor = new CONFIG.Item.documentClass(unique, { temporary: true });
-                          descriptor.system._id = randomID();
-                          templatedData.system.itemmodifier.push(descriptor.system);
+                          templatedData.system.itemmodifier.push(descriptor);
                         });
                       }
 
