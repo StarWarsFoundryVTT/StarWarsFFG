@@ -43,6 +43,10 @@ export const general_modifiers = {
     "value": "Skill Add Triumph",
     "label": "SWFFG.ModTypeSkillAddTriumph",
   },
+  "Skill Add Upgrade": {
+    "value": "Skill Add Upgrade",
+    "label": "SWFFG.ModTypeSkillAddUpgrade",
+  },
   "Skill Boost": {
     "value": "Skill Boost",
     "label": "SWFFG.ModTypeSkillBoost",
