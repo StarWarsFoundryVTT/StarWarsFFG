@@ -1,3 +1,5 @@
+{{#contains items "type" "forcepower"}}
+{{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
 <ul class="talent-list">
   <li class="talents-header flexrow">
     <div class="header-name">{{localize "SWFFG.ForcePower"}}</div>
@@ -34,3 +36,13 @@
     {{/iff}} {{/each}}
   </ul>
 </ul>
+{{else}}
+<div class="force-conflict">
+  <span>Conflict: Unit has Force Powers but the Force Dice Pool is disabled</span>
+  <div>
+    <input type="button" class="enable-dice-pool" value="Enable Dice Pool"/>
+    <input type="button" class="remove-force-powers" value="Remove Force Powers"/>
+  </div>
+</div>
+{{/if}}
+{{/contains}}

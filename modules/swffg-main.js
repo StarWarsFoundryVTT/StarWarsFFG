@@ -383,7 +383,7 @@ Hooks.once("init", async function () {
 
   Handlebars.registerHelper("contains", function (obj1, property, value, opts) {
     let bool = false;
-    if (Array.isArray(obj1)) {
+    if (Array.isArray(obj1) || obj1 instanceof Collection) {
       bool = obj1.some((e) => e[property] === value);
     } else if (typeof obj1 === "object") {
       bool = Object.keys(obj1).some(function (k) {
