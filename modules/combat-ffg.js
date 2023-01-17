@@ -112,7 +112,7 @@ export class CombatFFG extends Combat {
               // Iterate over Combatants, performing an initiative roll for each
               const [updates, messages] = await ids.reduce(
                 async (results, id, i) => {
-                  let [updates, messages] = results;
+                  let [updates, messages] = await results;
                   // Get Combatant data
                   const c = initiative.getCombatantByToken(
                     initiative.combatants.map(combatant => combatant)
