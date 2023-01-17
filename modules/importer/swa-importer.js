@@ -68,13 +68,13 @@ export default class SWAImporter extends FormApplication {
         // load ancillary files
         let filesToCache = [];
 
-        filesToCache.push({ name: "skills", file: await this._enableImportSelection(zip.files, "skills", false, true) });
-        filesToCache.push({ name: "weapons", file: await this._enableImportSelection(zip.files, "weapons", false, true) });
-        filesToCache.push({ name: "abilities", file: await this._enableImportSelection(zip.files, "abilities", false, true) });
-        filesToCache.push({ name: "force-powers", file: await this._enableImportSelection(zip.files, "force-powers", false, true) });
-        filesToCache.push({ name: "talents", file: await this._enableImportSelection(zip.files, "talents", false, true) });
-        filesToCache.push({ name: "mods", file: await this._enableImportSelection(zip.files, "mods", false, true) });
-        filesToCache.push({ name: "qualities", file: await this._enableImportSelection(zip.files, "qualities", false, true) });
+        filesToCache.push({ name: "skills", file: await this._getFilePaths(zip.files, "skills", false) });
+        filesToCache.push({ name: "weapons", file: await this._getFilePaths(zip.files, "weapons", false) });
+        filesToCache.push({ name: "abilities", file: await this._getFilePaths(zip.files, "abilities", false) });
+        filesToCache.push({ name: "force-powers", file: await this._getFilePaths(zip.files, "force-powers", false) });
+        filesToCache.push({ name: "talents", file: await this._getFilePaths(zip.files, "talents", false) });
+        filesToCache.push({ name: "mods", file: await this._getFilePaths(zip.files, "mods", false) });
+        filesToCache.push({ name: "qualities", file: await this._getFilePaths(zip.files, "qualities", false) });
 
         await ImportHelpers.asyncForEach(filesToCache, async (f) => {
           CONFIG.logger.debug(`Caching file: ${f.name}`);
@@ -97,7 +97,7 @@ export default class SWAImporter extends FormApplication {
             });
           }
         });
-        const adversaries = this._enableImportSelection(zip.files, "adversaries", true, true);
+        const adversaries = this._getFilePaths(zip.files, "adversaries", true);
 
         if (adversaries) {
           await this._handleAdversaries(zip, filter);
@@ -825,24 +825,30 @@ export default class SWAImporter extends FormApplication {
     }
   }
 
-  _enableImportSelection(files, name, isDirectory, returnFilename) {
-    this._importLogger(`Checking zip file for ${name}`);
-    let fileName;
-    Object.values(files).findIndex((file) => {
-      if (file.name.includes(`/${name}.json`) || (isDirectory && file.name.includes(`/${name}`))) {
-        this._importLogger(`Found file ${file.name}`);
-        $(`#import${name.replace(" ", "")}`)
-          .removeAttr("disabled")
-          .val(file.name);
-        if (returnFilename) {
-          fileName = file.name;
-        }
-        return true;
+  _getFilePath(files, name, isDirectory) {
+    try {
+      this._importLogger(`Checking zip file for ${name}`);
+      const filteredFiles = Object.values(files).filter(f => f.name.endsWith(`/${name}.json`) || (isDirectory && f.name.endsWith(`/${name}/`)))
+      let file;
+      if (filteredFiles.length === 1) {
+        file = filteredFiles[0]
       }
-      return false;
-    }) > -1;
+      else if (filteredFiles.length > 1) {
+        const srcFiles = filteredFiles.filter(f => f.name.includes('/src/'))
+        if (srcFiles.length === 1)
+          file = srcFiles[0]
+        else
+          throw new Error(`Found multiple files named ${name}.json with /src/ in the path.`)
+      }
+      else
+        throw new Error(`Found no file named ${name}.json`)
 
-    return fileName;
+      return file.name;
+    }
+    catch (e) {
+      ui.notifications.error(`Failed to process data file ${name}.json! Import failed.`);
+      console.error(e);
+    }
   }
 
   async _getCompendiumPack(type, name) {
