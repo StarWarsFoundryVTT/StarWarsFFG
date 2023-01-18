@@ -4,7 +4,6 @@
   </li>
   <ul class="items-list">
     {{#each items as |item id|}} {{#iff item.type '==' 'ability'}}
-    {{log item}}
     <li class="item specialization-talent-item flexrow" data-item-id="{{item.id}}">
       <div class="item-name">
         {{item.name}}
