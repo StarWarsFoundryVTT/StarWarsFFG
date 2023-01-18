@@ -4,6 +4,7 @@
   "ACTOR.TypeVehicle": "Vehicle",
   "ACTOR.TypeHomestead": "Homestead",
 
+  "ITEM.TypeAbility": "Ability",
   "ITEM.TypeArmour": "Armour",
   "ITEM.TypeCareer": "Career",
   "ITEM.TypeCriticaldamage": "Critical Damage",
@@ -66,6 +67,7 @@
   "SWFFG.ItemsWeapons": "Weapons",
   "SWFFG.ItemsArmor": "Armor",
   "SWFFG.ItemsGear": "Gear",
+  "SWFFG.ItemsAbility": "Abilities",
   "SWFFG.ItemsName": "Name",
   "SWFFG.ItemsSkill": "Skill",
   "SWFFG.ItemsDamage": "Damage",

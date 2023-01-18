@@ -1,0 +1,19 @@
+<ul class="items-list">
+  <li class="items-header flexrow">
+    <div class="header-name">{{localize "SWFFG.ItemsAbility"}}</div>
+  </li>
+  <ul class="items-list">
+    {{#each items as |item id|}} {{#iff item.type '==' 'ability'}}
+    {{log item}}
+    <li class="item specialization-talent-item flexrow" data-item-id="{{item.id}}">
+      <div class="item-name">
+        {{item.name}}
+      </div>
+      <div class="item-controls">
+        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/iff}} {{/each}}
+  </ul>
+</ul>

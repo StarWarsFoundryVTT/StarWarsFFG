@@ -227,7 +227,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
 
         // Prevent adding of character data type items to vehicles
-        if (["career", "forcepower", "talent", "signatureability", "specialization", "species"].includes(item.type.toString()) && actor.type === "vehicle") {
+        if (["career", "forcepower", "talent", "signatureability", "specialization", "species", "ability"].includes(item.type.toString()) && actor.type === "vehicle") {
           ui.notifications.warn(`Item type '${item.type}' cannot be added to 'vehicle' actor types.`);
           return false;
         }
