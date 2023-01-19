@@ -68,13 +68,13 @@ export default class SWAImporter extends FormApplication {
         // load ancillary files
         let filesToCache = [];
 
-        filesToCache.push({ name: "skills", file: await this._getFilePaths(zip.files, "skills", false) });
-        filesToCache.push({ name: "weapons", file: await this._getFilePaths(zip.files, "weapons", false) });
-        filesToCache.push({ name: "abilities", file: await this._getFilePaths(zip.files, "abilities", false) });
-        filesToCache.push({ name: "force-powers", file: await this._getFilePaths(zip.files, "force-powers", false) });
-        filesToCache.push({ name: "talents", file: await this._getFilePaths(zip.files, "talents", false) });
-        filesToCache.push({ name: "mods", file: await this._getFilePaths(zip.files, "mods", false) });
-        filesToCache.push({ name: "qualities", file: await this._getFilePaths(zip.files, "qualities", false) });
+        filesToCache.push({ name: "skills", file: await this._getFilePath(zip.files, "skills", false) });
+        filesToCache.push({ name: "weapons", file: await this._getFilePath(zip.files, "weapons", false) });
+        filesToCache.push({ name: "abilities", file: await this._getFilePath(zip.files, "abilities", false) });
+        filesToCache.push({ name: "force-powers", file: await this._getFilePath(zip.files, "force-powers", false) });
+        filesToCache.push({ name: "talents", file: await this._getFilePath(zip.files, "talents", false) });
+        filesToCache.push({ name: "mods", file: await this._getFilePath(zip.files, "mods", false) });
+        filesToCache.push({ name: "qualities", file: await this._getFilePath(zip.files, "qualities", false) });
 
         await ImportHelpers.asyncForEach(filesToCache, async (f) => {
           CONFIG.logger.debug(`Caching file: ${f.name}`);
@@ -97,7 +97,7 @@ export default class SWAImporter extends FormApplication {
             });
           }
         });
-        const adversaries = this._getFilePaths(zip.files, "adversaries", true);
+        const adversaries = this._getFilePath(zip.files, "adversaries", true);
 
         if (adversaries) {
           await this._handleAdversaries(zip, filter);
