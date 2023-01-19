@@ -38,6 +38,7 @@ import DataImporter from "./importer/data-importer.js";
 import PauseFFG from "./apps/pause-ffg.js";
 import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
 import RollBuilderFFG from "./dice/roll-builder.js";
+import CrewSettings from "./settings/crew-settings.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -288,7 +289,48 @@ Hooks.once("init", async function () {
     });
   }
 
+  async function registerCrewRoles() {
+    const defaultArrayCrewRoles = [
+      {
+        "role_name":  game.i18n.localize("SWFFG.Crew.Roles.None"),
+        "role_skill": undefined,
+        "use_weapons": false,
+        "use_handling": false
+      },
+      {
+        "role_name":  game.i18n.localize("SWFFG.Crew.Roles.Pilot_Space"),
+        "role_skill":  game.i18n.localize("SWFFG.SkillsNamePilotingSpace"),
+        "use_weapons": false,
+        "use_handling": true
+      },
+      {
+        "role_name":  game.i18n.localize("SWFFG.Crew.Roles.Gunner.Name"),
+        "role_skill":  game.i18n.localize("SWFFG.SkillsNameGunnery"),
+        "use_weapons": true,
+        "use_handling": false
+      }
+    ];
+    game.settings.registerMenu("starwarsffg", "arrayCrewRoles", {
+      name: game.i18n.localize("SWFFG.Crew.Settings.Name"),
+      label: game.i18n.localize("SWFFG.Crew.Settings.Label"),
+      hint: game.i18n.localize("SWFFG.Crew.Settings.Hint"),
+      icon: "fas fa-file-import",
+      type: CrewSettings,
+      restricted: true,
+    });
+
+    game.settings.register("starwarsffg", "arrayCrewRoles", {
+      module: "starwarsffg",
+      name: "arrayCrewRoles",
+      scope: "world",
+      default: defaultArrayCrewRoles,
+      config: false,
+      type: Object,
+    });
+  }
+
   await gameSkillsList();
+  await registerCrewRoles();
 
   FFG.configureDice();
   FFG.configureVehicleRange();
@@ -420,7 +462,7 @@ Hooks.once("init", async function () {
     for(let i = 0; i < list.length; ++i)
         if(list[i][propName] == value)
             result += options.fn({item: list[i]});
-            
+
     return result.length > 0 ? result : options.inverse();
 });
 

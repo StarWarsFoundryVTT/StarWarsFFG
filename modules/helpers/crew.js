@@ -92,6 +92,7 @@ export function change_role(vehicle_id, crew_member, old_crew_role, new_crew_rol
 
     if (flag_data.filter(i => i.actor_id === crew_member && i.role === new_crew_role).length > 0) {
       CONFIG.logger.debug("Crew member already has same role, aborting");
+      ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Role.Duplicate"));
       return;
     }
 
