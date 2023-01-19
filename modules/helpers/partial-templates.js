@@ -7,6 +7,7 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/parts/actor/ffg-homestead-upgrades.html",
       "systems/starwarsffg/templates/parts/actor/ffg-homestead-storage.html",
       "systems/starwarsffg/templates/parts/actor/ffg-talents.html",
+      "systems/starwarsffg/templates/parts/actor/ffg-abilities.html",
       "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html",
       "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html",
       "systems/starwarsffg/templates/parts/shared/ffg-block.html",

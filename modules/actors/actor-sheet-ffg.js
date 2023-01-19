@@ -217,7 +217,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
 
         // Prevent adding of character data type items to vehicles
-        if (["career", "forcepower", "talent", "signatureability", "specialization", "species"].includes(item.type.toString()) && actor.type === "vehicle") {
+        if (["career", "forcepower", "talent", "signatureability", "specialization", "species", "ability"].includes(item.type.toString()) && actor.type === "vehicle") {
           ui.notifications.warn(`Item type '${item.type}' cannot be added to 'vehicle' actor types.`);
           return false;
         }
@@ -892,6 +892,20 @@ export class ActorSheetFFG extends ActorSheet {
       const a = event.currentTarget;
       const id = a.dataset["id"];
       this.object.update({ "data.dutylist": { ["-=" + id]: null } });
+    });
+
+    html.find(".force-conflict .enable-dice-pool").on("click", async (event) => {
+      event.preventDefault();
+      await this.actor.setFlag('starwarsffg', 'config', {enableForcePool: true});
+      console.log({this: this, event: event})
+    });
+
+    html.find(".force-conflict .remove-force-powers").on("click", async (event) => {
+      event.preventDefault();
+      const itemsToDelete = this.actor.items.filter((i) => (i.type === "forcepower"));
+      itemsToDelete.forEach((i) => {
+          this.actor.items.get(i.id).delete();
+      });
     });
   }
 

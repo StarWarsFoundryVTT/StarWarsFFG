@@ -107,22 +107,22 @@ export default class RollBuilderFFG extends FormApplication {
             let entity;
             let entityData;
             if (!this?.roll?.item?.flags?.starwarsffg?.uuid) {
-              entity = CONFIG["Actor"].documentClass.collection.get(this.roll.data.actor.id);
+              entity = game.actors.get(this.roll.data.actor._id);
               entityData = {
                 _id: this.roll.item.id,
               };
             } else {
               const parts = this.roll.item.flags.starwarsffg?.uuid.split(".");
-              const [entityName, entityId, embeddedName, embeddedId] = parts;
-              entity = CONFIG[entityName].documentClass.collection.get(entityId);
-              if (parts.length === 4) {
+              const [sceneName, sceneId, entityName, entityId, embeddedName, embeddedId] = parts;
+              entity = game.actors.tokens[entityId].items.get(embeddedId);
+              if (parts.length === 6) {
                 entityData = {
-                  _id: embeddedId,
+                  _id: entity.id,
                 };
               }
             }
             setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
-            entity.updateOwnedItem(entityData);
+            entity.update(entityData);
           }
         }
       }
