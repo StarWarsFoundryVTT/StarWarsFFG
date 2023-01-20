@@ -64,15 +64,9 @@ export default class CrewSettings extends FormApplication {
    */
   _onResetDefaults(event) {
     event.preventDefault();
-    const button = event.currentTarget;
-    const form = button.form;
-    for (let [k, v] of game.settings.settings.entries()) {
-      if (v.config) {
-        let input = form[k];
-        if (input.type === "checkbox") input.checked = v.default;
-        else if (input) input.value = v.default;
-      }
-    }
+    const defaults = game.settings.settings.get("starwarsffg.arrayCrewRoles").default;
+    game.settings.set("starwarsffg", "arrayCrewRoles", defaults);
+    this.close();
   }
 
 
