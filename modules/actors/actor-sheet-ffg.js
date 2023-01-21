@@ -590,9 +590,11 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Delete Crew
     html.find(".crew-delete").click((ev) => {
-      let crew_id = $(ev.currentTarget).parents(".item").data("itemId");
-      let roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
-      deregister_crew(roles[0], roles[1], roles[2]);
+      const crew_id = $(ev.currentTarget).parents(".item").data("itemId");
+      const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
+      let actor = this.actor;
+
+      deregister_crew(actor, roles[1], roles[2]);
     });
 
     // Edit Crew
@@ -601,12 +603,13 @@ export class ActorSheetFFG extends ActorSheet {
       const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
       const registered_roles = await game.settings.get('starwarsffg', 'arrayCrewRoles');
       let role_buttons = {};
+      let actor = this.actor;
 
       for (let i = 0; i < registered_roles.length; i++) {
         role_buttons[registered_roles[i].role_name] = {
           label: registered_roles[i].role_name,
           callback: (html) => {
-            change_role(roles[0], roles[1], roles[2], registered_roles[i].role_name);
+            change_role(actor, roles[1], roles[2], registered_roles[i].role_name);
           }
         }
       }
@@ -714,15 +717,15 @@ export class ActorSheetFFG extends ActorSheet {
     // Roll crew
     html.find(".roll-button-crew").children().on("click", async (event) => {
       const roles = $(event.currentTarget).parents(".item").data("itemId").split('-');
-      const ship_id = roles[0];
       const crew_id = roles[1];
       const crew_role = roles[2];
+      let ship = this.actor;
 
       // look up the sheet for passing to the roller
       let crew_member = game.actors.get(crew_id);
       if (crew_member === undefined) {
         ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Actor.Removed"));
-        deregister_crew(ship_id, crew_id, crew_role);
+        deregister_crew(ship, crew_id, crew_role);
         return;
       }
       const crewSheet = game.actors.get(crew_id)?.sheet;
@@ -743,7 +746,7 @@ export class ActorSheetFFG extends ActorSheet {
       }
       // check if the pool uses handling
       if (role_info[0].use_handling) {
-        const handling = game.actors.get(ship_id)?.system?.stats?.handling?.value;
+        const handling = ship?.system?.stats?.handling?.value;
         // add modifiers from the vehicle handling
         if (handling > 0) {
           starting_pool['boost'] = handling;

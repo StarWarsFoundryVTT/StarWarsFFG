@@ -6,7 +6,16 @@
 export async function register_crew(...args) {
     CONFIG.logger.debug("Got possible register crew request");
     // check if this is an actor being dragged onto a vehicle
-    const vehicle_actor = args[0];
+    let vehicle_actor
+    if (args[1].token) {
+      // this is a token, not a real actor
+      vehicle_actor = args[1].token?.actor;
+      if (!vehicle_actor) {
+        CONFIG.logger.debug("Not registering crew as entity is a token without a matching actor");
+      }
+    } else {
+      vehicle_actor = args[0];
+    }
     if (vehicle_actor.type !== 'vehicle' || args[2].type !== 'Actor') {
         // the target is not a vehicle or the actor being dragged onto it is a vehicle
         CONFIG.logger.debug("Not registering crew as item is not an actor or the target is not a vehicle");
@@ -40,21 +49,21 @@ export async function register_crew(...args) {
         CONFIG.logger.debug("Adding actor to vehicle crew without a role");
         flag_data = flag_data.concat(existing_data);
     }
-    CONFIG.logger.debug("Flag data: ", flag_data)
+    //CONFIG.logger.debug("Flag data: ", flag_data)
+    CONFIG.logger.debug(`Registering crew on vehicle ${vehicle_actor._id} - data: ${JSON.stringify(flag_data)}`)
     // set the flag data
-    vehicle_actor.setFlag('starwarsffg', 'crew', flag_data);
+    await vehicle_actor.setFlag('starwarsffg', 'crew', flag_data);
     return args;
 }
 
 /**
  * Remove a crew member + role pair from an actor
- * @param vehicle_id actor ID of the vehicle receiving the crew change
+ * @param vehicle_actor actor object of the vehicle receiving the crew change
  * @param crew_member actor ID of the crew being changed
  * @param crew_role role of the crew to remove
  */
-export function deregister_crew(vehicle_id, crew_member, crew_role) {
+export function deregister_crew(vehicle_actor, crew_member, crew_role) {
     CONFIG.logger.debug("Got deregister crew request");
-    const vehicle_actor = game.actors.get(vehicle_id);
     const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
     let new_flag_data = [];
 
@@ -79,15 +88,16 @@ export function deregister_crew(vehicle_id, crew_member, crew_role) {
 
 /**
  *
- * @param vehicle_id actor ID of the vehicle receiving the crew change
+ * @param vehicle_actor actor object of the vehicle receiving the crew change
  * @param crew_member actor ID of the crew being changed
  * @param old_crew_role old role of the crew member
  * @param new_crew_role new role of the crew member
  */
-export function change_role(vehicle_id, crew_member, old_crew_role, new_crew_role) {
-    CONFIG.logger.debug("Got role change request: ", vehicle_id, crew_member, old_crew_role, new_crew_role);
-    const vehicle_actor = game.actors.get(vehicle_id);
-    const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
+export async function change_role(vehicle_actor, crew_member, old_crew_role, new_crew_role) {
+    CONFIG.logger.debug(
+      `Got role change request: vehicle ID: ${vehicle_actor} | crew ID: ${crew_member} | old role: ${old_crew_role} | new role: ${new_crew_role}`
+    );
+    const flag_data = await vehicle_actor.getFlag('starwarsffg', 'crew');
     let new_flag_data = [];
 
     if (flag_data.filter(i => i.actor_id === crew_member && i.role === new_crew_role).length > 0) {
