@@ -105,6 +105,13 @@ export class RollFFG extends Roll {
   evaluate({ minimize = false, maximize = false } = {}) {
     if (this._evaluated) throw new Error("This Roll object has already been rolled.");
 
+    // Step 0 - is this rolling nothing?
+    if(this.terms.length == 0) {
+      this._evaluated = true
+      this._total = 0
+      return this
+    }
+
     // Step 1 - evaluate any inner Rolls and recompile the formula
     let hasInner = false;
     this.terms = this.terms.map((t) => {
