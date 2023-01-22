@@ -210,7 +210,7 @@ export default class DiceHelpers {
 
     dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
-    this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, null, flavorText, sound);
+    this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, {}, flavorText, sound);
   }
 
   static getWeaponStatus(item) {
