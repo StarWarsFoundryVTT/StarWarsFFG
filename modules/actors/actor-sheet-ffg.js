@@ -754,6 +754,15 @@ export class ActorSheetFFG extends ActorSheet {
           starting_pool['setback'] = handling * -1;
         }
       }
+      // create chat card data
+      let card_data = {
+        "crew": {
+          "name": ship.name,
+          "img": ship.img,
+          "crew_card": true,
+          "role": role_info[0].role_name,
+        }
+      }
       // create the starting pool
       let pool = new DicePoolFFG(starting_pool);
       if (role_info[0].use_weapons) {
@@ -774,7 +783,7 @@ export class ActorSheetFFG extends ActorSheet {
                 pool,
                 `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
                 skill,
-                raw_weapons[i]
+                jQuery.extend(raw_weapons[i], card_data)
               );
             }
           }
@@ -792,11 +801,13 @@ export class ActorSheetFFG extends ActorSheet {
         // update the pool with actor information
         pool = get_dice_pool(crew_id, role_info[0].role_skill, pool);
         // open the roll dialog (skill name is already localized)
+        console.log(ship)
         await DiceHelpers.displayRollDialog(
           crewSheet,
           pool,
           `${game.i18n.localize("SWFFG.Rolling")} ${role_info[0].role_skill}`,
-          `${role_info[0].role_skill}`
+          `${role_info[0].role_skill} on ${ship.name}`,
+          card_data
         );
       }
     });
