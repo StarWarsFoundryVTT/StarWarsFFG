@@ -5,8 +5,9 @@ export default class CrewSettings extends FormApplication {
       id: "data-importer",
       classes: ["starwarsffg", "data-import"],
       title: `${game.i18n.localize("SWFFG.UISettingsLabel")}`,
-      height: 650,
-      template: "systems/starwarsffg/templates/dialogs/crew-settings.html",
+      height: 265,
+      resizable: true,
+      template: "systems/starwarsffg/templates/dialogs/crew-settings.html"
     });
   }
 
