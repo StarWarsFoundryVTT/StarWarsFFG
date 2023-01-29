@@ -783,7 +783,7 @@ export class ActorSheetFFG extends ActorSheet {
                 pool,
                 `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
                 skill,
-                jQuery.extend(raw_weapons[i], card_data)
+                mergeObject(raw_weapons[i], card_data)
               );
             }
           }
@@ -806,7 +806,7 @@ export class ActorSheetFFG extends ActorSheet {
           crewSheet,
           pool,
           `${game.i18n.localize("SWFFG.Rolling")} ${role_info[0].role_skill}`,
-          `${role_info[0].role_skill} on ${ship.name}`,
+          `${role_info[0].role_skill}`,
           card_data
         );
       }

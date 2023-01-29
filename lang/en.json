@@ -593,6 +593,6 @@
   "SWFFG.Crew.Role.Picker.Skill": "Role Skill",
   "SWFFG.Crew.Settings.Name": "Crew Roles",
   "SWFFG.Crew.Settings.Label": "Configure Crew Roles",
-  "SWFFG.Crew.Settings.Hint": "Define the roles crew members can have"
-
+  "SWFFG.Crew.Settings.Hint": "Define the roles crew members can have",
+  "SWFFG.Crew.Card.Role": "Role"
 }

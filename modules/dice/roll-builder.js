@@ -170,7 +170,14 @@ export default class RollBuilderFFG extends FormApplication {
 
         ChatMessage.create(chatOptions);
       } else {
+        if (this.roll.crew) {
+          this.roll.item['crew'] = this.roll.crew
+        }
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
+        // check if this is a crew roll - and it's a roll for a weapon
+        if (this.roll.item.hasOwnProperty('crew') && Object.keys(this.roll.item).length > 1) {
+          await this.roll.item.update({"flags": {"starwarsffg": {"crew": this.roll.item.crew}}})
+        }
         await roll.toMessage({
           user: game.user.id,
           speaker: {
