@@ -586,7 +586,7 @@
   "SWFFG.Crew.Role.Removed": "Role has been removed",
   "SWFFG.Crew.Role.Invalid": "You must define a skill for this role before it can be used",
   "SWFFG.Crew.Role.Duplicate": "Crew member already has that role set!",
-  "SWFFG.Crew.Role.New": "new role",
+  "SWFFG.Crew.Role.New": "New role",
   "SWFFG.Crew.Role.Picker.Handling": "Use Handling",
   "SWFFG.Crew.Role.Picker.Weapons": "Use Weapons",
   "SWFFG.Crew.Role.Picker.Name": "Role Name",
