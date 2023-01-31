@@ -767,7 +767,7 @@ export class ActorSheetFFG extends ActorSheet {
       let pool = new DicePoolFFG(starting_pool);
       if (role_info[0].use_weapons) {
         // build the dialog to select which weapon to use
-        let weapons = {};
+        const weapons = {};
         const raw_weapons = this.actor.items.filter(i => i.type === 'shipweapon');
 
         for (let i = 0; i < raw_weapons.length; i++) {
