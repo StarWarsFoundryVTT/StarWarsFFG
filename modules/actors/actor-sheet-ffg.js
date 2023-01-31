@@ -775,7 +775,7 @@ export class ActorSheetFFG extends ActorSheet {
             icon: `<img src="${raw_weapons[i].img}" style="max-width: 24px; max-height: 24px">`,
             label: raw_weapons[i].name,
             callback: async (html) => {
-              let skill = raw_weapons[i].system.skill.value;
+              const skill = raw_weapons[i].system.skill.value;
               let pool = new DicePoolFFG({'difficulty': 2});
               pool = get_dice_pool(crew_id, skill, pool);
               await DiceHelpers.displayRollDialog(
