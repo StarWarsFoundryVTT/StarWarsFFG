@@ -6,7 +6,7 @@
 export async function register_crew(...args) {
     CONFIG.logger.debug("Got possible register crew request");
     // check if this is an actor being dragged onto a vehicle
-    let vehicle_actor
+    let vehicle_actor;
     if (args[1].token) {
       // this is a token, not a real actor
       vehicle_actor = args[1].token?.actor;
