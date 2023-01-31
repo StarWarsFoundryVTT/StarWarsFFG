@@ -592,7 +592,7 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".crew-delete").click((ev) => {
       const crew_id = $(ev.currentTarget).parents(".item").data("itemId");
       const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
-      let actor = this.actor;
+      const actor = this.actor;
 
       deregister_crew(actor, roles[1], roles[2]);
     });
