@@ -1,0 +1,114 @@
+<form autocomplete="off" class="role_selection" style="overflow-y: scroll;">
+    <section id="config-tabs" class="content">
+        <div class="settings-list">
+            <h2 class="module-header">{{ localize data.system.title }}</h2>
+            <div class="form-group">
+                <div class="form-fields" style="display: flex; flex-direction: column; flex-wrap: wrap;">
+                    <div class="flexrow">
+                        <label style="margin-left: 15px; min-width: 135px;">{{ localize 'SWFFG.Crew.Role.Picker.Name'}}</label>
+                        <label style="min-width: 135px;">{{ localize 'SWFFG.Crew.Role.Picker.Skill'}}</label>
+                        <label style="min-width: 20px; margin: 5px;"><i class="fa-solid fa-jet-fighter"></i></label>
+                        <label style="min-width: 20px; margin: 5px;"><i class="fa-solid fa-person-rifle"></i></label>
+                    </div>
+                    <div class="role_container">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="add_row"><i class="fas fa-plus"></i></button>
+    </section>
+    <footer class="sheet-footer flexrow">
+        <button type="submit" name="submit" class="submit_role_changes"><i class="far fa-save"></i> {{ localize 'SETTINGS.Save'}}</button>
+        <button type="button" name="reset"><i class="fas fa-undo"></i> {{ localize 'SETTINGS.Reset'}}</button>
+    </footer>
+</form>
+
+<script>
+    // populate skills list for adding new roles
+    $(document).ready(function() {
+        let skills = [];
+        {{#each this.data.skills}}
+            skills.push("{{ this.value }}");
+        {{/each}}
+
+        // add the existing roles into the form
+        {{#each data.system.settings}}
+            {{#each this.value}}
+                add_role("{{this.role_name}}", "{{this.role_skill}}", {{this.use_handling}}, {{this.use_weapons}});
+            {{/each}}
+        {{/each}}
+
+        // add a row to the role list
+        $(".add_row").on("click", function(e) {
+            e.preventDefault();
+            add_role("{{ localize 'SWFFG.Crew.Role.New'}}", skills[0], false, false);
+        });
+
+        // remove a role from the list
+        $(".role_selection").on("click", ".remove_role", function(e) {
+          // done on a form listener to handle dynamically added rows
+          $(this).parent().parent()[0].remove();
+        });
+
+        /***
+         * Add a row to the role listing
+         * @param role_name string - name of the role
+         * @param role_skill string - name of the skill to use with the role
+         * @param use_handling bool - indicates if we should use the vehicle handling in the resulting pool
+         * @param use_weapons bool - indicates if we should present vehicle weapons for selection
+         */
+        function add_role(role_name, role_skill, use_handling, use_weapons) {
+            // convert to HTML
+            if (use_handling) {
+                use_handling = "checked";
+            } else {
+                use_handling = '';
+            }
+            if (use_weapons) {
+                use_weapons = "checked";
+            } else {
+                use_weapons = '';
+            }
+            const row = `
+            <div class="flexrow">
+                <div class="flex1">
+                    <input type="text" name="role_name" value="${role_name}" data-dtype="String"/>
+                </div>
+                <div class="flex1">
+                    <select name="role_skill">
+                        ${build_skill_selector(role_skill)}
+                    </select>
+                </div>
+                <div class="flex0">
+                    <input title="{{ localize 'SWFFG.Crew.Role.Picker.Handling'}}" type="checkbox" name="use_handling" data-dtype="Boolean" ${use_handling}/>
+                </div>
+                <div class="flex0">
+                    <input title="{{ localize 'SWFFG.Crew.Role.Picker.Weapons'}}" type="checkbox" name="use_weapons" data-dtype="Boolean" ${use_weapons}/>
+                </div>
+                <div class="flex0">
+                    <i class="fas fa-trash remove_role"></i>
+                </div>
+            </div>
+            `;
+            $('.role_container').append(row);
+        }
+
+        /***
+         * Builds the dropdown selector for role skill
+         * @param skill string - name of the selected skill
+         * @returns {*[]} array - array of HTML (with the specified skill set as selected)
+         */
+        function build_skill_selector(skill) {
+            let options = [];
+            for (let i = 0; i < skills.length; i++) {
+                if (skill === skills[i]) {
+                    options.push(`<option value="${skills[i]}" selected>${skills[i]}</option>`);
+                } else {
+                    options.push(`<option value="${skills[i]}">${skills[i]}</option>`);
+                }
+            }
+            return options;
+        }
+    });
+</script>

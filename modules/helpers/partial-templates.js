@@ -14,6 +14,7 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html",
       "systems/starwarsffg/templates/chat/roll-forcepower-card.html",
       "systems/starwarsffg/templates/chat/roll-weapon-card.html",
+      "systems/starwarsffg/templates/chat/roll-vehicle-card.html",
       "systems/starwarsffg/templates/parts/shared/ffg-tabs.html",
       "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html"
     ];

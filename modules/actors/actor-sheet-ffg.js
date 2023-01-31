@@ -115,23 +115,13 @@ export class ActorSheetFFG extends ActorSheet {
             const actor = game.actors.get(crew[i].actor_id);
             // pull the image from the actor to display it
             const img = actor?.img || 'icons/svg/mystery-man.svg';
-            // translate the role to the current language
-            let role = undefined;
-            if (crew[i].role === 'Pilot (Space)') {
-              role = game.i18n.localize("SWFFG.Crew.Roles.Pilot_Space");
-            } else if (crew[i].role === 'Pilot (Planetary)') {
-              role = game.i18n.localize("SWFFG.Crew.Roles.Pilot_Planetary");
-            } else if (crew[i].role === 'Gunner') {
-              role = game.i18n.localize("SWFFG.Crew.Roles.Gunner.Name");
-            } else {
-              role = game.i18n.localize("SWFFG.Crew.Roles.None");
-            }
+
             // add them to the items, so we can render them on the sheet
             data.crew.push({
               'type': 'shipcrew',
               'id': crew[i].actor_id,
               'name': crew[i].actor_name,
-              'role': role,
+              'role': crew[i].role,
               'img': img,
             })
           }
@@ -600,48 +590,35 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Delete Crew
     html.find(".crew-delete").click((ev) => {
-      let crew_id = $(ev.currentTarget).parents(".item").data("itemId");
-      let roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
-      deregister_crew(roles[0], roles[1], roles[2]);
+      const crew_id = $(ev.currentTarget).parents(".item").data("itemId");
+      const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
+      const actor = this.actor;
+
+      deregister_crew(actor, roles[1], roles[2]);
     });
 
     // Edit Crew
     html.find(".crew-edit").click(async (ev) => {
-      let crew_id = $(ev.currentTarget).parents(".item").data("itemId");
-      let roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
+      const crew_id = $(ev.currentTarget).parents(".item").data("itemId");
+      const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
+      const registered_roles = await game.settings.get('starwarsffg', 'arrayCrewRoles');
+      const role_buttons = {};
+      const actor = this.actor;
+
+      for (let i = 0; i < registered_roles.length; i++) {
+        role_buttons[registered_roles[i].role_name] = {
+          label: registered_roles[i].role_name,
+          callback: (html) => {
+            change_role(actor, roles[1], roles[2], registered_roles[i].role_name);
+          }
+        }
+      }
 
       new Dialog(
         {
           title: game.i18n.localize("SWFFG.Crew.Title"),
-          content: `<p>${game.i18n.localize("SWFFG.Crew.Role")}</p>`,
-          buttons: {
-            pilot_space: {
-              icon: '<i class="fa-solid fa-rocket"></i>',
-              label: game.i18n.localize("SWFFG.Crew.Roles.Pilot_Space"),
-              callback: (html) => {
-                change_role(roles[0], roles[1], roles[2], 'Pilot (Space)');
-              }
-            },
-            pilot_planetary: {
-              icon: '<i class="fa-solid fa-globe"></i>',
-              label: game.i18n.localize("SWFFG.Crew.Roles.Pilot_Planetary"),
-              callback: (html) => {
-                change_role(roles[0], roles[1], roles[2], 'Pilot (Planetary)');
-              }
-            },
-            gunner: {
-              icon: '<i class="fa-solid fa-gun"></i>',
-              label: game.i18n.localize("SWFFG.Crew.Roles.Gunner.Name"),
-              callback: (html) => {
-                change_role(roles[0], roles[1], roles[2], 'Gunner');
-              }
-            },
-            cancel: {
-              icon: '<i class="fas fa-times"></i>',
-              label: game.i18n.localize("SWFFG.Cancel"),
-              callback: () => console.log("Chose cancel")
-            }
-          },
+          content: `<p>${game.i18n.localize("SWFFG.Crew.Role.Content")}</p>`,
+          buttons: role_buttons
         },
       ).render(true);
     });
@@ -739,65 +716,74 @@ export class ActorSheetFFG extends ActorSheet {
 
     // Roll crew
     html.find(".roll-button-crew").children().on("click", async (event) => {
-      let crew_id = $(event.currentTarget).parents(".item").data("itemId");
-      let roles = crew_id.split('-'); // ship_id, crew_id, crew_role
+      const roles = $(event.currentTarget).parents(".item").data("itemId").split('-');
+      const crew_id = roles[1];
+      const crew_role = roles[2];
+      const ship = this.actor;
+
       // look up the sheet for passing to the roller
-      let crew_member = game.actors.get(roles[1]);
+      const crew_member = game.actors.get(crew_id);
       if (crew_member === undefined) {
-        ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Removed"));
-        deregister_crew(roles[0], roles[1], roles[2]);
+        ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Actor.Removed"));
+        deregister_crew(ship, crew_id, crew_role);
         return;
       }
-      const crewSheet = game.actors.get(roles[1])?.sheet;
+      const crewSheet = game.actors.get(crew_id)?.sheet;
       const starting_pool = {'difficulty': 2};
-      const handling = game.actors.get(roles[0])?.system?.stats?.handling?.value;
 
-      // add modifiers from the vehicle handling
-      if (handling > 0) {
-        starting_pool['boost'] = handling;
-      } else if (handling < 0) {
-        starting_pool['setback'] = handling * -1;
+      const registeredRoles = await game.settings.get('starwarsffg', 'arrayCrewRoles');
+      // look up the defined metadata for the assigned role
+      const role_info = registeredRoles.filter(i => i.role_name === crew_role);
+      // validate the role still exists in our settings
+      if (role_info.length === 0) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Role.Removed"));
+        return;
       }
-
-      if (roles[2] === 'Pilot (Space)') {
-        let pool = new DicePoolFFG(starting_pool);
-        // look up the actor dice pool
-        pool = get_dice_pool(roles[1], 'Piloting: Space', pool);
-        // actually display it
-        await DiceHelpers.displayRollDialog(
-          crewSheet,
-          pool,
-          `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.SkillsNamePilotingSpace")}`,
-          `${game.i18n.localize("SWFFG.SkillsNamePilotingSpace")}`
-        );
-      } else if (roles[2] === 'Pilot (Planetary)') {
-        let pool = new DicePoolFFG(starting_pool);
-        pool = get_dice_pool(roles[1], 'Piloting: Planetary', pool);
-        await DiceHelpers.displayRollDialog(
-          crewSheet,
-          pool,
-          `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.SkillsNamePilotingPlanetary")}`,
-          `${game.i18n.localize("SWFFG.SkillsNamePilotingPlanetary")}`
-        );
-      } else if (roles[2] === 'Gunner') {
-        // gunnery needs to present a set of options for which weapon to roll
-        let weapons = {};
-        let raw_weapons = this.actor.items.filter(i => i.type === 'shipweapon');
+      // validate that it's a valid role
+      if (role_info[0].role_skill === undefined) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Role.Invalid"));
+        return;
+      }
+      // check if the pool uses handling
+      if (role_info[0].use_handling) {
+        const handling = ship?.system?.stats?.handling?.value;
+        // add modifiers from the vehicle handling
+        if (handling > 0) {
+          starting_pool['boost'] = handling;
+        } else if (handling < 0) {
+          starting_pool['setback'] = handling * -1;
+        }
+      }
+      // create chat card data
+      const card_data = {
+        "crew": {
+          "name": ship.name,
+          "img": ship.img,
+          "crew_card": true,
+          "role": role_info[0].role_name,
+        }
+      }
+      // create the starting pool
+      let pool = new DicePoolFFG(starting_pool);
+      if (role_info[0].use_weapons) {
+        // build the dialog to select which weapon to use
+        const weapons = {};
+        const raw_weapons = this.actor.items.filter(i => i.type === 'shipweapon');
 
         for (let i = 0; i < raw_weapons.length; i++) {
           weapons['weapon ' + i] = {
             icon: `<img src="${raw_weapons[i].img}" style="max-width: 24px; max-height: 24px">`,
             label: raw_weapons[i].name,
-            callback: async(html) => {
-              let skill = raw_weapons[i].system.skill.value;
+            callback: async (html) => {
+              const skill = raw_weapons[i].system.skill.value;
               let pool = new DicePoolFFG({'difficulty': 2});
-              pool = get_dice_pool(roles[1], skill, pool);
+              pool = get_dice_pool(crew_id, skill, pool);
               await DiceHelpers.displayRollDialog(
                 crewSheet,
                 pool,
                 `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
                 skill,
-                raw_weapons[i]
+                mergeObject(raw_weapons[i], card_data)
               );
             }
           }
@@ -811,6 +797,17 @@ export class ActorSheetFFG extends ActorSheet {
             buttons: weapons,
           },
         ).render(true);
+      } else {
+        // update the pool with actor information
+        pool = get_dice_pool(crew_id, role_info[0].role_skill, pool);
+        // open the roll dialog (skill name is already localized)
+        await DiceHelpers.displayRollDialog(
+          crewSheet,
+          pool,
+          `${game.i18n.localize("SWFFG.Rolling")} ${role_info[0].role_skill}`,
+          `${role_info[0].role_skill}`,
+          card_data
+        );
       }
     });
 
