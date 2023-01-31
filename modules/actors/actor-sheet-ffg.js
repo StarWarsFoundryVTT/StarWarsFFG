@@ -719,7 +719,7 @@ export class ActorSheetFFG extends ActorSheet {
       const roles = $(event.currentTarget).parents(".item").data("itemId").split('-');
       const crew_id = roles[1];
       const crew_role = roles[2];
-      let ship = this.actor;
+      const ship = this.actor;
 
       // look up the sheet for passing to the roller
       let crew_member = game.actors.get(crew_id);
