@@ -801,7 +801,6 @@ export class ActorSheetFFG extends ActorSheet {
         // update the pool with actor information
         pool = get_dice_pool(crew_id, role_info[0].role_skill, pool);
         // open the roll dialog (skill name is already localized)
-        console.log(ship)
         await DiceHelpers.displayRollDialog(
           crewSheet,
           pool,
