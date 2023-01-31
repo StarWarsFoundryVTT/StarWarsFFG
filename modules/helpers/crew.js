@@ -49,7 +49,6 @@ export async function register_crew(...args) {
         CONFIG.logger.debug("Adding actor to vehicle crew without a role");
         flag_data = flag_data.concat(existing_data);
     }
-    //CONFIG.logger.debug("Flag data: ", flag_data)
     CONFIG.logger.debug(`Registering crew on vehicle ${vehicle_actor._id} - data: ${JSON.stringify(flag_data)}`)
     // set the flag data
     await vehicle_actor.setFlag('starwarsffg', 'crew', flag_data);
