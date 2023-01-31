@@ -755,7 +755,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
       // create chat card data
-      let card_data = {
+      const card_data = {
         "crew": {
           "name": ship.name,
           "img": ship.img,
