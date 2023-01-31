@@ -96,7 +96,7 @@ export async function change_role(vehicle_actor, crew_member, old_crew_role, new
     CONFIG.logger.debug(
       `Got role change request: vehicle ID: ${vehicle_actor} | crew ID: ${crew_member} | old role: ${old_crew_role} | new role: ${new_crew_role}`
     );
-    const flag_data = await vehicle_actor.getFlag('starwarsffg', 'crew');
+    const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
     let new_flag_data = [];
 
     if (flag_data.filter(i => i.actor_id === crew_member && i.role === new_crew_role).length > 0) {
