@@ -722,7 +722,7 @@ export class ActorSheetFFG extends ActorSheet {
       const ship = this.actor;
 
       // look up the sheet for passing to the roller
-      let crew_member = game.actors.get(crew_id);
+      const crew_member = game.actors.get(crew_id);
       if (crew_member === undefined) {
         ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Actor.Removed"));
         deregister_crew(ship, crew_id, crew_role);
