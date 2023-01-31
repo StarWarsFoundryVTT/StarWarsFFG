@@ -665,7 +665,7 @@ Hooks.once("ready", async () => {
         let update_data = [];
         actor.items.forEach((item) => {
           let updated_item = item.toObject(true);
-          if (["weapon", "armour"].includes(item.type)) {
+          if (["weapon", "armour", "shipweapon"].includes(item.type)) {
             // iterate over attachments and modifiers on the item
             updated_item.system.itemmodifier.map((modifier) => {
               if (modifier !== null && modifier?.hasOwnProperty('data')) {
@@ -693,7 +693,7 @@ Hooks.once("ready", async () => {
       game.items.forEach((item) => {
         let updated = false;
         let updated_item = item.toObject(true);
-        if (["weapon", "armour"].includes(item.type)) {
+        if (["weapon", "armour", "shipweapon"].includes(item.type)) {
           // iterate over attachments and modifiers on the item
           updated_item.system.itemmodifier.map((modifier) => {
             if (modifier?.hasOwnProperty('data')) {
