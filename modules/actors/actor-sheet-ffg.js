@@ -602,8 +602,8 @@ export class ActorSheetFFG extends ActorSheet {
       const crew_id = $(ev.currentTarget).parents(".item").data("itemId");
       const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
       const registered_roles = await game.settings.get('starwarsffg', 'arrayCrewRoles');
-      let role_buttons = {};
-      let actor = this.actor;
+      const role_buttons = {};
+      const actor = this.actor;
 
       for (let i = 0; i < registered_roles.length; i++) {
         role_buttons[registered_roles[i].role_name] = {
