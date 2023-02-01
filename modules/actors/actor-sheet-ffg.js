@@ -411,13 +411,22 @@ export class ActorSheetFFG extends ActorSheet {
       let prevUses = (this.object.system?.stats?.medical?.uses === undefined) ? 0 : this.object.system.stats.medical.uses;
       let updateData = {};
       let newUses = 0;
+      const item_name = this.object?.flags?.starwarsffg?.config?.medicalItemName || game.i18n.localize("SWFFG.DefaultMedicalItemName");
+      let msg_content;
       if (item[0].className === "fas fa-plus-circle medical") {
         newUses = prevUses + 1;
         newUses = (newUses > 5) ? 5 : newUses;
+        msg_content = `<i>${game.i18n.localize("SWFFG.MedicalItemUse")} ${item_name} #${newUses}</i>`;
       } else {
         newUses = prevUses - 1;
         newUses = (newUses < 0) ? 0 : newUses;
+        msg_content = `<i>${game.i18n.localize("SWFFG.MedicalItemUnUse")} ${item_name} #${prevUses}</i>`;
       }
+
+      ChatMessage.create({
+        speaker: { alias: this.object.name },
+        content: msg_content,
+      });
 
       setProperty(updateData, `data.stats.medical.uses`, newUses);
       this.object.update(updateData);
@@ -442,6 +451,10 @@ export class ActorSheetFFG extends ActorSheet {
                               setProperty(updateData, `data.stats.strain.value`, 0);
                               setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
                               this.object.update(updateData);
+                              ChatMessage.create({
+                                speaker: { alias: this.object.name },
+                                content: `<i>${game.i18n.localize("SWFFG.MedicalItemRest")}</i>`,
+                              });
                           },
                       },
                       cancel: {
@@ -452,6 +465,11 @@ export class ActorSheetFFG extends ActorSheet {
                               let updateData = {};
                               setProperty(updateData, `data.stats.medical.uses`, 0);
                               this.object.update(updateData);
+                              const item_name = this.object?.flags?.starwarsffg?.config?.medicalItemName || game.i18n.localize("SWFFG.DefaultMedicalItemName");
+                              ChatMessage.create({
+                                speaker: { alias: this.object.name },
+                                content: `<i>${game.i18n.localize("SWFFG.MedicalItemResetStart")} ${item_name} ${game.i18n.localize("SWFFG.MedicalItemResetEnd")}</i>`,
+                              });
                           },
                       },
                   },
