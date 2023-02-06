@@ -135,9 +135,9 @@ export default class RollBuilderFFG extends FormApplication {
       }
 
       // validate that required data is present
-      if (this.roll.hasOwnProperty('item') && this.roll.item !== undefined && this.roll.item.hasOwnProperty('flags') && !this.roll.item.flags.starwarsffg.uuid) {
-        // uuid is missing, look up the item and set it, so it's fixed going forward
-        let tmp_item = await fromUuid(this.roll.item.uuid);
+      if (this.roll.item?.uuid && !this.roll.item.flags?.starwarsffg?.uuid) {
+        // uuid flag is missing, look up the item and set it, so it's fixed going forward
+        const tmp_item = await fromUuid(this.roll.item.uuid);
         await tmp_item.setFlag("starwarsffg", "uuid", this.roll.item.uuid);
       }
 
@@ -175,7 +175,7 @@ export default class RollBuilderFFG extends FormApplication {
         }
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
         // check if this is a crew roll - and it's a roll for a weapon
-        if (this.roll.item !== undefined && this.roll.item.hasOwnProperty('crew') && Object.keys(this.roll.item).length > 1) {
+        if (this.roll.item && this.roll.item.hasOwnProperty('crew') && Object.keys(this.roll.item).length > 1) {
           await this.roll.item.update({"flags": {"starwarsffg": {"crew": this.roll.item.crew}}})
         }
         await roll.toMessage({
