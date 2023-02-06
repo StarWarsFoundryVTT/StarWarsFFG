@@ -754,25 +754,10 @@ export class ItemSheetFFG extends ItemSheet {
     } catch (err) {
       return false;
     }
-    // as of v10, "id" is not passed in - instead, "uuid" is. conver to the old format so we can go on
-    data.id = data.uuid.split('.')[1];
-    if (data.uuid.includes('Compendium')) {
-        let tmp = data.uuid.split('.');
-        data.pack = tmp[1] + '.' + tmp[2];
-        data.id = tmp[3];
-    }
+    // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
+    const itemObject = await fromUuid(data.uuid);
 
-    // Case 1 - Import from a Compendium pack
-    let itemObject;
-    if (data.pack) {
-      itemObject = await this.importItemFromCollection(data.pack, data.id);
-    }
-
-    // Case 2 - Import from World entity
-    else {
-      itemObject = await game.items.get(data.id);
-      if (!itemObject) return;
-    }
+    if (!itemObject) return;
 
     if (itemObject.type === "talent") {
       // we need to remove if this is the last instance of the talent in the specialization
@@ -814,8 +799,8 @@ export class ItemSheetFFG extends ItemSheet {
       $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.system.ranked);
       $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.system.isForceTalent);
       $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.system.isConflictTalent);
-      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(data.id);
-      $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
+      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
+      $(li).find(`input[name='data.talents.${talentId}.pack']`).val(itemObject.pack);
 
       const fields = $(li).find(`input[name='data.talents.${talentId}.name']`).parent();
       Object.keys(itemObject.system.attributes).forEach((attr) => {
@@ -868,27 +853,12 @@ export class ItemSheetFFG extends ItemSheet {
       return false;
     }
 
-    // as of v10, "id" is not passed in - instead, "uuid" is. conver to the old format so we can go on
-    data.id = data.uuid.split('.')[1];
-    if (data.uuid.includes('Compendium')) {
-        let tmp = data.uuid.split('.');
-        data.pack = tmp[1] + '.' + tmp[2];
-        data.id = tmp[3];
-    }
+    // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
+    const itemObject = await fromUuid(data.uuid);
 
-    // Case 1 - Import from a Compendium pack
-    let itemObject;
-    if (data.pack) {
-      const compendiumObject = await this.importItemFromCollection(data.pack, data.id);
-      itemObject = compendiumObject.toObject(true);
-    }
+    if (!itemObject) return;
 
-    // Case 2 - Import from World entity
-    else {
-      itemObject = duplicate(await game.items.get(data.id));
-      if (!itemObject) return;
-    }
-    itemObject.id = randomID();
+    itemObject.id = randomID(); // why do we do this?!
 
     if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.type === "shipweapon" && itemObject.system.type === "weapon") || obj.type === itemObject.system.type || itemObject.system.type === "all" || obj.type === "itemattachment")) {
       let items = obj?.system[itemObject.type];
