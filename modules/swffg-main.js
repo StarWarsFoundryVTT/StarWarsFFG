@@ -518,7 +518,7 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
 
 // Hook journal rendering to convert special text into images
 Hooks.on("renderJournalPageSheet", (...args) => {
-  if (args[1].length > 1) {
+  if (args[1].length > 2 && args[2]?.document?.type === 'text') {
     // replace FFG characters
     args[1][2].outerHTML = PopoutEditor.renderDiceImages(args[1][2].outerHTML, {});
   }
