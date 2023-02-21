@@ -518,9 +518,12 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
 
 // Hook journal rendering to convert special text into images
 Hooks.on("renderJournalPageSheet", (...args) => {
-  if (args[1].length > 1) {
-    // replace FFG characters
-    args[1][2].outerHTML = PopoutEditor.renderDiceImages(args[1][2].outerHTML, {});
+  if (args[0]?.object?.type === 'text' && args.length === 3 && args[2].cssClass === 'locked') {
+    // only run if it's a text sheet in the render mode
+    for (let i = 0; i < args[1].length; i++) {
+      // iterate through each HTML section and update it
+      args[1][i].outerHTML = PopoutEditor.renderDiceImages(args[1][i].outerHTML, {});
+    }
   }
   return args;
 });
@@ -537,7 +540,8 @@ Hooks.once("ready", async () => {
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
   const version = game.system.version;
-  const isAlpha = game.system.version.includes("alpha");
+  //const isAlpha = game.system.version.includes("alpha");
+    const isAlpha = false;
 
   if (isAlpha && game.user.isGM) {
     let d = new Dialog({
