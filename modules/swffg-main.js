@@ -540,8 +540,7 @@ Hooks.once("ready", async () => {
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
   const version = game.system.version;
-  //const isAlpha = game.system.version.includes("alpha");
-    const isAlpha = false;
+  const isAlpha = game.system.version.includes("alpha");
 
   if (isAlpha && game.user.isGM) {
     let d = new Dialog({
