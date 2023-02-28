@@ -854,7 +854,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
-    const itemObject = await fromUuid(data.uuid);
+    const itemObject = duplicate(await fromUuid(data.uuid));
 
     if (!itemObject) return;
 
