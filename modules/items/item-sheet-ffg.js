@@ -33,10 +33,7 @@ export class ItemSheetFFG extends ItemSheet {
   async getData(options) {
     let data = super.getData(options);
 
-    const itemData = data.data;
-
-    data.item = itemData;
-    data.data = itemData.data;
+    data.data = data.item.system;
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = mergeObject(data.item, options.data);
@@ -61,11 +58,11 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.isTemp = false;
-    if (this.object.data?.flags?.starwarsffg?.ffgIsOwned || this.object.data?.flags?.starwarsffg?.ffgIsTemp) {
+    if (this.object.flags?.starwarsffg?.ffgIsOwned || this.object.flags?.starwarsffg?.ffgIsTemp) {
       data.isTemp = true;
     }
 
-    switch (this.object.data.type) {
+    switch (this.object.type) {
       case "weapon":
       case "shipweapon":
         this.position.width = 550;
@@ -80,6 +77,7 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 350;
         break;
       case "armour":
+      case "ability":
       case "gear":
       case "shipattachment":
       case "homesteadupgrade":
@@ -98,23 +96,27 @@ export class ItemSheetFFG extends ItemSheet {
       case "forcepower":
         this.position.width = 720;
         this.position.height = 840;
-        data.data.isReadOnly = false;
+        data.isReadOnly = false;
         if (!this.options.editable) {
-          data.data.isEditing = false;
-          data.data.isReadOnly = true;
+          data.isEditing = false;
+          data.isReadOnly = true;
         }
         break;
       case "specialization":
         this.position.width = 715;
-        data.data.isReadOnly = false;
+        data.isReadOnly = false;
         if (!this.options.editable) {
-          data.data.isEditing = false;
-          data.data.isReadOnly = true;
+          data.isEditing = false;
+          data.isReadOnly = true;
         }
 
-        if (!this.item.data.flags?.starwarsffg?.loaded) {
+        if (!this.item.flags?.starwarsffg?.loaded) {
           CONFIG.logger.debug(`Running Item initial load`);
-          this.item.data.flags.starwarsffg.loaded = true;
+          if (!Object.keys(this.item.flags).includes('starwarsffg')) {
+              // the object is not properly set up yet; bail to let it finish
+              return;
+          }
+          this.item.flags.starwarsffg.loaded = true;
 
           const specializationTalents = data.data.talents;
 
@@ -142,7 +144,7 @@ export class ItemSheetFFG extends ItemSheet {
             }
 
             if (gameItem) {
-              this._updateSpecializationTalentReference(specializationTalents[talent], gameItem.data);
+              this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
             }
           });
         }
@@ -224,7 +226,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.FFG = CONFIG.FFG;
-    data.data.renderedDesc = PopoutEditor.renderDiceImages(data.data.description, this.actor ? this.actor.data : {});
+    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
 
     return data;
   }
@@ -270,37 +272,37 @@ export class ItemSheetFFG extends ItemSheet {
           }
         }
       }
-      if (!item.data.flags["clickfromparent"]) {
-        item.data.flags["clickfromparent"] = [];
+      if (!item.flags["clickfromparent"]) {
+        item.flags["clickfromparent"] = [];
       }
-      item.data.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
+      item.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
       item.sheet.render(true);
     });
 
-    if (this.object.data.type === "talent") {
-      if (!Hooks?._hooks[`closeAssociatedTalent_${this.object.data._id}`]?.length && typeof this._submitting === "undefined") {
-        Hooks.once(`closeAssociatedTalent_${this.object.data._id}`, (item) => {
-          item.object.data.flags.clickfromparent = [];
-          delete Hooks._hooks[`closeAssociatedTalent_${item.object.data._id}`];
+    if (this.object.type === "talent") {
+      if (!Hooks?.events[`closeAssociatedTalent_${this.object._id}`]?.length && typeof this._submitting === "undefined") {
+        Hooks.once(`closeAssociatedTalent_${this.object._id}`, (item) => {
+          item.object.flags.clickfromparent = [];
+          Hooks.off(`closeAssociatedTalent_${item.object._id}`);
         });
       }
     }
 
     // Everything below here is only needed if the sheet is editable
-    if (this.object.data.flags.readonly) this.options.editable = false;
+    if (this.object.flags.readonly) this.options.editable = false;
     if (!this.options.editable) return;
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
-    if (["forcepower", "specialization", "signatureability"].includes(this.object.data.type)) {
+    if (["forcepower", "specialization", "signatureability"].includes(this.object.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
       html.find(".talent-name.talent-modifiers").on("click", ModifierHelpers.popoutModiferWindowSpecTalents.bind(this));
     }
 
-    if (this.object.data.type === "specialization") {
+    if (this.object.type === "specialization") {
       try {
         const dragDrop = new DragDrop({
           dragSelector: ".item",
@@ -309,7 +311,7 @@ export class ItemSheetFFG extends ItemSheet {
           callbacks: { drop: this._onDropTalentToSpecialization.bind(this) },
         });
 
-        dragDrop.bind($(`form.editable.item-sheet-${this.object.data.type}`)[0]);
+        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
       } catch (err) {
         CONFIG.logger.debug(err);
       }
@@ -339,7 +341,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.data.type)) {
+    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
         dropSelector: null,
@@ -386,7 +388,7 @@ export class ItemSheetFFG extends ItemSheet {
       const itemType = parent.dataset.itemName;
       const itemIndex = parent.dataset.itemIndex;
 
-      const items = this.object.data.data[itemType];
+      const items = this.object.system[itemType];
       items.splice(itemIndex, 1);
 
       let formData = {};
@@ -402,7 +404,7 @@ export class ItemSheetFFG extends ItemSheet {
       const itemType = li.dataset.itemName;
       const itemIndex = li.dataset.itemIndex;
 
-      const item = this.object.data.data[itemType][parseInt(itemIndex, 10)];
+      const item = this.object.system[itemType][parseInt(itemIndex, 10)];
       if (item) {
         const title = `${this.object.name} ${item.name}`;
 
@@ -412,7 +414,7 @@ export class ItemSheetFFG extends ItemSheet {
             content: {
               item,
               type: itemType,
-              parenttype: this.object.data.type,
+              parenttype: this.object.type,
             },
             buttons: {
               done: {
@@ -429,14 +431,14 @@ export class ItemSheetFFG extends ItemSheet {
                         const name = input.attr("name");
                         const id = input[0].dataset.itemId;
 
-                        let arrayItem = this.object.data.data[itemType].findIndex((i) => i._id === id);
+                        let arrayItem = this.object.system[itemType].findIndex((i) => i._id === id);
 
                         if (arrayItem > -1) {
-                          setProperty(this.object.data.data[itemType][arrayItem], name, parseInt(input.val(), 10));
+                          setProperty(this.object.system[itemType][arrayItem], name, parseInt(input.val(), 10));
                         }
                       });
 
-                      setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+                      setProperty(formData, `data.${itemType}`, this.object.system[itemType]);
                       this.object.update(formData);
 
                       break;
@@ -478,7 +480,7 @@ export class ItemSheetFFG extends ItemSheet {
         itemIndex = parent.dataset.itemIndex;
       }
 
-      const item = this.object.data.data[itemType][itemIndex];
+      const item = this.object.system[itemType][itemIndex];
 
       let temp = {
         ...item,
@@ -488,7 +490,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempItemType: itemType,
             ffgTempItemIndex: itemIndex,
             ffgIsTemp: true,
-            ffgParent: this.object.data.flags,
+            ffgParent: this.object.flags,
             ffgParentApp: this.appId,
           }
         },
@@ -513,10 +515,6 @@ export class ItemSheetFFG extends ItemSheet {
 
       let tempItem = await Item.create(temp, { temporary: true });
 
-      tempItem.data._id = temp.id;
-      if (!temp.id) {
-        tempItem.data._id = randomID();
-      }
       tempItem.sheet.render(true);
     });
 
@@ -568,31 +566,28 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempId: this.object.id,
             ffgTempItemType: itemType,
             ffgTempItemIndex: -1,
-            ffgParent: this.object.data.flags.starwarsffg,
+            ffgParent: this.object.flags.starwarsffg,
             ffgIsTemp: true,
             ffgUuid: this.object.uuid,
             ffgParentApp: this.appId,
             ffgIsOwned: this.object.isEmbedded,
           }
         },
-        data: {
+        system: {
           attributes: {},
           description: "",
         },
       };
 
       let tempItem = await Item.create(temp, { temporary: true });
-      tempItem.data._id = temp.id;
-      if (!temp.id) {
-        tempItem.data._id = randomID();
-      }
+      //tempItem.data._id = randomID();
 
       let data = {};
-      this.object.data.data[itemType].push(tempItem);
-      setProperty(data, `data.${itemType}`, this.object.data.data[itemType]);
+      this.object.system[itemType].push(tempItem);
+      setProperty(data, `system.${itemType}`, this.object.system[itemType]);
       await this.object.update(data);
 
-      await tempItem.setFlag("starwarsffg", "ffgTempItemIndex", this.object.data.data[itemType].findIndex((i) => i.id === tempItem.data._id));
+      await tempItem.setFlag("starwarsffg", "ffgTempItemIndex", this.object.system[itemType].findIndex((i) => i.id === tempItem._id));
 
       tempItem.sheet.render(true);
     });
@@ -612,11 +607,11 @@ export class ItemSheetFFG extends ItemSheet {
     const action = a.dataset.action;
     const key = a.dataset.key;
 
-    let attrs = this.object.data.data.upgrades;
+    let attrs = this.object.system.upgrades;
     let itemType = "upgrades";
 
     if ($(a).parents(".specialization-talent").length > 0) {
-      attrs = this.object.data.data.talents;
+      attrs = this.object.system.talents;
       itemType = "talents";
     }
 
@@ -759,20 +754,12 @@ export class ItemSheetFFG extends ItemSheet {
     } catch (err) {
       return false;
     }
+    // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
+    const itemObject = await fromUuid(data.uuid);
 
-    // Case 1 - Import from a Compendium pack
-    let itemObject;
-    if (data.pack) {
-      itemObject = await this.importItemFromCollection(data.pack, data.id);
-    }
+    if (!itemObject) return;
 
-    // Case 2 - Import from World entity
-    else {
-      itemObject = await game.items.get(data.id);
-      if (!itemObject) return;
-    }
-
-    if (itemObject.data.type === "talent") {
+    if (itemObject.type === "talent") {
       // we need to remove if this is the last instance of the talent in the specialization
       const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
       const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
@@ -780,7 +767,7 @@ export class ItemSheetFFG extends ItemSheet {
         CONFIG.logger.debug("Non-compendium pack talent update");
 
         const talentList = [];
-        for (let talent in specialization.data.data.talents) {
+        for (let talent in specialization.system.talents) {
           if (talent.itemId === itemObject.id) {
             talentList.push(talent);
           }
@@ -788,7 +775,7 @@ export class ItemSheetFFG extends ItemSheet {
 
         // check if this is the last talent of the specializtion
         if (talentList.length === 1) {
-          let tree = itemObject.data.data.trees;
+          let tree = itemObject.system.trees;
 
           const index = tree.findIndex((tal) => {
             return tal === specialization.id;
@@ -805,19 +792,19 @@ export class ItemSheetFFG extends ItemSheet {
         }
       }
 
-      $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.data.name);
-      $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.data.data.description);
-      $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.data.data.activation.value);
-      $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.data.data.activation.label);
-      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.data.data.ranks.ranked);
-      $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.data.data.isForceTalent);
-      $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.data.data.isConflictTalent);
-      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(data.id);
-      $(li).find(`input[name='data.talents.${talentId}.pack']`).val(data.pack);
+      $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.name);
+      $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.system.description);
+      $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.system.activation.value);
+      $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.system.activation.label);
+      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.system.ranked);
+      $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.system.isForceTalent);
+      $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.system.isConflictTalent);
+      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
+      $(li).find(`input[name='data.talents.${talentId}.pack']`).val(itemObject.pack);
 
       const fields = $(li).find(`input[name='data.talents.${talentId}.name']`).parent();
-      Object.keys(itemObject.data.data.attributes).forEach((attr) => {
-        const a = itemObject.data.data.attributes[attr];
+      Object.keys(itemObject.system.attributes).forEach((attr) => {
+        const a = itemObject.system.attributes[attr];
         $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.key" value="${attr}" />`);
         $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.value" value="${a.value}" />`);
         $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.modtype" value="${a.modtype}" />`);
@@ -825,9 +812,9 @@ export class ItemSheetFFG extends ItemSheet {
       });
 
       // check to see if the talent already has a reference to the specialization
-      if (!itemObject.data.data.trees.includes(specialization.id)) {
+      if (!itemObject.system.trees.includes(specialization.id)) {
         // the talent doesn't already have the reference, add it
-        let tree = itemObject.data.data.trees;
+        let tree = itemObject.system.trees;
         tree.push(specialization.id);
 
         if (!data.pack) {
@@ -845,13 +832,13 @@ export class ItemSheetFFG extends ItemSheet {
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
     CONFIG.logger.debug(`Updating Specializations Talent during sheet render`);
     specializationTalentItem.name = talentItem.name;
-    specializationTalentItem.description = talentItem.data.description;
-    specializationTalentItem.activation = talentItem.data.activation.value;
-    specializationTalentItem.activationLabel = talentItem.data.activation.label;
-    specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
-    specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
-    specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
-    specializationTalentItem.attributes = talentItem.data.attributes;
+    specializationTalentItem.description = talentItem.system.description;
+    specializationTalentItem.activation = talentItem.system.activation.value;
+    specializationTalentItem.activationLabel = talentItem.system.activation.label;
+    specializationTalentItem.isRanked = talentItem.system.ranks.ranked;
+    specializationTalentItem.isForceTalent = talentItem.system.isForceTalent;
+    specializationTalentItem.isConflictTalent = talentItem.system.isConflictTalent;
+    specializationTalentItem.attributes = talentItem.system.attributes;
   }
 
   async _onDropItem(event) {
@@ -866,22 +853,15 @@ export class ItemSheetFFG extends ItemSheet {
       return false;
     }
 
-    // Case 1 - Import from a Compendium pack
-    let itemObject;
-    if (data.pack) {
-      const compendiumObject = await this.importItemFromCollection(data.pack, data.id);
-      itemObject = compendiumObject.data;
-    }
+    // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
+    const itemObject = duplicate(await fromUuid(data.uuid));
 
-    // Case 2 - Import from World entity
-    else {
-      itemObject = duplicate(await game.items.get(data.id));
-      if (!itemObject) return;
-    }
-    itemObject.id = randomID();
+    if (!itemObject) return;
 
-    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.data.type === "shipweapon" && itemObject.data.type === "weapon") || obj.data.type === itemObject.data.type || itemObject.data.type === "all" || obj.data.type === "itemattachment")) {
-      let items = obj?.data?.data?.[itemObject.type];
+    itemObject.id = randomID(); // why do we do this?!
+
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.type === "shipweapon" && itemObject.system.type === "weapon") || obj.type === itemObject.system.type || itemObject.system.type === "all" || obj.type === "itemattachment")) {
+      let items = obj?.system[itemObject.type];
       if (!items) {
         items = [];
       }
@@ -892,22 +872,22 @@ export class ItemSheetFFG extends ItemSheet {
 
       switch (itemObject.type) {
         case "itemmodifier": {
-          if (parseInt(itemObject.data.rank, 10) === 0) {
-            itemObject.data.rank = 1;
+          if (parseInt(itemObject.system.rank, 10) === 0) {
+            itemObject.system.rank = 1;
           }
 
           if (foundItem && this.object.type !== "itemattachment") {
-            foundItem.data.rank += itemObject.data.rank;
+            foundItem.system.rank += itemObject.system.rank;
           } else {
             items.push(itemObject);
           }
           break;
         }
         case "itemattachment": {
-          if (this.object.data.data.hardpoints.current - itemObject.data.hardpoints.value >= 0) {
+          if (this.object.system.hardpoints.current - itemObject.system.hardpoints.value >= 0) {
             items.push(itemObject);
           } else {
-            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.data.data.hardpoints.current} left)`);
+            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.system.hardpoints.current} left)`);
           }
           break;
         }

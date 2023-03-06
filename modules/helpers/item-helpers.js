@@ -1,5 +1,4 @@
 import ImportHelpers from "../importer/import-helpers.js";
-import JournalEntryFFG from "../items/journalentry-ffg.js";
 import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
@@ -11,7 +10,7 @@ export default class ItemHelpers {
     }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
-    if (this.object.data.type === "weapon") {
+    if (this.object.type === "weapon") {
       if (ModifierHelpers.applyBrawnToDamage(formData.data)) {
         setProperty(formData, `data.damage.value`, 0);
       }
@@ -27,8 +26,8 @@ export default class ItemHelpers {
     }, {});
 
     // Remove attributes which are no longer used
-    if (this.object.data?.data?.attributes) {
-      for (let k of Object.keys(this.object.data.data.attributes)) {
+    if (this.object.system?.attributes) {
+      for (let k of Object.keys(this.object.system.attributes)) {
         if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
       }
     }
@@ -38,13 +37,48 @@ export default class ItemHelpers {
       setProperty(formData, `data.attributes`, attributes);
     }
 
-    // Update the Item
-    setProperty(formData, `flags.starwarsffg.loaded`, false)
-    await this.object.update(formData);
+    // migrate data to v10 structure
+    let updated_id = formData._id;
+    delete formData._id;
 
-    if (this.object.data.type === "talent") {
-      if (this.object.data.flags?.clickfromparent?.length) {
-        let listofparents = JSON.parse(JSON.stringify(this.object.data.flags.starwarsffg.clickfromparent));
+    setProperty(formData, `flags.starwarsffg.loaded`, false);
+
+    // Update the Item
+    try {
+      // v10 items are no longer created in the global scope if they exist only on an actor (or another item)
+      if (this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId) {
+        let parent_object = await game.items.get(this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId);
+
+        // search for the relevant attachment
+        let updated_items = [];
+        parent_object.system.itemattachment.forEach(function (i) {
+          if (i._id === updated_id) {
+              // this is the item we want to update, replace it
+              i = formData;
+          }
+          updated_items.push(i)
+        });
+        await parent_object.update({'system': {'itemattachment': updated_items}});
+
+        // search for the relevant quality
+        updated_items = [];
+        parent_object.system.itemmodifier.forEach(function (i) {
+          if (i._id === updated_id) {
+              // this is the item we want to update, replace it
+              i = formData;
+          }
+          updated_items.push(i)
+        });
+        await parent_object.update({'system': {'itemmodifier': updated_items}});
+
+      }
+    } catch (error) {
+        await this.object.update(formData);
+    }
+
+    if (this.object.type === "talent") {
+      if (this.object.flags?.clickfromparent?.length) {
+        let listofparents = JSON.parse(JSON.stringify(this.object.flags.clickfromparent));
         while (listofparents.length > 0) {
           const parent = listofparents.shift();
           const spec = await fromUuid(parent.id);
@@ -58,8 +92,8 @@ export default class ItemHelpers {
             setProperty(updateData, `data.talents.${parent.talent}.isConflictTalent`, formData.data.isConflictTalent);
 
             // Remove attributes which are no longer used
-            if (spec?.data?.data?.talents?.[parent.talent]?.attributes) {
-              for (let k of Object.keys(spec.data.data.talents[parent.talent].attributes)) {
+            if (spec?.system?.talents?.[parent.talent]?.attributes) {
+              for (let k of Object.keys(spec.system.talents[parent.talent].attributes)) {
                 if (!formData.data.attributes.hasOwnProperty(k)) formData.data.attributes[`-=${k}`] = null;
               }
             }

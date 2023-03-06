@@ -15,9 +15,9 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq ../item.type "weapon")}} {{#each ../this.FFG.weapon_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../item.data.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
-      {{else}} {{#if (and (eq ../../item.data.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
-      >{{/if}} {{#if (and (eq ../../item.data.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../item.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
+      {{else}} {{#if (and (eq ../../item.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (eq ../../item.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
       >{{/if}} {{#if (and (ne t.value "Armor Stat") (ne t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
       >{{/if}} {{/if}} {{/each}} {{/if}} {{/select}}
     </select>
@@ -28,7 +28,7 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Characteristic")}} {{#each ../this.FFG.characteristics as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") (eq attr.modtype "Skill Add Advantage") (eq attr.modtype "Skill Add Dark") (eq attr.modtype "Skill Add Failure") (eq attr.modtype "Skill Add Light") (eq attr.modtype "Skill Add Success") (eq attr.modtype "Skill Add Threat") (eq attr.modtype "Skill Add Triumph") (eq attr.modtype "Skill Add Despair") )}}
+      {{/each}} {{/if}} {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") (eq attr.modtype "Skill Add Advantage") (eq attr.modtype "Skill Add Dark") (eq attr.modtype "Skill Add Failure") (eq attr.modtype "Skill Add Light") (eq attr.modtype "Skill Add Success") (eq attr.modtype "Skill Add Threat") (eq attr.modtype "Skill Add Triumph") (eq attr.modtype "Skill Add Despair") (eq attr.modtype "Skill Add Upgrade") )}}
       <option value="*">{{localize "SWFFG.ModifierAllSkills"}}</option>
       {{#each ../this.FFG.skills as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>

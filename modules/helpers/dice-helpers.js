@@ -42,6 +42,7 @@ export default class DiceHelpers {
       success: 0,
       triumph: 0,
       despair: 0,
+      upgrades: 0,
       label: skillData?.label ? game.i18n.localize(skillData.label) : game.i18n.localize(skillName),
     };
     let characteristic = {
@@ -70,7 +71,7 @@ export default class DiceHelpers {
         item = obj.actor.token.actor.items.get(itemID);
       }
     }
-    const itemData = item?.data || {};
+    const itemData = item || {};
     const status = this.getWeaponStatus(itemData);
 
     // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
@@ -88,10 +89,11 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill.triumph,
       despair: skill.despair,
+      upgrades: skill.upgrades,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
     if (type === "ability") {
       dicePool.upgrade();
@@ -128,6 +130,7 @@ export default class DiceHelpers {
         success: skill.success,
         triumph: skill?.triumph ? skill.triumph : 0,
         despair: skill?.despair ? skill.despair : 0,
+        upgrades: skill?.upgrades ? skill.upgrades : 0,
         source: {
           skill: skill?.ranksource?.length ? skill.ranksource : [],
           boost: skill?.boostsource?.length ? skill.boostsource : [],
@@ -139,9 +142,10 @@ export default class DiceHelpers {
           failure: skill?.failuresource?.length ? skill.failuresource : [],
           threat: skill?.threatsource?.length ? skill.threatsource : [],
           success: skill?.successsource?.length ? skill.successsource : [],
+          upgrades: skill?.upgradessource?.length ? skill.upgradessource: [],
         },
       });
-      dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+      dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
       const rollButton = elem.querySelector(".roll-button");
       dicePool.renderPreview(rollButton);
@@ -153,13 +157,13 @@ export default class DiceHelpers {
     const actorSheet = actor.sheet.getData();
 
     const item = actor.items.get(itemId);
-    const itemData = item.data;
+    const itemData = item.system;
     await item.setFlag("starwarsffg", "uuid", item.uuid);
 
-    const status = this.getWeaponStatus(itemData);
+    const status = this.getWeaponStatus(item);
 
-    const skill = actor.data.data.skills[itemData.data.skill.value];
-    const characteristic = actor.data.data.characteristics[skill.characteristic];
+    const skill = actor.system.skills[itemData.skill.value];
+    const characteristic = actor.system.characteristics[skill.characteristic];
 
     let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
@@ -174,14 +178,15 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill?.triumph ? skill.triumph : 0,
       despair: skill?.despair ? skill.despair : 0,
+      upgrades: skill?.upgrades ? skill.upgrades : 0,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
-    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, itemData));
+    dicePool = new DicePoolFFG(await this.getModifiers(dicePool, item));
 
-    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, itemData, flavorText, sound);
+    this.displayRollDialog(actorSheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, item, flavorText, sound);
   }
 
   // Takes a skill object, characteristic object, difficulty number and ActorSheetFFG.getData() object and creates the appropriate roll dialog.
@@ -200,19 +205,20 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill?.triumph ? skill.triumph : 0,
       despair: skill?.despair ? skill.despair : 0,
+      upgrades: skill?.upgrades ? skill.upgrades : 0,
     });
 
-    dicePool.upgrade(Math.min(characteristic.value, skill.rank));
+    dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
-    this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, null, flavorText, sound);
+    this.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${skill.label}`, skill.label, {}, flavorText, sound);
   }
 
   static getWeaponStatus(item) {
     let setback = 0;
     let difficulty = 0;
 
-    if (item.type === "weapon" && item?.data?.status && item.data.status !== "None") {
-      const status = CONFIG.FFG.itemstatus[item.data.status].attributes.find((i) => i.mod === "Setback");
+    if (item.type === "weapon" && item?.system?.status && item.system.status !== "None") {
+      const status = CONFIG.FFG.itemstatus[item.system.status].attributes.find((i) => i.mod === "Setback");
 
       if (status.value < 99) {
         if (status.value === 1) {
@@ -221,7 +227,7 @@ export default class DiceHelpers {
           difficulty = 1;
         }
       } else {
-        ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.data.status].label)}).`);
+        ui.notifications.error(`${item.name} ${game.i18n.localize("SWFFG.ItemTooDamagedToUse")} (${game.i18n.localize(CONFIG.FFG.itemstatus[item.system.status].label)}).`);
         return;
       }
     }
@@ -233,16 +239,16 @@ export default class DiceHelpers {
     if (item.type === "weapon") {
       dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
 
-      if (item?.data?.itemattachment) {
-        await ImportHelpers.asyncForEach(item.data.itemattachment, async (attachment) => {
+      if (item?.system?.itemattachment) {
+        await ImportHelpers.asyncForEach(item.system.itemattachment, async (attachment) => {
           //get base mods and additional mods totals
-          const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+          const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
 
           dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, attachment, activeModifiers);
         });
       }
-      if (item?.data?.itemmodifier) {
-        await ImportHelpers.asyncForEach(item.data.itemmodifier, async (modifier) => {
+      if (item?.system?.itemmodifier) {
+        await ImportHelpers.asyncForEach(item.system.itemmodifier, async (modifier) => {
           dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, modifier, []);
         });
       }
@@ -250,4 +256,62 @@ export default class DiceHelpers {
 
     return dicePool;
   }
+}
+
+/**
+ * Helper function to build a dice pool
+ * @param actor_id ID of the actor making the check
+ * @param skill_name name of the string of the skill
+ * @param incoming_roll existing dice, e.g. difficulty dice
+ * @returns {DicePoolFFG}
+ */
+export function get_dice_pool(actor_id, skill_name, incoming_roll) {
+  const actor = game.actors.get(actor_id);
+  const parsed_skill_name = convert_skill_name(skill_name);
+  const skill = actor.system.skills[parsed_skill_name];
+  const characteristic = actor.system.characteristics[skill.characteristic];
+
+  const dicePool = new DicePoolFFG({
+    ability: (Math.max(characteristic.value, skill.rank) + incoming_roll.ability) - (Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency),
+    proficiency: Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency,
+    boost: skill.boost + incoming_roll.boost,
+    setback: skill.setback + incoming_roll.setback,
+    force: skill.force + incoming_roll.force,
+    advantage: skill.advantage + incoming_roll.advantage,
+    dark: skill.dark + incoming_roll.dark,
+    light: skill.light + incoming_roll.light,
+    failure: skill.failure + incoming_roll.failure,
+    threat: skill.threat + incoming_roll.threat,
+    success: skill.success + incoming_roll.success,
+    triumph: skill.triumph + incoming_roll.triumph,
+    despair: skill.despair + incoming_roll.despair,
+    upgrades: skill.upgrades + incoming_roll.upgrades,
+    difficulty: +incoming_roll.difficulty,
+  });
+  return dicePool;
+}
+
+/**
+ * Convert the skill name to how the game handles it
+ * @param pool_skill_name skill name to be converted
+ * @returns {null|string}
+ */
+function convert_skill_name(pool_skill_name) {
+  CONFIG.logger.debug(`Converting ${pool_skill_name} to skill name`);
+  const skills = CONFIG.FFG.skills;
+  for (var skill in skills) {
+    if (skills[skill]['label'] === pool_skill_name) {
+      CONFIG.logger.debug(`Found mapping to ${skill}`);
+      return skill;
+    }
+  }
+  // it would appear that sometimes it's value instead of label
+  for (var skill in skills) {
+    if (skills[skill]['value'] === pool_skill_name) {
+      CONFIG.logger.debug(`Found mapping to ${skill}`);
+      return skill;
+    }
+  }
+  CONFIG.logger.debug('WARNING: Found no mapping!');
+  return null;
 }

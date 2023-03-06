@@ -297,6 +297,8 @@
   "SWFFG.CharacterSheet": "Feuille de Personnage",
   "SWFFG.Options": "Options",
   "SWFFG.TalentSource": "Origine du rang de talent pour",
+  "SWFFG.EnableStrainThreshold": "Enable Strain Threshold",
+  "SWFFG.EnableStrainThresholdHint": "Enables the Strain Threshold field on the character sheet",
   "SWFFG.EnableObligation": "Activer Obligation",
   "SWFFG.EnableObligationHint": "Active le champ 'Obligation' sur la feuille de personnage",
   "SWFFG.EnableDuty": "Activer Devoir",

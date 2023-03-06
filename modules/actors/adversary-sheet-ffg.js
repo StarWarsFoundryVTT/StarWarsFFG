@@ -26,7 +26,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
 
   getData() {
     const data = super.getData();
-    switch (this.actor.data.type) {
+    switch (this.actor.type) {
       case "character":
         this.position.width = 595;
         this.position.height = 783;
@@ -35,7 +35,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
         }
 
         // we need to update all specialization talents with the latest talent information
-        if (!this.actor.data.flags.starwarsffg?.loaded) {
+        if (!this.actor.flags.starwarsffg?.loaded) {
           super._updateSpecialization(data);
         }
 
@@ -43,7 +43,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
       default:
     }
 
-    data.items = this.actor.items.map((item) => item.data);
+    data.items = this.actor.items.map((item) => item);
 
     return data;
   }
@@ -54,7 +54,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
 
     if (!this.options.editable) return;
 
-    if (this.actor.data.type === "character") {
+    if (this.actor.type === "character") {
       this.sheetoptions.clear();
       this.sheetoptions.register("enableAutoSoakCalculation", {
         name: game.i18n.localize("SWFFG.EnableSoakCalc"),

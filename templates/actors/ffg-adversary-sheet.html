@@ -20,26 +20,31 @@
               <div class="row">
                 <div>{{localize "SWFFG.Species"}}:</div>
                 <div class="row-input">
-                  {{#each actor.items as |item id|}} {{#iff item.type '==' 'species'}}
+                  {{#each_when actor.items "type" "species"}}
                   <div class="species-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
-                  {{/iff}}{{/each}}
+                  {{else}}
+                  <div class="drag-note">Drag Here</div>
+                  {{/each_when}}
                 </div>
               </div>
               <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Career"}}:</div>
                 <div class="row-input">
-                  {{#each actor.items as |item id|}} {{#if (eq item.type 'career')}}
+                  {{#each_when actor.items "type" "career"}}
                   <div class="career-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
-                  {{/if}}{{/each}}
+                  {{else}}
+                  <div class="drag-note">Drag Here</div>
+                  {{/each_when}}
                 </div>
               </div>
               <div class="row" style="{{#if limited}}display:none;{{/if}}">
                 <div>{{localize "SWFFG.Specializations"}}:</div>
-                <!-- <div class="row-input"><input name="data.specialisation.value" type="text" value="{{data.specialisation.value}}" data-dtype="String" /></div> -->
                 <div class="row-input">
-                  {{#each actor.items as |item id|}} {{#iff item.type '==' 'specialization'}}
+                  {{#each_when actor.items "type" "specialization"}}
                   <div class="specialization-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
-                  {{/iff}}{{/each}}
+                  {{else}}
+                  <div class="drag-note">Drag Here</div>
+                  {{/each_when}}
                 </div>
               </div>
             </div>
@@ -51,7 +56,12 @@
 
       <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
         <div class="container flex-group-center">
-          {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}} {{!-- Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}} {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}} {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
+          {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}} 
+          {{#if (or (eq actor.flags.config.enableStrainThreshold undefined) (eq actor.flags.config.enableStrainThreshold true) )}}
+          {{!-- Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}} 
+          {{/if}}
+          {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}} 
+          {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
         </div>
       </div>
     </div>
@@ -96,16 +106,19 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
-        {{!-- Force Box --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
+        {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
       </div>
 
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} 
+      {{!-- Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-abilities.html"}} 
+      {{!-- Force Powers List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} 
+      {{!-- Signature Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.biography target="system.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
       </div>
       <div class="container flex-group-center biography-values">
         {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}

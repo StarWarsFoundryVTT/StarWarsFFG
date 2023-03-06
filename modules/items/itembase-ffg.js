@@ -2,8 +2,8 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
-    if (!this.data?.flags?.starwarsffg?.ffgTempId || (this.data?.flags?.starwarsffg?.ffgTempId === this.data._id && !this.data.isTemp) || this.data?.flags?.starwarsffg?.ffgIsOwned) {
-      super.update(data, options);
+    if (!this.flags?.starwarsffg?.ffgTempId || (this.flags?.starwarsffg?.ffgTempId === this._id && !this.isTemp) || this.flags?.starwarsffg?.ffgIsOwned) {
+      await super.update(data, options);
       // if (this.compendium) {
       //   return this.sheet.render(true);
       // }
@@ -22,10 +22,10 @@ export default class ItemBaseFFG extends Item {
 
         // we're working on an embedded item
         await this.sheet.render(true);
-        const appId = this.data?.flags?.starwarsffg?.ffgParentApp;
+        const appId = this.system?.flags?.starwarsffg?.ffgParentApp;
         if (appId) {
-          const newData = ui.windows[appId].object.data.data;
-          newData[this.data.flags.starwarsffg.ffgTempItemType][this.data.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.data.flags.starwarsffg.ffgTempItemType][this.data.flags.starwarsffg.ffgTempItemIndex], this.data);
+          const newData = ui.windows[appId].object;
+          newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex], this);
           await ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
         }
         return;

@@ -16,7 +16,9 @@ export class ItemFFG extends ItemBaseFFG {
     if (this.isEmbedded && this.actor) {
       // If this is a weapon or armour item we must ensure its modifier-adjusted values are saved to the database
       if (["weapon", "shipweapon", "armour"].includes(this.type)) {
-        this.data.update(this.data);
+        let that = this.toObject(true);
+        delete that._id;
+        await this.update(that);
       }
     }
     await super._onCreate(data, options, user);
@@ -26,21 +28,26 @@ export class ItemFFG extends ItemBaseFFG {
    * Augment the basic Item data model with additional dynamic data.
    */
   async prepareData() {
-    super.prepareData();
+    await super.prepareData();
 
     CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
 
     // Get the Item's data
-    const itemData = this.data;
-    const actorData = this.actor ? this.actor.data : {};
-    const data = itemData.data;
+    const item = this;
+    const actor = this.actor ? this.actor : {};
+    const data = item.system;
 
-    if (!itemData.flags.starwarsffg) {
-      itemData.update({
+    if (!item._id) {
+        // the item is not being done prepared
+        return;
+    }
+
+    if (!item.flags.starwarsffg) {
+      await item.updateSource({
         flags: {
           starwarsffg: {
             isCompendium: !!this.compendium,
-            ffgUuid: this.parent?.data ? this.uuid : null,
+            ffgUuid: this.parent?.system ? this.uuid : null,
             ffgIsOwned: this.isEmbedded,
             loaded: false
           }
@@ -48,23 +55,23 @@ export class ItemFFG extends ItemBaseFFG {
       });
     } else {
       if (this.compendium) {
-        itemData.flags.starwarsffg.isCompendium = true;
+        item.flags.starwarsffg.isCompendium = true;
         // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-        if (this.parent?.data) itemData.flags.starwarsffg.ffgUuid = this.uuid;
+        if (this.parent?.system) item.flags.starwarsffg.ffgUuid = this.uuid;
       } else {
-        itemData.flags.starwarsffg.isCompendium = false;
-        itemData.flags.starwarsffg.ffgIsOwned = false;
+        item.flags.starwarsffg.isCompendium = false;
+        item.flags.starwarsffg.ffgIsOwned = false;
         if (this.isEmbedded) {
-          itemData.flags.starwarsffg.ffgIsOwned = true;
+          item.flags.starwarsffg.ffgIsOwned = true;
           // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-          if (this.parent?.data) itemData.flags.starwarsffg.ffgUuid = this.uuid;
-        } else if (itemData._id) {
-          itemData.flags.starwarsffg.ffgTempId = itemData._id;
+          if (this.parent) item.flags.starwarsffg.ffgUuid = this.uuid;
+        } else if (item._id) {
+          item.flags.starwarsffg.ffgTempId = item._id;
         }
       }
     }
 
-    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actorData);
+    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actor);
 
     // perform localisation of dynamic values
     switch (this.type) {
@@ -92,8 +99,8 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
-            if (modifier?.data) {
-              modifier.data.rank_current = modifier.data.rank;
+            if (modifier?.system) {
+              modifier.system.rank_current = modifier.system.rank;
             }
             data.adjusteditemmodifier.push({ ...modifier });
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "damage", "Weapon Stat");
@@ -114,7 +121,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemattachment) {
           data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+            const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
             data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
             if (data.crit.adjusted < 1) data.crit.adjusted = 1;
@@ -130,16 +137,16 @@ export class ItemFFG extends ItemBaseFFG {
 
             data.range.adjusted = Object.values(rangeSetting)[newRange].value;
 
-            if (attachment?.data?.itemmodifier) {
-              const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
+            if (attachment?.system?.itemmodifier) {
+              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
 
               activeMods.forEach((am) => {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.data.rank_current = parseInt(foundItem.data.rank_current, 10) + 1;
+                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
                 } else {
-                  am.data.rank_current = 1;
+                  am.system.rank_current = 1;
                   data.adjusteditemmodifier.push({ ...am, adjusted: true });
                 }
               });
@@ -147,7 +154,7 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isEmbedded && this.actor && this.actor.data) {
+        if (this.isEmbedded && this.actor) {
           let damageAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
@@ -157,7 +164,7 @@ export class ItemFFG extends ItemBaseFFG {
           if (this.actor.type !== "vehicle") {
             if (ModifierHelpers.applyBrawnToDamage(data)) {
               const olddamage = data.damage.value;
-              data.damage.value = parseInt(actorData.data.characteristics[data.characteristic.value].value, 10) + damageAdd;
+              data.damage.value = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
               data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
@@ -189,8 +196,8 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
-            if (modifier?.data) {
-              modifier.data.rank_current = modifier.data.rank;
+            if (modifier?.system) {
+              modifier.system.rank_current = modifier.system.rank;
             }
             data.adjusteditemmodifier.push({ ...modifier });
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
@@ -204,7 +211,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemattachment) {
           data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.data.itemmodifier.filter((i) => i.data?.active);
+            const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
             data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
             data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Armor Stat");
@@ -212,16 +219,16 @@ export class ItemFFG extends ItemBaseFFG {
             data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Armor Stat");
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Armor Stat");
 
-            if (attachment?.data?.itemmodifier) {
-              const activeMods = attachment.data.itemmodifier.filter((i) => i?.data?.active);
+            if (attachment?.system?.itemmodifier) {
+              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
 
               activeMods.forEach((am) => {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.data.rank_current = parseInt(foundItem.data.rank_current, 10) + 1;
+                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
                 } else {
-                  am.data.rank_current = 1;
+                  am.system.rank_current = 1;
                   data.adjusteditemmodifier.push({ ...am, adjusted: true });
                 }
               });
@@ -229,7 +236,7 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isEmbedded && this.actor && this.actor.data) {
+        if (this.isEmbedded && this.actor && this.actor.system) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
           for (let attr in data.attributes) {
             if (data.attributes[attr].modtype === "Armor Stat") {
@@ -263,11 +270,11 @@ export class ItemFFG extends ItemBaseFFG {
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
         data.activation.label = activationId;
         break;
-      
+
       case "gear":
         data.encumbrance.value = parseInt(data.encumbrance.value, 10);
         break;
-      
+
       default:
     }
 
@@ -277,7 +284,7 @@ export class ItemFFG extends ItemBaseFFG {
 
       if (data?.itemattachment?.length) {
         data.itemattachment.forEach((attachment) => {
-          totalHPUsed += attachment.data.hardpoints.value;
+          totalHPUsed += attachment.system.hardpoints.value;
         });
       }
 
@@ -306,8 +313,8 @@ export class ItemFFG extends ItemBaseFFG {
   }
 
   _prepareTalentTrees(collection, itemType, listProperty, hasGlobalList) {
-    const itemData = this.data;
-    const talents = itemData.data[collection];
+    const item = this;
+    const talents = item.system[collection];
     let rowcount = 0;
     const controls = Object.keys(talents).filter((item) => {
       return item.includes(itemType);
@@ -380,7 +387,8 @@ export class ItemFFG extends ItemBaseFFG {
       return a.name - b.name;
     });
 
-    itemData[listProperty] = itemList;
+    item[listProperty] = itemList;
+    this.update({system: {collection: talents}})
   }
 
   async _prepareSpecializations() {
@@ -401,25 +409,25 @@ export class ItemFFG extends ItemBaseFFG {
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
     CONFIG.logger.debug(`Updating Specializations Talent ${specializationTalentItem.name} with ${talentItem.name}`);
     specializationTalentItem.name = talentItem.name;
-    specializationTalentItem.description = talentItem.data.description;
-    specializationTalentItem.activation = talentItem.data.activation.value;
-    specializationTalentItem.activationLabel = talentItem.data.activation.label;
-    specializationTalentItem.isRanked = talentItem.data.ranks.ranked;
-    specializationTalentItem.isForceTalent = talentItem.data.isForceTalent;
-    specializationTalentItem.isConflictTalent = talentItem.data.isConflictTalent;
-    specializationTalentItem.attributes = talentItem.data.attributes;
+    specializationTalentItem.description = talentItem.system.description;
+    specializationTalentItem.activation = talentItem.system.activation.value;
+    specializationTalentItem.activationLabel = talentItem.system.activation.label;
+    specializationTalentItem.isRanked = talentItem.system.ranks.ranked;
+    specializationTalentItem.isForceTalent = talentItem.system.isForceTalent;
+    specializationTalentItem.isConflictTalent = talentItem.system.isConflictTalent;
+    specializationTalentItem.attributes = talentItem.system.attributes;
   }
 
   /**
    * Prepare and return details of the item for display in inventory or chat.
    */
   getItemDetails() {
-    const data = duplicate(this.data.data);
+    const data = duplicate(this.system);
 
     // Item type specific properties
     const props = [];
 
-    data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor?.data);
+    data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor);
 
     if (this.type === "forcepower") {
       //Display upgrades
@@ -448,7 +456,7 @@ export class ItemFFG extends ItemBaseFFG {
       upgradeDescriptions.forEach((upd) => {
         props.push(`<div class="ffg-sendtochat hover" onclick="">${upd.name} ${upd.rank}
           <div class="tooltip2">
-            ${PopoutEditor.renderDiceImages(upd.description, this?.actor?.data)}
+            ${PopoutEditor.renderDiceImages(upd.description, this?.actor?.system)}
           </div>
         </div>`);
       });
@@ -456,7 +464,7 @@ export class ItemFFG extends ItemBaseFFG {
     // General equipment properties
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
-        const qualities = data.adjusteditemmodifier?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m.id}' data-modifier-type='${m.type}'>${m.name} ${m.data?.rank_current > 0 ? m.data.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = data.adjusteditemmodifier?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m._id}' data-modifier-type='${m.type}'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }

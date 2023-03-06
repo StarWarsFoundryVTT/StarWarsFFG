@@ -11,15 +11,15 @@
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">
         <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
-        <div class="hover {{#if item.data.rarity.isrestricted}}restricted{{/if}}">
-          {{item.name}} {{#if item.data.rarity.isrestricted}}
+        <div class="hover {{#if item.system.rarity.isrestricted}}restricted{{/if}}">
+          {{item.name}} {{#if item.system.rarity.isrestricted}}
           <div class="tooltip2">This is a Restricted item</div>
           {{/if}}
         </div>
       </div>
       <div class="item-quantity">
         <div class="quantity increase"><i class="far fa-plus-square"></i></div>
-        {{item.data.quantity.value}}
+        {{item.system.quantity.value}}
         <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
       </div>
       <div class="item-controls">

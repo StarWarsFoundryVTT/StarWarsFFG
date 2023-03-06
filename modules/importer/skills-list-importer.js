@@ -1,5 +1,5 @@
 import Helpers from "../helpers/common.js";
-import { defaultSkillArrayString } from "../config/ffg-skillslist.js";
+import { defaultSkillList } from "../config/ffg-skillslist.js";
 
 export default class SkillListImporter extends FormApplication {
   /** @override */
@@ -53,7 +53,7 @@ export default class SkillListImporter extends FormApplication {
       event.preventDefault();
       event.stopPropagation();
 
-      game.settings.set("starwarsffg", "arraySkillList", defaultSkillArrayString);
+      game.settings.set("starwarsffg", "arraySkillList", defaultSkillList);
       game.settings.set("starwarsffg", "skilltheme", "starwars");
 
       debounce(() => window.location.reload(), 100);
@@ -67,7 +67,7 @@ export default class SkillListImporter extends FormApplication {
 
       const target = event.currentTarget;
       const skilltheme = target.dataset.id;
-      const currentSkillList = await JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+      const currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
 
       const data = currentSkillList.find((i) => i.id === skilltheme);
 
@@ -84,7 +84,7 @@ export default class SkillListImporter extends FormApplication {
       if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
       const text = await readTextFromFile(form.data.files[0]);
 
-      let currentSkillList = await JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+      let currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
 
       const newSkillList = JSON.parse(text);
 
@@ -102,7 +102,7 @@ export default class SkillListImporter extends FormApplication {
         currentSkillList.push(newSkillList);
       }
 
-      const newMasterSkillListData = JSON.stringify(currentSkillList);
+      const newMasterSkillListData = currentSkillList;
       await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
       debounce(() => window.location.reload(), 100);
 

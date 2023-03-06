@@ -8,14 +8,13 @@
     {{/if}}
     <div></div>
   </li>
-
   <ul class="items-list">
-    {{#each data.talentList as |item id|}}
+    {{#each talentList as |item id|}}
     <li class="item specialization-talent-item flexrow" data-item-id="{{item.itemId}}">
       <div class="item-name">
         {{item.name}}
       </div>
-      <div>{{localize item.activationLabel}}</div>
+      <div>{{localize item.activation}}</div>
       <div>{{item.rank}}</div>
       {{#if (ne ../this.FFG.theme "starwars" )}}
       <div>{{item.tier}}</div>

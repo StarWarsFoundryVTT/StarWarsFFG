@@ -1,0 +1,10 @@
+<div class="item-display">
+  {{#iff (defaultImage data.crew.img) '!=' true}}
+    <img class="item-image" src="{{data.crew.img}}" />
+  {{/iff}}
+  <h2 class="item-name">{{data.crew.name}}</h2>
+  <h4 class="item-damage">
+      {{localize "SWFFG.Crew.Card.Role"}}:
+      <input class="damage-value" type="text" value="{{data.crew.role}}" disabled />
+  </h4>
+</div>

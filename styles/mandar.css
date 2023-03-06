@@ -55,10 +55,6 @@ section {
   background: #d8cbc0 url(../images/bgWindow.jpg) no-repeat;
 }
 
-.window-app .window-content form {
-  height: 100%;
-}
-
 .window-app.sheet.actor .window-content {
   background: #d8cbc0 url(../images/bgSheet.jpg) no-repeat;
 }
@@ -343,6 +339,12 @@ img {
   width: 100%;
   border: 0;
   background-color: rgba(0, 0, 0, 0);
+}
+
+.starwarsffg.sheet.actor .character .header-fields .row .row-input .drag-note {
+  border: 2px dotted;
+  border-radius: 10px;
+  padding: 0 5px;
 }
 
 .starwarsffg.sheet.actor .character .header-fields .header-name input:focus {

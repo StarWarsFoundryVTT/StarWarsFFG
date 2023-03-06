@@ -315,7 +315,7 @@ export default class SettingsHelpers {
     const playlists = {};
     playlists["None"] = "";
     game.playlists.contents.forEach((playlist, index) => {
-      playlists[playlist.id] = `${index}-${playlist.data.name}`;
+      playlists[playlist.id] = `${index}-${playlist.name}`;
     });
 
     // Playlist users can user for audio

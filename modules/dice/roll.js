@@ -12,6 +12,8 @@ export class RollFFG extends Roll {
     this.hasStandard = false;
     this.addedResults = [];
 
+    this.terms = this.parseShortHand(this.terms);
+
     if (args[2]?.success) {
       this.ffg.success += +args[2].success;
       this.addedResults.push({
@@ -102,6 +104,13 @@ export class RollFFG extends Roll {
   /** @override */
   evaluate({ minimize = false, maximize = false } = {}) {
     if (this._evaluated) throw new Error("This Roll object has already been rolled.");
+
+    // Step 0 - is this rolling nothing?
+    if(this.terms.length == 0) {
+      this._evaluated = true
+      this._total = 0
+      return this
+    }
 
     // Step 1 - evaluate any inner Rolls and recompile the formula
     let hasInner = false;
@@ -231,10 +240,16 @@ export class RollFFG extends Roll {
 
     // Define chat data
     if (this?.data) {
-      if (this.data.flags?.starwarsffg?.ffgUuid) {
+      if (this.data.flags?.starwarsffg?.uuid) {
+        const item = await fromUuid(this.data.flags.starwarsffg.uuid);
+        if (item) {
+          this.data = item;
+        }
+      }
+      else if (this.data.flags?.starwarsffg?.ffgUuid) {
         const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
-        if (item?.data) {
-          this.data = item.data;
+        if (item) {
+          this.data = item;
         }
       }
       this.data.additionalFlavorText = this.flavorText;
@@ -272,6 +287,9 @@ export class RollFFG extends Roll {
       addedResults: this.addedResults,
       publicRoll: !chatOptions.isPrivate,
     };
+    if (chatData?.data?.flags?.starwarsffg.hasOwnProperty('crew')) {
+      chatData.data.crew = chatData.data.flags.starwarsffg.crew;
+    }
     if (chatData.data.hasOwnProperty('data') && (chatData.data.data.adjusteditemmodifier === undefined || chatData.data.data.adjusteditemmodifier.length === 0)) {
       // extended metadata is missing, lookup the actor ID so we can embed it for future lookups
       let candidate_actors = game.actors.filter(actor => actor.items.filter(item => item.id === chatData.data._id).length > 0);
@@ -300,7 +318,7 @@ export class RollFFG extends Roll {
 
   /* -------------------------------------------- */
   /** @override */
-  toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
+  async toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) this.evaluate();
 
@@ -333,7 +351,7 @@ export class RollFFG extends Roll {
     if (rMode) msg.applyRollMode(rollMode);
 
     // Either create or return the data
-    return create ? cls.create(msg.data) : msg.data;
+    return create ? cls.create(msg) : msg;
   }
 
   /** @override */
@@ -358,5 +376,29 @@ export class RollFFG extends Roll {
     roll.addedResults = data.addedResults;
     roll.flavorText = data.flavorText;
     return roll;
+  }
+
+  //If the main parser hands back a StringTerm attempt to turn it into a die.
+  parseShortHand(terms) {
+    return terms
+      .flatMap(t => {
+        if(!(t instanceof StringTerm) || /\d/.test(t.term))
+          return t;
+
+        return t.term.replaceAll('d', 'i').split('').reduce((acc, next) => {
+          if(next in CONFIG.Dice.terms)
+          {
+            let cls = CONFIG.Dice.terms[next];
+            acc.push(new cls(1));
+          }
+          else throw new Error(`Unknown die type '${next}'`)
+
+          return acc;
+        }, [])
+      })
+      .flatMap((value, index, array) => //Put addition operators between each die.
+        array.length - 1 !== index
+          ? [value, new OperatorTerm({operator: '+'})]
+          : value)
   }
 }

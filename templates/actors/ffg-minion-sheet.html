@@ -61,13 +61,16 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <!-- New talent list snippet -->
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} {{!-- Force Powers List --}} {{#if (or (eq actor.flags.config.enableForcePool undefined) (eq actor.flags.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} {{/if}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} 
+      {{!-- Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-abilities.html"}} 
+      {{!-- Force Powers List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} 
+      {{!-- Signature Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor content=data.biography target="data.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.biography target="system.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
       </div>
       {{#if this.settings.enableCriticalInjuries}}
       <div class="container flex-group-center biography-values">

@@ -78,19 +78,19 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}} 
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
           </div>
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.adjusteditemmodifier)}} 
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.adjusteditemmodifier)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemAttachments" name="itemattachment" fields=data.itemattachment)}}
           </div>
           <div class="flex-group-center weapon-values hidden-content">
             <input type="text" name="data.encumbrance.adjusted" value="{{data.encumbrance.adjusted}}" data-dtype="Number"/>
             <input type="text" name="data.soak.adjusted" value="{{data.soak.adjusted}}" data-dtype="Number"/>
             <input type="text" name="data.defence.adjusted" value="{{data.defence.adjusted}}" data-dtype="Number"/>
-            
+
           </div>
         </div>
       </div>
@@ -101,7 +101,7 @@
   <section class="sheet-body small">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
-      {{editor content=data.renderedDesc target="data.description" button=true owner=owner editable=editable}}
+      {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}
     </div>
 
     {{!-- Modifiers Tab --}}

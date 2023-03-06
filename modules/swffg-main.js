@@ -26,8 +26,9 @@ import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
 import SkillListImporter from "./importer/skills-list-importer.js";
 import DestinyTracker from "./ffg-destiny-tracker.js";
-import { defaultSkillArrayString } from "./config/ffg-skillslist.js";
+import { defaultSkillList } from "./config/ffg-skillslist.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
+import {register_crew} from "./helpers/crew.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
@@ -37,10 +38,20 @@ import DataImporter from "./importer/data-importer.js";
 import PauseFFG from "./apps/pause-ffg.js";
 import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
 import RollBuilderFFG from "./dice/roll-builder.js";
+import CrewSettings from "./settings/crew-settings.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
+
+async function parseSkillList() {
+  try {
+    return JSON.parse(await game.settings.get("starwarsffg", "arraySkillList"));
+  } catch (e) {
+    CONFIG.logger.log("Could not parse custom skill list, returning raw setting");
+    return await game.settings.get("starwarsffg", "arraySkillList");
+  }
+}
 
 Hooks.once("init", async function () {
   console.log(`Initializing SWFFG System`);
@@ -99,7 +110,7 @@ Hooks.once("init", async function () {
 
     const pct = Math.clamped(val, 0, data.max) / data.max;
     let h = Math.max(canvas.dimensions.size / 12, 8);
-    if (this.data.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
+    if (this.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
     // Draw the bar
     let color = number === 0 ? [1 - pct / 2, pct, 0] : [0.5 * pct, 0.7 * pct, 0.5 + pct / 2];
     bar
@@ -124,12 +135,12 @@ Hooks.once("init", async function () {
 
   switch (uitheme) {
     case "mandar": {
-      $('link[href="systems/starwarsffg/styles/starwarsffg.css"]').prop("disabled", true);
+      $('link[href*="styles/starwarsffg.css"]').prop("disabled", true);
       $("head").append('<link href="systems/starwarsffg/styles/mandar.css" rel="stylesheet" type="text/css" media="all">');
       break;
     }
     default: {
-      $('link[href="systems/starwarsffg/styles/starwarsffg.css"]').prop("disabled", false);
+      $('link[href*="styles/starwarsffg.css"]').prop("disabled", false);
     }
   }
 
@@ -197,12 +208,13 @@ Hooks.once("init", async function () {
     game.settings.register("starwarsffg", "arraySkillList", {
       name: "Skill List",
       scope: "world",
-      default: defaultSkillArrayString,
+      default: defaultSkillList,
       config: false,
-      type: String,
+      type: Object,
+      onChange: SettingsHelpers.debouncedReload,
     });
 
-    let skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+    let skillList = await parseSkillList();
     try {
       CONFIG.FFG.alternateskilllists = skillList;
 
@@ -249,7 +261,9 @@ Hooks.once("init", async function () {
 
         CONFIG.FFG.skills = ordered;
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err);
+    }
 
     Hooks.on("createActor", (actor) => {
       if (actor.type !== "vehicle" && actor.type !== "homestead") {
@@ -259,11 +273,14 @@ Hooks.once("init", async function () {
             let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
             CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
-            actor.update({
-              data: {
-                skills: skills.skills,
-              },
-            });
+            if (!actor?.flags?.starwarsffg?.hasOwnProperty('ffgimportid')) {
+              // only apply the skills if it wasn't an imported actor
+              actor.update({
+                system: {
+                  skills: skills.skills,
+                },
+              });
+            }
           } catch (err) {
             CONFIG.logger.warn(err);
           }
@@ -367,7 +384,7 @@ Hooks.once("init", async function () {
 
   Handlebars.registerHelper("contains", function (obj1, property, value, opts) {
     let bool = false;
-    if (Array.isArray(obj1)) {
+    if (Array.isArray(obj1) || obj1 instanceof Collection) {
       bool = obj1.some((e) => e[property] === value);
     } else if (typeof obj1 === "object") {
       bool = Object.keys(obj1).some(function (k) {
@@ -399,6 +416,16 @@ Hooks.once("init", async function () {
     return ["icons/svg/mystery-man.svg", "icons/svg/item-bag.svg"].includes(img);
   });
 
+  Handlebars.registerHelper('each_when', function(list, propName, value, options) {
+    let result = '';
+    for(let i = 0; i < list.length; ++i)
+        if(list[i][propName] == value)
+            result += options.fn({item: list[i]});
+
+    return result.length > 0 ? result : options.inverse();
+});
+
+
   TemplateHelpers.preload();
 });
 
@@ -413,7 +440,7 @@ Hooks.on("renderSidebarTab", (app, html, data) => {
     const dicePool = new DicePoolFFG();
 
     let user = {
-      data: game.user.data,
+      data: game.user.system,
     };
 
     await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
@@ -489,33 +516,66 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
   });
 });
 
+// Hook journal rendering to convert special text into images
+Hooks.on("renderJournalPageSheet", (...args) => {
+  if (args[0]?.object?.type === 'text' && args.length === 3 && args[2].cssClass === 'locked') {
+    // only run if it's a text sheet in the render mode
+    for (let i = 0; i < args[1].length; i++) {
+      // iterate through each HTML section and update it
+      args[1][i].outerHTML = PopoutEditor.renderDiceImages(args[1][i].outerHTML, {});
+    }
+  }
+  return args;
+});
+
+// Handle crew registration
+Hooks.on("dropActorSheetData", (...args) => {
+    register_crew(...args);
+});
+
 // Handle migration duties
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
 
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
-  const version = game.system.data.version;
-  const isAlpha = game.system.data.version.includes("alpha");
+  const version = game.system.version;
+  const isAlpha = game.system.version.includes("alpha");
 
-  if ((isAlpha || currentVersion === "null" || parseFloat(currentVersion) < parseFloat(game.system.data.version)) && game.user.isGM) {
-    CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.data.version}`);
+  if (isAlpha && game.user.isGM) {
+    let d = new Dialog({
+      title: "Warning",
+      content: "<p>This is an alpha release of the system.  It is not recommended for regular gameplay. <b>There will be bugs.</b> <br><br>Check Discord or the GitHub repo for the latest stable version.</p>",
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: "I understand",
+          callback: () => console.log("Chose One") // leaving in case I get feedback to update a game setting to not show this on every load
+        }
+      },
+      default: "one",
+    });
+    d.render(true);
+  }
+
+  if ((isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
+    CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.version}`);
 
     // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
     // This is a temporary migration check to transfer existing actors .real_value back into the correct .value location.
     game.actors.forEach((actor) => {
-      if (actor.data.type === "character" || actor.data.type === "minion") {
-        if (actor.data.data.stats.wounds.real_value != null) {
-          actor.data.data.stats.wounds.value = actor.data.data.stats.wounds.real_value;
-          game.actors.get(actor.id).update({ ["data.stats.wounds.real_value"]: null });
+      if (actor.type === "character" || actor.type === "minion") {
+        if (actor.system.stats.wounds.real_value != null) {
+          actor.system.stats.wounds.value = actor.system.stats.wounds.real_value;
+          game.actors.get(actor.id).update({ ["system.stats.wounds.real_value"]: null });
           CONFIG.logger.log("Migrated stats.wounds.value from stats.wounds.real_value");
-          CONFIG.logger.log(actor.data.data.stats.wounds);
+          CONFIG.logger.log(actor.system.stats.wounds);
         }
-        if (actor.data.data.stats.strain.real_value != null) {
-          actor.data.data.stats.strain.value = actor.data.data.stats.strain.real_value;
-          game.actors.get(actor.id).update({ ["data.stats.strain.real_value"]: null });
+        if (actor.system.stats.strain.real_value != null) {
+          actor.system.stats.strain.value = actor.system.stats.strain.real_value;
+          game.actors.get(actor.id).update({ ["system.stats.strain.real_value"]: null });
           CONFIG.logger.log("Migrated stats.strain.value from stats.strain.real_value");
-          CONFIG.logger.log(actor.data.data.stats.strain);
+          CONFIG.logger.log(actor.system.stats.strain);
         }
 
         // migrate all character to using current skill list if not default.
@@ -526,13 +586,13 @@ Hooks.once("ready", async () => {
             let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
             CONFIG.logger.log(`Applying skill theme ${skilllist} to actor ${actor.name}`);
 
-            Object.keys(actor.data.data.skills).forEach((skill) => {
-              if (!skills.skills[skill] && !actor.data.data.skills?.[skill]?.nontheme) {
+            Object.keys(actor.system.skills).forEach((skill) => {
+              if (!skills.skills[skill] && !actor.system.skills?.[skill]?.nontheme) {
                 skills.skills[`-=${skill}`] = null;
               } else {
                 skills.skills[skill] = {
                   ...skills.skills[skill],
-                  ...actor.data.data.skills[skill],
+                  ...actor.system.skills[skill],
                 };
               }
             });
@@ -549,7 +609,7 @@ Hooks.once("ready", async () => {
       }
     });
 
-    if (currentVersion === "null" || parseFloat(currentVersion) < 1.1) {
+    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.1) {
       // Migrate alternate skill lists from file if found
       try {
         let skillList = [];
@@ -558,13 +618,13 @@ Hooks.once("ready", async () => {
         if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
           // if the skills.json file is found AND the skillsList in setting is the default skill list then read the data from the file.
           // This will make sure that the data from the JSON file overwrites the data in the setting.
-          if ((await game.settings.get("starwarsffg", "arraySkillList")) === defaultSkillArrayString) {
+          if ((await game.settings.get("starwarsffg", "arraySkillList")) === defaultSkillList) {
             const fileData = await fetch(`/worlds/${game.world.id}/skills.json`).then((response) => response.json());
             await game.settings.set("starwarsffg", "arraySkillList", JSON.stringify(fileData));
             skillList = fileData;
           }
         } else {
-          skillList = JSON.parse(game.settings.get("starwarsffg", "arraySkillList"));
+          skillList = await parseSkillList();
         }
 
         CONFIG.FFG.alternateskilllists = skillList;
@@ -598,21 +658,87 @@ Hooks.once("ready", async () => {
         CONFIG.logger.error(err);
       }
     }
+    // migrate embedded items
+    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.8) {
+      ui.notifications.info(`Migrating Star Wars FFG System Deep Embedded Items`);
+      CONFIG.logger.debug('Migrating Star Wars FFG System Deep Embedded Items');
 
-    if (currentVersion === "null" || parseFloat(currentVersion) < 1.61) {
-      ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.data.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
+      // items owned by actors
+      game.actors.forEach((actor) => {
+        let update_data = [];
+        actor.items.forEach((item) => {
+          let updated_item = item.toObject(true);
+          if (["weapon", "armour", "shipweapon"].includes(item.type)) {
+            // iterate over attachments and modifiers on the item
+            updated_item.system.itemmodifier.map((modifier) => {
+              if (modifier !== null && modifier?.hasOwnProperty('data')) {
+                modifier.system = modifier.data;
+                delete modifier.data;
+              }
+            });
+
+            updated_item.system.itemattachment.map((attachment) => {
+              if (attachment !== null && attachment.hasOwnProperty('data')) {
+                attachment.system = attachment.data;
+                delete attachment.data;
+              }
+            });
+            // push the updated items to the list of items to update
+            update_data.push(updated_item);
+          }
+        });
+        if (!foundry.utils.isEmpty(update_data)) {
+          // persist the changes for items owned by this actor to the DB
+          actor.update({items: update_data});
+        }
+      });
+      // move on to items in the world
+      game.items.forEach((item) => {
+        let updated = false;
+        let updated_item = item.toObject(true);
+        if (["weapon", "armour", "shipweapon"].includes(item.type)) {
+          // iterate over attachments and modifiers on the item
+          updated_item.system.itemmodifier.map((modifier) => {
+            if (modifier?.hasOwnProperty('data')) {
+              updated = true;
+              modifier.system = modifier.data;
+              delete modifier.data;
+            }
+          });
+
+          updated_item.system.itemattachment.map((attachment) => {
+            if (attachment.hasOwnProperty('data')) {
+              updated = true;
+              attachment.system = attachment.data;
+              delete attachment.data;
+            }
+          });
+        }
+        if (updated && !foundry.utils.isEmpty(updated_item)) {
+          // persist the changes to the DB
+          item.update(updated_item);
+        }
+      });
+      CONFIG.logger.debug('Migration of Star Wars FFG System Deep Embedded Items completed!');
+      ui.notifications.info(`Migration of Star Wars FFG System Deep Embedded Items completed!`);
+    }
+
+    // migrate compendiums and flags
+    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.61) {
+      ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
       try {
 
         // Update old pack to latest data model
-        for (let pack of game.packs) {
-          await pack.migrate();
-        }
+          // TODO: uncomment
+        //for (let pack of game.packs) {
+        //  await pack.migrate();
+        //}
 
         // Copy old flags to new system scope
         FlagMigrationHelpers.migrateFlags()
 
-        ui.notifications.info(`Starwars FFG System Migration to version ${game.system.data.version} completed!`, { permanent: true });
+        ui.notifications.info(`Starwars FFG System Migration to version ${game.system.version} completed!`, { permanent: true });
       } catch (err) {
         CONFIG.logger.error(`Error during system migration`, err);
       }
@@ -645,7 +771,7 @@ Hooks.once("ready", async () => {
   Hooks.on("hotbarDrop", (bar, data, slot) => createFFGMacro(data, slot));
 
   Hooks.on("closeItemSheetFFG", (item) => {
-    Hooks.call(`closeAssociatedTalent_${item.object.data._id}`, item);
+    Hooks.call(`closeAssociatedTalent_${item.object._id}`, item);
   });
 
   // Display Destiny Pool
@@ -668,7 +794,7 @@ Hooks.once("ready", async () => {
         const messageText = `<button class="ffg-destiny-roll">${game.i18n.localize("SWFFG.DestinyPoolRoll")}</button>`;
 
         new Map([...game.settings.settings].filter(([k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
-          game.settings.set(i.module, i.key, undefined);
+          game.settings.set(i.namespace, i.key, undefined);
         });
 
         CONFIG.FFG.DestinyGM = game.user.id;
@@ -684,6 +810,8 @@ Hooks.once("ready", async () => {
   const dTracker = new DestinyTracker(undefined, { menu: defaultDestinyMenu });
 
   dTracker.render(true);
+
+  await registerCrewRoles();
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
@@ -916,3 +1044,43 @@ Hooks.on("pauseGame", () => {
     }
   }
 });
+
+async function registerCrewRoles() {
+  const defaultArrayCrewRoles = [
+    {
+      "role_name":  game.i18n.localize("SWFFG.Crew.Roles.None"),
+      "role_skill": undefined,
+      "use_weapons": false,
+      "use_handling": false
+    },
+    {
+      "role_name":  game.i18n.localize("SWFFG.Crew.Roles.Pilot_Space"),
+      "role_skill":  game.i18n.localize("SWFFG.SkillsNamePilotingSpace").replace(' ', ' '),
+      "use_weapons": false,
+      "use_handling": true
+    },
+    {
+      "role_name":  game.i18n.localize("SWFFG.Crew.Roles.Gunner.Name"),
+      "role_skill":  game.i18n.localize("SWFFG.SkillsNameGunnery"),
+      "use_weapons": true,
+      "use_handling": false
+    }
+  ];
+  game.settings.registerMenu("starwarsffg", "arrayCrewRoles", {
+    name: game.i18n.localize("SWFFG.Crew.Settings.Name"),
+    label: game.i18n.localize("SWFFG.Crew.Settings.Label"),
+    hint: game.i18n.localize("SWFFG.Crew.Settings.Hint"),
+    icon: "fas fa-file-import",
+    type: CrewSettings,
+    restricted: true,
+  });
+
+  game.settings.register("starwarsffg", "arrayCrewRoles", {
+    module: "starwarsffg",
+    name: "arrayCrewRoles",
+    scope: "world",
+    default: defaultArrayCrewRoles,
+    config: false,
+    type: Object,
+  });
+}

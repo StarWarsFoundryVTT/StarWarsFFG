@@ -233,6 +233,7 @@ img {
 }
 .starwarsffg.sheet.actor .tabs .item {
   line-height: 15px;
+  padding: 0;
 }
 .starwarsffg.sheet.actor .characteristic-item .characteristic-label {
   background-color: #490c0b;
@@ -336,6 +337,11 @@ img {
 }
 .starwarsffg.sheet.actor .character .header-fields .row .row-input .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .career-pill .item-delete {
   cursor: pointer;
+}
+.starwarsffg.sheet.actor .character .header-fields .row .row-input .drag-note {
+  border: 2px dotted;
+  border-radius: 10px;
+  padding: 0 5px;
 }
 .starwarsffg.sheet.actor .character .header-fields .row input {
   width: 100%;
@@ -529,6 +535,7 @@ img {
 }
 .starwarsffg.sheet.item .tabs .item {
   line-height: 15px;
+  padding: 0;
 }
 .starwarsffg.sheet.item .characteristic .characteristic-value.restricted::after {
   content: "R";
@@ -1118,6 +1125,10 @@ img {
 }
 .starwarsffg .ffgDiceArray .dice-rolls .roll {
   width: 40px;
+  float: left;
+}
+.starwarsffg .dice-tooltip .dice-rolls .roll {
+  width: 24px;
   float: left;
 }
 .starwarsffg .dice-result .roll-success {
@@ -2185,6 +2196,7 @@ img {
 .starwarsffg .hover:hover .tooltip2 {
   opacity: 1;
   z-index: 500;
+  pointer-events: none;
 }
 .starwarsffg .hover:focus .tooltip2 {
   opacity: 1;
@@ -2356,6 +2368,12 @@ img {
 }
 .starwarsffg .talent-list .item.forcepower #context-menu {
   max-width: none;
+}
+.starwarsffg .force-conflict {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  row-gap: 3px;
 }
 .starwarsffg.sheet.item .item-sheet-specialization .popout-editor {
   height: 100%;

@@ -10,10 +10,10 @@ export class ActorFFG extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
   prepareDerivedData() {
-    CONFIG.logger.debug(`Preparing Actor Data ${this.data.type}`);
-    const actorData = this.data;
-    const data = actorData.data;
-    const flags = actorData.flags;
+    CONFIG.logger.debug(`Preparing Actor Data ${this.type}`);
+    const actor = this;
+    const data = actor.system;
+    const flags = actor.flags;
 
     // Make separate methods for each Actor type (character, minion, etc.) to keep
     // things organized.
@@ -40,13 +40,13 @@ export class ActorFFG extends Actor {
       });
     }
     this._prepareSharedData.bind(this);
-    this._prepareSharedData(actorData);
-    if (actorData.type === "minion") this._prepareMinionData(actorData);
-    if (actorData.type === "character") this._prepareCharacterData(actorData);
+    this._prepareSharedData(actor);
+    if (actor.type === "minion") this._prepareMinionData(actor);
+    if (actor.type === "character") this._prepareCharacterData(actor);
   }
 
   _prepareSharedData(actorData) {
-    const data = actorData.data;
+    const data = actorData.system;
     //data.biography = PopoutEditor.replaceRollTags(data.biography, actorData);
     data.biography = PopoutEditor.renderDiceImages(data.biography, actorData);
 
@@ -90,7 +90,7 @@ export class ActorFFG extends Actor {
    * Prepare Minion type specific data
    */
   _prepareMinionData(actorData) {
-    const data = actorData.data;
+    const data = actorData.system;
 
     // Set Wounds threshold to unit_wounds * quantity to account for minion group health.
     data.stats.wounds.max = Math.floor(data.unit_wounds.value * data.quantity.max);
@@ -110,6 +110,8 @@ export class ActorFFG extends Actor {
         // Check we don't go below 0.
         if (skill.rank < 0) {
           skill.rank = 0;
+        } else if (skill.rank > 5) {
+          skill.rank = 5;
         }
       } else if (!skill.groupskill) {
         skill.rank = data.attributes[key].value;
@@ -125,20 +127,20 @@ export class ActorFFG extends Actor {
       const item = {
         name: element.name,
         itemId: element.id,
-        description: element.data?.data?.description,
-        activation: element.data?.data?.activation?.value,
-        activationLabel: element.data?.data?.activation?.label,
-        isRanked: element.data?.data?.ranks?.ranked,
+        description: element.system?.description,
+        activation: element.system.activation?.value,
+        activationLabel: element.system.activation?.label,
+        isRanked: element.system.ranks?.ranked,
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
       };
       if (item.isRanked) {
-        item.rank = element.data?.data?.ranks?.current;
+        item.rank = element.system.ranks?.current;
       } else {
         item.rank = "N/A";
       }
 
       if (CONFIG.FFG.theme !== "starwars") {
-        item.tier = parseInt(element.data?.data?.tier, 10);
+        item.tier = parseInt(element.system.tier, 10);
       }
 
       let index = globalTalentList.findIndex((obj) => {
@@ -149,9 +151,9 @@ export class ActorFFG extends Actor {
         globalTalentList.push(item);
       } else {
         globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
-        globalTalentList[index].rank += element.data?.data?.ranks?.current;
+        globalTalentList[index].rank += element.system.ranks?.current;
         if (CONFIG.FFG.theme !== "starwars") {
-          globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.data?.data?.tier, 10) - 1));
+          globalTalentList[index].tier = Math.abs(globalTalentList[index].rank + (parseInt(element.system.tier, 10) - 1));
         }
       }
     });
@@ -176,14 +178,14 @@ export class ActorFFG extends Actor {
         return comparison;
       });
     }
-    data.talentList = globalTalentList;
+    actorData.talentList = globalTalentList;
   }
 
   /**
    * Prepare Character type specific data
    */
   _prepareCharacterData(actorData) {
-    const data = actorData.data;
+    const data = actorData;
 
     // Build complete talent list.
 
@@ -195,14 +197,14 @@ export class ActorFFG extends Actor {
     specializations.forEach((element) => {
       //go through each list of talent where learned = true
 
-      const learnedTalents = Object.keys(element.data.data.talents).filter((key) => element.data.data.talents[key].islearned === true);
+      const learnedTalents = Object.keys(element.system.talents).filter((key) => element.system.talents[key].islearned === true);
 
       learnedTalents.forEach((talent) => {
-        const item = JSON.parse(JSON.stringify(element.data.data.talents[talent]));
+        const item = JSON.parse(JSON.stringify(element.system.talents[talent]));
         item.firstSpecialization = element.id;
         item.source = [{ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element.id }];
         if (item.isRanked) {
-          item.rank = element.data.data.talents[talent]?.rank ? element.data.data.talents[talent].rank : 1;
+          item.rank = element.system.talents[talent]?.rank ? element.system.talents[talent].rank : 1;
         } else {
           item.rank = "N/A";
         }
@@ -214,7 +216,7 @@ export class ActorFFG extends Actor {
           globalTalentList.push(item);
         } else {
           globalTalentList[index].source.push({ type: "specialization", typeLabel: "SWFFG.Specialization", name: element.name, id: element.id });
-          globalTalentList[index].rank += element.data.data.talents[talent]?.rank ? element.data.data.talents[talent].rank : 1;
+          globalTalentList[index].rank += element.system.talents[talent]?.rank ? element.system.talents[talent].rank : 1;
         }
       });
     });
@@ -227,21 +229,21 @@ export class ActorFFG extends Actor {
       const item = {
         name: element.name,
         itemId: element.id,
-        description: element.data?.data?.description,
-        activation: element.data?.data?.activation?.value,
-        activationLabel: element.data?.data?.activation?.label,
-        isRanked: element.data?.data?.ranks?.ranked,
+        description: element.system?.description,
+        activation: element.system?.activation?.value,
+        activationLabel: element.system?.activation?.label,
+        isRanked: element.system?.ranks?.ranked,
         source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
       };
 
       if (item.isRanked) {
-        item.rank = element.data.data.ranks.current;
+        item.rank = element.system.ranks.current;
       } else {
         item.rank = "N/A";
       }
 
       if (CONFIG.FFG.theme !== "starwars") {
-        item.tier = parseInt(element.data?.data?.tier, 10);
+        item.tier = parseInt(element.system?.tier, 10);
       }
 
       let index = globalTalentList.findIndex((obj) => {
@@ -252,9 +254,9 @@ export class ActorFFG extends Actor {
         globalTalentList.push(item);
       } else {
         globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
-        globalTalentList[index].rank += element.data.data.ranks.current;
+        globalTalentList[index].rank += element.system.ranks.current;
         if (CONFIG.FFG.theme !== "starwars") {
-          globalTalentList[index].tier = Math.abs(parseInt(globalTalentList[index].rank) + (parseInt(element.data?.data?.tier, 10) - 1));
+          globalTalentList[index].tier = Math.abs(parseInt(globalTalentList[index].rank) + (parseInt(element.system?.tier, 10) - 1));
         }
       }
     });
@@ -313,36 +315,36 @@ export class ActorFFG extends Actor {
   }
 
   _calculateDerivedValues(actorData) {
-    const data = actorData.data;
-    const items = actorData.items.map((item) => item.data);
+    const data = actorData.system;
+    const items = actorData.items;
     var encum = 0;
 
     // Loop through all items
-    for (let [key, item] of Object.entries(items)) {
+    items.forEach(function(item) {
       try {
         // Calculate encumbrance, only if encumbrance value exists
-        if (item.data?.encumbrance?.adjusted !== undefined || item.data?.encumbrance?.value !== undefined) {
-          if (item.type === "armour" && item?.data?.equippable?.equipped) {
-            const equippedEncumbrance = +item.data.encumbrance.adjusted - 3;
+        if (item.system?.encumbrance?.adjusted !== undefined || item.system?.encumbrance?.value !== undefined) {
+          if (item.type === "armour" && item?.system?.equippable?.equipped) {
+            const equippedEncumbrance = +item.system.encumbrance.adjusted - 3;
             encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
           } else if (item.type === "armour" || item.type === "weapon" || item.type === "shipweapon") {
             let count = 0;
-            if (item.data?.quantity?.value) {
-              count = item.data.quantity.value;
+            if (item.system?.quantity?.value) {
+              count = item.system.quantity.value;
             }
-            encum += ((item.data?.encumbrance?.adjusted !== undefined) ? item.data?.encumbrance?.adjusted : item.data?.encumbrance?.value) * count;
+            encum += ((item.system?.encumbrance?.adjusted !== undefined) ? item.system?.encumbrance?.adjusted : item.system?.encumbrance?.value) * count;
           } else {
             let count = 0;
-            if (item.data?.quantity?.value) {
-              count = item.data.quantity.value;
+            if (item.system?.quantity?.value) {
+              count = item.system.quantity.value;
             }
-            encum += item.data?.encumbrance?.value * count;
+            encum += item.system?.encumbrance?.value * count;
           }
         }
       } catch (err) {
         CONFIG.logger.error(`Error calculating derived Encumbrance`, err);
       }
-    }
+    });
 
     // Set Encumbrance value on character.
     data.stats.encumbrance.value = encum;
@@ -407,8 +409,7 @@ export class ActorFFG extends Actor {
    * @param  {string} modifierType
    */
   _setModifiers(actorData, properties, name, modifierType) {
-    const actor = this;
-    const data = actorData.data;
+    const data = actorData.system;
     const attributes = Object.keys(data.attributes)
       .filter((key) =>
         Object.keys(properties)
@@ -446,7 +447,7 @@ export class ActorFFG extends Actor {
           value = [data[name][k].fore, data[name][k].port, data[name][k].starboard, data[name][k].aft];
         } else if (key === "Soak") {
           try {
-            if ((typeof actorData.data.flags?.config?.enableAutoSoakCalculation === undefined && game.settings.get("starwarsffg", "enableSoakCalc")) || actorData.data.flags?.config?.enableAutoSoakCalculation) {
+            if ((typeof actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation === undefined && game.settings.get("starwarsffg", "enableSoakCalc")) || actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation) {
               value = 0;
             }
           } catch (err) {
@@ -505,12 +506,12 @@ export class ActorFFG extends Actor {
    * @param  {object} actorData
    */
   _applyModifiers(actorData) {
-    const data = actorData.data;
+    const data = actorData.system;
     const isPC = this.hasPlayerOwner;
     if (!actorData.modifiers) {
       actorData.modifiers = {};
     }
-    const items = actorData.items.map((item) => item.data);
+    const items = actorData.items;
 
     this._setModifiers.bind(this);
 
@@ -587,6 +588,10 @@ export class ActorFFG extends Actor {
       const setback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Setback", true);
       const remsetback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Remove Setback", true);
 
+      const upgradesValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Add Upgrade", true);
+      data.skills[key].upgrades = upgradesValues.total;
+      data.skills[key].upgradessource = upgradesValues.sources;
+
       const setValueAndSources = (modifiername, propertyname) => {
         const obj = ModifierHelpers.getCalculatedValueFromItems(items, key, modifiername, true);
         if (obj.total > 0) {
@@ -603,6 +608,7 @@ export class ActorFFG extends Actor {
       setValueAndSources("Skill Add Threat", "threat");
       setValueAndSources("Skill Add Triumph", "triumph");
       setValueAndSources("Skill Add Despair", "despair");
+      setValueAndSources("Skill Add Upgrade", "upgrades");
 
       const forceboost = ModifierHelpers.getCalculatedValueFromItems(items, key, "Force Boost", true);
       data.skills[key].force = 0;
@@ -634,13 +640,13 @@ export class ActorFFG extends Actor {
   }
 
   _applyVehicleModifiers(actorData) {
-    const data = actorData.data;
+    const data = actorData.system;
     const isPC = this.hasPlayerOwner;
     if (!actorData.modifiers) {
       actorData.modifiers = {};
     }
 
-    const items = actorData.items.map((item) => item.data);
+    const items = actorData.items;
 
     this._setModifiers(actorData, CONFIG.FFG.vehicle_stats, "stats", "Stat");
     Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {

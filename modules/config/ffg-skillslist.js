@@ -1,5 +1,5 @@
 // Alternate Skill Lists
-export const defaultSkillArrayString = JSON.stringify([
+export const defaultSkillList = [
   {
     "id": "starwars",
     "skills": {
@@ -1626,4 +1626,4 @@ export const defaultSkillArrayString = JSON.stringify([
       },
     },
   },
-]);
+];

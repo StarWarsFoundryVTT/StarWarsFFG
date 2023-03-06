@@ -18,6 +18,7 @@ export default class RollBuilderFFG extends FormApplication {
       id: "roll-builder",
       classes: ["starwarsffg", "roll-builder-dialog"],
       template: "systems/starwarsffg/templates/dice/roll-options-ffg.html",
+      width: 350
     });
   }
 
@@ -68,7 +69,7 @@ export default class RollBuilderFFG extends FormApplication {
     if (game.user.isGM) {
       game.users.contents.forEach((user) => {
         if (user.visible && user.id !== game.user.id) {
-          users.push({ name: user.data.name, id: user.id });
+          users.push({ name: user.name, id: user.id });
         }
       });
     }
@@ -97,7 +98,7 @@ export default class RollBuilderFFG extends FormApplication {
     this._initializeInputs(html);
     this._activateInputs(html);
 
-    html.find(".btn").click((event) => {
+    html.find(".btn").click(async (event) => {
       // if sound was not passed search for sound dropdown value
       if (!this.roll.sound) {
         const sound = html.find(".sound-selection")?.[0]?.value;
@@ -107,22 +108,22 @@ export default class RollBuilderFFG extends FormApplication {
             let entity;
             let entityData;
             if (!this?.roll?.item?.flags?.starwarsffg?.uuid) {
-              entity = CONFIG["Actor"].documentClass.collection.get(this.roll.data.actor.id);
+              entity = game.actors.get(this.roll.data.actor._id);
               entityData = {
                 _id: this.roll.item.id,
               };
             } else {
               const parts = this.roll.item.flags.starwarsffg?.uuid.split(".");
-              const [entityName, entityId, embeddedName, embeddedId] = parts;
-              entity = CONFIG[entityName].documentClass.collection.get(entityId);
-              if (parts.length === 4) {
+              const [sceneName, sceneId, entityName, entityId, embeddedName, embeddedId] = parts;
+              entity = game.actors.tokens[entityId].items.get(embeddedId);
+              if (parts.length === 6) {
                 entityData = {
-                  _id: embeddedId,
+                  _id: entity.id,
                 };
               }
             }
             setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
-            entity.updateOwnedItem(entityData);
+            entity.update(entityData);
           }
         }
       }
@@ -132,6 +133,13 @@ export default class RollBuilderFFG extends FormApplication {
         if (flavor) {
           this.roll.flavor = flavor;
         }
+      }
+
+      // validate that required data is present
+      if (this.roll.item?.uuid && !this.roll.item.flags?.starwarsffg?.uuid) {
+        // uuid flag is missing, look up the item and set it, so it's fixed going forward
+        const tmp_item = await fromUuid(this.roll.item.uuid);
+        await tmp_item.setFlag("starwarsffg", "uuid", this.roll.item.uuid);
       }
 
       const sentToPlayer = html.find(".user-selection")?.[0]?.value;
@@ -163,8 +171,15 @@ export default class RollBuilderFFG extends FormApplication {
 
         ChatMessage.create(chatOptions);
       } else {
+        if (this.roll.crew) {
+          this.roll.item['crew'] = this.roll.crew
+        }
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
-        roll.toMessage({
+        // check if this is a crew roll - and it's a roll for a weapon
+        if (this.roll.item && this.roll.item.hasOwnProperty('crew') && Object.keys(this.roll.item).length > 1) {
+          await this.roll.item.update({"flags": {"starwarsffg": {"crew": this.roll.item.crew}}})
+        }
+        await roll.toMessage({
           user: game.user.id,
           speaker: {
             actor: game.actors.get(this.roll.data?.actor?._id),

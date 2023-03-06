@@ -1,5 +1,4 @@
 import PopoutEditor from "../popout-editor.js";
-import JournalEntryFFG from "../items/journalentry-ffg.js";
 
 export default class EmbeddedItemHelpers {
   static async updateRealObject(item, data) {
@@ -80,7 +79,9 @@ export default class EmbeddedItemHelpers {
       let formData = {};
       setProperty(formData, `data.${parents[0].ffgTempItemType}`, realItem.data.data[parents[0].ffgTempItemType]);
 
-      if (item.data.constructor.name === "ItemData") {
+      // TODO: validate that changing this doesn't break things
+      // that being said, itemData was removed as part of the original v10 migration
+      if (item.system.constructor.name === "Object") {
         item.data.update(data);
       } else {
         item.data = itemData;
@@ -115,7 +116,7 @@ export default class EmbeddedItemHelpers {
       let actor;
 
       if (compendium) {
-        actor = await compendium.getEntity(actorId);
+        actor = await compendium.get(actorId);
       } else {
         actor = await game.actors.get(actorId);
       }
@@ -125,15 +126,15 @@ export default class EmbeddedItemHelpers {
 
       let modifierIndex;
       let item;
-      if (ownedItem?.data?.data?.[modifierType]) {
-        modifierIndex = ownedItem.data.data[modifierType].findIndex((i) => i._id === modifierId || i.id === modifierId);
-        item = ownedItem.data.data[modifierType][modifierIndex];
+      if (ownedItem?.system[modifierType]) {
+        modifierIndex = ownedItem.system[modifierType].findIndex((i) => i?._id === modifierId || i?.id === modifierId);
+        item = ownedItem.system[modifierType][modifierIndex];
       }
 
       if (!item) {
         // this is a modifier on an attachment
-        ownedItem.data.data.itemattachment.forEach((a) => {
-          modifierIndex = a.data[modifierType].findIndex((m) => m.id === modifierId);
+        ownedItem.system.itemattachment.forEach((a) => {
+          modifierIndex = a.system[modifierType].findIndex((m) => m.id === modifierId);
           if (modifierIndex > -1) {
             item = a.data[modifierType][modifierIndex];
           }
@@ -142,14 +143,21 @@ export default class EmbeddedItemHelpers {
 
       const readonlyItem = {
         name: item.name,
-        content: item.data.description,
-        permission: {
-          default: CONST.ENTITY_PERMISSIONS.OBSERVER,
+        pages: [{
+            name: item.name,
+            type: 'text',
+            text: {
+                content: item.system.description,
+                format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML
+            },
+        }],
+        ownership: {
+          default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
         },
       };
 
-      const readonlyItemJournalEntry = new JournalEntryFFG(readonlyItem, { temporary: true });
-      readonlyItemJournalEntry.sheet.render(true);
+      let readonlyItemJournalEntry = await JournalEntry.create(readonlyItem, {temporary: true});
+      readonlyItemJournalEntry.sheet.render(true)
     } catch (err) {
       ui.notifications.warn(`The item or quality has been removed or can not be found!`);
       CONFIG.logger.warn(`Error loading Read-Only Journal Item`, err);

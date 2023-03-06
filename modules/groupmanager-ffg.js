@@ -72,8 +72,8 @@ export class GroupManager extends FormApplication {
       players.forEach((player) => {
         if (player.character) {
           try {
-            obligationRangeStart = this._addCharacterObligationDuty(player.character, obligationRangeStart, player.character.data.data.obligationlist, "obligations");
-            dutyRangeStart = this._addCharacterObligationDuty(player.character, dutyRangeStart, player.character.data.data.dutylist, "duties");
+            obligationRangeStart = this._addCharacterObligationDuty(player.character, obligationRangeStart, player.character.system.obligationlist, "obligations");
+            dutyRangeStart = this._addCharacterObligationDuty(player.character, dutyRangeStart, player.character.system.dutylist, "duties");
             //obligationRangeStart = this._addCharacterObligations(player.character, obligationRangeStart);
             //dutyRangeStart = this._addCharacterDuties(player.character, dutyRangeStart);
             characters.push(player.character);
@@ -87,13 +87,13 @@ export class GroupManager extends FormApplication {
         const char = game.actors.filter((actor) => actor.hasPerm(player, "OWNER"));
         char.forEach((c) => {
           try {
-            obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.data.data.obligationlist, "obligations");
-            dutyRangeStart = this._addCharacterObligationDuty(c, dutyRangeStart, c.data.data.dutylist, "duties");
+            obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.system.obligationlist, "obligations");
+            dutyRangeStart = this._addCharacterObligationDuty(c, dutyRangeStart, c.system.dutylist, "duties");
             characters.push(c);
             // obligationRangeStart = this._addCharacterObligations(c, obligationRangeStart);
             // dutyRangeStart = this._addCharacterDuties(c, dutyRangeStart);
           } catch (err) {
-            CONFIG.logger.warn(`Unable to add player (${c.data.name}) to obligation/duty table`, err);
+            CONFIG.logger.warn(`Unable to add player (${c.name}) to obligation/duty table`, err);
           }
         });
       });
@@ -293,16 +293,17 @@ export class GroupManager extends FormApplication {
     const createData = tokens.map((t) => {
       return { tokenId: t.id };
     });
-    await game.combat.createCombatant(createData);
+    await game.combat.createEmbeddedDocuments('Combatant', createData);
   }
 
   async _addCharacterToCombat(character, cbt) {
     await this._setupCombat(cbt);
     let token = await this._getCharacterToken(game.actors.get(character));
     if (token && !token.inCombat) {
-      await game.combat.createCombatant({ tokenId: token.id });
+        await game.combat.createEmbeddedDocuments('Combatant', [{ tokenId: token.id }]);
+      //await game.combat.createCombatant({ tokenId: token.id });
     } else {
-      ui.notifications.warn(`${c.name} has no active Token in the current scene.`);
+      ui.notifications.warn(`User has no active Token in the current scene.`);
     }
   }
 
@@ -338,8 +339,8 @@ export class GroupManager extends FormApplication {
           callback: () => {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
-            character.update({ ["data.experience.total"]: +character.data.data.experience.total + +amount.value });
-            character.update({ ["data.experience.available"]: +character.data.data.experience.available + +amount.value });
+            character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
+            character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
             ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
           },
         },
@@ -370,8 +371,8 @@ export class GroupManager extends FormApplication {
             const amount = container.querySelector('input[name="amount"]');
             characters.forEach((c) => {
               const character = game.actors.get(c);
-              character.update({ ["data.experience.total"]: +character.data.data.experience.total + +amount.value });
-              character.update({ ["data.experience.available"]: +character.data.data.experience.available + +amount.value });
+              character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
+              character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
               ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
             });
           },

@@ -6,12 +6,12 @@ export default class ActorOptions {
   }
 
   init(html) {
-    const options = $(`#actor-${this.data.object.id} .ffg-sheet-options`);
-    if (options.length === 0) {
-      const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
-      button.insertBefore(`#actor-${this.data.object.id} header a:first`);
-      button.on("click", this.handler.bind(this));
-    }
+      const options = $(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] .ffg-sheet-options`);
+      if (options.length === 0) {
+        const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
+        button.insertBefore(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] header a:first`);
+        button.on("click", this.handler.bind(this));
+      }
   }
 
   handler(event) {
@@ -66,7 +66,7 @@ export default class ActorOptions {
     if (!this.options[optionName]) {
       this.options[optionName] = { ...options };
     }
-    if (typeof this.data.object.data.flags?.starwarsffg?.config == "undefined") {
+    if (typeof this.data.object.flags?.starwarsffg?.config == "undefined") {
       await this.data.object.setFlag("starwarsffg", "config", {});
     }
 

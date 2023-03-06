@@ -27,6 +27,8 @@ export class DicePoolFFG {
     this.triumph = obj.triumph || 0;
     this.despair = obj.despair || 0;
 
+    this.upgrades = obj.upgrades || 0;
+
     this.source = {};
 
     if (obj?.source?.skill?.length) {
@@ -70,6 +72,16 @@ export class DicePoolFFG {
             return `${rank.name} (${rank.type}): +${rank.value} setback dice`;
           }
           return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} setback dice`;
+        });
+    }
+    if (obj?.source?.upgrades?.length) {
+      this.source.upgrades = obj.source.upgrades
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Upgrade") {
+            return `${rank.name} (${rank.type}): ${rank.value} upgrade(s)`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
   }
@@ -251,7 +263,7 @@ export class DicePoolFFG {
   }
 
   _addSourceToolTip(container) {
-    const createToolTip = this.source?.skill?.length || this.source?.boost?.length || this.source?.remsetback?.length || this.source?.setback?.length;
+    const createToolTip = this.source?.skill?.length || this.source?.boost?.length || this.source?.remsetback?.length || this.source?.setback?.length || this.source?.upgrades?.length;
 
     if (createToolTip) {
       const mapDataToString = (values) => {
@@ -273,6 +285,9 @@ export class DicePoolFFG {
       }
       if (this.source?.setback?.length) {
         mapDataToString(this.source.setback);
+      }
+      if (this.source?.upgrades?.length) {
+        mapDataToString(this.source.upgrades);
       }
 
       container.classList.add("hover");
@@ -302,6 +317,7 @@ export class DicePoolFFG {
       dark: container.querySelector('[name="dark"]')?.value ? container.querySelector('[name="dark"]').value : 0,
       triumph: container.querySelector('[name="triumph"]')?.value ? container.querySelector('[name="triumph"]').value : 0,
       despair: container.querySelector('[name="despair"]')?.value ? container.querySelector('[name="despair"]').value : 0,
+      upgrades: container.querySelector('[name="upgrades"]')?.value ? container.querySelector('[name="upgrades"]').value : 0,
     });
   }
 }
