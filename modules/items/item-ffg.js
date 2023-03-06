@@ -388,6 +388,7 @@ export class ItemFFG extends ItemBaseFFG {
     });
 
     item[listProperty] = itemList;
+    this.update({system: {collection: talents}})
   }
 
   async _prepareSpecializations() {
