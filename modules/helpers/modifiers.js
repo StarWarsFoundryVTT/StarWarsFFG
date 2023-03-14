@@ -156,8 +156,9 @@ export default class ModifierHelpers {
                     sources.push({ modtype, key, name: item.name, value: attr.value * multiplier, type: item.type });
                     total += parseInt(attr.value, 10) * multiplier;
                   } else {
+                    const quantity = (isNaN(item.system?.quantity?.value)) ? 1 : item.system.quantity.value;
                     sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
-                    total += parseInt(attr.value, 10);
+                    total += parseInt(attr.value, 10) * quantity;
                   }
                 }
               });
