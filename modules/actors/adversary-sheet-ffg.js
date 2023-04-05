@@ -68,6 +68,12 @@ export class AdversarySheetFFG extends ActorSheetFFG {
         type: "Boolean",
         default: true,
       });
+      this.sheetoptions.register("enableStrainThreshold", {
+        name: game.i18n.localize("SWFFG.EnableStrainThreshold"),
+        hint: game.i18n.localize("SWFFG.EnableStrainThresholdHint"),
+        type: "Boolean",
+        default: true,
+      });
       this.sheetoptions.register("talentSorting", {
         name: game.i18n.localize("SWFFG.EnableSortTalentsByActivation"),
         hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
