@@ -2218,6 +2218,7 @@ export default class ImportHelpers {
       const crt = await pack.importDocument(compendiumItem);
       CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = duplicate(crt);
     } else {
+      CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name} : ${JSON.stringify(entry)}`);
       let upd;
       if (removeFirst) {
         await pack.delete(entry.id);
