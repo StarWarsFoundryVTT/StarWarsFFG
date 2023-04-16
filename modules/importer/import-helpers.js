@@ -2254,7 +2254,11 @@ export default class ImportHelpers {
         }
 
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
-        await pack.get(updateData._id)?.update(updateData);
+        try {
+          await pack.get(updateData._id).update(updateData);
+        } catch (e) {
+          CONFIG.logger.error(`Failed to update ${type} ${dataType} ${data.name} : ${e.toString()}`);
+        }
         upd = duplicate(entry);
         if (upd.data) {
           upd.data = mergeObject(upd.data, data.data);
