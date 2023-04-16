@@ -173,7 +173,7 @@ export default class ImportHelpers {
 
           const content = await pack.getDocuments();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = duplicate(content[i]);
+            CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = deepClone(content[i]);
           }
         }
       } else {
