@@ -173,7 +173,7 @@ export default class ImportHelpers {
 
           const content = await pack.getDocuments();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = duplicate(content[i]);
+            CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = deepClone(content[i]);
           }
         }
       } else {
@@ -2218,6 +2218,7 @@ export default class ImportHelpers {
       const crt = await pack.importDocument(compendiumItem);
       CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = duplicate(crt);
     } else {
+      CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name} : ${JSON.stringify(entry)}`);
       let upd;
       if (removeFirst) {
         await pack.delete(entry.id);
@@ -2254,7 +2255,11 @@ export default class ImportHelpers {
         }
 
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
-        await pack.get(updateData._id)?.update(updateData);
+        try {
+          await pack.get(updateData._id).update(updateData);
+        } catch (e) {
+          CONFIG.logger.error(`Failed to update ${type} ${dataType} ${data.name} : ${e.toString()}`);
+        }
         upd = duplicate(entry);
         if (upd.data) {
           upd.data = mergeObject(upd.data, data.data);
