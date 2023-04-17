@@ -84,7 +84,7 @@ export class GroupManager extends FormApplication {
       });
     } else if (pcListMode === "owned") {
       players.forEach((player) => {
-        const char = game.actors.filter((actor) => actor.hasPerm(player, "OWNER"));
+        const char = game.actors.filter((actor) => actor.testUserPermission(player, "OWNER"));
         char.forEach((c) => {
           try {
             obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.system.obligationlist, "obligations");
