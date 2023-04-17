@@ -1441,9 +1441,7 @@ export class ActorSheetFFG extends ActorSheet {
       };
       if (game.settings.get("starwarsffg", "skillSorting")) {
         sortFunction = (a, b) => {
-          if (data.data.skills[a].label > data.data.skills[b].label) return 1;
-          if (data.data.skills[a].label < data.data.skills[b].label) return -1;
-          return 0;
+          return data.data.skills[a].label.localeCompare(data.data.skills[b].label, game.i18n.lang);
         };
       }
 
