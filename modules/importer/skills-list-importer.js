@@ -77,36 +77,42 @@ export default class SkillListImporter extends FormApplication {
     });
 
     html.find(".dialog-button").on("click", async (event) => {
-      event.preventDefault();
-      event.stopPropagation();
+      try {
+        event.preventDefault();
+        event.stopPropagation();
 
-      const form = html[0];
-      if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
-      const text = await readTextFromFile(form.data.files[0]);
+        const form = html[0];
+        if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
+        const text = await readTextFromFile(form.data.files[0]);
 
-      let currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
+        let currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
 
-      const newSkillList = JSON.parse(text);
+        const newSkillList = JSON.parse(text);
 
-      Object.keys(newSkillList.skills).forEach((skill) => {
-        if (!newSkillList.skills[skill].custom && !newSkillList.skills[skill].label.includes("SWFFG.")) {
-          newSkillList.skills[skill].custom = true;
+        Object.keys(newSkillList.skills).forEach((skill) => {
+          if (!newSkillList.skills[skill].custom && !newSkillList.skills[skill].label.includes("SWFFG.")) {
+            newSkillList.skills[skill].custom = true;
+          }
+        });
+
+        // Check to find if imported skill list id is already in master skilltheme list
+        const skillIndex = currentSkillList.findIndex((i) => i.id === newSkillList.id);
+        if (skillIndex >= 0) {
+          currentSkillList[skillIndex] = newSkillList;
+        } else {
+          currentSkillList.push(newSkillList);
         }
-      });
 
-      // Check to find if imported skill list id is already in master skilltheme list
-      const skillIndex = currentSkillList.findIndex((i) => i.id === newSkillList.id);
-      if (skillIndex >= 0) {
-        currentSkillList[skillIndex] = newSkillList;
-      } else {
-        currentSkillList.push(newSkillList);
+        const newMasterSkillListData = currentSkillList;
+        await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
+        debounce(() => window.location.reload(), 100);
+
+        this.close();
+      } catch (error) {
+        ui.notifications.warn(`Error importing the file. Check the console (f12) for details.`);
+        CONFIG.logger.error(`Error importing the file`, error);
+        this.close();
       }
-
-      const newMasterSkillListData = currentSkillList;
-      await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
-      debounce(() => window.location.reload(), 100);
-
-      this.close();
     });
   }
 }
