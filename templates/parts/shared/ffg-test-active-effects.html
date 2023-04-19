@@ -1,0 +1,76 @@
+<header class="attributes-header flexrow">
+    <span class="attribute-modtype">{{ localize "SWFFG.ModifierType"}}</span>
+    <span class="attribute-mod">{{ localize "SWFFG.Modifier"}}</span>
+    <span class="attribute-value">{{ localize "SWFFG.ModifierValue"}}</span>
+    <a class="attribute-control" data-action="create"><i class="fas fa-plus"></i></a>
+</header>
+
+<ol class="attributes-list">
+    {{#each data.attributes as |attr key|}} {{#if attr.exclude}} {{else}}
+    <li class="attribute flexrow" data-attribute="{{ key }}">
+        <input class="attribute-key" type="text" name="data.attributes.{{ key }}.key" value="{{ key }}" style="display: none;"/>
+
+        {{!-- modifier type selector --}}
+        <select class="attribute-modtype" name="data.attributes.{{ key }}.modtype">
+             {{#select attr.modtype}}
+                {{#each ../this.FFG.mod_types as |t|}}
+                <!-- was this.FFG.mod_types -->
+                <!-- updated to ../data/new_categories -->
+                    <option value="{{ t.value }}">{{ localize t.label}}</option>
+                {{/each}}
+            {{/select}}
+        </select>
+
+        {{!-- modifier selector --}}
+        <select class="attribute-mod" name="data.attributes.{{ key }}.mod">
+            {{#select attr.mod}}
+                {{#if (eq attr.modtype "Stat") }}
+                    {{#each ../this.FFG.character_stats as |t|}}
+                    <!-- unmodified -->
+                        <option value="{{ t.value }}">{{ localize t.label}}</option>
+                    {{/each}}
+                {{/if}}
+                {{#if (eq attr.modtype "Characteristic")}}
+                    {{#each ../this.FFG.characteristics as |t|}}
+                    <!-- was this.FFG.characteristics -->
+                    <!-- updated to ../this.data.new_characteristics -->
+                        <option value="{{ t.value }}">{{ localize t.label}}</option>
+                    {{/each}}
+                {{/if}}
+                {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") (eq attr.modtype "Skill Add Advantage") (eq attr.modtype "Skill Add Dark") (eq attr.modtype "Skill Add Failure") (eq attr.modtype "Skill Add Light") (eq attr.modtype "Skill Add Success") (eq attr.modtype "Skill Add Threat") (eq attr.modtype "Skill Add Triumph") (eq attr.modtype "Skill Add Despair") (eq attr.modtype "Skill Add Upgrade") )}}
+                    <option value="*">{{ localize "SWFFG.ModifierAllSkills"}}</option>
+                    {{#each ../this.FFG.skills as |t|}}
+                    <!-- was this.FFG.skills -->
+                    <!-- updated to ../this.data.new_skills -->
+                        <option value="{{ t.value }}">{{ localize t.label}}</option>
+                    {{/each}}
+                {{/if}}
+            {{/select}}
+        </select>
+
+        {{!-- value input --}}
+        {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}}
+            <input class="attribute-value" type="checkbox" name="data.attributes.{{ key }}.value" data-dtype="Boolean"
+                    {{#if (or (eq attr.value "0")(eq attr.value false)) }}
+                    {{ else }}
+                        checked
+                    {{/if}}
+            />
+        {{/if}}
+        {{#if (and (eq attr.modtype "Stat") (eq key "Shields") )}}
+            <input class="attribute-value" type="text" name="data.attributes.{{ key }}.value" value="{{ attr.value }}"/>
+        {{/if}}
+        {{#if (and (ne attr.modtype "Career Skill") (ne attr.modtype "Force Boost") (ne key "Shields") )}}
+            <input class="attribute-value" type="text" name="data.attributes.{{ key }}.value" value="{{ attr.value }}" data-dtype="Number" placeholder="0"/>
+        {{/if}}
+
+        {{!-- delete button --}}
+        <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+    </li>
+    {{/if}}{{/each}}
+</ol>
+
+{{{ json data.attributes }}}
+<br>mod types: {{{ json this.FFG.mod_types }}}
+<br>skills: {{{ json this.FFG.skills }}}
+<br>characteristics: {{{ json this.FFG.characteristics }}}

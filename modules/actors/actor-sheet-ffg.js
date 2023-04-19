@@ -145,11 +145,30 @@ export class ActorSheetFFG extends ActorSheet {
     return data;
   }
 
+  async _effectToggle(event) {
+      const itemId = event.currentTarget.closest(".item").dataset.itemId;
+      const gear = this.actor.items.get(itemId);
+      const effects = this.actor.getEmbeddedCollection("ActiveEffect").contents;
+      const relevantEffects = effects.filter(effect => effect.origin.endsWith(itemId));
+      if (relevantEffects.length === 0) {
+        return;
+      }
+
+      const effect = relevantEffects[0];
+      const newStatus = !effect.disabled;
+      // TODO: is this new code needed?
+      console.log(`updating new status to be ${newStatus}`)
+      await effect.update({disabled: newStatus});
+      await gear.update({"system": {"activeEffect": {"active": !newStatus}}});
+  }
+
   /* -------------------------------------------- */
 
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+
+    html.find(".effect-toggle").click(this._effectToggle.bind(this));
 
     // Activate tabs
     let tabs = html.find(".tabs");

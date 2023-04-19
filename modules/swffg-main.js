@@ -29,6 +29,8 @@ import DestinyTracker from "./ffg-destiny-tracker.js";
 import { defaultSkillList } from "./config/ffg-skillslist.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
 import {register_crew} from "./helpers/crew.js";
+import FFGActiveEffectConfig from "./items/item-active-effect-config.js";
+import FFGActiveEffect from "./items/item-active-effect.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
@@ -78,6 +80,10 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
   CONFIG.Combat.documentClass = CombatFFG;
+
+  // set up active effects
+  DocumentSheetConfig.registerSheet(ActiveEffect, 'starwarsffg', FFGActiveEffectConfig, {makeDefault: true, label: "My Sheet Class"});
+  CONFIG.ActiveEffect.documentClass = FFGActiveEffect;
 
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);

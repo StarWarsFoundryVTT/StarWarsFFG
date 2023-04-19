@@ -11,28 +11,27 @@ export default class ActorHelpers {
         if (this.object.type !== "vehicle") {
           // Handle characteristic updates
           Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
-            let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Characteristic");
-            let x = parseInt(formData.data.characteristics[key].value, 10) - total;
-            let y = parseInt(formData.data.attributes[key].value, 10) + x;
-            if (y > 0) {
-              formData.data.attributes[key].value = y;
-            } else {
-              formData.data.attributes[key].value = 0;
-            }
+            ModifierHelpers.getActiveAEModifierValue(this.actor, key)
+            // submitting the form with active effects enabled results in all values going up
+            // subtract the value being added by active effects, so we only submit the true changes
+            let form_value = parseInt(formData.data.attributes[key].value, 10); // value in form
+            let ae_value = parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, key)); // value impacting actor
+            formData.data.attributes[key].value = Math.max(0, form_value - ae_value);
           });
+
           // Handle stat updates
           Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
             const key = CONFIG.FFG.character_stats[k].value;
 
-            let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Stat");
-
-            let statValue = 0;
+            let total = parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, key)); // value being added from AEs
+            let statValue = 0; // value as it exists in the form
             let isFormValueVisible = true;
+
             if (key === "Soak") {
               if (formData.data.stats[k]?.value) {
                 statValue = parseInt(formData.data.stats[k].value, 10);
                 // the soak value is autocalculated we need to account for Brawn
-                statValue = statValue - parseInt(formData.data.characteristics.Brawn.value, 10);
+                statValue = statValue - parseInt(formData.data.attributes.Brawn.value, 10);
               } else {
                 statValue = 0;
                 isFormValueVisible = false;
@@ -41,7 +40,10 @@ export default class ActorHelpers {
               if (formData.data.stats[k]?.max) {
                 statValue = parseInt(formData.data.stats[k].max, 10);
                 // the encumbrance value is autocalculated we need to account for 5 + Brawn
-                statValue = statValue - parseInt(formData.data.characteristics.Brawn.value + 5, 10);
+                statValue -= parseInt(formData.data.attributes.Brawn.value, 10); // remove the Brawn in the form
+                statValue -= 5; // remove the extra 5 added
+                statValue -= parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, 'Brawn'));
+                total += parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, 'Brawn'))
               } else {
                 statValue = 0;
                 isFormValueVisible = false;
@@ -60,36 +62,28 @@ export default class ActorHelpers {
             }
 
             let x = statValue - (isFormValueVisible ? total : 0);
-
-            let y = parseInt(formData.data.attributes[key].value, 10) + x;
             if (key === "Soak") {
               const autoSoakCalculation = (typeof this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.flags.starwarsffg?.config.enableAutoSoakCalculation;
-
               if (autoSoakCalculation) {
-                y = 0;
+                x = 0;
               }
             }
 
-            if (y > 0) {
-              formData.data.attributes[key].value = y;
-            } else {
-              formData.data.attributes[key].value = 0;
-            }
+            formData.data.attributes[key].value = Math.max(0, x);
           });
+
           // Handle skill rank updates
           Object.keys(this.object.system.skills).forEach((key) => {
-            let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Skill Rank");
+            let total = parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, key)); // number from active effects
             let x = parseInt(formData.data.skills[key]?.rank, 10) - total;
-            let y = parseInt(formData.data.attributes[key]?.value, 10) + x;
-            if (y > 0) {
-              formData.data.attributes[key].value = y;
+            if (x > 0) {
+              formData.data.attributes[key].value = x;
             } else {
               formData.data.attributes[key].value = 0;
             }
           });
 
           // Handle credits
-
           if (formData.data.stats?.credits?.value) {
             const rawCredits = formData.data.stats?.credits.value
               ?.toString()
@@ -98,6 +92,7 @@ export default class ActorHelpers {
             formData.data.stats.credits.value = parseInt(rawCredits, 10);
           }
         } else {
+          // Vehicles
           // Handle stat updates
           Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
             const key = CONFIG.FFG.vehicle_stats[k].value;

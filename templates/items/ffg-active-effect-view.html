@@ -1,0 +1,52 @@
+{{#each mods as |mod|}}
+{{{ json mod }}}
+<div class="container flex-group-center form-fields">
+    <div class="container flex-group-center">
+        <input name="{{ @index }}-{{ mode }}-mod_name" type="text" placeholder="Unnamed Mod" value="{{ mod.label }}"/>
+        <a class="mod-control mod-remove" data-action="delete" data-id="{{@index}}" title="delete">
+            <i class="fas fa-trash"></i>
+        </a>
+    </div>
+    <table class="item-list mod-effect-list">
+        <thead>
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Effect
+            </th>
+            <th>
+                <a class="mod-effect-control add-passive-mod-effect" data-action="create">
+                    P<i class="fas fa-plus"></i>
+                </a>
+                <a class="mod-effect-control add-active-mod-effect" data-action="create">
+                    A<i class="fas fa-plus"></i>
+                </a>
+            </th>
+        </tr>
+        </thead>
+        <tbody class="mod-effects">
+        {{!-- Effects --}}
+        {{#each mod.changes as |effect|}}
+            <tr class="item effect">
+                <td class="item-name mod-effect-name">
+                    <input name="{{ @../index }}-{{ mode }}-effect_name" type="text" placeholder="Unnamed Effect" value="{{ effect.key }}"/>
+                </td>
+                <td class="item-name mod-effect-effect">
+                    <select name="{{ @../index }}-{{ mode }}-effect_effect">
+                        {{selectOptions ../../mod_activeEffects selected=effect.key}}
+                    </select>
+                    <input name="{{ @../index }}-{{ mode }}-effect_type" type="hidden" value="active"/>
+                </td>
+                <td class="mod-effect-controls">
+                    <a class="mod-effect-control mod-effect-remove" data-action="delete" data-id="{{@index}}" data-mod-id="{{ @../index }}" title="delete">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</div>
+{{/each}}

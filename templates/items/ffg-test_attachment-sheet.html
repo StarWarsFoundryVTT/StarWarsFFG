@@ -7,35 +7,6 @@
             <div class="container flex-group-center">
               <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
             </div>
-                            <div class="container flex-group-center">
-          <table class="item-list effects-list">
-              <tr>
-                  <th>
-                      Effect
-                  </th>
-                  <th>
-                      <a class="effect-control" data-action="create">
-                          <i class="fas fa-plus"></i>
-                      </a>
-                  </th>
-              </tr>
-              {{#each activeEffects as |effect|}}
-              <tr class="item effect" data-effect-id="{{ effect.id }}">
-                  <td class="item-name effect-name">
-                      <h4>{{ effect.label }}</h4>
-                  </td>
-                  <td class="effect-controls">
-                      <a class="effect-control" data-action="edit" title="edit">
-                          <i class="fas fa-edit"></i>
-                      </a>
-                      <a class="effect-control" data-action="delete" title="delete">
-                          <i class="fas fa-trash"></i>
-                      </a>
-                  </td>
-              </tr>
-              {{/each}}
-          </table>
-      </div>
           </td>
           <td>
             <div class="container flex-group-center">
@@ -83,40 +54,18 @@
       {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}
     </div>
 
-    {{!-- Modifiers Tab --}}
+    {{!-- Base Mods Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-active-effects.html"}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-test-attachment-mod.html" (object mods=base_mods mod_activeEffects=mod_activeEffects mode='base')}}
     </div>
 
+    {{!-- Added Mods Tab --}}
     <div class="tab additional" data-group="primary" data-tab="additional">
-      <table>
-        <thead>
-          <tr>
-            <th>Modification</th>
-            <!-- <th>Count</th> -->
-            <th>Active</th>
-            <th><i class="fas fa-plus add-new-item" data-acceptable-type="itemmodifier"></i></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each data.itemmodifier as |item id|}}
-          <tr>
-            <td>{{item.name}}</td>
-            <!-- <td data-item-name="itemmodifier" data-item-index="{{id}}">
-              <div class="quantity increase"><i class="far fa-plus-square"></i></div>
-              {{item.data.rank}}
-              <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
-            </td> -->
-            <td data-item-name="itemmodifier" data-item-index="{{id}}">
-              <div class="modifier-active"><i class="far {{#if item.data.active}} fa-check-square {{else}} fa-square {{/if}}"></i></div>
-            </td>
-            <td class="add-modifier" data-item-name="itemmodifier" data-item-index="{{id}}"><i class="fas fa-edit"></i><i class="fas fa-times item-delete"></i></td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-test-attachment-mod.html" (object mods=added_mods mod_activeEffects=mod_activeEffects mode='added')}}
     </div>
 
+    {{!-- Configuration Tab --}}
     <div class="tab configuration" data-group="primary" data-tab="configuration">
       <div class="container flex-group-center">
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Type" type="Dropdown" name="data.type" value=data.type options=this.FFG.itemmodifier_types)}}

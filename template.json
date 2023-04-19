@@ -62,6 +62,10 @@
             "type": "Number",
             "label": "Credits",
             "adjusted": 0
+          },
+          "activeEffects": {
+            "strain": 0,
+            "wound": 0
           }
         }
       },
@@ -546,7 +550,7 @@
   },
   "Item": {
     "types": [
-      "ability", "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon"],
+      "ability", "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon", "test_attachment", "test_mod"],
     "templates": {
       "core": {
         "description": "",
@@ -604,7 +608,10 @@
       }
     },
     "gear": {
-      "templates": ["core", "basic", "itemattachments", "qualities"]
+      "templates": ["core", "basic", "itemattachments", "qualities"],
+      "activeEffect": {
+        "active": false
+      }
     },
     "weapon": {
       "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
@@ -637,6 +644,15 @@
         "value": "",
         "type": "String",
         "label": "Special"
+      },
+      "attachments": {
+        "attachments":[]
+      },
+      "qualities" : {
+        "qualities": []
+      },
+      "activeEffect": {
+        "active": false
       }
     },
     "armour": {
@@ -778,7 +794,10 @@
       }
     },
     "career" : {
-      "templates": ["core"]
+      "templates": ["core"],
+      "activeEffect": {
+        "active": false
+      }
     },
     "signatureability": {
       "templates": ["core"],
@@ -795,12 +814,32 @@
     },
     "itemattachment": {
       "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],
-      "type": ""
+      "type": "",
+      "activeEffect": {
+        "active": false
+      }
     },
     "itemmodifier": {
       "templates": ["core", "qualities"],
       "type": "",
       "rank": 0
+    },
+    "test_attachment": {
+      "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],
+      "type": "",
+      "activeEffect": {
+        "active": false
+      },
+      "base_mods": [],
+      "added_mods": []
+    },
+    "test_mod": {
+      "templates": ["core", "basic"],
+      "type": "",
+       "activeEffect": {
+        "active": false
+      },
+      "effects": []
     }
   }
 }

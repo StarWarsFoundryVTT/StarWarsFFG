@@ -118,6 +118,9 @@
       </div>
       <!-- <div>{{item.system.encumbrance.value}}</div> -->
       <div class="item-controls">
+        <a class="effect-toggle">
+              <i class="fas {{#if item.system.activeEffect.active }}fa-times{{ else }}fa-check{{/if}}"></i>
+          </a>
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
       </div>

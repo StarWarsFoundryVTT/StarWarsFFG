@@ -2,6 +2,10 @@ export default class TemplateHelpers {
   static async preload() {
     const templatePaths = [
       "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html",
+      "systems/starwarsffg/templates/parts/shared/ffg-active-effects.html",
+      "systems/starwarsffg/templates/items/ffg-active-effect-view.html",
+      "systems/starwarsffg/templates/parts/shared/ffg-test-attachment-mod.html",
+      "systems/starwarsffg/templates/parts/shared/ffg-test-active-effects.html",
       "systems/starwarsffg/templates/parts/actor/ffg-skills.html",
       "systems/starwarsffg/templates/parts/actor/ffg-weapon-armor-gear.html",
       "systems/starwarsffg/templates/parts/actor/ffg-homestead-upgrades.html",

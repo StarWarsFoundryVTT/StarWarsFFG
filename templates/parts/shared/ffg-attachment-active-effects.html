@@ -1,0 +1,114 @@
+<form>
+    <div class="container flex-group-center item-name">
+        <h1 class="charname"><input name="name" type="text" value="{{ item.name }}" placeholder="Name"/></h1>
+    </div>
+    <div class="container flex-group-center form-fields">
+        <table class="item-list mod-effect-list">
+            <thead>
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Effect
+                </th>
+                <th>
+                    <a class="mod-effect-control add-passive-mod-effect" data-action="create">
+                        P<i class="fas fa-plus"></i>
+                    </a>
+                    <a class="mod-effect-control add-active-mod-effect" data-action="create">
+                        A<i class="fas fa-plus"></i>
+                    </a>
+                </th>
+            </tr>
+            </thead>
+            <tbody class="mod-effects">
+            {{#each effects as |effect|}}
+                <tr class="item effect">
+                    <td class="item-name mod-effect-name">
+                        <input name="mod_name" type="text" placeholder="Unnamed Effect" value="{{ effect.name }}"/>
+                    </td>
+                    {{#iff effect.type '==' 'active'}}
+                        <td class="item-name mod-effect-effect">
+                            <select name="mod_effect">
+                                {{selectOptions ../mod_activeEffects selected=effect.effect}}
+                            </select>
+                            <input name="mod_type" type="hidden" value="active"/>
+                        </td>
+                    {{/iff}}
+                    {{#iff effect.type '==' 'passive'}}
+                        <td class="item-name mod-effect-effect">
+                            <input name="mod_effect" type="text" placeholder="Description"  value="{{ effect.effect }}"/>
+                            <input name="mod_type" type="hidden" value="passive"/>
+                        </td>
+                    {{/iff}}
+                    <td class="mod-effect-controls">
+                        <a class="mod-effect-control mod-effect-remove" data-action="delete" title="delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            {{/each}}
+            </tbody>
+        </table>
+    </div>
+</form>
+
+<script>
+    $(document).ready(function() {
+        $(".add-passive-mod-effect").on("click", function(e) {
+            e.preventDefault();
+            add_row(passive=true);
+        });
+        $(".add-active-mod-effect").on("click", function(e) {
+            e.preventDefault();
+            add_row(passive=false);
+        });
+        $(".mod-effect-remove").on("click", function (e) {
+            e.preventDefault();
+            console.log(e)
+            remove_row(e);
+        })
+        $(document).on("click", "a.mod-effect-remove", function (e) {
+            e.preventDefault();
+            remove_row(e);
+        });
+    });
+
+    function add_row(passive) {
+        let toggled = `
+            <td class="item-name mod-effect-effect">
+                <input name="mod_effect" type="text" placeholder="Description"  value=""/>
+                <input name="mod_type" type="hidden" value="passive"/>
+            </td>
+        `;
+        if (!passive) {
+            toggled = `
+            <td class="item-name mod-effect-effect">
+                <select name="mod_effect">
+                    {{selectOptions mod_activeEffects}}
+                </select>
+                <input name="mod_type" type="hidden" value="active"/>
+            </td>
+            `;
+        }
+        $(".mod-effects").after(`
+        <tr class="item effect">
+            <td class="item-name mod-effect-name">
+                <input name="mod_name" type="text" placeholder="Unnamed Effect"/>
+            </td>
+           ${toggled}
+            <td class="mod-effect-controls">
+                <a class="mod-effect-control mod-effect-remove" data-action="delete" title="delete">
+                    <i class="fas fa-trash"></i>
+                </a>
+            </td>
+        </tr>
+        `);
+    }
+
+    function remove_row(event) {
+        let object = $(event.target);
+        object.parent().parent().parent().remove();
+    }
+</script>

@@ -3,6 +3,7 @@ import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
   static async itemUpdate(event, formData) {
+    // TODO: if the item is on an actor, it cannot be updated. we need to handle this and prevent updates.
     formData = expandObject(formData);
 
     if (this.object.isEmbedded && this.object.actor?.compendium?.metadata) {
@@ -29,6 +30,26 @@ export default class ItemHelpers {
     if (this.object.system?.attributes) {
       for (let k of Object.keys(this.object.system.attributes)) {
         if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
+      }
+    }
+
+    // check the attributes
+    for (let key in formData.data.attributes) {
+      // TODO: these sections look very similar, can we simplify the code?
+      if (key.includes('attr')) {
+        let active_effect_id = key;
+        let mod_type = formData.data.attributes[key].modtype;
+        let mod = formData.data.attributes[key].mod;
+        let mod_value = formData.data.attributes[key].value;
+        await ModifierHelpers.updateActiveEffect(this.item, active_effect_id, mod_type, mod, mod_value);
+
+      } else {
+        // handle non-mod changes
+        let active_effect_id = key; // ex: Agility
+        let mod_type = formData.data.attributes[key].modtype;
+        let mod = formData.data.attributes[key].mod;
+        let mod_value = formData.data.attributes[key].value;
+        await ModifierHelpers.updateActiveEffect(this.item, active_effect_id, mod_type, mod, mod_value);
       }
     }
 

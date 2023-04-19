@@ -6,6 +6,8 @@ import ImportHelpers from "../importer/import-helpers.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
+import FFGActiveEffectConfig from "./item-active-effect-config.js";
+import {modActiveEffects, activeEffectMap} from "../config/ffg-activeEffects.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -222,13 +224,129 @@ export class ItemSheetFFG extends ItemSheet {
         }
         break;
       }
+      case "test_mod": {
+        data.mod_activeEffects = modActiveEffects;
+        data.effects = this.item.system.effects;
+        break;
+      }
+      case "test_attachment": {
+        data.mod_activeEffects = modActiveEffects;
+        data.base_mods = this.item.system.base_mods;
+        data.added_mods = this.item.system.added_mods;
+        break;
+      }
+      case "test_species": {
+        // boilerplate species
+        this.position.width = 550;
+        this.position.height = 650;
+
+        const attributesForCharacteristics = Object.keys(data.data.attributes).filter((key) => {
+          return Object.keys(CONFIG.FFG.characteristics).includes(key);
+        });
+
+        const speciesCharacteristics = attributesForCharacteristics.map((key) => Object.assign(data.data.attributes[key], { key }));
+        data.characteristics = Object.keys(CONFIG.FFG.characteristics).map((key) => {
+          let attr = speciesCharacteristics.find((item) => item.mod === key);
+
+          if (!attr) {
+            data.data.attributes[`${key}`] = {
+              modtype: "Characteristic",
+              mod: key,
+              value: 0,
+              exclude: true,
+            };
+            attr = {
+              key: `${key}`,
+              value: 0,
+            };
+          } else {
+            data.data.attributes[`${key}`].exclude = true;
+          }
+
+          return {
+            id: attr.key,
+            key,
+            value: attr?.value ? parseInt(attr.value, 10) : 0,
+            modtype: "Characteristic",
+            mod: key,
+            label: game.i18n.localize(CONFIG.FFG.characteristics[key].label),
+          };
+        });
+
+        if (!data.data.attributes?.Wounds) {
+          data.data.attributes.Wounds = {
+            modtype: "Stat",
+            mod: "Wounds",
+            value: 0,
+            exclude: true,
+          };
+        } else {
+          data.data.attributes.Wounds.exclude = true;
+        }
+        if (!data.data.attributes?.Strain) {
+          data.data.attributes.Strain = {
+            modtype: "Stat",
+            mod: "Strain",
+            value: 0,
+            exclude: true,
+          };
+        } else {
+          data.data.attributes.Strain.exclude = true;
+        }
+        break;
+      }
       default:
     }
 
     data.FFG = CONFIG.FFG;
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
+    data.activeEffects = this.item.getEmbeddedCollection("ActiveEffect").contents
+    data.effects = this.item.getEmbeddedCollection("ActiveEffect")
+    // TODO: move this into a better block
+    data.mod_activeEffects = modActiveEffects;
 
     return data;
+  }
+
+  _onEffectControl(event) {
+    event.preventDefault();
+    const owner = this.item;
+    const a = event.currentTarget;
+    const tr = a.closest("tr");
+    const effect = tr.dataset.effectId ? owner.effects.get(tr.dataset.effectId) : null;
+    switch (a.dataset.action) {
+        case "create":
+            return owner.createEmbeddedDocuments("ActiveEffect", [{
+                label: "New Effect",
+                icon: "icons/svg/aura.svg",
+                origin: owner.uuid,
+                disabled: true,
+            }]);
+        case "edit":
+            return effect.sheet.render(true);
+        case "delete":
+            return effect.delete();
+    }
+  }
+
+async _onModControl(event) {
+    event.preventDefault();
+    const owner = this.item;
+    const owner_obj = game.items.get(owner.id);
+    const a = event.currentTarget;
+    const tr = a.closest("tr");
+    const mod_id = a.dataset.id;
+
+    switch (a.dataset.action) {
+        case "create":
+            return;
+        case "edit":
+            return mod.sheet.render(true);
+        case "delete":
+            // TODO: there should be a way to update without overriding
+            const update_mods = owner_obj.system.base_mods.splice(mod_id, 1);
+            return await owner_obj.update({'system': {'base_mods': update_mods}});
+    }
   }
 
   /* -------------------------------------------- */
@@ -236,6 +354,11 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+
+    if (this.isEditable) {
+        html.find(".effect-control").click(this._onEffectControl.bind(this));
+        html.find(".mod-control").click(this._onModControl.bind(this));
+    }
 
     // TODO: This is not needed in Foundry 0.6.0
     // Activate tabs
@@ -341,7 +464,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.type)) {
+    if (["weapon", "armour", "itemattachment", "shipweapon", "test_attachment"].includes(this.object.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
         dropSelector: null,
@@ -725,6 +848,247 @@ export class ItemSheetFFG extends ItemSheet {
     }).render(true);
   }
 
+  async _onSubmit(event, {updateData=null, preventClose=false, preventRender=false}={}) {
+    event.preventDefault();
+    // originally species
+    if (this.item.type === "species") {
+      const formData = this._getSubmitData(updateData);
+    }
+
+      if (this.item.type === "test_mod") {
+          const formData = this._getSubmitData(updateData);
+          let effects = [];
+          if ('mod_name' in formData) {
+              if (jQuery.type(formData['mod_name']) === 'array') {
+                  for (let x = 0; x < formData['mod_name'].length; x++) {
+                      effects.push({
+                          'name': formData['mod_name'][x],
+                          'type': formData['mod_type'][x],
+                          'effect': formData['mod_effect'][x],
+                      })
+                  }
+              } else {
+                  effects.push({
+                      'name': formData['mod_name'],
+                      'type': formData['mod_type'],
+                      'effect': formData['mod_effect'],
+                  })
+              }
+          }
+          await this.item.update({"system": {effects}});
+      } else if (this.item.type === "test_attachment") {
+          console.log("caught test attachment submit")
+          const formData = this._getSubmitData(updateData);
+          // TODO: each element within the mod will need the mod ID tied to it
+          // or we need to refactor the form submit
+          // (right now, we have no way of knowing which effects are tied to which mod)
+          if ('name' in formData && 'mod_type' in formData) {
+              if (jQuery.type(formData['mod_name']) === 'array') {
+                  for (let x = 0; x < formData['mod_name'].length; x++) {
+                      if (jQuery.type(formData['effect_name']) === 'array') {
+                          for (let x = 0; x < formData['mod_name'].length; x++) {
+
+                          }
+                      }
+                      effects.push({
+                          'name': formData['mod_name'][x],
+                          'type': formData['mod_type'][x],
+                          'effect': formData['mod_effect'][x],
+                      })
+                  }
+              } else {
+                  effects.push({
+                      'name': formData['mod_name'],
+                      'type': formData['mod_type'],
+                      'effect': formData['mod_effect'],
+                  })
+              }
+          }
+
+          console.log("original data")
+          console.log(this.item.system.base_mods)
+          let base_mods = this._extractFormGroups(formData, ['effect_effect', 'effect_name', 'effect_type', 'mod_name']);
+          let effects;
+          // transform to the final format
+          for (let k = 0; k < base_mods.length; k++) {
+              effects = [];
+              base_mods[k]['effect_effect'].forEach(function (element, index) {
+                  effects.push({
+                      'name': base_mods[k]['effect_name'][index],
+                      'type': base_mods[k]['effect_type'][index],
+                      'effect': element,
+                  })
+              });
+              base_mods[k] = {
+                  'name': base_mods[k]['mod_name'],
+                  'effects': effects,
+              }
+
+          }
+
+          let added_mods = this._extractFormGroups(formData, ['added-effect_effect', 'added-effect_name', 'added-effect_type', 'added-mod_name']);
+          // transform to the final format
+          for (let k = 0; k < added_mods.length; k++) {
+              effects = [];
+              added_mods[k]['effect_effect'].forEach(function (element, index) {
+                  effects.push({
+                      'name': added_mods[k]['effect_name'][index],
+                      'type': added_mods[k]['effect_type'][index],
+                      'effect': element,
+                  })
+              });
+              added_mods[k] = {
+                  'name': added_mods[k]['mod_name'],
+                  'effects': effects,
+              }
+          }
+
+          await this.item.update(
+              {
+                  "system": {
+                      "base_mods": base_mods,
+                      "added_mods": added_mods,
+                  }
+              }
+          );
+      }
+      return await super._onSubmit(event, {updateData = null, preventClose = false, preventRender = false} = {});
+  }
+
+    /***
+     * Given a set of field names, group all entries of those fields
+     * @param formData - raw formData. should look like this:
+     *     {
+     *         0-effect_effect: ["a"],
+     *         1-effect_effect: ["b"],
+     *         ...
+     *         0-effect_name: "c",
+     *         1-effect_name: "d",
+     *         ...
+     *     }
+     * @param key_bases - top-level field names, e.g. effect_effect
+     * @returns grouped form data
+     *     [
+     *       {
+     *           effect_effect: ["a"],
+     *           effect_name: "c",
+     *           ...
+     *       },
+     *       {
+     *           effect_effect: ["b"],
+     *           effect_name: "d",
+     *           ...
+     *       },
+     *       ...
+     *     ]
+     * @private
+     */
+  _extractFormGroups(formData, key_bases) {
+      /*
+      incoming data format:
+      {
+          0-effect_effect: ["a"],
+          1-effect_effect: ["b"],
+          ...
+          0-effect_name: "c",
+          1-effect_name: "d",
+          ...
+      }
+      */
+      let results = [];
+      let tmp = {};
+      let tmp2 = {};
+      // first pass - group fields under (common) name
+      for (let k = 0; k < key_bases.length; k++) {
+          tmp[key_bases[k]] = Object.keys( // https://masteringjs.io/tutorials/fundamentals/filter-key
+              formData
+          ).filter(
+              (key) => key.includes(key_bases[k])
+          ).reduce(
+              (cur, key) => { return Object.assign(cur, { [key]: formData[key] })}, {}
+          );
+      }
+      /*
+      data is now in the format:
+      {
+            effect_effect: {
+                0-effect_effect: ["a"],
+                1-effect_effect: ["b"],
+                ...
+            },
+            effect_name: {
+                0-effect_name: "c",
+                1-effect_name: "d",
+                ...
+            },
+            ...
+      }
+      */
+      console.log("reduced or something")
+      console.log(results)
+      let current_key;  // represents the current high-level form name we're working with, e.g. 'effect_effect'
+
+      // second pass - remove the extra information so we only have the field names and values
+      for (let k = 0; k < key_bases.length; k++) {
+          current_key = key_bases[k];
+          tmp2[current_key] = [];
+          // iterate over the values
+          Object.values(tmp[current_key]).forEach(function (element) {
+              // we want these to always be arrays
+              if (typeof(element) !== 'object') {
+                  element = [element];
+              }
+             tmp2[current_key].push(element);
+          });
+      }
+      console.log(tmp2)
+      /*
+      data is now in the format:
+      {
+          effect_effect: [
+            ["a"],
+            ["b"],
+            ...
+          ],
+          effect_name: [
+            "c",
+            "d",
+          ],
+          ...
+      }
+      */
+      let working_group;
+      // final pass - group by object
+      for (let k = 0; k < tmp2[Object.keys(tmp2)[0]].length; k++) {
+          console.log(k)
+          working_group = {};
+          for (let x = 0; x < key_bases.length; x++) {
+              working_group[key_bases[x]] = tmp2[Object.keys(tmp2)[x]][k];
+          }
+          results.push(working_group);
+      }
+      console.log(results)
+
+      /*
+      data is now in the format:
+      [
+        {
+            effect_effect: ["a"],
+            effect_name: "c",
+            ...
+        },
+        {
+            effect_effect: ["b"],
+            effect_name: "d",
+            ...
+        },
+        ...
+      ]
+      */
+      return results;
+
+  }
+
   _canDragStart(selector) {
     return this.options.editable && this.object.isOwner;
   }
@@ -842,6 +1206,7 @@ export class ItemSheetFFG extends ItemSheet {
   }
 
   async _onDropItem(event) {
+    console.log("dropped")
     let data;
     const obj = this.object;
     const li = event.currentTarget;
@@ -851,6 +1216,151 @@ export class ItemSheetFFG extends ItemSheet {
       if (data.type !== "Item") return;
     } catch (err) {
       return false;
+    }
+
+    let dropped_object = game.items.get(data.uuid.split('.').pop());
+    let dropee_object = game.items.get(obj.id);
+    if (dropee_object.type === 'test_attachment' && dropped_object.type === 'test_mod') {
+        console.log("mod dropped on attachment")
+        console.log(dropped_object)
+        console.log(dropee_object)
+        console.log(dropee_object.sheet)
+        console.log(dropee_object.sheet._tabs[0].active)
+        // TODO: improve tab detection or add the ability to move them because this is brittle
+        if (dropee_object.sheet._tabs[0].active === 'attributes') {
+            // base mods
+            await dropee_object.update(
+                {
+                    'system': {
+                        'base_mods': $.merge( // TODO: there's got to be a better way to add instead of replace
+                            dropee_object.system.base_mods,
+                            [{
+                                'name': dropped_object.name,
+                                'effects': dropped_object.system.effects,
+                            }]
+                        )
+                    }
+                }
+            );
+        } else if (dropee_object.sheet._tabs[0].active === 'additional') {
+            // add mod
+            await dropee_object.update(
+                {
+                    'system': {
+                        'added_mods': $.merge( // TODO: there's got to be a better way to add instead of replace
+                            dropee_object.system.added_mods,
+                            [{
+                                'name': dropped_object.name,
+                                'effects': dropped_object.system.effects,
+                            }]
+                        )
+                    }
+                }
+            );
+        }
+    }
+    // check for an active effect for a weapon
+    if (dropee_object.type === 'weapon' && dropped_object.type === 'test_attachment') {
+        console.log("handling active effect creation")
+        console.log(dropped_object)
+        // create the attachment
+        /*
+        attachment structure
+        {
+            "name": "",
+            "image": "",
+            "hp": "",
+            "rarity": "",
+            "price": "",
+            "description": "",
+            "base_mods": [],
+            "added_mods": [],
+            "restricted": "",
+            "effects": [],
+        }
+
+        mod structure
+        {
+            "name": "",
+            "active": "",
+            "mod_type": "",
+            "mod_method": "",
+            "mod_value": "",
+            "uuid": "",
+        }
+        */
+
+        /*
+        .createEmbeddedDocuments("ActiveEffect", [{
+            label: "New Effect",
+            icon: "icons/svg/aura.svg",
+            origin: owner.uuid,
+            disabled: true,
+        }]);
+         */
+
+        // since this is new logic, skip everything else that would happen to test only the new stuff
+        // base mods
+        console.log("base mods")
+        let active_effects = [];
+        let active_effect;
+        let current_mod;
+        let current_effect;
+        for (let k = 0; k < dropped_object.system.base_mods.length; k++) {
+            current_mod = dropped_object.system.base_mods[k];
+            console.log(current_mod)
+            active_effect = {
+                label: current_mod.name,
+                icon: current_mod.img,
+                disabled: false,
+                changes: [],
+            }
+            // a single mod can have multiple effects; loop through them
+            for (let x = 0; x < current_mod.effects.length; x++) {
+                current_effect = current_mod.effects[x];
+                if (current_effect.type === 'active') {
+                    console.log("creating active effect " + current_effect.name)
+                    // todo: this should probably be a single effect with multiple changes
+                    // todo: the mode and value should be configured upstream and passed in here
+                    active_effect['changes'].push({
+                        key: activeEffectMap[current_effect.effect],
+                        mode: '2',
+                        value: '1',
+                    });
+                } else {
+                    // todo: handle passive effect creation
+                    console.log("skipping passive effect " + current_effect.name)
+                }
+            }
+            active_effects.push(active_effect);
+        }
+        // added mods
+
+        /*
+            a.createEmbeddedDocuments(
+                "ActiveEffect",
+                [{
+                    label: "test",
+                    "icon": "icons/svg/aura.svg",
+                    disabled: true,
+                    changes: [{
+                        key: "system.stats.wounds.value",
+                        value: 1,
+                        mode: 2
+                    }]
+                }]
+            )
+         */
+
+        // actually create the effect(s)
+        await dropee_object.createEmbeddedDocuments(
+            "ActiveEffect",
+            active_effects
+        );
+
+
+        console.log("caught attachment on weapon")
+        return;
     }
 
     // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.

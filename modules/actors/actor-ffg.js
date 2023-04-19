@@ -581,14 +581,14 @@ export class ActorFFG extends Actor {
         data.skills[key].careerskillsource = careerSkillValues.sources;
       }
 
-      const boostValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Boost", true);
+      const boostValues = ModifierHelpers.getActiveSkillAEModifierValue(this, key, 'Skill Boost');
       data.skills[key].boost = boostValues.total;
       data.skills[key].boostsource = boostValues.sources;
 
-      const setback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Setback", true);
-      const remsetback = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Remove Setback", true);
+      const setback = ModifierHelpers.getActiveSkillAEModifierValue(this, key, 'Skill Setback');
+      const remsetback = ModifierHelpers.getActiveSkillAEModifierValue(this, key, 'Skill Remove Setback');
 
-      const upgradesValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Add Upgrade", true);
+      const upgradesValues = ModifierHelpers.getActiveSkillAEModifierValue(this, key, 'Skill Add Upgrade');
       data.skills[key].upgrades = upgradesValues.total;
       data.skills[key].upgradessource = upgradesValues.sources;
 
@@ -610,14 +610,12 @@ export class ActorFFG extends Actor {
       setValueAndSources("Skill Add Despair", "despair");
       setValueAndSources("Skill Add Upgrade", "upgrades");
 
-      const forceboost = ModifierHelpers.getCalculatedValueFromItems(items, key, "Force Boost", true);
+      const forceboost = ModifierHelpers.getActiveSkillAEModifierValue(this, key, 'Force Boost');
       data.skills[key].force = 0;
-      if (forceboost.checked) {
-        const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
-        if (forcedice > 0) {
-          data.skills[key].force = forcedice;
-          data.skills[key].forcesource = forceboost.sources;
-        }
+      const forcedice = data.stats.forcePool.max - data.stats.forcePool.value;
+      if (forceboost.total && forcedice > 0) {
+        data.skills[key].force = forcedice;
+        data.skills[key].forcesource = forceboost.sources;
       }
 
       if (remsetback.total >= setback.total) {
