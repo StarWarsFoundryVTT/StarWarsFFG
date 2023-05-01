@@ -1320,6 +1320,8 @@ export class ActorSheetFFG extends ActorSheet {
       return item.type === "specialization";
     });
 
+    const globalTalentList = [];
+
     for await (const spec of specializations) {
       const specializationTalents = spec.system.talents;
       for (const talent in specializationTalents) {
@@ -1343,7 +1345,6 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
 
-      const globalTalentList = [];
       if (spec?.talentList && spec.talentList.length > 0) {
         spec.talentList.forEach((talent) => {
           const item = talent;
@@ -1366,8 +1367,13 @@ export class ActorSheetFFG extends ActorSheet {
           }
         });
       }
-      data.talentList = mergeObject(data.talentList ? data.talentList : [], globalTalentList);
     }
+
+    data.talentList = globalTalentList.sort((a, b) => {
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+      return 0;
+    });
   }
 
   /**
