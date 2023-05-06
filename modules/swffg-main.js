@@ -522,8 +522,36 @@ Hooks.on("renderJournalPageSheet", (...args) => {
     // only run if it's a text sheet in the render mode
     for (let i = 0; i < args[1].length; i++) {
       // iterate through each HTML section and update it
-      args[1][i].outerHTML = PopoutEditor.renderDiceImages(args[1][i].outerHTML, {});
+      args[1][i].innerHTML = PopoutEditor.renderDiceImages(args[1][i].innerHTML, {});
+      CONFIG.logger.debug("Changed journal page HTML:");
+      CONFIG.logger.debug(args[1][i].innerHTML);
     }
+    // re-establish toc anchor links
+    args[0].toc = Object.fromEntries(
+      Object.entries(args[0].toc).map((tocItem) => {
+        let newRef;
+        CONFIG.logger.debug("Processing toc item:");
+        CONFIG.logger.debug(tocItem);
+        Object.entries(args[1]).filter((pageItem) => pageItem[0]!=="length").forEach((pageItem) => {
+          CONFIG.logger.debug("Processing page item:");
+          CONFIG.logger.debug(pageItem);
+          if(newRef) {
+            CONFIG.logger.debug(`New element  for anchor "${tocItem[0]}" already found, skipping duplicate search`);
+          } else {
+            const anchorRef = pageItem[1].parentElement.querySelector(`[data-anchor="${tocItem[1].element.attributes["data-anchor"]?.value}"]`);
+            CONFIG.logger.debug(anchorRef);
+            if(anchorRef) {
+              CONFIG.logger.debug(`Found new element for anchor "${tocItem[0]}"`);
+              newRef = anchorRef;
+            }
+          }
+        });
+        if(newRef) {
+          tocItem[1].element = newRef;
+        }
+        return tocItem;
+      })
+    );
   }
   return args;
 });
