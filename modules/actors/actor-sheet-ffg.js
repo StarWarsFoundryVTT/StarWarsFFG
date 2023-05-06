@@ -1320,7 +1320,13 @@ export class ActorSheetFFG extends ActorSheet {
       return item.type === "specialization";
     });
 
+    CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
+    CONFIG.logger.debug(data.talentList.slice());
+
+    const globalTalentList = [];
+
     for await (const spec of specializations) {
+      CONFIG.logger.debug(`_updateSpecialization(): starting work on ${spec.name}`);
       const specializationTalents = spec.system.talents;
       for (const talent in specializationTalents) {
         let gameItem;
@@ -1343,7 +1349,6 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
 
-      const globalTalentList = [];
       if (spec?.talentList && spec.talentList.length > 0) {
         spec.talentList.forEach((talent) => {
           const item = talent;
@@ -1366,8 +1371,18 @@ export class ActorSheetFFG extends ActorSheet {
           }
         });
       }
-      data.talentList = mergeObject(data.talentList ? data.talentList : [], globalTalentList);
+      CONFIG.logger.debug(`_updateSpecialization(): globalTalentList after current specialization:`);
+      CONFIG.logger.debug(globalTalentList.slice());
     }
+
+    data.talentList = globalTalentList.sort((a, b) => {
+      if (a.name > b.name) return 1;
+      if (a.name < b.name) return -1;
+      return 0;
+    });
+
+    CONFIG.logger.debug(`_updateSpecialization(): data.talentList after update:`);
+    CONFIG.logger.debug(data.talentList.slice());
   }
 
   /**
