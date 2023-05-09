@@ -27,6 +27,8 @@ export class ItemFFG extends ItemBaseFFG {
       // was originally test_species
       if (data.type === 'species') {
         await ModifierHelpers.createBasicActiveEffects(this, this.type);
+      } else if (data.type === 'weapon') {
+        await ModifierHelpers.createBasicActiveEffects(this, this.type);
       }
     }
     await super._onCreate(data, options, user);
@@ -85,6 +87,7 @@ export class ItemFFG extends ItemBaseFFG {
     switch (this.type) {
       case "weapon":
       case "shipweapon":
+        // TODO: clean this up
         // Apply item attachments / modifiers
         data.damage.value = parseInt(data.damage.value, 10);
         data.crit.value = parseInt(data.crit.value, 10);
@@ -128,38 +131,70 @@ export class ItemFFG extends ItemBaseFFG {
         }
 
         if (data?.itemattachment) {
-          data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
-            data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
-            data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
-            if (data.crit.adjusted < 1) data.crit.adjusted = 1;
-            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Weapon Stat");
-            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Weapon Stat");
-            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Weapon Stat");
-            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
-            const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
-            const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
-            let newRange = currentRangeIndex + range;
-            if (newRange < 0) newRange = 0;
-            if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
-
-            data.range.adjusted = Object.values(rangeSetting)[newRange].value;
-
-            if (attachment?.system?.itemmodifier) {
-              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
-
-              activeMods.forEach((am) => {
-                const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
-
-                if (foundItem) {
-                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
-                } else {
-                  am.system.rank_current = 1;
-                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
-                }
+          data.itemattachment.forEach(function (attachment) {
+            let active_modifiers = [];
+            if (Object.keys(attachment.system).includes('installed_mods')) {
+              // TODO: this should not have a condition
+              attachment.system.installed_mods.forEach(function (mod) {
+                mod.modifiers.forEach(function (modifier) {
+                  if (modifier[Object.keys(modifier)[0]].active) {
+                    active_modifiers.push(modifier[Object.keys(modifier)[0]]);
+                  }
+                });
               });
             }
+            data.damage.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "damage", "Weapon Stat");
+            data.crit.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "critical", "Weapon Stat");
+            // crit value can never be reduced below 1
+            data.crit.adjusted = Math.max(1, data.crit.adjusted);
+            data.encumbrance.adjusted +=  ModifierHelpers.calculateValueFromModifiers(active_modifiers, "encumbrance", "Weapon Stat");
+            // encumbrance can never be reduced below 0
+            data.encumbrance.adjusted = Math.max(0, data.encumbrance.adjusted);
+            data.price.adjusted +=  ModifierHelpers.calculateValueFromModifiers(active_modifiers, "price", "Weapon Stat");
+            data.rarity.adjusted +=  ModifierHelpers.calculateValueFromModifiers(active_modifiers, "rarity", "Weapon Stat");
+            data.hardpoints.adjusted +=  ModifierHelpers.calculateValueFromModifiers(active_modifiers, "hardpoints", "Weapon Stat");
+            let range = ModifierHelpers.calculateValueFromModifiers(active_modifiers, "range", "Weapon Stat");
+            range += Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
+            // range must be >0 and cannot be more than extreme
+            range = Math.min(Math.max(range, 0), Object.values(rangeSetting).length);
+            data.range.adjusted = Object.values(rangeSetting)[range].value;
           });
+
+          // TODO: remove this code block
+          if (true === false) {
+            data.itemattachment.forEach((attachment) => {
+              const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
+              data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
+              data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
+              if (data.crit.adjusted < 1) data.crit.adjusted = 1;
+              data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Weapon Stat");
+              data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Weapon Stat");
+              data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Weapon Stat");
+              data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
+              const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
+              const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
+              let newRange = currentRangeIndex + range;
+              if (newRange < 0) newRange = 0;
+              if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
+
+              data.range.adjusted = Object.values(rangeSetting)[newRange].value;
+              // this is the block of code which has not yet been converted
+              if (attachment?.system?.itemmodifier) {
+                const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
+
+                activeMods.forEach((am) => {
+                  const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
+
+                  if (foundItem) {
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  } else {
+                    am.system.rank_current = 1;
+                    data.adjusteditemmodifier.push({...am, adjusted: true});
+                  }
+                });
+              }
+            });
+          }
         }
 
         if (this.isEmbedded && this.actor) {

@@ -315,6 +315,11 @@ export class ActorFFG extends Actor {
   }
 
   _calculateDerivedValues(actorData) {
+    // TODO: this is supposed to update the value, so removing it might break stuff
+    // TODO: this no longer handles reducing the encumbrance if armor is equipped - how to do this needs to be thought through
+    return;
+    // this function used to update the encumbrance on an actor based on values from items
+    /*
     const data = actorData.system;
     const items = actorData.items;
     var encum = 0;
@@ -348,6 +353,8 @@ export class ActorFFG extends Actor {
 
     // Set Encumbrance value on character.
     data.stats.encumbrance.value = encum;
+
+    */
   }
 
   /**

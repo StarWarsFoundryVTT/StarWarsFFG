@@ -217,6 +217,27 @@ export default class ModifierHelpers {
     */
   }
 
+  /**
+   * Replaces the old getCalculatedValueFromCurrentAndArray.
+   * Used to calculate item stats based on e.g. attachments.
+   * @param modifiers - a list of active modifiers
+   * @param stat - the stat we want values for, e.g. "damage"
+   * @param mod_type - category of modifier, e.g. "weapon stats"
+   * @returns {number} - how much the included modifiers modify the mentioned stat by
+   */
+  static calculateValueFromModifiers(modifiers, stat, mod_type) {
+    let total = 0;
+    //console.log("calculating stuff")
+    // the objective here is to count the total changes coming from mods
+    modifiers.forEach(function (modifier) {
+      if (modifier['modtype'] === mod_type && modifier['mod'] === stat && modifier['active']) {
+        total += parseInt(modifier['value']);
+      }
+    });
+    //console.log(total)
+    return total;
+  }
+
   static getCalculatedValueFromCurrentAndArray(item, items, key, modtype, includeSource) {
     // TODO: remove calls to this function
     let total = 0;
@@ -300,15 +321,23 @@ export default class ModifierHelpers {
       }
       form.appendChild(newKey);
 
+      console.log("submitting data")
       await this._onSubmit(event);
-      // create the active effect after submitting the change because things go wrong in the other order
-      await this.item.createEmbeddedDocuments("ActiveEffect", [{
-        label: `attr${nk}`,
-        icon: "icons/svg/aura.svg",
-        origin: this.item.uuid,
-        disabled: false,
-        transfer: true,
-      }]);
+      console.log("done, creating thingy")
+      console.log(this.item)
+      // only attempt to create AEs on non-temporary items
+      if (!this.object.getFlag('starwarsffg', 'ffgIsTemp')) {
+        // check if the mod has a nonce and
+
+        // create the active effect after submitting the change because things go wrong in the other order
+        await this.item.createEmbeddedDocuments("ActiveEffect", [{
+          label: `attr${nk}`,
+          icon: "icons/svg/aura.svg",
+          origin: this.item.uuid,
+          disabled: false,
+          transfer: true,
+        }]);
+      }
     }
 
     // Remove existing attribute
@@ -324,6 +353,8 @@ export default class ModifierHelpers {
           to_delete.push(item.id);
       });
       await this.item.deleteEmbeddedDocuments("ActiveEffect", to_delete);
+    } else if (action === "activate") {
+
     }
   }
 
@@ -363,6 +394,7 @@ export default class ModifierHelpers {
       'Encumbrance': 'system.attributes.Encumbrance.value',
       'ForcePool': 'system.attributes.ForcePool.value',
     };
+    // TODO: add result, dice, roll mods (from e.g. attachments)
     let data = {
       keys: [],
       mode: CONST.ACTIVE_EFFECT_MODES.ADD,
@@ -398,6 +430,14 @@ export default class ModifierHelpers {
     } else if (modifier_category === 'Stat' && Object.keys(stat_mods).includes(modifier)) {
       // Stat mods
       data['keys'] = [stat_mods[modifier]];
+    } else if (modifier_category === 'Encumbrance (Current)') {
+      data['keys'] = ['system.stats.encumbrance.value'];
+    } else if (modifier_category === 'Weapon Stat') {
+      // TODO: this should contain armor stats as well
+      // the only weapon stat which requires an active effect on the actor is encumbrance
+      if (modifier === 'encumbrance') {
+        data['keys'] = ['system.stats.encumbrance.value'];
+      }
     }
     return data;
   }
@@ -496,6 +536,23 @@ export default class ModifierHelpers {
             }]
           },
         ]
+      );
+    } else if (item_type === 'weapon') {
+      await item.createEmbeddedDocuments(
+        "ActiveEffect",
+        [{
+          label: "Encumbrance (Current)",
+          icon: "icons/svg/aura.svg",
+          origin: item.uuid,
+          disabled: false,
+          transfer: true,
+          changes: [{
+            // TODO: this mapping should be a global somewhere, not hidden away and reconstructed in various functions
+            key: 'system.stats.encumbrance.value',
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: '0',
+          }]
+        }]
       );
     }
   }

@@ -20,7 +20,10 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/chat/roll-weapon-card.html",
       "systems/starwarsffg/templates/chat/roll-vehicle-card.html",
       "systems/starwarsffg/templates/parts/shared/ffg-tabs.html",
-      "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html"
+      "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html",
+      "systems/starwarsffg/templates/items/tooltips/ffg-attachment.html",
+      "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html",
+        "systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html"
     ];
 
     return loadTemplates(templatePaths);

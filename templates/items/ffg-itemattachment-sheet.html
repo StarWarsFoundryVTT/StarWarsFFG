@@ -7,35 +7,6 @@
             <div class="container flex-group-center">
               <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
             </div>
-                            <div class="container flex-group-center">
-          <table class="item-list effects-list">
-              <tr>
-                  <th>
-                      Effect
-                  </th>
-                  <th>
-                      <a class="effect-control" data-action="create">
-                          <i class="fas fa-plus"></i>
-                      </a>
-                  </th>
-              </tr>
-              {{#each activeEffects as |effect|}}
-              <tr class="item effect" data-effect-id="{{ effect.id }}">
-                  <td class="item-name effect-name">
-                      <h4>{{ effect.label }}</h4>
-                  </td>
-                  <td class="effect-controls">
-                      <a class="effect-control" data-action="edit" title="edit">
-                          <i class="fas fa-edit"></i>
-                      </a>
-                      <a class="effect-control" data-action="delete" title="delete">
-                          <i class="fas fa-trash"></i>
-                      </a>
-                  </td>
-              </tr>
-              {{/each}}
-          </table>
-      </div>
           </td>
           <td>
             <div class="container flex-group-center">

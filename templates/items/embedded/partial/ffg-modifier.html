@@ -1,0 +1,45 @@
+<div class="form-group embedded_modifier"> <!-- modifier dropdowns -->
+  <label>
+    Mod Modifier {{ index }}
+  </label>
+  <div class="form-fields"> <!-- contains 1 row of dropdowns -->
+    <select name="{{ mod_id }}-{{ index }}-modifier_modtype" class="embedded_selector" data-selector="modtype" data-id="{{ index }}" data-mod-id="{{ mod_id }}">
+      {{# select mod.modtype }}
+      {{#each this.config.itemmodifier_mod_types as |t|}}
+      <!-- TODO: this should be filtered to the item type that we're on -->
+      <option value="{{ t.value }}">{{ localize t.label}}</option>
+      {{/each}}
+      {{/select}}
+    </select>
+    <select name="{{ mod_id }}-{{ index }}-modifier_mod" class="embedded_selector" data-selector="modmod" data-id="{{ index }}" data-mod-id="{{ mod_id }}">
+      {{#select this.mod.mod}}
+        {{#if (eq this.mod.modtype "Result Modifiers") }}
+          {{#each this.config.itemmodifier_resultmodifiers as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Dice Modifiers") }}
+          {{#each this.config.itemmodifier_dicemodifiers as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Roll Modifiers") }}
+          {{#each this.config.itemmodifier_rollmodifiers as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Weapon Stat") }}
+          {{#each this.config.weapon_stats as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+      {{/select}}
+    </select>
+    <input type="text" name="{{ mod_id }}-{{ index }}-modifier_value" value="{{ this.mod.value }}" placeholder="0"/>
+    <input type="checkbox" name="{{ mod_id }}-{{ index }}-modifier_active"{{#if this.mod.active }} checked{{/if}}>
+    <input type="text" name="{{ mod_id }}-{{ index }}-modifier_attr" value="{{ attr }}" style="display: none;">
+    <button type="button" class="modifier_control" data-action="delete" data-modifier="{{ @key }}" data-mod-id="{{ mod_id }}" data-type="image" data-target="" title="Delete Modifier" tabindex="-1">
+      <i class="fas fa-trash-can fa-fw"></i>
+    </button>
+  </div> <!-- /row of modifiers -->
+</div> <!-- /modifier dropdowns -->

@@ -1,6 +1,6 @@
 <div class="resource {{blocktype}} {{name}}">
   <div class="attribute flex-group-center">
-    <div class="block-background">
+    <div class="block-background" {{#if (eq name "itemattachment") }}{{/if }}>
       <div class="block-title">
         {{#if headerlink}}
         <a class="{{headerclass}}" {{{headerattributes}}}>{{localize title}}</a>
@@ -10,11 +10,13 @@
         {{#if (eq blocktype "pills")}}
         <ul class="item-pill-list">
           {{#each fields as |item id|}}
-          <li class="item-pill {{#if adjusted}}adjusted{{/if}}" data-item-name="{{../name}}" data-item-index="{{id}}">
-            {{item.name}} {{#if item.system.rank}}
-            <i class="rank">{{item.system.rank}}</i>
-            {{/if}} {{#if adjusted}}{{else}}<i class="fas fa-times item-delete"></i>{{/if}}
-          </li>
+            <li class="item-pill {{#if adjusted}}adjusted{{/if}}" data-item-name="{{../name}}" data-item-index="{{id}}" data-tooltip="{{> "systems/starwarsffg/templates/items/tooltips/ffg-attachment.html" (object fields=item expanded=false)}}">
+              <div class="hover restricted">
+                {{item.name}} {{#if item.system.rank}}
+                <i class="rank">{{item.system.rank}}</i>
+                {{/if}} {{#if adjusted}}{{else}}<i class="fas fa-question" data-tooltip="{{> "systems/starwarsffg/templates/items/tooltips/ffg-attachment.html" (object fields=item expanded=true)}}"></i><i class="fas fa-times item-delete"></i>{{/if}}
+              </div>
+            </li>
           {{/each}}
         </ul>
         {{/if}} {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}

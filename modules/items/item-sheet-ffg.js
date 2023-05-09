@@ -8,6 +8,8 @@ import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import FFGActiveEffectConfig from "./item-active-effect-config.js";
 import {modActiveEffects, activeEffectMap} from "../config/ffg-activeEffects.js";
+import {ItemFFG} from "./item-ffg.js";
+import {UpdateEmbeddedAttachment} from "./item-editor.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -299,7 +301,8 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.FFG = CONFIG.FFG;
-    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
+    //data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
+    data.renderedDesc = 'placeholder temporary value TODO: remove'
     data.activeEffects = this.item.getEmbeddedCollection("ActiveEffect").contents
     data.effects = this.item.getEmbeddedCollection("ActiveEffect")
     // TODO: move this into a better block
@@ -507,17 +510,30 @@ async _onModControl(event) {
       event.stopPropagation();
 
       const li = event.currentTarget;
-      const parent = $(li).parent()[0];
+      const parent = $(li).parent().parent()[0]; // TODO: this may sometimes be 1 parent and sometimes 2 (due to tooltips)
       const itemType = parent.dataset.itemName;
       const itemIndex = parent.dataset.itemIndex;
 
       const items = this.object.system[itemType];
+
+      // find active effects associated with this attachment, so we can remove them
+      let nonce = this.object.system[itemType][itemIndex].nonce;
+      let related_active_effects = [];
+      this.object.getEmbeddedCollection("ActiveEffect").contents.forEach(function (active_effect) {
+        if (active_effect.getFlag('starwarsffg', 'associated_item') === nonce) {
+          related_active_effects.push(active_effect.id);
+        }
+      });
+
       items.splice(itemIndex, 1);
 
       let formData = {};
       setProperty(formData, `data.${itemType}`, items);
 
       this.object.update(formData);
+
+      // now that the change is submitted, actually remove them
+      this.object.deleteEmbeddedDocuments("ActiveEffect", related_active_effects);
     });
 
     html.find(".item-pill .rank").on("click", (event) => {
@@ -593,52 +609,20 @@ async _onModControl(event) {
       let itemType = li.dataset.itemName;
       let itemIndex = li.dataset.itemIndex;
 
-      if ($(li).hasClass("adjusted")) {
-        return await EmbeddedItemHelpers.loadItemModifierSheet(this.object.id, itemType, itemIndex, this.object?.actor?.id);
-      }
-
-      if ($(li).hasClass("fa-edit")) {
-        const parent = $(li).parent()[0];
-        itemType = parent.dataset.itemName;
-        itemIndex = parent.dataset.itemIndex;
-      }
-
-      const item = this.object.system[itemType][itemIndex];
-
-      let temp = {
-        ...item,
-        flags: {
-          starwarsffg: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: itemType,
-            ffgTempItemIndex: itemIndex,
-            ffgIsTemp: true,
-            ffgParent: this.object.flags,
-            ffgParentApp: this.appId,
-          }
-        },
-      };
-      if (this.object.isEmbedded) {
-        let ownerObject = await fromUuid(this.object.uuid);
-
-        temp = {
-          ...item,
-          flags: {
-            starwarsffg: {
-              ffgTempId: this.object.id,
-              ffgTempItemType: itemType,
-              ffgTempItemIndex: itemIndex,
-              ffgIsTemp: true,
-              ffgUuid: this.object.uuid,
-              ffgIsOwned: this.object.isEmbedded,
-            }
+      let update_form = new UpdateEmbeddedAttachment(
+          {
+            parent: this.object,
+            object: this.object.system[itemType][itemIndex],
+            config: CONFIG.FFG,
           },
-        };
-      }
-
-      let tempItem = await Item.create(temp, { temporary: true });
-
-      tempItem.sheet.render(true);
+          {
+            width: "500",
+            height: "auto",
+            resizable: true,
+            title: "Editing " + this.object.system[itemType][itemIndex].name,
+          }
+      );
+      await update_form.render(true);
     });
 
     html.find(".additional .modifier-active").on("click", async (event) => {
@@ -1220,147 +1204,63 @@ async _onModControl(event) {
 
     let dropped_object = game.items.get(data.uuid.split('.').pop());
     let dropee_object = game.items.get(obj.id);
-    if (dropee_object.type === 'test_attachment' && dropped_object.type === 'test_mod') {
-        console.log("mod dropped on attachment")
-        console.log(dropped_object)
-        console.log(dropee_object)
-        console.log(dropee_object.sheet)
-        console.log(dropee_object.sheet._tabs[0].active)
-        // TODO: improve tab detection or add the ability to move them because this is brittle
-        if (dropee_object.sheet._tabs[0].active === 'attributes') {
-            // base mods
-            await dropee_object.update(
-                {
-                    'system': {
-                        'base_mods': $.merge( // TODO: there's got to be a better way to add instead of replace
-                            dropee_object.system.base_mods,
-                            [{
-                                'name': dropped_object.name,
-                                'effects': dropped_object.system.effects,
-                            }]
-                        )
-                    }
-                }
-            );
-        } else if (dropee_object.sheet._tabs[0].active === 'additional') {
-            // add mod
-            await dropee_object.update(
-                {
-                    'system': {
-                        'added_mods': $.merge( // TODO: there's got to be a better way to add instead of replace
-                            dropee_object.system.added_mods,
-                            [{
-                                'name': dropped_object.name,
-                                'effects': dropped_object.system.effects,
-                            }]
-                        )
-                    }
-                }
-            );
-        }
+
+    console.log("dropped")
+    console.log(dropped_object)
+    console.log("dropee")
+    console.log(dropee_object)
+
+    // todo: this is probably much too small of a scope
+    if (dropped_object.type === 'itemmodifier' && dropee_object.type === 'itemattachment') {
+      // todo: validate that the type is appropriate
+      let link_id = randomID(); // used to tie AEs to mod
+      // update attachment data
+      let basic_data = {
+        'img': dropped_object.img,
+        'name': dropped_object.name,
+        'description': dropped_object.system.renderedDesc,
+        'link_id': link_id,
+        'modifiers': [],
+      }
+
+      // find the actual modifiers on the mod
+      Object.keys(dropped_object.system.attributes).forEach(function (attribute) {
+        let attribute_obj = dropped_object.system.attributes[attribute];
+        let temp_data = {}; // needed for setting the variable value as the key
+        temp_data[attribute] = {
+            'modtype': attribute_obj['modtype'],
+            'value': attribute_obj['value'],
+            'mod': attribute_obj['mod'],
+            'active': attribute_obj['active'],
+          };
+        basic_data['modifiers'].push(temp_data);
+      });
+
+      if (dropee_object.system.itemmodifier.length > 0) {
+        // combine with the existing modifiers
+        basic_data = dropee_object.system.itemmodifier.concat([basic_data]);
+      } else {
+        basic_data = [basic_data];
+      }
+
+      // actually perform the update
+      dropee_object.update({
+        system: {
+          itemmodifier: basic_data,
+        },
+      });
+      // transfer active effects
+      await ItemHelpers.transferActiveEffects(dropped_object, dropee_object, link_id);
+      return;
     }
-    // check for an active effect for a weapon
-    if (dropee_object.type === 'weapon' && dropped_object.type === 'test_attachment') {
-        console.log("handling active effect creation")
-        console.log(dropped_object)
-        // create the attachment
-        /*
-        attachment structure
-        {
-            "name": "",
-            "image": "",
-            "hp": "",
-            "rarity": "",
-            "price": "",
-            "description": "",
-            "base_mods": [],
-            "added_mods": [],
-            "restricted": "",
-            "effects": [],
-        }
 
-        mod structure
-        {
-            "name": "",
-            "active": "",
-            "mod_type": "",
-            "mod_method": "",
-            "mod_value": "",
-            "uuid": "",
-        }
-        */
+    await ItemHelpers.createEmbeddedAttachment(dropee_object, dropped_object, randomID())
+    //await ItemHelpers.embedAttachment(dropee_object, dropped_object);
 
-        /*
-        .createEmbeddedDocuments("ActiveEffect", [{
-            label: "New Effect",
-            icon: "icons/svg/aura.svg",
-            origin: owner.uuid,
-            disabled: true,
-        }]);
-         */
-
-        // since this is new logic, skip everything else that would happen to test only the new stuff
-        // base mods
-        console.log("base mods")
-        let active_effects = [];
-        let active_effect;
-        let current_mod;
-        let current_effect;
-        for (let k = 0; k < dropped_object.system.base_mods.length; k++) {
-            current_mod = dropped_object.system.base_mods[k];
-            console.log(current_mod)
-            active_effect = {
-                label: current_mod.name,
-                icon: current_mod.img,
-                disabled: false,
-                changes: [],
-            }
-            // a single mod can have multiple effects; loop through them
-            for (let x = 0; x < current_mod.effects.length; x++) {
-                current_effect = current_mod.effects[x];
-                if (current_effect.type === 'active') {
-                    console.log("creating active effect " + current_effect.name)
-                    // todo: this should probably be a single effect with multiple changes
-                    // todo: the mode and value should be configured upstream and passed in here
-                    active_effect['changes'].push({
-                        key: activeEffectMap[current_effect.effect],
-                        mode: '2',
-                        value: '1',
-                    });
-                } else {
-                    // todo: handle passive effect creation
-                    console.log("skipping passive effect " + current_effect.name)
-                }
-            }
-            active_effects.push(active_effect);
-        }
-        // added mods
-
-        /*
-            a.createEmbeddedDocuments(
-                "ActiveEffect",
-                [{
-                    label: "test",
-                    "icon": "icons/svg/aura.svg",
-                    disabled: true,
-                    changes: [{
-                        key: "system.stats.wounds.value",
-                        value: 1,
-                        mode: 2
-                    }]
-                }]
-            )
-         */
-
-        // actually create the effect(s)
-        await dropee_object.createEmbeddedDocuments(
-            "ActiveEffect",
-            active_effects
-        );
-
-
-        console.log("caught attachment on weapon")
-        return;
+    // TODO: stop normal duplicating the item for deep embed stuff
+    // TODO: handle all of the rules around adding items currently handled below
+    if (dropped_object.type === 'itemattachment') {
+      return
     }
 
     // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.

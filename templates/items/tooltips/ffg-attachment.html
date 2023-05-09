@@ -1,0 +1,37 @@
+<!--
+  NOTE: this is done via tabs, not spaces.
+  see https://stackoverflow.com/questions/22831988/string-attribute-values-in-multiple-lines-html
+-->
+<div style=&quot;display: flex; flex-direction: column&quot;>
+	<div>
+		<img src=&quot;{{ this.fields.img }}&quot; style=&quot;height: 16px; width: 16px;&quot;>
+	</div><div>
+		HP: {{ this.fields.system.hardpoints.value }} | Rarity: {{ this.fields.system.rarity.value }} | Price: {{ this.fields.system.price.value }}
+	</div>{{# if expanded }}<div>
+		{{{ this.fields.system.renderedDesc }}}
+	</div>{{/if}}<div>
+	{{#each this.fields.system.installed_mods as |installed_mod|}}
+		<div style=&quot;flex-direction: row&quot;>
+			<hr>
+			<div>
+				{{ installed_mod.name }}
+			</div><div>
+				{{ installed_mod.description }}
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th>mod</th><th>value</th><th>active</th>
+					</tr>
+				</thead>
+				<tbody>
+				{{#each installed_mod.modifiers as |stupid| }}{{#each stupid as |modifier| }}
+					<tr>
+						<td>{{ modifier.mod }}</td><td>{{ modifier.value }}</td><td>{{ modifier.active }}</td>
+					</tr>{{/each}}{{/each}}
+				</tbody>
+			</table>
+		</div>
+	{{/each}}
+	</div>
+</div>
