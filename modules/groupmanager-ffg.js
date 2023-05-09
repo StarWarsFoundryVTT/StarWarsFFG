@@ -83,19 +83,25 @@ export class GroupManager extends FormApplication {
         }
       });
     } else if (pcListMode === "owned") {
-      players.forEach((player) => {
-        const char = game.actors.filter((actor) => actor.testUserPermission(player, "OWNER"));
-        char.forEach((c) => {
-          try {
-            obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.system.obligationlist, "obligations");
-            dutyRangeStart = this._addCharacterObligationDuty(c, dutyRangeStart, c.system.dutylist, "duties");
-            characters.push(c);
-            // obligationRangeStart = this._addCharacterObligations(c, obligationRangeStart);
-            // dutyRangeStart = this._addCharacterDuties(c, dutyRangeStart);
-          } catch (err) {
-            CONFIG.logger.warn(`Unable to add player (${c.name}) to obligation/duty table`, err);
+      game.actors.filter((actor) => {
+        for (let player of players) {
+          if (actor.testUserPermission(player, "OWNER")) {
+            // use actor if any active player has ownership
+            return true;
           }
-        });
+        }
+        return false;
+      })
+      .forEach((c) => {
+        try {
+          obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.system.obligationlist, "obligations");
+          dutyRangeStart = this._addCharacterObligationDuty(c, dutyRangeStart, c.system.dutylist, "duties");
+          characters.push(c);
+          // obligationRangeStart = this._addCharacterObligations(c, obligationRangeStart);
+          // dutyRangeStart = this._addCharacterDuties(c, dutyRangeStart);
+        } catch (err) {
+          CONFIG.logger.warn(`Unable to add player (${c.name}) to obligation/duty table`, err);
+        }
       });
     }
 
