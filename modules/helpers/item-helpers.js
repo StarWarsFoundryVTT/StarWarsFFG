@@ -186,6 +186,8 @@ export default class ItemHelpers {
         attributes: embedded_modifiers,
       },
     });
+    // transfer active effects
+    await ItemHelpers.transferActiveEffects(mod_item, parent_item, randomID());
   }
 
   static async updateParent(embedded_item, form_data, parent_id) {
