@@ -1194,7 +1194,6 @@ async _onModControl(event) {
   }
 
   async _onDropItem(event) {
-    console.log("dropped")
     let data;
     const obj = this.object;
     const li = event.currentTarget;
@@ -1215,7 +1214,8 @@ async _onModControl(event) {
     console.log(dropee_object)
 
     // todo: this is probably much too small of a scope
-    if (dropped_object.type === 'itemmodifier' && dropee_object.type === 'weapon') {
+    if (dropped_object.type === 'itemmodifier' && ['weapon'].includes(dropee_object.type)) {
+      console.log("yes")
       // todo: validate that the type is appropriate
       let link_id = randomID(); // used to tie AEs to mod
       // update attachment data
@@ -1306,12 +1306,20 @@ async _onModControl(event) {
       return;
     }
 
-    await ItemHelpers.createEmbeddedAttachment(dropee_object, dropped_object, randomID())
+    if (dropped_object.type === 'itemmodifier' && dropped_object.system.type === 'all') {
+      console.log("dropped mod directly")
+      await ItemHelpers.createEmbeddedModifier(dropee_object, dropped_object);
+    } else {
+      await ItemHelpers.createEmbeddedAttachment(dropee_object, dropped_object, randomID());
+    }
+
+
+    //await ItemHelpers.syncActiveEffects(dropee_object);
     //await ItemHelpers.embedAttachment(dropee_object, dropped_object);
 
     // TODO: stop normal duplicating the item for deep embed stuff
     // TODO: handle all of the rules around adding items currently handled below
-    if (dropped_object.type === 'itemattachment') {
+    if (dropped_object.type === 'itemattachment' || dropped_object.type === 'itemmodifier') {
       return
     }
 

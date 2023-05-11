@@ -108,7 +108,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         const rangeSetting = (this.type === "shipweapon") ? CONFIG.FFG.vehicle_ranges : CONFIG.FFG.ranges;
 
-        if (data?.itemmodifier) {
+        if (data?.itemmodifier) { // TODO: convert to updated function
           data.itemmodifier.forEach((modifier) => {
             if (modifier?.system) {
               modifier.system.rank_current = modifier.system.rank;
@@ -238,45 +238,80 @@ export class ItemFFG extends ItemBaseFFG {
         data.adjusteditemmodifier = [];
 
         if (data?.itemmodifier) {
-          data.itemmodifier.forEach((modifier) => {
-            if (modifier?.system) {
-              modifier.system.rank_current = modifier.system.rank;
-            }
-            data.adjusteditemmodifier.push({ ...modifier });
-            data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
-            data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "defence", "Armor Stat");
-            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "encumbrance", "Armor Stat");
-            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Armor Stat");
-            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Armor Stat");
-            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Armor Stat");
-          });
+
         }
 
         if (data?.itemattachment) {
-          data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
-            data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
-            data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
-            data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Armor Stat");
-            data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Armor Stat");
-            data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Armor Stat");
-            data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Armor Stat");
-
-            if (attachment?.system?.itemmodifier) {
-              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
-
-              activeMods.forEach((am) => {
-                const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
-
-                if (foundItem) {
-                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
-                } else {
-                  am.system.rank_current = 1;
-                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
-                }
+          data.itemattachment.forEach(function (attachment) {
+            console.log(attachment)
+            let active_modifiers = [];
+            if (Object.keys(attachment.system).includes('installed_mods')) {
+              // TODO: this should not have a condition
+              attachment.system.installed_mods.forEach(function (mod) {
+                mod.modifiers.forEach(function (modifier) {
+                  if (modifier[Object.keys(modifier)[0]].active) {
+                    active_modifiers.push(modifier[Object.keys(modifier)[0]]);
+                  }
+                });
               });
             }
+
+            data.soak.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "soak", "Armor Stat");
+            data.defence.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "defence", "Armor Stat");
+            data.encumbrance.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "encumbrance", "Armor Stat");
+            data.price.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "price", "Armor Stat");
+            data.rarity.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "rarity", "Armor Stat");
+            console.log("before")
+            console.log(data.hardpoints.adjusted)
+            data.hardpoints.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "hardpoints", "Armor Stat");
+            console.log(data.hardpoints.adjusted)
+
           });
+        }
+
+        if (true === false) {
+          // TODO: remove this code block
+          if (data?.itemmodifier) {
+            data.itemmodifier.forEach((modifier) => {
+              if (modifier?.system) {
+                modifier.system.rank_current = modifier.system.rank;
+              }
+              data.adjusteditemmodifier.push({...modifier});
+              data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
+              data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "defence", "Armor Stat");
+              data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "encumbrance", "Armor Stat");
+              data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Armor Stat");
+              data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Armor Stat");
+              data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Armor Stat");
+            });
+          }
+
+          if (data?.itemattachment) {
+            data.itemattachment.forEach((attachment) => {
+              const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
+              data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
+              data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
+              data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Armor Stat");
+              data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Armor Stat");
+              data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Armor Stat");
+              data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Armor Stat");
+
+              if (attachment?.system?.itemmodifier) {
+                const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
+
+                activeMods.forEach((am) => {
+                  const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
+
+                  if (foundItem) {
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  } else {
+                    am.system.rank_current = 1;
+                    data.adjusteditemmodifier.push({...am, adjusted: true});
+                  }
+                });
+              }
+            });
+          }
         }
 
         if (this.isEmbedded && this.actor && this.actor.system) {

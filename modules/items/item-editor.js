@@ -45,6 +45,8 @@ export class UpdateEmbeddedAttachment extends FormApplication {
         key = 'itemmodifier_rollmodifiers';
       } else if (new_value === 'Weapon Stat') {
         key = 'weapon_stats';
+      } else if (new_value === 'Armor Stat') {
+        key = 'armor_stats';
       } else {
         console.log(`UNKNOWN MOD TYPE: ${new_value}`)
         return;

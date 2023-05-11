@@ -33,6 +33,11 @@
             <option value="{{ t.value }}">{{ localize t.label}}</option>
           {{/each}}
         {{/if}}
+        {{#if (eq this.mod.modtype "Armor Stat") }}
+          {{#each this.config.armor_stats as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
       {{/select}}
     </select>
     <input type="text" name="{{ mod_id }}-{{ index }}-modifier_value" value="{{ this.mod.value }}" placeholder="0"/>

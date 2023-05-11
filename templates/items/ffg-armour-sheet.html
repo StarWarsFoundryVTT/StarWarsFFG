@@ -53,8 +53,8 @@
               <div class="characteristic">
                 <div class="characteristic-value">
                   <input type="text" name="data.hardpoints.value" value="{{data.hardpoints.value}}" data-dtype="Number" />
-                  {{#if (ne data.hardpoints.current data.hardpoints.value)}}
-                  <div class="adjustedvalues-left {{#if (gt data.hardpoints.current data.hardpoints.value)}}positive{{/if}}">{{data.hardpoints.current}}</div>
+                  {{#if (ne data.hardpoints.adjusted data.hardpoints.value)}}
+                  <div class="adjustedvalues-left {{#if (gt data.hardpoints.current data.hardpoints.value)}}positive{{/if}}">{{data.hardpoints.adjusted}}</div>
                   {{/if}}
                 </div>
               </div>

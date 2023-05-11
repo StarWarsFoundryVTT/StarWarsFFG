@@ -165,6 +165,29 @@ export default class ItemHelpers {
     }
   }
 
+  /**
+   * Given a parent and child item, move all modifiers to the parent item
+   * @param parent_item - item, e.g. armor or weapon
+   * @param mod_item - item_modifier
+   * @returns {Promise<void>}
+   */
+  static async createEmbeddedModifier(parent_item, mod_item) {
+    if (mod_item.type !== 'itemmodifier') {
+      console.log("you cannot do this for non-modifiers")
+      return;
+    }
+    const embedded_modifiers = parent_item.system.attributes;
+    for (let modifier of Object.keys(mod_item.system.attributes)) {
+      // using the same key means multiple drag-and-drops will override the previous value
+      embedded_modifiers[`attr${Date.now()}`] = mod_item.system.attributes[modifier];
+    }
+    parent_item.update({
+      system: {
+        attributes: embedded_modifiers,
+      },
+    });
+  }
+
   static async updateParent(embedded_item, form_data, parent_id) {
     console.log("updating parent")
     console.log(embedded_item)
