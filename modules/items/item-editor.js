@@ -123,74 +123,114 @@ export class UpdateEmbeddedAttachment extends FormApplication {
   }
 
   async _updateObject(event, formData) {
-    // format the data to something mildly useful
-    let restricted = true;
-    if (formData['attachment_restricted'] === null) {
-      restricted = false;
-    }
-    let data = {
-      nonce: formData['attachment_nonce'],
-      name: formData['attachment_name'],
-      img: formData['attachment_img'],
-      type: formData['attachment_type'],
-      system: {
-        renderedDesc: formData['attachment_renderedDesc'],
-        type: formData['attachment_system_type'],
-        hardpoints: {
-          value: formData['attachment_hardpoints'],
-        },
-        rarity: {
-          value: formData['attachment_rarity'],
-          isrestricted: restricted,
-        },
-        price: {
-          value: formData['attachment_price'],
-        },
-        installed_mods: [],
-        attributes: {},
+    if (formData['submission_type'] === 'itemattachment') {
+      // format the data to something mildly useful
+      let restricted = true;
+      if (formData['attachment_restricted'] === null) {
+        restricted = false;
       }
-    };
-    // start building mod data
-    let mod_data = {};
-    Object.keys(formData).filter(i => i.includes("mod_name")).forEach(function (mod) {
-      let mod_index = mod.split('-')[0];
-      mod_data = {
-        name: formData[`${mod_index}-mod_name`],
-        img: formData[`${mod_index}-mod_img`], // TODO: image selector doesn't work
-        description: formData[`${mod_index}-mod_description`],
-        mod_link_id: formData[`${mod_index}-mod_link_id`],
+      let data = {
+        nonce: formData['attachment_nonce'],
+        name: formData['attachment_name'],
+        img: formData['attachment_img'],
+        type: formData['attachment_type'],
+        system: {
+          renderedDesc: formData['attachment_renderedDesc'],
+          type: formData['attachment_system_type'],
+          hardpoints: {
+            value: formData['attachment_hardpoints'],
+          },
+          rarity: {
+            value: formData['attachment_rarity'],
+            isrestricted: restricted,
+          },
+          price: {
+            value: formData['attachment_price'],
+          },
+          installed_mods: [],
+          attributes: {},
+        }
+      };
+      // start building mod data
+      let mod_data = {};
+      Object.keys(formData).filter(i => i.includes("mod_name")).forEach(function (mod) {
+        let mod_index = mod.split('-')[0];
+        mod_data = {
+          name: formData[`${mod_index}-mod_name`],
+          img: formData[`${mod_index}-mod_img`], // TODO: image selector doesn't work
+          description: formData[`${mod_index}-mod_description`],
+          mod_link_id: formData[`${mod_index}-mod_link_id`],
+          modifiers: [],
+        }
+        // start building modifier data
+        Object.keys(formData).filter(x => x.includes("modifier_modtype")).forEach(function (modifier) {
+          // represents the MOD index this modifier is on
+          let modifier_mod_index = modifier.split('-')[0];
+          let modifier_index = modifier.split('-')[1];
+          if (modifier_mod_index === mod_index) {
+            // done like this because js doesn't let you dynamically access keys if it isn't already defined
+            let new_data = {};
+            new_data[formData[`${modifier_mod_index}-${modifier_index}-modifier_attr`]] = {
+              modtype: formData[`${modifier_mod_index}-${modifier_index}-modifier_modtype`],
+              value: formData[`${modifier_mod_index}-${modifier_index}-modifier_value`],
+              mod: formData[`${modifier_mod_index}-${modifier_index}-modifier_mod`],
+              active: formData[`${modifier_mod_index}-${modifier_index}-modifier_active`],
+            };
+            mod_data['modifiers'].push(new_data);
+          }
+        });
+        data['system']['installed_mods'].push(mod_data);
+      });
+      console.log("updating attachment, final data:")
+      console.log(data)
+      // retrieve existing attachments, so we don't delete the other ones
+      let attachments = this.object.parent.system.itemattachment.filter(i => i.nonce !== data['nonce']);
+      attachments.push(data);
+      // actually perform the update
+      await this.object.parent.update({
+        system: {
+          itemattachment: attachments,
+        },
+      });
+      await ItemHelpers.syncActiveEffects(this.object.parent);
+    } else if (formData['submission_type'] === 'itemmodifier') {
+      let data = {
+        name: formData['attachment_name'],
+        img: formData['attachment_img'],
+        description: formData['quality_desc'],
+        link_id: formData['modifier_link'],
+        type: formData['submission_type'],
+        system: {
+          rank: formData['modifier_rank'],
+          type: formData['attachment_system_type'],
+        },
         modifiers: [],
-      }
-      // start building modifier data
+      };
       Object.keys(formData).filter(x => x.includes("modifier_modtype")).forEach(function (modifier) {
         // represents the MOD index this modifier is on
-        let modifier_mod_index = modifier.split('-')[0];
         let modifier_index = modifier.split('-')[1];
-        if (modifier_mod_index === mod_index) {
-          // done like this because js doesn't let you dynamically access keys if it isn't already defined
-          let new_data = {};
-          new_data[formData[`${modifier_mod_index}-${modifier_index}-modifier_attr`]] = {
-            modtype: formData[`${modifier_mod_index}-${modifier_index}-modifier_modtype`],
-            value: formData[`${modifier_mod_index}-${modifier_index}-modifier_value`],
-            mod: formData[`${modifier_mod_index}-${modifier_index}-modifier_mod`],
-            active: formData[`${modifier_mod_index}-${modifier_index}-modifier_active`],
-          };
-          mod_data['modifiers'].push(new_data);
-        }
+        // done like this because js doesn't let you dynamically access keys if it isn't already defined
+        let new_data = {};
+        new_data[formData[`-${modifier_index}-modifier_attr`]] = {
+          modtype: formData[`-${modifier_index}-modifier_modtype`],
+          value: formData[`-${modifier_index}-modifier_value`],
+          mod: formData[`-${modifier_index}-modifier_mod`],
+          active: formData[`-${modifier_index}-modifier_active`],
+        };
+        data['modifiers'].push(new_data);
       });
-      data['system']['installed_mods'].push(mod_data);
-    });
-    console.log("updating attachment, final data:")
-    console.log(data)
-    // retrieve existing attachments, so we don't delete the other ones
-    let attachments = this.object.parent.system.itemattachment.filter(i => i.nonce !== data['nonce']);
-    attachments.push(data);
-    // actually perform the update
-    await this.object.parent.update({
-      system: {
-        itemattachment: attachments,
-      },
-    });
-    await ItemHelpers.syncActiveEffects(this.object.parent);
+      // retrieve existing attachments, so we don't delete the other ones
+      let qualities = this.object.parent.system.itemmodifier.filter(i => i.link_id !== data['link_id']);
+      qualities.push(data);
+      // actually perform the update
+      await this.object.parent.update({
+        system: {
+          itemmodifier: qualities,
+        },
+      });
+      await ItemHelpers.syncActiveEffects(this.object.parent);
+    } else {
+      console.log("unknown embedded item editor submission")
+    }
   }
 }

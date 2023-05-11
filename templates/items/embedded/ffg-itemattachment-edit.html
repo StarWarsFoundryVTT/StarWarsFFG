@@ -12,6 +12,8 @@
       <input type="text" name="attachment_nonce" value="{{ this.object.object.nonce }}" style="display: none;">
       <input type="text" name="attachment_type" value="{{ this.object.object.type }}" style="display: none;">
       <input type="text" name="attachment_system_type" value="{{ this.object.object.system.type }}" style="display: none;">
+      <input type="text" name="submission_type" value="{{ this.object.object.type }}" style="display: none;">
+      <input type="text" name="modifier_link" value="{{ this.object.object.link_id }}" style="display: none;">
     </div>
   </div>
   <div class="form-group"> <!-- attachment image -->
@@ -25,6 +27,7 @@
       <input type="text" name="attachment_img" value="{{ this.object.object.img }}" placeholder="">
     </div>
   </div>
+  {{#if (eq this.object.object.type "itemattachment") }}
   <div class="form-group"> <!-- attachment hardpoints required -->
     <label>
       Hardpoints Required
@@ -50,24 +53,56 @@
       <input type="number" name="attachment_price" value="{{ this.object.object.system.price.value }}" placeholder="0">
     </div>
   </div>
+  {{/if }}
   <div class="form-group"> <!-- attachment description -->
     <label>
       Description
     </label>
     <div class="form-fields">
+      {{# if this.object.object.system.renderedDesc }}
       <input type="text" name="attachment_renderedDesc" value="{{ this.object.object.system.renderedDesc }}">
+      {{/if }}
+      {{# if this.object.object.description }}
+      <input type="text" name="quality_desc" value="{{ this.object.object.description }}">
+      {{/if }}
     </div>
   </div>
+  {{#if (eq this.object.object.type "itemmodifier") }}
+  <div class="form-group"> <!-- modifier rank -->
+    <label>
+      Rank
+    </label>
+    <div class="form-fields">
+      <input type="number" name="modifier_rank" value="{{ this.object.object.system.rank }}" placeholder="1">
+    </div>
+  </div>
+  {{/if }}
   Installed Mods<br> <!-- installed mods -->
   <div class="mod_container"> <!-- all mods container -->
+  {{#if (eq this.object.object.type "itemattachment") }}
   {{#each this.object.object.system.installed_mods as |installed_mod|}}
     {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html" (object index=@index config=../this.object.config installed_mod=installed_mod)}}
   {{/each}} <!-- / installed_mods -->
+  {{/if }}
+  {{#if (eq this.object.object.type "itemmodifier") }}
+    <div class="modifier_container" data-modifier="{{ mod.mod_link_id }}"> <!-- modifier container -->
+    {{#each this.object.object.modifiers as |installed_modifier modifier_id|}}
+    {{#each installed_modifier as |modifier|}}
+      {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=modifier_id config=../../this.object.config mod=modifier mod_id=../../index attr=@key)}}
+    {{/each}}
+    {{/each}} <!-- / installed_mods -->
+    </div>
+    <button type="button" class="modifier_control" data-action="create" data-modifier="{{ this.object.object.link_id }}" data-mod-id="{{ modifier_id }}" data-type="image" data-target="" title="Add Modifier" tabindex="-1">
+      <i class="fas fa-plus fa-fw"></i>Add Modifier
+    </button>
+  {{/if}}
   </div>
   <hr>
+  {{#if (eq this.object.object.type "itemattachment") }}
   <button type="button" class="mod_control" data-action="create" data-type="image" data-target="" title="Add Mod" tabindex="-1">
     <i class="fas fa-plus fa-fw"></i>Add Mod
   </button>
+  {{/if}}
   <br><br>
   <button type="submit">Save Changes</button>
 </form>

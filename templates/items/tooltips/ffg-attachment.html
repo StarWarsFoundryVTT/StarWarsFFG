@@ -2,6 +2,7 @@
   NOTE: this is done via tabs, not spaces.
   see https://stackoverflow.com/questions/22831988/string-attribute-values-in-multiple-lines-html
 -->
+{{#if (eq this.fields.type "itemattachment") }}
 <div style=&quot;display: flex; flex-direction: column&quot;>
 	<div>
 		<img src=&quot;{{ this.fields.img }}&quot; style=&quot;height: 16px; width: 16px;&quot;>
@@ -35,3 +36,33 @@
 	{{/each}}
 	</div>
 </div>
+{{else}}
+<div style=&quot;display: flex; flex-direction: column&quot;>
+	<div>
+		<img src=&quot;{{ this.fields.img }}&quot; style=&quot;height: 16px; width: 16px;&quot;>
+	</div><div>{{ this.fields.name }}</div>
+	<div>
+		<div style=&quot;flex-direction: row&quot;>
+			<hr>
+			<div>
+				Rank: 1
+			</div><div>
+				{{ this.fields.description }}
+			</div>
+			<table>
+				<thead>
+					<tr>
+						<th>mod</th><th>value</th><th>active</th>
+					</tr>
+				</thead>
+				<tbody>
+				{{#each this.fields.modifiers as |stupid| }}{{#each stupid as |modifier| }}
+					<tr>
+						<td>{{ modifier.mod }}</td><td>{{ modifier.value }}</td><td>{{ modifier.active }}</td>
+					</tr>{{/each}}{{/each}}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{{/if}}

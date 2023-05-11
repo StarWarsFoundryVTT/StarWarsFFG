@@ -539,9 +539,13 @@ async _onModControl(event) {
     html.find(".item-pill .rank").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const li = $(event.currentTarget).parent()[0];
+      const li = $(event.currentTarget).parent().parent()[0];
       const itemType = li.dataset.itemName;
       const itemIndex = li.dataset.itemIndex;
+      if (itemType === 'itemmodifier') {
+        // TODO: check if we can remove this entirely
+        return;
+      }
 
       const item = this.object.system[itemType][parseInt(itemIndex, 10)];
       if (item) {
@@ -1211,6 +1215,54 @@ async _onModControl(event) {
     console.log(dropee_object)
 
     // todo: this is probably much too small of a scope
+    if (dropped_object.type === 'itemmodifier' && dropee_object.type === 'weapon') {
+      // todo: validate that the type is appropriate
+      let link_id = randomID(); // used to tie AEs to mod
+      // update attachment data
+      let basic_data = {
+        'img': dropped_object.img,
+        'name': dropped_object.name,
+        'description': dropped_object.system.renderedDesc,
+        'link_id': link_id,
+        'modifiers': [],
+        'type': dropped_object.type,
+        'system': {
+          'rank': 1,
+          'type': dropped_object.system.type,
+        },
+      };
+      // find the actual modifiers on the quality
+      Object.keys(dropped_object.system.attributes).forEach(function (attribute) {
+        let attribute_obj = dropped_object.system.attributes[attribute];
+        let temp_data = {}; // needed for setting the variable value as the key
+        temp_data[attribute] = {
+            'modtype': attribute_obj['modtype'],
+            'value': attribute_obj['value'],
+            'mod': attribute_obj['mod'],
+            'active': attribute_obj['active'],
+          };
+        basic_data['modifiers'].push(temp_data);
+      });
+
+      if (dropee_object.system.itemmodifier.length > 0) {
+        // combine with the existing modifiers
+        basic_data = dropee_object.system.itemmodifier.concat([basic_data]);
+      } else {
+        basic_data = [basic_data];
+      }
+
+      // actually perform the update
+      dropee_object.update({
+        system: {
+          itemmodifier: basic_data,
+        },
+      });
+      // transfer active effects
+      await ItemHelpers.transferActiveEffects(dropped_object, dropee_object, link_id);
+      return;
+    }
+
+    // todo: this is probably much too small of a scope
     if (dropped_object.type === 'itemmodifier' && dropee_object.type === 'itemattachment') {
       // todo: validate that the type is appropriate
       let link_id = randomID(); // used to tie AEs to mod
@@ -1221,7 +1273,7 @@ async _onModControl(event) {
         'description': dropped_object.system.renderedDesc,
         'link_id': link_id,
         'modifiers': [],
-      }
+      };
 
       // find the actual modifiers on the mod
       Object.keys(dropped_object.system.attributes).forEach(function (attribute) {

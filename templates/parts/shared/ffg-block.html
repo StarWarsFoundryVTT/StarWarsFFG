@@ -14,7 +14,7 @@
               <div class="hover restricted">
                 {{item.name}} {{#if item.system.rank}}
                 <i class="rank">{{item.system.rank}}</i>
-                {{/if}} {{#if adjusted}}{{else}}<i class="fas fa-question" data-tooltip="{{> "systems/starwarsffg/templates/items/tooltips/ffg-attachment.html" (object fields=item expanded=true)}}"></i><i class="fas fa-times item-delete"></i>{{/if}}
+                {{/if}} {{#if adjusted}}{{else}}{{#if (eq item.type "itemattachment") }}<i class="fas fa-question" data-tooltip="{{> "systems/starwarsffg/templates/items/tooltips/ffg-attachment.html" (object fields=item expanded=true)}}"></i>{{/if }}<i class="fas fa-times item-delete"></i>{{/if}}
               </div>
             </li>
           {{/each}}
