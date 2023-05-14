@@ -613,6 +613,9 @@ export class ActorSheetFFG extends ActorSheet {
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
       let item = this.actor.items.get(itemId);
+      console.log("editing inventory item")
+      console.log(itemId)
+      console.log(item)
       if (!item) {
         item = game.items.get(itemId);
 

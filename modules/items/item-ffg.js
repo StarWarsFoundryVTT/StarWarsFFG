@@ -24,12 +24,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     if (this.getEmbeddedCollection("ActiveEffect").contents.length === 0) {
       // create the active effects that should always be present if they aren't already there
-      // was originally test_species
-      if (data.type === 'species') {
-        await ModifierHelpers.createBasicActiveEffects(this, this.type);
-      } else if (data.type === 'weapon') {
-        await ModifierHelpers.createBasicActiveEffects(this, this.type);
-      }
+      await ModifierHelpers.createBasicActiveEffects(this, this.type);
     }
     await super._onCreate(data, options, user);
   }

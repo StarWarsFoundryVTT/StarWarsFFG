@@ -393,6 +393,12 @@ export default class ModifierHelpers {
       'Defence-Ranged': 'system.attributes.Defence-Ranged.value',
       'Encumbrance': 'system.attributes.Encumbrance.value',
       'ForcePool': 'system.attributes.ForcePool.value',
+      'Armour': 'system.attributes.Armour.value',
+      'Handling': 'system.attributes.Handling.value',
+      'Hulltrauma': 'system.attributes.Hulltrauma.value',
+      'Silhouette': 'system.attributes.Silhouette.value', // 1 --> 10 instead of +5 (6)
+      'Speed': 'system.attributes.Speed.value',
+      'Systemstrain': 'system.attributes.Systemstrain.value',
     };
     // TODO: add result, dice, roll mods (from e.g. attachments)
     let data = {
@@ -432,12 +438,18 @@ export default class ModifierHelpers {
       data['keys'] = [stat_mods[modifier]];
     } else if (modifier_category === 'Encumbrance (Current)') {
       data['keys'] = ['system.stats.encumbrance.value'];
+    } else if (modifier_category === 'Hardpoints') {
+      data['keys'] = ['system.stats.customizationHardPoints.value'];
+      // TODO: figure out how to subtract?
+      data['mode'] = CONST.ACTIVE_EFFECT_MODES.ADD;
     } else if (modifier_category === 'Weapon Stat') {
       // TODO: this should contain armor stats as well
       // the only weapon stat which requires an active effect on the actor is encumbrance
       if (modifier === 'encumbrance') {
         data['keys'] = ['system.stats.encumbrance.value'];
       }
+    } else {
+      console.log(`UNKNOWN MODIFIER: ${modifier_category}, ${modifier}`)
     }
     return data;
   }
@@ -459,8 +471,10 @@ export default class ModifierHelpers {
       console.log("Could not find active effect - :|")
       return;
     }
-
-    active_effect.forEach(function (current_effect) {
+    console.log(item.id)
+    console.log(item)
+    for (let current_effect of active_effect) {
+      console.log(current_effect.origin)
       console.log(`updating active effect ${current_effect.label}`)
       let changes = [];
       // lookup relevant keys
@@ -476,12 +490,16 @@ export default class ModifierHelpers {
         });
       });
       // do the update
-      current_effect.update({
+      /*
+      TODO: instead of updating the standalone effect (which is done below), we want to update the item it's on
+      await game.actors.filter(i => i.name === 'ship')[0].effects.filter(i => i.id === effect.id)[0].update({changes: [{new: changes}]});
+       */
+      await current_effect.update({
         changes: changes
       });
       console.log("resulting effect:")
       console.log(current_effect)
-    });
+    }
   }
 
   static async createBasicActiveEffects(item, item_type) {
@@ -554,6 +572,74 @@ export default class ModifierHelpers {
           }]
         }]
       );
+    } else if (item_type === 'shipattachment') {
+      await item.createEmbeddedDocuments(
+          "ActiveEffect",
+          [{
+            label: "Encumbrance (Current)",
+            icon: "icons/svg/aura.svg",
+            origin: item.uuid,
+            disabled: false,
+            transfer: true,
+            changes: [{
+              // TODO: this mapping should be a global somewhere, not hidden away and reconstructed in various functions
+              key: 'system.stats.encumbrance.value',
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: '0',
+            }]
+          }]
+      );
+      await item.createEmbeddedDocuments(
+          "ActiveEffect",
+          [{
+            label: "Hardpoints",
+            icon: "icons/svg/aura.svg",
+            origin: item.uuid,
+            disabled: false,
+            transfer: true,
+            changes: [{
+              // TODO: this mapping should be a global somewhere, not hidden away and reconstructed in various functions
+              key: 'system.stats.customizationHardPoints.value',
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: '0',
+            }]
+          }]
+      );
+      await item.createEmbeddedDocuments(
+          "ActiveEffect",
+          [{
+            label: "Speed",
+            icon: "icons/svg/aura.svg",
+            origin: item.uuid,
+            disabled: false,
+            transfer: true,
+            changes: [{
+              // TODO: this mapping should be a global somewhere, not hidden away and reconstructed in various functions
+              key: 'system.stats.speed.value',
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: '0',
+            }]
+          }]
+      );
+    } else if (item_type === 'shipweapon') {
+        await item.createEmbeddedDocuments(
+          "ActiveEffect",
+          [{
+            label: "Encumbrance (Current)",
+            icon: "icons/svg/aura.svg",
+            origin: item.uuid,
+            disabled: false,
+            transfer: true,
+            changes: [{
+              // TODO: this mapping should be a global somewhere, not hidden away and reconstructed in various functions
+              key: 'system.stats.encumbrance.value',
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: '0',
+            }]
+          }]
+      );
+    } else {
+      console.log(`unknown item type: ${item_type}`)
     }
   }
 

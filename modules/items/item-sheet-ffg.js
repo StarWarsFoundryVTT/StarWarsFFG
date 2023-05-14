@@ -467,7 +467,7 @@ async _onModControl(event) {
       }
     });
 
-    if (["weapon", "armour", "itemattachment", "shipweapon", "test_attachment"].includes(this.object.type)) {
+    if (["weapon", "armour", "itemattachment", "shipweapon", "shipattachment"].includes(this.object.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
         dropSelector: null,
@@ -1198,6 +1198,8 @@ async _onModControl(event) {
     const obj = this.object;
     const li = event.currentTarget;
 
+    console.log("dropped")
+
     try {
       data = JSON.parse(event.dataTransfer.getData("text/plain"));
       if (data.type !== "Item") return;
@@ -1214,7 +1216,7 @@ async _onModControl(event) {
     console.log(dropee_object)
 
     // todo: this is probably much too small of a scope
-    if (dropped_object.type === 'itemmodifier' && ['weapon'].includes(dropee_object.type)) {
+    if (dropped_object.type === 'itemmodifier' && ['weapon', 'shipweapon'].includes(dropee_object.type)) {
       console.log("yes")
       // todo: validate that the type is appropriate
       let link_id = randomID(); // used to tie AEs to mod
@@ -1319,7 +1321,7 @@ async _onModControl(event) {
 
     // TODO: stop normal duplicating the item for deep embed stuff
     // TODO: handle all of the rules around adding items currently handled below
-    if (dropped_object.type === 'itemattachment' || dropped_object.type === 'itemmodifier') {
+    if (dropped_object.type === 'itemattachment' || dropped_object.type === 'itemmodifier' || dropped_object.type === 'shipweapon') {
       return
     }
 

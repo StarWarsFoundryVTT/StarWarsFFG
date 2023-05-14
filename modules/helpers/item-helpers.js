@@ -16,7 +16,7 @@ export default class ItemHelpers {
     if (this.object.getFlag("starwarsffg", "ffgIsTemp")) {
       // temporary object, update the parent object instead
       // TODO: handle this key not being present in the flag (or the flag being undefined)
-      await ItemHelpers.updateParent(this, formData, this.object.getFlag("starwarsffg", "ffgParent")['starwarsffg']['ffgTempId'])
+      await ItemHelpers.updateParent(this, formData, this.object.getFlag("starwarsffg", "ffgParent")['starwarsffg']['ffgTempId']);
       return;
     }
 
@@ -57,6 +57,27 @@ export default class ItemHelpers {
           '',
           formData.data.encumbrance.value
       );
+    }
+    if (this.object.type === 'shipattachment') {
+      console.log("Caught ship attachment update with encumbrance")
+      console.log(formData)
+      console.log(this.object)
+      if (!this.actor) {
+        await ModifierHelpers.updateActiveEffect(
+            this.item,
+            'Encumbrance (Current)',
+            'Encumbrance (Current)',
+            '',
+            formData.data.encumbrance.value,
+        );
+        await ModifierHelpers.updateActiveEffect(
+            this.item,
+            'Hardpoints',
+            'Hardpoints',
+            '',
+            formData.data.hardpoints.value * -1, // we want to reduce hardpoints, not add
+        );
+      }
     }
 
     // update active effects to reflect the currently-selected attributes
@@ -181,6 +202,7 @@ export default class ItemHelpers {
       // using the same key means multiple drag-and-drops will override the previous value
       embedded_modifiers[`attr${Date.now()}`] = mod_item.system.attributes[modifier];
     }
+    console.log(embedded_modifiers)
     parent_item.update({
       system: {
         attributes: embedded_modifiers,
