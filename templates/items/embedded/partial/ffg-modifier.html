@@ -5,7 +5,7 @@
   <div class="form-fields"> <!-- contains 1 row of dropdowns -->
     <select name="{{ mod_id }}-{{ index }}-modifier_modtype" class="embedded_selector" data-selector="modtype" data-id="{{ index }}" data-mod-id="{{ mod_id }}">
       {{# select mod.modtype }}
-      {{#each this.config.itemmodifier_mod_types as |t|}}
+      {{#each this.config.mod_types as |t|}}
       <!-- TODO: this should be filtered to the item type that we're on -->
       <option value="{{ t.value }}">{{ localize t.label}}</option>
       {{/each}}
@@ -35,6 +35,87 @@
         {{/if}}
         {{#if (eq this.mod.modtype "Armor Stat") }}
           {{#each this.config.armor_stats as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Characteristic") }}
+          {{#each this.config.characteristics as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}"{{ this.mod.modtype }}"
+        {{!-- each time I use handlebars, I hate it more. you cannot (easily) check if an item is in an array, so we get repeated if statements. --}}
+        {{#if (eq this.mod.modtype "Force Boost") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Advantage") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Dark") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Despair") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Failure") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Light") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Success") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Threat") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Triumph") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Add Upgrade") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Boost") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Rank") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Remove Setback") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Skill Setback") }}
+          {{#each this.config.skills as |t|}}
+            <option value="{{ t.value }}">{{ localize t.label}}</option>
+          {{/each}}
+        {{/if}}
+        {{#if (eq this.mod.modtype "Stat") }}
+          {{#each this.config.character_stats as |t|}}
             <option value="{{ t.value }}">{{ localize t.label}}</option>
           {{/each}}
         {{/if}}

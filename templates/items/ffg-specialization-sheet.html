@@ -39,7 +39,7 @@
               <div class="conflict"></div>
               {{/if}}
             </div>
-            <div class="talent-name {{#if (ne talent.name '')}}talent-modifiers{{/if}}">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
+            <div class="talent-name {{#if (ne talent.name '')}}talent-modifiers{{/if}}"data-tooltip="{{> "systems/starwarsffg/templates/items/tooltips/ffg-talent.html" (object fields=talent expanded=false)}}">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
           </div>
           <div class="talent-body">
             <input type="text" value="{{localize talent.activationLabel}}" disabled />
@@ -54,6 +54,8 @@
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.pack" value="{{talent.pack}}" />
               <input class="talent-hidden" type="text" name="data.talents.{{key}}.cost" value="{{calculateSpecializationTalentCost key}}" />
               <input class="talent-hidden" type="checkbox" name="data.talents.{{key}}.isForceTalent" data-dtype="Boolean" {{checked talent.isForceTalent}} />
+              <input class="talent-hidden" type="checkbox" name="data.talents.{{key}}.isConflictTalent" data-dtype="Boolean" {{checked talent.isConflictTalent}} />
+              <input class="talent-hidden" type="text" name="data.talents.{{key}}.link_id" value="{{talent.link_id}}" />
             </div>
           </div>
         </div>

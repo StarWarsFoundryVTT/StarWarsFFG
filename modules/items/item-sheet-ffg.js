@@ -9,7 +9,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import FFGActiveEffectConfig from "./item-active-effect-config.js";
 import {modActiveEffects, activeEffectMap} from "../config/ffg-activeEffects.js";
 import {ItemFFG} from "./item-ffg.js";
-import {UpdateEmbeddedAttachment} from "./item-editor.js";
+import {UpdateEmbeddedAttachment, UpdateEmbeddedTalent} from "./item-editor.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -123,34 +123,8 @@ export class ItemSheetFFG extends ItemSheet {
           this.item.flags.starwarsffg.loaded = true;
 
           const specializationTalents = data.data.talents;
-
-          await ImportHelpers.asyncForEach(Object.keys(specializationTalents), async (talent) => {
-            let gameItem;
-            if (specializationTalents?.[talent]?.pack?.length) {
-              try {
-                const pack = await game.packs.get(specializationTalents[talent].pack);
-
-                // this may be a coverted specialization talent from a world to a module.
-                if (!pack) {
-                  gameItem = await ImportHelpers.findCompendiumEntityById("Item", specializationTalents[talent].itemId);
-                } else {
-                  await pack.getIndex();
-                  const entry = await pack.index.find((e) => e.id === specializationTalents[talent].itemId);
-                  if (entry) {
-                    gameItem = await pack.getEntity(entry.id);
-                  }
-                }
-              } catch (err) {
-                CONFIG.logger.warn(`Unable to load ${specializationTalents[talent].pack}`, err);
-              }
-            } else {
-              gameItem = await game.items.get(specializationTalents[talent].itemId);
-            }
-
-            if (gameItem) {
-              this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
-            }
-          });
+          console.log("loading spec stuff")
+          console.log(specializationTalents)
         }
         break;
       case "species":
@@ -375,6 +349,34 @@ async _onModControl(event) {
     html.find(".specialization-talent .talent-body").on("click", async (event) => {
       const li = event.currentTarget;
       const parent = $(li).parents(".specialization-talent")[0];
+      const parent_obj = $(parent);
+      const talent_data = this.object.system.talents[parent_obj.attr('id')];
+      console.log(li)
+      console.log(parent)
+      console.log(talent_data)
+      console.log(parent.dataset.itemid)
+      console.log(parent_obj.attr('id'))
+
+      let update_form = new UpdateEmbeddedTalent(
+        {
+          parent: this.object,
+          object: talent_data,
+          config: CONFIG.FFG,
+          id: parent_obj.attr('id'),
+          skill_types: ["Force Boost"],
+        },
+        {
+          width: "500",
+          height: "auto",
+          resizable: true,
+          title: "Editing " + talent_data.name + " on " + this.object.name,
+        }
+      );
+      await update_form.render(true);
+
+      return;
+      //const li = event.currentTarget;
+      //const parent = $(li).parents(".specialization-talent")[0];
       const itemId = parent.dataset.itemid;
       const packName = $(parent).find(`input[name='data.talents.${parent.id}.pack']`).val();
       const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
@@ -467,6 +469,7 @@ async _onModControl(event) {
       }
     });
 
+    // TODO: should specialization be here?
     if (["weapon", "armour", "itemattachment", "shipweapon", "shipattachment"].includes(this.object.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",
@@ -843,104 +846,7 @@ async _onModControl(event) {
       const formData = this._getSubmitData(updateData);
     }
 
-      if (this.item.type === "test_mod") {
-          const formData = this._getSubmitData(updateData);
-          let effects = [];
-          if ('mod_name' in formData) {
-              if (jQuery.type(formData['mod_name']) === 'array') {
-                  for (let x = 0; x < formData['mod_name'].length; x++) {
-                      effects.push({
-                          'name': formData['mod_name'][x],
-                          'type': formData['mod_type'][x],
-                          'effect': formData['mod_effect'][x],
-                      })
-                  }
-              } else {
-                  effects.push({
-                      'name': formData['mod_name'],
-                      'type': formData['mod_type'],
-                      'effect': formData['mod_effect'],
-                  })
-              }
-          }
-          await this.item.update({"system": {effects}});
-      } else if (this.item.type === "test_attachment") {
-          console.log("caught test attachment submit")
-          const formData = this._getSubmitData(updateData);
-          // TODO: each element within the mod will need the mod ID tied to it
-          // or we need to refactor the form submit
-          // (right now, we have no way of knowing which effects are tied to which mod)
-          if ('name' in formData && 'mod_type' in formData) {
-              if (jQuery.type(formData['mod_name']) === 'array') {
-                  for (let x = 0; x < formData['mod_name'].length; x++) {
-                      if (jQuery.type(formData['effect_name']) === 'array') {
-                          for (let x = 0; x < formData['mod_name'].length; x++) {
-
-                          }
-                      }
-                      effects.push({
-                          'name': formData['mod_name'][x],
-                          'type': formData['mod_type'][x],
-                          'effect': formData['mod_effect'][x],
-                      })
-                  }
-              } else {
-                  effects.push({
-                      'name': formData['mod_name'],
-                      'type': formData['mod_type'],
-                      'effect': formData['mod_effect'],
-                  })
-              }
-          }
-
-          console.log("original data")
-          console.log(this.item.system.base_mods)
-          let base_mods = this._extractFormGroups(formData, ['effect_effect', 'effect_name', 'effect_type', 'mod_name']);
-          let effects;
-          // transform to the final format
-          for (let k = 0; k < base_mods.length; k++) {
-              effects = [];
-              base_mods[k]['effect_effect'].forEach(function (element, index) {
-                  effects.push({
-                      'name': base_mods[k]['effect_name'][index],
-                      'type': base_mods[k]['effect_type'][index],
-                      'effect': element,
-                  })
-              });
-              base_mods[k] = {
-                  'name': base_mods[k]['mod_name'],
-                  'effects': effects,
-              }
-
-          }
-
-          let added_mods = this._extractFormGroups(formData, ['added-effect_effect', 'added-effect_name', 'added-effect_type', 'added-mod_name']);
-          // transform to the final format
-          for (let k = 0; k < added_mods.length; k++) {
-              effects = [];
-              added_mods[k]['effect_effect'].forEach(function (element, index) {
-                  effects.push({
-                      'name': added_mods[k]['effect_name'][index],
-                      'type': added_mods[k]['effect_type'][index],
-                      'effect': element,
-                  })
-              });
-              added_mods[k] = {
-                  'name': added_mods[k]['mod_name'],
-                  'effects': effects,
-              }
-          }
-
-          await this.item.update(
-              {
-                  "system": {
-                      "base_mods": base_mods,
-                      "added_mods": added_mods,
-                  }
-              }
-          );
-      }
-      return await super._onSubmit(event, {updateData = null, preventClose = false, preventRender = false} = {});
+    return await super._onSubmit(event, arguments[1]);
   }
 
     /***
@@ -1094,10 +1000,47 @@ async _onModControl(event) {
     });
   }
 
+  async updateSpecializationSheetContents(li, talent_id, data) {
+    // intended to functionalize the syncing of input onto a specialization sheet, so we can call it from >1 place
+    let sheet = $(li);
+    console.log("got data")
+    console.log(data)
+
+    console.log(sheet)
+
+    sheet.find(`input[name='data.talents.${talent_id}.name']`).val(data.name);
+    sheet.find(`input[name='data.talents.${talent_id}.description']`).val('this is a dumb updated description');
+    sheet.find(`input[name='data.talents.${talent_id}.activation']`).val(data.activation);
+    sheet.find(`input[name='data.talents.${talent_id}.activationLabel']`).val(data.activationLabel);
+    sheet.find(`input[name='data.talents.${talent_id}.isRanked']`).val(data.isRanked);
+    sheet.find(`input[name='data.talents.${talent_id}.isForceTalent']`).val(data.isForceTalent);
+    sheet.find(`input[name='data.talents.${talent_id}.isConflictTalent']`).val(data.isConflictTalent);
+    sheet.find(`input[name='data.talents.${talent_id}.link_id']`).val(data.link_id);
+    sheet.find(`input[name='data.talents.${talent_id}.itemId']`).val('NOT A VALID ID');
+    sheet.find(`input[name='data.talents.${talent_id}.pack']`).val('NOT A VALID PACK');
+
+    let attr_fields = $(sheet.find(`input[name='data.talents.${talent_id}.name']`).parent());
+    // remove all the existing fields so we can re-add ones which still exist
+    console.log($(attr_fields).find('.attr').length)
+    $(attr_fields).find('.attr').remove();
+
+    Object.keys(data.attributes).forEach((attr) => {
+      const a = data.attributes[attr];
+      $(attr_fields).append(`<input class="talent-hidden attr" type="text" name="data.talents.${talent_id}.attributes.${attr}.key" value="${attr}" />`);
+      $(attr_fields).append(`<input class="talent-hidden attr" type="text" name="data.talents.${talent_id}.attributes.${attr}.value" value="${a.value}" />`);
+      $(attr_fields).append(`<input class="talent-hidden attr" type="text" name="data.talents.${talent_id}.attributes.${attr}.modtype" value="${a.modtype}" />`);
+      $(attr_fields).append(`<input class="talent-hidden attr" type="text" name="data.talents.${talent_id}.attributes.${attr}.mod" value="${a.mod}" />`);
+      $(attr_fields).append(`<input class="talent-hidden attr" type="text" name="data.talents.${talent_id}.attributes.${attr}.active" value="${a.active}" />`);
+    });
+
+    console.log(sheet)
+    return sheet;
+  }
+
   async _onDropTalentToSpecialization(event) {
     let data;
     const specialization = this.object;
-    const li = event.currentTarget;
+    let li = event.currentTarget;
     const talentId = $(li).attr("id");
 
     try {
@@ -1111,73 +1054,45 @@ async _onModControl(event) {
 
     if (!itemObject) return;
 
+    console.log("talent on specialization")
+    console.log(data)
+    console.log(specialization)
+    console.log(li)
+    console.log(talentId)
+    console.log(itemObject)
+    console.log("yus")
+    console.log(event)
+
+    // TODO: get rid of everything below here
+
     if (itemObject.type === "talent") {
-      // we need to remove if this is the last instance of the talent in the specialization
-      const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
-      const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
-      if (!isPreviousItemFromPack) {
-        CONFIG.logger.debug("Non-compendium pack talent update");
-
-        const talentList = [];
-        for (let talent in specialization.system.talents) {
-          if (talent.itemId === itemObject.id) {
-            talentList.push(talent);
-          }
-        }
-
-        // check if this is the last talent of the specializtion
-        if (talentList.length === 1) {
-          let tree = itemObject.system.trees;
-
-          const index = tree.findIndex((tal) => {
-            return tal === specialization.id;
-          });
-
-          // remove the specialization reference from the talent
-          tree.splice(index, 1);
-
-          let formData;
-          setProperty(formData, `data.trees`, tree);
-          itemObject.update(formData);
-
-          //itemObject.update({ [`data.trees`]: tree });
-        }
+      let link_id = randomID();
+      let form_data = {
+        name: itemObject.name,
+        description: 'this is a dumb basic description',
+        activation: itemObject.system.activation.value,
+        activationLabel: itemObject.system.activation.label,
+        isRanked: itemObject.system.ranked,
+        isForceTalent: itemObject.system.isForceTalent,
+        isConflictTalent: itemObject.system.isConflictTalent,  // TODO: for whatever reason, isConflictTalent specifically is not transferred on drag-and-drop now
+        link_id: link_id,
+        itemId: 'NOT A VALID ID',  // TODO: remove this line
+        pack: 'NOT A VALID PACK',  // TODO: remove this line
+        attributes: itemObject.system.attributes,
       }
-
-      $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.name);
-      $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.system.description);
-      $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.system.activation.value);
-      $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.system.activation.label);
-      $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.system.ranked);
-      $(li).find(`input[name='data.talents.${talentId}.isForceTalent']`).val(itemObject.system.isForceTalent);
-      $(li).find(`input[name='data.talents.${talentId}.isConflictTalent']`).val(itemObject.system.isConflictTalent);
-      $(li).find(`input[name='data.talents.${talentId}.itemId']`).val(itemObject.id);
-      $(li).find(`input[name='data.talents.${talentId}.pack']`).val(itemObject.pack);
-
-      const fields = $(li).find(`input[name='data.talents.${talentId}.name']`).parent();
-      Object.keys(itemObject.system.attributes).forEach((attr) => {
-        const a = itemObject.system.attributes[attr];
-        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.key" value="${attr}" />`);
-        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.value" value="${a.value}" />`);
-        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.modtype" value="${a.modtype}" />`);
-        $(fields).append(`<input class="talent-hidden" type="text" name="data.talents.${talentId}.attributes.${attr}.mod" value="${a.mod}" />`);
-      });
-
-      // check to see if the talent already has a reference to the specialization
-      if (!itemObject.system.trees.includes(specialization.id)) {
-        // the talent doesn't already have the reference, add it
-        let tree = itemObject.system.trees;
-        tree.push(specialization.id);
-
-        if (!data.pack) {
-          let formData = {};
-          setProperty(formData, `data.trees`, tree);
-          itemObject.update(formData);
-          //itemObject.update({ [`data.trees`]: tree });
-        }
-      }
+      li = this.updateSpecializationSheetContents(
+          li,
+          talentId,
+          form_data,
+      )
 
       await this._onSubmit(event);
+      // done after the onSubmit, so we don't ruin the event
+      await ItemHelpers.transferActiveEffects(itemObject, this.object, link_id);
+      //await ItemHelpers.syncActiveEffects(this.object);
+      await ItemHelpers.syncModifierActiveEffects(this.object);
+      // TODO: remove old ActiveEffects from the spot where this talent was droppped (if there were any)
+      // this will probably require actually including this ID somewhere helpful
     }
   }
 
@@ -1191,6 +1106,8 @@ async _onModControl(event) {
     specializationTalentItem.isForceTalent = talentItem.system.isForceTalent;
     specializationTalentItem.isConflictTalent = talentItem.system.isConflictTalent;
     specializationTalentItem.attributes = talentItem.system.attributes;
+    console.log("no")
+    console.log(talentItem.system.isConflictTalent)
   }
 
   async _onDropItem(event) {
@@ -1261,6 +1178,12 @@ async _onModControl(event) {
       });
       // transfer active effects
       await ItemHelpers.transferActiveEffects(dropped_object, dropee_object, link_id);
+      return;
+    }
+
+    if (dropped_object.type === 'talent' && dropee_object.type === 'specialization') {
+      console.log("yes")
+      await ItemHelpers.transferActiveEffects(dropped_object, dropee_object, randomID());
       return;
     }
 

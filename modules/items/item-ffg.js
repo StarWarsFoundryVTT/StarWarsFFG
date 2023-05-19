@@ -386,6 +386,10 @@ export class ItemFFG extends ItemBaseFFG {
   }
 
   _prepareTalentTrees(collection, itemType, listProperty, hasGlobalList) {
+    console.log("preparing talent trees")
+    console.log(collection)
+    console.log(itemType)
+    console.log(listProperty)
     const item = this;
     const talents = item.system[collection];
     let rowcount = 0;

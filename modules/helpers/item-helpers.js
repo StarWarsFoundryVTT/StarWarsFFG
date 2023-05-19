@@ -331,6 +331,124 @@ export default class ItemHelpers {
     await parent_item.deleteEmbeddedDocuments('ActiveEffect', to_delete);
   }
 
+  /**
+   * Same as syncActiveEffects, but for specializations and otherwise syncing modifiers directly on the item
+   *  (not coming from attachments/qualities)
+   * @param parent_item
+   * @returns {Promise<void>}
+   */
+  static async syncModifierActiveEffects(parent_item) {
+    console.log("syncing active effects")
+    console.log(parent_item)
+    let active_effects = parent_item.getEmbeddedCollection('ActiveEffect').contents; // already-existing AEs
+    let touched_modifiers = []; // list of everything we've found still in the direct-embed data
+    let to_delete = []; // list of AE IDs to delete
+    // iterate over attachments
+    // TODO: validate that this list is complete
+    // TODO: this should actually be a check to see if it has itemattachments so we can do it on all items
+    // and the other else {} should be for attributes
+    // once those two things are done, this entire function should fold into the normal syncAE function and go away
+    if (['weapon', 'armor'].includes(parent_item.type)) {
+      for (const attachment of parent_item.system?.itemattachment) {
+        // iterate over installed mods on each attachment
+        for (const mod of attachment.system?.installed_mods) {
+          // iterate over modifiers on each mod
+          for (const modifier of mod.modifiers) {
+            let modifier_label = Object.keys(modifier)[0]; // attr<blahblah>
+            let modifier_data = modifier[modifier_label]; // dict for modifier
+            if (active_effects.filter(i => i.label === modifier_label).length === 0) {
+              // AE does not exist, create it
+              let created = await parent_item.createEmbeddedDocuments("ActiveEffect", [{
+                label: modifier_label,
+                icon: "icons/svg/aura.svg",
+                origin: parent_item.uuid,
+                disabled: false,
+                transfer: true,
+              }]);
+              for (const created_active_effect of created) {
+                let link_ids = [
+                  attachment.nonce,
+                  mod.mod_link_id,
+                ];
+                created_active_effect.setFlag('starwarsffg', 'link_ids', link_ids);
+              }
+            }
+            // AE exists, update it
+            await ModifierHelpers.updateActiveEffect(
+                parent_item,
+                modifier_label,
+                modifier_data.modtype,
+                modifier_data.mod,
+                modifier_data.value,
+            );
+            touched_modifiers.push(modifier_label);
+          }
+          active_effects.forEach(function (active_effect) {
+            let link_ids = active_effect.getFlag('starwarsffg', 'link_ids');
+            if (link_ids && link_ids.includes(mod.mod_link_id) && !touched_modifiers.includes(active_effect.label)) {
+              // this AE has been removed, delete it
+              to_delete.push(active_effect.id);
+            }
+          });
+        }
+      }
+    }
+    else if (['specialization'].includes(parent_item.type)) {
+      for (const talent_id of Object.keys(parent_item.system?.talents)) {
+        let talent_data = parent_item.system.talents[talent_id];
+        if (Object.keys(talent_data).includes('attributes')) {
+          console.log(`talent ${talent_id} has attrs`)
+          console.log(talent_data)
+          for (let attribute_key of Object.keys(talent_data.attributes)) {
+            let modifier_label = attribute_key;
+            let modifier_data = talent_data.attributes[attribute_key];
+            console.log("found AE data")
+            console.log(modifier_data)
+            if (active_effects.filter(i => i.label === modifier_label).length === 0) {
+              // AE does not exist, create it
+              let created = await parent_item.createEmbeddedDocuments("ActiveEffect", [{
+                label: modifier_label,
+                icon: "icons/svg/aura.svg",
+                origin: parent_item.uuid,
+                disabled: false,
+                transfer: true,
+              }]);
+              for (const created_active_effect of created) {
+                let link_ids = [
+                  talent_data.link_id, // TODO: the specialization also needs a link ID, but this needs to be created on it first
+                ];
+                created_active_effect.setFlag('starwarsffg', 'link_ids', link_ids);
+              }
+            }
+            // AE exists, update it
+            await ModifierHelpers.updateActiveEffect(
+                parent_item,
+                modifier_label,
+                modifier_data.modtype,
+                modifier_data.mod,
+                modifier_data.value,
+            );
+            touched_modifiers.push(modifier_label);
+          }
+        }
+        console.log(touched_modifiers)
+        active_effects.forEach(function (active_effect) {
+          console.log(active_effect.label)
+          let link_ids = active_effect.getFlag('starwarsffg', 'link_ids');
+          console.log(link_ids)
+          if (link_ids && link_ids.includes(talent_data.link_id) && !touched_modifiers.includes(active_effect.label)) {
+            // this AE has been removed, delete it
+            to_delete.push(active_effect.id);
+          }
+        });
+      }
+    }
+
+    console.log("deleting unused AEs")
+    console.log(to_delete)
+    await parent_item.deleteEmbeddedDocuments('ActiveEffect', to_delete);
+  }
+
   static async createEmbeddedAttachment(parent_item, attachment_item, nonce) {
     console.log("creating/updating embedded attachment")
     let attachment_data = {

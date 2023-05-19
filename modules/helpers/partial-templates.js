@@ -22,8 +22,10 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/parts/shared/ffg-tabs.html",
       "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html",
       "systems/starwarsffg/templates/items/tooltips/ffg-attachment.html",
+      "systems/starwarsffg/templates/items/tooltips/ffg-talent.html",
       "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html",
-        "systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html"
+      "systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html",
+      "systems/starwarsffg/templates/items/embedded/ffg-talent.html"
     ];
 
     return loadTemplates(templatePaths);

@@ -1,0 +1,94 @@
+<form>
+  <b>Fixed header</b><br>
+  header stuff here
+  <hr>
+  Properties<br>
+  <div class="form-group"> <!-- talent name -->
+    <label>
+      Name
+    </label>
+    <div class="form-fields">
+      <input type="text" name="talent_name" value="{{ this.object.object.name }}" placeholder="talent name">
+      <input type="text" name="talent_nonce" value="{{ this.object.object.link_id }}" style="display: none;">
+      <input type="text" name="talent_link" value="{{ this.object.object.link_id }}" style="display: none;">
+      <input type="text" name="talent_id" value="{{ this.object.object.link_id }}" style="display: none;">
+    </div>
+  </div>
+  <div class="form-group"> <!-- talent image -->
+    <label>
+      Image
+    </label>
+    <div class="form-fields">
+      <button type="button" class="file-picker" data-type="image" data-target="" title="Browse Files" tabindex="-1">
+        <i class="fas fa-file-import fa-fw"></i>
+      </button>
+      <input type="text" name="talent_img" value="{{ this.object.object.img }}" placeholder="">
+    </div>
+  </div>
+  <div class="form-group"> <!-- talent description -->
+    <label>
+      Description
+    </label>
+    <div class="form-fields">
+      <input type="text" name="talent_description" value="{{ this.object.object.description }}" placeholder="talent description">
+    </div>
+  </div>
+  <div class="form-group"> <!-- talent activation -->
+    <label>
+      Activation
+    </label>
+    <div class="form-fields">
+    <select name="talent_activation" class="embedded_selector" data-id="{{ index }}">
+      {{#select this.object.object.activation }}
+      {{#each this.object.config.activations as |t|}}
+      <!-- TODO: this should be filtered to the item type that we're on -->
+      <option value="{{ t.value }}">{{ localize t.label}}</option>
+      {{/each}}
+      {{/select}}
+    </select>
+    </div>
+  </div>
+  <div class="form-group"> <!-- talent ranked -->
+    <label>
+      Ranked
+    </label>
+    <div class="form-fields">
+      <input type="checkbox" name="talent_ranked"{{#if this.object.object.isRanked }} checked{{/if}}>
+    </div>
+  </div>
+  <div class="form-group"> <!-- talent force talent -->
+    <label>
+      Force Talent
+    </label>
+    <div class="form-fields">
+      <input type="checkbox" name="talent_force_talent"{{#if this.object.object.isForceTalent }} checked{{/if}}>
+    </div>
+  </div>
+  <div class="form-group"> <!-- talent conflict -->
+    <label>
+      Conflict
+    </label>
+    <div class="form-fields">
+      <input type="checkbox" name="talent_conflict"{{#if this.object.object.isConflictTalent }} checked{{/if}}>
+    </div>
+  </div>
+  Mods<br> <!-- installed mods -->
+  <div class="mod_container"> <!-- all mods container -->
+    <div class="modifier_container" data-modifier="{{ mod.mod_link_id }}"> <!-- modifier container -->
+    {{#each this.object.object.attributes as |modifier modifier_id| }}
+      {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=@index config=../this.object.config mod=modifier mod_id=@index attr=@key)}}
+    {{/each}} <!-- / installed_mods -->
+    </div>
+    <button type="button" class="modifier_control" data-action="create" data-modifier="{{ this.object.object.link_id }}" data-mod-id="{{ modifier_id }}" data-type="image" data-target="" title="Add Modifier" tabindex="-1">
+      <i class="fas fa-plus fa-fw"></i>Add Modifier
+    </button>
+  </div>
+  <hr>
+  {{#if (eq this.object.object.type "itemattachment") }}
+  <button type="button" class="mod_control" data-action="create" data-type="image" data-target="" title="Add Mod" tabindex="-1">
+    <i class="fas fa-plus fa-fw"></i>Add Mod
+  </button>
+  {{/if}}
+  <br><br>
+  <button type="submit">Save Changes</button>
+</form>
