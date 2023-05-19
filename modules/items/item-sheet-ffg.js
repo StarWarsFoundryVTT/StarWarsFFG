@@ -446,34 +446,6 @@ async _onModControl(event) {
         callbacks: { drop: this._onDropItem.bind(this) },
       });
       itemToItemAssociation.bind(html[0]);
-
-      //commented out the ability to add on-the-fly qualities/attachments
-      //html.find(".resource.pills.itemmodifier .block-title, .resource.pills.itemattachment .block-title").append("<i class='far fa-plus-square add-new-item'></i>");
-
-      // html.find(".resource.pills.itemmodifier").on("click", async (event) => {
-
-      //   const tempItem = await EmbeddedItemHelpers.createNewEmbeddedItem("itemmodifier", {attributes: {}, description: "", rank: 1}, {ffgTempId: this.object.id, ffgParentApp: this.appId} );
-
-      //   let data = {};
-      //   this.object.data.data[tempItem.type].push(tempItem);
-      //   setProperty(data, `data.${tempItem.type}`, this.object.data.data[tempItem.type]);
-      //   await this.object.update(data);
-      //   tempItem.data.flags.ffgTempItemIndex = this.object.data.data[tempItem.type].findIndex((i) => i._id === tempItem.data._id);
-      //   tempItem.sheet.render(true);
-      // });
-
-      // html.find(".resource.pills.itemattachment").on("click", async (event) => {
-      //   const tempItem = await EmbeddedItemHelpers.createNewEmbeddedItem("itemattachment", {attributes: {}, description: "", itemmodifier: []}, {ffgTempId: this.object.id, ffgUuid: this.item.uuid, ffgParentApp: this.appId,});
-
-      //   let data = {};
-      //   this.object.data.data[tempItem.type].push(tempItem);
-      //   setProperty(data, `data.${tempItem.type}`, this.object.data.data[tempItem.type]);
-      //   await this.object.update(data);
-
-      //   tempItem.data.flags.ffgTempItemIndex = this.object.data.data[tempItem.type].findIndex((i) => i._id === tempItem.data._id);
-
-      //   tempItem.sheet.render(true);
-      // });
     }
 
     html.find(".item-pill .item-delete, .additional .add-modifier .item-delete").on("click", (event) => {
