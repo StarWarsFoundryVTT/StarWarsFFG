@@ -373,38 +373,6 @@ async _onModControl(event) {
         }
       );
       await update_form.render(true);
-
-      return;
-      //const li = event.currentTarget;
-      //const parent = $(li).parents(".specialization-talent")[0];
-      const itemId = parent.dataset.itemid;
-      const packName = $(parent).find(`input[name='data.talents.${parent.id}.pack']`).val();
-      const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
-
-      let item = await Helpers.getSpecializationTalent(itemId, packName);
-      if (!item) {
-        if (packName) {
-          // if we can't find the item by itemid, try by name
-          const pack = await game.packs.get(packName);
-          await pack.getIndex();
-          const entity = await pack.index.find((e) => e.name === talentName);
-          if (entity) {
-            item = await pack.getEntity(entity.id);
-
-            let updateData = {};
-            // build dataset if needed
-            if (!pack.locked) {
-              setProperty(updateData, `data.talents.${parent.id}.itemId`, entity.id);
-              this.object.update(updateData);
-            }
-          }
-        }
-      }
-      if (!item.flags["clickfromparent"]) {
-        item.flags["clickfromparent"] = [];
-      }
-      item.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
-      item.sheet.render(true);
     });
 
     if (this.object.type === "talent") {
