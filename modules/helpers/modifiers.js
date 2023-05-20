@@ -327,7 +327,7 @@ export default class ModifierHelpers {
       console.log(this.item)
       console.log(this)
       if (this.id === 'popout-modifiers') {
-        if (this.object.parent.type === 'forcepower') {
+        if (this.object.parent.type === 'forcepower' || this.object.parent.type === 'signatureability') {
           // create the active effect after submitting the change because things go wrong in the other order
           await this.object.parent.createEmbeddedDocuments("ActiveEffect", [{
             label: `attr${nk}`,
@@ -363,7 +363,7 @@ export default class ModifierHelpers {
       const delete_id = $(li).attr('data-attribute');
       // find the matching active effect
       const to_delete = [];
-      if (this.id === 'popout-modifiers' && this.object.parent.type === 'forcepower') {
+      if (this.id === 'popout-modifiers' && this.object.parent.type === 'forcepower' || this.object.parent.type === 'signatureability') {
         this.object.parent.getEmbeddedCollection("ActiveEffect").filter(i => i.label === delete_id).forEach(function (item) {
           to_delete.push(item.id);
         });

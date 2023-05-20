@@ -374,7 +374,7 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     if (this.type === "signatureability") {
-      this._prepareSignatureAbilities();
+      await this._prepareSignatureAbilities();
     }
   }
   /**
@@ -484,8 +484,9 @@ export class ItemFFG extends ItemBaseFFG {
     await ItemHelpers.syncModifierActiveEffects(this);
   }
 
-  _prepareSignatureAbilities() {
+  async _prepareSignatureAbilities() {
     this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
+    await ItemHelpers.syncModifierActiveEffects(this);
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {

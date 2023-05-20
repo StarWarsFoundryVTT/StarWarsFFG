@@ -443,7 +443,7 @@ export default class ItemHelpers {
         });
       }
     }
-    else if (['forcepower'].includes(parent_item.type)) {
+    else if (['forcepower', 'signatureability'].includes(parent_item.type)) {
       for (const upgrade_id of Object.keys(parent_item.system?.upgrades)) {
         let upgrade_data = parent_item.system.upgrades[upgrade_id];
         if (Object.keys(upgrade_data).includes('attributes')) {
