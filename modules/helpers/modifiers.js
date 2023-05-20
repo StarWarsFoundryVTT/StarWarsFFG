@@ -325,8 +325,22 @@ export default class ModifierHelpers {
       await this._onSubmit(event);
       console.log("done, creating thingy")
       console.log(this.item)
+      console.log(this)
+      if (this.id === 'popout-modifiers') {
+        if (this.object.parent.type === 'forcepower') {
+          // create the active effect after submitting the change because things go wrong in the other order
+          await this.object.parent.createEmbeddedDocuments("ActiveEffect", [{
+            label: `attr${nk}`,
+            icon: "icons/svg/aura.svg",
+            origin: this.object.uuid,
+            disabled: false,
+            transfer: true,
+          }]);
+        }
+        return;
+      }
       // only attempt to create AEs on non-temporary items
-      if (!this.object.getFlag('starwarsffg', 'ffgIsTemp')) {
+      if (!this.object?.getFlag('starwarsffg', 'ffgIsTemp')) {
         // check if the mod has a nonce and
 
         // create the active effect after submitting the change because things go wrong in the other order
@@ -349,10 +363,17 @@ export default class ModifierHelpers {
       const delete_id = $(li).attr('data-attribute');
       // find the matching active effect
       const to_delete = [];
-      this.item.getEmbeddedCollection("ActiveEffect").filter(i => i.label === delete_id).forEach(function (item) {
+      if (this.id === 'popout-modifiers' && this.object.parent.type === 'forcepower') {
+        this.object.parent.getEmbeddedCollection("ActiveEffect").filter(i => i.label === delete_id).forEach(function (item) {
           to_delete.push(item.id);
-      });
-      await this.item.deleteEmbeddedDocuments("ActiveEffect", to_delete);
+        });
+        await this.object.parent.deleteEmbeddedDocuments("ActiveEffect", to_delete);
+      } else {
+        this.item.getEmbeddedCollection("ActiveEffect").filter(i => i.label === delete_id).forEach(function (item) {
+          to_delete.push(item.id);
+        });
+        await this.item.deleteEmbeddedDocuments("ActiveEffect", to_delete);
+      }
     } else if (action === "activate") {
 
     }

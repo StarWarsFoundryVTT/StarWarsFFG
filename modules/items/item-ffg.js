@@ -4,6 +4,7 @@ import ActorOptions from "../actors/actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import Helpers from "../helpers/common.js";
+import ItemHelpers from "../helpers/item-helpers.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -365,7 +366,7 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     if (this.type === "forcepower") {
-      this._prepareForcePowers();
+      await this._prepareForcePowers();
     }
 
     if (this.type === "specialization") {
@@ -475,8 +476,12 @@ export class ItemFFG extends ItemBaseFFG {
   /**
    * Prepare Force Power Item Data
    */
-  _prepareForcePowers() {
+  async _prepareForcePowers() {
     this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
+    console.log("hi")
+    console.log(this)
+    console.log(this.system.upgrades)
+    await ItemHelpers.syncModifierActiveEffects(this);
   }
 
   _prepareSignatureAbilities() {

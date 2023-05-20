@@ -443,6 +443,56 @@ export default class ItemHelpers {
         });
       }
     }
+    else if (['forcepower'].includes(parent_item.type)) {
+      for (const upgrade_id of Object.keys(parent_item.system?.upgrades)) {
+        let upgrade_data = parent_item.system.upgrades[upgrade_id];
+        if (Object.keys(upgrade_data).includes('attributes')) {
+          console.log(`talent ${upgrade_id} has attrs`)
+          console.log(upgrade_data)
+          for (let attribute_key of Object.keys(upgrade_data.attributes)) {
+            let modifier_label = attribute_key;
+            let modifier_data = upgrade_data.attributes[attribute_key];
+            console.log("found AE data")
+            console.log(modifier_data)
+            if (active_effects.filter(i => i.label === modifier_label).length === 0) {
+              // AE does not exist, create it
+              let created = await parent_item.createEmbeddedDocuments("ActiveEffect", [{
+                label: modifier_label,
+                icon: "icons/svg/aura.svg",
+                origin: parent_item.uuid,
+                disabled: false,
+                transfer: true,
+              }]);
+              for (const created_active_effect of created) {
+                let link_ids = [
+                  upgrade_data.link_id, // TODO: the specialization also needs a link ID, but this needs to be created on it first
+                ];
+                created_active_effect.setFlag('starwarsffg', 'link_ids', link_ids);
+              }
+            }
+            // AE exists, update it
+            await ModifierHelpers.updateActiveEffect(
+                parent_item,
+                modifier_label,
+                modifier_data.modtype,
+                modifier_data.mod,
+                modifier_data.value,
+            );
+            touched_modifiers.push(modifier_label);
+          }
+        }
+        console.log(touched_modifiers)
+        active_effects.forEach(function (active_effect) {
+          console.log(active_effect.label)
+          let link_ids = active_effect.getFlag('starwarsffg', 'link_ids');
+          console.log(link_ids)
+          if (link_ids && link_ids.includes(upgrade_data.link_id) && !touched_modifiers.includes(active_effect.label)) {
+            // this AE has been removed, delete it
+            to_delete.push(active_effect.id);
+          }
+        });
+      }
+    }
 
     console.log("deleting unused AEs")
     console.log(to_delete)
