@@ -576,7 +576,7 @@ export default class ModifierHelpers {
           },
         ]
       );
-    } else if (item_type === 'weapon') {
+    } else if (['weapon', 'armour', 'gear'].includes(item_type)) {
       await item.createEmbeddedDocuments(
         "ActiveEffect",
         [{

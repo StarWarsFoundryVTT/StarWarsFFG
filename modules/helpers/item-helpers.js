@@ -48,7 +48,7 @@ export default class ItemHelpers {
     }
 
     // update encumbrance to show the current encumbrance
-    if (this.object.type === 'weapon') {
+    if (['weapon', 'armour', 'gear'].includes(this.object.type)) {
       console.log("Caught item update with encumbrance")
       await ModifierHelpers.updateActiveEffect(
           this.item,
@@ -58,7 +58,7 @@ export default class ItemHelpers {
           formData.data.encumbrance.value
       );
     }
-    if (this.object.type === 'shipattachment') {
+    else if (this.object.type === 'shipattachment') {
       console.log("Caught ship attachment update with encumbrance")
       console.log(formData)
       console.log(this.object)
