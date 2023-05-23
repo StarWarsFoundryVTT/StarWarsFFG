@@ -88,7 +88,8 @@ export default class ItemHelpers {
         let mod_type = formData.data.attributes[key].modtype;
         let mod = formData.data.attributes[key].mod;
         let mod_value = formData.data.attributes[key].value;
-        await ModifierHelpers.updateActiveEffect(this.item, active_effect_id, mod_type, mod, mod_value);
+        let mod_active = formData.data.attributes[key].active;
+        await ModifierHelpers.updateActiveEffect(this.item, active_effect_id, mod_type, mod, mod_value, mod_active);
 
       } else {
         // handle non-mod changes
@@ -96,7 +97,8 @@ export default class ItemHelpers {
         let mod_type = formData.data.attributes[key].modtype;
         let mod = formData.data.attributes[key].mod;
         let mod_value = formData.data.attributes[key].value;
-        await ModifierHelpers.updateActiveEffect(this.item, active_effect_id, mod_type, mod, mod_value);
+        let mod_active = formData.data.attributes[key].active;
+        await ModifierHelpers.updateActiveEffect(this.item, active_effect_id, mod_type, mod, mod_value, mod_active);
       }
     }
 
@@ -314,6 +316,7 @@ export default class ItemHelpers {
             modifier_data.modtype,
             modifier_data.mod,
             modifier_data.value,
+            modifier_data.active,
           );
           touched_modifiers.push(modifier_label);
         }
@@ -380,6 +383,7 @@ export default class ItemHelpers {
                 modifier_data.modtype,
                 modifier_data.mod,
                 modifier_data.value,
+                modifier_data.active,
             );
             touched_modifiers.push(modifier_label);
           }
@@ -427,6 +431,7 @@ export default class ItemHelpers {
                 modifier_data.modtype,
                 modifier_data.mod,
                 modifier_data.value,
+                modifier_data.active,
             );
             touched_modifiers.push(modifier_label);
           }
@@ -477,6 +482,7 @@ export default class ItemHelpers {
                 modifier_data.modtype,
                 modifier_data.mod,
                 modifier_data.value,
+                modifier_data.active,
             );
             touched_modifiers.push(modifier_label);
           }

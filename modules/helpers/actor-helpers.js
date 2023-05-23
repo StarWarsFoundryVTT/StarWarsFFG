@@ -3,7 +3,6 @@ import ModifierHelpers from "./modifiers.js";
 export default class ActorHelpers {
   static updateActor(event, formData) {
     formData = expandObject(formData);
-    const ownedItems = this.actor.items;
 
     // as of Foundry v10, saving an editor only submits the single entry for that editor
     if (Object.keys(formData).length > 1) {
@@ -23,7 +22,8 @@ export default class ActorHelpers {
           Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
             const key = CONFIG.FFG.character_stats[k].value;
 
-            let total = parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, key)); // value being added from AEs
+            let total = parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, key)); // value being added from AEs, needed for thresholds
+            if (key === 'Encumbrance') { console.log(`starting total: ${total}`)}
             let statValue = 0; // value as it exists in the form
             let isFormValueVisible = true;
 
@@ -44,6 +44,7 @@ export default class ActorHelpers {
                 statValue -= 5; // remove the extra 5 added
                 statValue -= parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, 'Brawn'));
                 total += parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, 'Brawn'))
+                formData.data.stats[k].value -= parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, key))
               } else {
                 statValue = 0;
                 isFormValueVisible = false;
@@ -97,7 +98,7 @@ export default class ActorHelpers {
           Object.keys(CONFIG.FFG.vehicle_stats).forEach((k) => {
             const key = CONFIG.FFG.vehicle_stats[k].value;
 
-            let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Stat");
+            let total = parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, key));
 
             let statValue = 0;
             let isFormValueVisible = true;
@@ -132,14 +133,16 @@ export default class ActorHelpers {
                 allowNegative = true;
               }
               let x = statValue - (isFormValueVisible ? total : 0);
-              let y = parseInt(formData.data.attributes[key].value, 10) + x;
-              if (y > 0 || allowNegative) {
-                formData.data.attributes[key].value = y;
+              if (x > 0 || allowNegative) {
+                formData.data.attributes[key].value = x;
               } else {
                 formData.data.attributes[key].value = 0;
               }
             }
           });
+          // subtract AE values for stats which can be increased by AEs so we don't add to them forever
+          formData.data.stats.encumbrance.value -= parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, 'Encumbrance'));
+          formData.data.stats.customizationHardPoints.value -= parseInt(ModifierHelpers.getActiveAEModifierValue(this.actor, 'customizationHardPoints'));
         }
       }
     }
@@ -161,6 +164,7 @@ export default class ActorHelpers {
 
     // recombine attributes to formData
     formData.data.attributes = attributes;
+    console.log(formData)
 
     // Update the Actor
     setProperty(formData, `flags.starwarsffg.loaded`, false);

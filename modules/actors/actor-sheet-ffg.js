@@ -513,11 +513,12 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     // Toggle item equipped
-    html.find(".items .item a.toggle-equipped").click((ev) => {
+    html.find(".items .item a.toggle-equipped").click(async (ev) => {
       const li = $(ev.currentTarget);
       const item = this.actor.items.get(li.data("itemId"));
       if (item) {
         item.update({ ["system.equippable.equipped"]: !item.system.equippable.equipped });
+        await ModifierHelpers.updateAEsForEquip(this.actor, item, !item.system.equippable.equipped);
       }
     });
 
@@ -1295,6 +1296,24 @@ export class ActorSheetFFG extends ActorSheet {
 
   _canDragDrop(selector) {
     return true;
+  }
+
+  async _onDropItem(event, data) {
+    let deny = false;
+    let item = game.items.get(data.uuid.split('.')[1]);
+    if (item) {
+      // don't allow dropping vehicle-only items onto a character
+      if (this.actor.type === "character" && ['criticaldamage', 'shipattachment', 'shipweapon'].includes(item.type)) {
+        deny = true;
+      }
+      // placeholder for vehicle denying
+      else if (this.actor.type === 'vehicle' && [].includes(item.type)) {
+        deny = true;
+      }
+    }
+    if (!deny) {
+      await super._onDropItem(event, data);
+    }
   }
 
   /**

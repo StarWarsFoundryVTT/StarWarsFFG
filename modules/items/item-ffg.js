@@ -252,9 +252,15 @@ export class ItemFFG extends ItemBaseFFG {
               });
             }
 
+            console.log("found the following active modifiers")
+            console.log(active_modifiers)
+
             data.soak.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "soak", "Armor Stat");
             data.defence.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "defence", "Armor Stat");
+            console.log("encumbrance")
+            console.log(data.encumbrance.adjusted)
             data.encumbrance.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "encumbrance", "Armor Stat");
+            console.log(data.encumbrance.adjusted)
             data.price.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "price", "Armor Stat");
             data.rarity.adjusted += ModifierHelpers.calculateValueFromModifiers(active_modifiers, "rarity", "Armor Stat");
             console.log("before")

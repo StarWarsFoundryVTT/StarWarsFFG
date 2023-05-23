@@ -363,7 +363,7 @@ export default class ModifierHelpers {
       const delete_id = $(li).attr('data-attribute');
       // find the matching active effect
       const to_delete = [];
-      if (this.id === 'popout-modifiers' && this.object.parent.type === 'forcepower' || this.object.parent.type === 'signatureability') {
+      if (this.id === 'popout-modifiers' && this.object?.parent?.type === 'forcepower' || this.object?.parent?.type === 'signatureability') {
         this.object.parent.getEmbeddedCollection("ActiveEffect").filter(i => i.label === delete_id).forEach(function (item) {
           to_delete.push(item.id);
         });
@@ -457,7 +457,7 @@ export default class ModifierHelpers {
     } else if (modifier_category === 'Stat' && Object.keys(stat_mods).includes(modifier)) {
       // Stat mods
       data['keys'] = [stat_mods[modifier]];
-    } else if (modifier_category === 'Encumbrance (Current)') {
+    } else if (modifier_category === 'Encumbrance (Current)' || modifier_category === 'Encumbrance (Equipped)') {
       data['keys'] = ['system.stats.encumbrance.value'];
     } else if (modifier_category === 'Hardpoints') {
       data['keys'] = ['system.stats.customizationHardPoints.value'];
@@ -482,9 +482,10 @@ export default class ModifierHelpers {
    * @param modifier_category - the "modifier type" selected
    * @param modifier - the "modifier" selected
    * @param modifier_value - the "value" selected (true/false for some mods)
+   * @param active - OPTIONAL. if the active effect should currently be supplied or not. if not supplied, assumed to be true.
    * @returns {Promise<void>}
    */
-  static async updateActiveEffect(item, effect_id, modifier_category, modifier, modifier_value) {
+  static async updateActiveEffect(item, effect_id, modifier_category, modifier, modifier_value, active=null) {
     // TODO: we really should check if this data has changed rather than forcing a full update each time
     // TODO: refactor console.log statements into debug statements
     let active_effect = item.getEmbeddedCollection("ActiveEffect").filter(i => i.label === effect_id);
@@ -503,6 +504,8 @@ export default class ModifierHelpers {
       let data =  ModifierHelpers.determineModifierKey(modifier_category, modifier);
       console.log("found data:")
       console.log(data)
+      console.log("new value")
+      console.log(modifier_value)
       data['keys'].forEach(function (key) {
         changes.push({
           key: key,
@@ -516,8 +519,15 @@ export default class ModifierHelpers {
       await game.actors.filter(i => i.name === 'ship')[0].effects.filter(i => i.id === effect.id)[0].update({changes: [{new: changes}]});
        */
       await current_effect.update({
-        changes: changes
+        changes: changes,
       });
+      if (active !== null) {
+        // if the caller specified active, set it
+        // (reversed because the property in Foundry is _disabled_ and we use _active_)
+        await current_effect.update({
+          disabled: !active,
+        });
+      }
       console.log("resulting effect:")
       console.log(current_effect)
     }
@@ -581,6 +591,22 @@ export default class ModifierHelpers {
         "ActiveEffect",
         [{
           label: "Encumbrance (Current)",
+          icon: "icons/svg/aura.svg",
+          origin: item.uuid,
+          disabled: false,
+          transfer: true,
+          changes: [{
+            // TODO: this mapping should be a global somewhere, not hidden away and reconstructed in various functions
+            key: 'system.stats.encumbrance.value',
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: '0',
+          }]
+        }]
+      );
+      await item.createEmbeddedDocuments(
+        "ActiveEffect",
+        [{
+          label: "Encumbrance (Equipped)",
           icon: "icons/svg/aura.svg",
           origin: item.uuid,
           disabled: false,
@@ -664,18 +690,84 @@ export default class ModifierHelpers {
     }
   }
 
+  static async updateAEsForEquip(actor, item, equipped) {
+    // determine how much encumbrance our item is (across all of its AEs)
+    // update the "equipped" encumbrance to that value - 3 (to a minimum of 0)
+    // disable the "current" one and enable the "equipped" one
+    if (equipped) {
+      console.log("enabling equipped encumbrance")
+      let total = ModifierHelpers.getActiveAEModifierValue(item, 'Encumbrance');
+      await ModifierHelpers.updateEmbeddedActiveEffect(
+        actor,
+        'Encumbrance (Equipped)',
+        'Encumbrance (Equipped)',
+        '',
+        Math.max(total - 3, 0), // configure it to be current encumbrance - 3
+        true,
+      );
+      await ModifierHelpers.updateEmbeddedActiveEffect(
+        actor,
+        'Encumbrance (Current)',
+        'Encumbrance (Current)',
+        '',
+        total,
+        false,
+      );
+    } else {
+      console.log("disabling equipped encumbrance")
+      await ModifierHelpers.updateEmbeddedActiveEffect(
+        actor,
+        'Encumbrance (Equipped)',
+        'Encumbrance (Equipped)',
+        '',
+        0,
+        false,
+      );
+      let total = ModifierHelpers.getActiveAEModifierValue(item, 'Encumbrance');
+      await ModifierHelpers.updateEmbeddedActiveEffect(
+        actor,
+        'Encumbrance (Current)',
+        'Encumbrance (Current)',
+        '',
+        total,
+        true,
+      );
+    }
+  }
+
+  static async updateEmbeddedActiveEffect(actor, effect_id, modifier_category, modifier, value, active) {
+    let effect = actor.effects.filter(i => i.label === effect_id);
+    if (!effect) {
+      return;
+    }
+    effect = effect[0];
+    for (let change of effect.changes) {
+      let changes = [];
+      let data =  ModifierHelpers.determineModifierKey(modifier_category, modifier);
+      data['keys'].forEach(function (key) {
+        changes.push({
+          key: key,
+          mode: data['mode'],
+          value: value,
+        });
+      });
+      await effect.update({changes: changes});
+    }
+    await effect.update({disabled: !active});
+  }
+
   static getActiveAEModifierValue(actor, attribute) {
     // TODO: this can probably be enhanced to return the source as well (to retain the feature... I asked for :p)
     // TODO: refactor console.log statements into debug statements
     // find (active) active effects
-    console.log(`Looking for AEs impacting ${attribute} on ${actor.name}`)
+    //console.log(`Looking for AEs impacting ${attribute} on ${actor.name}`)
     const effects = actor.effects.contents.filter(i => i.disabled === false);
     let value = 0;
     effects.forEach(function (effect) {
       // step through the changes
       effect.changes.forEach(function (change) {
         // check if the change key is the key for our attribute
-        if (change.key === `system.attributes.${attribute}.value` || change.key === testMap[attribute]) {
+        if (change.key === `system.attributes.${attribute}.value` || change.key === testMap[attribute] || change.key === `system.stats.${attribute.toLowerCase()}.value` || change.key === `system.stats.${attribute}.value`) {
           if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
             value += parseInt(change.value);
           } else if (change.mode === CONST.ACTIVE_EFFECT_MODES.SUBTRACT) {
@@ -688,7 +780,6 @@ export default class ModifierHelpers {
         }
       });
     });
-    console.log(`Final value: ${value}`)
     return value;
   }
 
@@ -702,7 +793,7 @@ export default class ModifierHelpers {
     // TODO: this can probably be enhanced to return the source as well (to retain the feature... I asked for :p)
     // TODO: refactor console.log statements into debug statements
     // find (active) active effects
-    console.log(`Looking for skill AEs impacting ${skill}/${modifier_type} on ${actor.name}`)
+    //console.log(`Looking for skill AEs impacting ${skill}/${modifier_type} on ${actor.name}`)
     const effects = actor.effects.contents.filter(i => i.disabled === false);
     let value = 0;
     let sources = [];
@@ -711,7 +802,7 @@ export default class ModifierHelpers {
       effect.changes.forEach(function (change) {
         // check if the change key is the key for our attribute
         if (change.key === `system.skills.${skill}.${testSkillModMap[modifier_type]}`) {
-          console.log(effect)
+          //console.log(effect)
           // TODO: this code is brittle and should probably be refactored
           sources.push(actor.items.filter(i => i.id === effect.origin.split('.')[3])[0].name)
           if (isNaN(parseInt(change.value))) {
@@ -730,7 +821,7 @@ export default class ModifierHelpers {
         }
       });
     });
-    console.log(`Final ${skill} value: ${value}, sources; ${sources}`)
+    //console.log(`Final ${skill} value: ${value}, sources; ${sources}`)
     return {
       'total': value,
       'sources': sources,
