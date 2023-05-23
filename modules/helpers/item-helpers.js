@@ -81,7 +81,7 @@ export default class ItemHelpers {
     }
 
     // update active effects to reflect the currently-selected attributes
-    for (let key in formData.data.attributes) {
+    for (let key in formData.data?.attributes) {
       // TODO: these sections look very similar, can we simplify the code?
       if (key.includes('attr')) {
         let active_effect_id = key;
