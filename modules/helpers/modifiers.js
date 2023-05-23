@@ -784,6 +784,61 @@ export default class ModifierHelpers {
   }
 
   /**
+   * Update the encumbrance value for gear on an actor when the +/- buttons are clicked
+   * @param actor - actor the gear is on
+   * @param item - item being +/-'ed
+   * @param mode - "increase" for + and "decrease" for -
+   * @returns {Promise<void>}
+   */
+  static async updateActiveEffectForGear(actor, item, mode) {
+    let effects = actor.effects.contents;
+    let uuid = `Actor.${actor.id}.Item.${item.id}`;
+    let current_value = item.system.quantity.value;
+    let previous_value;
+    if (mode === 'increase') {
+      previous_value = current_value - 1;
+    } else if (mode === 'decrease') {
+      previous_value = current_value + 1;
+    }
+    let filtered_effects =  effects.filter(i => i.origin === uuid && i.label === 'Encumbrance (Current)');
+    if (filtered_effects.length === 0) {
+      console.log("found no matching effects")
+      return;
+    }
+
+    if (current_value > 0 && previous_value !== 0) {
+      for (let effect of filtered_effects) {
+        if (effect.changes.length === 0) {
+          // don't attempt to do things if there aren't any changes
+          break;
+        }
+        let original_value = parseInt(effect.changes[0].value) / previous_value
+        await effect.update({
+          changes: [{
+            key: "system.stats.encumbrance.value",
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            priority: null,
+            value: original_value * current_value,
+          }],
+        });
+      }
+    }
+    else {
+      // toggle suspending the AE instead
+      for (let effect of filtered_effects) {
+        if (effect.changes.length === 0) {
+          console.log("found no matching effects")
+          // don't attempt to do things if there aren't any changes
+          break;
+        }
+        await effect.update({
+          disabled: !effect.disabled,
+        });
+      }
+    }
+  }
+
+  /**
    * Look up (active) active effects modifying a particular skill, e.g. "add boost"
    * @param actor - actor to search for matching Active Effects on
    * @param skill - name of the skill to search for

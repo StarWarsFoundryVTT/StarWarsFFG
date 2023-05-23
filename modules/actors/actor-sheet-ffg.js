@@ -722,7 +722,8 @@ export class ActorSheetFFG extends ActorSheet {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
         }
       }
-      item.update({ ["data.quantity.value"]: item.system.quantity.value + 1 });
+      await item.update({ ["data.quantity.value"]: item.system.quantity.value + 1 });
+      await ModifierHelpers.updateActiveEffectForGear(this.actor, item, 'increase');
     });
 
     html.find(".item-quantity .quantity.decrease").click(async (ev) => {
@@ -738,7 +739,8 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
       let count = item.system.quantity.value - 1 > 0 ? item.system.quantity.value - 1 : 0;
-      item.update({ ["data.quantity.value"]: count });
+      await item.update({ ["data.quantity.value"]: count });
+      await ModifierHelpers.updateActiveEffectForGear(this.actor, item, 'decrease');
     });
 
     // Roll Skill
