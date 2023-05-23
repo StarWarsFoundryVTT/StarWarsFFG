@@ -453,8 +453,12 @@ async _onModControl(event) {
       event.stopPropagation();
 
       const li = event.currentTarget;
-      const parent = $(li).parent().parent()[0]; // TODO: this may sometimes be 1 parent and sometimes 2 (due to tooltips)
-      const itemType = parent.dataset.itemName;
+      let parent = $(li).parent().parent()[0]; // TODO: this may sometimes be 1 parent and sometimes 2 (due to tooltips)
+      let itemType = parent.dataset.itemName;
+      if (itemType === undefined) {
+        parent = $(li).parent()[0];
+        itemType = parent.dataset.itemName;
+      }
       const itemIndex = parent.dataset.itemIndex;
 
       const items = this.object.system[itemType];
@@ -555,6 +559,13 @@ async _onModControl(event) {
       const li = event.currentTarget;
       let itemType = li.dataset.itemName;
       let itemIndex = li.dataset.itemIndex;
+      if (itemType === undefined) {
+        itemType = $(li).parent()[0].dataset.itemName;
+        itemIndex = $(li).parent()[0].dataset.itemIndex;
+      }
+
+      console.log(this.object)
+      console.log(this.object.system[itemType][itemIndex])
 
       let update_form = new UpdateEmbeddedAttachment(
           {
@@ -566,7 +577,7 @@ async _onModControl(event) {
             width: "500",
             height: "auto",
             resizable: true,
-            title: "Editing " + this.object.system[itemType][itemIndex].name,
+            title: "Editing " + this.object.system[itemType][itemIndex].name + " on " + this.object.name,
           }
       );
       await update_form.render(true);
@@ -608,42 +619,21 @@ async _onModControl(event) {
     html.find(".additional .add-new-item").on("click", async (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const li = event.currentTarget;
-      let itemType = li.dataset.acceptableType;
 
-      let temp = {
-        img: "icons/svg/mystery-man.svg",
-        name: "Item Mod",
-        type: itemType,
-        flags: {
-          starwarsffg: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: itemType,
-            ffgTempItemIndex: -1,
-            ffgParent: this.object.flags.starwarsffg,
-            ffgIsTemp: true,
-            ffgUuid: this.object.uuid,
-            ffgParentApp: this.appId,
-            ffgIsOwned: this.object.isEmbedded,
-          }
-        },
+      let update_data = {
         system: {
-          attributes: {},
-          description: "",
-        },
-      };
+          itemmodifier: [{
+            name: "Item mod",
+            description: "This is an item mod",
+            img: "icons/svg/item-bag.svg",
+            link_id: randomID(),
+            modifiers: [],
+            type: "itemmodifier",
+          }].concat(this.object.system.itemmodifier)
+        }
+      }
 
-      let tempItem = await Item.create(temp, { temporary: true });
-      //tempItem.data._id = randomID();
-
-      let data = {};
-      this.object.system[itemType].push(tempItem);
-      setProperty(data, `system.${itemType}`, this.object.system[itemType]);
-      await this.object.update(data);
-
-      await tempItem.setFlag("starwarsffg", "ffgTempItemIndex", this.object.system[itemType].findIndex((i) => i.id === tempItem._id));
-
-      tempItem.sheet.render(true);
+      await this.object.update(update_data);
     });
   }
 
@@ -1095,10 +1085,10 @@ async _onModControl(event) {
         let attribute_obj = dropped_object.system.attributes[attribute];
         let temp_data = {}; // needed for setting the variable value as the key
         temp_data[attribute] = {
-            'modtype': attribute_obj['modtype'],
-            'value': attribute_obj['value'],
-            'mod': attribute_obj['mod'],
-            'active': attribute_obj['active'],
+          'modtype': attribute_obj['modtype'],
+          'value': attribute_obj['value'],
+          'mod': attribute_obj['mod'],
+          'active': attribute_obj['active'],
           };
         basic_data['modifiers'].push(temp_data);
       });
@@ -1138,6 +1128,7 @@ async _onModControl(event) {
         'description': dropped_object.system.renderedDesc,
         'link_id': link_id,
         'modifiers': [],
+        'type': dropped_object.type,
       };
 
       // find the actual modifiers on the mod
@@ -1145,10 +1136,10 @@ async _onModControl(event) {
         let attribute_obj = dropped_object.system.attributes[attribute];
         let temp_data = {}; // needed for setting the variable value as the key
         temp_data[attribute] = {
-            'modtype': attribute_obj['modtype'],
-            'value': attribute_obj['value'],
-            'mod': attribute_obj['mod'],
-            'active': attribute_obj['active'],
+          'modtype': attribute_obj['modtype'],
+          'value': attribute_obj['value'],
+          'mod': attribute_obj['mod'],
+          'active': attribute_obj['active'],
           };
         basic_data['modifiers'].push(temp_data);
       });
