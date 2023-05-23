@@ -486,6 +486,21 @@ export default class ModifierHelpers {
    * @returns {Promise<void>}
    */
   static async updateActiveEffect(item, effect_id, modifier_category, modifier, modifier_value, active=null) {
+    if (item?.parent !== null) {
+      if (active === null) {
+        active = true;
+      }
+      await ModifierHelpers.updateEmbeddedActiveEffect(
+          item.parent,
+          effect_id,
+          modifier_category,
+          modifier,
+          modifier_value,
+          active,
+      );
+      return;
+    }
+    console.log("updating AE")
     // TODO: we really should check if this data has changed rather than forcing a full update each time
     // TODO: refactor console.log statements into debug statements
     let active_effect = item.getEmbeddedCollection("ActiveEffect").filter(i => i.label === effect_id);
@@ -738,6 +753,7 @@ export default class ModifierHelpers {
   static async updateEmbeddedActiveEffect(actor, effect_id, modifier_category, modifier, value, active) {
     let effect = actor.effects.filter(i => i.label === effect_id);
     if (!effect) {
+      console.log("could not find AE")
       return;
     }
     effect = effect[0];
@@ -751,7 +767,9 @@ export default class ModifierHelpers {
           value: value,
         });
       });
+      await effect.update({disabled: true});
       await effect.update({changes: changes});
+      await effect.update({disabled: false});
     }
     await effect.update({disabled: !active});
   }

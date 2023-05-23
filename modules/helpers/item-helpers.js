@@ -64,18 +64,18 @@ export default class ItemHelpers {
       console.log(this.object)
       if (!this.actor) {
         await ModifierHelpers.updateActiveEffect(
-            this.item,
-            'Encumbrance (Current)',
-            'Encumbrance (Current)',
-            '',
-            formData.data.encumbrance.value,
+          this.item,
+          'Encumbrance (Current)',
+          'Encumbrance (Current)',
+          '',
+          formData.data.encumbrance.value,
         );
         await ModifierHelpers.updateActiveEffect(
-            this.item,
-            'Hardpoints',
-            'Hardpoints',
-            '',
-            formData.data.hardpoints.value * -1, // we want to reduce hardpoints, not add
+          this.item,
+          'Hardpoints',
+          'Hardpoints',
+          '',
+          formData.data.hardpoints.value * -1, // we want to reduce hardpoints, not add
         );
       }
     }
