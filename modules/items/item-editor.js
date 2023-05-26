@@ -1,4 +1,5 @@
 import ItemHelpers from "../helpers/item-helpers.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 export class UpdateEmbeddedAttachment extends FormApplication {
   constructor(object, options) {
@@ -12,7 +13,17 @@ export class UpdateEmbeddedAttachment extends FormApplication {
     });
   }
 
-  getData(options = {}) {
+  async getData(options = {}) {
+    let data = await super.getData();
+    console.log(data)
+    if (!['itemattachment', 'itemmodifier'].includes(this.object.parent.type)) {
+      data['modifier_types'] = ModifierHelpers.determine_item_mods(this.object.object);
+    }
+    else {
+      data['modifier_types'] = ModifierHelpers.determine_item_mods(this.object.parent);
+    }
+
+    console.log(data)
     return super.getData();
   }
 
@@ -72,11 +83,20 @@ export class UpdateEmbeddedAttachment extends FormApplication {
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       let new_id = $(".embedded_mod").length;
+      console.log(this.object)
+      let calced_data;
+      if (!['itemattachment', 'itemmodifier'].includes(this.object.parent.type)) {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.object);
+      } else {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.parent);
+      }
+      console.log(calced_data)
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html',
         {
           index: new_id,
           config: CONFIG.FFG,
+          modifier_types: calced_data,
           installed_mod: {
             name: "new mod",
             img: "icons/svg/item-bag.svg",
@@ -101,12 +121,20 @@ export class UpdateEmbeddedAttachment extends FormApplication {
     let action = event.currentTarget.getAttribute('data-action');
     let new_id = $(".embedded_modifier").length;
     let mod_id = event.currentTarget.getAttribute('data-mod-id');
+    console.log(this.object)
     if (action === 'create') {
+      let calced_data;
+      if (!['itemattachment', 'itemmodifier'].includes(this.object.parent.type)) {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.object);
+      } else {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.parent);
+      }
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html',
         {
           index: new_id,
           config: CONFIG.FFG,
+          modifier_types: calced_data,
           mod: {
             modtype: "Result Modifiers",
             value: 1,
@@ -249,8 +277,12 @@ export class UpdateEmbeddedTalent extends FormApplication {
     });
   }
 
-  getData(options = {}) {
-    return super.getData();
+  async getData(options = {}) {
+    let data = await super.getData();
+    console.log(this.object)
+    data['modifier_types'] = ModifierHelpers.determine_item_mods(this.object.parent);
+    console.log(data)
+    return data;
   }
 
   activateListeners(html) {
@@ -333,11 +365,18 @@ export class UpdateEmbeddedTalent extends FormApplication {
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       let new_id = $(".embedded_mod").length;
+      let calced_data;
+      if (!['talent'].includes(this.object.parent.type)) {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.object);
+      } else {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.parent);
+      }
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html',
         {
           index: new_id,
           config: CONFIG.FFG,
+          modifier_types: calced_data,
           installed_mod: {
             name: "new mod",
             img: "icons/svg/item-bag.svg",
@@ -363,11 +402,18 @@ export class UpdateEmbeddedTalent extends FormApplication {
     let new_id = $(".embedded_modifier").length;
     let mod_id = event.currentTarget.getAttribute('data-mod-id');
     if (action === 'create') {
+      let calced_data;
+      if (!['talent'].includes(this.object.parent.type)) {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.object);
+      } else {
+        calced_data = ModifierHelpers.determine_item_mods(this.object.parent);
+      }
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html',
         {
           index: new_id,
           config: CONFIG.FFG,
+          modifier_types: calced_data,
           mod: {
             modtype: "Result Modifiers",
             value: 1,

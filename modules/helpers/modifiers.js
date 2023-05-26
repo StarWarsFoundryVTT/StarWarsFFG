@@ -12,25 +12,6 @@ export default class ModifierHelpers {
   static getCalculateValueForAttribute(key, attrs, items, modtype) {
     // TODO: remove calls to this function
     return attrs[key].value;
-    // leaving the code in so I can see what the old logic was. should be removed once other items are refactored
-    /*
-    return 0;
-    let total = 0;
-
-    if (key === "Shields") {
-      total += this.getCalculatedValueFromItems(items, key, modtype);
-
-      return attrs[key].value.map((v) => v + total);
-    } else {
-      const attrValue = attrs[key].value;
-      const itemsValue = this.getCalculatedValueFromItems(items, key, modtype);
-
-      total += attrValue;
-      total += itemsValue;
-    }
-
-    return total;
-    */
   }
 
   /**
@@ -750,6 +731,17 @@ export default class ModifierHelpers {
     }
   }
 
+  /**
+   * Update an embedded AE. "Embedded" here refers to an AE already on an actor.
+   * You can't directly edit an AE on an item if that item is on an actor
+   * @param actor - actor which the AE has been applied to
+   * @param effect_id - name of input box for a particular modifier (the active effect shares this name)
+   * @param modifier_category - the "modifier type" selected
+   * @param modifier - the "modifier" selected
+   * @param value - the "value" selected (true/false for some mods)
+   * @param active - OPTIONAL. if the active effect should currently be supplied or not. if not supplied, assumed to be true.
+   * @returns {Promise<void>}
+   */
   static async updateEmbeddedActiveEffect(actor, effect_id, modifier_category, modifier, value, active) {
     let effect = actor.effects.filter(i => i.label === effect_id);
     if (!effect) {
@@ -774,6 +766,13 @@ export default class ModifierHelpers {
     await effect.update({disabled: !active});
   }
 
+  /**
+   * Look up how much an attribute is being modified by active effects
+   * Useful for updating actor forms
+   * @param actor - actor on which the AEs exist
+   * @param attribute - attribute being modified by the AEs
+   * @returns {number} - INT - the number the attribute is modified by
+   */
   static getActiveAEModifierValue(actor, attribute) {
     // TODO: this can probably be enhanced to return the source as well (to retain the feature... I asked for :p)
     // TODO: refactor console.log statements into debug statements
@@ -877,7 +876,8 @@ export default class ModifierHelpers {
         if (change.key === `system.skills.${skill}.${testSkillModMap[modifier_type]}`) {
           //console.log(effect)
           // TODO: this code is brittle and should probably be refactored
-          sources.push(actor.items.filter(i => i.id === effect.origin.split('.')[3])[0].name)
+          // TODO: this breaks when a token status effect is added
+          //sources.push(actor.items.filter(i => i.id === effect.origin.split('.')[3])[0].name)
           if (isNaN(parseInt(change.value))) {
             // this is not a number value; skip other checks
             value = change.value;
@@ -961,6 +961,42 @@ export default class ModifierHelpers {
     new PopoutModifiers(data, {
       title,
     }).render(true);
+  }
+
+  static determine_item_mods(item) {
+    console.log("looking up")
+    console.log(item)
+    let data = [];
+    if (item.type === 'itemattachment' || item.type === 'itemmodifier') {
+      // TODO: move to shared function
+      console.log("attachment")
+      if (item.system.type === 'weapon') {
+        console.log('weapon')
+        data = [
+          'weapon_mod_types',
+        ];
+      } else if (item.system.type === 'armour') {
+        data = [
+          'armor_mod_types',
+        ];
+      } else if (item.system.type === 'vehicle') {
+        data = [
+          'vehicle_mod_types',
+        ];
+      } else {
+        console.log(item.system.type)
+        data = [
+          'mod_types',
+        ];
+      }
+    }
+    else if (item.type === 'talent' || item.type === 'specialization') {
+      data = [
+          'mod_types',
+      ];
+    }
+    console.log(data)
+    return data;
   }
 
   static async getDicePoolModifiers(pool, item, items) {

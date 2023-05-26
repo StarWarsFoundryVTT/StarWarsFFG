@@ -41,7 +41,6 @@
     <select name="talent_activation" class="embedded_selector" data-id="{{ index }}">
       {{#select this.object.object.activation }}
       {{#each this.object.config.activations as |t|}}
-      <!-- TODO: this should be filtered to the item type that we're on -->
       <option value="{{ t.value }}">{{ localize t.label}}</option>
       {{/each}}
       {{/select}}
@@ -76,7 +75,7 @@
   <div class="mod_container"> <!-- all mods container -->
     <div class="modifier_container" data-modifier="{{ mod.mod_link_id }}"> <!-- modifier container -->
     {{#each this.object.object.attributes as |modifier modifier_id| }}
-      {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=@index config=../this.object.config mod=modifier mod_id=@index attr=@key)}}
+      {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=@index config=../this.object.config mod=modifier mod_id=@index attr=@key modifier_types=../this.object.modifier_types)}}
     {{/each}} <!-- / installed_mods -->
     </div>
     <button type="button" class="modifier_control" data-action="create" data-modifier="{{ this.object.object.link_id }}" data-mod-id="{{ modifier_id }}" data-type="image" data-target="" title="Add Modifier" tabindex="-1">

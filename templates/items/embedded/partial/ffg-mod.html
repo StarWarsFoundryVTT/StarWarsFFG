@@ -34,7 +34,7 @@
   <div class="modifier_container" data-modifier="{{ mod.mod_link_id }}"> <!-- modifier container -->
     {{#each installed_mod.modifiers as |stupid stupid_id|}}
     {{#each stupid as |mod|}}
-    {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=stupid_id config=../../config mod=mod mod_id=../../index attr=@key)}}
+    {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=stupid_id config=../../config mod=mod mod_id=../../index attr=@key modifier_types=../../modifier_types)}}
     {{/each}}
     {{/each}}
   </div> <!-- /modifier container -->

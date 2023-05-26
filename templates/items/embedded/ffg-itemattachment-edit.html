@@ -77,20 +77,20 @@
     </div>
   </div>
   {{/if }}
-  Installed Mods<br> <!-- installed mods -->
+  Installed Mods<br> <!-- installed mods -->h<div>{{{ json this.object.modifier_types }}}</div>i
   <div class="mod_container"> <!-- all mods container -->
   {{#if (eq this.object.object.type "itemattachment") }}
   {{#each this.object.object.system.installed_mods as |installed_mod|}}
-    {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html" (object index=@index config=../this.object.config installed_mod=installed_mod)}}
-  {{/each}} <!-- / installed_mods -->
+    {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-mod.html" (object index=@index config=../this.object.config installed_mod=installed_mod modifier_types=../this.object.modifier_types )}}
+  {{/each}} <!-- /installed_mods -->
   {{/if }}
   {{#if (eq this.object.object.type "itemmodifier") }}
     <div class="modifier_container" data-modifier="{{ mod.mod_link_id }}"> <!-- modifier container -->
     {{#each this.object.object.modifiers as |installed_modifier modifier_id|}}
     {{#each installed_modifier as |modifier|}}
-      {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=modifier_id config=../../this.object.config mod=modifier mod_id=../../index attr=@key)}}
+      {{> "systems/starwarsffg/templates/items/embedded/partial/ffg-modifier.html" (object index=modifier_id config=../../this.object.config mod=modifier mod_id=../../index attr=@key modifier_types=../../this.object.modifier_types)}}
     {{/each}}
-    {{/each}} <!-- / installed_mods -->
+    {{/each}} <!-- /installed_mods -->
     </div>
     <button type="button" class="modifier_control" data-action="create" data-modifier="{{ this.object.object.link_id }}" data-mod-id="{{ modifier_id }}" data-type="image" data-target="" title="Add Modifier" tabindex="-1">
       <i class="fas fa-plus fa-fw"></i>Add Modifier

@@ -419,7 +419,7 @@ export default class ItemHelpers {
               }]);
               for (const created_active_effect of created) {
                 let link_ids = [
-                  talent_data.link_id, // TODO: the specialization also needs a link ID, but this needs to be created on it first
+                  talent_data.link_id,
                 ];
                 created_active_effect.setFlag('starwarsffg', 'link_ids', link_ids);
               }
@@ -470,7 +470,7 @@ export default class ItemHelpers {
               }]);
               for (const created_active_effect of created) {
                 let link_ids = [
-                  upgrade_data.link_id, // TODO: the specialization also needs a link ID, but this needs to be created on it first
+                  upgrade_data.link_id,
                 ];
                 created_active_effect.setFlag('starwarsffg', 'link_ids', link_ids);
               }

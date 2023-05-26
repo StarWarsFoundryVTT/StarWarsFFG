@@ -275,6 +275,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.FFG = CONFIG.FFG;
+    data.data.FFG = CONFIG.FFG;
     //data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
     data.renderedDesc = 'placeholder temporary value TODO: remove'
     data.activeEffects = this.item.getEmbeddedCollection("ActiveEffect").contents
@@ -282,6 +283,7 @@ export class ItemSheetFFG extends ItemSheet {
     // TODO: move this into a better block
     data.mod_activeEffects = modActiveEffects;
 
+    data.data.modifier_types = ModifierHelpers.determine_item_mods(this.item);
     return data;
   }
 
@@ -356,12 +358,14 @@ async _onModControl(event) {
       console.log(talent_data)
       console.log(parent.dataset.itemid)
       console.log(parent_obj.attr('id'))
+      let modifier_types = ModifierHelpers.determine_item_mods(this.object);
 
       let update_form = new UpdateEmbeddedTalent(
         {
           parent: this.object,
           object: talent_data,
           config: CONFIG.FFG,
+          modifier_types: modifier_types,
           id: parent_obj.attr('id'),
           skill_types: ["Force Boost"],
         },
@@ -566,12 +570,21 @@ async _onModControl(event) {
 
       console.log(this.object)
       console.log(this.object.system[itemType][itemIndex])
+      let modifier_types;
+      if (['itemattachment', 'itemmodifier'].includes(this.object.type)) {
+        modifier_types = ModifierHelpers.determine_item_mods(this.object);
+      } else {
+        modifier_types = ModifierHelpers.determine_item_mods(this.object.system[itemType][itemIndex]);
+      }
+      console.log("modifier types")
+      console.log(modifier_types)
 
       let update_form = new UpdateEmbeddedAttachment(
           {
             parent: this.object,
             object: this.object.system[itemType][itemIndex],
             config: CONFIG.FFG,
+            modifier_types: modifier_types,
           },
           {
             width: "500",

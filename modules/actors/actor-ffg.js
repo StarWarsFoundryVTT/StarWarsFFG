@@ -315,46 +315,7 @@ export class ActorFFG extends Actor {
   }
 
   _calculateDerivedValues(actorData) {
-    // TODO: this is supposed to update the value, so removing it might break stuff
-    // TODO: this no longer handles reducing the encumbrance if armor is equipped - how to do this needs to be thought through
     return;
-    // this function used to update the encumbrance on an actor based on values from items
-    /*
-    const data = actorData.system;
-    const items = actorData.items;
-    var encum = 0;
-
-    // Loop through all items
-    items.forEach(function(item) {
-      try {
-        // Calculate encumbrance, only if encumbrance value exists
-        if (item.system?.encumbrance?.adjusted !== undefined || item.system?.encumbrance?.value !== undefined) {
-          if (item.type === "armour" && item?.system?.equippable?.equipped) {
-            const equippedEncumbrance = +item.system.encumbrance.adjusted - 3;
-            encum += equippedEncumbrance > 0 ? equippedEncumbrance : 0;
-          } else if (item.type === "armour" || item.type === "weapon" || item.type === "shipweapon") {
-            let count = 0;
-            if (item.system?.quantity?.value) {
-              count = item.system.quantity.value;
-            }
-            encum += ((item.system?.encumbrance?.adjusted !== undefined) ? item.system?.encumbrance?.adjusted : item.system?.encumbrance?.value) * count;
-          } else {
-            let count = 0;
-            if (item.system?.quantity?.value) {
-              count = item.system.quantity.value;
-            }
-            encum += item.system?.encumbrance?.value * count;
-          }
-        }
-      } catch (err) {
-        CONFIG.logger.error(`Error calculating derived Encumbrance`, err);
-      }
-    });
-
-    // Set Encumbrance value on character.
-    data.stats.encumbrance.value = encum;
-
-    */
   }
 
   /**
