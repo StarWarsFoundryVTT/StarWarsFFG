@@ -3,20 +3,21 @@ import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
   static async itemUpdate(event, formData) {
-    // TODO: if the item is on an actor, it cannot be updated. we need to handle this and prevent updates.
     formData = expandObject(formData);
 
-    ///*
     console.log("hello updating item")
     console.log(event)
     console.log(formData)
     console.log(this)
 
-     //*/
     if (this.object.getFlag("starwarsffg", "ffgIsTemp")) {
       // temporary object, update the parent object instead
-      // TODO: handle this key not being present in the flag (or the flag being undefined)
-      await ItemHelpers.updateParent(this, formData, this.object.getFlag("starwarsffg", "ffgParent")['starwarsffg']['ffgTempId']);
+      if (this?.object != null) {
+        let flag_data = this.object.getFlag("starwarsffg", "ffgParent")
+        if (flag_data && 'starwarsffg' in Object.keys(flag_data) && 'ffgTempId' in Object.keys(flag_data['starwarsffg'])) {
+          await ItemHelpers.updateParent(this, formData, flag_data);
+        }
+      }
       return;
     }
 

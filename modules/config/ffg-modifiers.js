@@ -144,7 +144,7 @@ export const modifier_types = {
   "All": {
     "value": "all",
     "label": "SWFFG.ModTypeAll",
-    "key": "itemmodifier_types", // TODO: I don't think this section needs "key" - I think it's used for the dropdown for itemmodifer type, not for selecting mods
+    "key": "itemmodifier_types",
   },
   "Armor": {
     "value": "armour",

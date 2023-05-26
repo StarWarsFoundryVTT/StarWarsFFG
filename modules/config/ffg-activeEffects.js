@@ -5,18 +5,6 @@ export const activeEffectChanges = {
   "skill_rank.charm": "Charm (+1 rank)"
 };
 
-// TODO: remove
-export const modActiveEffects = {
-  "mod.boost": "+1 Boost Die",
-  "mod.light": "-1 encumbrance"
-}
-
-// TODO: remove
-export const activeEffectMap = {
-  "mod.boost": "system.stats.wounds.value",
-  "mod.light": "system.stats.strain.value"
-}
-
 export const testMap = {
   'Wounds': 'system.attributes.Wounds.value',
   'Strain': 'system.attributes.Strain.value',

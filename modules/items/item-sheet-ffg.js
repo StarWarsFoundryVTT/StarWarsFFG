@@ -7,7 +7,6 @@ import DiceHelpers from "../helpers/dice-helpers.js";
 import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import FFGActiveEffectConfig from "./item-active-effect-config.js";
-import {modActiveEffects, activeEffectMap} from "../config/ffg-activeEffects.js";
 import {ItemFFG} from "./item-ffg.js";
 import {UpdateEmbeddedAttachment, UpdateEmbeddedTalent} from "./item-editor.js";
 
@@ -200,77 +199,6 @@ export class ItemSheetFFG extends ItemSheet {
         }
         break;
       }
-      case "test_mod": {
-        data.mod_activeEffects = modActiveEffects;
-        data.effects = this.item.system.effects;
-        break;
-      }
-      case "test_attachment": {
-        data.mod_activeEffects = modActiveEffects;
-        data.base_mods = this.item.system.base_mods;
-        data.added_mods = this.item.system.added_mods;
-        break;
-      }
-      case "test_species": {
-        // boilerplate species
-        this.position.width = 550;
-        this.position.height = 650;
-
-        const attributesForCharacteristics = Object.keys(data.data.attributes).filter((key) => {
-          return Object.keys(CONFIG.FFG.characteristics).includes(key);
-        });
-
-        const speciesCharacteristics = attributesForCharacteristics.map((key) => Object.assign(data.data.attributes[key], { key }));
-        data.characteristics = Object.keys(CONFIG.FFG.characteristics).map((key) => {
-          let attr = speciesCharacteristics.find((item) => item.mod === key);
-
-          if (!attr) {
-            data.data.attributes[`${key}`] = {
-              modtype: "Characteristic",
-              mod: key,
-              value: 0,
-              exclude: true,
-            };
-            attr = {
-              key: `${key}`,
-              value: 0,
-            };
-          } else {
-            data.data.attributes[`${key}`].exclude = true;
-          }
-
-          return {
-            id: attr.key,
-            key,
-            value: attr?.value ? parseInt(attr.value, 10) : 0,
-            modtype: "Characteristic",
-            mod: key,
-            label: game.i18n.localize(CONFIG.FFG.characteristics[key].label),
-          };
-        });
-
-        if (!data.data.attributes?.Wounds) {
-          data.data.attributes.Wounds = {
-            modtype: "Stat",
-            mod: "Wounds",
-            value: 0,
-            exclude: true,
-          };
-        } else {
-          data.data.attributes.Wounds.exclude = true;
-        }
-        if (!data.data.attributes?.Strain) {
-          data.data.attributes.Strain = {
-            modtype: "Stat",
-            mod: "Strain",
-            value: 0,
-            exclude: true,
-          };
-        } else {
-          data.data.attributes.Strain.exclude = true;
-        }
-        break;
-      }
       default:
     }
 
@@ -280,8 +208,6 @@ export class ItemSheetFFG extends ItemSheet {
     data.renderedDesc = 'placeholder temporary value TODO: remove'
     data.activeEffects = this.item.getEmbeddedCollection("ActiveEffect").contents
     data.effects = this.item.getEmbeddedCollection("ActiveEffect")
-    // TODO: move this into a better block
-    data.mod_activeEffects = modActiveEffects;
 
     data.data.modifier_types = ModifierHelpers.determine_item_mods(this.item);
     return data;

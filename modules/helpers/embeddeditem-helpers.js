@@ -79,8 +79,6 @@ export default class EmbeddedItemHelpers {
       let formData = {};
       setProperty(formData, `data.${parents[0].ffgTempItemType}`, realItem.data.data[parents[0].ffgTempItemType]);
 
-      // TODO: validate that changing this doesn't break things
-      // that being said, itemData was removed as part of the original v10 migration
       if (item.system.constructor.name === "Object") {
         item.data.update(data);
       } else {
