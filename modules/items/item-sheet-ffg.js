@@ -1056,6 +1056,7 @@ async _onModControl(event) {
 
     // todo: this is probably much too small of a scope
     if (dropped_object.type === 'itemmodifier' && dropee_object.type === 'itemattachment') {
+      console.log("found itemmodifier on attachment")
       // todo: validate that the type is appropriate
       let link_id = randomID(); // used to tie AEs to mod
       // update attachment data

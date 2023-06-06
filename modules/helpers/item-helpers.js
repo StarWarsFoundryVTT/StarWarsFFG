@@ -226,7 +226,6 @@ export default class ItemHelpers {
     form_data['system'] = form_data['data'];
     form_data['type'] = embedded_item.object.getFlag('starwarsffg', 'ffgTempItemType');
     await ItemHelpers.createEmbeddedAttachment(parent, form_data, nonce);
-    // TODO: additionally (hooray), the description field isn't submitted at all
 
     console.log(nonce)
 

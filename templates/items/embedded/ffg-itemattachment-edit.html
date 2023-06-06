@@ -60,10 +60,10 @@
     </label>
     <div class="form-fields">
       {{# if this.object.object.system.renderedDesc }}
-      <input type="text" name="attachment_renderedDesc" value="{{ this.object.object.system.renderedDesc }}">
+      {{editor this.object.object.system.renderedDesc target="attachment_renderedDesc" button=false owner=true editable=true engine=prosemirror}}
       {{/if }}
       {{# if this.object.object.description }}
-      <input type="text" name="quality_desc" value="{{ this.object.object.description }}">
+      {{editor this.object.object.description target="quality_desc" button=false owner=true editable=true engine=prosemirror}}
       {{/if }}
     </div>
   </div>
@@ -77,7 +77,7 @@
     </div>
   </div>
   {{/if }}
-  Installed Mods<br> <!-- installed mods -->h<div>{{{ json this.object.modifier_types }}}</div>i
+  Installed Mods<br> <!-- installed mods -->h<div></div>i<!-- TODO: remove this div and "hi" block-->
   <div class="mod_container"> <!-- all mods container -->
   {{#if (eq this.object.object.type "itemattachment") }}
   {{#each this.object.object.system.installed_mods as |installed_mod|}}
