@@ -558,7 +558,7 @@ export class UpdateEmbeddedTalent extends FormApplication {
         let mod_index = mod.split('-')[0];
         mod_data = {
           name: formData[`${mod_index}-mod_name`],
-          img: formData[`${mod_index}-mod_img`], // TODO: image selector doesn't work
+          img: formData[`${mod_index}-mod_img`],
           description: formData[`${mod_index}-mod_description`],
           mod_link_id: formData[`${mod_index}-mod_link_id`],
           modifiers: [],
