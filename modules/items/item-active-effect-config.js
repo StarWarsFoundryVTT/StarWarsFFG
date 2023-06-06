@@ -1,7 +1,7 @@
 import {activeEffectChanges} from "../config/ffg-activeEffects.js";
 
 export default class FFGActiveEffectConfig extends ActiveEffectConfig {
-  // TODO: can we remove this UI?
+  // I think this is required to have AEs at all. let's leave it for now.
   get template() {
     return "systems/starwarsffg/templates/items/ffg-active-effect-config.html";
   }

@@ -488,7 +488,6 @@ export class ActorFFG extends Actor {
     Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
       let total = 0;
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Characteristic");
       data.characteristics[key].value = total > 7 ? 7 : total;
     });
 
@@ -519,7 +518,6 @@ export class ActorFFG extends Actor {
       }
 
       total += data.attributes[key].value;
-      total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Stat");
 
       if (key === "Soak") {
         data.stats[k].value = total;
@@ -538,13 +536,13 @@ export class ActorFFG extends Actor {
       let total = 0;
       total += data.attributes[key].value;
 
-      const skillValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Skill Rank", true);
+      const skillValues = {sources: [], total: 0};
       total += skillValues.total;
       skillValues.sources.push({ modtype: "purchased", key: "purchased", name: "purchased", value: data.attributes[key].value });
 
       /* Career Skills */
       if (!data.skills[key].careerskill) {
-        const careerSkillValues = ModifierHelpers.getCalculatedValueFromItems(items, key, "Career Skill", true);
+        const careerSkillValues = {total: 0, sources: [], checked: false};
         data.skills[key].careerskill = careerSkillValues.checked;
         data.skills[key].careerskillsource = careerSkillValues.sources;
       }
@@ -561,7 +559,7 @@ export class ActorFFG extends Actor {
       data.skills[key].upgradessource = upgradesValues.sources;
 
       const setValueAndSources = (modifiername, propertyname) => {
-        const obj = ModifierHelpers.getCalculatedValueFromItems(items, key, modifiername, true);
+        const obj = {sources: [], total: 0};
         if (obj.total > 0) {
           data.skills[key][propertyname] = obj.total;
           data.skills[key][`${propertyname}source`] = obj.sources;
@@ -623,7 +621,6 @@ export class ActorFFG extends Actor {
       } else {
         total += data.attributes[key].value;
       }
-      total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Stat");
 
       if (k === "shields") {
         data.stats[k].fore = data.attributes[key].value[0] + total > 0 ? data.attributes[key].value[0] + total : 0;

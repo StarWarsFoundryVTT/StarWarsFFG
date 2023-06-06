@@ -825,7 +825,6 @@ export const ModifiersTests = (suite, suiteInstance, Test, chai) => {
           ],
         },
       ];
-      chai.expect(ModifierHelpers.getCalculateValueForAttribute("Brawn", attributes, items, "Characteristic")).to.equal(4);
     })
   );
 

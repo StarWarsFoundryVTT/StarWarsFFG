@@ -83,7 +83,6 @@ export class ItemFFG extends ItemBaseFFG {
     switch (this.type) {
       case "weapon":
       case "shipweapon":
-        // TODO: clean this up
         // Apply item attachments / modifiers
         data.damage.value = parseInt(data.damage.value, 10);
         data.crit.value = parseInt(data.crit.value, 10);
@@ -155,42 +154,6 @@ export class ItemFFG extends ItemBaseFFG {
             range = Math.min(Math.max(range, 0), Object.values(rangeSetting).length);
             data.range.adjusted = Object.values(rangeSetting)[range].value;
           });
-
-          // TODO: remove this code block
-          if (true === false) {
-            data.itemattachment.forEach((attachment) => {
-              const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
-              data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
-              data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
-              if (data.crit.adjusted < 1) data.crit.adjusted = 1;
-              data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Weapon Stat");
-              data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Weapon Stat");
-              data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Weapon Stat");
-              data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
-              const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
-              const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
-              let newRange = currentRangeIndex + range;
-              if (newRange < 0) newRange = 0;
-              if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
-
-              data.range.adjusted = Object.values(rangeSetting)[newRange].value;
-              // this is the block of code which has not yet been converted
-              if (attachment?.system?.itemmodifier) {
-                const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
-
-                activeMods.forEach((am) => {
-                  const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
-
-                  if (foundItem) {
-                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
-                  } else {
-                    am.system.rank_current = 1;
-                    data.adjusteditemmodifier.push({...am, adjusted: true});
-                  }
-                });
-              }
-            });
-          }
         }
 
         if (this.isEmbedded && this.actor) {
@@ -269,51 +232,6 @@ export class ItemFFG extends ItemBaseFFG {
             console.log(data.hardpoints.adjusted)
 
           });
-        }
-
-        if (true === false) {
-          // TODO: remove this code block
-          if (data?.itemmodifier) {
-            data.itemmodifier.forEach((modifier) => {
-              if (modifier?.system) {
-                modifier.system.rank_current = modifier.system.rank;
-              }
-              data.adjusteditemmodifier.push({...modifier});
-              data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "soak", "Armor Stat");
-              data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "defence", "Armor Stat");
-              data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "encumbrance", "Armor Stat");
-              data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Armor Stat");
-              data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Armor Stat");
-              data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Armor Stat");
-            });
-          }
-
-          if (data?.itemattachment) {
-            data.itemattachment.forEach((attachment) => {
-              const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
-              data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
-              data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
-              data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Armor Stat");
-              data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Armor Stat");
-              data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Armor Stat");
-              data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Armor Stat");
-
-              if (attachment?.system?.itemmodifier) {
-                const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
-
-                activeMods.forEach((am) => {
-                  const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
-
-                  if (foundItem) {
-                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
-                  } else {
-                    am.system.rank_current = 1;
-                    data.adjusteditemmodifier.push({...am, adjusted: true});
-                  }
-                });
-              }
-            });
-          }
         }
 
         if (this.isEmbedded && this.actor && this.actor.system) {

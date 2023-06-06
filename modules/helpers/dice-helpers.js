@@ -236,6 +236,7 @@ export default class DiceHelpers {
   }
 
   static async getModifiers(dicePool, item) {
+    // TODO: refactor this to not import attachments every time a roll is made (!)
     if (item.type === "weapon") {
       dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
 

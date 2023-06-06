@@ -517,8 +517,8 @@ export class ActorSheetFFG extends ActorSheet {
       const li = $(ev.currentTarget);
       const item = this.actor.items.get(li.data("itemId"));
       if (item) {
-        item.update({ ["system.equippable.equipped"]: !item.system.equippable.equipped });
-        await ModifierHelpers.updateAEsForEquip(this.actor, item, !item.system.equippable.equipped);
+        await item.update({ ["system.equippable.equipped"]: !item.system.equippable.equipped });
+        await ModifierHelpers.updateAEsForEquip(this.actor, item, item.system.equippable.equipped);
       }
     });
 

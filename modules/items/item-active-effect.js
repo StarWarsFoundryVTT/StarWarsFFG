@@ -1,7 +1,7 @@
 export default class FFGActiveEffect extends ActiveEffect {
     // used to apply active effects. we want to hook custom effects for custom logic
     apply(actor, change) {
-        // TODO: this function can probably be removed (perhaps except the super call?)
+        // allows us to hook active effect application and the like
         let key = change.key.split('.');
         if (key[0] === "career_skill") {
             // this isn't really doing anything but represents how we could apply custom logic between the

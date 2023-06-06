@@ -2,201 +2,6 @@ import PopoutModifiers from "../popout-modifiers.js";
 import {testMap, testSkillModMap} from "../config/ffg-activeEffects.js";
 
 export default class ModifierHelpers {
-  /**
-   * Calculate a total attribute value for a key from a list of attributes and items
-   * @param  {string} key - Attribute key
-   * @param  {object} attrs - Attributes object
-   * @param  {array} items - Items array
-   * @returns {number} - Total value of all attribute values
-   */
-  static getCalculateValueForAttribute(key, attrs, items, modtype) {
-    // TODO: remove calls to this function
-    return attrs[key].value;
-  }
-
-  /**
-   * Calculate total value from embedded items
-   * @param  {array} items
-   * @param  {string} key
-   */
-  static getCalculatedValueFromItems(items, key, modtype, includeSource) {
-    // TODO: remove calls to this function
-    let total = 0;
-    let sources = [];
-    if (includeSource) {
-      return { total, sources };
-    } else {
-      return total;
-      //return total;
-    }
-    /*
-    let total = 0;
-    let checked = false;
-    let sources = [];
-
-    try {
-      items.forEach((item) => {
-        if (item.system?.attributes) {
-          const attrsToApply = Object.keys(item.system.attributes)
-            .filter((id) => (item.system.attributes[id].mod === key || item.system.attributes[id].mod === "*") && item.system.attributes[id].modtype === modtype)
-            .map((i) => item.system.attributes[i]);
-
-          if (item.type === "armour" || item.type === "weapon") {
-            if (item?.system?.equippable?.equipped) {
-              if (key === "Soak" && item.system?.soak) {
-                sources.push({ modtype, key, name: item.name, value: item.system.soak.adjusted, type: item.type });
-                total += parseInt(item.system.soak.adjusted, 10);
-              }
-              if ((key === "Defence-Melee" || key === "Defence-Ranged") && item.system?.defence) {
-                // get the highest defense item
-                const shouldUse = items.filter((i) => item.system.defence >= i.system.defence).length >= 0;
-                if (shouldUse) {
-                  sources.push({ modtype, key, name: item.name, value: item.system.defence.adjusted, type: item.type });
-                  total += parseInt(item.system.defence.adjusted, 10);
-                }
-              }
-              if (attrsToApply.length > 0) {
-                attrsToApply.forEach((attr) => {
-                  if (modtype === "Career Skill" || modtype === "Force Boost") {
-                    if (attr.value) {
-                      sources.push({ modtype, key, name: item.name, value: true, type: item.type });
-                      checked = true;
-                    }
-                  } else {
-                    sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
-                    total += parseInt(attr.value, 10);
-                  }
-                });
-              }
-            }
-          } else if (item.type === "forcepower" || item.type === "specialization" || item.type === "signatureability") {
-            // apply basic force power/specialization modifiers
-            if (attrsToApply.length > 0) {
-              attrsToApply.forEach((attr) => {
-                if (modtype === "Career Skill" || modtype === "Force Boost") {
-                  if (attr.value) {
-                    sources.push({ modtype, key, name: item.name, value: true, type: item.type });
-                    checked = true;
-                  }
-                } else {
-                  if ((modtype === "ForcePool" && total === 0) || modtype !== "ForcePool") {
-                    sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
-                    total += parseInt(attr.value, 10);
-                  }
-                }
-              });
-            }
-            let upgrades;
-            if (item.type === "forcepower" || item.type === "signatureability") {
-              // apply force power upgrades
-              upgrades = Object.keys(item.system.upgrades)
-                .filter((k) => item.system.upgrades[k].islearned)
-                .map((k) => {
-                  return {
-                    type: "talent",
-                    name: `${item.name}: ${item.system.upgrades[k].name}`,
-                    data: {
-                      attributes: item.system.upgrades[k]?.attributes ? item.system.upgrades[k]?.attributes : {},
-                      ranks: {
-                        ranked: false,
-                        current: 1,
-                      },
-                    },
-                  };
-                });
-            } else if (item.type === "specialization") {
-              // apply specialization talent modifiers
-              upgrades = Object.keys(item.system.talents)
-                .filter((k) => item.system.talents[k].islearned)
-                .map((k) => {
-                  return {
-                    type: "talent",
-                    name: `${item.name}: ${item.system.talents[k].name}`,
-                    system: {
-                      attributes: item.system.talents[k].attributes,
-                      ranks: {
-                        ranked: item.system.talents[k].isRanked,
-                        current: 1,
-                      },
-                    },
-                  };
-                });
-            }
-            if (modtype === "Career Skill" || modtype === "Force Boost") {
-              if (this.getCalculatedValueFromItems(upgrades, key, modtype)) {
-                sources.push({ modtype, key, name: item.name, value: true, type: item.type });
-                checked = true;
-              }
-            } else {
-              if (includeSource) {
-                const subValues = this.getCalculatedValueFromItems(upgrades, key, modtype, includeSource);
-                total += subValues.total;
-                sources = sources.concat(subValues.sources);
-              } else {
-                const subValues = this.getCalculatedValueFromItems(upgrades, key, modtype);
-                total += subValues;
-              }
-            }
-          } else {
-            if (attrsToApply.length > 0) {
-              attrsToApply.forEach((attr) => {
-                if (modtype === "Career Skill" || modtype === "Force Boost") {
-                  if (attr.value) {
-                    sources.push({ modtype, key, name: item.name, value: true, type: item.type });
-                    checked = true;
-                  }
-                } else {
-                  if (item.type === "talent") {
-                    let multiplier = 1;
-                    if (item.system.ranks.ranked) {
-                      multiplier = item.system.ranks.current;
-                    }
-                    sources.push({ modtype, key, name: item.name, value: attr.value * multiplier, type: item.type });
-                    total += parseInt(attr.value, 10) * multiplier;
-                  } else {
-                    sources.push({ modtype, key, name: item.name, value: attr.value, type: item.type });
-                    total += parseInt(attr.value, 10);
-                  }
-                }
-              });
-            }
-          }
-        }
-      });
-    } catch (err) {
-      CONFIG.logger.warn(`Error occured while trying to calculate modifiers from item list`, err);
-    }
-
-    if (modtype === 'Characteristic') {
-      console.log("got modifiers:")
-      console.log(items) // e.g. [test_species, random_item]
-      console.log(key) // e.g. Brawn
-      console.log(modtype) // e.g. Characteristics
-      console.log(includeSource) // e.g. undefined
-      console.log(checked) // e.g. false
-      console.log(total) // e.g. 1
-      console.log(sources) // e.g. [test_species]
-    }
-
-    if (modtype === "Career Skill" || modtype === "Force Boost") {
-      if (includeSource) {
-        return { checked, sources };
-      }
-      return checked;
-    }
-
-    // override the calculations to always return 0, so we only rely on active effects
-    // TODO: find where this call is needed and remove it everywhere else
-    if (includeSource) {
-      total = 0;
-      return { total, sources };
-    } else {
-      return 0;
-      //return total;
-    }
-
-    */
-  }
 
   /**
    * Replaces the old getCalculatedValueFromCurrentAndArray.
@@ -227,36 +32,7 @@ export default class ModifierHelpers {
       return { total, sources };
     } else {
       return total;
-      //return total;
     }
-    /*
-    let total = 0;
-    let checked = false;
-    let sources = [];
-    let rank = item?.system?.rank;
-    if(rank === null || rank === undefined) {
-      rank = 1;
-    }
-    if (item?.system) {
-      const filteredAttributes = Object.values(item.system.attributes).filter((a) => a.modtype === modtype && a.mod === key);
-
-      filteredAttributes.forEach((attr) => {
-        sources.push({ modtype, key, name: item.name, value: attr.value * rank, type: item.type });
-        total += parseInt(attr.value * rank, 10);
-      });
-    }
-
-    const itemsTotal = ModifierHelpers.getCalculatedValueFromItems(items, key, modtype, includeSource);
-    if (includeSource) {
-      total += itemsTotal.total;
-      sources = sources.concat(itemsTotal.sources);
-
-      return { total, sources };
-    } else {
-      total += itemsTotal;
-      return total;
-    }
-    */
   }
 
   static getBaseValue(items, key, modtype) {
@@ -369,7 +145,6 @@ export default class ModifierHelpers {
    */
   static determineModifierKey(modifier_category, modifier) {
     // TODO: these mappings should be a global location and should be auto-generated
-    // TODO: refactor console.log statements into debug statements
     let skill_mods = {
       'Career Skill': 'careerskill',
       'Force Boost': 'force', // not working
@@ -442,11 +217,9 @@ export default class ModifierHelpers {
       data['keys'] = ['system.stats.encumbrance.value'];
     } else if (modifier_category === 'Hardpoints') {
       data['keys'] = ['system.stats.customizationHardPoints.value'];
-      // TODO: figure out how to subtract?
       data['mode'] = CONST.ACTIVE_EFFECT_MODES.ADD;
-    } else if (modifier_category === 'Weapon Stat') {
-      // TODO: this should contain armor stats as well
-      // the only weapon stat which requires an active effect on the actor is encumbrance
+    } else if (modifier_category === 'Weapon Stat' || modifier_category === 'Armor Stat') {
+      // the only weapon/armor modifier which requires an active effect on the actor is encumbrance
       if (modifier === 'encumbrance') {
         data['keys'] = ['system.stats.encumbrance.value'];
       }
@@ -473,6 +246,7 @@ export default class ModifierHelpers {
       }
       await ModifierHelpers.updateEmbeddedActiveEffect(
           item.parent,
+          item.uuid,
           effect_id,
           modifier_category,
           modifier,
@@ -482,9 +256,9 @@ export default class ModifierHelpers {
       return;
     }
     console.log("updating AE")
+    let uuid = item.uuid;
     // TODO: we really should check if this data has changed rather than forcing a full update each time
-    // TODO: refactor console.log statements into debug statements
-    let active_effect = item.getEmbeddedCollection("ActiveEffect").filter(i => i.label === effect_id);
+    let active_effect = item.getEmbeddedCollection("ActiveEffect").filter(i => (i.origin === uuid) && (i.label === effect_id));
     if (active_effect.length === 0) {
       console.log("Could not find active effect - :|")
       return;
@@ -510,10 +284,6 @@ export default class ModifierHelpers {
         });
       });
       // do the update
-      /*
-      TODO: instead of updating the standalone effect (which is done below), we want to update the item it's on
-      await game.actors.filter(i => i.name === 'ship')[0].effects.filter(i => i.id === effect.id)[0].update({changes: [{new: changes}]});
-       */
       await current_effect.update({
         changes: changes,
       });
@@ -530,8 +300,6 @@ export default class ModifierHelpers {
   }
 
   static async createBasicActiveEffects(item, item_type) {
-    // TODO: refactor console.log statements into debug statements
-    // originally test_species
     if (item_type === 'species') {
       // create characteristics active effects
       Object.keys(CONFIG.FFG.characteristics).forEach(await async function(characteristic) {
@@ -690,11 +458,14 @@ export default class ModifierHelpers {
     // determine how much encumbrance our item is (across all of its AEs)
     // update the "equipped" encumbrance to that value - 3 (to a minimum of 0)
     // disable the "current" one and enable the "equipped" one
+    // TODO: upstream issue somewhere. editing the encumbrance of an item on an actor doesn't properly update the AEs
+    let uuid = item.uuid;
     if (equipped) {
       console.log("enabling equipped encumbrance")
       let total = ModifierHelpers.getActiveAEModifierValue(item, 'Encumbrance');
       await ModifierHelpers.updateEmbeddedActiveEffect(
         actor,
+        uuid,
         'Encumbrance (Equipped)',
         'Encumbrance (Equipped)',
         '',
@@ -703,6 +474,7 @@ export default class ModifierHelpers {
       );
       await ModifierHelpers.updateEmbeddedActiveEffect(
         actor,
+        uuid,
         'Encumbrance (Current)',
         'Encumbrance (Current)',
         '',
@@ -713,6 +485,7 @@ export default class ModifierHelpers {
       console.log("disabling equipped encumbrance")
       await ModifierHelpers.updateEmbeddedActiveEffect(
         actor,
+        uuid,
         'Encumbrance (Equipped)',
         'Encumbrance (Equipped)',
         '',
@@ -722,6 +495,7 @@ export default class ModifierHelpers {
       let total = ModifierHelpers.getActiveAEModifierValue(item, 'Encumbrance');
       await ModifierHelpers.updateEmbeddedActiveEffect(
         actor,
+        uuid,
         'Encumbrance (Current)',
         'Encumbrance (Current)',
         '',
@@ -735,6 +509,7 @@ export default class ModifierHelpers {
    * Update an embedded AE. "Embedded" here refers to an AE already on an actor.
    * You can't directly edit an AE on an item if that item is on an actor
    * @param actor - actor which the AE has been applied to
+   * @param uuid - item UUID. used to compare the origin to make sure we're editing the one from the item
    * @param effect_id - name of input box for a particular modifier (the active effect shares this name)
    * @param modifier_category - the "modifier type" selected
    * @param modifier - the "modifier" selected
@@ -742,8 +517,8 @@ export default class ModifierHelpers {
    * @param active - OPTIONAL. if the active effect should currently be supplied or not. if not supplied, assumed to be true.
    * @returns {Promise<void>}
    */
-  static async updateEmbeddedActiveEffect(actor, effect_id, modifier_category, modifier, value, active) {
-    let effect = actor.effects.filter(i => i.label === effect_id);
+  static async updateEmbeddedActiveEffect(actor, uuid, effect_id, modifier_category, modifier, value, active) {
+    let effect = actor.effects.filter(i => (i.origin === uuid) && (i.label === effect_id));
     if (!effect) {
       console.log("could not find AE")
       return;
@@ -759,9 +534,7 @@ export default class ModifierHelpers {
           value: value,
         });
       });
-      await effect.update({disabled: true});
       await effect.update({changes: changes});
-      await effect.update({disabled: false});
     }
     await effect.update({disabled: !active});
   }
@@ -775,7 +548,6 @@ export default class ModifierHelpers {
    */
   static getActiveAEModifierValue(actor, attribute) {
     // TODO: this can probably be enhanced to return the source as well (to retain the feature... I asked for :p)
-    // TODO: refactor console.log statements into debug statements
     // find (active) active effects
     //console.log(`Looking for AEs impacting ${attribute} on ${actor.name}`)
     const effects = actor.effects.contents.filter(i => i.disabled === false);
@@ -863,7 +635,6 @@ export default class ModifierHelpers {
    */
   static getActiveSkillAEModifierValue(actor, skill, modifier_type) {
     // TODO: this can probably be enhanced to return the source as well (to retain the feature... I asked for :p)
-    // TODO: refactor console.log statements into debug statements
     // find (active) active effects
     //console.log(`Looking for skill AEs impacting ${skill}/${modifier_type} on ${actor.name}`)
     const effects = actor.effects.contents.filter(i => i.disabled === false);
@@ -874,10 +645,6 @@ export default class ModifierHelpers {
       effect.changes.forEach(function (change) {
         // check if the change key is the key for our attribute
         if (change.key === `system.skills.${skill}.${testSkillModMap[modifier_type]}`) {
-          //console.log(effect)
-          // TODO: this code is brittle and should probably be refactored
-          // TODO: this breaks when a token status effect is added
-          //sources.push(actor.items.filter(i => i.id === effect.origin.split('.')[3])[0].name)
           if (isNaN(parseInt(change.value))) {
             // this is not a number value; skip other checks
             value = change.value;
@@ -968,7 +735,6 @@ export default class ModifierHelpers {
     console.log(item)
     let data = [];
     if (item.type === 'itemattachment' || item.type === 'itemmodifier') {
-      // TODO: move to shared function
       console.log("attachment")
       if (item.system.type === 'weapon') {
         console.log('weapon')
@@ -995,30 +761,32 @@ export default class ModifierHelpers {
           'mod_types',
       ];
     }
+    else if (item.type === "weapon") {
+        data = [
+          'weapon_mod_types',
+        ];
+    }
+    else if (item.type === "armour") {
+        data = [
+          'armor_mod_types',
+        ];
+    }
+    else if (item.type === "vehicle") {
+        data = [
+          'vehicle_mod_types',
+        ];
+    }
+    else {
+        data = [
+          'mod_types',
+        ];
+    }
     console.log(data)
     return data;
   }
 
   static async getDicePoolModifiers(pool, item, items) {
     let dicePool = new DicePoolFFG(pool);
-
-    dicePool.boost += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Boost", "Roll Modifiers");
-    dicePool.setback += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Setback", "Roll Modifiers");
-    dicePool.remsetback += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Remove Setback", "Roll Modifiers");
-    dicePool.advantage += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Advantage", "Result Modifiers");
-    dicePool.dark += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Dark", "Result Modifiers");
-    dicePool.failure += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Failure", "Result Modifiers");
-    dicePool.light += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Light", "Result Modifiers");
-    dicePool.success += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Success", "Result Modifiers");
-    dicePool.threat += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Threat", "Result Modifiers");
-    dicePool.triumph += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Triumph", "Result Modifiers");
-    dicePool.despair += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Despair", "Result Modifiers");
-
-    dicePool.difficulty += ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Add Difficulty", "Dice Modifiers");
-    dicePool.upgradeDifficulty(ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Upgrade Difficulty", "Dice Modifiers"));
-    dicePool.upgradeDifficulty(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Downgrade Difficulty", "Dice Modifiers"));
-    dicePool.upgrade(ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Upgrade Ability", "Dice Modifiers"));
-    dicePool.upgrade(-1 * ModifierHelpers.getCalculatedValueFromCurrentAndArray(item, items, "Downgrade Ability", "Dice Modifiers"));
 
     return dicePool;
   }
