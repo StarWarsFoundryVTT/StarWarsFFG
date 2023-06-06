@@ -552,7 +552,6 @@ export default class ModifierHelpers {
             // I don't think subtract is actually used anywhere, but just in case...
             value -= parseInt(change.value);
           } else {
-            // TODO: this should be a real warning, most likely
             console.log(`Found unexpected effect mode on ${actor.name} / ${effect.label}. Change key: ${change.key}, mode: ${change.mode}`)
           }
         }
@@ -644,7 +643,6 @@ export default class ModifierHelpers {
             // I don't think subtract is actually used anywhere, but just in case...
             value -= parseInt(change.value);
           } else {
-            // TODO: this should be a real warning, most likely
             console.log(`Found unexpected skill effect mode on ${actor.name} / ${effect.label}. Change key: ${change.key}, mode: ${change.mode}`)
           }
         }
