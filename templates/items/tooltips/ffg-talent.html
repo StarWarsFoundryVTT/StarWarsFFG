@@ -4,7 +4,7 @@
 -->
 <div style=&quot;display: flex; flex-direction: column&quot;>
 	<div>
-		<img src=&quot;{{ this.fields.img }}&quot; style=&quot;height: 16px; width: 16px;&quot;><!-- TODO: save talent image on drag-and-drop -->
+		<img src=&quot;{{ this.fields.img }}&quot; style=&quot;height: 16px; width: 16px;&quot;>
 	</div><div>
 		{{ this.fields.activation }} | {{#if this.fields.isRanked }}Ranked{{else}}Unranked{{/if}}{{#if this.fields.isForceTalent }} | Force Talent {{/if}}{{#if this.fields.isConflictTalent }} | Conflict{{/if}}
 	</div>{{# if expanded }}<div>

@@ -248,7 +248,6 @@ async _onModControl(event) {
         case "edit":
             return mod.sheet.render(true);
         case "delete":
-            // TODO: there should be a way to update without overriding
             const update_mods = owner_obj.system.base_mods.splice(mod_id, 1);
             return await owner_obj.update({'system': {'base_mods': update_mods}});
     }
@@ -265,7 +264,7 @@ async _onModControl(event) {
         html.find(".mod-control").click(this._onModControl.bind(this));
     }
 
-    // TODO: This is not needed in Foundry 0.6.0
+    // not wrycu TODO: This is not needed in Foundry 0.6.0
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
@@ -367,7 +366,6 @@ async _onModControl(event) {
       }
     });
 
-    // TODO: should specialization be here?
     if (["weapon", "armour", "itemattachment", "shipweapon", "shipattachment"].includes(this.object.type)) {
       const itemToItemAssociation = new DragDrop({
         dragSelector: ".item",

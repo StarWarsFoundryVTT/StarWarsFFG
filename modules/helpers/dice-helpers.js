@@ -74,7 +74,7 @@ export default class DiceHelpers {
     const itemData = item || {};
     const status = this.getWeaponStatus(itemData);
 
-    // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
+    // not wrycu TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
 
     let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
@@ -236,7 +236,7 @@ export default class DiceHelpers {
   }
 
   static async getModifiers(dicePool, item) {
-    // TODO: refactor this to not import attachments every time a roll is made (!)
+    // not wrycu TODO: refactor this to not import attachments every time a roll is made (!)
     if (item.type === "weapon") {
       dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
 

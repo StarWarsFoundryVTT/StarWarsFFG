@@ -156,7 +156,7 @@ export class ActorSheetFFG extends ActorSheet {
 
       const effect = relevantEffects[0];
       const newStatus = !effect.disabled;
-      // TODO: is this new code needed?
+      // I don't think this is needed since we don't use the native AE modifier, buit it's still here just in case
       console.log(`updating new status to be ${newStatus}`)
       await effect.update({disabled: newStatus});
       await gear.update({"system": {"activeEffect": {"active": !newStatus}}});

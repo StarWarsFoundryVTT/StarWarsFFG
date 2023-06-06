@@ -24,17 +24,6 @@ export default class ModifierHelpers {
     return total;
   }
 
-  static getCalculatedValueFromCurrentAndArray(item, items, key, modtype, includeSource) {
-    // TODO: remove calls to this function
-    let total = 0;
-    let sources = [];
-    if (includeSource) {
-      return { total, sources };
-    } else {
-      return total;
-    }
-  }
-
   static getBaseValue(items, key, modtype) {
     let total = 0;
 

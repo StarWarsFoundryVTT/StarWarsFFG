@@ -311,7 +311,7 @@ export class UpdateEmbeddedTalent extends FormApplication {
       } else if (new_value === 'Career Skill') {
         key = 'skills';
       } else if (new_value === 'Force Boost') {
-        key = 'skills'; // TODO: missing
+        key = 'skills';
       } else if (new_value === 'Skill Add Advantage') {
         key = 'skills';
       } else if (new_value === 'Skill Add Dark') {

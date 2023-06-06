@@ -1176,7 +1176,7 @@ export default class ImportHelpers {
       {
         let force = JSON.parse(JSON.stringify(comForceAbility));
         // Just add all upgrades since there's no good way of mapping the NPC upgrades to their Character-sheet Counterparts
-        // todo : find a solution to this known issue.
+        // not wrycu todo : find a solution to this known issue.
         Object.keys(force.data.upgrades).forEach((key) => {
           force.data.upgrades[key].islearned = true;
         });
@@ -2492,7 +2492,7 @@ export default class ImportHelpers {
           };
           const descriptor = Item.create(unique, { temporary: true });
           descriptor.id = randomID();
-          // TODO: should this really be a different value, or should it be the same thing?
+          // not wrycu TODO: should this really be a different value, or should it be the same thing?
           descriptor._id = descriptor.id;
           let rank = "";
           if (unique.data.rank > 1) {
