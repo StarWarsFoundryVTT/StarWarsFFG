@@ -958,8 +958,6 @@ async _onModControl(event) {
       await ItemHelpers.transferActiveEffects(itemObject, this.object, link_id);
       //await ItemHelpers.syncActiveEffects(this.object);
       await ItemHelpers.syncModifierActiveEffects(this.object);
-      // TODO: remove old ActiveEffects from the spot where this talent was droppped (if there were any)
-      // this will probably require actually including this ID somewhere helpful
     }
   }
 

@@ -123,7 +123,6 @@ export class ItemFFG extends ItemBaseFFG {
           data.itemattachment.forEach(function (attachment) {
             let active_modifiers = [];
             if (Object.keys(attachment.system).includes('installed_mods')) {
-              // TODO: this should not have a condition
               attachment.system?.installed_mods.forEach(function (mod) {
                 mod.modifiers.forEach(function (modifier) {
                   if (modifier[Object.keys(modifier)[0]].active) {
@@ -199,7 +198,6 @@ export class ItemFFG extends ItemBaseFFG {
             console.log(attachment)
             let active_modifiers = [];
             if (Object.keys(attachment.system).includes('installed_mods')) {
-              // TODO: this should not have a condition
               attachment.system.installed_mods.forEach(function (mod) {
                 mod.modifiers.forEach(function (modifier) {
                   if (modifier[Object.keys(modifier)[0]].active) {
