@@ -561,6 +561,10 @@ Hooks.on("dropActorSheetData", (...args) => {
     register_crew(...args);
 });
 
+function isCurrentVersionNullOrBlank(currentVersion) {
+  return currentVersion === "null" || currentVersion === '' || currentVersion === null;
+}
+
 // Handle migration duties
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
@@ -586,7 +590,7 @@ Hooks.once("ready", async () => {
     d.render(true);
   }
 
-  if ((isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
+  if ((isAlpha || isCurrentVersionNullOrBlank(currentVersion) || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
     CONFIG.logger.log(`Migrating to from ${currentVersion} to ${game.system.version}`);
 
     // Calculating wound and strain .value from .real_value is no longer necessary due to the Token._drawBar() override in swffg-main.js
@@ -637,7 +641,7 @@ Hooks.once("ready", async () => {
       }
     });
 
-    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.1) {
+    if (isAlpha || isCurrentVersionNullOrBlank(currentVersion) || parseFloat(currentVersion) < 1.1) {
       // Migrate alternate skill lists from file if found
       try {
         let skillList = [];
@@ -687,7 +691,7 @@ Hooks.once("ready", async () => {
       }
     }
     // migrate embedded items
-    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.8) {
+    if (isAlpha || isCurrentVersionNullOrBlank(currentVersion) || parseFloat(currentVersion) < 1.8) {
       ui.notifications.info(`Migrating Star Wars FFG System Deep Embedded Items`);
       CONFIG.logger.debug('Migrating Star Wars FFG System Deep Embedded Items');
 
@@ -752,7 +756,7 @@ Hooks.once("ready", async () => {
     }
 
     // migrate compendiums and flags
-    if (isAlpha || currentVersion === "null" || currentVersion === '' || parseFloat(currentVersion) < 1.61) {
+    if (isAlpha || isCurrentVersionNullOrBlank(currentVersion) || parseFloat(currentVersion) < 1.61) {
       ui.notifications.info(`Migrating Starwars FFG System for version ${game.system.version}. Please be patient and do not close your game or shut down your server.`, { permanent: true });
 
       try {
