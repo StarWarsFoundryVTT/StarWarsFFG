@@ -284,7 +284,7 @@ export class ItemFFG extends ItemBaseFFG {
 
       if (data?.itemattachment?.length) {
         data.itemattachment.forEach((attachment) => {
-          totalHPUsed += attachment.system.hardpoints.value;
+          totalHPUsed += attachment.system?.hardpoints?.value || 0;
         });
       }
 
