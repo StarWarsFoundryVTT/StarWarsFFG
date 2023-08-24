@@ -22,9 +22,19 @@ describe("ffg-star-wars create entities", () => {
     cy.get('#actors > .directory-header > .header-actions > .create-folder').click().then(function () {
       cy.get(':nth-child(3) > .form-fields > input').type('actors');
       cy.get('form > button').click().then(function () {
+        // wait for the window to go away
+        cy.get('[type="color"]').should('not.be.visible');
         // create the character
-        cy.get('.folder-header > .create-entry').click();
+        cy.get('.folder-header > .create-document > .fa-user').click();
+        cy.get('.form-fields > input').should('be.enabled');
         cy.get('.form-fields > input').type('character');
+        cy.get('.dialog-button').click();
+        // validate the character sheet opened up
+        cy.get('.profile-img').should('be.visible');
+        // make sure basic data is visible
+        cy.get(':nth-child(1) > .row-input > .drag-note').should('be.visible');
+        cy.get('.sheet-tabs > [data-tab="items"]').should('be.visible');
+        cy.get('.sheet-tabs > [data-tab="description"]').should('be.visible');
       });
     });
 
