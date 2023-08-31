@@ -73,7 +73,9 @@ export default class ItemHelpers {
 
       }
     } catch (error) {
-        await this.object.update(formData);
+      CONFIG.logger.debug(`Encountered an error while trying to update item ${this.object.id}`);
+      CONFIG.logger.debug(error);
+      await this.object.update(formData);
     }
 
     if (this.object.type === "talent") {
