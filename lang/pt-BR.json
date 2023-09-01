@@ -491,6 +491,7 @@
   "SWFFG.ModTypeAddSuccess": "Adicionar Sucesso",
   "SWFFG.ModTypeAddThreat": "Adicionar Ameaça",
   "SWFFG.ModTypeStatArmor" : "Stat da Armdaura",
+  "SWFFG.ModTypeStatVehicle": "Stat da Veículo",
   "SWFFG.FromAttachment": "do acessório",
   "SWFFG.WeaponCardCritical" : "Crítico",
   "SWFFG.ItemModifiers" : "Modificadores de items",
