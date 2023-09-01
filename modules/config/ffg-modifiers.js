@@ -135,6 +135,10 @@ export const itemmodifier_modifiertypes = {
     "value": "Armor Stat",
     "label": "SWFFG.ModTypeStatArmor",
   }, //-> Def, Soak, Encum, HP, Rarity, Price
+  "Vehicle Stat": {
+    "value": "Vehicle Stat",
+    "label": "SWFFG.ModTypeStatVehicle",
+  },
 };
 
 export const itemmodifier_rollmodifiers = {

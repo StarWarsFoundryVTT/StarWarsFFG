@@ -491,6 +491,7 @@
   "SWFFG.ModTypeAddSuccess": "Ajouter un Succès",
   "SWFFG.ModTypeAddThreat": "Ajouter un Menace",
   "SWFFG.ModTypeStatArmor": "État de l'armure",
+  "SWFFG.ModTypeStatVehicle": "État de le véhicule",
   "SWFFG.FromAttachment": "De l'Attachement",
   "SWFFG.WeaponCardCritical": "Critique",
   "SWFFG.ItemModifiers": "Modificateurs d'objet",
