@@ -525,10 +525,10 @@ export class ItemSheetFFG extends ItemSheet {
       const parent = $(li).parent()[0];
       let itemType = parent.dataset.itemName;
       let itemIndex = parent.dataset.itemIndex;
-      const item = this.object.data.data[itemType][itemIndex];
-      item.data.active = !item.data.active;
+      const item = this.object.system[itemType][itemIndex];
+      item.active = !item.active;
 
-      if (this.object.data.flags.starwarsffg.ffgTempId) {
+      if (this.object.flags.starwarsffg.ffgTempId) {
         // this is a temporary sheet for an embedded item
 
         item.flags = {
@@ -544,7 +544,7 @@ export class ItemSheetFFG extends ItemSheet {
         await EmbeddedItemHelpers.updateRealObject({ data: item }, {});
       } else {
         let formData = {};
-        setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+        setProperty(formData, `system.${itemType}`, this.object.system[itemType]);
         this.object.update(formData);
       }
 
