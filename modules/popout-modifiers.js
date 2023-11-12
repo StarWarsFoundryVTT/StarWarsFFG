@@ -97,13 +97,14 @@ export default class PopoutModifiers extends FormApplication {
       let data = attributes;
       let upgradeFormData = {};
       setProperty(upgradeFormData, `data.talents.${this.object.keyname}.attributes`, data);
-
+      upgradeFormData.system = upgradeFormData.data;
+      delete upgradeFormData.data;
       await this.object.parent.update(upgradeFormData);
     } else {
       // Update the Item
       await this.object.update(formData);
     }
-    mergeObject(this.object.data, formData);
+    this.object.data = mergeObject(this.object.data, formData);
     this.render();
   }
 }
