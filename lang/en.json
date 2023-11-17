@@ -600,5 +600,6 @@
   "SWFFG.Crew.Settings.Label": "Configure Crew Roles",
   "SWFFG.Crew.Settings.Hint": "Define the roles crew members can have",
   "SWFFG.Crew.Card.Role": "Role",
-  "SWFFG.Notifications.DragAndDropFirst": "You must drag-and-drop a talent before you can edit it."
+  "SWFFG.Notifications.DragAndDropFirst": "You must drag-and-drop a talent before you can edit it.",
+  "SWFFG.Notifications.TalentEditGlobally": "You cannot edit specialization talents if they exist globally, edit the item in the world or compendium instead."
 }
