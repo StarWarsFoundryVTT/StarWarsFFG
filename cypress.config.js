@@ -8,7 +8,7 @@ module.exports = defineConfig({
          */
         setupNodeEvents(on, config) {
             if (config.hasOwnProperty("env") && config.env.hasOwnProperty("baseUrl")) {
-                config.baseUrl = config.env.baseUrl;
+                config.baseUrl = cypress.env.baseUrl;
             }
             return config;
         },
