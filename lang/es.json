@@ -1,7 +1,7 @@
 {
-  "TYPES.Actor.character": "Personaje",
-  "TYPES.Actor.minion": "Esbirro",
-  "TYPES.Actor.vehicle": "Vehículo",
+  "ACTOR.TypeCharacter": "Personaje",
+  "ACTOR.TypeMinion": "Esbirro",
+  "ACTOR.TypeVehicle": "Vehículo",
 
   "ITEM.TypeArmour": "Blindaje",
   "ITEM.TypeCareer": "Carrera",
