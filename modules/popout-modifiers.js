@@ -31,7 +31,9 @@ export default class PopoutModifiers extends FormApplication {
 
   /** @override */
   getData() {
-    const data = this.object.data;
+    const data = {
+      data: this.object.system,
+    };
 
     if (this.object.isUpgrade) {
       data.data = this.object.parent.system.upgrades[this.object.keyname];
@@ -75,8 +77,8 @@ export default class PopoutModifiers extends FormApplication {
     }, {});
 
     // Remove attributes which are no longer used
-    if (this.object.data?.data?.attributes) {
-      for (let k of Object.keys(this.object.data.data.attributes)) {
+    if (this.object.system?.attributes) {
+      for (let k of Object.keys(this.object.system.attributes)) {
         if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
       }
     }
@@ -87,23 +89,67 @@ export default class PopoutModifiers extends FormApplication {
     }
 
     if (this.object.isUpgrade) {
+      // redo the earlier code but with the proper attribute path
+      // Remove attributes which are no longer used
+      if (this.object.parent.system.upgrades[this.object.keyname].attributes) {
+        for (let k of Object.keys(this.object.parent.system.upgrades[this.object.keyname].attributes)) {
+          if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
+        }
+      }
+
+      // recombine attributes to formData
+      if (Object.keys(attributes).length > 0) {
+        setProperty(formData, `data.attributes`, attributes);
+      }
+
       let data = attributes;
 
       let upgradeFormData = {};
       setProperty(upgradeFormData, `data.upgrades.${this.object.keyname}.attributes`, data);
 
+      upgradeFormData.system = upgradeFormData.data;
+      delete upgradeFormData.data;
+      delete upgradeFormData._id;
+
       await this.object.parent.update(upgradeFormData);
     } else if (this.object.isTalent) {
+      // redo the earlier code but with the proper attribute path
+      // Remove attributes which are no longer used
+      if (this.object.parent.system.talents[this.object.keyname].attributes) {
+        for (let k of Object.keys(this.object.parent.system.talents[this.object.keyname].attributes)) {
+          if (!attributes.hasOwnProperty(k)) {
+            attributes[`-=${k}`] = null;
+          }
+        }
+      }
+      let test_item = await game.items.get(this.object.parent.system.talents[this.object.keyname]?.itemId);
+      if (this.object.parent.system.talents[this.object.keyname].pack || test_item) {
+        ui.notifications.error(game.i18n.localize("SWFFG.Notifications.TalentEditGlobally"));
+        return;
+      }
+
+      // recombine attributes to formData
+      if (Object.keys(attributes).length > 0) {
+        setProperty(formData, `data.attributes`, attributes);
+      }
+
       let data = attributes;
+
       let upgradeFormData = {};
       setProperty(upgradeFormData, `data.talents.${this.object.keyname}.attributes`, data);
 
+      upgradeFormData.system = upgradeFormData.data;
+      delete upgradeFormData.data;
+      delete upgradeFormData._id;
       await this.object.parent.update(upgradeFormData);
     } else {
       // Update the Item
+      // sets _id, which is not settable
+      formData.system = formData.data;
+      delete formData.data;
+      delete formData._id;
       await this.object.update(formData);
     }
-    mergeObject(this.object.data, formData);
     this.render();
   }
 }

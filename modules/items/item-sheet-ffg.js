@@ -253,6 +253,11 @@ export class ItemSheetFFG extends ItemSheet {
       const packName = $(parent).find(`input[name='data.talents.${parent.id}.pack']`).val();
       const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
 
+      if (!itemId) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.DragAndDropFirst"));
+        return;
+      }
+
       let item = await Helpers.getSpecializationTalent(itemId, packName);
       if (!item) {
         if (packName) {

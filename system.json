@@ -5,7 +5,7 @@
   "version": "1.801",
   "compatibility": {
     "minimum": 10,
-    "verified": 10
+    "verified": 11
   },
   "templateVersion": 1,
   "authors": [{"name": "Esrin"}, {"name": "CStadther"}, {"name": "Wrycu"}, {"name": "Jaxxa"}],
