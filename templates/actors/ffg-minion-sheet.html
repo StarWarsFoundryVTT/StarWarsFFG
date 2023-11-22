@@ -9,14 +9,20 @@
           <h1><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.MinionName'}}" data-dtype="String" /></h1>
           <div class="container">
             <div class="grid grid-3col minion-stats">
-              {{!-- Quantity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.MinionQuantity" fields=(array (object name="data.quantity.max" value=data.quantity.max type="Number" label="SWFFG.MinionQuantityMax") (object name="data.quantity.value" value=data.quantity.value type="Number" label="SWFFG.MinionQuantityAlive" disabled=true) ))}} {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value )}} {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
+              {{!-- Quantity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.MinionQuantity" fields=(array (object name="data.quantity.max" value=data.quantity.max type="Number" label="SWFFG.MinionQuantityMax") (object name="data.quantity.value" value=data.quantity.value type="Number" label="SWFFG.MinionQuantityAlive" disabled=true) ))}}
+              {{#if limited}}{{else}}
+              {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value )}}
+              {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
+              {{/if}}
             </div>
           </div>
+          {{#if limited}}{{else}}
           <div class="container">
             <div class="grid grid-3col minion-stats">
               {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.MinionUnitWounds" type="Number" name="data.unit_wounds.value" value=data.unit_wounds.value )}}
             </div>
           </div>
+          {{/if}}
         </div>
 
         <div class="profile-block">
@@ -29,7 +35,7 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) )}} {{!-- Sheet Body --}}
-  <section class="sheet-body minion">
+  <section class="sheet-body minion" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}
     <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
       {{!-- Characteristics Scores --}}
@@ -61,9 +67,9 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <!-- New talent list snippet -->
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}} 
-      {{!-- Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-abilities.html"}} 
-      {{!-- Force Powers List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}} 
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}}
+      {{!-- Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-abilities.html"}}
+      {{!-- Force Powers List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}}
       {{!-- Signature Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
