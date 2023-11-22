@@ -187,6 +187,11 @@ export default class DestinyTracker extends FormApplication {
     if (game.user.isGM) {
       // socket handler for GM
       game.socket.on("system.starwarsffg", async (...args) => {
+        // check if this is the GM intended to answer the question or not
+        if (game.user.id !== game.users.find(i => i.isGM).id) {
+          // limit rolling to a single GM
+          return;
+        }
         // Can user roll destiny? Or have they already rolled
         if (args[0]?.canIRollDestiny) {
           let rolled = false;
