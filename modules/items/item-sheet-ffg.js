@@ -882,7 +882,7 @@ export class ItemSheetFFG extends ItemSheet {
           }
 
           if (foundItem && this.object.type !== "itemattachment") {
-            foundItem.system.rank += itemObject.system.rank;
+            foundItem.system.rank = (parseInt(foundItem.system.rank) + parseInt(itemObject.system.rank)).toString();
           } else {
             items.push(itemObject);
           }
