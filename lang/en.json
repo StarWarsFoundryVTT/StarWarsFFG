@@ -530,6 +530,7 @@
   "SWFFG.ModTypeAddSuccess": "Add Success",
   "SWFFG.ModTypeAddThreat": "Add Threat",
   "SWFFG.ModTypeStatArmor" : "Armor Stat",
+  "SWFFG.ModTypeStatVehicle": "Vehicle Stat",
   "SWFFG.FromAttachment": "From Attachment",
   "SWFFG.WeaponCardCritical" : "Critical",
   "SWFFG.ItemModifiers" : "Item Modifiers",

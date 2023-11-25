@@ -3,24 +3,24 @@
   <label>{{this.name}}</label>
   <div class="form-fields">
     {{#if this.isCheckbox}}
-    <input type="checkbox" name="{{this.module}}.{{this.key}}" data-dtype="Boolean" {{checked this.value}} />
+    <input type="checkbox" name="{{this.namespace}}.{{this.key}}" data-dtype="Boolean" {{checked this.value}} />
 
     {{else if this.isSelect}}
-    <select name="{{this.module}}.{{this.key}}">
+    <select name="{{this.namespace}}.{{this.key}}">
       {{#select this.value}} {{#each this.choices as |name k|}}
       <option value="{{k}}">{{localize name}}</option>
       {{/each}} {{/select}}
     </select>
 
     {{else if this.isRange}}
-    <input type="range" name="{{this.module}}.{{this.key}}" data-dtype="Number" value="{{ this.value }}" min="{{ this.range.min }}" max="{{ this.range.max }}" step="{{ this.range.step }}" />
+    <input type="range" name="{{this.namespace}}.{{this.key}}" data-dtype="Number" value="{{ this.value }}" min="{{ this.range.min }}" max="{{ this.range.max }}" step="{{ this.range.step }}" />
     <span class="range-value">{{this.value}}</span>
 
     {{else if this.isFilePicker}}
-    <input type="text" name="{{this.module}}.{{this.key}}" value="{{this.value}}" data-dtype="{{this.type}}" /><button type="button" class="filepicker">...</button>
+    <input type="text" name="{{this.namespace}}.{{this.key}}" value="{{this.value}}" data-dtype="{{this.type}}" /><button type="button" class="filepicker">...</button>
 
     {{else}}
-    <input type="text" name="{{this.module}}.{{this.key}}" value="{{this.value}}" data-dtype="{{this.type}}" />
+    <input type="text" name="{{this.namespace}}.{{this.key}}" value="{{this.value}}" data-dtype="{{this.type}}" />
     {{/if}}
   </div>
 

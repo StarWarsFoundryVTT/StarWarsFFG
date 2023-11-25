@@ -15,10 +15,11 @@
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq ../item.type "weapon")}} {{#each ../this.FFG.weapon_mod_types as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
-      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../item.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
-      {{else}} {{#if (and (eq ../../item.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
-      >{{/if}} {{#if (and (eq ../../item.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
-      >{{/if}} {{#if (and (ne t.value "Armor Stat") (ne t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      {{/each}} {{/if}} {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}} {{#each ../this.FFG.itemmodifier_mod_types as |t|}} {{#if (eq ../../item.system.type "all")}}<option value="{{t.value}}">{{localize t.label}}</option>
+      {{else}} {{#if (and (eq ../../item.system.type "weapon") (eq t.value "Weapon Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (eq ../../item.system.type "armour") (eq t.value "Armor Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (eq ../../item.system.type "vehicle") (eq t.value "Vehicle Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
+      >{{/if}} {{#if (and (ne t.value "Armor Stat") (ne t.value "Weapon Stat")(ne t.value "Vehicle Stat"))}}<option value="{{t.value}}">{{localize t.label}}</option
       >{{/if}} {{/if}} {{/each}} {{/if}} {{/select}}
     </select>
     <select class="attribute-mod" name="data.attributes.{{key}}.mod">
@@ -41,6 +42,8 @@
       {{/each}} {{/if}} {{#if (eq attr.modtype "Weapon Stat") }} {{#each ../this.FFG.weapon_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{#if (eq attr.modtype "Armor Stat") }} {{#each ../this.FFG.armor_stats as |t|}}
+      <option value="{{t.value}}">{{localize t.label}}</option>
+      {{/each}} {{/if}} {{#if (eq attr.modtype "Vehicle Stat") }} {{#each ../this.FFG.vehicle_stats as |t|}}
       <option value="{{t.value}}">{{localize t.label}}</option>
       {{/each}} {{/if}} {{/select}}
     </select>
