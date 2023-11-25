@@ -26,7 +26,7 @@ export default class UISettings extends FormApplication {
       const s = duplicate(setting);
       s.name = game.i18n.localize(s.name);
       s.hint = game.i18n.localize(s.hint);
-      s.value = game.settings.get(s.module, s.key);
+      s.value = game.settings.get(s.namespace, s.key);
       s.type = setting.type instanceof Function ? setting.type.name : "String";
       s.isCheckbox = setting.type === Boolean;
       s.isSelect = s.choices !== undefined;
@@ -34,8 +34,7 @@ export default class UISettings extends FormApplication {
       s.isFilePicker = setting.valueType === "FilePicker";
 
       // Classify setting
-      const name = s.module;
-      if (name === game.system.id && s.key.includes("ui-")) data.system.settings.push(s);
+      if (s.namespace === game.system.id && s.key.includes("ui-")) data.system.settings.push(s);
     }
 
     // Return data
@@ -110,9 +109,9 @@ export default class UISettings extends FormApplication {
   async _updateObject(event, formData) {
     for (let [k, v] of Object.entries(flattenObject(formData))) {
       let s = game.settings.settings.get(k);
-      let current = game.settings.get(s.module, s.key);
+      let current = game.settings.get(s.namespace, s.key);
       if (v !== current) {
-        await game.settings.set(s.module, s.key, v);
+        await game.settings.set(s.namespace, s.key, v);
       }
     }
   }

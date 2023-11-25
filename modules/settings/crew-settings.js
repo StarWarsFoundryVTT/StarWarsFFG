@@ -28,7 +28,7 @@ export default class CrewSettings extends FormApplication {
       const s = duplicate(setting);
       s.name = game.i18n.localize(s.name);
       s.hint = game.i18n.localize(s.hint);
-      s.value = game.settings.get(s.module, s.key);
+      s.value = game.settings.get(s.namespace, s.key);
       s.type = setting.type instanceof Function ? setting.type.name : "String";
       s.isCheckbox = setting.type === Boolean;
       s.isSelect = s.choices !== undefined;
@@ -36,8 +36,7 @@ export default class CrewSettings extends FormApplication {
       s.isFilePicker = setting.valueType === "FilePicker";
 
       // Classify setting
-      const name = s.module;
-      if (name === game.system.id && s.key.includes("arrayCrewRoles")) data.system.settings.push(s);
+      if (s.namespace === game.system.id && s.key.includes("arrayCrewRoles")) data.system.settings.push(s);
     }
 
     data.skills = CONFIG.FFG.skills;
