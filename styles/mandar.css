@@ -2944,6 +2944,13 @@ img {
   overflow-x: hidden;
 }
 
+.starwarsffg .vehicle .items.active {
+  max-height: 200px;
+  height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
 .starwarsffg.sheet.item.v2 {
   background-color: #1f1c37;
 }
