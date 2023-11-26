@@ -12,6 +12,10 @@ import Helpers from "../helpers/common.js";
 export class ItemFFG extends ItemBaseFFG {
   /** @override */
   async _onCreate(data, options, user) {
+    if (user !== game.user.id) {
+      // only run onCreate for the user actually performing the update
+      return;
+    }
     // Ensure we're dealing with an embedded item
     if (this.isEmbedded && this.actor) {
       // If this is a weapon or armour item we must ensure its modifier-adjusted values are saved to the database
@@ -21,6 +25,22 @@ export class ItemFFG extends ItemBaseFFG {
         await this.update(that);
       }
     }
+
+    // on create, run the first-time setup for deep data
+    if (this.type === 'forcepower') {
+      await this.update(
+          this._prepareForcePowers()
+      );
+    } else if (this.type === 'signatureability') {
+      await this.update(
+          this._prepareSignatureAbilities()
+      );
+    } else if (this.type === 'specialization') {
+      await this.update(
+          await this._prepareSpecializations()
+      );
+    }
+
     await super._onCreate(data, options, user);
   }
 
@@ -388,22 +408,22 @@ export class ItemFFG extends ItemBaseFFG {
     });
 
     item[listProperty] = itemList;
-    this.update({system: {collection: talents}})
+    return {system: {collection: talents}};
   }
 
   async _prepareSpecializations() {
-    this._prepareTalentTrees("talents", "talent", "talentList");
+    return this._prepareTalentTrees("talents", "talent", "talentList");
   }
 
   /**
    * Prepare Force Power Item Data
    */
   _prepareForcePowers() {
-    this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
+    return this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
   }
 
   _prepareSignatureAbilities() {
-    this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
+    return this._prepareTalentTrees("upgrades", "upgrade", "powerUpgrades");
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
