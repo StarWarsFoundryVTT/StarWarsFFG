@@ -525,6 +525,11 @@
           "duration" : "months",
           "type": "Number",
           "label": "SWFFG.Consumables"
+        },
+        "navicomputer": {
+          "value": false,
+          "type": "Boolean",
+          "label": "SWFFG.VehicleNavicomputer"
         }
       }
     },
