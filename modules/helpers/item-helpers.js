@@ -48,28 +48,35 @@ export default class ItemHelpers {
       // v10 items are no longer created in the global scope if they exist only on an actor (or another item)
       if (this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId) {
         let parent_object = await game.items.get(this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId);
+        let tempIndex = this.object.flags.starwarsffg?.ffgTempItemIndex;
+        if (tempIndex) {
+          // TODO: the below code should not be in an else block (or at least not a single one)
+          mergeObject(parent_object.system.itemattachment[tempIndex], ItemHelpers.normalizeDataStructure(formData), {insertKeys: true});
+          await parent_object.update({'system': {'itemattachment': parent_object.system.itemattachment}});
+        } else {
 
-        // search for the relevant attachment
-        let updated_items = [];
-        parent_object.system.itemattachment.forEach(function (i) {
-          if (i._id === updated_id) {
+          // search for the relevant attachment
+          let updated_items = [];
+          parent_object.system.itemattachment.forEach(function (i) {
+            if (i._id === updated_id) {
               // this is the item we want to update, replace it
               i = formData;
-          }
-          updated_items.push(i)
-        });
-        await parent_object.update({'system': {'itemattachment': updated_items}});
+            }
+            updated_items.push(i)
+          });
+          await parent_object.update({'system': {'itemattachment': updated_items}});
 
-        // search for the relevant quality
-        updated_items = [];
-        parent_object.system.itemmodifier.forEach(function (i) {
-          if (i._id === updated_id) {
+          // search for the relevant quality
+          updated_items = [];
+          parent_object.system.itemmodifier.forEach(function (i) {
+            if (i._id === updated_id) {
               // this is the item we want to update, replace it
               i = formData;
-          }
-          updated_items.push(i)
-        });
-        await parent_object.update({'system': {'itemmodifier': updated_items}});
+            }
+            updated_items.push(i)
+          });
+          await parent_object.update({'system': {'itemmodifier': updated_items}});
+        }
 
       }
     } catch (error) {
@@ -118,5 +125,16 @@ export default class ItemHelpers {
         }
       }
     }
+  }
+
+  /**
+   * Takes formData and move anything under .data into .system in preparation for an item.update() call
+   * @param formData
+   * @returns {*}
+   */
+  static normalizeDataStructure(formData) {
+    formData.system = formData?.data;
+    delete formData.data;
+    return formData;
   }
 }

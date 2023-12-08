@@ -496,7 +496,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempItemIndex: itemIndex,
             ffgIsTemp: true,
             ffgParent: this.object.flags,
-            ffgParentApp: this.appId,
+            //ffgParentApp: this.appId, // TODO: check if this is needed
           }
         },
       };
@@ -511,13 +511,15 @@ export class ItemSheetFFG extends ItemSheet {
               ffgTempItemType: itemType,
               ffgTempItemIndex: itemIndex,
               ffgIsTemp: true,
-              ffgUuid: this.object.uuid,
-              ffgIsOwned: this.object.isEmbedded,
+              //ffgUuid: this.object.uuid, // TODO: check if this is needed
+              //ffgIsOwned: this.object.isEmbedded, // TODO: check if this is needed
             }
           },
         };
       }
 
+      delete temp.id;
+      delete temp._id;
       let tempItem = await Item.create(temp, { temporary: true });
 
       tempItem.sheet.render(true);
@@ -530,26 +532,29 @@ export class ItemSheetFFG extends ItemSheet {
       const parent = $(li).parent()[0];
       let itemType = parent.dataset.itemName;
       let itemIndex = parent.dataset.itemIndex;
-      const item = this.object.data.data[itemType][itemIndex];
-      item.data.active = !item.data.active;
 
-      if (this.object.data.flags.starwarsffg.ffgTempId) {
+      // "item" here is the item which the user toggled the modifier for
+      const item = this.object.system[itemType][itemIndex];
+      item.system.active = !item.system.active;
+
+      if (this.object.flags.starwarsffg.ffgTempId) {
         // this is a temporary sheet for an embedded item
 
         item.flags = {
           starwarsffg: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: itemType,
-            ffgTempItemIndex: itemIndex,
-            ffgParent: this.object.data.flags.starwarsffg,
-            ffgIsTemp: true
+            ffgTempId: this.object.id,                // here, this represents the ID of the item this is on
+            ffgTempItemType: itemType,                // modified item type
+            ffgTempItemIndex: itemIndex,              // modified item index
+            ffgParent: this.object.flags.starwarsffg, // flags from the parent
+            ffgIsTemp: true,                          // this is a temporary item
           }
         };
 
-        await EmbeddedItemHelpers.updateRealObject({ data: item }, {});
+        await EmbeddedItemHelpers.updateRealObject(this.object, {system: { itemmodifier: [item]}}); // TODO: add this properly
+
       } else {
         let formData = {};
-        setProperty(formData, `data.${itemType}`, this.object.data.data[itemType]);
+        setProperty(formData, `data.${itemType}`, this.object.system[itemType]);
         this.object.update(formData);
       }
 
@@ -568,14 +573,14 @@ export class ItemSheetFFG extends ItemSheet {
         type: itemType,
         flags: {
           starwarsffg: {
-            ffgTempId: this.object.id,
-            ffgTempItemType: itemType,
-            ffgTempItemIndex: -1,
-            ffgParent: this.object.flags.starwarsffg,
-            ffgIsTemp: true,
-            ffgUuid: this.object.uuid,
-            ffgParentApp: this.appId,
-            ffgIsOwned: this.object.isEmbedded,
+            ffgTempId: this.object.id,                  // here, this represents the ID of the item this was added to
+            ffgTempItemType: itemType,                  // added item type
+            ffgTempItemIndex: -1,                       // index of the added item within the parent
+            ffgParent: this.object.flags.starwarsffg,   // flags from the parent
+            ffgIsTemp: true,                            // this is a temporary item
+            //ffgUuid: this.object.uuid,                  // UUID for the parent (if available) TODO: check if this is needed
+            ffgParentApp: this.appId,                   // not sure what this is x.x
+            //ffgIsOwned: this.object.isEmbedded,         // if this is within an actor TODO: check if this is needed
           }
         },
         system: {
@@ -585,16 +590,10 @@ export class ItemSheetFFG extends ItemSheet {
       };
 
       let tempItem = await Item.create(temp, { temporary: true });
-      //tempItem.data._id = randomID();
 
-      let data = {};
-      this.object.system[itemType].push(tempItem);
-      setProperty(data, `system.${itemType}`, this.object.system[itemType]);
-      await this.object.update(data);
-
-      await tempItem.setFlag("starwarsffg", "ffgTempItemIndex", this.object.system[itemType].findIndex((i) => i.id === tempItem._id));
-
-      tempItem.sheet.render(true);
+      this.object.system[itemType].push(tempItem.toJSON());
+      await this.object.update({system: {itemType: [tempItem.toJSON()]}}); // TODO: merge instead of overwrite
+      this.object.sheet.render(true);
     });
   }
 

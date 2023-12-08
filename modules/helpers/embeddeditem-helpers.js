@@ -1,106 +1,93 @@
 import PopoutEditor from "../popout-editor.js";
 
 export default class EmbeddedItemHelpers {
-  static async updateRealObject(item, data) {
-    let flags = item.data.flags.starwarsffg;
-    let realItem = await game.items.get(flags.ffgTempId);
-    let parents = [];
-    let owner;
-    let entity;
 
-    if (realItem) {
-      parents.unshift(flags);
-    } else {
-      if (Object.values(data).length > 0) {
-        parents.unshift(flags);
-      }
-      let x = flags?.ffgParent;
-      if (flags?.ffgParent && !flags?.ffgParent?.isCompendium) {
-        parents.unshift(x);
-      }
+  /**
+   * Actually grabs both the real item and the flag Hierarchy
+   * @param temporaryItem - the item which data will be merged into (the attachment, in our test case)
+   * @returns {Promise<*>}
+   */
+  static async _getRealItem(temporaryItem) {
+    // NOTE: If data is no-op update, there was previous logic here to not populate parents. We think that's dead, but leaving a note to be removed before commit in case that turned out to be important.
+    // https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/3721dd62caeb7b18e3b9907dfb5ec0342e4dd3ac/modules/helpers/embeddeditem-helpers.js#L14-L16
 
-      let ffgTempId = "";
-      while (x) {
-        if (x?.ffgParent && Object.values(x.ffgParent).length > 0) {
-          parents.unshift(x.ffgParent);
-          x = x.ffgParent;
-        } else {
-          flags = x;
-          ffgTempId = x.ffgTempId;
-          x = undefined;
-        }
-      }
+    // NOTE: Previously, only add the ffgParent from flags to parents if NOT in the compendium. Don't think we want or need that anymore.
+    // https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/3721dd62caeb7b18e3b9907dfb5ec0342e4dd3ac/modules/helpers/embeddeditem-helpers.js#L17-L20
 
-      if (flags.ffgUuid) {
-        const parts = flags.ffgUuid.split(".");
-        const [entityName, entityId, embeddedName, embeddedId] = parts;
-        entity = entityName;
-        if (entityName === "Compendium") {
-          realItem = await fromUuid(flags.ffgUuid);
-        } else if (entityName === "Actor") {
-          owner = game.actors.get(entityId);
-          realItem = await owner.items.get(embeddedId);
-        } else {
-          realItem = await game.items.get(ffgTempId);
-        }
-      } else {
-        realItem = await game.items.get(ffgTempId);
-      }
+    let flags = temporaryItem.flags.starwarsffg;
+    if (!flags.ffgParent) {
+      // TODO: We think this code path is dead, but being paranoid for now. Should clean-up later.
+      ui.notifications.warn("We think this code path is dead, let us know that it's not!");
+      CONFIG.logger.error("Flags does not have parent assigned");
     }
 
-    if (realItem) {
-      if (!item.id) {
-        data._id = randomID();
+    const flagHierarchy = [flags];
+    while (flags.ffgParent) {
+      if (Object.values(flags.ffgParent).length === 0) {
+        // TODO: We think this code path is dead, but being paranoid for now. Should clean-up later.
+        ui.notifications.warn("We think this code path is dead, let us know that it's not!");
+        CONFIG.logger.error("FFG parent is empty");
       }
-
-      let dataPointer = realItem.data;
-
-      if ((Object.values(data).length === 0 || parents.length > 1) && !entity) {
-        parents.forEach((value, index) => {
-          if (parents[index].ffgTempItemType && parents[index].ffgTempItemIndex) {
-            dataPointer = dataPointer.data[parents[index].ffgTempItemType][parents[index].ffgTempItemIndex];
-          }
-        });
-      } else if (entity === "Actor" && parents.length > 1) {
-        dataPointer = dataPointer.data[parents[0].ffgTempItemType][parents[0].ffgTempItemIndex];
-      }
-
-      const mergedData = mergeObject(item.data.data, data.data);
-      data.data = mergedData;
-      const itemData = mergeObject(item.data, data);
-
-      if (item.data.flags.starwarsffg.ffgTempItemIndex > -1) {
-        dataPointer.data[item.data.flags.starwarsffg.ffgTempItemType][item.data.flags.starwarsffg.ffgTempItemIndex] = { ...itemData, flags: {} };
-      } else {
-        await item.setFlag("starwarsffg", "ffgTempItemIndex", dataPointer.data[item.data.flags.starwarsffg.ffgTempItemType].length);
-        dataPointer.data[item.data.flags.starwarsffg.ffgTempItemType].push({ ...itemData, flags: {} });
-      }
-
-      let formData = {};
-      setProperty(formData, `data.${parents[0].ffgTempItemType}`, realItem.data.data[parents[0].ffgTempItemType]);
-
-      // TODO: validate that changing this doesn't break things
-      // that being said, itemData was removed as part of the original v10 migration
-      if (item.system.constructor.name === "Object") {
-        item.data.update(data);
-      } else {
-        item.data = itemData;
-      }
-
-      // because this could be a temporary item, item-ffg.js may not fire, we need to set the renderedDesc.
-      if (item.data.data.renderedDesc) {
-        item.data.data.renderedDesc = PopoutEditor.renderDiceImages(item.data.data.description, {});
-      }
-
-      if (realItem?.compendium) {
-        formData.id = realItem.id;
-        await realItem.update(formData);
-        await realItem.sheet.render(true, { action: "update", data: formData });
-      } else {
-        await realItem.update(formData);
-      }
+      flags = flags.ffgParent.starwarsffg;
+      flagHierarchy.unshift(flags);
     }
-    return;
+
+    CONFIG.logger.debug("After flagHierarchy population", flagHierarchy);
+
+    if (!flags.ffgTempId) {
+      ui.notifications.error("Unable to find parent ffgTempId, aborting action");
+      throw new Error("Unable to find parent ffgTempId");
+    }
+
+    // TODO: we do not currently resolve items within compendiums or actors
+    const realItem = await game.items.get(flags.ffgTempId);
+    CONFIG.logger.debug("Real item", realItem);
+
+    return {
+      realItem,
+      flagHierarchy,
+    };
+  }
+
+  static async updateRealObject(temporaryItem, data) {
+    // TODO: drop parents once the refactor is done
+    const {realItem, flagHierarchy: parents} = await EmbeddedItemHelpers._getRealItem(temporaryItem);
+
+    if (!realItem) {
+      ui.notifications.error("Could not locate the real item, aborting action");
+      CONFIG.logger.error("Could not locate the real item, aborting action");
+      return;
+    }
+
+    // TODO: we don't check for actors or compendiums here, either (and we may need to)
+    let dataPointer = realItem;
+    CONFIG.logger.debug("Starting dataPointer", dataPointer);
+    parents.forEach((flags) => {
+      if (flags.ffgTempItemType && flags.ffgTempItemIndex) {
+        CONFIG.logger.debug(`Traversing ${flags.ffgTempItemType} into ${flags.ffgTempItemIndex}`);
+        dataPointer = dataPointer.system[flags.ffgTempItemType][flags.ffgTempItemIndex];
+      }
+    });
+    CONFIG.logger.debug("Final dataPointer", dataPointer);
+
+    mergeObject(dataPointer.system, {...temporaryItem.system, ...data.system});
+    mergeObject(dataPointer.flags, temporaryItem.flags);
+
+    let formData = {
+      system: {
+        [temporaryItem.flags.starwarsffg.ffgTempItemType]: realItem.system[temporaryItem.flags.starwarsffg.ffgTempItemType]
+      },
+    };
+
+    // because this could be a temporary item, item-ffg.js may not fire, we need to set the renderedDesc.
+    if (temporaryItem.system.renderedDesc) {
+      temporaryItem.system.renderedDesc = PopoutEditor.renderDiceImages(
+          temporaryItem.system.description,
+          {},
+      );
+    }
+    CONFIG.logger.debug("Final formData", formData);
+    await realItem.update(formData);
   }
 
   /**
@@ -144,12 +131,12 @@ export default class EmbeddedItemHelpers {
       const readonlyItem = {
         name: item.name,
         pages: [{
-            name: item.name,
-            type: 'text',
-            text: {
-                content: item.system.description,
-                format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML
-            },
+          name: item.name,
+          type: 'text',
+          text: {
+            content: item.system.description,
+            format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML
+          },
         }],
         ownership: {
           default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
