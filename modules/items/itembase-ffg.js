@@ -3,12 +3,14 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
     if (!this.flags?.starwarsffg?.ffgTempId || (this.flags?.starwarsffg?.ffgTempId === this._id && !this.isTemp) || this.flags?.starwarsffg?.ffgIsOwned) {
+      CONFIG.logger.debug("Updating real item", this, data);
       await super.update(data, options);
       // if (this.compendium) {
       //   return this.sheet.render(true);
       // }
       return;
     } else {
+      CONFIG.logger.debug("Updating fake item item", this, data);
       const preState = Object.values(this.apps)[0]._state;
       await EmbeddedItemHelpers.updateRealObject(this, data);
 
