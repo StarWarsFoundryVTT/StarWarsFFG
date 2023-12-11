@@ -46,13 +46,23 @@ export default class ItemHelpers {
     // Update the Item
     try {
       // v10 items are no longer created in the global scope if they exist only on an actor (or another item)
-      if (this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId) {
+      if (this.object.flags?.starwarsffg?.ffgParent?.starwarsffg?.ffgTempId) {
         let parent_object = await game.items.get(this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId);
         let tempIndex = this.object.flags.starwarsffg?.ffgTempItemIndex;
-        if (tempIndex) {
+        const tempItemType = this.object.flags.starwarsffg?.ffgTempItemType;
+        if (tempIndex && tempItemType) {
           // TODO: the below code should not be in an else block (or at least not a single one)
-          mergeObject(parent_object.system.itemattachment[tempIndex], ItemHelpers.normalizeDataStructure(formData), {insertKeys: true});
-          await parent_object.update({'system': {'itemattachment': parent_object.system.itemattachment}});
+          foundry.utils.mergeObject(
+              parent_object.system[tempItemType][tempIndex],
+              ItemHelpers.normalizeDataStructure(formData),
+              {insertKeys: true},
+          );
+          await parent_object.update({'system': {[tempItemType]: parent_object.system[tempItemType]}});
+          foundry.utils.mergeObject(
+              this.object,
+              formData,
+          );
+          this.object.sheet.render(true);
         } else {
 
           // search for the relevant attachment
@@ -78,8 +88,11 @@ export default class ItemHelpers {
           await parent_object.update({'system': {'itemmodifier': updated_items}});
         }
 
+      } else {
+        await this.object.update(formData);
       }
     } catch (error) {
+      ui.notifications.warn(`Encountered an error while trying to update item ${this.object.id}`);
       CONFIG.logger.debug(`Encountered an error while trying to update item ${this.object.id}`);
       CONFIG.logger.debug(error);
       await this.object.update(formData);
