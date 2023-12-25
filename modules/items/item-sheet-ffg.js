@@ -34,6 +34,28 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   async getData(options) {
     let data = super.getData(options);
+    // this code was mostly written by Phind
+    // removing a key from a dict in Foundry requires submitting it with a new key of `-=key` and a value of null
+    // without explicitly replacing values, we end up duplicating entries instead of removing the one
+    // so instead, we go and manually remove any mods which have been deleted
+
+    // find any deleted attributes
+    const deleted_keys = EmbeddedItemHelpers.findKeysIncludingStringRecursively(
+        data,
+        '-=attr',
+    );
+    // remove matching attributes from the existing object
+    deleted_keys.forEach(function (cur_key) {
+      EmbeddedItemHelpers.removeKeyFromObject(
+        data,
+        cur_key,
+      );
+      EmbeddedItemHelpers.removeKeyFromObject(
+        data,
+        cur_key,
+      );
+    });
+    // this is the end of the de-duplicating -=key stuff
 
     data.data = data.item.system;
 
