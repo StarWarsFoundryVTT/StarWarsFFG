@@ -42,9 +42,12 @@ export class ItemSheetFFG extends ItemSheet {
     } else if (options?.action === "ffgUpdate") {
       if (options?.data?.data) {
         data.data = mergeObject(data.data, options.data.data);
+        // we are going to merge options.data into data.item and can't set data.item.data this way
+        delete options.data.data;
       } else {
         data.data = mergeObject(data.data, options.data);
       }
+      data.item = mergeObject(data.item, options.data); // some fields are read out of item, some are read out of data
     }
 
     data.classType = this.constructor.name;
