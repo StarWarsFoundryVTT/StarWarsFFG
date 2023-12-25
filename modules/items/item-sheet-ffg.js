@@ -18,6 +18,8 @@ export class ItemSheetFFG extends ItemSheet {
       classes: ["starwarsffg", "sheet", "item"],
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
       scrollY: [".sheet-body", ".tab"],
+      action: null,
+      data: null,
     });
   }
 
@@ -39,9 +41,9 @@ export class ItemSheetFFG extends ItemSheet {
       data.item = mergeObject(data.item, options.data);
     } else if (options?.action === "ffgUpdate") {
       if (options?.data?.data) {
-        data.item = mergeObject(data.item, options.data);
+        data.data = mergeObject(data.data, options.data.data);
       } else {
-        data.item.data = mergeObject(data.item.data, options.data);
+        data.data = mergeObject(data.data, options.data);
       }
     }
 
@@ -496,7 +498,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempItemIndex: itemIndex,
             ffgIsTemp: true,
             ffgParent: this.object.flags,
-            //ffgParentApp: this.appId, // TODO: check if this is needed
+            ffgParentApp: this.appId, // TODO: check if this is needed
           }
         },
       };
