@@ -88,11 +88,20 @@ export default class EmbeddedItemHelpers {
     CONFIG.logger.debug("Starting dataPointer", dataPointer);
     parents.forEach((flags) => {
       if (flags.ffgTempItemType && flags.ffgTempItemIndex) {
-        CONFIG.logger.debug(`Traversing ${flags.ffgTempItemType} into ${flags.ffgTempItemIndex}`);
+        CONFIG.logger.debug(`Traversing into ${flags.ffgTempItemType} #${flags.ffgTempItemIndex}`);
         dataPointer = dataPointer.system[flags.ffgTempItemType][flags.ffgTempItemIndex];
       }
     });
     CONFIG.logger.debug("Final dataPointer", dataPointer);
+    await mergeObject(
+        temporaryItem,
+        ItemHelpers.normalizeDataStructure(data),
+        {
+          recursive: true,
+          insertKeys: true,
+          insertValues: true,
+        },
+    );
 
     mergeObject(dataPointer, {...temporaryItem, ...ItemHelpers.normalizeDataStructure(data)});
     mergeObject(dataPointer.flags, temporaryItem.flags);
