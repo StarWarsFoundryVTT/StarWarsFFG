@@ -916,10 +916,10 @@ export class ItemSheetFFG extends ItemSheet {
           break;
         }
         case "itemattachment": {
-          if (this.object.system.hardpoints.current - itemObject.system.hardpoints.value >= 0) {
+          if (this.object.system.hardpoints.adjusted - itemObject.system.hardpoints.value >= 0) {
             items.push(itemObject);
           } else {
-            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.system.hardpoints.current} left)`);
+            ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.system.hardpoints.adjusted} left)`);
           }
           break;
         }

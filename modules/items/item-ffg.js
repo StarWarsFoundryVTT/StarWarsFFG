@@ -298,7 +298,7 @@ export class ItemFFG extends ItemBaseFFG {
       default:
     }
 
-    if (["weapon", "armour"].includes(this.type)) {
+    if (["weapon", "armour", "shipweapon"].includes(this.type)) {
       // get all item attachments
       let totalHPUsed = 0;
 
