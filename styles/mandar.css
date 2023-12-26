@@ -2868,32 +2868,36 @@ img {
   width: 100%;
 }
 
-.starwarsffg .item-sheet-vehicle-weapon .charname {
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item {
   width: 100%;
 }
 
-.starwarsffg .item-sheet-vehicle-weapon .charname input {
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item input {
   color: #1f1c37;
   border: 0;
 }
 
-.starwarsffg .item-sheet-vehicle-weapon .charname input:focus {
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item input:focus {
   box-shadow: 0 0 5px #7da9c2;
   background-color: #7da9c2;
 }
 
-.starwarsffg .item-sheet-vehicle-weapon .charname .characteristic {
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic {
   border: 5px double #bffebf;
 }
 
-.starwarsffg .item-sheet-vehicle-weapon .charname .characteristic .adjustedvalues-left {
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic .adjustedvalues-left {
   position: absolute;
   top: 0;
-  right: 2px;
-  color: red;
+  right: 0;
+  background: red;
+  color: white;
+  width: 1rem;
+  border-radius: 0 0.5rem;
+  border: 1px solid transparent;
 }
 
-.starwarsffg .item-sheet-vehicle-weapon .charname .characteristic .adjustedvalues-left.positive {
+.starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic .adjustedvalues-left.positive {
   color: green;
 }
 
