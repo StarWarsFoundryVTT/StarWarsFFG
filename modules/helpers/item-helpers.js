@@ -1,4 +1,3 @@
-import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
@@ -42,61 +41,8 @@ export default class ItemHelpers {
     delete formData._id;
 
     setProperty(formData, `flags.starwarsffg.loaded`, false);
-
-    // Update the Item
-    try {
-      // v10 items are no longer created in the global scope if they exist only on an actor (or another item)
-      if (this.object.flags?.starwarsffg?.ffgParent?.starwarsffg?.ffgTempId) {
-        let parent_object = await game.items.get(this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId);
-        let tempIndex = this.object.flags.starwarsffg?.ffgTempItemIndex;
-        const tempItemType = this.object.flags.starwarsffg?.ffgTempItemType;
-        if (tempIndex && tempItemType) {
-          // TODO: the below code should not be in an else block (or at least not a single one)
-          foundry.utils.mergeObject(
-              parent_object.system[tempItemType][tempIndex],
-              ItemHelpers.normalizeDataStructure(formData),
-              {insertKeys: true},
-          );
-          await parent_object.update({'system': {[tempItemType]: parent_object.system[tempItemType]}});
-          foundry.utils.mergeObject(
-              this.object,
-              formData,
-          );
-          this.object.sheet.render(true);
-        } else {
-
-          // search for the relevant attachment
-          let updated_items = [];
-          parent_object.system.itemattachment.forEach(function (i) {
-            if (i._id === updated_id) {
-              // this is the item we want to update, replace it
-              i = formData;
-            }
-            updated_items.push(i)
-          });
-          await parent_object.update({'system': {'itemattachment': updated_items}});
-
-          // search for the relevant quality
-          updated_items = [];
-          parent_object.system.itemmodifier.forEach(function (i) {
-            if (i._id === updated_id) {
-              // this is the item we want to update, replace it
-              i = formData;
-            }
-            updated_items.push(i)
-          });
-          await parent_object.update({'system': {'itemmodifier': updated_items}});
-        }
-
-      } else {
-        await this.object.update(formData);
-      }
-    } catch (error) {
-      ui.notifications.warn(`Encountered an error while trying to update item ${this.object.id}`);
-      CONFIG.logger.debug(`Encountered an error while trying to update item ${this.object.id}`);
-      CONFIG.logger.debug(error);
-      await this.object.update(formData);
-    }
+    await this.object.update(formData);
+    await this.render(true);
 
     if (this.object.type === "talent") {
       if (this.object.flags?.clickfromparent?.length) {
@@ -146,8 +92,11 @@ export default class ItemHelpers {
    * @returns {*}
    */
   static normalizeDataStructure(formData) {
-    formData.system = formData?.data;
-    delete formData.data;
-    return formData;
+    const updatedData = foundry.utils.deepClone(formData);
+    if (Object.keys(formData).includes('data')) {
+      updatedData.system = updatedData?.data;
+      delete updatedData.data;
+    }
+    return updatedData;
   }
 }

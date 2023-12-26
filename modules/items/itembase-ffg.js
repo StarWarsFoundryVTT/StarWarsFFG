@@ -2,7 +2,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
-    if ((!this.flags?.starwarsffg?.ffgTempId && this.flags?.starwarsffg?.ffgTempId !== null) || (this.flags?.starwarsffg?.ffgTempId === this._id && this._id !== null && !this.isTemp) || this.flags?.starwarsffg?.ffgIsOwned) {
+    if ((!this.flags?.starwarsffg?.ffgTempId && this.flags?.starwarsffg?.ffgTempId !== null) || (this.flags?.starwarsffg?.ffgTempId === this._id && this._id !== null && !this.isTemp) || (this.flags?.starwarsffg?.ffgIsOwned && !this.flags?.starwarsffg?.ffgIsTemp)) {
       CONFIG.logger.debug("Updating real item", this, data);
       await super.update(data, options);
       // if (this.compendium) {

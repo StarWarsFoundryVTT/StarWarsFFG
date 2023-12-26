@@ -16,13 +16,15 @@ export default class EmbeddedItemHelpers {
     // https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/3721dd62caeb7b18e3b9907dfb5ec0342e4dd3ac/modules/helpers/embeddeditem-helpers.js#L17-L20
 
     let flags = temporaryItem.flags.starwarsffg;
+    let flagHierarchy = [flags];
     if (!flags.ffgParent) {
+      if (flags.ffgUuid) {
+        flagHierarchy = [flags];
+      }
       // TODO: We think this code path is dead, but being paranoid for now. Should clean-up later.
-      ui.notifications.warn("We think this code path is dead, let us know that it's not! (flag does not have parent)");
-      CONFIG.logger.error("Flags does not have parent assigned");
+      //ui.notifications.warn("We think this code path is dead, let us know that it's not! (flag does not have parent)");
+      //CONFIG.logger.error("Flags does not have parent assigned");
     }
-
-    const flagHierarchy = [flags];
     while (flags.ffgParent) {
       if (Object.values(flags.ffgParent).length === 0) {
         // TODO: We think this code path is dead, but being paranoid for now. Should clean-up later.
@@ -32,16 +34,20 @@ export default class EmbeddedItemHelpers {
       flags = flags.ffgParent.starwarsffg;
       flagHierarchy.unshift(flags);
     }
-
     CONFIG.logger.debug("After flagHierarchy population", flagHierarchy);
 
-    if (!flags.ffgTempId) {
-      ui.notifications.error("Unable to find parent ffgTempId, aborting action");
-      throw new Error("Unable to find parent ffgTempId");
+    if (!flags.ffgTempId && !flags.ffgUuid) {
+      ui.notifications.error("Unable to find parent ffgTempId or ffgUuid, aborting action");
+      throw new Error("Unable to find parent ffgTempId or ffgUuid");
     }
 
-    // TODO: we do not currently resolve items within compendiums or actors
-    const realItem = await game.items.get(flags.ffgTempId);
+    // TODO: we do not currently resolve items within compendiums
+    let realItem;
+    if (Object.keys(flags).includes('ffgUuid') && flags.ffgUuid != null) {
+      realItem = await fromUuid(flags.ffgUuid);
+    } else {
+      realItem = await game.items.get(flags.ffgTempId);
+    }
     CONFIG.logger.debug("Real item", realItem);
 
     return {
@@ -67,12 +73,12 @@ export default class EmbeddedItemHelpers {
     deleted_keys.forEach(function (cur_key) {
       cur_key = cur_key.substring(2);
       EmbeddedItemHelpers.removeKeyFromObject(
-        temporaryItem,
-        cur_key,
+          temporaryItem,
+          cur_key,
       );
       EmbeddedItemHelpers.removeKeyFromObject(
-        realItem,
-        cur_key,
+          realItem,
+          cur_key,
       );
     });
     // this is the end of the de-duplicating -=key stuff
