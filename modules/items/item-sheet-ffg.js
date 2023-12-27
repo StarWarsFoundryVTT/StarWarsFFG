@@ -59,10 +59,12 @@ export class ItemSheetFFG extends ItemSheet {
 
     data.data = data.item.system;
 
+
     if (options?.action === "update" && this.object.compendium) {
       delete options.data._id;
       data.item = mergeObject(data.item, options.data);
     } else if (options?.action === "ffgUpdate") {
+      delete options?.data?.system?.description;
       if (options?.data?.data) {
         data.data = mergeObject(data.data, options.data.data);
         // we are going to merge options.data into data.item and can't set data.item.data this way
@@ -255,6 +257,9 @@ export class ItemSheetFFG extends ItemSheet {
 
     data.FFG = CONFIG.FFG;
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
+    if (!data.renderedDesc) {
+      data.data.renderedDesc = PopoutEditor.renderDiceImages(data?.item?.system?.description, this.actor ? this.actor : {});
+    }
 
     return data;
   }
@@ -504,6 +509,7 @@ export class ItemSheetFFG extends ItemSheet {
       let itemIndex = li.dataset.itemIndex;
 
       if ($(li).hasClass("adjusted")) {
+        // loads modifiers added by other things, e.g. attachments
         return await EmbeddedItemHelpers.loadItemModifierSheet(this.object.id, itemType, itemIndex, this.object?.actor?.id);
       }
 
@@ -573,12 +579,12 @@ export class ItemSheetFFG extends ItemSheet {
             ffgTempId: this.object.id,                // here, this represents the ID of the item this is on
             ffgTempItemType: itemType,                // modified item type
             ffgTempItemIndex: itemIndex,              // modified item index
-            ffgParent: this.object.flags.starwarsffg, // flags from the parent
+            ffgParent: this.object.flags,             // flags from the parent
             ffgIsTemp: true,                          // this is a temporary item
           }
         };
 
-        await EmbeddedItemHelpers.updateRealObject(this.object, {system: { itemmodifier: [item]}}); // TODO: add this properly
+        await EmbeddedItemHelpers.updateRealObject(item, {system: { active: item.system.active}});
 
       } else {
         let formData = {};

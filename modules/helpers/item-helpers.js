@@ -94,7 +94,14 @@ export default class ItemHelpers {
   static normalizeDataStructure(formData) {
     const updatedData = foundry.utils.deepClone(formData);
     if (Object.keys(formData).includes('data')) {
-      updatedData.system = updatedData?.data;
+      if (!Object.keys(formData).includes('system')) {
+        // sometimes we get formData with a mix of data and system...
+        updatedData.system = {};
+      }
+      updatedData.system = foundry.utils.mergeObject(
+          updatedData.system,
+          updatedData.data
+      );
       delete updatedData.data;
     }
     return updatedData;

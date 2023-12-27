@@ -17,13 +17,10 @@ export default class EmbeddedItemHelpers {
 
     let flags = temporaryItem.flags.starwarsffg;
     let flagHierarchy = [flags];
-    if (!flags.ffgParent) {
-      if (flags.ffgUuid) {
+    let uuid;
+    if (flags.ffgUuid) {
         flagHierarchy = [flags];
-      }
-      // TODO: We think this code path is dead, but being paranoid for now. Should clean-up later.
-      //ui.notifications.warn("We think this code path is dead, let us know that it's not! (flag does not have parent)");
-      //CONFIG.logger.error("Flags does not have parent assigned");
+        uuid = flags.ffgUuid;
     }
     while (flags.ffgParent) {
       if (Object.values(flags.ffgParent).length === 0) {
@@ -32,6 +29,9 @@ export default class EmbeddedItemHelpers {
         CONFIG.logger.error("FFG parent is empty");
       }
       flags = flags.ffgParent.starwarsffg;
+      if (Object.keys(flags).includes("ffgUuid")) {
+        uuid = flags.ffgUuid;
+      }
       flagHierarchy.unshift(flags);
     }
     CONFIG.logger.debug("After flagHierarchy population", flagHierarchy);
@@ -43,8 +43,8 @@ export default class EmbeddedItemHelpers {
 
     // TODO: we do not currently resolve items within compendiums
     let realItem;
-    if (Object.keys(flags).includes('ffgUuid') && flags.ffgUuid != null) {
-      realItem = await fromUuid(flags.ffgUuid);
+    if (uuid) {
+      realItem = await fromUuid(uuid);
     } else {
       realItem = await game.items.get(flags.ffgTempId);
     }
@@ -88,14 +88,22 @@ export default class EmbeddedItemHelpers {
       CONFIG.logger.error("Could not locate the real item, aborting action");
       return;
     }
-
-    // TODO: we don't check for actors or compendiums here, either (and we may need to)
+    // because this could be a temporary item, item-ffg.js may not fire, we need to set the renderedDesc.
+    if (temporaryItem.system.description) {
+      temporaryItem.system.renderedDesc = PopoutEditor.renderDiceImages(
+          temporaryItem.system.description,
+          {},
+      );
+    }
+    // TODO: we don't check for compendiums here, either (and we may need to)
     let dataPointer = realItem;
     CONFIG.logger.debug("Starting dataPointer", dataPointer);
+    let reconstruct = [];
     parents.forEach((flags) => {
-      if (flags.ffgTempItemType && flags.ffgTempItemIndex) {
+      if (flags.ffgTempItemType && flags.ffgTempItemIndex !== undefined && flags.ffgTempItemIndex !== null) {
         CONFIG.logger.debug(`Traversing into ${flags.ffgTempItemType} #${flags.ffgTempItemIndex}`);
         dataPointer = dataPointer.system[flags.ffgTempItemType][flags.ffgTempItemIndex];
+        reconstruct.push({type: flags.ffgTempItemType, index: flags.ffgTempItemIndex});
       }
     });
     CONFIG.logger.debug("Final dataPointer", dataPointer);
@@ -112,19 +120,28 @@ export default class EmbeddedItemHelpers {
     mergeObject(dataPointer, {...temporaryItem, ...ItemHelpers.normalizeDataStructure(data)});
     mergeObject(dataPointer.flags, temporaryItem.flags);
 
-    let formData = {
-      system: {
-        [temporaryItem.flags.starwarsffg.ffgTempItemType]: realItem.system[temporaryItem.flags.starwarsffg.ffgTempItemType]
-      },
-    };
+    let formData;
+    if (reconstruct.length === 1) {
+      // this fucks up on activating stuff because activate is called on the attachment but it's trying to set data on the mod, not the attachment
+      formData = {
+        system: {
+          [temporaryItem.flags.starwarsffg.ffgTempItemType]: realItem.system[temporaryItem.flags.starwarsffg.ffgTempItemType]
+        },
+      };
+    } else if (reconstruct.length === 2) {
+      // update the attachment list with our updated dataPointer data, so we can add it to the formData
+      realItem.system[reconstruct[0].type][reconstruct[0].index].system[temporaryItem.flags.starwarsffg.ffgTempItemType][temporaryItem.flags.starwarsffg.ffgTempItemIndex] = dataPointer;
 
-    // because this could be a temporary item, item-ffg.js may not fire, we need to set the renderedDesc.
-    if (temporaryItem.system.renderedDesc) {
-      temporaryItem.system.renderedDesc = PopoutEditor.renderDiceImages(
-          temporaryItem.system.description,
-          {},
-      );
+      formData = {
+        system: {
+          [reconstruct[0].type]: realItem.system[reconstruct[0].type],
+        }
+      };
+    } else {
+      ui.notifictions.warn(`You shouldn't see this. Please notify the devs if you do - reconstruct length was ${reconstruct.length}`);
+      CONFIG.logger.warn(`You shouldn't see this. Please notify the devs if you do - reconstruct length was ${reconstruct.length}`);
     }
+
     CONFIG.logger.debug("Final formData", formData);
     await realItem.update(formData);
   }
@@ -209,20 +226,30 @@ export default class EmbeddedItemHelpers {
     }
 
     let item;
-    if (ownedItem?.data?.data?.[modifierType]) {
-      item = ownedItem.data.data[modifierType][modifierIndex];
+    if (ownedItem?.system[modifierType]) {
+      item = ownedItem.system[modifierType][modifierIndex];
     }
+    let rename_item;
 
     if (!item) {
       // this is a modifier on an attachment
-      ownedItem.data.data.itemattachment.forEach((a) => {
+      ownedItem.system.itemattachment.forEach((a, index) => {
         if (!isNaN(modifierId)) {
-          modifierIndex = modifierId - ownedItem.data.data[modifierType].length;
+          modifierIndex = modifierId - ownedItem.system[modifierType].length;
         } else {
-          modifierIndex = a.data[modifierType].findIndex((m) => m.id === parseInt(modifierId, 10) - ownedItem.data.data[modifierType].length);
+          modifierIndex = a.system[modifierType].findIndex((m) => m.id === parseInt(modifierId, 10) - ownedItem.system[modifierType].length);
         }
         if (modifierIndex > -1) {
-          item = a.data[modifierType][modifierIndex];
+          item = a.system[modifierType][modifierIndex];
+          rename_item = {
+            flags: {
+              starwarsffg: {
+                ffgTempItemType: "itemattachment",
+                ffgTempItemIndex: index,
+                ffgTempId: itemId,
+              }
+            }
+          };
         }
       });
     }
@@ -236,16 +263,15 @@ export default class EmbeddedItemHelpers {
           ffgTempItemIndex: modifierIndex,
           ffgIsTemp: true,
           ffgUuid: ownedItem.uuid,
+          readonly: true,
+          ffgParent: rename_item.flags,
         }
       },
     };
 
+    delete temp._id;
+    delete temp.id;
     let tempItem = await Item.create(temp, {temporary: true});
-    tempItem.data._id = temp.id;
-    await tempItem.setFlag("starwarsffg", "readonly", true);
-    if (!temp.id) {
-      tempItem.data._id = randomID();
-    }
     tempItem.sheet.render(true);
   }
 

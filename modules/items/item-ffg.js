@@ -57,11 +57,6 @@ export class ItemFFG extends ItemBaseFFG {
     const actor = this.actor ? this.actor : {};
     const data = item.system;
 
-    if (!item._id) {
-        // the item is not being done prepared
-        return;
-    }
-
     if (!item.flags.starwarsffg) {
       await item.updateSource({
         flags: {
