@@ -620,7 +620,13 @@ export class ItemSheetFFG extends ItemSheet {
       CONFIG.logger.debug("Adding mod with the following data", tempItem);
 
       this.object.system[itemType].push(tempItem.toJSON());
-      await this.object.update({system: {[itemType]: [tempItem.toJSON()]}}); // TODO: merge instead of overwrite
+      await this.object.update(
+        {
+          system: {
+            [itemType]: this.object.system[itemType],
+          }
+        }
+      );
       this.object.sheet.render(true);
     });
   }
