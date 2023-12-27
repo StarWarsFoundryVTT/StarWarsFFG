@@ -60,6 +60,7 @@ export class ItemSheetFFG extends ItemSheet {
     data.data = data.item.system;
 
     if (options?.action === "update" && this.object.compendium) {
+      delete options.data._id;
       data.item = mergeObject(data.item, options.data);
     } else if (options?.action === "ffgUpdate") {
       if (options?.data?.data) {
