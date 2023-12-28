@@ -1,4 +1,3 @@
-import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
@@ -42,41 +41,8 @@ export default class ItemHelpers {
     delete formData._id;
 
     setProperty(formData, `flags.starwarsffg.loaded`, false);
-
-    // Update the Item
-    try {
-      // v10 items are no longer created in the global scope if they exist only on an actor (or another item)
-      if (this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId) {
-        let parent_object = await game.items.get(this.object.flags.starwarsffg.ffgParent.starwarsffg.ffgTempId);
-
-        // search for the relevant attachment
-        let updated_items = [];
-        parent_object.system.itemattachment.forEach(function (i) {
-          if (i._id === updated_id) {
-              // this is the item we want to update, replace it
-              i = formData;
-          }
-          updated_items.push(i)
-        });
-        await parent_object.update({'system': {'itemattachment': updated_items}});
-
-        // search for the relevant quality
-        updated_items = [];
-        parent_object.system.itemmodifier.forEach(function (i) {
-          if (i._id === updated_id) {
-              // this is the item we want to update, replace it
-              i = formData;
-          }
-          updated_items.push(i)
-        });
-        await parent_object.update({'system': {'itemmodifier': updated_items}});
-
-      }
-    } catch (error) {
-      CONFIG.logger.debug(`Encountered an error while trying to update item ${this.object.id}`);
-      CONFIG.logger.debug(error);
-      await this.object.update(formData);
-    }
+    await this.object.update(formData);
+    await this.render(true);
 
     if (this.object.type === "talent") {
       if (this.object.flags?.clickfromparent?.length) {
@@ -118,5 +84,26 @@ export default class ItemHelpers {
         }
       }
     }
+  }
+
+  /**
+   * Takes formData and move anything under .data into .system in preparation for an item.update() call
+   * @param formData
+   * @returns {*}
+   */
+  static normalizeDataStructure(formData) {
+    const updatedData = foundry.utils.deepClone(formData);
+    if (Object.keys(formData).includes('data')) {
+      if (!Object.keys(formData).includes('system')) {
+        // sometimes we get formData with a mix of data and system...
+        updatedData.system = {};
+      }
+      updatedData.system = foundry.utils.mergeObject(
+          updatedData.system,
+          updatedData.data
+      );
+      delete updatedData.data;
+    }
+    return updatedData;
   }
 }

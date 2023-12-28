@@ -10,7 +10,7 @@
         {{#if (eq blocktype "pills")}}
         <ul class="item-pill-list">
           {{#each fields as |item id|}}
-          <li class="item-pill {{#if adjusted}}adjusted{{/if}}" data-item-name="{{../name}}" data-item-index="{{id}}">
+            <li class="item-pill {{#if adjusted}}adjusted{{/if}}" data-item-name="{{../name}}" data-item-index="{{#if adjusted}}{{item.flags.starwarsffg.ffgTempItemIndex}}{{else}}{{id}}{{/if}}">
             {{item.name}} {{#if item.system.rank}}
             <i class="rank">{{item.system.rank}}</i>
             {{/if}} {{#if adjusted}}{{else}}<i class="fas fa-times item-delete"></i>{{/if}}
