@@ -235,9 +235,9 @@ export default class EmbeddedItemHelpers {
       // this is a modifier on an attachment
       ownedItem.system.itemattachment.forEach((a, index) => {
         if (!isNaN(modifierId)) {
-          modifierIndex = modifierId - ownedItem.system[modifierType].length;
+          modifierIndex = modifierId;
         } else {
-          modifierIndex = a.system[modifierType].findIndex((m) => m.id === parseInt(modifierId, 10) - ownedItem.system[modifierType].length);
+          modifierIndex = a.system[modifierType].findIndex((m) => m.id === parseInt(modifierId, 10));
         }
         if (modifierIndex > -1) {
           item = a.system[modifierType][modifierIndex];
