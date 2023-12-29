@@ -755,7 +755,8 @@
         "upgrade13": {},
         "upgrade14": {},
         "upgrade15": {}
-      }
+      },
+      "required_force_rating": 0
     },
     "specialization": {
       "templates": ["core"],

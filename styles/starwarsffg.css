@@ -2322,6 +2322,9 @@ img {
   min-width: 700px;
   min-height: 600px;
 }
+.starwarsffg .item-sheet-forcepower .required_fr input[type=text] {
+  width: 10px;
+}
 .starwarsffg .item-sheet-forcepower .talent-background .talent-header {
   background-color: #0e4400;
 }
