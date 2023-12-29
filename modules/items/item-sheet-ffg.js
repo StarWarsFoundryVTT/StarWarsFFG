@@ -742,6 +742,18 @@ export class ItemSheetFFG extends ItemSheet {
         await this._onSubmit(event);
       }
     }
+
+    if (action === "img") {
+      const fp = new FilePicker({
+        type: "image",
+        callback: async (path) => {
+          await this.object.update({img: path});
+          },
+          top: this.position.top + 40,
+          left: this.position.left + 10,
+        });
+        return fp.browse();
+    }
   }
 
   _onPopoutEditor(event) {
