@@ -1,3 +1,6 @@
+import {get_dice_pool} from "./dice-helpers.js";
+import {DicePoolFFG} from "../dice/pool.js";
+
 /**
  * Capture a drag-and-drop event (used to capture adding crew members via a flag)
  * @param args - actor receiving the event, actor being dropped onto the recipient, ID of the actor being dropped on
@@ -117,4 +120,48 @@ export async function change_role(vehicle_actor, crew_member, old_crew_role, new
     CONFIG.logger.debug("Final updated flag data: ", new_flag_data);
     // set the updated flag data
     vehicle_actor.setFlag('starwarsffg', 'crew', new_flag_data);
+}
+
+/**
+ * Create a string representation of a skill check for a crew member in a particular role on a vehicle
+ * @param vehicle actor object for the vehicle the crew is on
+ * @param crew_id actor ID of the crew member
+ * @param crew_role role of the actor (used to determine which skill to use)
+ * @returns {string|boolean} a string representation of HTML for the dice in the roll
+ */
+export function build_crew_roll(vehicle, crew_id, crew_role) {
+  // look up the sheet for passing to the roller
+  const crew_member = game.actors.get(crew_id);
+  if (crew_member === undefined) {
+    ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Actor.Removed"));
+    deregister_crew(ship, crew_id, crew_role);
+    return false;
+  }
+  const starting_pool = {'difficulty': 0};
+  const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
+  // look up the defined metadata for the assigned role
+  const role_info = registeredRoles.filter(i => i.role_name === crew_role);
+  // validate the role still exists in our settings
+  if (role_info.length === 0) {
+    ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Role.Removed"));
+    return false;
+  }
+  // validate that it's a valid role
+  if (role_info[0].role_skill === undefined) {
+    ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Role.Invalid"));
+    return false;
+  }
+  // check if the pool uses handling
+  if (role_info[0].use_handling) {
+    const handling = vehicle?.system?.stats?.handling?.value;
+    // add modifiers from the vehicle handling
+    if (handling > 0) {
+      starting_pool['boost'] = handling;
+    } else if (handling < 0) {
+      starting_pool['setback'] = handling * -1;
+    }
+  }
+  let pool = new DicePoolFFG(starting_pool);
+  pool = get_dice_pool(crew_id, role_info[0].role_skill, pool);
+  return pool.renderPreview().innerHTML;
 }
