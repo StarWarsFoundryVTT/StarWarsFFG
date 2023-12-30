@@ -797,6 +797,7 @@ export class ActorSheetFFG extends ActorSheet {
               const skill = raw_weapons[i].system.skill.value;
               let pool = new DicePoolFFG({'difficulty': 2});
               pool = get_dice_pool(crew_id, skill, pool);
+              pool = await DiceHelpers.getModifiers(pool, raw_weapons[i]);
               await DiceHelpers.displayRollDialog(
                 crewSheet,
                 pool,

@@ -236,7 +236,7 @@ export default class DiceHelpers {
   }
 
   static async getModifiers(dicePool, item) {
-    if (item.type === "weapon") {
+    if (item.type === "weapon" || item.type === "shipweapon") {
       dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
 
       if (item?.system?.itemattachment) {
