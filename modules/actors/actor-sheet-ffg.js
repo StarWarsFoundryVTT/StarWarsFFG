@@ -10,7 +10,7 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
-import {change_role, deregister_crew} from "../helpers/crew.js";
+import {change_role, deregister_crew, build_crew_roll} from "../helpers/crew.js";
 import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
 
@@ -123,6 +123,7 @@ export class ActorSheetFFG extends ActorSheet {
               'name': crew[i].actor_name,
               'role': crew[i].role,
               'img': img,
+              'roll': build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role),
             })
           }
         }
