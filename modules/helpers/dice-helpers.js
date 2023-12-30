@@ -236,7 +236,7 @@ export default class DiceHelpers {
   }
 
   static async getModifiers(dicePool, item) {
-    if (item.type === "weapon") {
+    if (item.type === "weapon" || item.type === "shipweapon") {
       dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
 
       if (item?.system?.itemattachment) {
@@ -289,6 +289,13 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
     difficulty: +incoming_roll.difficulty,
   });
   return dicePool;
+}
+
+export async function get_item_pool_modifiers(pool, weapon) {
+  console.log(pool)
+  console.log(weapon)
+  pool = await DiceHelpers.getModifiers(pool, weapon)
+  return pool;
 }
 
 /**
