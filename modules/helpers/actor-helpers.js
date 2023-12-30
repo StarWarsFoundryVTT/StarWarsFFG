@@ -7,6 +7,14 @@ export default class ActorHelpers {
 
     // as of Foundry v10, saving an editor only submits the single entry for that editor
     if (Object.keys(formData).length > 1) {
+      if (this.object.type === "minion") {
+        Object.keys(formData?.data?.skills).forEach((skill) => {
+          if (!formData.data.skills[skill].groupskill && this.object.system.skills[skill].groupskill) {
+            // this is a minion group with a group skill being removed - reduce the rank by one (since we added 1 when it was checked)
+            formData.data.skills[skill].rank -= this.object.system.quantity.value;
+          }
+        });
+      }
       if (this.object.type !== "homestead") {
         if (this.object.type !== "vehicle") {
           // Handle characteristic updates
