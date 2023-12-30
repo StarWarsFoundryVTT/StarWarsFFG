@@ -1782,11 +1782,9 @@ img {
 }
 
 .starwarsffg .item-sheet-talent .header-fields .profile-img, .starwarsffg .item-sheet-gear .header-fields .profile-img, .starwarsffg .item-sheet-weapon .header-fields .profile-img, .starwarsffg .item-sheet-armor .header-fields .profile-img, .starwarsffg .item-sheet-vehicle-weapon .header-fields .profile-img, .starwarsffg .item-sheet-vehicle-attachment .header-fields .profile-img, .starwarsffg .item-sheet-criticalinjury .header-fields .profile-img {
-  position: absolute;
   left: 0.5rem;
   top: 0.5rem;
-  height: 3rem;
-  max-width: 3rem;
+  height: 124px;
   -webkit-clip-path: none;
   clip-path: none;
   -o-object-fit: cover;
