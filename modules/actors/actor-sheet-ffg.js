@@ -3,7 +3,7 @@
  * @extends {ActorSheet}
  */
 import PopoutEditor from "../popout-editor.js";
-import DiceHelpers, {get_item_pool_modifiers} from "../helpers/dice-helpers.js";
+import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";

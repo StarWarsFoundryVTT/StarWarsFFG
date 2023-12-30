@@ -291,13 +291,6 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
   return dicePool;
 }
 
-export async function get_item_pool_modifiers(pool, weapon) {
-  console.log(pool)
-  console.log(weapon)
-  pool = await DiceHelpers.getModifiers(pool, weapon)
-  return pool;
-}
-
 /**
  * Convert the skill name to how the game handles it
  * @param pool_skill_name skill name to be converted
