@@ -348,13 +348,13 @@
   "SWFFG.SkillsNameArcana": "Arcane",
   "SWFFG.SkillsNameDivine": "Divine",
   "SWFFG.SkillsNamePrimal": "Primaire",
-  "SWFFG.SkillsNameMeleeHeavyAbbreviation": "MLd",
-  "SWFFG.SkillsNameMeleeHeavy": "Melee: Heavy",
-  "SWFFG.SkillsNameMeleeLightAbbreviation": "MLg",
+  "SWFFG.SkillsNameMeleeHeavyAbbreviation": "Cmb.Lo",
+  "SWFFG.SkillsNameMeleeHeavy": "Mêlée: Lourde",
+  "SWFFG.SkillsNameMeleeLightAbbreviation": "Cmb.lé",
   "SWFFG.SkillsNameMeleeLight": "Mêlée : Légère",
-  "SWFFG.SkillsNameRangedAbbreviation": "R",
-  "SWFFG.SkillsNameRanged": "Ranged",
-  "SWFFG.SkillsNameKnowledge": "Connaissances",
+  "SWFFG.SkillsNameRangedAbbreviation": "Dist.",
+  "SWFFG.SkillsNameRanged": "Distance",
+  "SWFFG.SkillsNameKnowledge": "Savoir",
   "SWFFG.SkillsMagic": "Compétences magiquess",
   "SWFFG.SkillsSocial": "Social",
   "SWFFG.TalentTier": "Niveau",
@@ -540,6 +540,8 @@
   "SWFFG.DiceResult.OneDespair": "1 désastre",
 
   "K2G" : {
-    "SkillsName" : ""
+    "SkillsNameMeleeShort": "Mêlée : courte",
+    "SkillsNameMeleeShortAbbreviation" :"Cmb.C",
+    "SkillsNameMegantique" : "Mégagantique"
   }
 }
