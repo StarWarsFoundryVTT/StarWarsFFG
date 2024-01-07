@@ -131,6 +131,8 @@
   "SWFFG.VehicleTabShipWeapons": "Ship Weapon",
   "SWFFG.VehicleTabShipAttachments": "Ship Attachment",
   "SWFFG.VehicleTabShipCrew": "Crew",
+  "SWFFG.VehicleCrewRole": "Role",
+  "SWFFG.VehicleCrewRoll": "Roll",
   "SWFFG.VehicleTabShipCargoHold": "Cargo Hold Item",
   "SWFFG.VehicleTabFiringArc": "Firing Arc",
   "SWFFG.VehicleTabDamage": "Damage",
