@@ -81,7 +81,7 @@ export const ModifiersTests = (suite, suiteInstance, Test, chai) => {
           "flags": {
             "importid": "DEFEL",
           },
-          "img": "modules/starwarsffg-compendiums/images/packs/oggdudespecies/DEFEL.png",
+          "img": "modules/genesysk2-compendiums/images/packs/oggdudespecies/DEFEL.png",
           "effects": [],
         },
         {
@@ -899,7 +899,7 @@ export const ModifiersTests = (suite, suiteInstance, Test, chai) => {
           "flags": {
             "importid": "DEFEL",
           },
-          "img": "modules/starwarsffg-compendiums/images/packs/oggdudespecies/DEFEL.png",
+          "img": "modules/genesysk2-compendiums/images/packs/oggdudespecies/DEFEL.png",
           "effects": [],
         },
         {

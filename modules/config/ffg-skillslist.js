@@ -1,7 +1,7 @@
 // Alternate Skill Lists
 export const defaultSkillList = [
   {
-    "id": "starwars",
+    "id": "k2genesys",
     "skills": {
       "Brawl": {
         "rank": 0,
@@ -19,21 +19,25 @@ export const defaultSkillList = [
         "type": "Combat",
         "max": 6,
       },
-      "Lightsaber": {
+      "Melee-Heavy": {
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
         "careerskill": false,
         "type": "Combat",
         "max": 6,
+        "label": "SWFFG.SkillsNameMeleeHeavy",
+        "abrev": "SWFFG.SkillsNameMeleeHeavyAbbreviation"
       },
-      "Melee": {
+      "Melee-Light": {
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
         "careerskill": false,
         "type": "Combat",
         "max": 6,
+        "label": "SWFFG.SkillsNameMeleeLight",
+        "abrev": "SWFFG.SkillsNameMeleeLightAbbreviation"
       },
       "Ranged: Light": {
         "rank": 0,
@@ -51,13 +55,15 @@ export const defaultSkillList = [
         "type": "Combat",
         "max": 6,
       },
-      "Astrogation": {
+      "Alchemy": {
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
         "careerskill": false,
         "type": "General",
         "max": 6,
+        "label": "SWFFG.SkillsNameAlchemy",
+        "abrev": "SWFFG.SkillsNameAlchemy"
       },
       "Athletics": {
         "rank": 0,
@@ -78,14 +84,6 @@ export const defaultSkillList = [
       "Coercion": {
         "rank": 0,
         "characteristic": "Willpower",
-        "groupskill": false,
-        "careerskill": false,
-        "type": "General",
-        "max": 6,
-      },
-      "Computers": {
-        "rank": 0,
-        "characteristic": "Intellect",
         "groupskill": false,
         "careerskill": false,
         "type": "General",
@@ -163,15 +161,7 @@ export const defaultSkillList = [
         "type": "General",
         "max": 6,
       },
-      "Piloting: Planetary": {
-        "rank": 0,
-        "characteristic": "Agility",
-        "groupskill": false,
-        "careerskill": false,
-        "type": "General",
-        "max": 6,
-      },
-      "Piloting: Space": {
+      "Piloting": {
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -227,7 +217,7 @@ export const defaultSkillList = [
         "type": "General",
         "max": 6,
       },
-      "Knowledge: Core Worlds": {
+      "Knowledge: adventures": {
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -235,7 +225,7 @@ export const defaultSkillList = [
         "type": "Knowledge",
         "max": 6,
       },
-      "Knowledge: Education": {
+      "Knowledge: geographic": {
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -243,7 +233,7 @@ export const defaultSkillList = [
         "type": "Knowledge",
         "max": 6,
       },
-      "Knowledge: Lore": {
+      "Knowledge: pure": {
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,

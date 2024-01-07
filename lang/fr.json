@@ -537,5 +537,9 @@
   "SWFFG.DiceResult.OneThreat": "1 menace",
   "SWFFG.DiceResult.TwoThreat": "2 menaces",
   "SWFFG.DiceResult.OneFailureOneThreat": "1 échec, 1 menace",
-  "SWFFG.DiceResult.OneDespair": "1 désastre"
+  "SWFFG.DiceResult.OneDespair": "1 désastre",
+
+  "K2G" : {
+    "SkillsName" : ""
+  }
 }

@@ -17,7 +17,7 @@ export default class RollBuilderFFG extends FormApplication {
     return mergeObject(super.defaultOptions, {
       id: "roll-builder",
       classes: ["starwarsffg", "roll-builder-dialog"],
-      template: "systems/starwarsffg/templates/dice/roll-options-ffg.html",
+      template: "systems/genesysk2/templates/dice/roll-options-ffg.html",
       width: 350
     });
   }
@@ -32,7 +32,7 @@ export default class RollBuilderFFG extends FormApplication {
     //get all possible sounds
     let sounds = [];
 
-    let canUserAddAudio = await game.settings.get("starwarsffg", "allowUsersAddRollAudio");
+    let canUserAddAudio = await game.settings.get("genesysk2", "allowUsersAddRollAudio");
     let canUserAddFlavor = game.user.isGM || !this?.roll?.flavor;
 
     if (game.user.isGM) {
@@ -47,7 +47,7 @@ export default class RollBuilderFFG extends FormApplication {
         });
       });
     } else if (canUserAddAudio) {
-      const playlistId = await game.settings.get("starwarsffg", "allowUsersAddRollAudioPlaylist");
+      const playlistId = await game.settings.get("genesysk2", "allowUsersAddRollAudioPlaylist");
       const playlist = await game.playlists.get(playlistId);
 
       if (playlist) {
@@ -74,10 +74,10 @@ export default class RollBuilderFFG extends FormApplication {
       });
     }
 
-    const enableForceDie = game.settings.get("starwarsffg", "enableForceDie");
+    const enableForceDie = game.settings.get("genesysk2", "enableForceDie");
     const labels = {
-      light: game.settings.get("starwarsffg", "destiny-pool-light"),
-      dark: game.settings.get("starwarsffg", "destiny-pool-dark"),
+      light: game.settings.get("genesysk2", "destiny-pool-light"),
+      dark: game.settings.get("genesysk2", "destiny-pool-dark"),
     };
 
     return {

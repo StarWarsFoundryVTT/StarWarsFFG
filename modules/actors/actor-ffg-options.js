@@ -57,7 +57,7 @@ export default class ActorOptions {
       },
       {
         classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/dialogs/ffg-sheet-options.html",
+        template: "systems/genesysk2/templates/dialogs/ffg-sheet-options.html",
       }
     ).render(true);
   }
@@ -66,12 +66,12 @@ export default class ActorOptions {
     if (!this.options[optionName]) {
       this.options[optionName] = { ...options };
     }
-    if (typeof this.data.object.flags?.starwarsffg?.config == "undefined") {
-      await this.data.object.setFlag("starwarsffg", "config", {});
+    if (typeof this.data.object.flags?.genesysk2?.config == "undefined") {
+      await this.data.object.setFlag("genesysk2", "config", {});
     }
 
-    if (typeof this.data.object.flags?.starwarsffg?.config[optionName] !== "undefined") {
-      this.options[optionName].value = this.data.object.flags?.starwarsffg?.config[optionName];
+    if (typeof this.data.object.flags?.genesysk2?.config[optionName] !== "undefined") {
+      this.options[optionName].value = this.data.object.flags?.genesysk2?.config[optionName];
     } else {
       this.options[optionName].value = this.options[optionName].default;
     }

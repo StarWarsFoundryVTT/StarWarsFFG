@@ -9,7 +9,7 @@ export default class SkillListImporter extends FormApplication {
       classes: ["starwarsffg", "data-import"],
       title: "Skill List Importer",
       width: 385,
-      template: "systems/starwarsffg/templates/importer/skill-list-importer.html",
+      template: "systems/genesysk2/templates/importer/skill-list-importer.html",
     });
   }
 
@@ -29,7 +29,7 @@ export default class SkillListImporter extends FormApplication {
       CONFIG.temporary = {};
     }
 
-    const currentSkillTheme = await game.settings.get("starwarsffg", "skilltheme");
+    const currentSkillTheme = await game.settings.get("genesysk2", "skilltheme");
 
     const themes = CONFIG.FFG.alternateskilllists.map((list) => {
       return {
@@ -67,7 +67,7 @@ export default class SkillListImporter extends FormApplication {
 
       const target = event.currentTarget;
       const skilltheme = target.dataset.id;
-      const currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
+      const currentSkillList = await game.settings.get("genesysk2", "arraySkillList");
 
       const data = currentSkillList.find((i) => i.id === skilltheme);
 
@@ -85,7 +85,7 @@ export default class SkillListImporter extends FormApplication {
         if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
         const text = await readTextFromFile(form.data.files[0]);
 
-        let currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
+        let currentSkillList = await game.settings.get("genesysk2", "arraySkillList");
 
         const newSkillList = JSON.parse(text);
 

@@ -45,7 +45,7 @@ export class GroupManager extends FormApplication {
       resizable: true,
       width: 330,
       height: 900,
-      template: "systems/starwarsffg/templates/group-manager.html",
+      template: "systems/genesysk2/templates/group-manager.html",
       id: "group-manager",
       title: "Group Manager",
     });
@@ -63,7 +63,7 @@ export class GroupManager extends FormApplication {
       players.connected = true;
     }
 
-    const pcListMode = game.settings.get("starwarsffg", "pcListMode");
+    const pcListMode = game.settings.get("genesysk2", "pcListMode");
     const characters = [];
     let obligationRangeStart = 0;
     let dutyRangeStart = 0;
@@ -105,7 +105,7 @@ export class GroupManager extends FormApplication {
       });
     }
 
-    const dPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
+    const dPool = { light: game.settings.get("genesysk2", "dPoolLight"), dark: game.settings.get("genesysk2", "dPoolDark") };
     const initiative = CONFIG.Combat.initiative.formula;
     const isGM = game.user.isGM;
     const theme = CONFIG.FFG.theme;
@@ -116,8 +116,8 @@ export class GroupManager extends FormApplication {
     if (!isGM) this.position.height = 470;
 
     const labels = {
-      light: game.settings.get("starwarsffg", "destiny-pool-light"),
-      dark: game.settings.get("starwarsffg", "destiny-pool-dark"),
+      light: game.settings.get("genesysk2", "destiny-pool-light"),
+      dark: game.settings.get("genesysk2", "destiny-pool-dark"),
     };
 
     return { dPool, players, initiative, isGM, pcListMode, characters, obligations, duties, theme, labels };
@@ -262,7 +262,7 @@ export class GroupManager extends FormApplication {
   async _rollTable(table, type) {
     let r = new Roll("1d100");
     await r.evaluate();
-    let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? { rollMode: "gmroll" } : {};
+    let rollOptions = game.settings.get("genesysk2", "privateTriggers") ? { rollMode: "gmroll" } : {};
     r.toMessage(
       {
         flavor: `${game.i18n.localize("SWFFG.Rolling")} ${type}...`,
@@ -275,7 +275,7 @@ export class GroupManager extends FormApplication {
       user: game.user.id,
       content: tableResult,
     };
-    if (game.settings.get("starwarsffg", "privateTriggers")) {
+    if (game.settings.get("genesysk2", "privateTriggers")) {
       messageOptions.whisper = ChatMessage.getWhisperRecipients("GM");
     }
     ChatMessage.create(messageOptions);
@@ -331,7 +331,7 @@ export class GroupManager extends FormApplication {
   async _grantXP(character) {
     const id = randomID();
     const description = game.i18n.localize("SWFFG.GrantXPTo") + ` ${character.name}...`;
-    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
+    const content = await renderTemplate("systems/genesysk2/templates/grant-xp.html", {
       id,
     });
 
@@ -361,7 +361,7 @@ export class GroupManager extends FormApplication {
   async _bulkXP(characters) {
     const id = randomID();
     const description = game.i18n.localize("SWFFG.GrantXPToAllCharacters");
-    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
+    const content = await renderTemplate("systems/genesysk2/templates/grant-xp.html", {
       id,
     });
 

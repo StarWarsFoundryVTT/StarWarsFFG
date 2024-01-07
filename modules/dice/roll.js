@@ -94,9 +94,9 @@ export class RollFFG extends Roll {
     }
   }
 
-  static CHAT_TEMPLATE = "systems/starwarsffg/templates/dice/roll-ffg.html";
+  static CHAT_TEMPLATE = "systems/genesysk2/templates/dice/roll-ffg.html";
 
-  static TOOLTIP_TEMPLATE = "systems/starwarsffg/templates/dice/tooltip-ffg.html";
+  static TOOLTIP_TEMPLATE = "systems/genesysk2/templates/dice/tooltip-ffg.html";
 
   /* -------------------------------------------- */
 
@@ -294,7 +294,7 @@ export class RollFFG extends Roll {
       // extended metadata is missing, lookup the actor ID so we can embed it for future lookups
       let candidate_actors = game.actors.filter(actor => actor.items.filter(item => item.id === chatData.data._id).length > 0);
       if (candidate_actors.length > 0) {
-        if (game.settings.get("starwarsffg", "oldWorldCompatability")) {
+        if (game.settings.get("genesysk2", "oldWorldCompatability")) {
           let test_item = game.actors.get(candidate_actors[0].id).items.get(chatData.data._id);
           // for whatever reason, sometimes the item we read doesn't have modifiers even though the chat item does
           // check if this is the case and correct it if it is

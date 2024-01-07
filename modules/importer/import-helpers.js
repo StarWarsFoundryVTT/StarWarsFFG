@@ -2386,8 +2386,8 @@ export default class ImportHelpers {
         output.attributes[skillModifier.type] = skillModifier.value;
       } else if (dieMod.SkillChar) {
         // this is a skill modifier based on characteristic (ex all Brawn skills);
-        const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
-        const allSkillsLists = await game.settings.get("starwarsffg", "arraySkillList");
+        const skillTheme = await game.settings.get("genesysk2", "skilltheme");
+        const allSkillsLists = await game.settings.get("genesysk2", "arraySkillList");
         const skills = allSkillsLists.find((i) => i.id === skillTheme).skills;
         const characteristicSkills = Object.keys(skills).filter((s) => skills[s].characteristic === ImportHelpers.convertOGCharacteristic(dieMod.SkillChar));
 
@@ -2401,8 +2401,8 @@ export default class ImportHelpers {
           }
         });
       } else if (dieMod.SkillType) {
-        const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
-        const allSkillsLists = await game.settings.get("starwarsffg", "arraySkillList");
+        const skillTheme = await game.settings.get("genesysk2", "skilltheme");
+        const allSkillsLists = await game.settings.get("genesysk2", "arraySkillList");
         const skills = allSkillsLists.find((i) => i.id === skillTheme).skills;
         const characteristicSkills = Object.keys(skills).filter((s) => skills[s].type.toLowerCase() === dieMod.SkillType.toLowerCase());
 
@@ -2609,7 +2609,7 @@ export default class ImportHelpers {
   }
 
   static async getTemplate(type) {
-    const response = await fetch("systems/starwarsffg/template.json");
+    const response = await fetch("systems/genesysk2/template.json");
     const template = await response.json();
 
     const obj = Object.values(template).find((i) => i.types.includes(type));

@@ -6,7 +6,7 @@ export default class SettingsHelpers {
   // Initialize System Settings after the Init Hook
   static initLevelSettings() {
     // System Migration Version
-    game.settings.register("starwarsffg", "systemMigrationVersion", {
+    game.settings.register("genesysk2", "systemMigrationVersion", {
       name: "Current Version",
       scope: "world",
       default: null,
@@ -15,7 +15,7 @@ export default class SettingsHelpers {
     });
 
     // Register dice theme setting
-    game.settings.register("starwarsffg", "dicetheme", {
+    game.settings.register("genesysk2", "dicetheme", {
       name: game.i18n.localize("SWFFG.SettingsDiceTheme"),
       hint: game.i18n.localize("SWFFG.SettingsDiceThemeHint"),
       scope: "world",
@@ -24,7 +24,7 @@ export default class SettingsHelpers {
       type: String,
       onChange: (rule) => {
         if (rule === "starwars") {
-          game.settings.set("starwarsffg", "enableForceDie", true);
+          game.settings.set("genesysk2", "enableForceDie", true);
         }
         return this.debouncedReload();
       },
@@ -35,7 +35,7 @@ export default class SettingsHelpers {
     });
 
     // Register vehicle range bands
-    game.settings.register("starwarsffg", "vehicleRangeBand", {
+    game.settings.register("genesysk2", "vehicleRangeBand", {
       name: game.i18n.localize("SWFFG.SettingsVehicleRange"),
       hint: game.i18n.localize("SWFFG.SettingsVehicleRangeHint"),
       scope: "world",
@@ -52,7 +52,7 @@ export default class SettingsHelpers {
     });
 
     // Enable auto Soak calculation
-    game.settings.register("starwarsffg", "enableSoakCalc", {
+    game.settings.register("genesysk2", "enableSoakCalc", {
       name: game.i18n.localize("SWFFG.EnableSoakCalc"),
       hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
       scope: "world",
@@ -63,7 +63,7 @@ export default class SettingsHelpers {
     });
 
     // Enable auto Soak calculation
-    game.settings.register("starwarsffg", "privateTriggers", {
+    game.settings.register("genesysk2", "privateTriggers", {
       name: game.i18n.localize("SWFFG.EnablePrivateTriggers"),
       hint: game.i18n.localize("SWFFG.EnablePrivateTriggersHint"),
       scope: "world",
@@ -74,7 +74,7 @@ export default class SettingsHelpers {
     });
 
     // Register grouping talents so people can let them be ordered by purchase history
-    game.settings.register("starwarsffg", "talentSorting", {
+    game.settings.register("genesysk2", "talentSorting", {
       name: game.i18n.localize("SWFFG.EnableSortTalentsByActivationGlobal"),
       hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
       scope: "world",
@@ -85,7 +85,7 @@ export default class SettingsHelpers {
     });
 
     // Register skill sorting by localised value setting
-    game.settings.register("starwarsffg", "skillSorting", {
+    game.settings.register("genesysk2", "skillSorting", {
       name: game.i18n.localize("SWFFG.SettingsSkillSorting"),
       hint: game.i18n.localize("SWFFG.SettingsSkillSortingHint"),
       scope: "world",
@@ -96,7 +96,7 @@ export default class SettingsHelpers {
     });
 
     // Register setting for group manager Player Character List display mode
-    game.settings.register("starwarsffg", "pcListMode", {
+    game.settings.register("genesysk2", "pcListMode", {
       name: game.i18n.localize("SWFFG.SettingsPCListMode"),
       hint: game.i18n.localize("SWFFG.SettingsPCListModeHint"),
       scope: "world",
@@ -116,7 +116,7 @@ export default class SettingsHelpers {
     });
 
     // Register placeholder settings to store Destiny Pool values for the group manager.
-    game.settings.register("starwarsffg", "dPoolLight", {
+    game.settings.register("genesysk2", "dPoolLight", {
       name: "Destiny Pool Light",
       scope: "world",
       default: 0,
@@ -127,12 +127,12 @@ export default class SettingsHelpers {
         if (groupmanager) {
           groupmanager.render();
         }
-        let destinyLight = game.settings.get("starwarsffg", "dPoolLight");
+        let destinyLight = game.settings.get("genesysk2", "dPoolLight");
         document.getElementById("destinyLight").setAttribute("data-value", destinyLight);
-        document.getElementById("destinyLight").innerHTML = destinyLight + `<span>${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))}</span>`;
+        document.getElementById("destinyLight").innerHTML = destinyLight + `<span>${game.i18n.localize(game.settings.get("genesysk2", "destiny-pool-light"))}</span>`;
       },
     });
-    game.settings.register("starwarsffg", "dPoolDark", {
+    game.settings.register("genesysk2", "dPoolDark", {
       name: "Destiny Pool Dark",
       scope: "world",
       default: 0,
@@ -143,14 +143,14 @@ export default class SettingsHelpers {
         if (groupmanager) {
           groupmanager.render();
         }
-        let destinyDark = game.settings.get("starwarsffg", "dPoolDark");
+        let destinyDark = game.settings.get("genesysk2", "dPoolDark");
         document.getElementById("destinyDark").setAttribute("data-value", destinyDark);
-        document.getElementById("destinyDark").innerHTML = destinyDark + `<span>${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))}</span>`;
+        document.getElementById("destinyDark").innerHTML = destinyDark + `<span>${game.i18n.localize(game.settings.get("genesysk2", "destiny-pool-dark"))}</span>`;
       },
     });
 
     // OggDude Importer Control Menu
-    game.settings.registerMenu("starwarsffg", "odImporter", {
+    game.settings.registerMenu("genesysk2", "odImporter", {
       name: game.i18n.localize("SWFFG.SettingsOggDudeImporter"),
       hint: game.i18n.localize("SWFFG.SettingsOggDudeImporterHint"),
       label: game.i18n.localize("SWFFG.SettingsOggDudeImporterLabel"),
@@ -158,7 +158,7 @@ export default class SettingsHelpers {
       type: DataImporter,
       restricted: true,
     });
-    game.settings.register("starwarsffg", "odImporter", {
+    game.settings.register("genesysk2", "odImporter", {
       name: "Item Importer",
       scope: "world",
       default: {},
@@ -167,7 +167,7 @@ export default class SettingsHelpers {
     });
 
     // SWA Importer Control Menu
-    game.settings.registerMenu("starwarsffg", "swaImporter", {
+    game.settings.registerMenu("genesysk2", "swaImporter", {
       name: game.i18n.localize("SWFFG.SettingsSWAdversariesImporter"),
       hint: game.i18n.localize("SWFFG.SettingsSWAdversariesImporterHint"),
       label: game.i18n.localize("SWFFG.SettingsSWAdversariesImporterLabel"),
@@ -175,7 +175,7 @@ export default class SettingsHelpers {
       type: SWAImporter,
       restricted: true,
     });
-    game.settings.register("starwarsffg", "swaImporter", {
+    game.settings.register("genesysk2", "swaImporter", {
       name: "Adversaries Importer",
       scope: "world",
       default: {},
@@ -184,7 +184,7 @@ export default class SettingsHelpers {
     });
 
     // Enable debug messages in console
-    game.settings.register("starwarsffg", "enableDebug", {
+    game.settings.register("genesysk2", "enableDebug", {
       name: game.i18n.localize("SWFFG.EnableDebug"),
       hint: game.i18n.localize("SWFFG.EnableDebugHint"),
       scope: "world",
@@ -194,7 +194,7 @@ export default class SettingsHelpers {
       onChange: this.debouncedReload,
     });
 
-    game.settings.registerMenu("starwarsffg", "uiSettings", {
+    game.settings.registerMenu("genesysk2", "uiSettings", {
       name: game.i18n.localize("SWFFG.UISettings"),
       hint: game.i18n.localize("SWFFG.UISettingsHint"),
       label: game.i18n.localize("SWFFG.UISettingsLabel"),
@@ -203,7 +203,7 @@ export default class SettingsHelpers {
       restricted: true,
     });
 
-    game.settings.register("starwarsffg", "uiSettings", {
+    game.settings.register("genesysk2", "uiSettings", {
       name: "UI Settings",
       scope: "world",
       default: {},
@@ -212,8 +212,8 @@ export default class SettingsHelpers {
     });
 
     // Register settings for UI Themes
-    game.settings.register("starwarsffg", "ui-uitheme", {
-      module: "starwarsffg",
+    game.settings.register("genesysk2", "ui-uitheme", {
+      module: "genesysk2",
       name: game.i18n.localize("SWFFG.SettingsUITheme"),
       hint: game.i18n.localize("SWFFG.SettingsUIThemeHint"),
       scope: "world",
@@ -227,8 +227,8 @@ export default class SettingsHelpers {
       },
     });
 
-    game.settings.register("starwarsffg", "ui-pausedImage", {
-      module: "starwarsffg",
+    game.settings.register("genesysk2", "ui-pausedImage", {
+      module: "genesysk2",
       name: game.i18n.localize("SWFFG.SettingsPausedImage"),
       hint: game.i18n.localize("SWFFG.SettingsPausedImageHint"),
       scope: "world",
@@ -239,7 +239,7 @@ export default class SettingsHelpers {
       onChange: this.debouncedReload,
     });
 
-    game.settings.register("starwarsffg", "destiny-pool-light", {
+    game.settings.register("genesysk2", "destiny-pool-light", {
       name: game.i18n.localize("SWFFG.SettingsDestinyLight"),
       hint: game.i18n.localize("SWFFG.SettingsDestinyLightHint"),
       scope: "world",
@@ -248,13 +248,13 @@ export default class SettingsHelpers {
       type: String,
       onChange: (rule) => {
         if (rule === "") {
-          game.settings.set("starwarsffg", "destiny-pool-light", "SWFFG.Lightside");
+          game.settings.set("genesysk2", "destiny-pool-light", "SWFFG.Lightside");
         }
         return this.debouncedReload();
       },
     });
 
-    game.settings.register("starwarsffg", "destiny-pool-dark", {
+    game.settings.register("genesysk2", "destiny-pool-dark", {
       name: game.i18n.localize("SWFFG.SettingsDestinyDark"),
       hint: game.i18n.localize("SWFFG.SettingsDestinyDarkHint"),
       scope: "world",
@@ -263,13 +263,13 @@ export default class SettingsHelpers {
       type: String,
       onChange: (rule) => {
         if (rule === "") {
-          game.settings.set("starwarsffg", "destiny-pool-dark", "SWFFG.Darkside");
+          game.settings.set("genesysk2", "destiny-pool-dark", "SWFFG.Darkside");
         }
         return this.debouncedReload();
       },
     });
 
-    game.settings.register("starwarsffg", "enableForceDie", {
+    game.settings.register("genesysk2", "enableForceDie", {
       name: game.i18n.localize("SWFFG.SettingsEnableForceDie"),
       hint: game.i18n.localize("SWFFG.SettingsEnableForceDieHint"),
       scope: "world",
@@ -277,9 +277,9 @@ export default class SettingsHelpers {
       default: true,
       type: Boolean,
       onChange: (rule) => {
-        if (game.settings.get("starwarsffg", "dicetheme") === "starwars") {
+        if (game.settings.get("genesysk2", "dicetheme") === "starwars") {
           if (!rule) {
-            game.settings.set("starwarsffg", "enableForceDie", true);
+            game.settings.set("genesysk2", "enableForceDie", true);
           }
         }
         return this.debouncedReload();
@@ -288,7 +288,7 @@ export default class SettingsHelpers {
 
 
     // Increase compatibility with old versions (likely to make new games kinda weird as it updates items from chat data)
-    game.settings.register("starwarsffg", "oldWorldCompatability", {
+    game.settings.register("genesysk2", "oldWorldCompatability", {
       name: game.i18n.localize("SWFFG.OldWorld.CompatLabel"),
       hint: game.i18n.localize("SWFFG.OldWorld.CompatHint"),
       scope: "world",
@@ -302,7 +302,7 @@ export default class SettingsHelpers {
   // Initialize System Settings after the Ready Hook
   static readyLevelSetting() {
     // Allow Users to Roll Audio
-    game.settings.register("starwarsffg", "allowUsersAddRollAudio", {
+    game.settings.register("genesysk2", "allowUsersAddRollAudio", {
       name: game.i18n.localize("SWFFG.EnableRollAudio"),
       hint: game.i18n.localize("SWFFG.EnableRollAudioHint"),
       scope: "world",
@@ -319,7 +319,7 @@ export default class SettingsHelpers {
     });
 
     // Playlist users can user for audio
-    game.settings.register("starwarsffg", "allowUsersAddRollAudioPlaylist", {
+    game.settings.register("genesysk2", "allowUsersAddRollAudioPlaylist", {
       name: game.i18n.localize("SWFFG.EnableRollAudioPlaylist"),
       hint: game.i18n.localize("SWFFG.EnableRollAudioPlaylistHint"),
       scope: "world",
@@ -330,7 +330,7 @@ export default class SettingsHelpers {
     });
 
     // Name default healing item
-    game.settings.register("starwarsffg", "medItemName", {
+    game.settings.register("genesysk2", "medItemName", {
       name: game.i18n.localize("SWFFG.MedicalItemName"),
       hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
       scope: "world",
@@ -345,7 +345,7 @@ export default class SettingsHelpers {
         game.i18n.localize("SWFFG.MedicalItemNameUseRest"),
         game.i18n.localize("SWFFG.MedicalItemNameUseReset"),
     ];
-    game.settings.register("starwarsffg", "HealingItemAction", {
+    game.settings.register("genesysk2", "HealingItemAction", {
       name: game.i18n.localize("SWFFG.MedicalItemSetting"),
       scope: "world",
       default: '0',
