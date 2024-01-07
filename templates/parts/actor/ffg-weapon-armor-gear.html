@@ -189,7 +189,7 @@
 
   <ul class="items-list">
     {{#each crew as |item id|}} {{#iff item.type '==' 'shipcrew'}}
-    <li class="item flexrow" data-item-id="{{ ../this.actor._id }}-{{ item.id }}-{{ item.role }}">
+    <li class="item flexrow" data-item-id="{{ ../this.actor._id }}-{{ item.id }}-{{ item.role }}" data-ship-id="{{ ../this.actor._id }}" data-actor-id="{{ item.id }}" data-role-name="{{ item.role }}">
       <div class="item-name">
         <div class="roll-button-crew">
           <!-- Create define a button with mouseover events to update the icon and generate rolls when clicked and moused over -->
