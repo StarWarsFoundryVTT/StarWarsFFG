@@ -65,7 +65,7 @@ export default class CrewSettings extends FormApplication {
   _onResetDefaults(event) {
     event.preventDefault();
     const defaults = game.settings.settings.get("starwarsffg.arrayCrewRoles").default;
-    game.settings.set("starwarsffg", "arrayCrewRoles", defaults);
+    game.settings.set("genesysk2", "arrayCrewRoles", defaults);
     this.close();
   }
 
@@ -87,7 +87,7 @@ export default class CrewSettings extends FormApplication {
     }
     // update the settings if they don't match the old ones
     if (existing_settings !== new_settings) {
-      game.settings.set("starwarsffg", "arrayCrewRoles", new_settings);
+      game.settings.set("genesysk2", "arrayCrewRoles", new_settings);
     }
   }
 }

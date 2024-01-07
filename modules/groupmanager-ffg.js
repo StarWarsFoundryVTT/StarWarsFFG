@@ -159,7 +159,7 @@ export class GroupManager extends FormApplication {
     // Listen for initiative dropdown change and update initiative formula accordingly.
     html.find(".initiative-mode").change((ev) => {
       const init_value = ev.target.value.charAt(0).toLowerCase();
-      game.settings.set("starwarsffg", "initiativeRule", init_value);
+      game.settings.set("genesysk2", "initiativeRule", init_value);
       ui.notifications.info(`Initiative mode changed to: ${ev.target.value}`);
     });
 
@@ -226,8 +226,8 @@ export class GroupManager extends FormApplication {
    */
   _updateObject(event, formData) {
     const formDPool = expandObject(formData).dPool || {};
-    game.settings.set("starwarsffg", "dPoolLight", formDPool.light);
-    game.settings.set("starwarsffg", "dPoolDark", formDPool.dark);
+    game.settings.set("genesysk2", "dPoolLight", formDPool.light);
+    game.settings.set("genesysk2", "dPoolDark", formDPool.dark);
     return formData;
   }
 

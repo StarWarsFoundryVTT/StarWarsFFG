@@ -1,6 +1,6 @@
 /**
- * A systems implementation of the Star Wars RPG by Fantasy Flight Games.
- * Author: Esrin
+ * A systems implementation of K² from the Star Wars RPG by Fantasy Flight Games.
+ * Author: Esrin, zol
  * Software License: GNU GPLv3
  */
 
@@ -70,7 +70,7 @@ Hooks.once("init", async function () {
   };
 
   // Define custom log prefix and logger
-  CONFIG.module = "Starwars FFG";
+  CONFIG.module = "Genesys K²";
   CONFIG.logger = Helpers.logger;
 
   // Define custom Entity classes. This will override the default Actor

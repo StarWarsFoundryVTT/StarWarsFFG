@@ -60,4 +60,9 @@ export const character_stats = {
     value: "ForcePool",
     label: "SWFFG.ForcePool",
   },
+  // "ressources" : {
+  //   "r1": {
+  //     value: 
+  //   }
+  // }
 };

@@ -53,8 +53,8 @@ export default class SkillListImporter extends FormApplication {
       event.preventDefault();
       event.stopPropagation();
 
-      game.settings.set("starwarsffg", "arraySkillList", defaultSkillList);
-      game.settings.set("starwarsffg", "skilltheme", "starwars");
+      game.settings.set("genesysk2", "arraySkillList", defaultSkillList);
+      game.settings.set("genesysk2", "skilltheme", "starwars");
 
       debounce(() => window.location.reload(), 100);
 
@@ -104,7 +104,7 @@ export default class SkillListImporter extends FormApplication {
         }
 
         const newMasterSkillListData = currentSkillList;
-        await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
+        await game.settings.set("genesysk2", "arraySkillList", newMasterSkillListData);
         debounce(() => window.location.reload(), 100);
 
         this.close();

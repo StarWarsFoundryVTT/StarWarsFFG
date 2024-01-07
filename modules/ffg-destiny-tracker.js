@@ -134,8 +134,8 @@ export default class DestinyTracker extends FormApplication {
           }
 
           if (game.user.isGM) {
-            game.settings.set("starwarsffg", "dPoolLight", pool.light);
-            game.settings.set("starwarsffg", "dPoolDark", pool.dark);
+            game.settings.set("genesysk2", "dPoolLight", pool.light);
+            game.settings.set("genesysk2", "dPoolDark", pool.dark);
           } else {
             await game.socket.emit("system.starwarsffg", { pool });
           }
@@ -152,7 +152,7 @@ export default class DestinyTracker extends FormApplication {
           return;
         }
         const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
-        game.settings.set("starwarsffg", pointType, game.settings.get("genesysk2", pointType) + 1);
+        game.settings.set("genesysk2", pointType, game.settings.get("genesysk2", pointType) + 1);
         messageText = "Added a " + typeName + " point.";
       } else if (remove) {
         if (!game.user.isGM) {
@@ -160,7 +160,7 @@ export default class DestinyTracker extends FormApplication {
           return;
         }
         const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
-        game.settings.set("starwarsffg", pointType, game.settings.get("genesysk2", pointType) - 1);
+        game.settings.set("genesysk2", pointType, game.settings.get("genesysk2", pointType) - 1);
         messageText = "Removed a " + typeName + " point.";
       }
 
@@ -271,8 +271,8 @@ export default class DestinyTracker extends FormApplication {
       const light = await game.settings.get("genesysk2", "dPoolLight");
       const dark = await game.settings.get("genesysk2", "dPoolDark");
 
-      await game.settings.set("starwarsffg", "dPoolLight", light + roll.ffg.light);
-      await game.settings.set("starwarsffg", "dPoolDark", dark + roll.ffg.dark);
+      await game.settings.set("genesysk2", "dPoolLight", light + roll.ffg.light);
+      await game.settings.set("genesysk2", "dPoolDark", dark + roll.ffg.dark);
     }
   }
 
@@ -288,14 +288,14 @@ export default class DestinyTracker extends FormApplication {
 
       switch (request.type) {
         case "destiny-roll": {
-          game.settings.set("starwarsffg", `destinyrollers${request.id}`, true);
-          await game.settings.set("starwarsffg", "dPoolLight", light + request.light);
-          await game.settings.set("starwarsffg", "dPoolDark", dark + request.dark);
+          game.settings.set("genesysk2", `destinyrollers${request.id}`, true);
+          await game.settings.set("genesysk2", "dPoolLight", light + request.light);
+          await game.settings.set("genesysk2", "dPoolDark", dark + request.dark);
           break;
         }
         case "destiny-flip": {
-          await game.settings.set("starwarsffg", "dPoolLight", light - request.light);
-          game.settings.set("starwarsffg", "dPoolDark", dark - request.dark);
+          await game.settings.set("genesysk2", "dPoolLight", light - request.light);
+          game.settings.set("genesysk2", "dPoolDark", dark - request.dark);
           break;
         }
       }
