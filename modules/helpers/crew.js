@@ -30,6 +30,10 @@ export async function register_crew(...args) {
     } else {
         drag_actor = game.actors.get(args[2].id);
     }
+    if (drag_actor.type === 'vehicle') {
+      CONFIG.logger.debug("Not registering crew as item is a vehicle");
+      return args;
+    }
     // set up the flag data
     let flag_data = [];
     flag_data.push({
