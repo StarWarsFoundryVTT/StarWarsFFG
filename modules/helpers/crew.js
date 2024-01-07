@@ -132,9 +132,10 @@ export async function change_role(vehicle_actor, crew_member, old_crew_role, new
 export function build_crew_roll(vehicle, crew_id, crew_role) {
   // look up the sheet for passing to the roller
   const crew_member = game.actors.get(crew_id);
+  const vehicle_actor = game.actors.get(vehicle);
   if (crew_member === undefined) {
     ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Actor.Removed"));
-    deregister_crew(ship, crew_id, crew_role);
+    deregister_crew(vehicle_actor, crew_id, crew_role);
     return false;
   }
   const starting_pool = {'difficulty': 0};
