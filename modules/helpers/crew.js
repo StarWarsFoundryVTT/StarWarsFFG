@@ -40,6 +40,7 @@ export async function register_crew(...args) {
         'actor_id': drag_actor.id,
         'actor_name': drag_actor.name,
         'role': '(none)',
+        'link':  await TextEditor.enrichHTML(drag_actor?.link) || null,
     });
 
     CONFIG.logger.debug("Looking up existing crew information");

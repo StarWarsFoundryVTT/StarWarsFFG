@@ -195,7 +195,11 @@
           <!-- Create define a button with mouseover events to update the icon and generate rolls when clicked and moused over -->
           <div class="skill-label rollable roll-button-crew starwarsffg item-rollable" style="background-image: url('{{ item.img }}')"></div>
         </div>
-        {{ item.name }}
+        {{#if item.link}}
+          {{{ item.link }}}
+        {{else}}
+          {{ item.name }}
+        {{/if}}
       </div>
       <div class="crew_role" style="flex: 6;">
         <div>{{ item.role }}</div>

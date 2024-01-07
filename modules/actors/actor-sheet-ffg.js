@@ -124,6 +124,7 @@ export class ActorSheetFFG extends ActorSheet {
               'role': crew[i].role,
               'img': img,
               'roll': build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role),
+              'link': crew[i]?.link,
             })
           }
         }
