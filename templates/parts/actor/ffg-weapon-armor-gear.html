@@ -184,7 +184,9 @@
 <ul class="items">
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.VehicleTabShipCrew"}}</div>
-    <div>Role</div><div></div>
+    <div>{{localize "SWFFG.VehicleCrewRole"}}</div>
+    <div>{{localize "SWFFG.VehicleCrewRoll"}}</div>
+    <div></div>
   </li>
 
   <ul class="items-list">
@@ -197,9 +199,18 @@
         </div>
         {{ item.name }}
       </div>
-      <div class="crew_role" style="flex: 6;">
+      <div class="crew_role">
         <div>{{ item.role }}</div>
-        {{#if (eq item.role "(none)")}}{{else}}<div class="skillsGrid" style="justify-content: center;"><div class="dice-pool">{{{ item.roll }}}</div></div>{{/if}}
+      </div>
+      <div>
+        {{#if (eq item.role "(none)")}}
+        {{else}}
+          <div class="crew skillsGrid">
+            <div class="crew dice-pool">
+              {{{ item.roll }}}
+            </div>
+          </div>
+        {{/if}}
       </div>
       <div class="item-controls">
         <a class="item-control crew-edit" title="Edit Role"><i class="fas fa-edit"></i></a>
