@@ -300,7 +300,7 @@ function convert_skill_name(pool_skill_name) {
   CONFIG.logger.debug(`Converting ${pool_skill_name} to skill name`);
   const skills = CONFIG.FFG.skills;
   for (var skill in skills) {
-    if (skills[skill]['label'] === pool_skill_name) {
+    if (game.i18n.localize(skills[skill]['label']) === pool_skill_name) {
       CONFIG.logger.debug(`Found mapping to ${skill}`);
       return skill;
     }
