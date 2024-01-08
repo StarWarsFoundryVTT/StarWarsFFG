@@ -775,6 +775,29 @@ Hooks.once("ready", async () => {
         CONFIG.logger.error(`Error during system migration`, err);
       }
     }
+    if (isAlpha || isCurrentVersionNullOrBlank(currentVersion) || parseFloat(currentVersion) < 1.805) {
+      // update skill sets
+      ui.notifications.info('Updating skill groupings, please be patient...');
+      try {
+        const skillTheme = game.settings.get("starwarsffg", "skilltheme");
+        if (skillTheme === 'starwars') {
+          const skills = CONFIG.FFG.alternateskilllists.find((list) => list.id === skillTheme).skills;
+          const actors = game.actors.filter(i => i.type === 'character' || i.type === 'minion');
+          for (const actor of actors) {
+            for (const skillName of Object.keys(actor.system.skills)) {
+              let skillData = actor.system.skills[skillName];
+              if (skillData.type !== skills[skillName].type) {
+                skillData.type = skills[skillName].type;
+                await actor.update({[`system.skills.${skillName}.type`]: skillData.type});
+              }
+            }
+          }
+        }
+      } catch (error) {
+        CONFIG.logger.warn(error);
+      }
+      ui.notifications.info('Done updating skill groupings!');
+    }
     game.settings.set("starwarsffg", "systemMigrationVersion", version);
   }
 
