@@ -15,9 +15,15 @@
 .item-sheet-forcepower {
   $swffg-force-background: rgb(14, 68, 0);
   $swffg-force-input-background: #1a8200;
-  
+
   min-width: 700px;
   min-height: 600px;
+
+  .required_fr {
+    input[type=text] {
+      width: 10px;
+    }
+  }
 
   .talent-background {
     .talent-header {
@@ -73,8 +79,8 @@
   }
   .talent-modifiers {
     position: absolute;
-    right:5px; 
-    bottom:2px; 
+    right:5px;
+    bottom:2px;
     z-index: 10;
   }
 }

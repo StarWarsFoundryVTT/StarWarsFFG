@@ -32,6 +32,10 @@
     height: calc(100% - 21.3125rem);
     overflow:auto;
   }
+  .profile-img {
+    height: 124px;
+    width: 100%;
+  }
 }
 
 &.sheet {
@@ -42,7 +46,7 @@
           padding: 0 5px 0 5px;
           margin-bottom: 0;
         }
-         
+
         .weapon-values {
           margin: 0 5px;
           padding: 0 5px 0 5px;
