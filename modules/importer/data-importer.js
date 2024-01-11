@@ -12,7 +12,7 @@ export default class DataImporter extends FormApplication {
       id: "data-importer",
       classes: ["starwarsffg", "data-import"],
       title: "Data Importer",
-      template: "systems/starwarsffg/templates/importer/data-importer.html",
+      template: "systems/genesysk2/templates/importer/data-importer.html",
     });
   }
 

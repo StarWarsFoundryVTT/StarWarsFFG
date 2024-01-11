@@ -30,12 +30,17 @@ export async function register_crew(...args) {
     } else {
         drag_actor = game.actors.get(args[2].id);
     }
+    if (drag_actor.type === 'vehicle') {
+      CONFIG.logger.debug("Not registering crew as item is a vehicle");
+      return args;
+    }
     // set up the flag data
     let flag_data = [];
     flag_data.push({
         'actor_id': drag_actor.id,
         'actor_name': drag_actor.name,
         'role': '(none)',
+        'link':  await TextEditor.enrichHTML(drag_actor?.link) || null,
     });
 
     CONFIG.logger.debug("Looking up existing crew information");
@@ -132,9 +137,10 @@ export async function change_role(vehicle_actor, crew_member, old_crew_role, new
 export function build_crew_roll(vehicle, crew_id, crew_role) {
   // look up the sheet for passing to the roller
   const crew_member = game.actors.get(crew_id);
+  const vehicle_actor = game.actors.get(vehicle);
   if (crew_member === undefined) {
     ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Actor.Removed"));
-    deregister_crew(ship, crew_id, crew_role);
+    deregister_crew(vehicle_actor, crew_id, crew_role);
     return false;
   }
   const starting_pool = {'difficulty': 0};

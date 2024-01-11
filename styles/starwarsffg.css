@@ -1594,7 +1594,7 @@ img {
   border: none;
 }
 .starwarsffg .item-rollable.rollable:hover {
-  background-image: url(/systems/starwarsffg/images/generic-die.svg) !important;
+  background-image: url(/systems/genesysk2/images/generic-die.svg) !important;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -2893,4 +2893,11 @@ img {
 .destiny-flip.dPoolLight {
   background-color: #b8383b;
   color: white;
+}
+.starwarsffg .skillsGrid.crew .dice-pool.crew {
+  margin: 0;
+}
+.starwarsffg .skillsGrid.crew {
+  justify-content: center;
+  height: 24px;
 }

@@ -1,6 +1,6 @@
 import { ActorSheetFFG } from "./actor-sheet-ffg.js";
 
-export class ActorSheetFFGV2 extends ActorSheetFFG {
+export class ActorSheetK2G extends ActorSheetFFG {
   constructor(...args) {
     super(...args);
   }
@@ -8,8 +8,8 @@ export class ActorSheetFFGV2 extends ActorSheetFFG {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["starwarsffg", "sheet", "actor", "v2"],
-      template: "systems/genesysk2/templates/actors/ffg-character-sheet.html",
+      classes: ["k2G", "sheet", "actor", "v2"],
+      template: "systems/genesysk2/templates/actors/k2g-character-sheet.html",
       width: 710,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],

@@ -13,7 +13,7 @@ export default class ItemDescriptors {
     await ImportHelpers.asyncForEach(items, async (item) => {
       try {
         let data = ImportHelpers.prepareBaseObject(item, "itemmodifier");
-        data.img = `/systems/starwarsffg/images/mod-${item.Type ? item.Type.toLowerCase() : "all"}.png`;
+        data.img = `/systems/genesysk2/images/mod-${item.Type ? item.Type.toLowerCase() : "all"}.png`;
         data.data = {
           description: item.Description?.length ? item.Description : item.ModDesc,
           attributes: {},

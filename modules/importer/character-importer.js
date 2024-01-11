@@ -9,7 +9,7 @@ export default class CharacterImporter extends FormApplication {
       title: "OggDude Character Importer",
       width: 385,
       height: 200,
-      template: "systems/starwarsffg/templates/importer/character-importer.html",
+      template: "systems/genesysk2/templates/importer/character-importer.html",
     });
   }
 

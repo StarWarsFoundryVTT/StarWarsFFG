@@ -15,7 +15,7 @@ export default class ItemAttachments {
         try {
           let data = ImportHelpers.prepareBaseObject(item, "itemattachment");
           if (Array.isArray(item.Type)) item.Type = item.Type[0];
-          data.img = `/systems/starwarsffg/images/mod-${item?.Type ? item.Type.toLowerCase() : "all"}.png`;
+          data.img = `/systems/genesysk2/images/mod-${item?.Type ? item.Type.toLowerCase() : "all"}.png`;
           data.data = {
             description: item.Description,
             attributes: {},
