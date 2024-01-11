@@ -124,6 +124,7 @@ export class ActorSheetFFG extends ActorSheet {
               'role': crew[i].role,
               'img': img,
               'roll': build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role),
+              'link': crew[i]?.link,
             })
           }
         }
@@ -608,18 +609,18 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     // Delete Crew
-    html.find(".crew-delete").click((ev) => {
-      const crew_id = $(ev.currentTarget).parents(".item").data("itemId");
-      const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
+    html.find(".crew-delete").click(async (ev) => {
+      const crew_member_id = $(ev.currentTarget).parents(".item").data("actor-id");
+      const crew_role = $(ev.currentTarget).parents(".item").data("role-name");
       const actor = this.actor;
 
-      deregister_crew(actor, roles[1], roles[2]);
+      deregister_crew(actor, crew_member_id, crew_role);
     });
 
     // Edit Crew
     html.find(".crew-edit").click(async (ev) => {
-      const crew_id = $(ev.currentTarget).parents(".item").data("itemId");
-      const roles = crew_id.split('-'); // vehicle_id, crew_member_id, crew_role
+      const crew_member_id = $(ev.currentTarget).parents(".item").data("actor-id");
+      const crew_role = $(ev.currentTarget).parents(".item").data("role-name");
       const registered_roles = await game.settings.get('starwarsffg', 'arrayCrewRoles');
       const role_buttons = {};
       const actor = this.actor;
@@ -628,7 +629,7 @@ export class ActorSheetFFG extends ActorSheet {
         role_buttons[registered_roles[i].role_name] = {
           label: registered_roles[i].role_name,
           callback: (html) => {
-            change_role(actor, roles[1], roles[2], registered_roles[i].role_name);
+            change_role(actor, crew_member_id, crew_role, registered_roles[i].role_name);
           }
         }
       }

@@ -2894,3 +2894,10 @@ img {
   background-color: #b8383b;
   color: white;
 }
+.starwarsffg .skillsGrid.crew .dice-pool.crew {
+  margin: 0;
+}
+.starwarsffg .skillsGrid.crew {
+  justify-content: center;
+  height: 24px;
+}

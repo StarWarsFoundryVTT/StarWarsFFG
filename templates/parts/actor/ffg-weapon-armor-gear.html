@@ -184,22 +184,37 @@
 <ul class="items">
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.VehicleTabShipCrew"}}</div>
-    <div>Role</div><div></div>
+    <div>{{localize "SWFFG.VehicleCrewRole"}}</div>
+    <div>{{localize "SWFFG.VehicleCrewRoll"}}</div>
+    <div></div>
   </li>
 
   <ul class="items-list">
     {{#each crew as |item id|}} {{#iff item.type '==' 'shipcrew'}}
-    <li class="item flexrow" data-item-id="{{ ../this.actor._id }}-{{ item.id }}-{{ item.role }}">
+    <li class="item flexrow" data-item-id="{{ ../this.actor._id }}-{{ item.id }}-{{ item.role }}" data-ship-id="{{ ../this.actor._id }}" data-actor-id="{{ item.id }}" data-role-name="{{ item.role }}">
       <div class="item-name">
         <div class="roll-button-crew">
           <!-- Create define a button with mouseover events to update the icon and generate rolls when clicked and moused over -->
           <div class="skill-label rollable roll-button-crew starwarsffg item-rollable" style="background-image: url('{{ item.img }}')"></div>
         </div>
-        {{ item.name }}
+        {{#if item.link}}
+          {{{ item.link }}}
+        {{else}}
+          {{ item.name }}
+        {{/if}}
       </div>
-      <div class="crew_role" style="flex: 6;">
+      <div class="crew_role">
         <div>{{ item.role }}</div>
-        {{#if (eq item.role "(none)")}}{{else}}<div class="skillsGrid" style="justify-content: center;"><div class="dice-pool">{{{ item.roll }}}</div></div>{{/if}}
+      </div>
+      <div>
+        {{#if (eq item.role "(none)")}}
+        {{else}}
+          <div class="crew skillsGrid">
+            <div class="crew dice-pool">
+              {{{ item.roll }}}
+            </div>
+          </div>
+        {{/if}}
       </div>
       <div class="item-controls">
         <a class="item-control crew-edit" title="Edit Role"><i class="fas fa-edit"></i></a>

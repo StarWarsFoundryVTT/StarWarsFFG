@@ -3953,3 +3953,10 @@ img {
 .ffg-destiny-roll {
   cursor: pointer;
 }
+.starwarsffg .skillsGrid.crew .dice-pool.crew {
+  margin: 0;
+}
+.starwarsffg .skillsGrid.crew {
+  justify-content: center;
+  height: 24px;
+}
