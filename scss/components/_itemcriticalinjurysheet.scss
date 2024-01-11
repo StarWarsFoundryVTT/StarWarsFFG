@@ -10,7 +10,7 @@
 
   .block-background {
     background-color: $swffg-injury-color-light;
-    
+
     .block-title {
       background-color: $swffg-injury-color;
     }
@@ -50,7 +50,12 @@
   .sheet-body {
     height: calc(100% - 19.375rem);
   }
-  
+
+  .profile-img {
+    height: 124px;
+    width: 100%;
+  }
+
 }
 
 &.sheet {

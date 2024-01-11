@@ -13,30 +13,30 @@
             margin-bottom: 0;
           }
         }
-    
+
         .grid {
           margin: 5px;
-    
+
           &.grid-4col {
             margin: 10px;
           }
         }
-    
+
         .block-background {
           position: relative;
         }
-    
+
         .flex-group-right {
           border: 0;
           padding: 0 5px;
         }
-    
+
         .profile-block {
           position: absolute;
           left: 50%;
           transform: translateX(-50%);
           width: 100%;
-    
+
           .profile-img {
             height: 200px;
             width: 100%;
@@ -44,10 +44,10 @@
           }
         }
       }
-    
+
       .defense-group {
         width: 100%;
-    
+
         .defense-decoration {
           position: absolute;
           width: 175px;
@@ -57,7 +57,7 @@
           left: 50%;
           transform: translate(-50%, -50%) rotate(45deg);
           background: conic-gradient($swffg-vehicle-defense-color1 0% 25%, $swffg-vehicle-defense-color2 25% 50%, $swffg-vehicle-defense-color1 50% 75%, $swffg-vehicle-defense-color2 75% 100%);
-    
+
           img {
             position: absolute;
             top: 50%;
@@ -67,12 +67,12 @@
           }
         }
       }
-    
+
       .defense-block {
         height: 200px;
         width: 100%;
         position: relative;
-    
+
         .defense-block-title {
           position: absolute;
           top: 0;
@@ -82,19 +82,19 @@
           color: white;
           width: 90px;
           text-align: center;
-    
+
           --notchSize: 9px;
-    
+
           clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
         }
-    
+
         .defense-value {
           border-radius: 10px;
           border: 5px double rgb(31, 28, 57);
           margin: auto;
           position: absolute;
           background-color: white;
-    
+
           .defense-value-label {
             position: absolute;
             text-transform: uppercase;
@@ -106,56 +106,61 @@
             left: 50%;
             transform: translateX(-50%);
             --notchSize: 7px;
-    
+
             clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
           }
-    
+
           &.fore {
             top: 0;
             left: 50%;
             transform: translateX(-50%);
-    
+
             .defense-value-label {
               bottom: -20px;
             }
           }
+
           &.aft {
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-    
+
             .defense-value-label {
               top: -20px;
             }
           }
+
           &.port {
             left: 0;
             top: 50%;
             transform: translateY(-50%);
+
             .defense-value-label {
               left: 50px;
               top: 50%;
               transform: translateY(-50%);
             }
           }
+
           &.starboard {
             right: 0;
             top: 50%;
             transform: translateY(-50%);
+
             .defense-value-label {
               left: -50px;
               top: 50%;
               transform: translateY(-50%);
             }
           }
-    
+
           input {
             height: 40px;
             width: 40px;
             border: 0;
             font-size: 30px;
             text-align: center;
-    
+
             &:focus {
               box-shadow: 0 0 5px $swffg-input-background;
               background-color: $swffg-input-background;
@@ -164,14 +169,14 @@
           }
         }
       }
-    
+
       .characteristic-item {
         width: 100%;
-    
+
         .characteristic-label {
           background-color: $swffg-vehicle-characteristic-color;
         }
-    
+
         .characteristic {
           border-radius: 10px;
           border: 5px double $swffg-vehicle-color;
@@ -183,30 +188,30 @@
           }
         }
       }
-    
+
       .attribute {
         .block-title {
           background-color: $swffg-vehicle-color;
         }
       }
-    
+
       .resource {
         &.single {
           width: 115px;
         }
       }
-    
+
       .biography-values {
         border: 0;
       }
 
       .sheet-body {
         height: calc(100% - 28.875rem);
-        overflow:auto;
+        overflow: auto;
 
         .biography {
           height: calc(100% - 6.5rem);
-          overflow:auto;
+          overflow: auto;
         }
       }
 
@@ -218,6 +223,18 @@
         }
       }
     }
+
+    .skillsGrid {
+      &.crew {
+        justify-content: center;
+        height: 24px;
+
+        .dice-pool {
+          &.crew {
+            margin: 0;
+          }
+        }
+      }
+    }
   }
 }
-

@@ -4,7 +4,6 @@
     min-height: 54px;
     text-align: center;
   }
-  
   .pool-value {
     border: 1px solid black;
     background-color: #ddd;
@@ -31,7 +30,7 @@
       line-height: 20px;
       font-size: 12px;
       text-align: left;
-    }   
+    }
   }
 
   .pool-dice-pool {
@@ -76,7 +75,7 @@
   }
 
   .minimize {
-    max-width: 20%;    
+    max-width: 20%;
   }
 
   .maximize {
@@ -98,6 +97,23 @@
     .roll {
       width: 40px;
       float: left;
+    }
+  }
+}
+
+&.dice-roll {
+  .dice-result {
+    .dice-tooltip {
+      &.expanded {
+        .dice-rolls {
+          .roll {
+            &.isFFG {
+              width: 24px;
+              float: left;
+            }
+          }
+        }
+      }
     }
   }
 }
@@ -136,7 +152,7 @@
       width: 70%;
     }
   }
-  
+
   .item-miss {
     text-align: center;
     font-style: italic;
@@ -159,14 +175,14 @@
     &.adjusted {
       color: #8b0000;
     }
-    
+
     .rank {
       padding-right: 15px;
       &:hover {
         color: green;
       }
     }
-  
+
     .item-delete {
       cursor: pointer;
       &:hover {
@@ -176,4 +192,3 @@
   }
 
 }
-

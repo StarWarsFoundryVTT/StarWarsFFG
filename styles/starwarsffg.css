@@ -1127,7 +1127,7 @@ img {
   width: 40px;
   float: left;
 }
-.starwarsffg .dice-tooltip .dice-rolls .roll {
+.starwarsffg.dice-roll .dice-result .dice-tooltip.expanded .dice-rolls .roll.isFFG {
   width: 24px;
   float: left;
 }
@@ -1773,10 +1773,6 @@ img {
 .starwarsffg .item-sheet-gear .charname input {
   color: #2c0344;
 }
-.starwarsffg .item-sheet-gear .profile-img {
-  height: 124px;
-  width: 100%;
-}
 .starwarsffg .item-sheet-gear .characteristic-item .characteristic-label {
   background-color: #2c0344;
 }
@@ -1792,6 +1788,10 @@ img {
 .starwarsffg .item-sheet-gear .sheet-body {
   height: calc(100% - 21.3125rem);
   overflow: auto;
+}
+.starwarsffg .item-sheet-gear .profile-img {
+  height: 124px;
+  width: 100%;
 }
 .starwarsffg.sheet.item.v2 .item-sheet-gear .container.flex-group-center {
   padding: 0 5px 0 5px;
@@ -2058,6 +2058,13 @@ img {
 .starwarsffg.sheet.actor .vehicle .injuries .resource.full {
   width: 100%;
 }
+.starwarsffg.sheet.actor .skillsGrid.crew {
+  justify-content: center;
+  height: 24px;
+}
+.starwarsffg.sheet.actor .skillsGrid.crew .dice-pool.crew {
+  margin: 0;
+}
 .starwarsffg.sheet.actor .homestead .sheet-header .homestead-img {
   height: 20vmin;
 }
@@ -2255,10 +2262,6 @@ img {
 .starwarsffg .item-sheet-criticalinjury .block-background .block-title {
   background-color: #830707;
 }
-.starwarsffg .item-sheet-criticalinjury .profile-img {
-  height: 124px;
-  width: 100%;
-}
 .starwarsffg .item-sheet-criticalinjury .severity-img {
   max-height: 15px;
   max-width: 15px;
@@ -2284,6 +2287,10 @@ img {
 }
 .starwarsffg .item-sheet-criticalinjury .sheet-body {
   height: calc(100% - 19.375rem);
+}
+.starwarsffg .item-sheet-criticalinjury .profile-img {
+  height: 124px;
+  width: 100%;
 }
 .starwarsffg.sheet.item.v2 .item-sheet-criticalinjury .sheet-body {
   height: calc(100% - 18.75rem);
@@ -2893,11 +2900,4 @@ img {
 .destiny-flip.dPoolLight {
   background-color: #b8383b;
   color: white;
-}
-.starwarsffg .skillsGrid.crew .dice-pool.crew {
-  margin: 0;
-}
-.starwarsffg .skillsGrid.crew {
-  justify-content: center;
-  height: 24px;
 }
