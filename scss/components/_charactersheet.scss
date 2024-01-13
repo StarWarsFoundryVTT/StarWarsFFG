@@ -16,7 +16,23 @@ $swffg-table-header-color: rgb(145, 145, 145);
       .header-fields {
         flex: 1;
         height: auto;
-      
+        .drag-note {
+          border: 2px dotted;
+          border-radius: 10px;
+          padding: 0 5px;
+          width: fit-content;
+        }
+        .specialization-pill, .species-pill, .career-pill, .signatureability-pill, .forcepower-pill {
+          padding: 3px 9px;
+          background-color: #aaa;
+          border: 1px solid black;
+          border-radius: 20px;
+          width: fit-content;
+          .item-delete {
+            cursor: pointer;
+          }
+        }
+
         .block-background-shadow {
           top: 36px;
         }
@@ -25,94 +41,76 @@ $swffg-table-header-color: rgb(145, 145, 145);
           margin: 0;
           width: 100%;
         }
-      
+
         .header-name {
           margin: 0;
           position: relative;
           width: 100%;
-      
+
           input {
             margin: 0;
             width: 100%;
             border: 0;
             background-color: rgba(0, 0, 0, 0);
-      
+
             &:focus {
               box-shadow: 0 0 5px $swffg-input-background;
               background-color: $swffg-input-background;
             }
           }
         }
-      
+
         .header-description-block {
           margin-bottom: 5px;
           margin-top: 5px;
         }
-      
+
         .header-description {
           background-color: rgb(196, 219, 233);
           --notchSize: 10px;
           padding: 3px;
-      
+
           clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
         }
-      
+
         .table {
           display: table;
           width: 100%;
         }
-      
+
         .row {
           display: table-row;
           width: 100%;
-      
+
           div {
             display: table-cell;
           }
-      
+
           .row-input {
             width:100%;
             padding: 1px 5px;
-      
-            .specialization-pill, .species-pill, .career-pill {
-              padding: 3px 9px;
-              background-color: #aaa;
-              border: 1px solid black;
-              border-radius: 20px;
-      
-              .item-delete {
-                cursor: pointer;
-              }
-            }
-
-            .drag-note {
-              border: 2px dotted;
-              border-radius: 10px;
-              padding: 0 5px;
-            }
-          
           }
-      
+
           input {
             width: 100%;
             border: 0;
             border-bottom: 1px solid black;
             border-radius: 0;
-      
+
             &:focus {
               box-shadow: 0 0 5px $swffg-input-background;
               background-color: $swffg-input-background;
             }
           }
         }
-      
+
         .profile-block {
           margin-right: 5px;
           margin-left: 5px;
           height: 130px;
           max-width: 130px;
         }
-      
+
         .profile-img {
           flex: 0 0 100px;
           height: 124px;
@@ -123,7 +121,7 @@ $swffg-table-header-color: rgb(145, 145, 145);
           object-fit: contain;
         }
       }
-      
+
       .sheet-body {
         height: calc(100% - 13.75rem);
         overflow:hidden;
@@ -132,7 +130,7 @@ $swffg-table-header-color: rgb(145, 145, 145);
           .grid {
             margin: 0;
           }
-          
+
           .resource {
             width: 100%;
             line-height: normal;
@@ -140,7 +138,7 @@ $swffg-table-header-color: rgb(145, 145, 145);
             p {
               padding: 0 0.3125rem;
             }
-                        
+
             &.full {
               width:100%;
 
@@ -190,7 +188,7 @@ $swffg-table-header-color: rgb(145, 145, 145);
                 .block-background {
                   height: 100%;
 
-                  .block-attribute {  
+                  .block-attribute {
                     height: calc(100% - 0.9375rem);
                     overflow: hidden;
 
@@ -215,7 +213,7 @@ $swffg-table-header-color: rgb(145, 145, 145);
                 .block-background {
                   height: 100%;
 
-                  .block-attribute {  
+                  .block-attribute {
                     height: calc(100% - 0.9375rem);
                     overflow: hidden;
 
@@ -249,8 +247,8 @@ $swffg-table-header-color: rgb(145, 145, 145);
               min-height: 4.6875rem;
             }
           }
-          
-          
+
+
         }
 
         .tab {
@@ -273,7 +271,7 @@ $swffg-table-header-color: rgb(145, 145, 145);
           height: calc(100% - 32.1875rem);
           overflow:auto;
         }
-      
+
         table {
           &.force-powers {
             border: 0;
@@ -303,6 +301,11 @@ $swffg-table-header-color: rgb(145, 145, 145);
           }
         }
       }
+    }
+    .character-details-table {
+      border-top: none;
+      border-bottom: none;
+      background: none;
     }
   }
 }
