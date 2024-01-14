@@ -518,7 +518,7 @@ export class ActorSheetFFG extends ActorSheet {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
         }
         if (item?.sheet) {
-          if (item?.type == "species" || item?.type == "career" || item?.type == "specialization") item.sheet.render(true);
+          if (item?.type == "species" || item?.type == "career" || item?.type == "specialization" || item?.type == "forcepower" || item?.type == "signatureability") item.sheet.render(true);
           else this._itemDisplayDetails(item, ev);
         }
 

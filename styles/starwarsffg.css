@@ -281,6 +281,26 @@ img {
   flex: 1;
   height: auto;
 }
+.starwarsffg.sheet.actor .character .header-fields .drag-note {
+  border: 2px dotted;
+  border-radius: 10px;
+  padding: 0 5px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.starwarsffg.sheet.actor .character .header-fields .specialization-pill, .starwarsffg.sheet.actor .character .header-fields .species-pill, .starwarsffg.sheet.actor .character .header-fields .career-pill, .starwarsffg.sheet.actor .character .header-fields .signatureability-pill, .starwarsffg.sheet.actor .character .header-fields .forcepower-pill {
+  padding: 3px 9px;
+  background-color: #aaa;
+  border: 1px solid black;
+  border-radius: 20px;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.starwarsffg.sheet.actor .character .header-fields .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .career-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .signatureability-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .forcepower-pill .item-delete {
+  cursor: pointer;
+}
 .starwarsffg.sheet.actor .character .header-fields .block-background-shadow {
   top: 36px;
 }
@@ -328,20 +348,6 @@ img {
 .starwarsffg.sheet.actor .character .header-fields .row .row-input {
   width: 100%;
   padding: 1px 5px;
-}
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .specialization-pill, .starwarsffg.sheet.actor .character .header-fields .row .row-input .species-pill, .starwarsffg.sheet.actor .character .header-fields .row .row-input .career-pill {
-  padding: 3px 9px;
-  background-color: #aaa;
-  border: 1px solid black;
-  border-radius: 20px;
-}
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .career-pill .item-delete {
-  cursor: pointer;
-}
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .drag-note {
-  border: 2px dotted;
-  border-radius: 10px;
-  padding: 0 5px;
 }
 .starwarsffg.sheet.actor .character .header-fields .row input {
   width: 100%;
@@ -492,6 +498,11 @@ img {
   text-align: right;
   width: auto;
   z-index: auto;
+}
+.starwarsffg.sheet.actor .character-details-table {
+  border-top: none;
+  border-bottom: none;
+  background: none;
 }
 .starwarsffg.sheet.actor.v2 .character .sheet-body .skillsTablesGrid {
   height: calc(100% - 31.1875rem);

@@ -16,38 +16,90 @@
             <div style="{{#if limited}}display:none;{{/if}}">
               <h2><input name="name" type="text" value="{{actor.name}}" placeholder="{{localize 'SWFFG.Name'}}" data-dtype="String" /></h2>
             </div>
-            <div class="table">
-              <div class="row">
-                <div>{{localize "SWFFG.Species"}}:</div>
-                <div class="row-input">
+            <table class="character-details-table">
+              <tbody>
+              <tr>
+                <td>
+                  {{localize "SWFFG.Species"}}:
+                </td>
+                <td>
                   {{#each_when actor.items "type" "species"}}
-                  <div class="species-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
+                    <div class="species-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
                   {{else}}
-                  <div class="drag-note">Drag Here</div>
+                    <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
-                </div>
-              </div>
-              <div class="row" style="{{#if limited}}display:none;{{/if}}">
-                <div>{{localize "SWFFG.Career"}}:</div>
-                <div class="row-input">
+                </td>
+                <td style="{{#if limited}}display:none;{{/if}}">
+                  {{localize "SWFFG.SignatureAbilities"}}:
+                </td>
+                <td style="{{#if limited}}display:none;{{/if}}">
+                  {{#each_when actor.items "type" "signatureability"}}
+                  <div class="signatureability-pill item" data-item-id="{{item._id}}">
+                    {{item.name}} <i class="fas fa-times item-delete"></i>
+                  </div>
+                  {{else}}
+                  <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
+                  {{/each_when}}
+                </td>
+              </tr>
+              <tr style="{{#if limited}}display:none;{{/if}}">
+                <td>
+                  {{localize "SWFFG.Career"}}:
+                </td>
+                <td>
                   {{#each_when actor.items "type" "career"}}
                   <div class="career-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
                   {{else}}
-                  <div class="drag-note">Drag Here</div>
+                  <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
-                </div>
-              </div>
-              <div class="row" style="{{#if limited}}display:none;{{/if}}">
-                <div>{{localize "SWFFG.Specializations"}}:</div>
-                <div class="row-input">
-                  {{#each_when actor.items "type" "specialization"}}
-                  <div class="specialization-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
+                </td>
+                <td>
+                  {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
+                  {{localize "SWFFG.ForcePowers"}}:
+                  {{/if}}
+                </td>
+                <td>
+                  {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
+                  {{#each_when actor.items "type" "forcepower"}}
+                  <div class="forcepower-pill item" data-item-id="{{item._id}}">
+                    {{item.name}} <i class="fas fa-times item-delete"></i>
+                  </div>
                   {{else}}
-                  <div class="drag-note">Drag Here</div>
+                  <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
-                </div>
-              </div>
-            </div>
+                  {{/if}}
+                </td>
+              </tr>
+              <tr style="{{#if limited}}display:none;{{/if}}">
+                <td>
+                  {{localize "SWFFG.Specializations"}}:
+                </td>
+                <td>
+                  {{#each_when actor.items "type" "specialization"}}
+                  <div class="specialization-pill item" data-item-id="{{item._id}}">
+                    {{item.name}} <i class="fas fa-times item-delete"></i>
+                  </div>
+                  {{else}}
+                  <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
+                  {{/each_when}}
+                </td>
+                <td></td>
+                <td></td>
+              </tr>
+              {{#if (contains classType "V2")}}{{else}}
+              <tr style="{{#if limited}}display:none;{{/if}}">
+                <td>
+                  <div>
+                    <a class="alt-tab" data-tab="general"><i class="far fa-id-card"></i></a>
+                  </div>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              {{/if}}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
