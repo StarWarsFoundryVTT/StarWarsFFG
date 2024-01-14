@@ -13,6 +13,7 @@ import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
 import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
 import { ActorSheetFFGV2 } from "./actors/actor-sheet-ffg-v2.js";
+import { ActorSheetK2G } from "./actors/actor-sheet-k2g-v2.js";
 import { AdversarySheetFFG } from "./actors/adversary-sheet-ffg.js";
 import { AdversarySheetFFGV2 } from "./actors/adversary-sheet-ffg-v2.js";
 import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
@@ -54,7 +55,8 @@ async function parseSkillList() {
 }
 
 Hooks.once("init", async function () {
-  console.log(`Initializing SWFFG System`);
+  console.log(`Initializing K2Genesys
+   System`);
   // Place our classes in their own namespace for later reference.
   game.ffg = {
     ActorFFG,
@@ -127,7 +129,7 @@ Hooks.once("init", async function () {
   };
 
   // Load character templates so that dynamic skills lists work correctly
-  loadTemplates(["systems/genesysk2/templates/actors/ffg-character-sheet.html", "systems/genesysk2/templates/actors/ffg-minion-sheet.html"]);
+  loadTemplates(["systems/genesysk2/templates/actors/k2g-character-sheet.html", "systems/genesysk2/templates/actors/ffg-character-sheet.html",  "systems/genesysk2/templates/actors/ffg-minion-sheet.html"]);
 
   SettingsHelpers.initLevelSettings();
 
@@ -296,8 +298,9 @@ Hooks.once("init", async function () {
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFG, { makeDefault: true, label: "Actor Sheet v1" });
+  Actors.registerSheet("ffg", ActorSheetFFG, { /*makeDefault: true,*/ label: "Actor Sheet v1" });
   Actors.registerSheet("ffg", ActorSheetFFGV2, { label: "Actor Sheet v2" });
+  Actors.registerSheet("ffg", ActorSheetK2G, { makeDefault: true, label: "Actor Sheet K² Genesys" });
   Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
   Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
   Items.unregisterSheet("core", ItemSheet);

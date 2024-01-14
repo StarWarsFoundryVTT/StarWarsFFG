@@ -293,9 +293,15 @@ img {
   position: relative;
   width: 100%;
 }
+.starwarsffg.sheet.actor .character .header-fields .header-name .container input{
+  margin: 0;
+  position: relative;
+  border: 0;
+  background-color: rgba(136, 134, 134, 0) !important;  
+}
 .starwarsffg.sheet.actor .character .header-fields .header-name input {
   margin: 0;
-  width: 100%;
+  /*width: 100%;*/
   border: 0;
   background-color: rgba(0, 0, 0, 0);
 }

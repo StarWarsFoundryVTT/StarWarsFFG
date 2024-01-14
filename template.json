@@ -62,7 +62,58 @@
             "type": "Number",
             "label": "Credits",
             "adjusted": 0
+          },
+          "monney" : {
+            "lune":{
+              "value":0,
+              "type" : "Number",
+              "label" : "K2G.lune",
+              "ajusted": 0,
+              "upper" : {
+                "name": "demielune",
+                "rapport" : 5
+              },
+              "lower" : {
+                "name":"lune",
+                "rapport" : 5
+              }
+            },
+            "orc":{
+              "value":0,
+              "type" : "Number",
+              "label" : "K2G.orc",
+              "ajusted": 0,
+              "upper" : {
+                "name": "emeraude",
+                "rapport" : 5
+              },
+              "lower" : {
+                "name":"lune",
+                "rapport" : 5
+              }
+            }
+          },
+          "ressources": {
+            "pool1":  {
+              "name" : "Magie",
+              "value": 0,
+              "max": 0,
+              "adjusted": 0
+            },
+            "pool2":  {
+              "name" : "",
+              "value": 0,
+              "max": 0,
+              "adjusted": 0
+            },
+            "pool3":  {
+              "name" : "",
+              "value": 0,
+              "max": 0,
+              "adjusted": 0
+            }
           }
+
         }
       },
       "characteristics": {

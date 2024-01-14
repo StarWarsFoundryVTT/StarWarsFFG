@@ -16,7 +16,7 @@
   "SWFFG.ForcePoolAvailable": "Disponible",
   "SWFFG.Encumbrance": "Encombrement",
   "SWFFG.TabCharacteristics": "Caractéristiques",
-  "SWFFG.TabGear": "Matériel & Equipment",
+  "SWFFG.TabGear": "Equipment",
   "SWFFG.TabTalents": "Talents",
   "SWFFG.TabBiography": "Biographie",
   "SWFFG.TabDescription": "Description",
@@ -542,6 +542,10 @@
   "K2G" : {
     "SkillsNameMeleeShort": "Mêlée : courte",
     "SkillsNameMeleeShortAbbreviation" :"Cmb.C",
-    "SkillsNameMegantique" : "Mégagantique"
+    "SkillsNameMegantique" : "Mégagantique",
+    "RES1": "Magie",
+    "RES2": "Panache",
+    "RES3" : "Load",
+    "TabSpell" : "Sorts"
   }
 }
