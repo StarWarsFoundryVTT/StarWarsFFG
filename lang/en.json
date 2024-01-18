@@ -22,10 +22,13 @@
   "TYPES.Item.species": "Species",
   "TYPES.Item.weapon": "Weapon",
 
+  "SWFFG.DragNotes": "Drag Here",
   "SWFFG.Name": "Name",
   "SWFFG.Species": "Species",
   "SWFFG.Career": "Career",
   "SWFFG.Specializations": "Specializations",
+  "SWFFG.SignatureAbilities": "Signature Abilities",
+  "SWFFG.ForcePowers": "Force Powers",
   "SWFFG.Wounds": "Wounds",
   "SWFFG.Strain": "Strain",
   "SWFFG.Soak": "Soak",

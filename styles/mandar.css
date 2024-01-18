@@ -340,11 +340,17 @@ img {
   border: 0;
   background-color: rgba(0, 0, 0, 0);
 }
+.starwarsffg.sheet.actor .character-details-table {
+  border-top: none;
+  border-bottom: none;
+  background: none;
+}
 
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .drag-note {
+.starwarsffg.sheet.actor .character .header-fields .drag-note {
   border: 2px dotted;
   border-radius: 10px;
   padding: 0 5px;
+  width: fit-content;
 }
 
 .starwarsffg.sheet.actor .character .header-fields .header-name input:focus {
@@ -361,15 +367,16 @@ img {
   display: table-cell;
 }
 
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .specialization-pill, .starwarsffg.sheet.actor .character .header-fields .row .row-input .species-pill, .starwarsffg.sheet.actor .character .header-fields .row .row-input .career-pill {
+.starwarsffg.sheet.actor .character .header-fields .specialization-pill, .starwarsffg.sheet.actor .character .header-fields .species-pill, .starwarsffg.sheet.actor .character .header-fields .career-pill, .starwarsffg.sheet.actor .character .header-fields .signatureability-pill, .starwarsffg.sheet.actor .character .header-fields .forcepower-pill {
   padding: 0.1rem 0.5rem;
   background-color: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
   cursor: pointer;
+  width: fit-content;
 }
 
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .career-pill .item-delete {
+.starwarsffg.sheet.actor .character .header-fields .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .career-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .signatureability-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .forcepower-pill .item-delete {
   cursor: pointer;
 }
 
@@ -3262,6 +3269,9 @@ img {
   width: 100%;
   min-height: 2rem;
   position: relative;
+}
+.starwarsffg .item-sheet-forcepower .required_fr input[type=text] {
+  width: 10px;
 }
 
 .starwarsffg .item-sheet-forcepower {
