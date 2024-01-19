@@ -837,7 +837,7 @@ img {
 }
 .starwarsffg .talent-upgrade {
   position: relative;
-  margin: 10px 10px 0 10px;
+  margin: 10px 10px 5px 10px;
 }
 .starwarsffg .talent-upgrade .talent-actions {
   display: none;
@@ -2415,7 +2415,7 @@ img {
   min-height: 600px;
 }
 .starwarsffg .item-sheet-specialization .talent-upgrade {
-  margin: 1px 10px 4px 10px;
+  margin: 5px 10px 10px 10px;
 }
 .starwarsffg .item-sheet-specialization .sheet-body {
   margin: 0;
