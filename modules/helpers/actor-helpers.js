@@ -155,6 +155,10 @@ export default class ActorHelpers {
           });
         }
       }
+      if (this.object.type === "minion") {
+        // include the updated quantity of minions in the group in the update object so automation can access it
+        formData.data.quantity.value = Math.min(formData.data.quantity.max, formData.data.quantity.max - Math.floor(formData.data.stats.wounds.value - 1) / formData.data.unit_wounds.value);
+      }
     }
     // Handle the free-form attributes list
     const formAttrs = expandObject(formData)?.data?.attributes || {};
