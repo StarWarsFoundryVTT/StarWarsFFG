@@ -159,10 +159,16 @@ export class ItemFFG extends ItemBaseFFG {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  if (foundItem.system?.rank) {
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  }
                 } else {
-                  am.system.rank_current = 1;
-                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
+                  if (am.system?.rank) {
+                    am.system.rank_current = 1;
+                  } else {
+                    am.system.rank_current = null;
+                  }
+                  data.adjusteditemmodifier.push({...am, adjusted: true});
                 }
               });
             }
@@ -241,10 +247,16 @@ export class ItemFFG extends ItemBaseFFG {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  if (foundItem.system?.rank) {
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  }
                 } else {
-                  am.system.rank_current = 1;
-                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
+                  if (am.system?.rank) {
+                    am.system.rank_current = 1;
+                  } else {
+                    am.system.rank_current = null;
+                  }
+                  data.adjusteditemmodifier.push({...am, adjusted: true});
                 }
               });
             }

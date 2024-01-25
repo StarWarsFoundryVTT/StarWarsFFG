@@ -8,15 +8,12 @@
         <div class="container flex-group-center item-name">
           <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
         </div>
-
-        <div class="hidden-content">
-          <input name="data.rank" type="text" value="{{data.rank}}" />
-        </div>
       </div>
     </div>
+
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fas fa-cog" isHidden=isTemp cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body small">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -30,7 +27,10 @@
 
     <div class="tab configuration" data-group="primary" data-tab="configuration">
       <div class="container flex-group-center">
-        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Type" type="Dropdown" name="data.type" value=data.type options=this.FFG.itemmodifier_types)}}
+        {{#if isTemp }}{{ else }}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Type" type="Dropdown" name="data.type" value=data.type options=this.FFG.itemmodifier_types)}}
+        {{/if}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="Rank" type="Number" name="data.rank" value=data.rank )}}
       </div>
     </div>
   </section>
