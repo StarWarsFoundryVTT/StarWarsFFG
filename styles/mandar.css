@@ -3970,3 +3970,18 @@ img {
   justify-content: center;
   height: 24px;
 }
+
+.starwarsffg #combat-tracker .slot-Friendly {
+  background: rgba(21, 87, 134, 0.3);
+  color: #f0f0e0;
+}
+.starwarsffg #combat-tracker .slot-Friendly.slot-unused-true {
+  background: rgba(4, 37, 61, 0.3);
+}
+.starwarsffg #combat-tracker .slot-Enemy {
+  background: rgba(146, 52, 20, 0.3);
+  color: #f0f0e0;
+}
+.starwarsffg #combat-tracker .slot-Enemy.slot-unused-true {
+  background: rgba(87, 9, 9, 0.3);
+}

@@ -609,5 +609,14 @@
   "SWFFG.Crew.Settings.Hint": "Define the roles crew members can have",
   "SWFFG.Crew.Card.Role": "Role",
   "SWFFG.Notifications.DragAndDropFirst": "You must drag-and-drop a talent before you can edit it.",
-  "SWFFG.Notifications.TalentEditGlobally": "You cannot edit specialization talents if they exist globally, edit the item in the world or compendium instead."
+  "SWFFG.Notifications.TalentEditGlobally": "You cannot edit specialization talents if they exist globally, edit the item in the world or compendium instead.",
+  "SWFFG.Notifications.Combat.Claim.OneToken": "You must have exactly one token selected to claim an initiative slot",
+  "SWFFG.Notifications.Combat.Claim.Combatant": "Selected token must be in the combat",
+  "SWFFG.Notifications.Combat.Claim.SlotType": "Selected token must have the same disposition as the slot you are claiming",
+  "SWFFG.Notifications.Combat.Claim.UnClaim": "Un-claim This Initiative Slot",
+  "SWFFG.Notifications.Combat.Claim.Claim": "Claim This Initiative Slot",
+  "SWFFG.Notifications.Combat.Claim.Unused": "Unused",
+  "SWFFG.Notifications.Combat.Claim.Slot": "Slot",
+  "SWFFG.Settings.UseGenericSlots.Name": "Use Generic Slots",
+  "SWFFG.Settings.UseGenericSlots.Hint": "Disables named slots and replaces them with claimable slots"
 }
