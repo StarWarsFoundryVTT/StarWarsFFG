@@ -216,7 +216,11 @@ export class CombatFFG extends Combat {
    * @returns {*|*[]} - a list of combatant IDs (NOT token IDs, NOT actor IDs)
    */
   getClaims(round) {
-    return this.getFlag('starwarsffg', 'combatClaims')[round] || [];
+    const combatClaims = this.getFlag('starwarsffg', 'combatClaims');
+    if (combatClaims) {
+      return combatClaims[round] || [];
+    }
+    return [];
   }
 
   /**
