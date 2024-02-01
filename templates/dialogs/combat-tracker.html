@@ -21,7 +21,6 @@
 				</a>
 			</nav>
 		{{/if}}
-
 		<div class="encounter-controls flexrow {{#if hasCombat}}combat{{/if}}">
 			{{#if user.isGM}}
 				<a class="combat-button combat-control" data-tooltip="COMBAT.RollAll" data-control="rollAll" {{#unless turns}}disabled{{/unless}}>
@@ -62,6 +61,36 @@
 	</header>
 
 	<ol id="combat-tracker" class="directory-list">
+		{{#if (gt turnData.Friendly.length 0)}}
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			<span class="actor-header">{{localize 'SWFFG.Combats.Actors.Friendly'}}</span>
+		</div>
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			{{#each turnData.Friendly }}
+				<img class="token-image actor-header friendly{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}"/>
+			{{/each}}
+		</div>
+		{{/if}}
+		{{#if (gt turnData.Enemy.length 0)}}
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			<span class="actor-header">{{localize 'SWFFG.Combats.Actors.Enemy'}}</span>
+		</div>
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			{{#each turnData.Enemy }}
+				<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+			{{/each}}
+		</div>
+		{{/if}}
+		{{#if (gt turnData.Neutral.length 0)}}
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			<span class="actor-header">{{localize 'SWFFG.Combats.Actors.Neutral'}}</span>
+		</div>
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			{{#each turnData.Neutral }}
+				<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+			{{/each}}
+		</div>
+		{{/if}}
 		{{#each turns}}
 			{{#if claimed}}
 				<li class="combatant actor directory-item flexrow {{css}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}">
