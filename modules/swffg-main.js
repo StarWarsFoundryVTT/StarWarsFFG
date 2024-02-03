@@ -902,6 +902,76 @@ Hooks.once("ready", async () => {
       });
     }
   }
+
+  Hooks.on("refreshToken", (token) => {
+    /*
+    Used to render minion count
+    */
+    if (token?.actor?.type !== "minion") {
+      console.log(token)
+      console.log("rejecting refreshToken")
+      return token;
+    }
+
+    // calculate total and alive numbers of minions
+    const curCount = Math.max(token.actor.system.quantity.value, 0);
+    const maxCount = token.actor.system.quantity.max;
+
+    // attempt to draw it on the token directly
+    // check for existing copies of the container
+    if (!token.children.find(i => i.name === "minionCount")) {
+      const countContainer = new PIXI.Container();
+      countContainer.name = "minionCount";
+      token.minionCount = token.addChild(countContainer);
+    } else {
+      token.minionCount.removeChildren().forEach(i => i.destroy());
+    }
+
+    const tokenWidth = token.w;
+    const markerWidth = 7;
+    const markerHeight = 15;
+    const insideGap = 5;
+    const availableSpace = tokenWidth - ((markerWidth * maxCount) + (insideGap * (maxCount - 1)));
+    const outsideGap = availableSpace / 2;
+    const borderWidth = 0.35;
+    const friendlyColor = "0x00A2E84D";
+    const enemyColor = "0x8800154D";
+    CONFIG.logger.debug(`calculated: tokenWidth: ${tokenWidth}, insideGap: ${insideGap}, availableSpace: ${availableSpace}, outsideGap: ${outsideGap}`);
+    CONFIG.logger.debug(`curCount: ${curCount}, maxCount: ${maxCount}`);
+
+    for (let i = 0; i < curCount; i++) {
+      const element = new PIXI.Graphics();
+      // add the border
+      element.lineStyle(borderWidth, "0x000000", 1);
+      // draw the rectangle
+      element.beginFill(friendlyColor);
+      element.drawRoundedRect(0, 0, markerWidth, markerHeight, 2);
+      element.endFill();
+      element.endFill();
+      // position it
+      element.x = (i * (markerWidth + insideGap)) + outsideGap;
+      element.y = token.h - markerHeight - 2;
+      // add it to the container
+      token.minionCount.addChild(element);
+    }
+
+    for (let i = 0; i < maxCount - curCount; i++) {
+      const element = new PIXI.Graphics();
+      // add the border
+      element.lineStyle(borderWidth, "0x000000", 1);
+      // draw the rectangle
+      element.beginFill(enemyColor);
+      element.drawRoundedRect(0, 0, markerWidth, markerHeight, 2);
+      element.endFill();
+      // position it
+      element.x = ((i + curCount) * (markerWidth + insideGap)) + outsideGap;
+      element.y = token.h - markerHeight - 2;
+      // add it to the container
+      token.minionCount.addChild(element);
+    }
+
+    return token;
+  });
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
