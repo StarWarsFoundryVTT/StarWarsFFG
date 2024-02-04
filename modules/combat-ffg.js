@@ -384,6 +384,9 @@ export class CombatTrackerFFG extends CombatTracker {
           }
         }
 
+        // propagate this to the overall turn data, so we can gray out claimed slots
+        data.turns.find(i => i.id === claimant.id).claimed = true;
+
         claim = {
           id: claimant.id,
           name: claimant.name,
@@ -429,10 +432,17 @@ export class CombatTrackerFFG extends CombatTracker {
     const claimantId = combat.getSlotClaims(combat.round, combat.turn);
     const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
 
+    const turnData = {
+      Friendly: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
+      Enemy: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
+      Neutral: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+    };
+
     return {
       ...data,
       turns,
       control: claimant?.players?.includes(game.user) ?? false,
+      turnData,
     };
   }
 
@@ -474,7 +484,7 @@ export class CombatTrackerFFG extends CombatTracker {
   async _onCombatantHoverIn(event) {
     event.preventDefault();
 
-    if (!(event.currentTarget).classList.contains('claimed')) {
+    if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
       return;
     }
     return super._onCombatantHoverIn(event);
@@ -484,7 +494,7 @@ export class CombatTrackerFFG extends CombatTracker {
   async _onCombatantMouseDown(event) {
     event.preventDefault();
 
-    if (!(event.currentTarget).classList.contains('claimed')) {
+    if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
       return;
     }
     return super._onCombatantMouseDown(event);
