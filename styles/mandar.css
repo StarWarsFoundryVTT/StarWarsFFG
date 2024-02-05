@@ -3985,3 +3985,16 @@ img {
 .starwarsffg #combat-tracker .slot-Enemy.slot-unused-true {
   background: rgba(87, 9, 9, 0.3);
 }
+
+.starwarsffg #combat-tracker .slot-claimed {
+  filter: grayscale(100%);
+}
+.starwarsffg #combat-tracker .encounter-controls .actor-header {
+  font-size: 14px;
+}
+.starwarsffg #combat-tracker .token-image.actor-header {
+  width: 24px;
+  height: 24px;
+  max-width: 24px;
+  max-height: 24px;
+}

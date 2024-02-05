@@ -13,4 +13,16 @@
       background: rgba(87, 9, 9, 0.3);
     }
   }
+  .slot-claimed {
+    filter: grayscale(100%);
+  }
+  .encounter-controls .actor-header {
+    font-size: 14px;
+  }
+  .token-image.actor-header {
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+  }
 }
