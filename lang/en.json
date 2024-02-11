@@ -621,5 +621,5 @@
   "SWFFG.Combats.Actors.Enemy": "Enemy Actors",
   "SWFFG.Combats.Actors.Neutral": "Neutral Actors",
   "SWFFG.Settings.UseGenericSlots.Name": "Use Generic Slots",
-  "SWFFG.Settings.UseGenericSlots.Hint": "Disables named slots and replaces them with claimable slots"
+  "SWFFG.Settings.UseGenericSlots.Hint": "Replaces named slots in the combat tracker with generic, claimable slots"
 }
