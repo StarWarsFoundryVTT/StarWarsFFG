@@ -517,20 +517,41 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
   html.find(".item-display .item-pill, .item-properties .item-pill").on("click", async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const li = event.currentTarget;
-    let uuid = li.dataset.itemId;
-    let modifierId = li.dataset.modifierId;
-    let modifierType = li.dataset.modifierType;
+    const li = $(event.currentTarget);
+    const itemType = li.attr("data-item-embed-type");
+    let itemData = {};
+    const newEmbed = li.attr("data-item-embed");
 
-    if (li.dataset.uuid) {
-      uuid = li.dataset.uuid;
+    if (newEmbed === "true" && itemType === "itemmodifier") {
+      itemData = {
+        img: li.attr('data-item-embed-img'),
+        name: li.attr('data-item-embed-name'),
+        type: li.attr('data-item-embed-type'),
+        system: {
+          description: li.attr('data-item-embed-description'),
+          attributes: JSON.parse(li.attr('data-item-embed-modifiers')),
+          rank: li.attr('data-item-embed-rank'),
+          rank_current: li.attr('data-item-embed-rank'),
+        },
+      };
+      const tempItem = await Item.create(itemData, {temporary: true});
+      tempItem.sheet.render(true);
+    } else {
+      CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
+      const li2 = event.currentTarget;
+      let uuid = li2.dataset.itemId;
+      let modifierId = li2.dataset.modifierId;
+      let modifierType = li2.dataset.modifierType;
+      if (li2.dataset.uuid) {
+        uuid = li2.dataset.uuid;
+      }
+
+      const parts = uuid.split(".");
+
+      const [entityName, entityId, embeddedName, embeddedId] = parts;
+
+      await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
     }
-
-    const parts = uuid.split(".");
-
-    const [entityName, entityId, embeddedName, embeddedId] = parts;
-
-    await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
   });
 });
 
