@@ -39,6 +39,7 @@ import PauseFFG from "./apps/pause-ffg.js";
 import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
 import RollBuilderFFG from "./dice/roll-builder.js";
 import CrewSettings from "./settings/crew-settings.js";
+import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag_enricher} from "./helpers/journal.js";
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
 
 /* -------------------------------------------- */
@@ -53,6 +54,13 @@ async function parseSkillList() {
     return await game.settings.get("starwarsffg", "arraySkillList");
   }
 }
+
+Hooks.on("setup", function (){
+  // add dice symbol rendering to the text editor for journal pages
+  register_roll_tag_enricher();
+  register_oggdude_tag_enricher();
+  register_dice_enricher();
+});
 
 Hooks.once("init", async function () {
   console.log(`Initializing SWFFG System`);
@@ -448,12 +456,6 @@ Hooks.once("init", async function () {
   TemplateHelpers.preload();
 });
 
-Hooks.on("renderJournalSheet", (journal, obj, data) => {
-  let content = $(obj).find(".editor-content").html();
-
-  $(obj).find(".editor-content").html(PopoutEditor.renderDiceImages(content));
-});
-
 Hooks.on("renderSidebarTab", (app, html, data) => {
   html.find(".chat-control-icon").click(async (event) => {
     const dicePool = new DicePoolFFG();
@@ -518,61 +520,42 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
   html.find(".item-display .item-pill, .item-properties .item-pill").on("click", async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    const li = event.currentTarget;
-    let uuid = li.dataset.itemId;
-    let modifierId = li.dataset.modifierId;
-    let modifierType = li.dataset.modifierType;
+    const li = $(event.currentTarget);
+    const itemType = li.attr("data-item-embed-type");
+    let itemData = {};
+    const newEmbed = li.attr("data-item-embed");
 
-    if (li.dataset.uuid) {
-      uuid = li.dataset.uuid;
+    if (newEmbed === "true" && itemType === "itemmodifier") {
+      itemData = {
+        img: li.attr('data-item-embed-img'),
+        name: li.attr('data-item-embed-name'),
+        type: li.attr('data-item-embed-type'),
+        system: {
+          description: li.attr('data-item-embed-description'),
+          attributes: JSON.parse(li.attr('data-item-embed-modifiers')),
+          rank: li.attr('data-item-embed-rank'),
+          rank_current: li.attr('data-item-embed-rank'),
+        },
+      };
+      const tempItem = await Item.create(itemData, {temporary: true});
+      tempItem.sheet.render(true);
+    } else {
+      CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
+      const li2 = event.currentTarget;
+      let uuid = li2.dataset.itemId;
+      let modifierId = li2.dataset.modifierId;
+      let modifierType = li2.dataset.modifierType;
+      if (li2.dataset.uuid) {
+        uuid = li2.dataset.uuid;
+      }
+
+      const parts = uuid.split(".");
+
+      const [entityName, entityId, embeddedName, embeddedId] = parts;
+
+      await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
     }
-
-    const parts = uuid.split(".");
-
-    const [entityName, entityId, embeddedName, embeddedId] = parts;
-
-    await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
   });
-});
-
-// Hook journal rendering to convert special text into images
-Hooks.on("renderJournalPageSheet", (...args) => {
-  if (args[0]?.object?.type === 'text' && args.length === 3 && args[2].cssClass === 'locked') {
-    // only run if it's a text sheet in the render mode
-    for (let i = 0; i < args[1].length; i++) {
-      // iterate through each HTML section and update it
-      args[1][i].innerHTML = PopoutEditor.renderDiceImages(args[1][i].innerHTML, {});
-      CONFIG.logger.debug("Changed journal page HTML:");
-      CONFIG.logger.debug(args[1][i].innerHTML);
-    }
-    // re-establish toc anchor links
-    args[0].toc = Object.fromEntries(
-      Object.entries(args[0].toc).map((tocItem) => {
-        let newRef;
-        CONFIG.logger.debug("Processing toc item:");
-        CONFIG.logger.debug(tocItem);
-        Object.entries(args[1]).filter((pageItem) => pageItem[0]!=="length").forEach((pageItem) => {
-          CONFIG.logger.debug("Processing page item:");
-          CONFIG.logger.debug(pageItem);
-          if(newRef) {
-            CONFIG.logger.debug(`New element  for anchor "${tocItem[0]}" already found, skipping duplicate search`);
-          } else {
-            const anchorRef = pageItem[1].parentElement.querySelector(`[data-anchor="${tocItem[1].element.attributes["data-anchor"]?.value}"]`);
-            CONFIG.logger.debug(anchorRef);
-            if(anchorRef) {
-              CONFIG.logger.debug(`Found new element for anchor "${tocItem[0]}"`);
-              newRef = anchorRef;
-            }
-          }
-        });
-        if(newRef) {
-          tocItem[1].element = newRef;
-        }
-        return tocItem;
-      })
-    );
-  }
-  return args;
 });
 
 // Handle crew registration

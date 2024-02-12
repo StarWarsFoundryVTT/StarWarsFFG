@@ -65,13 +65,29 @@
   }
 
   .talent-cost {
-    bottom: -5px;
-    left: 7px;
-    position: absolute;
-    z-index: 10;
-    width: 60px;
+  bottom: -5px;
+  left: 0;
+  position: absolute;
+  background: #CCCCCC;
+  z-index: 60;
+    width: auto;
+  padding: 0 0.25rem 0 0.5rem;
+  font-size: 0.75rem;
+  height: 1.5em;
+  --notchSize: 0.5rem;
+  clip-path: polygon(
+      0 0,
+      var(--notchSize) 0%,
+      calc(100% - var(--notchSize)) 0%,
+      100% var(--notchSize), 100%
+      calc(100%),
+      calc(100% - var(--notchSize)) 100%,
+      0 100%,
+      0% calc(100% - var(--notchSize))
+  );
 
     input {
+      height: 1.2em;
       width: 25px;
       border: 0;
       background: rgba(0,0,0,0);

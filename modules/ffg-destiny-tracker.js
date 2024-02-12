@@ -194,7 +194,7 @@ export default class DestinyTracker extends FormApplication {
       // socket handler for GM
       game.socket.on("system.starwarsffg", async (...args) => {
         // check if this is the GM intended to answer the question or not
-        if (game.user.id !== game.users.find(i => i.isGM).id) {
+        if (game.user.id !== game.users.activeGM?.id) {
           // limit rolling to a single GM
           return;
         }
