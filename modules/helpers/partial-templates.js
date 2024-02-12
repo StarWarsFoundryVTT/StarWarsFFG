@@ -16,6 +16,9 @@ export default class TemplateHelpers {
       "systems/genesysk2/templates/chat/roll-weapon-card.html",
       "systems/genesysk2/templates/chat/roll-vehicle-card.html",
       "systems/genesysk2/templates/parts/shared/ffg-tabs.html",
+      "systems/genesysk2/templates/parts/shared/k2g-tabs.html",
+//      "systems/genesysk2/templates/parts/shared/k2g-block.html",
+      "systems/genesysk2/templates/parts/actor/k2g-spells.html",
       "systems/genesysk2/templates/parts/actor/ffg-healingitem.html"
     ];
 

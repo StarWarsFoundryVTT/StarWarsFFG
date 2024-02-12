@@ -128,7 +128,7 @@
         {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
       </div>
       {{> "systems/genesysk2/templates/parts/actor/ffg-talents.html"}} 
-      {{!-- Abilities List --}} {{> "systems/genesysk2/templates/parts/actor/ffg-abilities.html"}}       
+      {{!-- Abilities List --}} {{> "systems/genesysk2/templates/parts/actor/ffg-abilities.html"}}
       {{> "systems/genesysk2/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 

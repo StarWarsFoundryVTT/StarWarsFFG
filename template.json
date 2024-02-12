@@ -586,7 +586,7 @@
   },
   "Item": {
     "types": [
-      "ability", "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon"],
+      "ability", "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "spell", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon"],
     "templates": {
       "core": {
         "description": "",
@@ -793,6 +793,16 @@
       },
       "required_force_rating": 0,
       "base_cost": 0
+    },
+    "spell": {
+      "templates":["core"],
+      "base_cost" :0,
+      "dammage" : "",
+      "typecmp" :"",
+      "cmps" : [],
+      "cmp" : "",
+      "special": "",
+      "txt" : ""
     },
     "specialization": {
       "templates": ["core"],
