@@ -115,8 +115,7 @@ export function drawAdversaryCount(token) {
   if (!game.settings.get("starwarsffg", "showAdversaryCount")) {
     return;
   }
-  const friendlyColor = "0x00A2E84D";
-  // TODO: this should be a configurable value so non-English users can use it
+  const overflowColor = "0xDAA520";
   const itemName = game.settings.get("starwarsffg", "adversaryItemName");
   const adversaryItems = token?.actor?.items?.filter(i => i.name === itemName) || [];
   let adversaryLevel = 0;
@@ -133,27 +132,14 @@ export function drawAdversaryCount(token) {
     } else {
       token.adversaryLevel.removeChildren().forEach(i => i.destroy());
     }
-    const segmentLength = 15;
-    const tokenHeight = token.h;
-    const tokenWidth = token.w;
-    let height = tokenHeight - 8;
-    const rankWidth = 4;
-    for (let i = 0; i < 2; i++) {
-      const element = new PIXI.Graphics();
-      element.lineStyle(rankWidth, friendlyColor, 1); // 2 pixels wide, white color, full opacity
-      // Move to the start point
-      element.moveTo((tokenWidth / 2) - segmentLength, height);
-      // Draw lines to form the shape
-      element.lineTo((tokenWidth / 2), height - segmentLength);
-      element.lineTo((tokenWidth / 2) + segmentLength, height);
-      token.adversaryLevel.addChild(element);
-      height -= 8;
+    const sprite = PIXI.Sprite.from(`systems/starwarsffg/images/adversary/adversary-${adversaryLevel}.png`);
+    sprite.width = token.w * .3;
+    sprite.height = token.h * .3;
+    sprite.x = (token.w / 2) - (sprite.width / 2) ;
+    sprite.y = token.h / 2 + 15;
+    if (adversaryLevel > 5) {
+      sprite.tint = overflowColor;
     }
-    // add the text
-    const text = new PIXI.Text(adversaryLevel, { fontFamily: "Arial", fontSize: 14, fill: friendlyColor, align: "center", strokeThickness: 1, fontWeight: "bold" });
-    text.anchor.set(0.5);
-    text.x = tokenWidth / 2;
-    text.y = tokenHeight - 10;
-    token.adversaryLevel.addChild(text);
+    token.adversaryLevel.addChild(sprite);
   }
 }
