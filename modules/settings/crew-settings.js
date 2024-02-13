@@ -40,6 +40,7 @@ export default class CrewSettings extends FormApplication {
     }
 
     data.skills = CONFIG.FFG.skills;
+    data.initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
 
     // Return data
     return {
@@ -87,7 +88,14 @@ export default class CrewSettings extends FormApplication {
     }
     // update the settings if they don't match the old ones
     if (existing_settings !== new_settings) {
-      game.settings.set("starwarsffg", "arrayCrewRoles", new_settings);
+      await game.settings.set("starwarsffg", "arrayCrewRoles", new_settings);
     }
+    const updateData = {
+      "role_name":  formData['initiativeCrewRole'],
+      "role_skill": undefined,
+      "use_weapons": false,
+      "use_handling": false
+    };
+    await game.settings.set("starwarsffg", "initiativeCrewRole", updateData);
   }
 }

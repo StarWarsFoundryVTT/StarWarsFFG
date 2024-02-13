@@ -1171,4 +1171,18 @@ async function registerCrewRoles() {
     config: false,
     type: Object,
   });
+  const initiativeCrewRole = {
+      "role_name":  game.i18n.localize("SWFFG.Crew.Roles.Initiative.Name"),
+      "role_skill": undefined,
+      "use_weapons": false,
+      "use_handling": false
+    };
+  game.settings.register("starwarsffg", "initiativeCrewRole", {
+    module: "starwarsffg",
+    name: "initiativeCrewRole",
+    scope: "world",
+    default: initiativeCrewRole,
+    config: false,
+    type: Object,
+  });
 }

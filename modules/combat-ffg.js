@@ -59,7 +59,8 @@ export class CombatFFG extends Combat {
             initiative.combatants.map(combatant => combatant)
             .filter(combatantData => combatantData._id == ids[0])[0]
             .tokenId);
-        const data = c.actor.system;
+        //const data = c.actor.system;
+        const data = _findActorForInitiative(c);
         whosInitiative = c.actor.name;
 
         vigilanceDicePool = _buildInitiativePool(data, "Vigilance");
@@ -121,7 +122,8 @@ export class CombatFFG extends Combat {
                   if (!c || !c.isOwner) return resolve(results);
 
                   // Detemine Formula
-                  let pool = _buildInitiativePool(c.actor.system, baseFormulaType);
+                  const data = _findActorForInitiative(c);
+                  let pool = _buildInitiativePool(data, baseFormulaType);
 
                   const addPool = DicePoolFFG.fromContainer(container.querySelector(`.addDicePool`));
                   pool.success += +addPool.success;
@@ -275,6 +277,30 @@ function _getInitiativeFormula(skill, ability) {
   });
   dicePool.upgrade(parseInt(skill.rank));
   return dicePool.renderDiceExpression();
+}
+
+function _findActorForInitiative(c) {
+  let data = c.actor.system;
+  const initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
+  CONFIG.logger.debug("Attempting to find initiative data for actor in combat");
+  if (c.actor.type === "vehicle") {
+    const crew = c.actor.getFlag("starwarsffg", "crew");
+    CONFIG.logger.debug("Actor is a vehicle, looking for initiative crew role.");
+    if (crew !== undefined && crew !== []) {
+      const initiativeCrew = crew.find((c) => c.role === initiativeRole.role_name);
+      if (initiativeCrew) {
+        CONFIG.logger.debug("Found initiative crew role, swapping data to crew member");
+        const realActor = game.actors.get(initiativeCrew.actor_id);
+        if (realActor?.system) {
+          data = realActor.system;
+        }
+      }
+    } else {
+      CONFIG.logger.warn("You must set a crew member with the initiative role to roll initiative for a vehicle");
+    }
+  }
+  CONFIG.logger.debug("Finished checking");
+  return data;
 }
 
 function _buildInitiativePool(data, skill) {

@@ -595,6 +595,7 @@
   "SWFFG.Crew.Roles.Gunner.Title": "Select Weapon",
   "SWFFG.Crew.Roles.Gunner.Description": "Choose the ship weapon to use",
   "SWFFG.Crew.Roles.None": "(none)",
+  "SWFFG.Crew.Roles.Initiative.Name": "Initiative",
   "SWFFG.Crew.Actor.Removed": "Actor representing this crew member was deleted, removing from role",
   "SWFFG.Crew.Role.Removed": "Role has been removed",
   "SWFFG.Crew.Role.Invalid": "You must define a skill for this role before it can be used",
