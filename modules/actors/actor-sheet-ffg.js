@@ -117,13 +117,17 @@ export class ActorSheetFFG extends ActorSheet {
             const img = actor?.img || 'icons/svg/mystery-man.svg';
 
             // add them to the items, so we can render them on the sheet
+            let roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+            if (!roll) {
+              roll = 'N/A';
+            }
             data.crew.push({
               'type': 'shipcrew',
               'id': crew[i].actor_id,
               'name': crew[i].actor_name,
               'role': crew[i].role,
               'img': img,
-              'roll': build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role),
+              'roll': roll,
               'link': crew[i]?.link,
             })
           }
@@ -621,7 +625,11 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".crew-edit").click(async (ev) => {
       const crew_member_id = $(ev.currentTarget).parents(".item").data("actor-id");
       const crew_role = $(ev.currentTarget).parents(".item").data("role-name");
-      const registered_roles = await game.settings.get('starwarsffg', 'arrayCrewRoles');
+      const initial_registered_roles = game.settings.get('starwarsffg', 'arrayCrewRoles');
+      let registered_roles = [
+        ...initial_registered_roles,
+        ...[game.settings.get('starwarsffg', 'initiativeCrewRole')],
+      ];
       const role_buttons = {};
       const actor = this.actor;
 
