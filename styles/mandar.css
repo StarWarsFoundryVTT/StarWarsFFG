@@ -340,11 +340,17 @@ img {
   border: 0;
   background-color: rgba(0, 0, 0, 0);
 }
+.starwarsffg.sheet.actor .character-details-table {
+  border-top: none;
+  border-bottom: none;
+  background: none;
+}
 
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .drag-note {
+.starwarsffg.sheet.actor .character .header-fields .drag-note {
   border: 2px dotted;
   border-radius: 10px;
   padding: 0 5px;
+  width: fit-content;
 }
 
 .starwarsffg.sheet.actor .character .header-fields .header-name input:focus {
@@ -361,15 +367,16 @@ img {
   display: table-cell;
 }
 
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .specialization-pill, .starwarsffg.sheet.actor .character .header-fields .row .row-input .species-pill, .starwarsffg.sheet.actor .character .header-fields .row .row-input .career-pill {
+.starwarsffg.sheet.actor .character .header-fields .specialization-pill, .starwarsffg.sheet.actor .character .header-fields .species-pill, .starwarsffg.sheet.actor .character .header-fields .career-pill, .starwarsffg.sheet.actor .character .header-fields .signatureability-pill, .starwarsffg.sheet.actor .character .header-fields .forcepower-pill {
   padding: 0.1rem 0.5rem;
   background-color: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
   cursor: pointer;
+  width: fit-content;
 }
 
-.starwarsffg.sheet.actor .character .header-fields .row .row-input .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .row .row-input .career-pill .item-delete {
+.starwarsffg.sheet.actor .character .header-fields .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .career-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .signatureability-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .forcepower-pill .item-delete {
   cursor: pointer;
 }
 
@@ -884,7 +891,7 @@ img {
 
 .starwarsffg .talent-upgrade {
   position: relative;
-  margin: 10px 10px 0 10px;
+  margin: 10px 10px 5px 10px;
 }
 
 .starwarsffg .talent-upgrade .talent-actions {
@@ -3263,6 +3270,9 @@ img {
   min-height: 2rem;
   position: relative;
 }
+.starwarsffg .item-sheet-forcepower .required_fr input[type=text] {
+  width: 10px;
+}
 
 .starwarsffg .item-sheet-forcepower {
   min-width: 700px;
@@ -3354,7 +3364,7 @@ img {
 }
 
 .starwarsffg .item-sheet-specialization .talent-upgrade {
-  margin: 1px 10px 4px 10px;
+  margin: 5px 10px 10px 10px;
 }
 
 .starwarsffg .item-sheet-specialization .sheet-body {
@@ -3959,4 +3969,32 @@ img {
 .starwarsffg .skillsGrid.crew {
   justify-content: center;
   height: 24px;
+}
+
+.starwarsffg #combat-tracker .slot-Friendly {
+  background: rgba(21, 87, 134, 0.3);
+  color: #f0f0e0;
+}
+.starwarsffg #combat-tracker .slot-Friendly.slot-unused-true {
+  background: rgba(4, 37, 61, 0.3);
+}
+.starwarsffg #combat-tracker .slot-Enemy {
+  background: rgba(146, 52, 20, 0.3);
+  color: #f0f0e0;
+}
+.starwarsffg #combat-tracker .slot-Enemy.slot-unused-true {
+  background: rgba(87, 9, 9, 0.3);
+}
+
+.starwarsffg #combat-tracker .slot-claimed {
+  filter: grayscale(100%);
+}
+.starwarsffg #combat-tracker .encounter-controls .actor-header {
+  font-size: 14px;
+}
+.starwarsffg #combat-tracker .token-image.actor-header {
+  width: 24px;
+  height: 24px;
+  max-width: 24px;
+  max-height: 24px;
 }

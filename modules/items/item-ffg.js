@@ -159,10 +159,16 @@ export class ItemFFG extends ItemBaseFFG {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  if (foundItem.system?.rank) {
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  }
                 } else {
-                  am.system.rank_current = 1;
-                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
+                  if (am.system?.rank) {
+                    am.system.rank_current = 1;
+                  } else {
+                    am.system.rank_current = null;
+                  }
+                  data.adjusteditemmodifier.push({...am, adjusted: true});
                 }
               });
             }
@@ -241,10 +247,16 @@ export class ItemFFG extends ItemBaseFFG {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
 
                 if (foundItem) {
-                  foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  if (foundItem.system?.rank) {
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + 1;
+                  }
                 } else {
-                  am.system.rank_current = 1;
-                  data.adjusteditemmodifier.push({ ...am, adjusted: true });
+                  if (am.system?.rank) {
+                    am.system.rank_current = 1;
+                  } else {
+                    am.system.rank_current = null;
+                  }
+                  data.adjusteditemmodifier.push({...am, adjusted: true});
                 }
               });
             }
@@ -479,7 +491,7 @@ export class ItemFFG extends ItemBaseFFG {
     // General equipment properties
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
-        const qualities = data.adjusteditemmodifier?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-id='${this.id}' data-uuid='${this.uuid}' data-modifier-id='${m._id}' data-modifier-type='${m.type}'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = data.adjusteditemmodifier?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${m.system.description}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }

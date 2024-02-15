@@ -40,6 +40,7 @@ export default class CrewSettings extends FormApplication {
     }
 
     data.skills = CONFIG.FFG.skills;
+    data.initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
 
     // Return data
     return {
@@ -89,5 +90,12 @@ export default class CrewSettings extends FormApplication {
     if (existing_settings !== new_settings) {
       game.settings.set("genesysk2", "arrayCrewRoles", new_settings);
     }
+    const updateData = {
+      "role_name":  formData['initiativeCrewRole'],
+      "role_skill": undefined,
+      "use_weapons": false,
+      "use_handling": false
+    };
+    await game.settings.set("genesysk2", "initiativeCrewRole", updateData);
   }
 }

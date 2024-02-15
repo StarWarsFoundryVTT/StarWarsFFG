@@ -213,7 +213,7 @@
             "characteristic": "Presence",
             "groupskill": false,
             "careerskill": false,
-            "type": "General",
+            "type": "Social",
             "max": 6
           },
           "Coercion": {
@@ -221,7 +221,7 @@
             "characteristic": "Willpower",
             "groupskill": false,
             "careerskill": false,
-            "type": "General",
+            "type": "Social",
             "max": 6
           },
           "Cool": {
@@ -245,7 +245,7 @@
             "characteristic": "Cunning",
             "groupskill": false,
             "careerskill": false,
-            "type": "General",
+            "type": "Social",
             "max": 6
           },
           "Discipline": {
@@ -261,7 +261,7 @@
             "characteristic": "Presence",
             "groupskill": false,
             "careerskill": false,
-            "type": "General",
+            "type": "Social",
             "max": 6
           },
           "Mechanics": {
@@ -285,7 +285,7 @@
             "characteristic": "Presence",
             "groupskill": false,
             "careerskill": false,
-            "type": "General",
+            "type": "Social",
             "max": 6
           },
           "Perception": {

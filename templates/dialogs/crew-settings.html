@@ -18,6 +18,11 @@
         </div>
         <button class="add_row"><i class="fas fa-plus"></i></button>
     </section>
+    <hr>
+    <section id="config-tabs-initiative" class="content">
+        <label>{{ localize 'SWFFG.Crew.Roles.Initiative.Name' }} {{ localize 'SWFFG.Crew.Card.Role' }}</label>
+        <input type="text" name="initiativeCrewRole" value="{{this.data.initiativeRole.role_name}}" data-dtype="String"/>
+    </section>
     <footer class="sheet-footer flexrow">
         <button type="submit" name="submit" class="submit_role_changes"><i class="far fa-save"></i> {{ localize 'SETTINGS.Save'}}</button>
         <button type="button" name="reset"><i class="fas fa-undo"></i> {{ localize 'SETTINGS.Reset'}}</button>

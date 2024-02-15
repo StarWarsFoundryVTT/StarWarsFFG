@@ -145,6 +145,11 @@ export function build_crew_roll(vehicle, crew_id, crew_role) {
   }
   const starting_pool = {'difficulty': 0};
   const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
+  // don't attempt to draw a roll for the initiative role
+  const initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
+  if (crew_role === initiativeRole.role_name) {
+    return false;
+  }
   // look up the defined metadata for the assigned role
   const role_info = registeredRoles.filter(i => i.role_name === crew_role);
   // validate the role still exists in our settings

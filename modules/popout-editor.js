@@ -9,9 +9,10 @@ export default class PopoutEditor extends FormApplication {
       id: "popout-editor",
       classes: ["starwarsffg", "sheet"],
       title: "Pop-out Editor",
-      template: "systems/genesysk2/templates/popout-editor.html",
+      template: "systems/starwarsffg/templates/popout-editor.html",
       width: 320,
       height: 320,
+      resizable:true,
     });
   }
 
@@ -65,7 +66,7 @@ export default class PopoutEditor extends FormApplication {
       }
     }
 
-    const dicetheme = game.settings.get("genesysk2", "dicetheme");
+    const dicetheme = game.settings.get("starwarsffg", "dicetheme");
 
     const replaceValues = [
       {
@@ -365,3 +366,4 @@ export default class PopoutEditor extends FormApplication {
     return formula;
   }
 }
+

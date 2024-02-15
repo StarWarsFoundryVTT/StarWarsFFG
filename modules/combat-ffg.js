@@ -1,4 +1,4 @@
-import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
+import {DicePoolFFG, RollFFG} from "./dice-pool-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 
 /**
@@ -59,7 +59,8 @@ export class CombatFFG extends Combat {
             initiative.combatants.map(combatant => combatant)
             .filter(combatantData => combatantData._id == ids[0])[0]
             .tokenId);
-        const data = c.actor.system;
+        //const data = c.actor.system;
+        const data = _findActorForInitiative(c);
         whosInitiative = c.actor.name;
 
         vigilanceDicePool = _buildInitiativePool(data, "Vigilance");
@@ -121,7 +122,8 @@ export class CombatFFG extends Combat {
                   if (!c || !c.isOwner) return resolve(results);
 
                   // Detemine Formula
-                  let pool = _buildInitiativePool(c.actor.system, baseFormulaType);
+                  const data = _findActorForInitiative(c);
+                  let pool = _buildInitiativePool(data, baseFormulaType);
 
                   const addPool = DicePoolFFG.fromContainer(container.querySelector(`.addDicePool`));
                   pool.success += +addPool.success;
@@ -195,6 +197,75 @@ export class CombatFFG extends Combat {
 
     return await promise;
   }
+
+  /**
+   * gets any existing initiative claims for this turn within the round of a given combat
+   * @param round - INT - the round
+   * @param slot - INT - the turn
+   * @returns {undefined|*}
+   */
+  getSlotClaims(round, slot) {
+    const claims = this.getFlag('starwarsffg', 'combatClaims') || undefined;
+    if (!claims) {
+      return undefined;
+    }
+    return claims[round]?.[slot];
+  }
+
+  /**
+   * gets any existing initiative claims for this round of a given combat
+   * @param round - INT - the round
+   * @returns {*|*[]} - a list of combatant IDs (NOT token IDs, NOT actor IDs)
+   */
+  getClaims(round) {
+    const combatClaims = this.getFlag('starwarsffg', 'combatClaims');
+    if (combatClaims) {
+      return combatClaims[round] || [];
+    }
+    return [];
+  }
+
+  /**
+   * Claim a slot for a given combatant
+   * @param round - INT - the round
+   * @param slot - INT - the turn
+   * @param combatantId - STRING - the combatant ID (NOT token ID, NOT actor ID)
+   * @returns {Promise<void>}
+   */
+  async claimSlot(round, slot, combatantId) {
+    if (!game.user.isGM) {
+      const data = {
+        combatId: this.id,
+        round: round,
+        slot: slot,
+        combatantId: combatantId,
+      }
+      game.socket.emit("system.starwarsffg", {event: "combat", data: data});
+      return;
+    }
+    const claims = {
+      ...this.getFlag('starwarsffg', 'combatClaims')
+    };
+    if (!claims[round]) {
+      claims[round] = {};
+    }
+    claims[round][slot] = combatantId;
+    await this.setFlag('starwarsffg', 'combatClaims', claims);
+  }
+
+  /**
+   * Un-claim a slot for a given combatant
+   * @param round - INT - the round
+   * @param slot - INT - the turn
+   * @returns {Promise<void>}
+   */
+  async unclaimSlot(round, slot) {
+    if (!game.user.isGM) {
+      // only the GM can un-claim a slot
+      return;
+    }
+    await this.unsetFlag('starwarsffg', `combatClaims.${round}.${slot}`);
+  }
 }
 
 function _getInitiativeFormula(skill, ability) {
@@ -208,6 +279,30 @@ function _getInitiativeFormula(skill, ability) {
   return dicePool.renderDiceExpression();
 }
 
+function _findActorForInitiative(c) {
+  let data = c.actor.system;
+  const initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
+  CONFIG.logger.debug("Attempting to find initiative data for actor in combat");
+  if (c.actor.type === "vehicle") {
+    const crew = c.actor.getFlag("starwarsffg", "crew");
+    CONFIG.logger.debug("Actor is a vehicle, looking for initiative crew role.");
+    if (crew !== undefined && crew !== []) {
+      const initiativeCrew = crew.find((c) => c.role === initiativeRole.role_name);
+      if (initiativeCrew) {
+        CONFIG.logger.debug("Found initiative crew role, swapping data to crew member");
+        const realActor = game.actors.get(initiativeCrew.actor_id);
+        if (realActor?.system) {
+          data = realActor.system;
+        }
+      }
+    } else {
+      CONFIG.logger.warn("You must set a crew member with the initiative role to roll initiative for a vehicle");
+    }
+  }
+  CONFIG.logger.debug("Finished checking");
+  return data;
+}
+
 function _buildInitiativePool(data, skill) {
   const pool = new DicePoolFFG({
     ability: Math.max(data.characteristics[data.skills[skill].characteristic].value, data.skills[skill].rank),
@@ -218,4 +313,216 @@ function _buildInitiativePool(data, skill) {
   pool.upgrade(Math.min(data.characteristics[data.skills[skill].characteristic].value, data.skills[skill].rank));
 
   return pool;
+}
+
+export class CombatTrackerFFG extends CombatTracker {
+  /** @override */
+  get template() {
+    return "systems/starwarsffg/templates/dialogs/combat-tracker.html";
+  }
+
+  /** @override */
+  activateListeners(html) {
+    super.activateListeners(html);
+    html.find('a[data-claim-slot]').on('click', this._claimInitiativeSlot.bind(this));
+  }
+
+  /**
+   * Initial JS handler for the "claim slot" button on the combat tracker
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _claimInitiativeSlot(event) {
+    const slot = $(event.currentTarget).data('claim-slot');
+    const tokenCount = canvas.tokens.controlled.length;
+    // you must have a single token selected to claim a slot
+    if (tokenCount !== 1) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.OneToken"));
+      return;
+    }
+    const token = canvas.tokens.controlled[0];
+    const combatant = token.combatant;
+    if (!combatant) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.Combatant"));
+      return;
+    }
+    // ensure combatant is permitted in this type of slot
+    const combatantDisposition = combatant?.token?.disposition ?? combatant?.actor?.token?.disposition ?? token?.document?.disposition ?? 0;
+    const slotDisposition = this.viewed.turns[slot]?.token?.disposition ?? this.viewed.turns[slot]?.actor?.token?.disposition ?? 0;
+    if (slotDisposition !== combatantDisposition) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.SlotType"));
+      return;
+    }
+    await this.viewed.claimSlot(this.viewed.round, slot, combatant.id);
+  }
+
+  /** @override */
+  async getData(options) {
+    const data = await super.getData(options);
+    const combat = this.viewed;
+
+    if (!combat) {
+      return data;
+    }
+
+    const initiatives = combat.combatants.reduce((accumulator, combatant) => {
+      accumulator[combatant.id] = [{activationId: -1, initiative: combatant.initiative}];
+      return accumulator;
+    }, {});
+
+    // used to track how many slots have occurred per side - we care to mark slots as "unused" if they're past the number of alive combatants
+    let turnTracker = {
+      [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 0,
+      [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 0,
+      [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 0,
+    };
+
+    const turns = data.turns.map((turn, index) => {
+      const combatant = combat.combatants.get(turn.id);
+      const claimantId = combat.getSlotClaims(combat.round, index);
+      const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
+      const claimed = combat.started ? claimantId !== undefined : true;
+      const canClaim = ((combatant.token?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY || combatant?.actor?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) && !claimed) || game.user.isGM;
+
+      // get the highest possible initiative for this combatant
+      const slotInitiative = initiatives[combatant.id].pop();
+      let claim = {};
+
+      if (combat.started && claimant) {
+        let defeated = claimant.isDefeated;
+
+        const effects = new Set();
+        if (claimant.token) {
+          claimant.token.effects.forEach((e) => effects.add(e))
+          if (claimant.token.overlayEffect) {
+            effects.add(claimant.token.overlayEffect);
+          }
+        }
+        if (claimant.actor) {
+          if (claimant.isDefeated) {
+            defeated = true;
+          }
+          for (const effect of claimant.actor.temporaryEffects) {
+            if (effect?.icon) {
+              effects.add(effect.icon);
+            }
+          }
+        }
+
+        // propagate this to the overall turn data, so we can gray out claimed slots
+        data.turns.find(i => i.id === claimant.id).claimed = true;
+
+        claim = {
+          id: claimant.id,
+          name: claimant.name,
+          img: claimant.img ?? CONST.DEFAULT_TOKEN,
+          owner: claimant.owner,
+          defeated,
+          hidden: claimant.hidden,
+          canPing: claimant.sceneId === canvas.scene?.id && game.user.hasPermission("PING_CANVAS"),
+          effects,
+        };
+      }
+      const disposition = combatant.token?.disposition ?? combatant.actor?.token.disposition ?? 0;
+      let slotType;
+      if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+        slotType = 'Friendly';
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+        slotType = 'Enemy';
+      } else {
+        slotType = 'Neutral';
+      }
+
+      // determine if we should mark the slot as unneeded
+      const aliveCount = this._getCombatantStateCount(combat, disposition);
+      let unused = false;
+      turnTracker[disposition]++;
+      if (turnTracker[disposition] > aliveCount) {
+        unused = true;
+      }
+
+      return {
+        ...turn,
+        ...claim,
+        slotType: slotType,
+        initiative: slotInitiative.initiative,
+        hasRolled: slotInitiative.initiative !== null,
+        claimed,
+        canClaim,
+        activationId: slotInitiative.activationId,
+        unused: unused,
+      }
+    });
+
+    const claimantId = combat.getSlotClaims(combat.round, combat.turn);
+    const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
+
+    const turnData = {
+      Friendly: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
+      Enemy: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
+      Neutral: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+    };
+
+    return {
+      ...data,
+      turns,
+      control: claimant?.players?.includes(game.user) ?? false,
+      turnData,
+    };
+  }
+
+  /**
+   * get the number of alive combatants on a given side, including any who have claimed a slot and died
+   * essentially, the claimed and dead ones need to be included to get an accurate count to determine unused slots
+   * @param combat
+   * @param disposition
+   * @returns {number}
+   * @private
+   */
+  _getCombatantStateCount(combat, disposition) {
+    const rawAlive = combat.combatants.filter(i => i.token.disposition === disposition && !i.isDefeated);
+    const claimed = Object.values(combat.getClaims(combat.round));
+    const defeated = combat.combatants.filter(i => i.token.disposition === disposition && i.isDefeated);
+    return rawAlive.length + defeated.filter(i => i.id && claimed.includes(i.id)).length;
+  }
+
+  /* @override */
+  _getEntryContextOptions() {
+    const baseEntries = super._getEntryContextOptions();
+
+    // Allow GMs to revoke an initiative slot claim.
+    const unClaimSlot = {
+      name: 'SWFFG.Notifications.Combat.Claim.UnClaim',
+      icon: '<i class="fa-regular fa-xmark"></i>',
+      callback: async (li) => {
+        const index = +li.data('slot-index');
+        if (!isNaN(index)) {
+          await this.viewed.unclaimSlot(this.viewed.round, index);
+        }
+      },
+    };
+
+    return [...baseEntries, unClaimSlot];
+  }
+
+  /* @override */
+  async _onCombatantHoverIn(event) {
+    event.preventDefault();
+
+    if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
+      return;
+    }
+    return super._onCombatantHoverIn(event);
+  }
+
+  /* @override */
+  async _onCombatantMouseDown(event) {
+    event.preventDefault();
+
+    if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
+      return;
+    }
+    return super._onCombatantMouseDown(event);
+  }
 }

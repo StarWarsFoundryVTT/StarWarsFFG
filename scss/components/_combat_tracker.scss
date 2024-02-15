@@ -1,0 +1,28 @@
+#combat-tracker {
+  .slot-Friendly {
+    background: rgba(21, 87, 134, 0.3);
+    color: rgb(240, 240, 224);
+    &.slot-unused-true {
+      background: rgba(4, 37, 61, 0.3);
+    }
+  }
+  .slot-Enemy {
+    background: rgba(146, 52, 20, 0.3);
+    color: rgb(240, 240, 224);
+    &.slot-unused-true {
+      background: rgba(87, 9, 9, 0.3);
+    }
+  }
+  .slot-claimed {
+    filter: grayscale(100%);
+  }
+  .encounter-controls .actor-header {
+    font-size: 14px;
+  }
+  .token-image.actor-header {
+    width: 24px;
+    height: 24px;
+    max-width: 24px;
+    max-height: 24px;
+  }
+}
