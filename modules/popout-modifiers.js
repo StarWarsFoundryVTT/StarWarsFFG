@@ -9,7 +9,7 @@ export default class PopoutModifiers extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "popout-modifiers",
-      classes: ["starwarsffg", "sheet"],
+      classes: ["genesysk2", "sheet"],
       title: "Pop-out Modifiers",
       template: "systems/genesysk2/templates/items/dialogs/ffg-popout-modifiers.html",
       closeOnSubmit: false,

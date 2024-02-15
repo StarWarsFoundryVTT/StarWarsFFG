@@ -101,7 +101,7 @@ export default class Species {
               });
             }
 
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", data.flags.starwarsffg.ffgimportid);
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", data.flags.genesysk2.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }

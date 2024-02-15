@@ -159,7 +159,7 @@ export default class DiceHelpers {
 
     const item = actor.items.get(itemId);
     const itemData = item.system;
-    await item.setFlag("starwarsffg", "uuid", item.uuid);
+    await item.setFlag("genesysk2", "uuid", item.uuid);
 
     const status = this.getWeaponStatus(item);
 

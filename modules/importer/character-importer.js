@@ -5,7 +5,7 @@ export default class CharacterImporter extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "ogc-importer",
-      classes: ["starwarsffg", "data-import"],
+      classes: ["genesysk2", "data-import"],
       title: "OggDude Character Importer",
       width: 385,
       height: 200,

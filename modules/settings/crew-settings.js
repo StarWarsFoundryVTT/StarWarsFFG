@@ -3,7 +3,7 @@ export default class CrewSettings extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "data-importer",
-      classes: ["starwarsffg", "data-import"],
+      classes: ["genesysk2", "data-import"],
       title: `${game.i18n.localize("SWFFG.UISettingsLabel")}`,
       height: 265,
       resizable: true,
@@ -40,7 +40,7 @@ export default class CrewSettings extends FormApplication {
     }
 
     data.skills = CONFIG.FFG.skills;
-    data.initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
+    data.initiativeRole = game.settings.get('genesysk2', 'initiativeCrewRole');
 
     // Return data
     return {
@@ -65,7 +65,7 @@ export default class CrewSettings extends FormApplication {
    */
   _onResetDefaults(event) {
     event.preventDefault();
-    const defaults = game.settings.settings.get("starwarsffg.arrayCrewRoles").default;
+    const defaults = game.settings.settings.get("genesysk2.arrayCrewRoles").default;
     game.settings.set("genesysk2", "arrayCrewRoles", defaults);
     this.close();
   }

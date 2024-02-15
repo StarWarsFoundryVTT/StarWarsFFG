@@ -447,7 +447,7 @@ export class ActorFFG extends Actor {
           value = [data[name][k].fore, data[name][k].port, data[name][k].starboard, data[name][k].aft];
         } else if (key === "Soak") {
           try {
-            if ((typeof actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation === undefined && game.settings.get("genesysk2", "enableSoakCalc")) || actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation) {
+            if ((typeof actorData.flags?.genesysk2?.config?.enableAutoSoakCalculation === undefined && game.settings.get("genesysk2", "enableSoakCalc")) || actorData.flags?.genesysk2?.config?.enableAutoSoakCalculation) {
               value = 0;
             }
           } catch (err) {

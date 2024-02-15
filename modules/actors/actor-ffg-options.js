@@ -6,10 +6,10 @@ export default class ActorOptions {
   }
 
   init(html) {
-      const options = $(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] .ffg-sheet-options`);
+      const options = $(`.genesysk2.sheet.actor[data-appid='${this.data.appId}'] .ffg-sheet-options`);
       if (options.length === 0) {
         const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
-        button.insertBefore(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] header a:first`);
+        button.insertBefore(`.genesysk2.sheet.actor[data-appid='${this.data.appId}'] header a:first`);
         button.on("click", this.handler.bind(this));
       }
   }
@@ -56,7 +56,7 @@ export default class ActorOptions {
         },
       },
       {
-        classes: ["dialog", "starwarsffg"],
+        classes: ["dialog", "genesysk2"],
         template: "systems/genesysk2/templates/dialogs/ffg-sheet-options.html",
       }
     ).render(true);

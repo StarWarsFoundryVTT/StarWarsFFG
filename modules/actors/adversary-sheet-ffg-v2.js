@@ -14,7 +14,7 @@ export class AdversarySheetFFGV2 extends AdversarySheetFFG {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["starwarsffg", "sheet", "actor", "adversary", "v2"],
+      classes: ["genesysk2", "sheet", "actor", "adversary", "v2"],
       template: "systems/genesysk2/templates/actors/ffg-adversary-sheet.html",
       width: 710,
       height: 650,

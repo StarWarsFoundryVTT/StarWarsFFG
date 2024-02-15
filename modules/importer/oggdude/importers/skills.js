@@ -20,13 +20,13 @@ export default class Skills {
         let data = {
           name: `${item.TypeValue === "stKnowledge" ? "Knowledge: " : ""}${item.Name.replace(" - ", ": ")}`,
           flags: {
-            starwarsffg: {
+            genesysk2: {
               ffgimportid: item.Key,
             }
           },
           content: item?.Description?.length && item.Description.length > 0 ? item.Description : "Dataset did not have a description",
         };
-        CONFIG.temporary.skills[data.flags.starwarsffg.ffgimportid] = data.name;
+        CONFIG.temporary.skills[data.flags.genesysk2.ffgimportid] = data.name;
 
         if (createJournalCompendium) {
           switch (item.TypeValue) {

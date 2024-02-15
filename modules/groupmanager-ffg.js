@@ -36,7 +36,7 @@ export class GroupManager extends FormApplication {
 
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["starwarsffg", "form", "group-manager"],
+      classes: ["genesysk2", "form", "group-manager"],
       closeOnSubmit: false,
       submitOnChange: true,
       submitOnClose: true,

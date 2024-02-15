@@ -54,13 +54,13 @@ function setup() {
         cy.get('.sheet-tabs > [data-tab="systems"]').click();
         cy.get("#system-list").then(($systemList) => {
             // System already installed
-            if ($systemList.find('[data-package-id="starwarsffg"]').length) {
+            if ($systemList.find('[data-package-id="genesysk2"]').length) {
                 return;
             }
 
             cy.get(".active > .setup-footer > .install-package").click();
 
-            cy.get('[data-package-id="starwarsffg"] > .package-controls > .install').click();
+            cy.get('[data-package-id="genesysk2"] > .package-controls > .install').click();
 
             cy.get("#notifications > .notification").contains("installed successfully", { timeout: 25000 });
 

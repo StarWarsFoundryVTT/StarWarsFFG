@@ -85,7 +85,7 @@ export default class Weapons {
               };
             }
 
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", data.flags.starwarsffg.ffgimportid);
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", data.flags.genesysk2.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }

@@ -23,7 +23,7 @@ export default class DestinyTracker extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "destiny-tracker",
-      classes: ["starwarsffg"],
+      classes: ["genesysk2"],
       title: "Destiny Tracker",
       template: "systems/genesysk2/templates/ffg-destiny-tracker.html",
     });
@@ -137,7 +137,7 @@ export default class DestinyTracker extends FormApplication {
             game.settings.set("genesysk2", "dPoolLight", pool.light);
             game.settings.set("genesysk2", "dPoolDark", pool.dark);
           } else {
-            await game.socket.emit("system.starwarsffg", { pool });
+            await game.socket.emit("system.genesysk2", { pool });
           }
 
           messageText = `<div class="destiny-flip ${flipType}">
@@ -151,7 +151,7 @@ export default class DestinyTracker extends FormApplication {
           ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
           return;
         }
-        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
+        const setting = game.settings.settings.get(`genesysk2.${pointType}`);
         game.settings.set("genesysk2", pointType, game.settings.get("genesysk2", pointType) + 1);
         messageText = "Added a " + typeName + " point.";
       } else if (remove) {
@@ -159,7 +159,7 @@ export default class DestinyTracker extends FormApplication {
           ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
           return;
         }
-        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
+        const setting = game.settings.settings.get(`genesysk2.${pointType}`);
         game.settings.set("genesysk2", pointType, game.settings.get("genesysk2", pointType) - 1);
         messageText = "Removed a " + typeName + " point.";
       }
@@ -179,11 +179,11 @@ export default class DestinyTracker extends FormApplication {
     });
 
     // setup socket handler for checking destiny roll
-    game.socket.on("system.starwarsffg", async (...args) => {
+    game.socket.on("system.genesysk2", async (...args) => {
       if (args[0]?.canIRollDestinyResponse === game.user.id && !game.user.isGM) {
         if (!args[0]?.rolled) {
           const roll = this._rollDestiny();
-          await game.socket.emit("system.starwarsffg", { destiny: game.user.id, light: roll.ffg.light, dark: roll.ffg.dark });
+          await game.socket.emit("system.genesysk2", { destiny: game.user.id, light: roll.ffg.light, dark: roll.ffg.dark });
         } else {
           ui.notifications.error(`${game.i18n.localize("SWFFG.DestinyAlreadyRolled")}`);
         }
@@ -192,7 +192,7 @@ export default class DestinyTracker extends FormApplication {
 
     if (game.user.isGM) {
       // socket handler for GM
-      game.socket.on("system.starwarsffg", async (...args) => {
+      game.socket.on("system.genesysk2", async (...args) => {
         // check if this is the GM intended to answer the question or not
         if (game.user.id !== game.users.activeGM?.id) {
           // limit rolling to a single GM
@@ -205,7 +205,7 @@ export default class DestinyTracker extends FormApplication {
           try {
             rolled = await game.settings.get("genesysk2", `destinyrollers${args[0]?.canIRollDestiny}`);
           } catch (err) {
-            game.settings.register("starwarsffg", `destinyrollers${args[0].canIRollDestiny}`, {
+            game.settings.register("genesysk2", `destinyrollers${args[0].canIRollDestiny}`, {
               name: "DestinyRoll",
               scope: "client",
               default: false,
@@ -214,7 +214,7 @@ export default class DestinyTracker extends FormApplication {
             });
           }
 
-          await game.socket.emit("system.starwarsffg", { canIRollDestinyResponse: args[0]?.canIRollDestiny, rolled });
+          await game.socket.emit("system.genesysk2", { canIRollDestinyResponse: args[0]?.canIRollDestiny, rolled });
         }
 
         // Handle user initiated destiny pool flips
@@ -262,7 +262,7 @@ export default class DestinyTracker extends FormApplication {
     event.preventDefault();
     event.stopPropagation();
     if (!game.user.isGM) {
-      await game.socket.emit("system.starwarsffg", { canIRollDestiny: game.user.id });
+      await game.socket.emit("system.genesysk2", { canIRollDestiny: game.user.id });
     }
 
     if (game.user.isGM) {

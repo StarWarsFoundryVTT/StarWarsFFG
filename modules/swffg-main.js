@@ -158,7 +158,7 @@ Hooks.once("init", async function () {
   /**
    * Register the option to use generic slots for combat
    */
-  game.settings.register("starwarsffg", "useGenericSlots", {
+  game.settings.register("genesysk2", "useGenericSlots", {
     name: game.i18n.localize("SWFFG.Settings.UseGenericSlots.Name"),
     hint: game.i18n.localize("SWFFG.Settings.UseGenericSlots.Hint"),
     scope: "world",
@@ -168,7 +168,7 @@ Hooks.once("init", async function () {
     onChange: (rule) => window.location.reload()
   });
 
-  if (game.settings.get("starwarsffg", "useGenericSlots")) {
+  if (game.settings.get("genesysk2", "useGenericSlots")) {
     CONFIG.ui.combat = CombatTrackerFFG;
   }
 
@@ -872,9 +872,9 @@ Hooks.once("ready", async () => {
 
   await registerCrewRoles();
 
-  if (game.settings.get("starwarsffg", "useGenericSlots")) {
+  if (game.settings.get("genesysk2", "useGenericSlots")) {
     if (game.user.isGM) {
-      game.socket.on("system.starwarsffg", async (...args) => {
+      game.socket.on("system.genesysk2", async (...args) => {
         if (game.user.id === game.users.find(i => i.isGM)?.id) {
           const event_type = args[0].event;
           if (event_type === "combat") {
@@ -1165,8 +1165,8 @@ async function registerCrewRoles() {
       "use_weapons": false,
       "use_handling": false
     };
-  game.settings.register("starwarsffg", "initiativeCrewRole", {
-    module: "starwarsffg",
+  game.settings.register("genesysk2", "initiativeCrewRole", {
+    module: "genesysk2",
     name: "initiativeCrewRole",
     scope: "world",
     default: initiativeCrewRole,

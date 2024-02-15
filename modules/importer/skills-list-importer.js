@@ -6,7 +6,7 @@ export default class SkillListImporter extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "swffg-skilllist-importer",
-      classes: ["starwarsffg", "data-import"],
+      classes: ["genesysk2s", "data-import"],
       title: "Skill List Importer",
       width: 385,
       template: "systems/genesysk2/templates/importer/skill-list-importer.html",

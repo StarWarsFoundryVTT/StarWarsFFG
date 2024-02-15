@@ -133,7 +133,7 @@ export default class ForcePowers {
                 }
               }
 
-              let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", data.flags.starwarsffg.ffgimportid);
+              let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", data.flags.genesysk2.ffgimportid);
               if (imgPath) {
                 data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
               }

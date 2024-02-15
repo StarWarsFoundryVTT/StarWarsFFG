@@ -3,7 +3,7 @@ export default class UISettings extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "data-importer",
-      classes: ["starwarsffg", "data-import"],
+      classes: ["genesysk2", "data-import"],
       title: `${game.i18n.localize("SWFFG.UISettingsLabel")}`,
       template: "systems/genesysk2/templates/dialogs/ffg-ui-settings.html",
     });
