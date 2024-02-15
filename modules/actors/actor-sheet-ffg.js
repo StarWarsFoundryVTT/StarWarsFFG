@@ -32,7 +32,7 @@ export class ActorSheetFFG extends ActorSheet {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor"],
-      template: "systems/starwarsffg/templates/actors/ffg-character-sheet.html",
+      template: "systems/genesysk2/templates/actors/ffg-character-sheet.html",
       width: 710,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],
@@ -42,7 +42,7 @@ export class ActorSheetFFG extends ActorSheet {
 
   /** @override */
   get template() {
-    const path = "systems/starwarsffg/templates/actors";
+    const path = "systems/genesysk2/templates/actors";
     return `${path}/ffg-${this.actor.type}-sheet.html`;
   }
 
@@ -76,7 +76,7 @@ export class ActorSheetFFG extends ActorSheet {
     let autoSoakCalculation = true;
 
     if (typeof this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined") {
-      autoSoakCalculation = game.settings.get("starwarsffg", "enableSoakCalc");
+      autoSoakCalculation = game.settings.get("genesysk2", "enableSoakCalc");
     } else {
       autoSoakCalculation = this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation;
     }
@@ -326,7 +326,7 @@ export class ActorSheetFFG extends ActorSheet {
         name: game.i18n.localize("SWFFG.MedicalItemName"),
         hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
         type: "String",
-        default: game.settings.get("starwarsffg", "medItemName"),
+        default: game.settings.get("genesysk2", "medItemName"),
       });
       this.sheetoptions.register("enableObligation", {
         name: game.i18n.localize("SWFFG.EnableObligation"),
@@ -440,7 +440,7 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     html.find(".resetMedical").click(async (ev) => {
-      if (game.settings.get("starwarsffg", "HealingItemAction") === '0') {
+      if (game.settings.get("genesysk2", "HealingItemAction") === '0') {
           // prompt
           // show a prompt asking what the user wants to do
           new Dialog(
@@ -484,14 +484,14 @@ export class ActorSheetFFG extends ActorSheet {
                   classes: ["dialog", "starwarsffg"],
               }
           ).render(true);
-      } else if (game.settings.get("starwarsffg", "HealingItemAction") === '1') {
+      } else if (game.settings.get("genesysk2", "HealingItemAction") === '1') {
         // rest
         let updateData = {};
         setProperty(updateData, `data.stats.medical.uses`, 0);
         setProperty(updateData, `data.stats.strain.value`, 0);
         setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
         this.object.update(updateData);
-      } else if (game.settings.get("starwarsffg", "HealingItemAction") === '2') {
+      } else if (game.settings.get("genesysk2", "HealingItemAction") === '2') {
         // reset
         let updateData = {};
         setProperty(updateData, `data.stats.medical.uses`, 0);
@@ -690,7 +690,7 @@ export class ActorSheetFFG extends ActorSheet {
         },
         {
           classes: ["dialog", "starwarsffg"],
-          template: "systems/starwarsffg/templates/actors/dialogs/ffg-talent-selector.html",
+          template: "systems/genesysk2/templates/actors/dialogs/ffg-talent-selector.html",
         }
       ).render(true);
     });
@@ -1025,7 +1025,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     const itemDetails = item?.getItemDetails();
-    const template = "systems/starwarsffg/templates/chat/item-card.html";
+    const template = "systems/genesysk2/templates/chat/item-card.html";
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
@@ -1055,7 +1055,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     const itemDetails = { "desc": desc, "name": name };
-    const template = "systems/starwarsffg/templates/chat/force-power-card.html";
+    const template = "systems/genesysk2/templates/chat/force-power-card.html";
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
@@ -1114,7 +1114,7 @@ export class ActorSheetFFG extends ActorSheet {
       },
       {
         classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
+        template: "systems/genesysk2/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
       }
     ).render(true);
   }
@@ -1169,7 +1169,7 @@ export class ActorSheetFFG extends ActorSheet {
       },
       {
         classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-new.html",
+        template: "systems/genesysk2/templates/actors/dialogs/ffg-skill-new.html",
       }
     ).render(true);
   }
@@ -1465,7 +1465,7 @@ export class ActorSheetFFG extends ActorSheet {
         if (a.toLowerCase() < b.toLowerCase()) return -1;
         return 0;
       };
-      if (game.settings.get("starwarsffg", "skillSorting")) {
+      if (game.settings.get("genesysk2", "skillSorting")) {
         sortFunction = (a, b) => {
           return data.data.skills[a].label.localeCompare(data.data.skills[b].label, game.i18n.lang);
         };

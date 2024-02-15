@@ -313,9 +313,15 @@ img {
   position: relative;
   width: 100%;
 }
+.starwarsffg.sheet.actor .character .header-fields .header-name .container input{
+  margin: 0;
+  position: relative;
+  border: 0;
+  background-color: rgba(136, 134, 134, 0) !important;  
+}
 .starwarsffg.sheet.actor .character .header-fields .header-name input {
   margin: 0;
-  width: 100%;
+  /*width: 100%;*/
   border: 0;
   background-color: rgba(0, 0, 0, 0);
 }
@@ -1605,7 +1611,7 @@ img {
   border: none;
 }
 .starwarsffg .item-rollable.rollable:hover {
-  background-image: url(/systems/starwarsffg/images/generic-die.svg) !important;
+  background-image: url(/systems/genesysk2/images/generic-die.svg) !important;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;

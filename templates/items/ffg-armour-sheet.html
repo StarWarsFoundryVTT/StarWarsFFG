@@ -78,13 +78,13 @@
           </div>
 
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
           </div>
           <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.adjusteditemmodifier)}}
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemAttachments" name="itemattachment" fields=data.itemattachment)}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.adjusteditemmodifier)}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemAttachments" name="itemattachment" fields=data.itemattachment)}}
           </div>
           <div class="flex-group-center weapon-values hidden-content">
             <input type="text" name="data.encumbrance.adjusted" value="{{data.encumbrance.adjusted}}" data-dtype="Number"/>
@@ -97,7 +97,7 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body small">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -106,7 +106,7 @@
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
+      {{> "systems/genesysk2/templates/parts/shared/ffg-modifiers.html"}}
     </div>
   </section>
 </form>

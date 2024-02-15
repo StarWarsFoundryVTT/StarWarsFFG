@@ -8,7 +8,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
 
   /** @override */
   get template() {
-    const path = "systems/starwarsffg/templates/actors";
+    const path = "systems/genesysk2/templates/actors";
     return `${path}/ffg-adversary-sheet.html`;
   }
 
@@ -16,7 +16,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor", "adversary"],
-      template: "systems/starwarsffg/templates/actors/ffg-adversary-sheet.html",
+      template: "systems/genesysk2/templates/actors/ffg-adversary-sheet.html",
       width: 710,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],

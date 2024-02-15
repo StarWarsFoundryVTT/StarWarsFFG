@@ -366,3 +366,4 @@ export default class PopoutEditor extends FormApplication {
     return formula;
   }
 }
+

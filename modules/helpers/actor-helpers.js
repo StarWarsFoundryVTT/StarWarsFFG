@@ -71,7 +71,7 @@ export default class ActorHelpers {
 
             let y = parseInt(formData.data.attributes[key].value, 10) + x;
             if (key === "Soak") {
-              const autoSoakCalculation = (typeof this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.flags.starwarsffg?.config.enableAutoSoakCalculation;
+              const autoSoakCalculation = (typeof this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("genesysk2", "enableSoakCalc")) || this.actor.flags.starwarsffg?.config.enableAutoSoakCalculation;
 
               if (autoSoakCalculation) {
                 y = 0;

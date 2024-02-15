@@ -7,7 +7,7 @@ export default class CrewSettings extends FormApplication {
       title: `${game.i18n.localize("SWFFG.UISettingsLabel")}`,
       height: 265,
       resizable: true,
-      template: "systems/starwarsffg/templates/dialogs/crew-settings.html"
+      template: "systems/genesysk2/templates/dialogs/crew-settings.html"
     });
   }
 
@@ -66,7 +66,7 @@ export default class CrewSettings extends FormApplication {
   _onResetDefaults(event) {
     event.preventDefault();
     const defaults = game.settings.settings.get("starwarsffg.arrayCrewRoles").default;
-    game.settings.set("starwarsffg", "arrayCrewRoles", defaults);
+    game.settings.set("genesysk2", "arrayCrewRoles", defaults);
     this.close();
   }
 
@@ -75,7 +75,7 @@ export default class CrewSettings extends FormApplication {
 
   /** @override */
   async _updateObject(event, formData) {
-    const existing_settings = game.settings.get("starwarsffg", "arrayCrewRoles");
+    const existing_settings = game.settings.get("genesysk2", "arrayCrewRoles");
     let new_settings = [];
     // convert the arrays into the format expected
     for (let i = 0; i < formData['role_name'].length; i++) {
@@ -88,7 +88,7 @@ export default class CrewSettings extends FormApplication {
     }
     // update the settings if they don't match the old ones
     if (existing_settings !== new_settings) {
-      await game.settings.set("starwarsffg", "arrayCrewRoles", new_settings);
+      game.settings.set("genesysk2", "arrayCrewRoles", new_settings);
     }
     const updateData = {
       "role_name":  formData['initiativeCrewRole'],
@@ -96,6 +96,6 @@ export default class CrewSettings extends FormApplication {
       "use_weapons": false,
       "use_handling": false
     };
-    await game.settings.set("starwarsffg", "initiativeCrewRole", updateData);
+    await game.settings.set("genesysk2", "initiativeCrewRole", updateData);
   }
 }

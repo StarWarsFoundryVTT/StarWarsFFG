@@ -1,12 +1,19 @@
 {
-  "id": "starwarsffg",
-  "title": "Star Wars FFG",
-  "description": "A system for playing Star Wars FFG games.",
-  "version": "1.806",
+  "id": "genesysk2",
+  "title": "K² Genesys avancé",
+  "description": "Un système pour pouvoir jouer à K² avec Genesys.",
+  "version": "1.804",
   "compatibility": {
     "minimum": 10,
     "verified": 11
   },
+  "media": [
+    {
+      "type": "setup",
+      "url": "systems/genesysk2/images/frontalK2.png",
+      "thumbnail": "systems/genesysk2/images/peintureka.png"
+    }
+  ],
   "templateVersion": 1,
   "authors": [{"name": "Esrin"}, {"name": "CStadther"}, {"name": "Wrycu"}, {"name": "Jaxxa"}],
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
@@ -41,12 +48,12 @@
       "path": "lang/pt-BR.json"
     }
   ],
-  "gridDistance": 5,
-  "gridUnits": "ft",
+  "gridDistance": 1.5,
+  "gridUnits": "m",
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
-  "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG",
-  "manifest": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/latest/download/system.json",
-  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.806/starwarsffg_1.806.zip",
+  "url": "https://github.com/ZolOnTheNet/genesysK2",
+  "manifest": "https://github.com/ZolOnTheNet/genesysK2/releases/latest/download/system.json",
+  "download": "https://github.com/ZolOnTheNet/genesysK2/genesysK2_1.804.zip",
   "license": "LICENSE.txt"
 }

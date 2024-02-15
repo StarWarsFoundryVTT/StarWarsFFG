@@ -8,7 +8,7 @@ export default class SWAImporter extends FormApplication {
       id: "swa-importer",
       classes: ["starwarsffg", "data-import"],
       title: "Adversaries Importer",
-      template: "systems/starwarsffg/templates/importer/swa-importer.html",
+      template: "systems/genesysk2/templates/importer/swa-importer.html",
     });
   }
 
@@ -362,10 +362,10 @@ export default class SWAImporter extends FormApplication {
                   },
                 };
 
-                const skilltheme = await game.settings.get("starwarsffg", "skilltheme");
+                const skilltheme = await game.settings.get("genesysk2", "skilltheme");
 
                 if (skilltheme !== "starwars") {
-                  skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("starwarsffg", "skilltheme")).skills));
+                  skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("genesysk2", "skilltheme")).skills));
                 }
 
                 let adversary = {
