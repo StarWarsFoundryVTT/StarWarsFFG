@@ -133,9 +133,8 @@ export function drawAdversaryCount(token) {
       token.adversaryLevel.removeChildren().forEach(i => i.destroy());
     }
     const sprite = PIXI.Sprite.from(`systems/starwarsffg/images/adversary/adversary-${adversaryLevel}.png`);
-    sprite.width = token.w * .3;
-    sprite.height = token.h * .3;
-    sprite.x = (token.w / 2) - (sprite.width / 2) ;
+    sprite.scale.set(0.15, 0.15);
+    sprite.x = (token.w / 2) - 20;
     sprite.y = token.h / 2 + 15;
     if (adversaryLevel > 5) {
       sprite.tint = overflowColor;
