@@ -362,6 +362,9 @@ export class CombatTrackerFFG extends CombatTracker {
     const data = await super.getData(options);
     const combat = this.viewed;
 
+    console.log(options)
+    console.log(data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE))
+
     if (!combat) {
       return data;
     }
@@ -378,7 +381,17 @@ export class CombatTrackerFFG extends CombatTracker {
       [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 0,
     };
 
-    const turns = data.turns.map((turn, index) => {
+    const turns = this.viewed.turns.map((turn_initial, index) => {
+      let turn = data.turns.find(i => i.id === turn_initial.id);
+      console.log("turn:")
+      console.log(turn)
+      if (turn === undefined) {
+        // TODO: remove
+        //CONFIG.logger.warn("Turn not found, wtf is even going on");
+        console.log("falling back to combat actor")
+        console.log(turn_initial)
+        turn = turn_initial;
+      }
       const combatant = combat.combatants.get(turn.id);
       const claimantId = combat.getSlotClaims(combat.round, index);
       const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
@@ -411,18 +424,38 @@ export class CombatTrackerFFG extends CombatTracker {
         }
 
         // propagate this to the overall turn data, so we can gray out claimed slots
-        data.turns.find(i => i.id === claimant.id).claimed = true;
+        this.viewed.turns.find(i => i.id === claimant.id).claimed = true;
+        let img = claimant.img ?? CONST.DEFAULT_TOKEN;
+        let name = claimant.name;
+        if (claimant.hidden && !game.user.isGM) {
+          img = "systems/starwarsffg/images/combat/hidden.png";
+          // TODO: localize
+          name = "unknown";
+        }
 
         claim = {
           id: claimant.id,
-          name: claimant.name,
-          img: claimant.img ?? CONST.DEFAULT_TOKEN,
+          name: name,
+          img: img,
           owner: claimant.owner,
           defeated,
           hidden: claimant.hidden,
           canPing: claimant.sceneId === canvas.scene?.id && game.user.hasPermission("PING_CANVAS"),
           effects,
         };
+      } else {
+        if (combatant.hidden && !game.user.isGM) {
+          combatant.img = "systems/starwarsffg/images/combat/hidden.png";
+          // TODO: localize
+          combatant.name = "unknown";
+          if (combat.turn === index) {
+            combatant.active = true;
+            combatant.css = "active";
+          } else {
+            combatant.active = false;
+            combatant.css = "";
+          }
+        }
       }
       const disposition = combatant.token?.disposition ?? combatant.actor?.token.disposition ?? 0;
       let slotType;
@@ -459,10 +492,13 @@ export class CombatTrackerFFG extends CombatTracker {
     const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
 
     const turnData = {
-      Friendly: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
-      Enemy: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
-      Neutral: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+      Friendly: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
+      Enemy: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
+      Neutral: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
     };
+
+    console.log("turndata")
+    console.log(turnData)
 
     return {
       ...data,
