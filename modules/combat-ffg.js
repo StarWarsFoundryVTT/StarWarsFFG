@@ -362,9 +362,6 @@ export class CombatTrackerFFG extends CombatTracker {
     const data = await super.getData(options);
     const combat = this.viewed;
 
-    console.log(options)
-    console.log(data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE))
-
     if (!combat) {
       return data;
     }
@@ -383,13 +380,8 @@ export class CombatTrackerFFG extends CombatTracker {
 
     const turns = this.viewed.turns.map((turn_initial, index) => {
       let turn = data.turns.find(i => i.id === turn_initial.id);
-      console.log("turn:")
-      console.log(turn)
       if (turn === undefined) {
-        // TODO: remove
-        //CONFIG.logger.warn("Turn not found, wtf is even going on");
-        console.log("falling back to combat actor")
-        console.log(turn_initial)
+        CONFIG.logger.warn("Turn not found, using initial data");
         turn = turn_initial;
       }
       const combatant = combat.combatants.get(turn.id);
@@ -403,6 +395,7 @@ export class CombatTrackerFFG extends CombatTracker {
       let claim = {};
 
       if (combat.started && claimant) {
+        CONFIG.logger.debug(`slot ${index} has been claimed by ${claimant.name}`);
         let defeated = claimant.isDefeated;
 
         const effects = new Set();
@@ -425,37 +418,35 @@ export class CombatTrackerFFG extends CombatTracker {
 
         // propagate this to the overall turn data, so we can gray out claimed slots
         this.viewed.turns.find(i => i.id === claimant.id).claimed = true;
-        let img = claimant.img ?? CONST.DEFAULT_TOKEN;
-        let name = claimant.name;
-        if (claimant.hidden && !game.user.isGM) {
-          img = "systems/starwarsffg/images/combat/hidden.png";
-          // TODO: localize
-          name = "unknown";
+        const hidden = this._getTokenHidden(claimant.tokenId);
+
+        if (!hidden && turn.css) {
+          turn.css = turn?.css?.replace('hidden', '');
         }
 
         claim = {
           id: claimant.id,
-          name: name,
-          img: img,
+          name: claimant.name,
+          img: claimant.img ?? CONST.DEFAULT_TOKEN,
           owner: claimant.owner,
           defeated,
-          hidden: claimant.hidden,
+          hidden: hidden,
           canPing: claimant.sceneId === canvas.scene?.id && game.user.hasPermission("PING_CANVAS"),
           effects,
         };
+        turn.hidden = hidden;
       } else {
-        if (combatant.hidden && !game.user.isGM) {
-          combatant.img = "systems/starwarsffg/images/combat/hidden.png";
-          // TODO: localize
-          combatant.name = "unknown";
-          if (combat.turn === index) {
-            combatant.active = true;
-            combatant.css = "active";
-          } else {
-            combatant.active = false;
-            combatant.css = "";
-          }
-        }
+        CONFIG.logger.debug(`slot ${index} is unclaimed`);
+        combatant.hidden = this._getTokenHidden(combatant.tokenId);
+        // sync the turn state to the token state
+        turn.hidden = combatant.hidden;
+      }
+      if (combat.turn === index) {
+        combatant.active = true;
+        combatant.css += "active";
+      } else {
+        combatant.active = false;
+        combatant.css = "";
       }
       const disposition = combatant.token?.disposition ?? combatant.actor?.token.disposition ?? 0;
       let slotType;
@@ -496,9 +487,16 @@ export class CombatTrackerFFG extends CombatTracker {
       Enemy: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
       Neutral: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
     };
-
-    console.log("turndata")
-    console.log(turnData)
+    // update visibility state for each token
+    for (const turn of turnData['Friendly']) {
+      turn.hidden = this._getTokenHidden(turn.tokenId);
+    }
+    for (const turn of turnData['Enemy']) {
+      turn.hidden = this._getTokenHidden(turn.tokenId);
+    }
+    for (const turn of turnData['Neutral']) {
+      turn.hidden = this._getTokenHidden(turn.tokenId);
+    }
 
     return {
       ...data,
@@ -523,7 +521,7 @@ export class CombatTrackerFFG extends CombatTracker {
     return rawAlive.length + defeated.filter(i => i.id && claimed.includes(i.id)).length;
   }
 
-  /* @override */
+  /** @override */
   _getEntryContextOptions() {
     const baseEntries = super._getEntryContextOptions();
 
@@ -542,7 +540,7 @@ export class CombatTrackerFFG extends CombatTracker {
     return [...baseEntries, unClaimSlot];
   }
 
-  /* @override */
+  /** @override */
   async _onCombatantHoverIn(event) {
     event.preventDefault();
 
@@ -552,7 +550,7 @@ export class CombatTrackerFFG extends CombatTracker {
     return super._onCombatantHoverIn(event);
   }
 
-  /* @override */
+  /** @override */
   async _onCombatantMouseDown(event) {
     event.preventDefault();
 
@@ -560,5 +558,32 @@ export class CombatTrackerFFG extends CombatTracker {
       return;
     }
     return super._onCombatantMouseDown(event);
+  }
+
+  /**
+   * Determine the hidden status of a token, since the state in the combat tracker seems to lag
+   * @param tokenId
+   * @returns {boolean}
+   * @private
+   */
+  _getTokenHidden(tokenId) {
+    let hidden = true;
+    const scene = game.scenes.get(this.viewed.scene.id);
+    const token = scene.tokens.get(tokenId);
+    if (token) {
+      hidden = token.hidden;
+    }
+    CONFIG.logger.debug(`looking up hidden state for ${token.name}/${tokenId} on scene ${scene.id}: ${hidden}`);
+    return hidden;
+  }
+}
+
+/**
+ * Force the combat tracker to re-render, which picks up "hidden" state changes of tokens
+ */
+export function updateCombatTracker() {
+  // Used to force the tracker to re-render based on updated visibility state
+  if (game.combat && game.settings.get("starwarsffg", "useGenericSlots")) {
+    ui.combat.render(true);
   }
 }
