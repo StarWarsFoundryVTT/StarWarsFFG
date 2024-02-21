@@ -319,6 +319,15 @@ Hooks.once("init", async function () {
         updateCombatTracker();
       }
     });
+
+    Hooks.on("preCreateCombatant", async (combatant, context, options, combatantId) => {
+      console.log("caught create combatant")
+      await game.combat.handleCombatantAddition(combatant, context, options, combatantId);
+    });
+    Hooks.on("preDeleteCombatant", async (combatant, options, unknownId) => {
+      console.log("caught delete combatant")
+      await game.combat.handleCombatantRemoval(combatant, options, unknownId);
+    });
   }
 
   await gameSkillsList();
