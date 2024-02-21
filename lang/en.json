@@ -623,5 +623,11 @@
   "SWFFG.Combats.Actors.Neutral": "Neutral Actors",
   "SWFFG.Combats.Actors.Hidden": "Hidden Actor",
   "SWFFG.Settings.UseGenericSlots.Name": "Use Generic Slots",
-  "SWFFG.Settings.UseGenericSlots.Hint": "Replaces named slots in the combat tracker with generic, claimable slots"
+  "SWFFG.Settings.UseGenericSlots.Hint": "Replaces named slots in the combat tracker with generic, claimable slots",
+  "SWFFG.Settings.showMinionCount.Name": "Show Minion Count",
+  "SWFFG.Settings.showMinionCount.Hint": "Shows alive/total minions in group on tokens",
+  "SWFFG.Settings.showAdversaryCount.Name": "Show Adversary Count",
+  "SWFFG.Settings.showAdversaryCount.Hint": "Shows the ranks of the Adversary talent on tokens",
+  "SWFFG.Settings.AdversaryItemName.Name": "Adversary Item Name",
+  "SWFFG.Settings.AdversaryItemName.Hint": "The name of the talent to consider 'adversary' for the purposes of showing ranks on tokens (for translations)"
 }

@@ -12,6 +12,7 @@ export default class PopoutEditor extends FormApplication {
       template: "systems/starwarsffg/templates/popout-editor.html",
       width: 320,
       height: 320,
+      resizable:true,
     });
   }
 
