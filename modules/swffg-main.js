@@ -7,7 +7,7 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
-import {CombatFFG, CombatTrackerFFG} from "./combat-ffg.js";
+import {CombatFFG, CombatTrackerFFG, updateCombatTracker} from "./combat-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
@@ -313,6 +313,19 @@ Hooks.once("init", async function () {
           }
         }
       }
+    });
+
+    Hooks.on("updateToken", async (tokenDocument, options, diffData, tokenId) => {
+      if (Object.keys(options).includes('hidden')) {
+        updateCombatTracker();
+      }
+    });
+
+    Hooks.on("preCreateCombatant", async (combatant, context, options, combatantId) => {
+      await game.combat.handleCombatantAddition(combatant, context, options, combatantId);
+    });
+    Hooks.on("preDeleteCombatant", async (combatant, options, unknownId) => {
+      await game.combat.handleCombatantRemoval(combatant, options, unknownId);
     });
   }
 
