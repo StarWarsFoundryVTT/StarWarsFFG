@@ -393,12 +393,18 @@ export class CombatTrackerFFG extends CombatTracker {
 
   /** @override */
   async getData(options) {
-    const data = await super.getData(options);
     const combat = this.viewed;
-
-    if (!combat) {
-      return data;
+      if (!combat) {
+      return await super.getData(options);
     }
+
+    // create a copy of the turn data, then set hidden to false so non-GMs can view all turns, then set the data back
+    const tempData = foundry.utils.deepClone(this.viewed.turns);
+    for (const turn of this.viewed.turns) {
+      turn.hidden = false;
+    }
+    const data = await super.getData(options);
+    this.viewed.turns = tempData;
 
     const initiatives = combat.combatants.reduce((accumulator, combatant) => {
       accumulator[combatant.id] = [{activationId: -1, initiative: combatant.initiative}];
@@ -412,12 +418,7 @@ export class CombatTrackerFFG extends CombatTracker {
       [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 0,
     };
 
-    const turns = this.viewed.turns.map((turn_initial, index) => {
-      let turn = data.turns.find(i => i.id === turn_initial.id);
-      if (turn === undefined) {
-        CONFIG.logger.debug("Turn not found, using initial data (this is expected for non-GMs if there are hidden units");
-        turn = turn_initial;
-      }
+    const turns = data.turns.map((turn, index) => {
       const combatant = combat.combatants.get(turn.id);
       const claimantId = combat.getSlotClaims(combat.round, index);
       const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
@@ -521,19 +522,30 @@ export class CombatTrackerFFG extends CombatTracker {
     const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
 
     const turnData = {
-      Friendly: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
-      Enemy: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
-      Neutral: this.viewed.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+      Friendly: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
+      Enemy: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
+      Neutral: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
     };
+
     // update visibility state for each token
     for (const turn of turnData['Friendly']) {
       turn.hidden = this._getTokenHidden(turn.tokenId);
       turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
     }
+
     for (const turn of turnData['Enemy']) {
-      turn.hidden = this._getTokenHidden(turn.tokenId);
-      turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
+      const combatant = combat.combatants.get(turn.id);
+      const claimantId = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
+      const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
+      if (combat.started && claimant) {
+        turn.hidden = this._getTokenHidden(claimant.tokenId);
+        turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === claimant.tokenId).id );
+      } else {
+        turn.hidden = this._getTokenHidden(combatant.tokenId);
+        turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === combatant.tokenId).id);
+      }
     }
+
     for (const turn of turnData['Neutral']) {
       turn.hidden = this._getTokenHidden(turn.tokenId);
       turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
