@@ -30,9 +30,9 @@
 }
 
 .skillsTablesGrid {
-  position: relative; 
-  overflow: auto; 
-  height: calc(100% - 5.5rem); 
+  position: relative;
+  overflow: auto;
+  height: calc(100% - 5.5rem);
   float: left; width: 100%;
 }
 
@@ -63,7 +63,7 @@
   .skillTable {
     .skillsHeader {
       line-height: 1.313rem;
-    
+
       div {
         text-align: center;
         padding: 3px;
@@ -116,4 +116,7 @@
       border: 0;
     }
   }
+}
+.skillsGrid:last-child {
+  padding-bottom: 2rem;
 }
