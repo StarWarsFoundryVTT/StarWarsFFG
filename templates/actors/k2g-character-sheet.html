@@ -60,8 +60,10 @@
               <div class="table">
                 <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
                   <div class="container flex-group-center">
-                    {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="K2G.RES1" fields=(array (object name="data.stats.ressources.pool1.max" value=data.stats.ressources.pool1.max type="Number" label="SWFFG.Threshold") (object name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value type="Number" label="SWFFG.Current") ))}}
-                    {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES2" type="Number" name="data.stats.ressources.pool2.value" value=data.stats.ressources.pool3.value )}}
+                    {{!-- chercher à bien remplir headerlink="true" headerclass="" headerattributes="" --}}
+                    {{!-- {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="K2G.RES1" fields=(array (object name="data.stats.ressources.pool1.max" value=data.stats.ressources.pool1.max type="Number" label="SWFFG.Threshold") (object name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value type="Number" label="SWFFG.Current") ))}} --}}
+                    {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES1" headerlink="true" headerclass="cmd" headerattributes="data-cmd='reboot.PdH'" type="Number" name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value )}}
+                    {{!-- {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES2" type="Number" name="data.stats.ressources.pool2.value" value=data.stats.ressources.pool2.value )}} --}}
                   </div>
                 </div>
               </div>

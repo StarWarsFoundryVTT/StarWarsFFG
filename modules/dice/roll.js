@@ -240,14 +240,14 @@ export class RollFFG extends Roll {
 
     // Define chat data
     if (this?.data) {
-      if (this.data.flags?.starwarsffg?.uuid) {
-        const item = await fromUuid(this.data.flags.starwarsffg.uuid);
+      if (this.data.flags?.genesysk2?.uuid) {
+        const item = await fromUuid(this.data.flags.genesysk2.uuid);
         if (item) {
           this.data = item;
         }
       }
-      else if (this.data.flags?.starwarsffg?.ffgUuid) {
-        const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
+      else if (this.data.flags?.genesysk2?.ffgUuid) {
+        const item = await fromUuid(this.data.flags.genesysk2.ffgUuid);
         if (item) {
           this.data = item;
         }
@@ -287,8 +287,8 @@ export class RollFFG extends Roll {
       addedResults: this.addedResults,
       publicRoll: !chatOptions.isPrivate,
     };
-    if (chatData?.data?.flags?.starwarsffg.hasOwnProperty('crew')) {
-      chatData.data.crew = chatData.data.flags.starwarsffg.crew;
+    if (chatData?.data?.flags?.genesysk2.hasOwnProperty('crew')) {
+      chatData.data.crew = chatData.data.flags.genesysk2.crew;
     }
     if (chatData.data.hasOwnProperty('data') && (chatData.data.data.adjusteditemmodifier === undefined || chatData.data.data.adjusteditemmodifier.length === 0)) {
       // extended metadata is missing, lookup the actor ID so we can embed it for future lookups
@@ -308,7 +308,7 @@ export class RollFFG extends Roll {
           }
         }
         // fake the UUID flag so we can do the lookup within chat messages
-        chatData.data.flags.starwarsffg.ffgUuid = 'Actor.' + candidate_actors[0].id + '.Item.' + chatData.data._id;
+        chatData.data.flags.genesysk2.ffgUuid = 'Actor.' + candidate_actors[0].id + '.Item.' + chatData.data._id;
       }
     }
 

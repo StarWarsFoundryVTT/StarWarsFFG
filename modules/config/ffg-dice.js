@@ -69,17 +69,32 @@ export function configureDice() {
     8: { label: "SWFFG.DiceResult.OneFailureOneThreat", image: `systems/genesysk2/images/dice/${dicetheme}/purpleft.png`, success: 0, failure: 1, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
   };
 
+  // CONFIG.FFG.FORCE_RESULTS = {
+  //   1: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
+  //   2: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
+  //   3: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
+  //   4: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
+  //   5: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
+  //   6: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
+  //   7: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitenn.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 2 },
+  //   8: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitel.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 1, dark: 0 },
+  //   9: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitel.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 1, dark: 0 },
+  //   10: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitell.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 2, dark: 0 },
+  //   11: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitell.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 2, dark: 0 },
+  //   12: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitell.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 2, dark: 0 },
+  // };
+
   CONFIG.FFG.FORCE_RESULTS = {
-    1: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
-    2: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
-    3: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
+    1: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitenn.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 2 },
+    2: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitenn.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 2 },
+    3: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitenn.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 2 },
     4: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
     5: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
     6: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whiten.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 1 },
-    7: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitenn.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 2 },
+    7: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitez.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
     8: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitel.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 1, dark: 0 },
     9: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitel.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 1, dark: 0 },
-    10: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitell.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 2, dark: 0 },
+    10: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitel.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 1, dark: 0 },
     11: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitell.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 2, dark: 0 },
     12: { label: "", image: `systems/genesysk2/images/dice/${dicetheme}/whitell.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 2, dark: 0 },
   };

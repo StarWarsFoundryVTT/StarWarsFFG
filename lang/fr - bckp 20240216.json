@@ -567,8 +567,8 @@
   "SWFFG.DicePoolAddsHint": "Clic gauche pour augmenter les dés, clic droit pour les diminuer.",
   "SWFFG.RollSucceeded": "Test réussi !",
   "SWFFG.RollFailure": "Test échoué !",
-  "SWFFG.DestinyFlipMessage": "Point échangé",
-  "SWFFG.DestinyFlipRemaining": "Reste",
+  "SWFFG.DestinyFlipMessage": "Point Flipped (Translate)",
+  "SWFFG.DestinyFlipRemaining": "Remaining (Translate)",
   "SWFFG.DestinyTrackerHint": "Clic gauche pour inverser, SHIFT+clic gauche pour ajouter, CTRL+clic gauche pour enlever.",
   "SWFFG.DiceResult.Blank": "vide",
   "SWFFG.DiceResult.OneSuccess": "1 succès",
@@ -620,7 +620,7 @@
   "SWFFG.Combats.Actors.Enemy": "Personnage Ennemi",
   "SWFFG.Combats.Actors.Neutral": "Personnage Neutre",
   "SWFFG.Settings.UseGenericSlots.Name": "Utilisez un Slot générique",
-  "SWFFG.Settings.UseGenericSlots.Hint": "Remplace les emplacements nommés dans le suivi des combats par des emplacements génériques pouvant être revendiqués.",
+  "SWFFG.Settings.UseGenericSlots.Hint": "Remplace les emplacements nommés dans le suivi des combats par des emplacements génériques pouvant être revendiqués."
 
   "K2G" : {
     "SkillsNameMeleeShort": "Mêlée : courte",

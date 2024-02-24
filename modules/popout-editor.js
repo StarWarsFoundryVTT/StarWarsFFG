@@ -7,7 +7,7 @@ export default class PopoutEditor extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "popout-editor",
-      classes: ["genesysk2", "sheet"],
+      classes: ["starwarsffg", "sheet"],
       title: "Pop-out Editor",
       template: "systems/genesysk2/templates/popout-editor.html",
       width: 320,

@@ -1020,10 +1020,11 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
       "d12"
     );
 
-    dice3d.addDicePreset(
+    dice3d.addDicePreset( // modif pour le dé de Magie (df)
       {
         type: "df",
-        labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
+        //labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
+        labels: ["z\nz", "z\nz", "z\nz", "\nz", "\nz", "\nz", "\n", "\nZ", "\nZ", "\nZ", "Z\nZ", "Z\nZ"],
         font: "SWRPG-Symbol-Regular",
         colorset: "white-sw",
         system: "genesys",

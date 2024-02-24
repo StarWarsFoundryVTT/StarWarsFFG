@@ -15,7 +15,7 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["genesysk2", "sheet", "item"],
+      classes: ["starwarsffg", "sheet", "item"],
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
       scrollY: [".sheet-body", ".tab"],
       action: null,

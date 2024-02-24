@@ -31,7 +31,7 @@ export class ActorSheetFFG extends ActorSheet {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["genesysk2", "sheet", "actor"],
+      classes: ["starwarsffg", "sheet", "actor"],
       template: "systems/genesysk2/templates/actors/ffg-character-sheet.html",
       width: 710,
       height: 650,

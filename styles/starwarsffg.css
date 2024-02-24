@@ -236,7 +236,7 @@ img {
   padding: 0;
 }
 .starwarsffg.sheet.actor .characteristic-item .characteristic-label {
-  background-color: #490c0b;
+  background-color: #B50707;
 }
 .starwarsffg.sheet.actor .characteristic-item .characteristic {
   border-radius: 50%;
@@ -694,7 +694,7 @@ img {
 }
 .starwarsffg .attribute .block-title {
   line-height: initial;
-  background-color: #553113;
+  background-color: #B50707;
   color: white;
   font-size: 13px;
   padding: 0 10px;
@@ -706,7 +706,7 @@ img {
 }
 .starwarsffg .attribute .block-header {
   line-height: initial;
-  background-color: #490c0b;
+  background-color: #7d1616;
   color: white;
   font-size: 13px;
   text-transform: uppercase;
@@ -751,7 +751,7 @@ img {
   transform: translateX(-50%);
 }
 .starwarsffg .attribute .shadow-left {
-  background-color: #490c0b;
+  background-color: #B50707;
   width: 50%;
   height: 100%;
   float: left;
@@ -763,7 +763,7 @@ img {
   text-transform: uppercase;
 }
 .starwarsffg .attribute .shadow-right {
-  background-color: #7da9c2;
+  background-color: #1c8ac8;
   width: 50%;
   height: 100%;
   float: right;
@@ -771,7 +771,7 @@ img {
   padding-top: 25px;
 }
 .starwarsffg .attribute .shadow-right .shadow-text {
-  color: black;
+  color: white;
   font-weight: bold;
   text-transform: uppercase;
 }
@@ -1376,7 +1376,7 @@ img {
 .starwarsffg .tabs .item.active {
   text-decoration: underline;
   text-shadow: none;
-  background-color: #490c0b;
+  background-color: #B50707;
   color: white;
   font-weight: normal;
 }
@@ -1455,7 +1455,7 @@ img {
   text-align: center;
   padding: 3px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-  background-color: #490c0b;
+  background-color: #7d1616;
   color: white;
   font-size: 12px;
   font-weight: normal;

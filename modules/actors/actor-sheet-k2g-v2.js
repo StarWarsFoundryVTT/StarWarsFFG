@@ -8,7 +8,7 @@ export class ActorSheetK2G extends ActorSheetFFG {
   /** @override */
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
-      classes: ["genesysk2", "sheet", "actor", "K2G"], // ici si K² pas la bonne présentation ', "v2"' pour la forme différente (v2)
+      classes: ["genesysk2", "starwarsffg", "sheet", "actor", "K2G"], // ici si K² pas la bonne présentation ', "v2"' pour la forme différente (v2)
       template: "systems/genesysk2/templates/actors/k2g-character-sheet.html",
       width: 710,
       height: 650,
@@ -19,7 +19,9 @@ export class ActorSheetK2G extends ActorSheetFFG {
 
   get template() {
     const path = "systems/genesysk2/templates/actors";
-    return `${path}/k2g-${this.actor.type}-sheet.html`;
+    let front = "ffg"
+    if(this.actor.type=='character') front = "k2g"    
+    return `${path}/${front}-${this.actor.type}-sheet.html`;
   }
   getData() {
     const data = super.getData();
@@ -29,5 +31,8 @@ export class ActorSheetK2G extends ActorSheetFFG {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    html.find(".cmd").on("click",(html) => { 
+      console.log(this.actor, html) 
+    })
   }
 }
