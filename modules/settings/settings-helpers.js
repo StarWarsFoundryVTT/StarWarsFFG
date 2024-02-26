@@ -20,7 +20,7 @@ export default class SettingsHelpers {
       hint: game.i18n.localize("SWFFG.SettingsDiceThemeHint"),
       scope: "world",
       config: true,
-      default: "starwars",
+      default: "genesys",
       type: String,
       onChange: (rule) => {
         if (rule === "starwars") {
