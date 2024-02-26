@@ -41,6 +41,7 @@ import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
 import RollBuilderFFG from "./dice/roll-builder.js";
 import CrewSettings from "./settings/crew-settings.js";
 import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag_enricher} from "./helpers/journal.js";
+import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -871,6 +872,7 @@ Hooks.once("ready", async () => {
   dTracker.render(true);
 
   await registerCrewRoles();
+  registerTokenControls();
 
   if (game.settings.get("genesysk2", "useGenericSlots")) {
     if (game.user.isGM) {
@@ -888,6 +890,19 @@ Hooks.once("ready", async () => {
       });
     }
   }
+
+  Hooks.on("refreshToken", (token) => {
+    /*
+    Used to render minion count
+    */
+    if (token?.actor?.type === "minion") {
+      drawMinionCount(token);
+    }
+    if (["character"].includes(token?.actor?.type)) {
+      drawAdversaryCount(token);
+    }
+    return token;
+  });
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
