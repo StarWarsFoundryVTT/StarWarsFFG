@@ -226,6 +226,40 @@ export class CombatFFG extends Combat {
   }
 
   /**
+   * Check if a given combatant has any claims in the current combat round
+   * @param combatantId - STRING - the combatant ID (NOT token ID, NOT actor ID)
+   * @returns {boolean|string} - false if no claims, otherwise the round of the claimant
+   */
+  hasClaims(combatantId) {
+    const claims = this.getClaims(this.round);
+    if (!claims) {
+      return false;
+    }
+    if (Object.values(claims).includes(combatantId)) {
+      return Object.keys(claims).find(key => claims[key] === combatantId);
+    } else {
+      return false;
+    }
+  }
+
+  async handleCombatantRemoval(combatant, options, combatantId) {
+    CONFIG.logger.debug(`Handling combatant removal of ${combatant?.name}`);
+    const claims = this.hasClaims(combatant.id);
+    if (!claims) {
+      CONFIG.logger.debug("No claimed slots found, nothing to do!");
+      return;
+    }
+    CONFIG.logger.debug("Claimed slots found, unclaiming...");
+    await this.unclaimSlot(this.round, claims);
+    CONFIG.logger.debug("...Done!");
+  }
+
+  async handleCombatantAddition(combatant, context, options, combatantI) {
+    // there may be cases when this is needed, but for now, we don't need to do anything
+    // (leaving as a placeholder until we know for sure)
+  }
+
+  /**
    * Claim a slot for a given combatant
    * @param round - INT - the round
    * @param slot - INT - the turn
@@ -359,12 +393,18 @@ export class CombatTrackerFFG extends CombatTracker {
 
   /** @override */
   async getData(options) {
-    const data = await super.getData(options);
     const combat = this.viewed;
-
-    if (!combat) {
-      return data;
+      if (!combat) {
+      return await super.getData(options);
     }
+
+    // create a copy of the turn data, then set hidden to false so non-GMs can view all turns, then set the data back
+    const tempData = foundry.utils.deepClone(this.viewed.turns);
+    for (const turn of this.viewed.turns) {
+      turn.hidden = false;
+    }
+    const data = await super.getData(options);
+    this.viewed.turns = tempData;
 
     const initiatives = combat.combatants.reduce((accumulator, combatant) => {
       accumulator[combatant.id] = [{activationId: -1, initiative: combatant.initiative}];
@@ -390,6 +430,7 @@ export class CombatTrackerFFG extends CombatTracker {
       let claim = {};
 
       if (combat.started && claimant) {
+        CONFIG.logger.debug(`slot ${index} has been claimed by ${claimant.name}`);
         let defeated = claimant.isDefeated;
 
         const effects = new Set();
@@ -410,8 +451,11 @@ export class CombatTrackerFFG extends CombatTracker {
           }
         }
 
-        // propagate this to the overall turn data, so we can gray out claimed slots
-        data.turns.find(i => i.id === claimant.id).claimed = true;
+        const hidden = this._getTokenHidden(claimant.tokenId);
+
+        if (!hidden && turn.css) {
+          turn.css = turn?.css?.replace('hidden', '');
+        }
 
         claim = {
           id: claimant.id,
@@ -419,10 +463,29 @@ export class CombatTrackerFFG extends CombatTracker {
           img: claimant.img ?? CONST.DEFAULT_TOKEN,
           owner: claimant.owner,
           defeated,
-          hidden: claimant.hidden,
+          hidden: hidden,
           canPing: claimant.sceneId === canvas.scene?.id && game.user.hasPermission("PING_CANVAS"),
           effects,
         };
+        turn.hidden = hidden;
+        turn.tokenId = claimant.tokenId;
+      } else {
+        CONFIG.logger.debug(`slot ${index} is unclaimed`);
+        combatant.hidden = this._getTokenHidden(combatant.tokenId);
+        turn.tokenId = combatant.tokenId;
+        // sync the turn state to the token state
+        turn.hidden = combatant.hidden;
+      }
+
+      if (combatant.css === undefined) {
+        combatant.css = "";
+      }
+      if (combat.turn === index) {
+        combatant.active = true;
+        combatant.css += " active";
+      } else {
+        combatant.active = false;
+        combatant.css = "";
       }
       const disposition = combatant.token?.disposition ?? combatant.actor?.token.disposition ?? 0;
       let slotType;
@@ -464,6 +527,30 @@ export class CombatTrackerFFG extends CombatTracker {
       Neutral: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
     };
 
+    // update visibility state for each token
+    for (const turn of turnData['Friendly']) {
+      turn.hidden = this._getTokenHidden(turn.tokenId);
+      turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
+    }
+
+    for (const turn of turnData['Enemy']) {
+      const combatant = combat.combatants.get(turn.id);
+      const claimantId = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
+      const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
+      if (combat.started && claimant) {
+        turn.hidden = this._getTokenHidden(claimant.tokenId);
+        turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === claimant.tokenId).id );
+      } else {
+        turn.hidden = this._getTokenHidden(combatant.tokenId);
+        turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === combatant.tokenId).id);
+      }
+    }
+
+    for (const turn of turnData['Neutral']) {
+      turn.hidden = this._getTokenHidden(turn.tokenId);
+      turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
+    }
+
     return {
       ...data,
       turns,
@@ -487,7 +574,7 @@ export class CombatTrackerFFG extends CombatTracker {
     return rawAlive.length + defeated.filter(i => i.id && claimed.includes(i.id)).length;
   }
 
-  /* @override */
+  /** @override */
   _getEntryContextOptions() {
     const baseEntries = super._getEntryContextOptions();
 
@@ -506,7 +593,7 @@ export class CombatTrackerFFG extends CombatTracker {
     return [...baseEntries, unClaimSlot];
   }
 
-  /* @override */
+  /** @override */
   async _onCombatantHoverIn(event) {
     event.preventDefault();
 
@@ -516,7 +603,7 @@ export class CombatTrackerFFG extends CombatTracker {
     return super._onCombatantHoverIn(event);
   }
 
-  /* @override */
+  /** @override */
   async _onCombatantMouseDown(event) {
     event.preventDefault();
 
@@ -524,5 +611,32 @@ export class CombatTrackerFFG extends CombatTracker {
       return;
     }
     return super._onCombatantMouseDown(event);
+  }
+
+  /**
+   * Determine the hidden status of a token, since the state in the combat tracker seems to lag
+   * @param tokenId
+   * @returns {boolean}
+   * @private
+   */
+  _getTokenHidden(tokenId) {
+    let hidden = true;
+    const scene = game.scenes.get(this.viewed.scene.id);
+    const token = scene.tokens.get(tokenId);
+    if (token) {
+      hidden = token.hidden;
+    }
+    CONFIG.logger.debug(`looking up hidden state for ${token?.name}/${tokenId} on scene ${scene.id}: ${hidden}`);
+    return hidden;
+  }
+}
+
+/**
+ * Force the combat tracker to re-render, which picks up "hidden" state changes of tokens
+ */
+export function updateCombatTracker() {
+  // Used to force the tracker to re-render based on updated visibility state
+  if (game.combat && game.settings.get("starwarsffg", "useGenericSlots")) {
+    ui.combat.render(true);
   }
 }
