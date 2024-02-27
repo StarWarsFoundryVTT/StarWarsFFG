@@ -14,7 +14,8 @@ I'm made some modification to make a reality for my own RPG namde K².
 #Rogue Trader
 A add Rogue Trader implémentation, some Skills spécifique for now.
 
-TODO : Modified bellow :
+---
+# TODO : Modified bellow :
 
 # Installing Star Wars FFG game system
 NOT OPERATIONNAL Now
