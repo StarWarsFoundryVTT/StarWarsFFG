@@ -11,12 +11,16 @@ The system for Foundry VTT contains no rules or proprietary content from the var
 
 I'm made some modification to make a reality for my own RPG namde K². 
 
-#Rogue Trader
+# Rogue Trader
 A add Rogue Trader implémentation, some Skills spécifique for now.
 
 ---
 # TODO : Modified bellow :
+Actually, the system is not directly usable by the hub of foundryvvtt. If you want, let me a message
 
+You can clone, if you want. Use actual k2main2 for the last use. The main is only a copy of starwars FFG game system.
+
+Many thing come from Star Wars FFG game system, it's the reason why the texte bellow is présent
 # Installing Star Wars FFG game system
 NOT OPERATIONNAL Now
 1. Open Foundry VTT
