@@ -1,5 +1,5 @@
 export function registerTokenControls() {
-  game.settings.register("starwarsffg", "showMinionCount", {
+  game.settings.register("genesysk2", "showMinionCount", {
     name: game.i18n.localize("SWFFG.Settings.showMinionCount.Name"),
     hint: game.i18n.localize("SWFFG.Settings.showMinionCount.Hint"),
     scope: "world",
@@ -8,7 +8,7 @@ export function registerTokenControls() {
     type: Boolean,
     onChange: (rule) => window.location.reload()
   });
-  game.settings.register("starwarsffg", "showAdversaryCount", {
+  game.settings.register("genesysk2", "showAdversaryCount", {
     name: game.i18n.localize("SWFFG.Settings.showAdversaryCount.Name"),
     hint: game.i18n.localize("SWFFG.Settings.showAdversaryCount.Hint"),
     scope: "world",
@@ -17,7 +17,7 @@ export function registerTokenControls() {
     type: Boolean,
     onChange: (rule) => window.location.reload()
   });
-    game.settings.register("starwarsffg", "adversaryItemName", {
+    game.settings.register("genesysk2", "adversaryItemName", {
     name: game.i18n.localize("SWFFG.Settings.AdversaryItemName.Name"),
     hint: game.i18n.localize("SWFFG.Settings.AdversaryItemName.Hint"),
     scope: "world",
@@ -29,7 +29,7 @@ export function registerTokenControls() {
 }
 
 export function drawMinionCount(token) {
-  if (!game.settings.get("starwarsffg", "showMinionCount")) {
+  if (!game.settings.get("genesysk2", "showMinionCount")) {
     return;
   }
   const borderWidth = 0.35;
