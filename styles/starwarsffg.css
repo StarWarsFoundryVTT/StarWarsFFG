@@ -1496,6 +1496,9 @@ img {
   height: 1em;
   border: 0;
 }
+.starwarsffg .skillsGrid:last-child {
+  padding-bottom: 2rem;
+}
 .starwarsffg .items {
   margin: 0;
   padding: 0;

@@ -67,7 +67,15 @@
 		</div>
 		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
 			{{#each turnData.Friendly }}
-				<img class="token-image actor-header friendly{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}"/>
+				{{#if ../user.isGM }}
+					<img class="combatant token-image actor-header friendly{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+				{{else}}
+					{{#if hidden}}
+						<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+					{{else}}
+						<img class="combatant token-image actor-header friendly{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+					{{/if}}
+				{{/if}}
 			{{/each}}
 		</div>
 		{{/if}}
@@ -77,7 +85,15 @@
 		</div>
 		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
 			{{#each turnData.Enemy }}
-				<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+				{{#if ../user.isGM }}
+					<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+				{{else}}
+					{{#if hidden}}
+						<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+					{{else}}
+						<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+					{{/if}}
+				{{/if}}
 			{{/each}}
 		</div>
 		{{/if}}
@@ -87,16 +103,40 @@
 		</div>
 		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
 			{{#each turnData.Neutral }}
-				<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+				{{#if ../user.isGM }}
+					<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+				{{else}}
+					{{#if hidden}}
+						<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+					{{else}}
+						<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+					{{/if}}
+				{{/if}}
 			{{/each}}
 		</div>
 		{{/if}}
 		{{#each turns}}
 			{{#if claimed}}
-				<li class="combatant actor directory-item flexrow {{css}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}">
-					<img class="token-image" data-src="{{img}}" alt="{{name}}"/>
+				<li class="combatant actor directory-item flexrow {{css}}{{#if ../user.isGM}}{{#if hidden}} hidden{{/if}}{{/if}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}">
+					{{#if ../user.isGM}}
+						<img class="token-image" data-src="{{img}}" alt="{{name}}"/>
+					{{else}}
+						{{#if hidden }}
+							<img class="token-image" data-src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+						{{else}}
+							<img class="token-image" data-src="{{img}}" alt="{{name}}"/>
+						{{/if}}
+					{{/if}}
 					<div class="token-name flexcol">
+					{{#if ../user.isGM}}
 						<h4>{{name}}</h4>
+					{{else}}
+						{{#if hidden }}
+							<h4>{{localize "SWFFG.Combats.Actors.Hidden"}}</h4>
+						{{else}}
+							<h4>{{name}}</h4>
+						{{/if}}
+					{{/if}}
 						<div class="combatant-controls flexrow">
 							{{#if ../user.isGM}}
 								{{#if (not hasRolled)}}
