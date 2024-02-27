@@ -11,6 +11,22 @@ The system for Foundry VTT contains no rules or proprietary content from the var
 
 I'm made some modification to make a reality for my own RPG namde K². 
 
+# ADDs
+## spectifics Skills 
+- For the K2 system
+- For Rogue Trader adaptation to Genesys
+
+## Modification Sheet
+- Add as special sheet for tabs Spells
+- Add Point of Hero
+- Add (transform the Force dice) Magical Dice
+
+# ToDo
+- import from externe JSON for many type (a sheet) (to make a universal importation multiples objects => to a module)
+- Ability item Add (and not in description)
+- Roll modification for use Hero points.
+- simple import (json + zip)
+
 # Rogue Trader
 A add Rogue Trader implémentation, some Skills spécifique for now.
 
