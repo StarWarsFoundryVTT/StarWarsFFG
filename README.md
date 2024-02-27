@@ -11,6 +11,8 @@ The system for Foundry VTT contains no rules or proprietary content from the var
 
 I'm made some modification to make a reality for my own RPG namde K². 
 
+#Rogue Trader
+A add Rogue Trader implémentation, some Skills spécifique for now.
 
 TODO : Modified bellow :
 
