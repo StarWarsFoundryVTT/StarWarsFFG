@@ -10,7 +10,7 @@ export class ActorSheetK2G extends ActorSheetFFG {
     return mergeObject(super.defaultOptions, {
       classes: ["genesysk2", "starwarsffg", "sheet", "actor", "K2G"], // ici si K² pas la bonne présentation ', "v2"' pour la forme différente (v2)
       template: "systems/genesysk2/templates/actors/k2g-character-sheet.html",
-      width: 710,
+      width: 750,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],
       scrollY: [".tableWithHeader", ".tab", ".skillsGrid", ".skillsTablesGrid"],

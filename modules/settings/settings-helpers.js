@@ -217,7 +217,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.SettingsUITheme"),
       hint: game.i18n.localize("SWFFG.SettingsUIThemeHint"),
       scope: "world",
-      config: false,
+      config: true,
       default: "mandar",
       type: String,
       onChange: this.debouncedReload,

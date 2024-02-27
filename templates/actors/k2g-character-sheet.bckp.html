@@ -62,7 +62,7 @@
                   <div class="container flex-group-center">
                     {{!-- chercher à bien remplir headerlink="true" headerclass="" headerattributes="" --}}
                     {{!-- {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="K2G.RES1" fields=(array (object name="data.stats.ressources.pool1.max" value=data.stats.ressources.pool1.max type="Number" label="SWFFG.Threshold") (object name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value type="Number" label="SWFFG.Current") ))}} --}}
-                    {{!-- {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES1" headerlink="true" headerclass="cmd" headerattributes="data-cmd='reboot.PdH'" type="Number" name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value )}}  --}}
+                    {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES1" headerlink="true" headerclass="cmd" headerattributes="data-cmd='reboot.PdH'" type="Number" name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value )}}
                     {{!-- {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES2" type="Number" name="data.stats.ressources.pool2.value" value=data.stats.ressources.pool2.value )}} --}}
                   </div>
                 </div>
@@ -82,7 +82,6 @@
           {{/if}}
           {{!-- Soak Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
           {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
-          {{!-- Pt Hero Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES1" headerlink="true" headerclass="cmd" headerattributes="data-cmd='reboot.PdH'" type="Number" name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value )}}
         </div>
       </div>
     </div>
@@ -127,6 +126,9 @@
 
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
+      <div class="container flex-group-center item-values">
+        {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
+      </div>
       {{> "systems/genesysk2/templates/parts/actor/ffg-talents.html"}} 
       {{!-- Abilities List --}} {{> "systems/genesysk2/templates/parts/actor/ffg-abilities.html"}}
       {{> "systems/genesysk2/templates/parts/actor/ffg-signatureability.html"}}
@@ -137,9 +139,7 @@
     <div class="tab spells items" data-group="primary" data-tab="spells">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
-        <div class="container flex-group-center item-values">
-          {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
-        </div>
+    
       </div>
       {{!-- Spells power list --}} {{> "systems/genesysk2/templates/parts/actor/k2g-spells.html"}} 
     
