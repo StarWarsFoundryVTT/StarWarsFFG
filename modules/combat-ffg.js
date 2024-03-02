@@ -6,6 +6,188 @@ import PopoutEditor from "./popout-editor.js";
  * @extends {Combat}
  */
 export class CombatFFG extends Combat {
+  /**
+   * Adds extra slots into the combat turn tracker
+   */
+  /** @override */
+  setupTurns() {
+    // get the normal combatants (turns)
+    const combatants = this.combatants.map(
+        (combatant) => ({
+          slotOrigin: combatant,
+          initiative: combatant.initiative,
+          disposition: combatant.disposition,
+          id: combatant.id,
+        })
+    );
+
+    // retrieve the added turns
+    const extraSlots = this._getExtraSlotsForRound(this.round).reduce((accum, slot) => {
+      accum.push({
+        initiative: slot.initiative,
+        disposition: slot.disposition,
+        slotOrigin: slot.slotOrigin,
+      });
+      return accum;
+    }, []);
+
+    // combine the two lists and sort them
+    const turns = combatants.concat(
+        extraSlots
+    ).sort(
+        this._sortSlots
+    ).map(
+        (slotData => slotData.slotOrigin)
+    );
+
+    if (this.turn !== null) {
+      // idk; it's in the base function. presumably does something important.
+      this.turn = Math.clamped(this.turn, 0, turns.length - 1);
+    }
+
+    // original logic from the base function from here on out
+    const currentCombatant = turns[this.turn];
+    this.current = {
+      round: this.round,
+      turn: this.turn,
+      combatantId: currentCombatant ? currentCombatant.id : null,
+      tokenId: currentCombatant ? currentCombatant.tokenId : null,
+    };
+    if (!this.previous) {
+      this.previous = this.current;
+    }
+
+    return (this.turns = turns);
+  }
+
+  /** @override */
+  /**
+   * Technically not an override, since the default function is _sortCombatants
+   * @param firstSlot
+   * @param secondSlot
+   * @returns {number|number}
+   * @private
+   */
+  _sortSlots(firstSlot, secondSlot) {
+		const firstSlotInitiative = firstSlot.initiative ?? -Infinity;
+		const secondSlotInitiative = secondSlot.initiative ?? -Infinity;
+
+		// Sort by initiative value in descending order.
+		if (firstSlotInitiative === secondSlotInitiative) {
+			// Break initiative ties by using the combatants' disposition.
+			if (firstSlot.disposition === secondSlot.disposition) {
+				// Break ties in the combatants' disposition by using their id.
+				if (firstSlot.id === secondSlot.id) {
+					return 0;
+				} else {
+					return firstSlot.id > secondSlot.id ? 1 : -1;
+				}
+			} else {
+				const dispositions = ['hostile', 'neutral', 'friendly'];
+				return dispositions.indexOf(secondSlot.disposition) - dispositions.indexOf(firstSlot.disposition);
+			}
+		} else {
+			return secondSlotInitiative - firstSlotInitiative;
+		}
+	}
+
+  /**
+   * Returns the extra slots which have been added for a round
+   * @param round - INT - the round to get the slots for
+   * @returns {*} - an array of extra slots
+   * @private
+   */
+  _getExtraSlotsForRound(round) {
+    const extraSlots = this.getFlag("starwarsffg", "extraSlots") ?? [];
+
+    return extraSlots.reduce((accum, slot, index) => {
+      if (slot.startingRound <= round) {
+        accum.push({...slot, index});
+        return accum;
+      }
+    }, []);
+  }
+
+  /**
+   * Adds a generic slot to the combat (via a flag)
+   * @param round - INT - the round to add the slot to
+   * @param disposition - INT - the disposition of the slot
+   * @param initiative - FLOAT - the initiative value of the slot
+   * @returns {Promise<void>}
+   */
+  async addExtraSlot(round, disposition, initiative) {
+    const extraSlots = this._getExtraSlotsForRound(round);
+
+    // includes disposition in two places because sometimes it's readable, and sometimes it's not :|
+    extraSlots.push({
+      startingRound: round,
+      slotOrigin: {
+        initiative: initiative,
+        disposition: disposition,
+        visible: true,
+        name: "__CONTROL_GENERIC_SLOT__",
+        isDefeated: disposition,
+      },
+      initiative: initiative,
+      disposition: disposition,
+      visible: true,
+      defeated: disposition,
+    });
+
+    await this.setFlag("starwarsffg", "extraSlots", extraSlots);
+  }
+
+  /**
+   * Handler for clicking the "add extra slot" button. Creates a dialog to get the slot details,
+   * then calls the function to create the slot
+   * @returns {Promise<void>}
+   */
+  async addInitiativeSlot() {
+    // ask the user which disposition and initiative they would like, so we can add a generic slot
+
+    let slotDialog = new Dialog({
+      title: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Title"),
+      content: `
+        <p>${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Initiative")} :</p>
+        <input type="number" id="initiative" name="initiative" value="0">
+        <p>${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Disposition")}:</p>
+        <label><input type="radio" id="friendly" name="disposition" value="friendly">${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Friendly")}</label>
+        <label><input type="radio" id="neutral" name="disposition" value="neutral">${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Neutral")}</label>
+        <label><input type="radio" id="enemy" name="disposition" value="enemy">${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Enemy")}</label>
+      `,
+      buttons: {
+        submit: {
+          icon: '<i class="fas fa-check"></i>',
+          label: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Submit"),
+          callback: async (obj, event) => {
+            const jObj = $(obj);
+            let disposition = undefined;
+            if (jObj.find("#friendly")[0].checked) {
+              disposition = CONST.TOKEN_DISPOSITIONS["FRIENDLY"];
+            } else if (jObj.find("#neutral")[0].checked) {
+              disposition = CONST.TOKEN_DISPOSITIONS["NEUTRAL"];
+            } else if (jObj.find("#enemy")[0].checked) {
+              disposition = CONST.TOKEN_DISPOSITIONS["HOSTILE"];
+            }
+            if (disposition === undefined) {
+              ui.notifications.warn("You must select a disposition");
+              return;
+            }
+            const initiative = jObj.find("#initiative")[0].value;
+            if (initiative === "") {
+              ui.notifications.warn("You must provide an initiative value");
+              return;
+            }
+            await this.addExtraSlot(this.round, disposition, parseInt(initiative));
+            this.setupTurns();
+          }
+        }
+      },
+      default: "submit",
+    });
+    slotDialog.render(true);
+  }
+
   /** @override */
   _getInitiativeRoll(combatant, formula) {
     const cData = duplicate(combatant.actor.system);
@@ -383,7 +565,7 @@ export class CombatTrackerFFG extends CombatTracker {
     }
     // ensure combatant is permitted in this type of slot
     const combatantDisposition = combatant?.token?.disposition ?? combatant?.actor?.token?.disposition ?? token?.document?.disposition ?? 0;
-    const slotDisposition = this.viewed.turns[slot]?.token?.disposition ?? this.viewed.turns[slot]?.actor?.token?.disposition ?? 0;
+    const slotDisposition = this.viewed.turns[slot]?.token?.disposition ?? this.viewed.turns[slot]?.actor?.token?.disposition ?? this.viewed.turns[slot]?.disposition ?? 0;
     if (slotDisposition !== combatantDisposition) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.SlotType"));
       return;
@@ -406,10 +588,47 @@ export class CombatTrackerFFG extends CombatTracker {
     const data = await super.getData(options);
     this.viewed.turns = tempData;
 
-    const initiatives = combat.combatants.reduce((accumulator, combatant) => {
-      accumulator[combatant.id] = [{activationId: -1, initiative: combatant.initiative}];
-      return accumulator;
-    }, {});
+    const newInitiatives = {
+      [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: combat.combatants.reduce(
+        (ac, combatant) => {
+          const disposition = combatant?.token ? combatant.token?.disposition : combatant?.actor?.token?.disposition;
+          if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+            ac.push(combatant.initiative);
+          }
+          return ac;
+        },
+        []
+      ),
+      [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: combat.combatants.reduce(
+        (ac, combatant) => {
+          const disposition = combatant?.token ? combatant.token?.disposition : combatant?.actor?.token?.disposition;
+          if (disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL) {
+            ac.push(combatant.initiative);
+          }
+          return ac;
+        },
+        []
+      ),
+      [CONST.TOKEN_DISPOSITIONS.HOSTILE]: combat.combatants.reduce(
+        (ac, combatant) => {
+          const disposition = combatant?.token ? combatant.token?.disposition : combatant?.actor?.token?.disposition;
+          if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+            ac.push(combatant.initiative);
+          }
+          return ac;
+        },
+        []
+      ),
+    }
+
+    combat._getExtraSlotsForRound(combat.round).forEach((slot) => {
+      newInitiatives[slot.disposition].push(slot.initiative);
+    });
+
+    // sort the initiatives
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.FRIENDLY].sort(sortInit);
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.NEUTRAL].sort(sortInit);
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.HOSTILE].sort(sortInit);
 
     // used to track how many slots have occurred per side - we care to mark slots as "unused" if they're past the number of alive combatants
     let turnTracker = {
@@ -419,15 +638,24 @@ export class CombatTrackerFFG extends CombatTracker {
     };
 
     const turns = data.turns.map((turn, index) => {
-      const combatant = combat.combatants.get(turn.id);
+      // check if anyone has claimed this slot
       const claimantId = combat.getSlotClaims(combat.round, index);
+      // if they have, pull the actor data
       const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
+      // if there's a claim on the slot and combat has started, set claimed = true
       const claimed = combat.started ? claimantId !== undefined : true;
-      const canClaim = ((combatant.token?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY || combatant?.actor?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) && !claimed) || game.user.isGM;
+      // look up the normal actor for this slot
+      const combatant = combat.combatants.get(turn.id);
+      // track the disposition: the token, if it exists, then the actor, if it exists, then turn.defeated (which is where we stash extra slot initiative)
+      const disposition = combatant?.token ? combatant.token?.disposition ?? combatant.actor?.token.disposition ?? 0 : turn.defeated;
+      // determine if the user can claim this slot
+      const canClaim = ((disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY || disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) && !claimed) || game.user.isGM;
 
       // get the highest possible initiative for this combatant
-      const slotInitiative = initiatives[combatant.id].pop();
+      const slotInitiative = newInitiatives[disposition].pop();
+
       let claim = {};
+      let hasRolled = true;
 
       if (combat.started && claimant) {
         CONFIG.logger.debug(`slot ${index} has been claimed by ${claimant.name}`);
@@ -457,37 +685,51 @@ export class CombatTrackerFFG extends CombatTracker {
           turn.css = turn?.css?.replace('hidden', '');
         }
 
+        if (claimant.initiative === null) {
+          CONFIG.logger.debug("setting hasRolled to false (no initiative for claimant)");
+          hasRolled = false;
+        }
+
         claim = {
           id: claimant.id,
           name: claimant.name,
           img: claimant.img ?? CONST.DEFAULT_TOKEN,
-          owner: claimant.owner,
+          owner: claimant.isOwner,
           defeated,
           hidden: hidden,
           canPing: claimant.sceneId === canvas.scene?.id && game.user.hasPermission("PING_CANVAS"),
           effects,
+          initiative: claimant.initiative,
         };
         turn.hidden = hidden;
         turn.tokenId = claimant.tokenId;
       } else {
         CONFIG.logger.debug(`slot ${index} is unclaimed`);
-        combatant.hidden = this._getTokenHidden(combatant.tokenId);
-        turn.tokenId = combatant.tokenId;
-        // sync the turn state to the token state
-        turn.hidden = combatant.hidden;
-      }
+        if (combatant) {
+          if (combatant && Object.keys(combatant).includes("tokenId")) {
+            combatant.hidden = this._getTokenHidden(combatant.tokenId);
+          } else {
+            combatant.hidden = false;
+          }
+          turn.tokenId = combatant.tokenId;
+          // sync the turn state to the token state
+          turn.hidden = combatant.hidden;
+          if (!combatant.initiative && !combat?.started) {
+            hasRolled = false;
+          }
 
-      if (combatant.css === undefined) {
-        combatant.css = "";
+          if (combatant.css === undefined) {
+            combatant.css = "";
+          }
+          if (combat.turn === index) {
+            combatant.active = true;
+            combatant.css += " active";
+          } else {
+            combatant.active = false;
+            combatant.css = "";
+          }
+        }
       }
-      if (combat.turn === index) {
-        combatant.active = true;
-        combatant.css += " active";
-      } else {
-        combatant.active = false;
-        combatant.css = "";
-      }
-      const disposition = combatant.token?.disposition ?? combatant.actor?.token.disposition ?? 0;
       let slotType;
       if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
         slotType = 'Friendly';
@@ -505,15 +747,18 @@ export class CombatTrackerFFG extends CombatTracker {
         unused = true;
       }
 
+      // we do not care about the defeated status since defeated units get their slot marked unused
+      turn.css = turn.css.replace('defeated', '');
+
       return {
         ...turn,
         ...claim,
         slotType: slotType,
-        initiative: slotInitiative.initiative,
-        hasRolled: slotInitiative.initiative !== null,
+        initiative: slotInitiative,
+        hasRolled: hasRolled,
         claimed,
         canClaim,
-        activationId: slotInitiative.activationId,
+        activationId: slotInitiative ? slotInitiative.activationId : undefined,
         unused: unused,
       }
     });
@@ -522,9 +767,9 @@ export class CombatTrackerFFG extends CombatTracker {
     const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
 
     const turnData = {
-      Friendly: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
-      Enemy: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
-      Neutral: data.turns.filter(i => combat.combatants.get(i.id).token.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+      Friendly: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
+      Enemy: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
+      Neutral: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
     };
 
     // update visibility state for each token
@@ -535,6 +780,9 @@ export class CombatTrackerFFG extends CombatTracker {
 
     for (const turn of turnData['Enemy']) {
       const combatant = combat.combatants.get(turn.id);
+      if (!combatant) {
+        //continue;
+      }
       const claimantId = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
       const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
       if (combat.started && claimant) {
@@ -568,10 +816,13 @@ export class CombatTrackerFFG extends CombatTracker {
    * @private
    */
   _getCombatantStateCount(combat, disposition) {
-    const rawAlive = combat.combatants.filter(i => i.token.disposition === disposition && !i.isDefeated);
-    const claimed = Object.values(combat.getClaims(combat.round));
+    const extraSlots = combat._getExtraSlotsForRound(combat.round);
+    const realSlots = combat.combatants.filter(i => i.token.disposition === disposition);
+    const combinedTotal = realSlots.concat(extraSlots.filter(i => i.disposition === disposition));
     const defeated = combat.combatants.filter(i => i.token.disposition === disposition && i.isDefeated);
-    return rawAlive.length + defeated.filter(i => i.id && claimed.includes(i.id)).length;
+    CONFIG.logger.debug(`getting combatant state count for ${disposition}`)
+    CONFIG.logger.debug(`detected ${extraSlots.length} extra slots, ${realSlots.length} real slots, and ${defeated.length} defeated slots`);
+    return combinedTotal.length - defeated.length;
   }
 
   /** @override */
@@ -639,4 +890,25 @@ export function updateCombatTracker() {
   if (game.combat && game.settings.get("starwarsffg", "useGenericSlots")) {
     ui.combat.render(true);
   }
+}
+
+/**
+ * Sort function for initiatives. Puts NULL to the end.
+ * @param a
+ * @param b
+ * @returns {number|number}
+ */
+function sortInit(a, b) {
+  // equal items sort equally
+  if (a === b) {
+      return 0;
+  }
+  // nulls sort before anything else
+  if (a === null) {
+      return -1;
+  }
+  if (b === null) {
+      return 1;
+  }
+  return a < b ? -1 : 1;
 }
