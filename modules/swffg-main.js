@@ -885,20 +885,27 @@ Hooks.once("ready", async () => {
   registerTokenControls();
 
   if (game.settings.get("starwarsffg", "useGenericSlots")) {
-    if (game.user.isGM) {
-      game.socket.on("system.starwarsffg", async (...args) => {
-        if (game.user.id === game.users.find(i => i.isGM)?.id) {
-          const event_type = args[0].event;
-          if (event_type === "combat") {
-            CONFIG.logger.debug("Processing combat event from player");
-            const data = args[0]?.data;
-            CONFIG.logger.debug(`Received data: ${data.combatId}, ${data.round}, ${data.slot}, ${data.combatantId}`);
-            const combat = game.combats.get(data.combatId);
-            await combat.claimSlot(data.round, data.slot, data.combatantId);
-          }
+
+    game.socket.on("system.starwarsffg", async (...args) => {
+      const event_type = args[0].event;
+      if (game.user.id === game.users.find(i => i.isGM)?.id) {
+        if (event_type === "combat") {
+          CONFIG.logger.debug("Processing combat event from player");
+          const data = args[0]?.data;
+          CONFIG.logger.debug(`Received data: ${data.combatId}, ${data.round}, ${data.slot}, ${data.combatantId}`);
+          const combat = game.combats.get(data.combatId);
+          await combat.claimSlot(data.round, data.slot, data.combatantId);
         }
-      });
-    }
+      } else if (event_type === "trackerRender") {
+        CONFIG.logger.debug("Received combat tracker rerender request");
+        const incomingCombatID = args[0].combatId;
+        const incomingCombat = game.combats.get(incomingCombatID);
+        incomingCombat.debounceRender();
+        incomingCombat.setupTurns();
+      }
+    });
+
+
   }
 
   Hooks.on("refreshToken", (token) => {

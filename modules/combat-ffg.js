@@ -178,8 +178,10 @@ export class CombatFFG extends Combat {
               ui.notifications.warn("You must provide an initiative value");
               return;
             }
+            this.debounceRender();
             await this.addExtraSlot(this.round, disposition, parseInt(initiative));
             this.setupTurns();
+            game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: this.id});
           }
         }
       },
@@ -187,6 +189,12 @@ export class CombatFFG extends Combat {
     });
     slotDialog.render(true);
   }
+
+  debounceRender = foundry.utils.debounce(() => {
+    if (ui.combat.viewed === this) {
+      ui.combat.render();
+    }
+  }, 200);
 
   /** @override */
   _getInitiativeRoll(combatant, formula) {
