@@ -615,6 +615,7 @@
   "SWFFG.Notifications.Combat.Claim.Combatant": "Selected token must be in the combat",
   "SWFFG.Notifications.Combat.Claim.SlotType": "Selected token must have the same disposition as the slot you are claiming",
   "SWFFG.Notifications.Combat.Claim.UnClaim": "Un-claim This Initiative Slot",
+  "SWFFG.Notifications.Combat.Claim.RemoveSlot": "Remove Initiative Slot",
   "SWFFG.Notifications.Combat.Claim.Claim": "Claim This Initiative Slot",
   "SWFFG.Notifications.Combat.Claim.Unused": "Unused",
   "SWFFG.Notifications.Combat.Claim.Slot": "Slot",

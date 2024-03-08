@@ -117,7 +117,7 @@
 		{{/if}}
 		{{#each turns}}
 			{{#if claimed}}
-				<li class="combatant actor directory-item flexrow {{css}}{{#if ../user.isGM}}{{#if hidden}} hidden{{/if}}{{/if}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}">
+				<li class="combatant actor directory-item flexrow {{css}}{{#if ../user.isGM}}{{#if hidden}} hidden{{/if}}{{/if}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}" data-disposition="{{slotType}}" data-initiative="{{initiative}}">
 					{{#if ../user.isGM}}
 						<img class="token-image" data-src="{{img}}" alt="{{name}}"/>
 					{{else}}
@@ -172,7 +172,7 @@
 					</div>
 				</li>
 			{{else}}
-				<li class="combatant actor directory-item flexrow {{css}} slot-{{slotType}} slot-unused-{{unused}}" data-combatant-id="{{id}}" data-activation-id="{{activationId}}">
+				<li class="combatant actor directory-item flexrow {{css}} slot-{{slotType}} slot-unused-{{unused}}" data-combatant-id="{{id}}" data-activation-id="{{activationId}}" data-disposition="{{slotType}}" data-initiative="{{initiative}}" data-slot-index="{{@index}}">
 					<div class="token-name flexcol">
 						{{# if unused }}
 							<h4>{{ localize "SWFFG.Notifications.Combat.Claim.Unused" }} {{ slotType}} {{ localize "SWFFG.Notifications.Combat.Claim.Slot" }}</h4>

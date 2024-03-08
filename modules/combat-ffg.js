@@ -190,6 +190,34 @@ export class CombatFFG extends Combat {
     slotDialog.render(true);
   }
 
+  /**
+   * Update the extraSlots flag to remove a slot
+   * @param initiative
+   * @param disposition
+   * @param round
+   * @returns {Promise<void>}
+   */
+  async removeExtraSlot(initiative, disposition, round) {
+    const initialExtraSlots = this._getExtraSlotsForRound(round);
+    const filterLimit = 1;
+    let filterCount = 0;
+    // filter out up to one slot with the given initiative and disposition (to remove it)
+    // this really should look for an ID, but that's a follow-up
+    const updatedExtraSlots = initialExtraSlots.filter(slot => {
+      if (slot.initiative === initiative && slot.disposition === disposition) {
+        if (filterCount >= filterLimit) {
+          return true;
+        }
+        filterCount++;
+        return false;
+      } else {
+        return true;
+      }
+    });
+    // update the flag with the removed single slot
+    await this.setFlag("starwarsffg", "extraSlots", updatedExtraSlots);
+  }
+
   debounceRender = foundry.utils.debounce(() => {
     if (ui.combat.viewed === this) {
       ui.combat.render();
@@ -833,9 +861,42 @@ export class CombatTrackerFFG extends CombatTracker {
     return combinedTotal.length - defeated.length;
   }
 
+  /**
+   * get the total number of slots for a given disposition, including any extra slots
+   * @param combat
+   * @param disposition
+   * @returns {number}
+   * @private
+   */
+  _getDispositionSlotCount(combat, disposition) {
+    const extraSlots = combat._getExtraSlotsForRound(combat.round);
+    const realSlots = combat.combatants.filter(i => i.token.disposition === disposition);
+    const combinedTotal = realSlots.concat(extraSlots.filter(i => i.disposition === disposition));
+    return combinedTotal.length;
+  }
+
   /** @override */
   _getEntryContextOptions() {
     const baseEntries = super._getEntryContextOptions();
+    // replace the default remove combatant entry with our custom one, which allows us to detect and remove extra slots
+    const removeCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantRemove");
+    if (removeCombatantEntry) {
+      removeCombatantEntry.callback = li => {
+        this._removeCombatant(this, li);
+      };
+      baseEntries[3] = removeCombatantEntry;
+    }
+
+    const removeSlot = {
+      name: 'SWFFG.Notifications.Combat.Claim.RemoveSlot',
+      icon: '<i class="fa-regular fa-trash-alt"></i>',
+      callback: async (li) => {
+        const index = +li.data('slot-index');
+        if (!isNaN(index)) {
+          await this._removeSlot(this.viewed.round, li);
+        }
+      },
+    };
 
     // Allow GMs to revoke an initiative slot claim.
     const unClaimSlot = {
@@ -849,7 +910,90 @@ export class CombatTrackerFFG extends CombatTracker {
       },
     };
 
-    return [...baseEntries, unClaimSlot];
+    return [...baseEntries, removeSlot, unClaimSlot];
+  }
+
+  async _removeCombatant(tracker, li) {
+    const combat = this.viewed;
+    if (!combat) {
+      ui.notifications.error("Error detecting combat, try starting/ending combat?");
+    }
+    const round = combat.round;
+    const turn = li.data("slot-index");
+    const claim = combat.getSlotClaims(round, turn);
+    const claimed = claim !== undefined;
+    if (!claimed) {
+      ui.notifications.warn("You cannot remove a combatant without having the slot claimed");
+      return;
+    }
+    // note the combatant's information
+    // create a generic slot mirroring the combatant's data
+    // remove the combatant's true slot
+    const claimant = combat.combatants.get(claim);
+    const disposition = CONST.TOKEN_DISPOSITIONS[li.data("disposition").replace('Enemy', 'Hostile').toUpperCase()];
+    if (!claimant) {
+      ui.notifications.error("Unable to find actor which claimed this slot, please report");
+      return;
+    }
+    const initiative = claimant.initiative;
+    combat.debounceRender();
+    claimant.delete();
+    // we create a generic slot to keep slots consistent (deleting a combatant removes their slot as well, which we do not want)
+    await combat.addExtraSlot(round, disposition, initiative);
+    combat.setupTurns();
+    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
+  }
+
+  async _removeSlot(tracker, li) {
+    const combat = this.viewed;
+    if (!combat) {
+      ui.notifications.error("Error detecting combat, try starting/ending combat?");
+    }
+    const round = combat.round;
+    const turn = li.data("slot-index");
+    const claim = combat.getSlotClaims(round, turn);
+    const claimed = claim !== undefined;
+    const combatantId = combat.turns[turn]?.id;
+    const realCombatant = this.viewed.combatants.get(combatantId) || undefined;
+    const disposition = CONST.TOKEN_DISPOSITIONS[li.data("disposition").replace('Enemy', 'Hostile').toUpperCase()];
+    const initiative = li.data("initiative");
+
+    if (claimed) {
+      ui.notifications.warn("You must un-claim the slot before removing it");
+      return;
+    }
+    const slotCount = this._getDispositionSlotCount(combat, disposition)
+    const presentCount = combat.combatants.filter(i => i?.token?.disposition === disposition).length;
+
+    CONFIG.logger.debug(`detected ${presentCount} total combatants for disposition ${disposition}, along with ${slotCount} total slots`);
+
+    if (slotCount - 1 < presentCount) {
+      ui.notifications.warn(`You must retain enough slots for all actors in the combat (${presentCount})`);
+      return;
+    }
+    if (!realCombatant) {
+      // this is an extra slot, just remove it
+      combat.debounceRender();
+      await combat.removeExtraSlot(initiative, disposition, round);
+      combat.setupTurns();
+    } else {
+      // find an extra slot to replace this slot
+      // note initiative and any claims on the extra slot
+      // un-claim the extra slot (if applicable)
+      // remove the extra slot
+      // overwrite our initiative with the noted initiative
+      // re-claim the slot (if applicable)
+      // setup turns
+      const extraSlot = combat.turns.find(i => !Object.keys(i).includes('actorId'));
+      const extraSlotInitiative = extraSlot.initiative;
+      // TODO: this does not un-claim and re-claim the slot, which is dependent on having an actual unique ID for the extra slots
+      combat.debounceRender();
+      await combat.removeExtraSlot(extraSlotInitiative, disposition, round);
+      await realCombatant.update({initiative: extraSlotInitiative});
+      realCombatant.initiative = extraSlotInitiative;
+      combat.setupTurns();
+    }
+    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
   }
 
   /** @override */
