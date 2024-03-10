@@ -1829,16 +1829,16 @@ export default class ImportHelpers {
                   specTotal += spec.Talents.CharTalent.length;
                   updateDialogSpecialization(specCount, specTotal);
                   for (let i = 0; i < spec.Talents.CharTalent.length; i += 1) {
-                    const talent = await funcGetTalent(spec.Talents.CharTalent[i], newspec.data.talents[`talent${i}`].itemId);
+                    const talent = await funcGetTalent(spec.Talents.CharTalent[i], newspec.system.talents[`talent${i}`].itemId);
                     if (talent) {
-                      newspec.data.talents[`talent${i}`] = { ...newspec.data.talents[`talent${i}`], ...talent };
+                      newspec.system.talents[`talent${i}`] = { ...newspec.system.talents[`talent${i}`], ...talent };
 
                       if (spec.Talents.CharTalent[i]?.BonusChars?.BonusChar) {
                         if (Array.isArray(spec.Talents.CharTalent[i]?.BonusChars?.BonusChar)) {
                           await this.asyncForEach(spec.Talents.CharTalent[i].BonusChars.BonusChar, async (char) => {
-                            let attrId = Object.keys(newspec.data.talents[`talent${i}`].attributes).length + 1;
+                            let attrId = Object.keys(newspec.system.talents[`talent${i}`].attributes).length + 1;
 
-                            newspec.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                            newspec.system.talents[`talent${i}`].attributes[`attr${attrId}`] = {
                               isCheckbox: false,
                               mod: this.convertOGCharacteristic(char.CharKey),
                               modtype: "Characteristic",
@@ -1846,9 +1846,9 @@ export default class ImportHelpers {
                             };
                           });
                         } else {
-                          let attrId = Object.keys(newspec.data.talents[`talent${i}`].attributes).length + 1;
+                          let attrId = Object.keys(newspec.system.talents[`talent${i}`].attributes).length + 1;
 
-                          newspec.data.talents[`talent${i}`].attributes[`attr${attrId}`] = {
+                          newspec.system.talents[`talent${i}`].attributes[`attr${attrId}`] = {
                             isCheckbox: false,
                             mod: this.convertOGCharacteristic(spec.Talents.CharTalent[i].BonusChars.BonusChar.CharKey),
                             modtype: "Characteristic",
