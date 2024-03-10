@@ -7,23 +7,6 @@ import PopoutEditor from "./popout-editor.js";
  */
 export class CombatFFG extends Combat {
   /**
-   * Returns the extra slots which have been added for a round
-   * @param round - INT - the round to get the slots for
-   * @returns {*} - an array of extra slots
-   * @private
-   */
-  _getExtraSlotsForRound(round) {
-    const extraSlots = this.getFlag("starwarsffg", "extraSlots") ?? [];
-
-    return extraSlots.reduce((accum, slot, index) => {
-      if (slot.startingRound <= round) {
-        accum.push({...slot, index});
-        return accum;
-      }
-    }, []);
-  }
-
-  /**
    * Adds a generic slot to the combat (via a flag)
    * @param round - INT - the round to add the slot to
    * @param disposition - INT - the disposition of the slot
@@ -514,10 +497,6 @@ export class CombatTrackerFFG extends CombatTracker {
       [CONST.TOKEN_DISPOSITIONS.HOSTILE]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE).map(i => i.initiative),
     }
 
-    combat._getExtraSlotsForRound(combat.round).forEach((slot) => {
-      newInitiatives[slot.disposition].push(slot.initiative);
-    });
-
     // sort the initiatives
     newInitiatives[CONST.TOKEN_DISPOSITIONS.FRIENDLY].sort(sortInit);
     newInitiatives[CONST.TOKEN_DISPOSITIONS.NEUTRAL].sort(sortInit);
@@ -724,10 +703,7 @@ export class CombatTrackerFFG extends CombatTracker {
    * @private
    */
   _getDispositionSlotCount(combat, disposition) {
-    const extraSlots = combat._getExtraSlotsForRound(combat.round);
-    const realSlots = combat.combatants.filter(i => i.disposition === disposition);
-    const combinedTotal = realSlots.concat(extraSlots.filter(i => i.disposition === disposition));
-    return combinedTotal.length;
+    return combat.combatants.filter(i => i.disposition === disposition).length;
   }
 
   /** @override */
