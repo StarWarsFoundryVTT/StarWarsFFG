@@ -7,7 +7,7 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
-import {CombatFFG, CombatTrackerFFG, updateCombatTracker} from "./combat-ffg.js";
+import CombatantFFG, {CombatFFG, CombatTrackerFFG, updateCombatTracker} from "./combat-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
@@ -69,6 +69,7 @@ Hooks.once("init", async function () {
     ActorFFG,
     ItemFFG,
     CombatFFG,
+    CombatantFFG,
     CombatTrackerFFG,
     RollFFG,
     DiceHelpers,
@@ -88,6 +89,7 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
   CONFIG.Combat.documentClass = CombatFFG;
+  CONFIG.Combatant.documentClass = CombatantFFG;
 
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
