@@ -370,12 +370,13 @@ export class CombatTrackerFFG extends CombatTracker {
   async _claimInitiativeSlot(event) {
     const slot = $(event.currentTarget).data('claim-slot');
     const tokenCount = canvas.tokens.controlled.length;
+    const ownedTokenCount = canvas.tokens.ownedTokens.length;
     // you must have a single token selected to claim a slot
-    if (tokenCount !== 1) {
+    if (tokenCount !== 1 && ownedTokenCount !== 1) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.OneToken"));
       return;
     }
-    const token = canvas.tokens.controlled[0];
+    const token = ownedTokenCount === 1 ? canvas.tokens.ownedTokens[0] : canvas.tokens.controlled[0];
     const combatant = token.combatant;
     if (!combatant) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.Combatant"));
