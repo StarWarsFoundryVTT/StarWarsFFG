@@ -1,3 +1,7 @@
+Les talents du compandium de adversaries
 ap = game.packs.get("world.genesys-adversaries-genesysversion-develop")
 aa = [...ap.index]
 ret= [];aa.forEach((x) => { ap.getDocument(x._id).then((actor) => ret.push(actor.items.filter(y => y.type=="talent"))) } ); console.log(ret) 
+
+les themes de Skills
+game.settings.get("genesysk2","skilltheme") 

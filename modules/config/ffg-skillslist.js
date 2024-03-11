@@ -13,16 +13,6 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameAlchemy",
         "abrev": "SWFFG.SkillsNameAlchemy",
       },
-      "Acrobatics": {
-        "rank": 0,
-        "characteristic": "Agility",
-        "groupskill": false,
-        "careerskill": false,
-        "type": "General",
-        "max": 6,
-        "label": "K2G.SkillsNameAcrobatic",
-        "abrev": "K2G.SkillsNameAcrobaticAbv",
-      },
       "Arcana": {
         "rank": 0,
         "characteristic": "Intellect",
@@ -90,8 +80,8 @@ export const defaultSkillList = [
         "careerskill": false,
         "type": "General",
         "max": 6,
-        "label": "SWFFG.SkillsNameCoordination",
-        "abrev": "SWFFG.SkillsNameCoordination",
+        "label": "K2G.SkillsNameAcrobatic",
+        "abrev": "K2G.SkillsNameAcrobaticAbv",
       },
       "Deception": {
         "rank": 0,
@@ -235,7 +225,7 @@ export const defaultSkillList = [
       },
       "Melee-Short": {
         "rank": 0,
-        "characteristic": "Brawn",
+        "characteristic": "Agility",
         "groupskill": false,
         "careerskill": false,
         "type": "Combat",

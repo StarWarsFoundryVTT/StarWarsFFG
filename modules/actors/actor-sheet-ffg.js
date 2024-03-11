@@ -104,6 +104,11 @@ export class ActorSheetFFG extends ActorSheet {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         break;
+        // OG : modif a cause du data sur mon système : trouver à la copie ne se fait pas correctement !
+      // case "minion":
+        // let lstcmp = Object.entries(data.data.skills)
+        // lstcmp.forEach(cmpn => { data.data.skills[cmpn [0]].groupskill = data.data.skills[cmpn[0]].careerskill})
+        // break;
       case "vehicle":
         // add the crew to the items of the vehicle
         data.crew = [];

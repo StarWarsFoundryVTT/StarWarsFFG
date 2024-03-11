@@ -20,11 +20,18 @@ export class ActorSheetK2G extends ActorSheetFFG {
   get template() {
     const path = "systems/genesysk2/templates/actors";
     let front = "ffg"
-    if(this.actor.type=='character') front = "k2g"    
+    if(this.actor.type=='character') front = "k2g"
     return `${path}/${front}-${this.actor.type}-sheet.html`;
   }
   getData() {
     const data = super.getData();
+    let codeSkillObj = game.settings.get("genesysk2","codeSkill")
+    let codeSkill = codeSkillObj.toString()
+        //copie des chose comme la magie --- c'est moche mais ça marche  !
+        game.i18n.translations.SWFFG.ForcePool = game.i18n.translations[codeSkill].ForcePool
+        game.i18n.translations.SWFFG.ForcePoolCommitted = game.i18n.translations[codeSkill].ForcePoolCommitted
+        game.i18n.translations.SWFFG.ForcePoolAvailable = game.i18n.translations[codeSkill].ForcePoolAvailable
+        game.i18n.translations.SWFFG.TabSpell =game.i18n.translations[codeSkill].TabSpell
     return data;
   }
 

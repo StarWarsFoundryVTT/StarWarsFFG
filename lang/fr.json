@@ -37,7 +37,7 @@
   "SWFFG.Defense": "Défense",
   "SWFFG.DefenseRanged": "Distance",
   "SWFFG.DefenseMelee": "Corps à corps",
-  "SWFFG.ForcePool": "Dé de Magie",
+  "SWFFG.ForcePool": "Force",
   "SWFFG.ForcePoolCommitted": "Engagé",
   "SWFFG.ForcePoolAvailable": "Disponible",
   "SWFFG.Encumbrance": "Encombrement",
@@ -622,6 +622,7 @@
   "SWFFG.Combats.Actors.Neutral": "Personnage Neutre",
   "SWFFG.Settings.UseGenericSlots.Name": "Utilisez un Slot générique",
   "SWFFG.Settings.UseGenericSlots.Hint": "Remplace les emplacements nommés dans le suivi des combats par des emplacements génériques pouvant être revendiqués.",
+  "SWFFG.TabSpell": "Sorts",
 
   "K2G" : {
     "SkillsNameAcrobatic" : "Acrobatie",
@@ -643,6 +644,9 @@
     "SkillsNameRiding3D": "Equitation 3D",
     "SkillsNameRiding3DAbbreviation" :"Equi3D",
     "SkillsNameRidingAbbreviation" : "Equi",
+    "ForcePool": "Dé de Magie",
+    "ForcePoolCommitted": "Dette",
+    "ForcePoolAvailable": "Nombre",
     "RES1": "Pt Héro",
     "RES2": "Load",
     "RES3" : "Folie",
@@ -681,6 +685,10 @@
     "SkillsNameRangedHeavy": "Distance : Armes lourdes",
     "SkillsNameRangedHeavyAbbreviation": "Dist.A.Lo",
     "SkillsNameRangedLight": "Distance : Armes de poing",
-    "SkillsNameRangedLightAbbreviation": "Dist.A.P."
+    "SkillsNameRangedLightAbbreviation": "Dist.A.P.",
+    "ForcePool": "Puissance Spyker",
+    "ForcePoolCommitted": "Niveau",
+    "ForcePoolAvailable": "Dés",
+    "TabSpell" : "Pouvoir"
   }
 }
