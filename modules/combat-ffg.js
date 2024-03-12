@@ -175,7 +175,7 @@ export class CombatFFG extends Combat {
       }
 
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
-      const content = await renderTemplate("systems/starwarsffg/templates/dialogs/ffg-initiative.html", {
+      const content = await renderTemplate("systems/genesysk2/templates/dialogs/ffg-initiative.html", {
         id,
         dicePools,
         addDicePool,
@@ -290,7 +290,7 @@ export class CombatFFG extends Combat {
    * @returns {undefined|*}
    */
   getSlotClaims(round, slot) {
-    const claims = this.getFlag('starwarsffg', 'combatClaims') || undefined;
+    const claims = this.getFlag('genesysk2', 'combatClaims') || undefined;
     if (!claims) {
       return undefined;
     }
@@ -303,7 +303,7 @@ export class CombatFFG extends Combat {
    * @returns {*|*[]} - a list of combatant IDs (NOT token IDs, NOT actor IDs)
    */
   getClaims(round) {
-    const combatClaims = this.getFlag('starwarsffg', 'combatClaims');
+    const combatClaims = this.getFlag('genesysk2', 'combatClaims');
     if (combatClaims) {
       return combatClaims[round] || [];
     }
@@ -359,17 +359,17 @@ export class CombatFFG extends Combat {
         slot: slot,
         combatantId: combatantId,
       }
-      game.socket.emit("system.starwarsffg", {event: "combat", data: data});
+      game.socket.emit("system.genesysk2", {event: "combat", data: data});
       return;
     }
     const claims = {
-      ...this.getFlag('starwarsffg', 'combatClaims')
+      ...this.getFlag('genesysk2', 'combatClaims')
     };
     if (!claims[round]) {
       claims[round] = {};
     }
     claims[round][slot] = combatantId;
-    await this.setFlag('starwarsffg', 'combatClaims', claims);
+    await this.setFlag('genesysk2', 'combatClaims', claims);
   }
 
   /**
@@ -383,7 +383,7 @@ export class CombatFFG extends Combat {
       // only the GM can un-claim a slot
       return;
     }
-    await this.unsetFlag('starwarsffg', `combatClaims.${round}.${slot}`);
+    await this.unsetFlag('genesysk2', `combatClaims.${round}.${slot}`);
   }
 }
 
@@ -400,10 +400,10 @@ function _getInitiativeFormula(skill, ability) {
 
 function _findActorForInitiative(c) {
   let data = c.actor.system;
-  const initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
+  const initiativeRole = game.settings.get('genesysk2', 'initiativeCrewRole');
   CONFIG.logger.debug("Attempting to find initiative data for actor in combat");
   if (c.actor.type === "vehicle") {
-    const crew = c.actor.getFlag("starwarsffg", "crew");
+    const crew = c.actor.getFlag("genesysk2", "crew");
     CONFIG.logger.debug("Actor is a vehicle, looking for initiative crew role.");
     if (crew !== undefined && crew !== []) {
       const initiativeCrew = crew.find((c) => c.role === initiativeRole.role_name);
@@ -437,7 +437,7 @@ function _buildInitiativePool(data, skill) {
 export class CombatTrackerFFG extends CombatTracker {
   /** @override */
   get template() {
-    return "systems/starwarsffg/templates/dialogs/combat-tracker.html";
+    return "systems/genesysk2/templates/dialogs/combat-tracker.html";
   }
 
   /** @override */

@@ -57,10 +57,10 @@ export class ItemFFG extends ItemBaseFFG {
     const actor = this.actor ? this.actor : {};
     const data = item.system;
 
-    if (!item.flags.starwarsffg) {
+    if (!item.flags.genesysk2) {
       await item.updateSource({
         flags: {
-          starwarsffg: {
+          genesysk2: {
             isCompendium: !!this.compendium,
             ffgUuid: this.parent?.system ? this.uuid : null,
             ffgIsOwned: this.isEmbedded,
@@ -70,18 +70,18 @@ export class ItemFFG extends ItemBaseFFG {
       });
     } else {
       if (this.compendium) {
-        item.flags.starwarsffg.isCompendium = true;
+        item.flags.genesysk2.isCompendium = true;
         // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-        if (this.parent?.system) item.flags.starwarsffg.ffgUuid = this.uuid;
+        if (this.parent?.system) item.flags.genesysk2.ffgUuid = this.uuid;
       } else {
-        item.flags.starwarsffg.isCompendium = false;
-        item.flags.starwarsffg.ffgIsOwned = false;
+        item.flags.genesysk2.isCompendium = false;
+        item.flags.genesysk2.ffgIsOwned = false;
         if (this.isEmbedded) {
-          item.flags.starwarsffg.ffgIsOwned = true;
+          item.flags.genesysk2.ffgIsOwned = true;
           // Temporary check on this.parent.data to avoid initialisation failing in Foundry VTT 0.8.6
-          if (this.parent) item.flags.starwarsffg.ffgUuid = this.uuid;
+          if (this.parent) item.flags.genesysk2.ffgUuid = this.uuid;
         } else if (item._id) {
-          item.flags.starwarsffg.ffgTempId = item._id;
+          item.flags.genesysk2.ffgTempId = item._id;
         }
       }
     }

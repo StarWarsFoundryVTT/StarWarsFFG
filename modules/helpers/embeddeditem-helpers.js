@@ -15,7 +15,7 @@ export default class EmbeddedItemHelpers {
     // NOTE: Previously, only add the ffgParent from flags to parents if NOT in the compendium. Don't think we want or need that anymore.
     // https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/3721dd62caeb7b18e3b9907dfb5ec0342e4dd3ac/modules/helpers/embeddeditem-helpers.js#L17-L20
 
-    let flags = temporaryItem.flags.starwarsffg;
+    let flags = temporaryItem.flags.genesysk2;
     let flagHierarchy = [flags];
     let uuid;
     if (flags.ffgUuid) {
@@ -28,7 +28,7 @@ export default class EmbeddedItemHelpers {
         ui.notifications.warn("We think this code path is dead, let us know that it's not! (parent is empty)");
         CONFIG.logger.error("FFG parent is empty");
       }
-      flags = flags.ffgParent.starwarsffg;
+      flags = flags.ffgParent.genesysk2;
       if (Object.keys(flags).includes("ffgUuid")) {
         uuid = flags.ffgUuid;
       }
@@ -125,12 +125,12 @@ export default class EmbeddedItemHelpers {
       // this fucks up on activating stuff because activate is called on the attachment but it's trying to set data on the mod, not the attachment
       formData = {
         system: {
-          [temporaryItem.flags.starwarsffg.ffgTempItemType]: realItem.system[temporaryItem.flags.starwarsffg.ffgTempItemType]
+          [temporaryItem.flags.genesysk2.ffgTempItemType]: realItem.system[temporaryItem.flags.genesysk2.ffgTempItemType]
         },
       };
     } else if (reconstruct.length === 2) {
       // update the attachment list with our updated dataPointer data, so we can add it to the formData
-      realItem.system[reconstruct[0].type][reconstruct[0].index].system[temporaryItem.flags.starwarsffg.ffgTempItemType][temporaryItem.flags.starwarsffg.ffgTempItemIndex] = dataPointer;
+      realItem.system[reconstruct[0].type][reconstruct[0].index].system[temporaryItem.flags.genesysk2.ffgTempItemType][temporaryItem.flags.genesysk2.ffgTempItemIndex] = dataPointer;
 
       formData = {
         system: {
@@ -243,7 +243,7 @@ export default class EmbeddedItemHelpers {
           item = a.system[modifierType][modifierIndex];
           rename_item = {
             flags: {
-              starwarsffg: {
+              genesysk2: {
                 ffgTempItemType: "itemattachment",
                 ffgTempItemIndex: index,
                 ffgTempId: itemId,
@@ -257,7 +257,7 @@ export default class EmbeddedItemHelpers {
     const temp = {
       ...item,
       flags: {
-        starwarsffg: {
+        genesysk2: {
           ffgTempId: itemId,
           ffgTempItemType: modifierType,
           ffgTempItemIndex: modifierIndex,
@@ -281,7 +281,7 @@ export default class EmbeddedItemHelpers {
       name: "",
       type,
       flags: {
-        starwarsffg: {
+        genesysk2: {
           ffgTempItemType: type,
           ffgTempItemIndex: -1,
           ...flags,

@@ -25,7 +25,7 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   get template() {
-    const path = "systems/starwarsffg/templates/items";
+    const path = "systems/genesysk2/templates/items";
     return `${path}/ffg-${this.item.type}-sheet.html`;
   }
 
@@ -88,7 +88,7 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     data.isTemp = false;
-    if (this.object.flags?.starwarsffg?.ffgIsOwned || this.object.flags?.starwarsffg?.ffgIsTemp) {
+    if (this.object.flags?.genesysk2?.ffgIsOwned || this.object.flags?.genesysk2?.ffgIsTemp) {
       data.isTemp = true;
     }
 
@@ -140,13 +140,13 @@ export class ItemSheetFFG extends ItemSheet {
           data.isReadOnly = true;
         }
 
-        if (!this.item.flags?.starwarsffg?.loaded) {
+        if (!this.item.flags?.genesysk2?.loaded) {
           CONFIG.logger.debug(`Running Item initial load`);
-          if (!Object.keys(this.item.flags).includes('starwarsffg')) {
+          if (!Object.keys(this.item.flags).includes('genesysk2')) {
               // the object is not properly set up yet; bail to let it finish
               return;
           }
-          this.item.flags.starwarsffg.loaded = true;
+          this.item.flags.genesysk2.loaded = true;
 
           const specializationTalents = data.data.talents;
 
@@ -494,8 +494,8 @@ export class ItemSheetFFG extends ItemSheet {
             },
           },
           {
-            classes: ["dialog", "starwarsffg"],
-            template: `systems/starwarsffg/templates/items/dialogs/ffg-edit-${itemType}.html`,
+            classes: ["dialog", "genesysk2"],
+            template: `systems/genesysk2/templates/items/dialogs/ffg-edit-${itemType}.html`,
           }
         ).render(true);
       }
@@ -524,7 +524,7 @@ export class ItemSheetFFG extends ItemSheet {
       let temp = {
         ...item,
         flags: {
-          starwarsffg: {
+          genesysk2: {
             ffgTempId: this.object.id,
             ffgTempItemType: itemType,
             ffgTempItemIndex: itemIndex,
@@ -540,7 +540,7 @@ export class ItemSheetFFG extends ItemSheet {
         temp = {
           ...item,
           flags: {
-            starwarsffg: {
+            genesysk2: {
               ffgTempId: this.object.id,
               ffgTempItemType: itemType,
               ffgTempItemIndex: itemIndex,
@@ -571,11 +571,11 @@ export class ItemSheetFFG extends ItemSheet {
       const item = this.object.system[itemType][itemIndex];
       item.system.active = !item.system.active;
 
-      if (this.object.flags.starwarsffg.ffgTempId && this.object.flags.starwarsffg.ffgTempId !== this.object._id) {
+      if (this.object.flags.genesysk2.ffgTempId && this.object.flags.genesysk2.ffgTempId !== this.object._id) {
         // this is a temporary sheet for an embedded item
 
         item.flags = {
-          starwarsffg: {
+          genesysk2: {
             ffgTempId: this.object.id,                // here, this represents the ID of the item this is on
             ffgTempItemType: itemType,                // modified item type
             ffgTempItemIndex: itemIndex,              // modified item index
@@ -606,11 +606,11 @@ export class ItemSheetFFG extends ItemSheet {
         name: "Item Mod",
         type: itemType,
         flags: {
-          starwarsffg: {
+          genesysk2: {
             ffgTempId: this.object.id,                  // here, this represents the ID of the item this was added to
             ffgTempItemType: itemType,                  // added item type
             ffgTempItemIndex: -1,                       // index of the added item within the parent
-            ffgParent: this.object.flags.starwarsffg,   // flags from the parent
+            ffgParent: this.object.flags.genesysk2,   // flags from the parent
             ffgIsTemp: true,                            // this is a temporary item
             ffgUuid: this.object.uuid,                  // UUID for the parent (if available) TODO: check if this is needed
             ffgParentApp: this.appId,                   // not sure what this is x.x
@@ -924,7 +924,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       const foundItem = items.find((i) => {
-        return i.name === itemObject.name || (i.flags?.starwarsffg?.ffgimportid?.length ? i.flags.starwarsffg.ffgimportid === itemObject.flags.starwarsffg.ffgimportid : false);
+        return i.name === itemObject.name || (i.flags?.genesysk2?.ffgimportid?.length ? i.flags.genesysk2.ffgimportid === itemObject.flags.genesysk2.ffgimportid : false);
       });
 
       switch (itemObject.type) {
