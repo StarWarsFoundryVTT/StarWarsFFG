@@ -7,7 +7,7 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
-import {CombatFFG, CombatTrackerFFG, updateCombatTracker} from "./combat-ffg.js";
+import CombatantFFG, {CombatFFG, CombatTrackerFFG, updateCombatTracker} from "./combat-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
@@ -71,6 +71,7 @@ Hooks.once("init", async function () {
     ActorFFG,
     ItemFFG,
     CombatFFG,
+    CombatantFFG,
     CombatTrackerFFG,
     RollFFG,
     DiceHelpers,
@@ -90,6 +91,7 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
   CONFIG.Combat.documentClass = CombatFFG;
+  CONFIG.Combatant.documentClass = CombatantFFG;
 
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
@@ -900,8 +902,16 @@ Hooks.once("ready", async () => {
             await combat.claimSlot(data.round, data.slot, data.combatantId);
           }
         }
-      });
-    }
+      } else if (event_type === "trackerRender") {
+        CONFIG.logger.debug("Received combat tracker rerender request");
+        const incomingCombatID = args[0].combatId;
+        const incomingCombat = game.combats.get(incomingCombatID);
+        incomingCombat.debounceRender();
+        incomingCombat.setupTurns();
+      }
+    });
+
+
   }
 
   Hooks.on("refreshToken", (token) => {
