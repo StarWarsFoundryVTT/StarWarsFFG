@@ -1331,10 +1331,11 @@ export class ActorSheetFFG extends ActorSheet {
     }
     this.actor.flags.genesysk2.loaded = true;
 
-    let actor = await game.actors.get(this.actor.id);
+    let actor = await game.actors.get(this.actor.id); // si l'acteur n'est pas dans les acteurs mais dans les packs, erreur ! OG
+    if(actor == undefined) actor = this.actor;
     const specializations = actor.items.filter((item) => {
-      return item.type === "specialization";
-    });
+    return item.type === "specialization";
+  });
 
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
     CONFIG.logger.debug(data.talentList.slice());
