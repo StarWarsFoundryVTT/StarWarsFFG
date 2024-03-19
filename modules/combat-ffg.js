@@ -639,7 +639,7 @@ export class CombatTrackerFFG extends CombatTracker {
       }
     });
 
-    const claimantId = combat.getSlotClaims(combat.round, combat.turn);
+    const claimantId = combat.getSlotClaims(combat.round, combat.turns[combat.turn].id);
     const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
 
     const turnData = {
@@ -755,7 +755,8 @@ export class CombatTrackerFFG extends CombatTracker {
     }
     const round = combat.round;
     const turn = li.data("slot-index");
-    const claim = combat.getSlotClaims(round, turn);
+    const combatantId = li.data("combatant-id");
+    const claim = combat.getSlotClaims(round, combatantId);
     const claimed = claim !== undefined;
     if (!claimed) {
       ui.notifications.warn("You cannot remove a combatant without having the slot claimed");
