@@ -2953,9 +2953,12 @@ img {
   overflow-x: hidden;
 }
 
-.starwarsffg .vehicle .items.active {
+.starwarsffg .vehicle .items.active v1 {
   max-height: 200px;
   height: 200px;
+}
+
+.starwarsffg .vehicle .items.active {
   overflow-y: scroll;
   overflow-x: hidden;
 }
