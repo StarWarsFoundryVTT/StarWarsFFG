@@ -639,7 +639,7 @@ export class CombatTrackerFFG extends CombatTracker {
       }
     });
 
-    const claimantId = combat.getSlotClaims(combat.round, combat.turns[combat.turn].id);
+    const claimantId = combat.getSlotClaims(combat.round, combat.turns[combat.turn]?.id);
     const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
 
     const turnData = {
