@@ -4,7 +4,7 @@ export default class Helpers {
       console.log(`${CONFIG.module} | `, ...args);
     },
     debug: (...args) => {
-      if (game.settings.get("starwarsffg", "enableDebug")) {
+      if (game.settings.get("genesysk2", "enableDebug")) {
         console.debug(`${CONFIG.module} | `, ...args);
       }
     },

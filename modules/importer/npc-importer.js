@@ -5,11 +5,11 @@ export default class NPCImporter extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "ognpc-importer",
-      classes: ["starwarsffg", "data-import"],
+      classes: ["genesysk2", "data-import"],
       title: "OggDude NPC Importer",
       width: 385,
       height: 200,
-      template: "systems/starwarsffg/templates/importer/character-importer.html",
+      template: "systems/genesysk2/templates/importer/character-importer.html",
     });
   }
 

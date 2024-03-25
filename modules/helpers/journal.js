@@ -2,7 +2,7 @@
  * Registers enrichers for the Journal pages - automatically runs the regex and replaces it with the return value of the function
  */
 export function register_dice_enricher() {
-  const dicetheme = game.settings.get("starwarsffg", "dicetheme");
+  const dicetheme = game.settings.get("genesysk2", "dicetheme");
   // ability die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(ability):|\[(AB)(ILITY)?\]/gim,

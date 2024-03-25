@@ -62,7 +62,58 @@
             "type": "Number",
             "label": "Credits",
             "adjusted": 0
+          },
+          "monney" : {
+            "lune":{
+              "value":0,
+              "type" : "Number",
+              "label" : "K2G.lune",
+              "ajusted": 0,
+              "upper" : {
+                "name": "demielune",
+                "rapport" : 5
+              },
+              "lower" : {
+                "name":"lune",
+                "rapport" : 5
+              }
+            },
+            "orc":{
+              "value":0,
+              "type" : "Number",
+              "label" : "K2G.orc",
+              "ajusted": 0,
+              "upper" : {
+                "name": "emeraude",
+                "rapport" : 5
+              },
+              "lower" : {
+                "name":"lune",
+                "rapport" : 5
+              }
+            }
+          },
+          "ressources": {
+            "pool1":  {
+              "name" : "Magie",
+              "value": 0,
+              "max": 0,
+              "adjusted": 0
+            },
+            "pool2":  {
+              "name" : "",
+              "value": 0,
+              "max": 0,
+              "adjusted": 0
+            },
+            "pool3":  {
+              "name" : "",
+              "value": 0,
+              "max": 0,
+              "adjusted": 0
+            }
           }
+
         }
       },
       "characteristics": {
@@ -149,14 +200,6 @@
             "type": "Combat",
             "max": 6
           },
-          "Astrogation": {
-            "rank": 0,
-            "characteristic": "Intellect",
-            "groupskill": false,
-            "careerskill": false,
-            "type": "General",
-            "max": 6
-          },
           "Athletics": {
             "rank": 0,
             "characteristic": "Brawn",
@@ -179,14 +222,6 @@
             "groupskill": false,
             "careerskill": false,
             "type": "Social",
-            "max": 6
-          },
-          "Computers": {
-            "rank": 0,
-            "characteristic": "Intellect",
-            "groupskill": false,
-            "careerskill": false,
-            "type": "General",
             "max": 6
           },
           "Cool": {
@@ -256,22 +291,6 @@
           "Perception": {
             "rank": 0,
             "characteristic": "Cunning",
-            "groupskill": false,
-            "careerskill": false,
-            "type": "General",
-            "max": 6
-          },
-          "Piloting: Planetary": {
-            "rank": 0,
-            "characteristic": "Agility",
-            "groupskill": false,
-            "careerskill": false,
-            "type": "General",
-            "max": 6
-          },
-          "Piloting: Space": {
-            "rank": 0,
-            "characteristic": "Agility",
             "groupskill": false,
             "careerskill": false,
             "type": "General",
@@ -373,7 +392,23 @@
             "type": "Knowledge",
             "max": 6
           },
-          "Knowledge: Xenology": {
+          "Knowledge: adventures": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Geography": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Pure": {
             "rank": 0,
             "characteristic": "Intellect",
             "groupskill": false,
@@ -551,7 +586,7 @@
   },
   "Item": {
     "types": [
-      "ability", "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon"],
+      "ability", "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "spell", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon"],
     "templates": {
       "core": {
         "description": "",
@@ -758,6 +793,16 @@
       },
       "required_force_rating": 0,
       "base_cost": 0
+    },
+    "spell": {
+      "templates":["core"],
+      "base_cost" :0,
+      "dammage" : "",
+      "typecmp" :"",
+      "cmps" : [],
+      "cmp" : "",
+      "special": "",
+      "txt" : ""
     },
     "specialization": {
       "templates": ["core"],

@@ -23,7 +23,6 @@ export class ActorFFG extends Actor {
       let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
 
       data.skills = mergeObject(skills, data.skills);
-
       // Filter out skills that are not custom (manually added) or part of the current system skill list
       Object.keys(data.skills)
       .filter(s => !data.skills[s].custom && !CONFIG.FFG.skills[s])
@@ -77,7 +76,7 @@ export class ActorFFG extends Actor {
     if (actorData.type === "minion" || actorData.type === "character") {
       this._applyModifiers.bind(this);
       this._applyModifiers(actorData);
-      if (game.settings.get("starwarsffg", "enableSoakCalc")) {
+      if (game.settings.get("genesysk2", "enableSoakCalc")) {
         this._calculateDerivedValues(actorData);
       }
     } else if (actorData.type === "vehicle") {
@@ -284,7 +283,7 @@ export class ActorFFG extends Actor {
     }
 
     // enable talent sorting if global to true and sheet is set to inherit or sheet is set to true.
-    if ((game.settings.get("starwarsffg", "talentSorting") && (!actorData.flags?.config?.talentSorting || actorData.flags?.config?.talentSorting === "0")) || actorData.flags?.config?.talentSorting === "1") {
+    if ((game.settings.get("genesysk2", "talentSorting") && (!actorData.flags?.config?.talentSorting || actorData.flags?.config?.talentSorting === "0")) || actorData.flags?.config?.talentSorting === "1") {
       data.talentList = globalTalentList.slice().reverse().sort(this._sortTalents);
     } else {
       data.talentList = globalTalentList;
@@ -447,7 +446,7 @@ export class ActorFFG extends Actor {
           value = [data[name][k].fore, data[name][k].port, data[name][k].starboard, data[name][k].aft];
         } else if (key === "Soak") {
           try {
-            if ((typeof actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation === undefined && game.settings.get("starwarsffg", "enableSoakCalc")) || actorData.flags?.starwarsffg?.config?.enableAutoSoakCalculation) {
+            if ((typeof actorData.flags?.genesysk2?.config?.enableAutoSoakCalculation === undefined && game.settings.get("genesysk2", "enableSoakCalc")) || actorData.flags?.genesysk2?.config?.enableAutoSoakCalculation) {
               value = 0;
             }
           } catch (err) {
