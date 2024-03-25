@@ -88,7 +88,7 @@ export default class CrewSettings extends FormApplication {
     }
     // update the settings if they don't match the old ones
     if (existing_settings !== new_settings) {
-      game.settings.set("genesysk2", "arrayCrewRoles", new_settings);
+      await game.settings.set("genesysk2", "arrayCrewRoles", new_settings);
     }
     const updateData = {
       "role_name":  formData['initiativeCrewRole'],
