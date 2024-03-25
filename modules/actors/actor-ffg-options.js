@@ -6,10 +6,10 @@ export default class ActorOptions {
   }
 
   init(html) {
-      const options = $(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] .ffg-sheet-options`);
+      const options = $(`.genesysk2.sheet.actor[data-appid='${this.data.appId}'] .ffg-sheet-options`);
       if (options.length === 0) {
         const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
-        button.insertBefore(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] header a:first`);
+        button.insertBefore(`.genesysk2.sheet.actor[data-appid='${this.data.appId}'] header a:first`);
         button.on("click", this.handler.bind(this));
       }
   }
@@ -56,8 +56,8 @@ export default class ActorOptions {
         },
       },
       {
-        classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/dialogs/ffg-sheet-options.html",
+        classes: ["dialog", "genesysk2"],
+        template: "systems/genesysk2/templates/dialogs/ffg-sheet-options.html",
       }
     ).render(true);
   }
@@ -66,12 +66,12 @@ export default class ActorOptions {
     if (!this.options[optionName]) {
       this.options[optionName] = { ...options };
     }
-    if (typeof this.data.object.flags?.starwarsffg?.config == "undefined") {
-      await this.data.object.setFlag("starwarsffg", "config", {});
+    if (typeof this.data.object.flags?.genesysk2?.config == "undefined") {
+      await this.data.object.setFlag("genesysk2", "config", {});
     }
 
-    if (typeof this.data.object.flags?.starwarsffg?.config[optionName] !== "undefined") {
-      this.options[optionName].value = this.data.object.flags?.starwarsffg?.config[optionName];
+    if (typeof this.data.object.flags?.genesysk2?.config[optionName] !== "undefined") {
+      this.options[optionName].value = this.data.object.flags?.genesysk2?.config[optionName];
     } else {
       this.options[optionName].value = this.options[optionName].default;
     }

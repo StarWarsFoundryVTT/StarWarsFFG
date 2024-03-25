@@ -1,0 +1,48 @@
+{{#contains items "type" "forcepower"}}
+{{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
+<ul class="talent-list">
+  <li class="talents-header flexrow">
+    <div class="header-name">{{localize "SWFFG.ForcePower"}}</div>
+    <div></div>
+  </li>
+
+  <ul class="talent-list">
+    {{#each items as |item id|}} {{#iff item.type '==' 'forcepower'}}
+    <li class="item flexrow forcepower" data-item-id="{{item._id}}">
+      <div class="item-name">
+        {{item.name}}
+      </div>
+      <div class="force-powers">
+        <ul>
+          <li class="talents-header flexrow">
+            <div class="header-name">{{localize "SWFFG.SkillsName"}}</div>
+            <div>{{localize "SWFFG.SkillsRank"}}</div>
+          </li>
+          <ul class="items-list">
+            {{#each item.powerUpgrades as |upgrade name|}}
+            <li class="force-power flexrow" data-item-id="{{item._id}}" data-desc="{{upgrade.description}}" data-upgrade-name="{{upgrade.name}}">
+              <div class="item-name">{{upgrade.name}}</div>
+              <div>{{upgrade.rank}}</div>
+            </li>
+            {{/each}}
+          </ul>
+        </ul>
+      </div>
+      <div class="item-controls">
+        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+      </div>
+    </li>
+    {{/iff}} {{/each}}
+  </ul>
+</ul>
+{{else}}
+<div class="force-conflict">
+  <span>Conflict: Unit has Force Powers but the Force Dice Pool is disabled</span>
+  <div>
+    <input type="button" class="enable-dice-pool" value="Enable Dice Pool"/>
+    <input type="button" class="remove-force-powers" value="Remove Force Powers"/>
+  </div>
+</div>
+{{/if}}
+{{/contains}}

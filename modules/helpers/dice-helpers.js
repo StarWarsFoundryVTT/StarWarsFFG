@@ -13,7 +13,7 @@ export default class DiceHelpers {
     }
 
     let skills;
-    const theme = await game.settings.get("starwarsffg", "skilltheme");
+    const theme = await game.settings.get("genesysk2", "skilltheme");
     try {
       skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === theme).skills));
     } catch (err) {
@@ -46,7 +46,7 @@ export default class DiceHelpers {
       label: skillData?.label ? game.i18n.localize(skillData.label) : game.i18n.localize(skillName),
     };
     let characteristic = {
-      value: 0,
+      value: 0
     };
 
     if (data?.data?.skills?.[skillName]) {
@@ -92,7 +92,7 @@ export default class DiceHelpers {
       upgrades: skill.upgrades,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
-
+    
     dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
     if (type === "ability") {
@@ -145,6 +145,7 @@ export default class DiceHelpers {
           upgrades: skill?.upgradessource?.length ? skill.upgradessource: [],
         },
       });
+            
       dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
 
       const rollButton = elem.querySelector(".roll-button");
@@ -158,7 +159,7 @@ export default class DiceHelpers {
 
     const item = actor.items.get(itemId);
     const itemData = item.system;
-    await item.setFlag("starwarsffg", "uuid", item.uuid);
+    await item.setFlag("genesysk2", "uuid", item.uuid);
 
     const status = this.getWeaponStatus(item);
 

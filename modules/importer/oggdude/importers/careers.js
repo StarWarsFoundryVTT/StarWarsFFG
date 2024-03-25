@@ -63,7 +63,7 @@ export default class Career {
               });
             }
 
-            let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", data.flags.starwarsffg.ffgimportid);
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", data.flags.genesysk2.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }

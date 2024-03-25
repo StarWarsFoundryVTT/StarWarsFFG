@@ -3,7 +3,7 @@ import ItemHelpers from "../helpers/item-helpers.js";
 
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
-    if ((!this.flags?.starwarsffg?.ffgTempId && this.flags?.starwarsffg?.ffgTempId !== null) || (this.flags?.starwarsffg?.ffgTempId === this._id && this._id !== null && !this.isTemp) || (this.flags?.starwarsffg?.ffgIsOwned && !this.flags?.starwarsffg?.ffgIsTemp)) {
+    if ((!this.flags?.genesysk2?.ffgTempId && this.flags?.genesysk2?.ffgTempId !== null) || (this.flags?.genesysk2?.ffgTempId === this._id && this._id !== null && !this.isTemp) || (this.flags?.genesysk2?.ffgIsOwned && !this.flags?.genesysk2?.ffgIsTemp)) {
       CONFIG.logger.debug("Updating real item", this, data);
       await super.update(ItemHelpers.normalizeDataStructure(data), options);
       // if (this.compendium) {
@@ -15,8 +15,8 @@ export default class ItemBaseFFG extends Item {
       const preState = Object.values(this.apps)[0]?._state;
       await EmbeddedItemHelpers.updateRealObject(this, data);
 
-      if (this.flags?.starwarsffg?.ffgParent?.isCompendium || Object.values(this.apps)[0]._state !== preState) {
-        if (this.flags?.starwarsffg?.ffgParent?.ffgUuid) {
+      if (this.flags?.genesysk2?.ffgParent?.isCompendium || Object.values(this.apps)[0]._state !== preState) {
+        if (this.flags?.genesysk2?.ffgParent?.ffgUuid) {
           this.sheet.render(false);
         }
       } else {
@@ -24,10 +24,10 @@ export default class ItemBaseFFG extends Item {
 
         // we're working on an embedded item
         await this.sheet.render(true, {action: "ffgUpdate", data: data});
-        const appId = this?.flags?.starwarsffg?.ffgParentApp;
+        const appId = this?.flags?.genesysk2?.ffgParentApp;
         if (appId) {
           const newData = ui.windows[appId].object;
-          newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex], this);
+          newData[this.flags.genesysk2.ffgTempItemType][this.flags.genesysk2.ffgTempItemIndex] = mergeObject(newData[this.flags.genesysk2.ffgTempItemType][this.flags.genesysk2.ffgTempItemIndex], this);
           await ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
         }
         return;

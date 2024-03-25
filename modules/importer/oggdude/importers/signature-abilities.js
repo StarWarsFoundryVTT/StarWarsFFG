@@ -101,7 +101,7 @@ export default class SignatureAbilities {
               CONFIG.logger.error(`Error importing record : `, data.name);
             }
           });
-          let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", data.flags.starwarsffg.ffgimportid);
+          let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", data.flags.genesysk2.ffgimportid);
           if (imgPath) {
             data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
           } else {
