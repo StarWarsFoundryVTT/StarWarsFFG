@@ -2953,9 +2953,12 @@ img {
   overflow-x: hidden;
 }
 
-.starwarsffg .vehicle .items.active {
+.starwarsffg .vehicle .items.active v1 {
   max-height: 200px;
   height: 200px;
+}
+
+.starwarsffg .vehicle .items.active {
   overflow-y: scroll;
   overflow-x: hidden;
 }
@@ -3988,6 +3991,9 @@ img {
 
 .starwarsffg #combat-tracker .slot-claimed {
   filter: grayscale(100%);
+}
+.starwarsffg #combat-tracker .token-image.actor-header.defeated {
+  filter: blur(1px) grayscale(50%);
 }
 .starwarsffg #combat-tracker .encounter-controls .actor-header {
   font-size: 14px;
