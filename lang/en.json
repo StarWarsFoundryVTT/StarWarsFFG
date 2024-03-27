@@ -638,5 +638,21 @@
   "SWFFG.Settings.showAdversaryCount.Name": "Show Adversary Count",
   "SWFFG.Settings.showAdversaryCount.Hint": "Shows the ranks of the Adversary talent on tokens",
   "SWFFG.Settings.AdversaryItemName.Name": "Adversary Item Name",
-  "SWFFG.Settings.AdversaryItemName.Hint": "The name of the talent to consider 'adversary' for the purposes of showing ranks on tokens (for translations)"
+  "SWFFG.Settings.AdversaryItemName.Hint": "The name of the talent to consider 'adversary' for the purposes of showing ranks on tokens (for translations)",
+  "SWFFG.Actors.Sheets.Purchase.LogTitle": "XP Spend Log",
+  "SWFFG.Actors.Sheets.Purchase.ConfirmPurchase": "Purchase",
+  "SWFFG.Actors.Sheets.Purchase.CancelPurchase": "Cancel",
+  "SWFFG.Actors.Sheets.Purchase.NotEnoughXP": "You do not have enough XP to buy a rank in this skill",
+  "SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText": "Purchase Skill Rank",
+  "SWFFG.Actors.Sheets.Purchase.SkillRank.ConfirmTitle": "Purchase Skill Rank",
+  "SWFFG.Actors.Sheets.Purchase.SkillRank.Text": "Spend {cost} XP to purchase a rank in {skill}?",
+  "SWFFG.Actors.Sheets.Purchase.Talent.ContextMenuText": "Purchase Talent",
+  "SWFFG.Actors.Sheets.Purchase.Talent.ConfirmTitle": "Purchase Talent",
+  "SWFFG.Actors.Sheets.Purchase.Talent.ConfirmText": "Spend {cost} XP to purchase {talent}?",
+  "SWFFG.Actors.Sheets.Purchase.FP.ContextMenuText": "Purchase Upgrade",
+  "SWFFG.Actors.Sheets.Purchase.FP.ConfirmTitle": "Purchase Upgrade",
+  "SWFFG.Actors.Sheets.Purchase.FP.ConfirmText": "Spend {cost} XP to purchase {upgrade}?",
+  "SWFFG.Actors.Sheets.Purchase.SA.ContextMenuText": "Purchase Upgrade",
+  "SWFFG.Actors.Sheets.Purchase.SA.ConfirmTitle": "Purchase Upgrade",
+  "SWFFG.Actors.Sheets.Purchase.SA.ConfirmText": "Spend {cost} XP to purchase {upgrade}?"
 }

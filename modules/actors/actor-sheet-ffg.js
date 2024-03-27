@@ -7,7 +7,7 @@ import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
-import ActorHelpers from "../helpers/actor-helpers.js";
+import ActorHelpers, {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import {change_role, deregister_crew, build_crew_roll} from "../helpers/crew.js";
@@ -147,6 +147,9 @@ export class ActorSheetFFG extends ActorSheet {
     if (this.actor.flags?.config?.enableObligation === false && this.actor.flags?.config?.enableDuty === false && this.actor.flags?.config?.enableMorality === false && this.actor.flags?.config?.enableConflict === false) {
       data.hideObligationDutyMoralityConflictTab = true;
     }
+    if (this.actor.flags?.starwarsffg?.xpLog) {
+      data.xpLog = this.actor.flags.starwarsffg.xpLog.join("<br>");
+    }
 
     return data;
   }
@@ -169,6 +172,7 @@ export class ActorSheetFFG extends ActorSheet {
 
     html.find(".alt-tab").click((ev) => {
       const item = $(ev.currentTarget);
+      console.log(this._tabs[0])
       this._tabs[0].activate(item.data("tab"));
     });
 
@@ -262,6 +266,13 @@ export class ActorSheetFFG extends ActorSheet {
         icon: '<i class="fas fa-times"></i>',
         callback: (li) => {
           this._onRemoveSkill(li);
+        },
+      },
+      {
+        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
+        icon: '<i class="fas fa-dollar"></i>',
+        callback: (li) => {
+          this._buySkillRank(li);
         },
       },
     ]);
@@ -1170,6 +1181,57 @@ export class ActorSheetFFG extends ActorSheet {
       {
         classes: ["dialog", "starwarsffg"],
         template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-new.html",
+      }
+    ).render(true);
+  }
+
+  /**
+   * Handle the right click -> buy skill rank event
+   * @param a - Event object
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _buySkillRank(a) {
+    const skill = $(a).data("ability");
+    const curRank = this.object.system.skills[skill].rank;
+    const availableXP = this.object.system.experience.available;
+    const careerSkill = this.object.system.skills[skill].careerskill;
+    const cost = careerSkill ? (curRank + 1) * 5 : (curRank + 1) * 5 + 5;
+
+    if (cost > availableXP) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
+      return;
+    }
+    const dialog = new Dialog(
+      {
+        title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ConfirmTitle"),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SkillRank.Text", {cost: cost, skill: skill, old: curRank, new: curRank + 1}),
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              // update the form because the fields are read when an update is performed
+              this.object.sheet.element.find(`[name="data.skills.${skill}.rank"]`).val(curRank + 1);
+              await this.object.sheet.submit({preventClose: true});
+              await this.object.update({
+                system: {
+                  experience: {
+                    available: availableXP - cost,
+                  }
+                }
+              });
+              await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
       }
     ).render(true);
   }

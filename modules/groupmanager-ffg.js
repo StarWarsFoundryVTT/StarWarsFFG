@@ -1,3 +1,5 @@
+import {xpLogEarn} from "./helpers/actor-helpers.js";
+
 export class GroupManagerLayer extends CanvasLayer {
   constructor() {
     super();
@@ -342,11 +344,12 @@ export class GroupManager extends FormApplication {
         one: {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize("SWFFG.GrantXP"),
-          callback: () => {
+          callback: async () => {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
             character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
             character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
+            await xpLogEarn(character, amount.value);
             ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
           },
         },

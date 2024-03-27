@@ -29,11 +29,11 @@
   <section class="sheet-body">
     <div class="talent-grid {{#if data.isEditing}}{{else}}talent-disable-edit{{/if}}">
       {{#each data.upgrades as |upgrade key|}}
-      <div class="talent-block talent-upgrade talent-{{#if upgrade.size}}{{upgrade.size}}{{else}}single{{/if}} {{#if upgrade.visible}}{{else}}talent-hidden{{/if}}" id="{{key}}">
+      <div class="talent-block talent-upgrade talent-{{#if upgrade.size}}{{upgrade.size}}{{else}}single{{/if}} {{#if upgrade.visible}}{{else}}talent-hidden{{/if}} signature-ability" id="{{key}}" data-cost="{{calculateSignatureAbilityCost key}}" data-base-item-name="{{../item.name}}">
         <div class="talent-background">
           <div class="talent-header">
             <div><input type="checkbox" name="data.upgrades.{{key}}.islearned" data-dtype="Boolean" {{#if upgrade.islearned }}checked{{else}} {{/if}}></div>
-            <div class="talent-name"><input name="data.upgrades.{{key}}.name" type="text" value="{{upgrade.name}}" placeholder="{{localize 'SWFFG.SignatureAbilityUpgradeName'}}" /></div>
+            <div class="talent-name" data-name="{{upgrade.name}}"><input name="data.upgrades.{{key}}.name" type="text" value="{{upgrade.name}}" placeholder="{{localize 'SWFFG.SignatureAbilityUpgradeName'}}" /></div>
           </div>
           <div class="talent-body">
             <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-label="{{upgrade.name}}">

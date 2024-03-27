@@ -30,7 +30,7 @@
     <div class="talent-grid {{#if data.isEditing}}{{else}}talent-disable-edit{{/if}}">
       {{#each data.talents as |talent key|}}
 
-      <div class="talent-block talent-upgrade talent-single specialization-talent" id="{{key}}" data-itemid="{{talent.itemId}}">
+      <div class="talent-block talent-upgrade talent-single specialization-talent" id="{{key}}" data-itemid="{{talent.itemId}}" data-cost="{{calculateSpecializationTalentCost key}}" data-base-item-name="{{../item.name}}">
         <div class="talent-background {{#iff talent.activationLabel 'contains' 'Passive'}}talent-passive{{else}}talent-active{{/iff}}">
           <div class="talent-header">
             <div>
@@ -40,7 +40,7 @@
               <div class="conflict"></div>
               {{/if}}
             </div>
-            <div class="talent-name {{#if (ne talent.name '')}}talent-modifiers{{/if}}">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
+            <div class="talent-name {{#if (ne talent.name '')}}talent-modifiers{{/if}}" data-name="{{talent.name}}">{{{talent.name}}} <span>COST: {{calculateSpecializationTalentCost key}}</span></div>
           </div>
           <div class="talent-body">
             <input type="text" value="{{localize talent.activationLabel}}" disabled />
