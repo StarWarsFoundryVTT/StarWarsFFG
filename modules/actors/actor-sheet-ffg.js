@@ -529,13 +529,33 @@ export class ActorSheetFFG extends ActorSheet {
         html.find("li.item-pill").on("click", async (event) => {
           event.preventDefault();
           event.stopPropagation();
-          const li = event.currentTarget;
+          const li = $(event.currentTarget);
+          const itemType = li.attr("data-item-embed-type");
+          let itemData = {};
+          const newEmbed = li.attr("data-item-embed");
 
-          let itemId = li.dataset.itemId;
-          let modifierType = li.dataset.modifierType;
-          let modifierId = li.dataset.modifierId;
+          if (newEmbed === "true" && itemType === "itemmodifier") {
+            itemData = {
+              img: li.attr('data-item-embed-img'),
+              name: li.attr('data-item-embed-name'),
+              type: li.attr('data-item-embed-type'),
+              system: {
+                description: unescape(li.attr('data-item-embed-description')),
+                attributes: JSON.parse(li.attr('data-item-embed-modifiers')),
+                rank: li.attr('data-item-embed-rank'),
+                rank_current: li.attr('data-item-embed-rank'),
+              },
+            };
+            const tempItem = await Item.create(itemData, {temporary: true});
+            tempItem.sheet.render(true);
+          } else {
+            CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
+            let itemId = li.dataset.itemId;
+            let modifierType = li.dataset.modifierType;
+            let modifierId = li.dataset.modifierId;
 
-          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor.id, this.actor.compendium);
+            await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor.id, this.actor.compendium);
+          }
         });
       }
     });

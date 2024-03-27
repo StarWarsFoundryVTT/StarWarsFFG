@@ -546,7 +546,7 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
         name: li.attr('data-item-embed-name'),
         type: li.attr('data-item-embed-type'),
         system: {
-          description: li.attr('data-item-embed-description'),
+          description: unescape(li.attr('data-item-embed-description')),
           attributes: JSON.parse(li.attr('data-item-embed-modifiers')),
           rank: li.attr('data-item-embed-rank'),
           rank_current: li.attr('data-item-embed-rank'),
