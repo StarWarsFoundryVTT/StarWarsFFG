@@ -785,7 +785,9 @@
       }
     },
     "career" : {
-      "templates": ["core"]
+      "templates": ["core"],
+      "specializations": {},
+      "signatureabilities": {}
     },
     "signatureability": {
       "templates": ["core"],

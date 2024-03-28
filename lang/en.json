@@ -47,6 +47,8 @@
   "SWFFG.TabBiography": "Biography",
   "SWFFG.TabDescription": "Description",
   "SWFFG.TabModifiers": "Modifiers",
+  "SWFFG.TabSpecializations": "Specializations",
+  "SWFFG.TabCareer": "Career Data",
   "SWFFG.CharacteristicBrawn": "Brawn",
   "SWFFG.CharacteristicBrawnAbbreviation": "Br",
   "SWFFG.CharacteristicAgility": "Agility",
@@ -654,5 +656,8 @@
   "SWFFG.Actors.Sheets.Purchase.FP.ConfirmText": "Spend {cost} XP to purchase {upgrade}?",
   "SWFFG.Actors.Sheets.Purchase.SA.ContextMenuText": "Purchase Upgrade",
   "SWFFG.Actors.Sheets.Purchase.SA.ConfirmTitle": "Purchase Upgrade",
-  "SWFFG.Actors.Sheets.Purchase.SA.ConfirmText": "Spend {cost} XP to purchase {upgrade}?"
+  "SWFFG.Actors.Sheets.Purchase.SA.ConfirmText": "Spend {cost} XP to purchase {upgrade}?",
+  "SWFFG.Actors.Sheets.Purchase.Talent.New.ContextMenuText": "Purchase Specialization",
+  "SWFFG.Actors.Sheets.Purchase.Career.Specialization.DropHint": "(drop specializations here)",
+  "SWFFG.Actors.Sheets.Purchase.Career.SignatureAbility.DropHint": "(drop signature abilities here)"
 }

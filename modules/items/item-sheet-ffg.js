@@ -242,6 +242,14 @@ export class ItemSheetFFG extends ItemSheet {
       case "career":
         this.position.width = 500;
         this.position.height = 600;
+        if (Object.keys(this.object.system.specializations).length === 0) {
+          // handlebars sucks
+          data.data.specializations = false;
+        }
+        if (Object.keys(this.object.system.signatureabilities).length === 0) {
+          // handlebars sucks
+          data.data.signatureabilities = false;
+        }
         break;
       case "signatureability": {
         this.position.width = 720;
@@ -381,6 +389,52 @@ export class ItemSheetFFG extends ItemSheet {
       } catch (err) {
         CONFIG.logger.debug(err);
       }
+    } else if (this.object.type === "career") {
+      try {
+        const dragDrop = new DragDrop({
+          dragSelector: ".item",
+          dropSelector: ".tab.career",
+          permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+          callbacks: { drop: this._onDragItemCareer.bind(this) },
+        });
+
+        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
+      } catch (err) {
+        CONFIG.logger.debug(err);
+      }
+      // handle click events for specialization and signature ability on careers
+      html.find(".item-delete").on("click", async (event) => {
+        event.stopPropagation();
+        const itemId = $(event.target).data("specialization-id");
+        const itemType = $(event.target).data("item-type");
+        if (itemType === "specialization") {
+          const updateData = this.object.system.specializations;
+          delete updateData[itemId];
+          updateData[`-=${itemId}`] = null;
+          this.object.update({system: {specializations: updateData}})
+        } else if (itemType === "signatureability") {
+          const updateData = this.object.system.signatureabilities;
+          delete updateData[itemId];
+          updateData[`-=${itemId}`] = null;
+          this.object.update({system: {signatureabilities: updateData}})
+        }
+      });
+      // handle click events for specialization and signature ability on careers
+      html.find(".item-pill2").on("click", async (event) => {
+        event.stopPropagation();
+        const itemId = $(event.target).data("specialization-id");
+        const itemType = $(event.target).data("item-type");
+        let item = game.items.get(itemId);
+        if (!item) {
+          // it was removed or came from a compendium, try that instead
+          if (itemType === "specialization") {
+            item = await fromUuid(this.object.system.specializations[itemId].source);
+          } else if (itemType === "signatureability") {
+            item = await fromUuid(this.object.system.signatureabilities[itemId].source);
+          }
+        }
+        new Item(item).sheet.render(true);
+      });
     }
 
     // hidden here instead of css to prevent non-editable display of edit button
@@ -1155,6 +1209,35 @@ export class ItemSheetFFG extends ItemSheet {
       setProperty(formData, `data.${itemObject.type}`, items);
 
       obj.update(formData);
+    }
+  }
+
+  /**
+   * Handles dragging specializations and signature abilities to the career sheet.
+   * This is used for purchasing (in order to determine which specializations are career specializations)
+   * @param event
+   * @returns {Promise<boolean>}
+   * @private
+   */
+  async _onDragItemCareer(event) {
+    let data;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
+    const itemObject = await fromUuid(data.uuid);
+
+    if (!itemObject) return;
+
+    if (itemObject.type === "specialization") {
+      await this.object.update({system: {specializations: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
+    } else if (itemObject.type === "signatureability") {
+      await this.object.update({system: {signatureabilities: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
     }
   }
 

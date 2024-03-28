@@ -287,6 +287,16 @@ export class ActorSheetFFG extends ActorSheet {
       },
     ]);
 
+    new ContextMenu(html, "td.ffg-purchase", [
+      {
+        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.New.ContextMenuText"),
+        icon: '<i class="fas fa-plus-circle"></i>',
+        callback: async (li) => {
+          await this._buyNewSpecialization(li);
+        },
+      },
+    ]);
+
     // Send Item Details to chat.
 
     const sendToChatContextItem = {
@@ -1566,5 +1576,9 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     return cols;
+  }
+
+  async _buyNewSpecialization(event) {
+
   }
 }

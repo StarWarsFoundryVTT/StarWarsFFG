@@ -12,7 +12,7 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="career" label="SWFFG.TabCareer" icon="fas fa-cog" cls=classType))}} {{!-- Sheet Body --}}
   <section class="sheet-body small">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -22,6 +22,25 @@
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
+    </div>
+    {{!-- Specializations Tab --}}
+    <div class="tab career" data-group="primary" data-tab="career">
+      <h2>Specializations in this Career</h2>
+      {{#if data.specializations}}
+      {{#each data.specializations as |s_data id|}}
+        <div class="specialization-pill item-pill2" data-item-type="specialization" data-specialization-id="{{id}}">{{s_data.name}}<i class="fas fa-times item-delete" data-item-type="specialization" data-specialization-id="{{id}}"></i></div>
+      {{/each}}
+      {{else}}
+        {{ localize "SWFFG.Actors.Sheets.Purchase.Career.Specialization.DropHint" }}
+      {{/if}}
+      <h2>Signature Abilities in this Career</h2>
+      {{#if data.signatureabilities}}
+      {{#each data.signatureabilities as |s_data id|}}
+        <div class="signatureability-pill item-pill2" data-item-type="signatureability" data-specialization-id="{{id}}">{{s_data.name}}<i class="fas fa-times item-delete" data-item-type="signatureability" data-specialization-id="{{id}}"></i></div>
+      {{/each}}
+      {{else}}
+        {{ localize "SWFFG.Actors.Sheets.Purchase.Career.SignatureAbility.DropHint" }}
+      {{/if}}
     </div>
   </section>
 </form>
