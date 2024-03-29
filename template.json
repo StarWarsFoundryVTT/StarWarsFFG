@@ -800,7 +800,8 @@
         "upgrade5": {},
         "upgrade6": {},
         "upgrade7": {}
-      }
+      },
+      "base_cost": 0
     },
     "itemattachment": {
       "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],

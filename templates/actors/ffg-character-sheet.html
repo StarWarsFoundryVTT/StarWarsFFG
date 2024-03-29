@@ -29,7 +29,7 @@
                     <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
                 </td>
-                <td style="{{#if limited}}display:none;{{/if}}">
+                <td style="{{#if limited}}display:none;{{/if}}" class="ffg-purchase" data-buy-action="signatureability">
                   {{localize "SWFFG.SignatureAbilities"}}:
                 </td>
                 <td style="{{#if limited}}display:none;{{/if}}">
@@ -53,7 +53,7 @@
                   <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
                 </td>
-                <td>
+                <td class="ffg-purchase" data-buy-action="forcepower">
                   {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
                   {{localize "SWFFG.ForcePowers"}}:
                   {{/if}}

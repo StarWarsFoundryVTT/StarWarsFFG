@@ -25,7 +25,7 @@
     </div>
     {{!-- Specializations Tab --}}
     <div class="tab career" data-group="primary" data-tab="career">
-      <h2>Specializations in this Career</h2>
+      <h2>{{localize "SWFFG.Actors.Sheets.Purchase.Career.Specializations.Header"}}</h2>
       {{#if data.specializations}}
       {{#each data.specializations as |s_data id|}}
         <div class="specialization-pill item-pill2" data-item-type="specialization" data-specialization-id="{{id}}">{{s_data.name}}<i class="fas fa-times item-delete" data-item-type="specialization" data-specialization-id="{{id}}"></i></div>
@@ -33,7 +33,7 @@
       {{else}}
         {{ localize "SWFFG.Actors.Sheets.Purchase.Career.Specialization.DropHint" }}
       {{/if}}
-      <h2>Signature Abilities in this Career</h2>
+      <h2>{{localize "SWFFG.Actors.Sheets.Purchase.Career.SignatureAbility.Header"}}</h2>
       {{#if data.signatureabilities}}
       {{#each data.signatureabilities as |s_data id|}}
         <div class="signatureability-pill item-pill2" data-item-type="signatureability" data-specialization-id="{{id}}">{{s_data.name}}<i class="fas fa-times item-delete" data-item-type="signatureability" data-specialization-id="{{id}}"></i></div>

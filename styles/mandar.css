@@ -4016,3 +4016,7 @@ img {
 .starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 .item-delete {
   cursor: pointer;
 }
+
+.starwarsffg.sheet.actor .character .header-fields .ffg-purchase {
+  cursor: pointer;
+}
