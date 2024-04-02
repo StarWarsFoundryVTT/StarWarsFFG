@@ -245,6 +245,15 @@ Hooks.once("init", async function () {
       onChange: SettingsHelpers.debouncedReload,
     });
 
+    game.settings.register("genesysk2", "codeSkill", {
+      name: "Skill Code",
+      scope: "world",
+      default: "starwars",
+      config: false,
+      type: Object,
+      //onChange: SettingsHelpers.debouncedReload,
+    });
+
     let skillList = await parseSkillList();
     try {
       CONFIG.FFG.alternateskilllists = skillList;
@@ -266,7 +275,7 @@ Hooks.once("init", async function () {
         choices: skillChoices,
       });
 
-      if (game.settings.get("genesysk2", "skilltheme") !== "starwars") {
+      if (game.settings.get("genesysk2", "skilltheme") !== "starwars") { // XXXX
         const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("genesysk2", "skilltheme")).skills));
 
         let skills = {};
@@ -291,6 +300,7 @@ Hooks.once("init", async function () {
         });
 
         CONFIG.FFG.skills = ordered;
+
       }
     } catch (err) {
       console.error(err);
@@ -549,7 +559,7 @@ Hooks.on("renderChatMessage", (app, html, messageData) => {
         name: li.attr('data-item-embed-name'),
         type: li.attr('data-item-embed-type'),
         system: {
-          description: li.attr('data-item-embed-description'),
+          description:  unescape(li.attr('data-item-embed-description')),
           attributes: JSON.parse(li.attr('data-item-embed-modifiers')),
           rank: li.attr('data-item-embed-rank'),
           rank_current: li.attr('data-item-embed-rank'),
@@ -890,17 +900,16 @@ Hooks.once("ready", async () => {
   registerTokenControls();
 
   if (game.settings.get("genesysk2", "useGenericSlots")) {
-    if (game.user.isGM) {
-      game.socket.on("system.genesysk2", async (...args) => {
-        if (game.user.id === game.users.find(i => i.isGM)?.id) {
-          const event_type = args[0].event;
-          if (event_type === "combat") {
-            CONFIG.logger.debug("Processing combat event from player");
-            const data = args[0]?.data;
-            CONFIG.logger.debug(`Received data: ${data.combatId}, ${data.round}, ${data.slot}, ${data.combatantId}`);
-            const combat = game.combats.get(data.combatId);
-            await combat.claimSlot(data.round, data.slot, data.combatantId);
-          }
+
+    game.socket.on("system.starwarsffg", async (...args) => {
+      const event_type = args[0].event;
+      if (game.user.id === game.users.find(i => i.isGM)?.id) {
+        if (event_type === "combat") {
+          CONFIG.logger.debug("Processing combat event from player");
+          const data = args[0]?.data;
+          CONFIG.logger.debug(`Received data: ${data.combatId}, ${data.round}, ${data.slot}, ${data.combatantId}`);
+          const combat = game.combats.get(data.combatId);
+          await combat.claimSlot(data.round, data.slot, data.combatantId);
         }
       } else if (event_type === "trackerRender") {
         CONFIG.logger.debug("Received combat tracker rerender request");
@@ -922,10 +931,25 @@ Hooks.once("ready", async () => {
       drawMinionCount(token);
     }
     if (["character"].includes(token?.actor?.type)) {
-      drawAdversaryCount(token);
+      // suite a une erreur 
+      //drawAdversaryCount(token);
     }
     return token;
   });
+
+  // modification de la façon d'appeler la magie XXXX
+  //game.settings.set("genesysk2","codeSkill") //= ["SWFFG","K2G","RTG","CRU",]
+  let tabNameSkillGame = ['starwars','k2genesys','roguetrader','genesys','android', 'terrinoth', 'crucible']
+  //let tabCodeSkillGame = ['SWFFG', 'k2G','RTG','GNS','ANDR','TRG','CRU'] //the code Name
+  let tabCodeSkillGame = ['SWFFG', 'K2G','RTG','SWFFG','SWFFG','SWFFG','SWFFG'] //the code Name
+  let poscode = tabNameSkillGame.indexOf(game.settings.get("genesysk2", "skilltheme"))
+  let codeSkill = tabCodeSkillGame[poscode]
+  game.settings.set("genesysk2","codeSkill", codeSkill)
+  // copie des chose comme la magie --- c'est moche mais ça marche pas ! Portée dans la fiche
+  // game.i18n.translations.SWFFG.ForcePool = game.i18n.translations[codeSkill].ForcePool
+  // game.i18n.translations.SWFFG.ForcePoolCommitted = game.i18n.translations[codeSkill].ForcePoolCommitted
+  // game.i18n.translations.SWFFG.ForcePoolAvailable = game.i18n.translations[codeSkill].ForcePoolAvailable
+
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {

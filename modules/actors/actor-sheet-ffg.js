@@ -104,6 +104,11 @@ export class ActorSheetFFG extends ActorSheet {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         break;
+        // OG : modif a cause du data sur mon système : trouver à la copie ne se fait pas correctement !
+      // case "minion":
+        // let lstcmp = Object.entries(data.data.skills)
+        // lstcmp.forEach(cmpn => { data.data.skills[cmpn [0]].groupskill = data.data.skills[cmpn[0]].careerskill})
+        // break;
       case "vehicle":
         // add the crew to the items of the vehicle
         data.crew = [];
@@ -529,13 +534,33 @@ export class ActorSheetFFG extends ActorSheet {
         html.find("li.item-pill").on("click", async (event) => {
           event.preventDefault();
           event.stopPropagation();
-          const li = event.currentTarget;
+          const li = $(event.currentTarget);
+          const itemType = li.attr("data-item-embed-type");
+          let itemData = {};
+          const newEmbed = li.attr("data-item-embed");
 
-          let itemId = li.dataset.itemId;
-          let modifierType = li.dataset.modifierType;
-          let modifierId = li.dataset.modifierId;
+          if (newEmbed === "true" && itemType === "itemmodifier") {
+            itemData = {
+              img: li.attr('data-item-embed-img'),
+              name: li.attr('data-item-embed-name'),
+              type: li.attr('data-item-embed-type'),
+              system: {
+                description: unescape(li.attr('data-item-embed-description')),
+                attributes: JSON.parse(li.attr('data-item-embed-modifiers')),
+                rank: li.attr('data-item-embed-rank'),
+                rank_current: li.attr('data-item-embed-rank'),
+              },
+            };
+            const tempItem = await Item.create(itemData, {temporary: true});
+            tempItem.sheet.render(true);
+          } else {
+            CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
+            let itemId = li.dataset.itemId;
+            let modifierType = li.dataset.modifierType;
+            let modifierId = li.dataset.modifierId;
 
-          await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor.id, this.actor.compendium);
+            await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor.id, this.actor.compendium);
+          }
         });
       }
     });
@@ -1326,10 +1351,11 @@ export class ActorSheetFFG extends ActorSheet {
     }
     this.actor.flags.genesysk2.loaded = true;
 
-    let actor = await game.actors.get(this.actor.id);
+    let actor = await game.actors.get(this.actor.id); // si l'acteur n'est pas dans les acteurs mais dans les packs, erreur ! OG
+    if(actor == undefined) actor = this.actor;
     const specializations = actor.items.filter((item) => {
-      return item.type === "specialization";
-    });
+    return item.type === "specialization";
+  });
 
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
     CONFIG.logger.debug(data.talentList.slice());

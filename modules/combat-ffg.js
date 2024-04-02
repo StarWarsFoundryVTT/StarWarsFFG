@@ -290,6 +290,7 @@ export class CombatFFG extends Combat {
    * @param slot_id - STRING - the ID of the native combatant for this turn
    * @returns {undefined|*}
    */
+
   getSlotClaims(round, slot) {
     const claims = this.getFlag('genesysk2', 'combatClaims') || undefined;
     if (!claims) {

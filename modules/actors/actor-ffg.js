@@ -21,10 +21,8 @@ export class ActorFFG extends Actor {
     // if the actor has skills, add custom skills
     if (data.skills) {
       let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
-      // original
-      //data.skills = mergeObject(skills, data.skills);
-      data.skills = mergeObject(data.skills, skills);
 
+      data.skills = mergeObject(skills, data.skills);
       // Filter out skills that are not custom (manually added) or part of the current system skill list
       Object.keys(data.skills)
       .filter(s => !data.skills[s].custom && !CONFIG.FFG.skills[s])

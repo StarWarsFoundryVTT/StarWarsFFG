@@ -179,6 +179,9 @@ export default class ActorHelpers {
     // recombine attributes to formData
     formData.data.attributes = attributes;
 
+    // use system not data
+    //formData.system = formData.data
+
     // Update the Actor
     setProperty(formData, `flags.genesysk2.loaded`, false);
     return this.object.update(formData);
