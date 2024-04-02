@@ -33,15 +33,15 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameAthletics",
         "abrev": "SWFFG.SkillsNameAthletics",
       },
-      "Brawl": {
+      "Brawl": { // Pugilat, ou bagarre
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
         "careerskill": false,
         "type": "Combat",
         "max": 6,
-        "label": "SWFFG.SkillsNameBrawl",
-        "abrev": "SWFFG.SkillsNameBrawlAbbreviation",
+        "label": "K2G.SkillsNameBrawl",
+        "abrev": "K2G.SkillsNameBrawlAbbreviation",
       },
       "Charm": {
         "rank": 0,
@@ -185,7 +185,7 @@ export const defaultSkillList = [
       },
       "Megantique": {
         "rank": 0,
-        "characteristic": "Willpower",
+        "characteristic": "Cunning",
         "groupskill": false,
         "careerskill": false,
         "type": "Magic",
@@ -363,7 +363,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameSurvival",
         "abrev": "SWFFG.SkillsNameSurvival",
       },
-      "Verse": {
+      "Verse": { // virtuose
         "rank": 0,
         "characteristic": "Presence",
         "groupskill": false,
@@ -527,7 +527,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameDiscipline",
         "abrev": "SWFFG.SkillsNameDiscipline",
       },
-      "Driving": {  // COnduite doit avoir des spécialité (par defaut véhicule terrestre)
+      "Driving": {  // Conduite doit avoir des spécialité (par defaut véhicule terrestre)
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,

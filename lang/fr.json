@@ -500,7 +500,7 @@
   "SWFFG.SkillsNameKnowledgeGeography": "Géographie",
   "SWFFG.SkillsNameKnowledgeGeographyAbbrev": "Géogr.",
   "SWFFG.SkillsNameRunes": "Runes",
-  "SWFFG.SkillsNameVerse": "Verse",
+  "SWFFG.SkillsNameVerse": "Virtuose",
   "SWFFG.SkillsNameAember": "Æmbercraft",
   "SWFFG.SkillsNameAemberAbbrev": "ÆmCrft",
   "SWFFG.SkillsNameKnowledgeAember": "Æmber",
@@ -646,6 +646,8 @@
   "K2G" : {
     "SkillsNameAcrobatic" : "Acrobatie",
     "SkillsNameAcrobaticAbv" : "Acrobat.",
+    "SkillsNameBrawl": "Bagarre",
+    "SkillsNameBrawlAbbreviation": "Bag.",  
     "SkillsNameMeleeShort": "Mêlée : courte",
     "SkillsNameMeleeShortAbbreviation" :"Cmb.C",
     "SkillsNameMeleeLight": "Mêlée : légère",
