@@ -3540,10 +3540,6 @@ img {
   height: calc(100% - 25.25rem);
 }
 
-.starwarsffg .item-sheet-career .sheet-body {
-  height: calc(100% - 11.75rem);
-}
-
 .starwarsffg .attributes {
   margin: 0;
   border: 0;
