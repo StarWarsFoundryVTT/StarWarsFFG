@@ -291,7 +291,7 @@ export class CombatFFG extends Combat {
    * @returns {undefined|*}
    */
 
-  getSlotClaims(round, slot) {
+  getSlotClaims(round, slot_id) {
     const claims = this.getFlag('genesysk2', 'combatClaims') || undefined;
     if (!claims) {
       return undefined;
@@ -371,7 +371,7 @@ export class CombatFFG extends Combat {
     if (!claims[round]) {
       claims[round] = {};
     }
-    claims[round][slot] = combatantId;
+    claims[round][slot_id] = combatantId;
     await this.setFlag('genesysk2', 'combatClaims', claims);
   }
 
@@ -386,7 +386,7 @@ export class CombatFFG extends Combat {
       // only the GM can un-claim a slot
       return;
     }
-    await this.unsetFlag('genesysk2', `combatClaims.${round}.${slot}`);
+    await this.unsetFlag('genesysk2', `combatClaims.${round}.${slot_id}`);
   }
 }
 
