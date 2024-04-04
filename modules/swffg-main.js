@@ -586,6 +586,21 @@ function isCurrentVersionNullOrBlank(currentVersion) {
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
 
+  if (!game.settings.get("starwarsffg", "token_configured")) {
+    const tokenData = {
+      bar1: {
+        attribute: "stats.wounds",
+      },
+      bar2: {
+        attribute: "stats.strain",
+      },
+      displayBars: 30, // hovered by anyone
+    };
+    game.settings.set("core", "defaultToken", tokenData);
+    game.settings.set("starwarsffg", "token_configured", true);
+  }
+
+
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
   const version = game.system.version;
