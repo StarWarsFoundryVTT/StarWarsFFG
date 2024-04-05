@@ -164,7 +164,7 @@ export function build_crew_roll(vehicle, crew_id, crew_role) {
   }
   // check if the pool uses handling
   if (role_info[0].use_handling) {
-    const handling = vehicle?.system?.stats?.handling?.value;
+    const handling = vehicle_actor?.system?.stats?.handling?.value;
     // add modifiers from the vehicle handling
     if (handling > 0) {
       starting_pool['boost'] = handling;
