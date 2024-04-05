@@ -1781,6 +1781,10 @@ img {
   font-size: 1rem;
 }
 
+.starwarsffg .item-sheet-criticalinjury .crit-label {
+  padding-top: 5px;
+}
+
 .starwarsffg .item-sheet-talent .header-fields h1 input, .starwarsffg .item-sheet-gear .header-fields h1 input, .starwarsffg .item-sheet-weapon .header-fields h1 input, .starwarsffg .item-sheet-armor .header-fields h1 input, .starwarsffg .item-sheet-vehicle-weapon .header-fields h1 input, .starwarsffg .item-sheet-vehicle-attachment .header-fields h1 input, .starwarsffg .item-sheet-criticalinjury .header-fields h1 input {
   margin: 0;
   width: 100%;
