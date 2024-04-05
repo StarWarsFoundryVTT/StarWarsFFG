@@ -1782,7 +1782,6 @@ img {
 }
 
 .starwarsffg .item-sheet-talent .header-fields h1 input, .starwarsffg .item-sheet-gear .header-fields h1 input, .starwarsffg .item-sheet-weapon .header-fields h1 input, .starwarsffg .item-sheet-armor .header-fields h1 input, .starwarsffg .item-sheet-vehicle-weapon .header-fields h1 input, .starwarsffg .item-sheet-vehicle-attachment .header-fields h1 input, .starwarsffg .item-sheet-criticalinjury .header-fields h1 input {
-  padding-left: 3rem;
   margin: 0;
   width: 100%;
   text-align: center;
