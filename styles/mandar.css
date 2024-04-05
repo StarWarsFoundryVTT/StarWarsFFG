@@ -3757,10 +3757,6 @@ img {
   height: auto;
 }
 
-.starwarsffg .item-sheet-itemattachment .sheet-body {
-  height: calc(100% - 19rem);
-}
-
 .starwarsffg .item-sheet-itemattachment .sheet-body table th:first-child {
   text-align: left;
   padding-left: 3px;
