@@ -157,6 +157,10 @@ export default class ImportHelpers {
     }
   }
 
+  static clearCache() {
+    CONFIG.temporary = {};
+  }
+
   /**
    * Find an entity by the import key.
    * @param  {string} type - Entity type to search for
@@ -2216,7 +2220,8 @@ export default class ImportHelpers {
       }
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
       const crt = await pack.importDocument(compendiumItem);
-      CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = duplicate(crt);
+      CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = deepClone(crt);
+      return crt;
     } else {
       CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name} : ${JSON.stringify(entry)}`);
       let upd;
@@ -2266,6 +2271,7 @@ export default class ImportHelpers {
         }
       }
       CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = upd;
+      return upd;
     }
   }
 

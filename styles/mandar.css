@@ -3577,10 +3577,6 @@ img {
   height: calc(100% - 25.25rem);
 }
 
-.starwarsffg .item-sheet-career .sheet-body {
-  height: calc(100% - 11.75rem);
-}
-
 .starwarsffg .attributes {
   margin: 0;
   border: 0;
@@ -4036,6 +4032,22 @@ img {
   height: 24px;
   max-width: 24px;
   max-height: 24px;
+}
+.starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 {
+  padding: 0.1rem 0.5rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 .item-delete {
+  cursor: pointer;
+}
+
+.starwarsffg.sheet.actor .character .header-fields .ffg-purchase {
+  cursor: pointer;
 }
 
 .starwarsffg .dice-tooltip .dice-rolls .roll {

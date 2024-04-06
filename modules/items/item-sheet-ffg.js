@@ -6,6 +6,7 @@ import ImportHelpers from "../importer/import-helpers.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
+import {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemOptions from "./item-ffg-options.js";
 
 /**
@@ -245,6 +246,14 @@ export class ItemSheetFFG extends ItemSheet {
       case "career":
         this.position.width = 500;
         this.position.height = 600;
+        if (Object.keys(this.object.system.specializations).length === 0) {
+          // handlebars sucks
+          data.data.specializations = false;
+        }
+        if (Object.keys(this.object.system.signatureabilities).length === 0) {
+          // handlebars sucks
+          data.data.signatureabilities = false;
+        }
         break;
       case "signatureability": {
         this.position.width = 720;
@@ -273,6 +282,33 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    new ContextMenu(this.element, ".talent-upgrade.specialization-talent", [
+      {
+        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.ContextMenuText"),
+        icon: '<i class="fas fa-dollar"></i>',
+        callback: (li) => {
+          this._buyTalent(li);
+        },
+      },
+    ]);
+    new ContextMenu(this.element, ".talent-upgrade.force-power", [
+      {
+        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.FP.ContextMenuText"),
+        icon: '<i class="fas fa-dollar"></i>',
+        callback: (li) => {
+          this._buyForcePower(li);
+        },
+      },
+    ]);
+    new ContextMenu(this.element, ".talent-upgrade.signature-ability", [
+      {
+        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.ContextMenuText"),
+        icon: '<i class="fas fa-dollar"></i>',
+        callback: (li) => {
+          this._buySignatureAbility(li);
+        },
+      },
+    ]);
 
     // register sheet options
     if (["gear", "weapon", "armour"].includes(this.object.type)) {
@@ -374,6 +410,52 @@ export class ItemSheetFFG extends ItemSheet {
       } catch (err) {
         CONFIG.logger.debug(err);
       }
+    } else if (this.object.type === "career") {
+      try {
+        const dragDrop = new DragDrop({
+          dragSelector: ".item",
+          dropSelector: ".tab.career",
+          permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
+          callbacks: { drop: this._onDragItemCareer.bind(this) },
+        });
+
+        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
+      } catch (err) {
+        CONFIG.logger.debug(err);
+      }
+      // handle click events for specialization and signature ability on careers
+      html.find(".item-delete").on("click", async (event) => {
+        event.stopPropagation();
+        const itemId = $(event.target).data("specialization-id");
+        const itemType = $(event.target).data("item-type");
+        if (itemType === "specialization") {
+          const updateData = this.object.system.specializations;
+          delete updateData[itemId];
+          updateData[`-=${itemId}`] = null;
+          this.object.update({system: {specializations: updateData}})
+        } else if (itemType === "signatureability") {
+          const updateData = this.object.system.signatureabilities;
+          delete updateData[itemId];
+          updateData[`-=${itemId}`] = null;
+          this.object.update({system: {signatureabilities: updateData}})
+        }
+      });
+      // handle click events for specialization and signature ability on careers
+      html.find(".item-pill2").on("click", async (event) => {
+        event.stopPropagation();
+        const itemId = $(event.target).data("specialization-id");
+        const itemType = $(event.target).data("item-type");
+        let item = game.items.get(itemId);
+        if (!item) {
+          // it was removed or came from a compendium, try that instead
+          if (itemType === "specialization") {
+            item = await fromUuid(this.object.system.specializations[itemId].source);
+          } else if (itemType === "signatureability") {
+            item = await fromUuid(this.object.system.signatureabilities[itemId].source);
+          }
+        }
+        new Item(item).sheet.render(true);
+      });
     }
 
     // hidden here instead of css to prevent non-editable display of edit button
@@ -657,6 +739,176 @@ export class ItemSheetFFG extends ItemSheet {
       );
       this.object.sheet.render(true);
     });
+  }
+
+  async _buyHandleClick(li, desired_item_type) {
+    const owned = this.object.flags?.starwarsffg?.ffgIsOwned;
+    const type = this.object.type;
+    if (type !== desired_item_type || !owned) {
+      // you can't buy talents for any old item!
+      // you can only buy talents for owned items!
+      CONFIG.logger.warn(`Refused to buy talent for non-${desired_item_type} or unowned item`);
+      throw new Error(`Refused to buy talent for non-${desired_item_type} or unowned item`);
+    }
+    const ownerFlag = this.object.flags?.starwarsffg?.ffgUuid;
+    if (!ownerFlag) {
+      // bad flag data, move along, citizen
+      CONFIG.logger.warn("Refused to buy for item with no owner flag set");
+      throw new Error("Refused to buy for item with no owner flag set");
+    }
+    const ownerId = ownerFlag.split('.')[1];
+    if (!ownerId) {
+      CONFIG.logger.warn("Refused to buy for item with no owner ID");
+      throw new Error("Refused to buy for item with no owner ID");
+    }
+    const owner = game.actors.get(ownerId);
+    if (!owner) {
+      CONFIG.logger.warn("Refused to buy for item with no found owner actor");
+      throw new Error("Refused to buy for item with no found owner actor");
+    }
+    const availableXP = owner.system.experience.available;
+    const cost = $(li).data("cost");
+    if (cost > availableXP) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
+      throw new Error("Not enough XP");
+    }
+    return {
+      owner: owner,
+      cost: cost,
+      availableXP: availableXP,
+    }
+  }
+
+  async _buyTalent(li) {
+    let owner;
+    let cost;
+    let availableXP;
+    try {
+      const basic_data = await this._buyHandleClick(li, "specialization");
+      owner = basic_data.owner;
+      cost = basic_data.cost;
+      availableXP = basic_data.availableXP;
+    } catch (e) {
+      return;
+    }
+    const baseName = $(li).data("base-item-name");
+    const talent = $(".talent-name", li).data("name");
+    const dialog = new Dialog(
+      {
+        title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmTitle"),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmText", {cost: cost, talent: talent}),
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              // update the form because the fields are read when an update is performed
+              const talentId = $(li).attr("id");
+              const input = $(`[name="data.talents.${talentId}.islearned"]`, this.element)[0];
+              input.checked = true;
+              await this.object.sheet.submit({preventClose: true});
+              owner.update({system: {experience: {available: availableXP - cost}}});
+              await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+      }
+    ).render(true);
+  }
+
+  async _buyForcePower(li) {
+    let owner;
+    let cost;
+    let availableXP;
+    try {
+      const basic_data = await this._buyHandleClick(li, "forcepower");
+      owner = basic_data.owner;
+      cost = basic_data.cost;
+      availableXP = basic_data.availableXP;
+    } catch (e) {
+      return;
+    }
+    const baseName = $(li).data("base-item-name");
+    const upgrade = $(".talent-name", li).data("name");
+    const dialog = new Dialog(
+      {
+        title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.FP.ConfirmTitle"),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.FP.ConfirmText", {cost: cost, upgrade: upgrade}),
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              // update the form because the fields are read when an update is performed
+              const talentId = $(li).attr("id");
+              const input = $(`[name="data.upgrades.${talentId}.islearned"]`, this.element)[0];
+              input.checked = true;
+              await this.object.sheet.submit({preventClose: true});
+              owner.update({system: {experience: {available: availableXP - cost}}});
+              await xpLogSpend(owner, `force power ${baseName} upgrade ${upgrade}`, cost);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+      }
+    ).render(true);
+  }
+
+  async _buySignatureAbility(li) {
+    let owner;
+    let cost;
+    let availableXP;
+    try {
+      const basic_data = await this._buyHandleClick(li, "signatureability");
+      owner = basic_data.owner;
+      cost = basic_data.cost;
+      availableXP = basic_data.availableXP;
+    } catch (e) {
+      return;
+    }
+    const baseName = $(li).data("base-item-name");
+    const upgrade = $(".talent-name", li).data("name");
+    const dialog = new Dialog(
+      {
+        title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.ConfirmTitle"),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SA.ConfirmText", {cost: cost, upgrade: upgrade}),
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              // update the form because the fields are read when an update is performed
+              const talentId = $(li).attr("id");
+              const input = $(`[name="data.upgrades.${talentId}.islearned"]`, this.element)[0];
+              input.checked = true;
+              await this.object.sheet.submit({preventClose: true});
+              owner.update({system: {experience: {available: availableXP - cost}}});
+              await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgrade}`, cost);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+      }
+    ).render(true);
   }
 
   /* -------------------------------------------- */
@@ -978,6 +1230,35 @@ export class ItemSheetFFG extends ItemSheet {
       setProperty(formData, `data.${itemObject.type}`, items);
 
       obj.update(formData);
+    }
+  }
+
+  /**
+   * Handles dragging specializations and signature abilities to the career sheet.
+   * This is used for purchasing (in order to determine which specializations are career specializations)
+   * @param event
+   * @returns {Promise<boolean>}
+   * @private
+   */
+  async _onDragItemCareer(event) {
+    let data;
+
+    try {
+      data = JSON.parse(event.dataTransfer.getData("text/plain"));
+      if (data.type !== "Item") return;
+    } catch (err) {
+      return false;
+    }
+
+    // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
+    const itemObject = await fromUuid(data.uuid);
+
+    if (!itemObject) return;
+
+    if (itemObject.type === "specialization") {
+      await this.object.update({system: {specializations: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
+    } else if (itemObject.type === "signatureability") {
+      await this.object.update({system: {signatureabilities: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
     }
   }
 

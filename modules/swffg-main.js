@@ -174,6 +174,34 @@ Hooks.once("init", async function () {
   }
 
   /**
+   * Register compendiums for sources for purchasing
+   */
+  game.settings.register("starwarsffg", "specializationCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Hint"),
+    scope: "world",
+    config: true,
+    default: "world.oggdudespecializations",
+    type: String,
+  });
+  game.settings.register("starwarsffg", "signatureAbilityCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Hint"),
+    scope: "world",
+    config: true,
+    default: "world.oggdudesignatureabilities",
+    type: String,
+  });
+  game.settings.register("starwarsffg", "forcePowerCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Hint"),
+    scope: "world",
+    config: true,
+    default: "world.oggdudeforcepowers",
+    type: String,
+  });
+
+  /**
    * Set an initiative formula for the system
    * @type {String}
    */

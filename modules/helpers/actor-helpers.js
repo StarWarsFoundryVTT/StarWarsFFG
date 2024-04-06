@@ -184,3 +184,30 @@ export default class ActorHelpers {
     return this.object.update(formData);
   }
 }
+
+/**
+ * Adds a SPEND log entry to the actor's XP log (accessed via the notebook under specializations)
+ * @param actor - ffgActor object
+ * @param action - action taken (e.g. "skill rank Astrogation 1 --> 2")
+ * @param cost - XP spent
+ * @returns {Promise<void>}
+ */
+export async function xpLogSpend(actor, action, cost) {
+    const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+    const date = new Date().toISOString().slice(0, 10);
+    let newEntry = `<font color="red"><b>${date}</b>: spent <b>${cost}</b> XP for <b>${action}</b></font>`;
+    await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+}
+
+/**
+ * Adds a GRANT log entry to the actor's XP log (accessed via the notebook under specializations)
+ * @param actor - ffgActor object
+ * @param grant - XP granted
+ * @returns {Promise<void>}
+ */
+export async function xpLogEarn(actor, grant) {
+  const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+  const date = new Date().toISOString().slice(0, 10);
+  let newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP</font>`;
+  await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+}
