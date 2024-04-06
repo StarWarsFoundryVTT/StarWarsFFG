@@ -47,7 +47,7 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
-  <section class="sheet-body small">
+  <section class="sheet-body small gear">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
       {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}
