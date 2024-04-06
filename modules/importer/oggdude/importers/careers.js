@@ -26,6 +26,8 @@ export default class Career {
             data.data = {
               attributes: {},
               description: item.Description,
+              specializations: {},
+              signatureabilities: {},
             };
 
             data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
@@ -61,6 +63,21 @@ export default class Career {
                   }
                 }
               });
+            }
+
+            // process specializations
+            if (item?.Specializations) {
+              for (const specializationKey of Object.values(item.Specializations.Key)) {
+                let specializationItem = await ImportHelpers.findCompendiumEntityByImportId("Item", specializationKey, "world.oggdudespecializations", "specialization");
+                if (!specializationItem) {
+                  continue;
+                }
+                data.data.specializations[specializationItem._id] = {
+                  name: specializationItem.name,
+                  source: specializationItem.uuid,
+                  id: specializationItem._id,
+                }
+              }
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", data.flags.starwarsffg.ffgimportid);
