@@ -894,7 +894,7 @@ Hooks.once("ready", async () => {
 
     game.socket.on("system.starwarsffg", async (...args) => {
       const event_type = args[0].event;
-      if (game.user.id === game.users.find(i => i.isGM)?.id) {
+      if (game.user.id === game.users.activeGM?.id) {
         if (event_type === "combat") {
           CONFIG.logger.debug("Processing combat event from player");
           const data = args[0]?.data;
