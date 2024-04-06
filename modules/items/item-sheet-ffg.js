@@ -6,6 +6,7 @@ import ImportHelpers from "../importer/import-helpers.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
+import ItemOptions from "./item-ffg-options.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -269,6 +270,23 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+
+    // register sheet options
+    if (["gear", "weapon", "armour"].includes(this.object.type)) {
+      this.sheetoptions = new ItemOptions(this, html);
+      this.sheetoptions.register("enablePrice", {
+        name: game.i18n.localize("SWFFG.SheetOptions2.EnablePrice.Name"),
+        hint: game.i18n.localize("SWFFG.SheetOptions2.EnablePrice.Hint"),
+        type: "Boolean",
+        default: true,
+      });
+      this.sheetoptions.register("enableRarity", {
+        name: game.i18n.localize("SWFFG.SheetOptions2.enableRarity.Name"),
+        hint: game.i18n.localize("SWFFG.SheetOptions2.enableRarity.Hint"),
+        type: "Boolean",
+        default: true,
+      });
+    }
 
     // TODO: This is not needed in Foundry 0.6.0
     // Activate tabs
