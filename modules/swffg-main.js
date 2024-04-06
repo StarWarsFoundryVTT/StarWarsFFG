@@ -594,7 +594,7 @@ Hooks.once("ready", async () => {
       bar2: {
         attribute: "stats.strain",
       },
-      displayBars: 30, // hovered by anyone
+      displayBars: 20, // hovered by owner
     };
     const existingSettings = game.settings.get("core", "defaultToken");
     const updateData = foundry.utils.mergeObject(existingSettings, tokenData);
