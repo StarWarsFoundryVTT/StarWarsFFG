@@ -618,7 +618,8 @@ img {
 }
 
 .starwarsffg.sheet .sheet-body {
-  height: calc(100% - 15.75rem);
+  /*height: 60px;*/
+  height: calc(100% - 30.75rem);
   min-height: 100px;
   display: flex;
   flex-direction: column;
@@ -629,6 +630,43 @@ img {
   border-top: 1px solid #878787;
   -o-border-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(73, 12, 11, 0.85), rgba(0, 0, 0, 0)) 5%;
   border-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(73, 12, 11, 0.85), rgba(0, 0, 0, 0)) 5%;
+}
+
+/* confirmed good */
+.starwarsffg.sheet .sheet-body.gear {
+  height: calc(100% - 24rem);
+}
+
+.starwarsffg.sheet .sheet-body.weapon, .starwarsffg.sheet .sheet-body.armour {
+  height: calc(100% - 32rem);
+}
+
+.starwarsffg.sheet .sheet-body.shipweapon {
+  height: calc(100% - 40rem);
+}
+
+.starwarsffg.sheet .sheet-body.itemattachment {
+  height: calc(100% - 18rem);
+}
+
+.starwarsffg.sheet .sheet-body.ability {
+  height: calc(100% - 1.5rem);
+}
+
+.starwarsffg.sheet .sheet-body.shipattachment {
+  height: calc(100% - 22.75rem);
+}
+
+.starwarsffg.sheet .sheet-body.homesteadupgrade {
+  height: calc(100% - 20rem);
+}
+
+.starwarsffg.sheet .sheet-body.talent {
+  height: calc(100% - 26rem);
+}
+
+.starwarsffg.sheet .sheet-body.species {
+  height: calc(100% - 24rem);
 }
 
 .starwarsffg.sheet .sheet-body .tab {
@@ -646,11 +684,7 @@ img {
 
 .starwarsffg.sheet .sheet-body .editor {
   width: 100%;
-  height: calc(100% - 1.5rem);
-}
-
-.starwarsffg.sheet.v2 .sheet-body {
-  height: calc(100% - 14rem);
+  /*height: calc(100% - 1.5rem);*/
 }
 
 .starwarsffg.sheet.v2.minion .sheet-body {
@@ -1781,8 +1815,11 @@ img {
   font-size: 1rem;
 }
 
+.starwarsffg .item-sheet-criticalinjury .crit-label {
+  padding-top: 5px;
+}
+
 .starwarsffg .item-sheet-talent .header-fields h1 input, .starwarsffg .item-sheet-gear .header-fields h1 input, .starwarsffg .item-sheet-weapon .header-fields h1 input, .starwarsffg .item-sheet-armor .header-fields h1 input, .starwarsffg .item-sheet-vehicle-weapon .header-fields h1 input, .starwarsffg .item-sheet-vehicle-attachment .header-fields h1 input, .starwarsffg .item-sheet-criticalinjury .header-fields h1 input {
-  padding-left: 3rem;
   margin: 0;
   width: 100%;
   text-align: center;
@@ -3754,10 +3791,6 @@ img {
   height: auto;
 }
 
-.starwarsffg .item-sheet-itemattachment .sheet-body {
-  height: calc(100% - 19rem);
-}
-
 .starwarsffg .item-sheet-itemattachment .sheet-body table th:first-child {
   text-align: left;
   padding-left: 3px;
@@ -4015,4 +4048,9 @@ img {
 
 .starwarsffg.sheet.actor .character .header-fields .ffg-purchase {
   cursor: pointer;
+}
+
+.starwarsffg .dice-tooltip .dice-rolls .roll {
+  width: 24px;
+  float: left;
 }

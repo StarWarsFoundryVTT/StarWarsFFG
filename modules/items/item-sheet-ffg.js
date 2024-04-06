@@ -7,6 +7,7 @@ import DiceHelpers from "../helpers/dice-helpers.js";
 import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import {xpLogSpend} from "../helpers/actor-helpers.js";
+import ItemOptions from "./item-ffg-options.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -108,8 +109,11 @@ export class ItemSheetFFG extends ItemSheet {
         this.position.height = 350;
         break;
       case "armour":
-      case "ability":
       case "gear":
+        this.position.width = 385;
+        this.position.height = 750;
+        break;
+      case "ability":
       case "shipattachment":
       case "homesteadupgrade":
         this.position.width = 385;
@@ -305,6 +309,23 @@ export class ItemSheetFFG extends ItemSheet {
         },
       },
     ]);
+
+    // register sheet options
+    if (["gear", "weapon", "armour"].includes(this.object.type)) {
+      this.sheetoptions = new ItemOptions(this, html);
+      this.sheetoptions.register("enablePrice", {
+        name: game.i18n.localize("SWFFG.SheetOptions2.EnablePrice.Name"),
+        hint: game.i18n.localize("SWFFG.SheetOptions2.EnablePrice.Hint"),
+        type: "Boolean",
+        default: true,
+      });
+      this.sheetoptions.register("enableRarity", {
+        name: game.i18n.localize("SWFFG.SheetOptions2.enableRarity.Name"),
+        hint: game.i18n.localize("SWFFG.SheetOptions2.enableRarity.Hint"),
+        type: "Boolean",
+        default: true,
+      });
+    }
 
     // TODO: This is not needed in Foundry 0.6.0
     // Activate tabs

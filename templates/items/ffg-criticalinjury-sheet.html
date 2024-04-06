@@ -11,7 +11,7 @@
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="d100 Roll" fields=(array (object name="data.min" value=data.min type="Number" label="Low") (object name="data.max" value=data.max type="Number" label="High") ))}}
       </div>
 
-      <div class="container flex-group-center">
+      <div class="container flex-group-center crit-label">
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Severity" type="Dropdown" name="data.severity" value=data.severity options=this.FFG.difficulty)}}
       </div>
     </div>
