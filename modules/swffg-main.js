@@ -596,7 +596,9 @@ Hooks.once("ready", async () => {
       },
       displayBars: 30, // hovered by anyone
     };
-    game.settings.set("core", "defaultToken", tokenData);
+    const existingSettings = game.settings.get("core", "defaultToken");
+    const updateData = foundry.utils.mergeObject(existingSettings, tokenData);
+    game.settings.set("core", "defaultToken", updateData);
     game.settings.set("starwarsffg", "token_configured", true);
   }
 
