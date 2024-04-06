@@ -7,7 +7,7 @@ import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
-import ActorHelpers from "../helpers/actor-helpers.js";
+import ActorHelpers, {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import {change_role, deregister_crew, build_crew_roll} from "../helpers/crew.js";
@@ -147,6 +147,9 @@ export class ActorSheetFFG extends ActorSheet {
     if (this.actor.flags?.config?.enableObligation === false && this.actor.flags?.config?.enableDuty === false && this.actor.flags?.config?.enableMorality === false && this.actor.flags?.config?.enableConflict === false) {
       data.hideObligationDutyMoralityConflictTab = true;
     }
+    if (this.actor.flags?.starwarsffg?.xpLog) {
+      data.xpLog = this.actor.flags.starwarsffg.xpLog.join("<br>");
+    }
 
     return data;
   }
@@ -264,6 +267,13 @@ export class ActorSheetFFG extends ActorSheet {
           this._onRemoveSkill(li);
         },
       },
+      {
+        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
+        icon: '<i class="fas fa-dollar"></i>',
+        callback: (li) => {
+          this._buySkillRank(li);
+        },
+      },
     ]);
 
     new ContextMenu(html, "div.skillsHeader", [
@@ -275,6 +285,10 @@ export class ActorSheetFFG extends ActorSheet {
         },
       },
     ]);
+
+    html.find("td.ffg-purchase").click(async (ev) => {
+      await this._buyCore(ev)
+    });
 
     // Send Item Details to chat.
 
@@ -959,7 +973,6 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".force-conflict .enable-dice-pool").on("click", async (event) => {
       event.preventDefault();
       await this.actor.setFlag('starwarsffg', 'config', {enableForcePool: true});
-      console.log({this: this, event: event})
     });
 
     html.find(".force-conflict .remove-force-powers").on("click", async (event) => {
@@ -1190,6 +1203,57 @@ export class ActorSheetFFG extends ActorSheet {
       {
         classes: ["dialog", "starwarsffg"],
         template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-new.html",
+      }
+    ).render(true);
+  }
+
+  /**
+   * Handle the right click -> buy skill rank event
+   * @param a - Event object
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _buySkillRank(a) {
+    const skill = $(a).data("ability");
+    const curRank = this.object.system.skills[skill].rank;
+    const availableXP = this.object.system.experience.available;
+    const careerSkill = this.object.system.skills[skill].careerskill;
+    const cost = careerSkill ? (curRank + 1) * 5 : (curRank + 1) * 5 + 5;
+
+    if (cost > availableXP) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
+      return;
+    }
+    const dialog = new Dialog(
+      {
+        title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ConfirmTitle"),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SkillRank.Text", {cost: cost, skill: skill, old: curRank, new: curRank + 1}),
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              // update the form because the fields are read when an update is performed
+              this.object.sheet.element.find(`[name="data.skills.${skill}.rank"]`).val(curRank + 1);
+              await this.object.sheet.submit({preventClose: true});
+              await this.object.update({
+                system: {
+                  experience: {
+                    available: availableXP - cost,
+                  }
+                }
+              });
+              await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
       }
     ).render(true);
   }
@@ -1525,4 +1589,174 @@ export class ActorSheetFFG extends ActorSheet {
 
     return cols;
   }
+
+  async _buyCore(event) {
+    const action = $(event.target).data("buy-action");
+    const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
+    let content;
+    const availableXP = this.object.system.experience.available;
+    let itemType;
+    if (action === "specialization") {
+      const inCareer = this.object.items.find(i => i.type === "career").system.specializations;
+      const inCareerNames = Object.values(inCareer).map(i => i.name);
+      const sources = game.settings.get("starwarsffg", "specializationCompendiums").split(",");
+      let outCareer = [];
+      for (const source of sources) {
+        const pack = game.packs.get(source);
+        if (!pack) {
+          continue;
+        }
+        const items = await pack.getDocuments();
+        for (const item of items) {
+          if (!inCareerNames.includes(item.name)) {
+            outCareer.push({
+              name: item.name,
+              id: item.id,
+              source: item.uuid,
+            });
+          }
+        }
+      }
+      outCareer = sortDataBy(outCareer, "name");
+      const baseCost = (this.object.items.filter(i => i.type === "specialization").length + 1) * 10;
+      const increasedCost = baseCost + 10;
+      if (baseCost > availableXP) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
+        return;
+      } else if (increasedCost > availableXP) {
+        outCareer = [];
+      }
+      itemType =  game.i18n.localize("TYPES.Item.specialization");
+      content = await renderTemplate(template, { inCareer, outCareer, baseCost, increasedCost, itemType: itemType });
+    } else if (action === "signatureability") {
+      const sources = game.settings.get("starwarsffg", "signatureAbilityCompendiums").split(",");
+      const rawSelectableItems =  this.object.items.find(i => i.type === "career").system.signatureabilities;
+      const sigAbilityNames = Object.values(rawSelectableItems).map(i => i.name);
+      let selectableItems = [];
+      // pull items out of the world
+      for (const itemId of Object.keys(rawSelectableItems)) {
+        const item = rawSelectableItems[itemId];
+        let retrievedItem = game.items.get(item.id);
+        if (retrievedItem) {
+          selectableItems.push({
+            name: retrievedItem.name,
+            id: retrievedItem.id,
+            source: retrievedItem.uuid,
+            cost: parseInt(retrievedItem.system.base_cost),
+          });
+        }
+      }
+      // pull items out of compendiums
+      for (const source of sources) {
+        const pack = game.packs.get(source);
+        if (!pack) {
+          continue;
+        }
+        const items = await pack.getDocuments();
+        for (const item of items) {
+          if (sigAbilityNames.includes(item.name)) {
+            selectableItems.push({
+              name: item.name,
+              id: item.id,
+              source: item.uuid,
+              cost: parseInt(item.system.base_cost),
+            });
+          }
+        }
+      }
+      if (selectableItems.length === 0) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.NotSet"));
+        return;
+      }
+      selectableItems = sortDataBy(selectableItems, "name");
+      itemType = game.i18n.localize("TYPES.Item.signatureability");
+      content = await renderTemplate(template, { selectableItems, itemType: itemType });
+    } else if (action === "forcepower") {
+      const sources = game.settings.get("starwarsffg", "forcePowerCompendiums").split(",");
+      let selectableItems = [];
+      const worldItems = game.items.filter(i => i.type === "forcepower");
+      for (const worldItem of worldItems) {
+        selectableItems.push({
+          name: worldItem.name,
+          id: worldItem.id,
+          source: worldItem.uuid,
+          cost: worldItem.system.base_cost,
+        });
+      }
+      for (const source of sources) {
+        const pack = game.packs.get(source);
+        if (!pack) {
+          continue;
+        }
+        const items = await pack.getDocuments();
+        for (const item of items) {
+          selectableItems.push({
+            name: item.name,
+            id: item.id,
+            source: item.uuid,
+            cost: item.system.base_cost,
+          });
+        }
+        selectableItems = sortDataBy(selectableItems, "name");
+        itemType = game.i18n.localize("TYPES.Item.forcepower");
+        content = await renderTemplate(template, { selectableItems, itemType: itemType });
+      }
+    }
+
+    const dialog = new Dialog(
+    {
+        title: game.i18n.format("SWFFG.Actors.Sheets.Purchase.DialogTitle", {itemType: itemType}),
+        content: content,
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              const cost = $("#ffgPurchase option:selected", that).data("cost");
+              const selected_id = $("#ffgPurchase option:selected", that).data("id");
+              const selected_source = $("#ffgPurchase option:selected", that).data("source");
+              let purchasedItem = game.items.get(selected_id);
+              if (!purchasedItem) {
+                purchasedItem = await fromUuid(selected_source);
+              }
+              await this.object.createEmbeddedDocuments("Item", [purchasedItem]);
+              await this.object.update({
+                system: {
+                  experience: {
+                    available: availableXP - cost,
+                  },
+                },
+              });
+              await xpLogSpend(game.actors.get(this.object.id), `new ${action} ${purchasedItem.name}`, cost);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+      }
+    ).render(true);
+  }
+}
+
+/**
+ * Sort an array of dicts by a key. Totally not AI generated. But it works :)
+ * @param data
+ * @param byKey
+ * @returns {*}
+ */
+function sortDataBy(data, byKey) {
+ return data.sort((a, b) => {
+    if (a[byKey] < b[byKey]) {
+      return -1;
+    }
+    if (a[byKey] > b[byKey]) {
+      return 1;
+    }
+    return 0;
+ });
 }
