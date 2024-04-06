@@ -286,7 +286,6 @@ export default class SettingsHelpers {
       },
     });
 
-
     // Increase compatibility with old versions (likely to make new games kinda weird as it updates items from chat data)
     game.settings.register("starwarsffg", "oldWorldCompatability", {
       name: game.i18n.localize("SWFFG.OldWorld.CompatLabel"),
@@ -296,6 +295,14 @@ export default class SettingsHelpers {
       default: false,
       type: Boolean,
       onChange: this.debouncedReload,
+    });
+
+    // auto-configure the default values of tokens - once
+    game.settings.register("starwarsffg", "token_configured", {
+      scope: "world",
+      config: false,
+      default: false,
+      type: Boolean,
     });
   }
 
