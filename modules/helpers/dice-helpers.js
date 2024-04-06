@@ -286,6 +286,7 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
     triumph: skill.triumph + incoming_roll.triumph,
     despair: skill.despair + incoming_roll.despair,
     upgrades: skill.upgrades + incoming_roll.upgrades,
+    remsetback: skill.remsetback + incoming_roll.remsetback,
     difficulty: +incoming_roll.difficulty,
   });
   return dicePool;
