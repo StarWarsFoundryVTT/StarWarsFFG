@@ -4004,3 +4004,8 @@ img {
   max-width: 24px;
   max-height: 24px;
 }
+
+.starwarsffg .dice-tooltip .dice-rolls .roll {
+  width: 24px;
+  float: left;
+}
