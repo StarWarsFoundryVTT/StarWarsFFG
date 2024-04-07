@@ -618,8 +618,7 @@ img {
 }
 
 .starwarsffg.sheet .sheet-body {
-  /*height: 60px;*/
-  height: calc(100% - 30.75rem);
+  height: calc(100% - 15.75rem);
   min-height: 100px;
   display: flex;
   flex-direction: column;
