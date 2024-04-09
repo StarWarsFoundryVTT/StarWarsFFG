@@ -1197,7 +1197,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       const foundItem = items.find((i) => {
-        return i.name === itemObject.name || (i.flags?.starwarsffg?.ffgimportid?.length ? i.flags.starwarsffg.ffgimportid === itemObject.flags.starwarsffg.ffgimportid : false);
+        return i?.name === itemObject.name || (i?.flags?.starwarsffg?.ffgimportid?.length ? i?.flags.starwarsffg.ffgimportid === itemObject.flags.starwarsffg.ffgimportid : false);
       });
 
       switch (itemObject.type) {
