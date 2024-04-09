@@ -150,6 +150,7 @@ export default class DataImporter extends FormApplication {
       let isSpecialization = false;
       let isVehicle = false;
       let isCareer = false;
+      let isSpecies = false;
 
       let skillsFileName;
       try {
@@ -190,25 +191,29 @@ export default class DataImporter extends FormApplication {
           promises.push(OggDude.Import.Armor(xmlDoc, zip));
           promises.push(OggDude.Import.Talents(xmlDoc, zip));
           promises.push(OggDude.Import.ForcePowers(xmlDoc, zip));
-          //promises.push(OggDude.Import.SignatureAbilities(xmlDoc, zip));
           promises.push(OggDude.Import.ItemAttachments(xmlDoc));
         } else {
           if (file.file.includes("/Specializations/")) {
             isSpecialization = true;
           }
           if (file.file.includes("/Careers/")) {
+            // delay career processing so specializations can be done first
             isCareer = true;
           }
           if (file.file.includes("/Species/")) {
-            promises.push(OggDude.Import.Species(zip));
+            // delay species processing so talents are done first
+            isSpecies = true;
           }
           if (file.file.includes("/Vehicles/")) {
             isVehicle = true;
           }
         }
       });
-
       await Promise.all(promises);
+
+      if (isSpecies) {
+        await OggDude.Import.Species(zip);
+      }
       if (isSpecialization) {
         await OggDude.Import.Specializations(zip);
       }
@@ -219,7 +224,7 @@ export default class DataImporter extends FormApplication {
         await OggDude.Import.Vehicles(zip);
       }
 
-      // import signature abilities
+      // import signature abilities (delayed so careers are done first)
       ImportHelpers.clearCache();
       const promisesPhase2 = [];
       await this.asyncForEach(importFiles, async (file) => {

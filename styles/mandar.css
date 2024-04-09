@@ -4032,7 +4032,7 @@ img {
   max-width: 24px;
   max-height: 24px;
 }
-.starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 {
+.starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2, .starwarsffg.sheet.item .item-sheet-species .talent-pill.item-pill2 {
   padding: 0.1rem 0.5rem;
   background-color: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
@@ -4041,7 +4041,7 @@ img {
   width: fit-content;
 }
 
-.starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 .item-delete {
+.starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-species .talent-pill.item-pill2 .item-delete {
   cursor: pointer;
 }
 

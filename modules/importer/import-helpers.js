@@ -167,7 +167,14 @@ export default class ImportHelpers {
    * @param  {string} id - Entity Id
    * @returns {object} - Entity Object Data
    */
-  static async findCompendiumEntityByImportId(type, id, packId, itemType) {
+  static async findCompendiumEntityByImportId(type, id, packId, itemType, skipCache) {
+    if (skipCache) {
+      const pack = game.packs.get(packId);
+      const contents = await pack.getDocuments();
+      return contents.find((item) => {
+        return item.flags.starwarsffg.ffgimportid === id;
+      });
+    }
     const cachePack = async (packid) => {
       if (!CONFIG.temporary[packid]) {
         const pack = await game.packs.get(packid);
@@ -2252,9 +2259,25 @@ export default class ImportHelpers {
 
         if (updateData?.data?.attributes) {
           // Remove and repopulate all modifiers
-          if (entry.data?.attributes) {
-            for (let k of Object.keys(entry.data.attributes)) {
+          if (entry.system?.attributes) {
+            for (let k of Object.keys(entry.system.attributes)) {
               if (!updateData.data.attributes.hasOwnProperty(k)) updateData.data.attributes[`-=${k}`] = null;
+            }
+          }
+        }
+        if (updateData?.data?.specializations) {
+          // Remove and repopulate all specializations
+          if (entry.system?.specializations) {
+            for (let k of Object.keys(entry.system.specializations)) {
+              if (!updateData.data.specializations.hasOwnProperty(k)) updateData.data.specializations[`-=${k}`] = null;
+            }
+          }
+        }
+        if (updateData?.data?.talents) {
+          // Remove and repopulate all talents
+          if (entry.system?.talents) {
+            for (let k of Object.keys(entry.system.talents)) {
+              if (!updateData.data.talents.hasOwnProperty(k)) updateData.data.talents[`-=${k}`] = null;
             }
           }
         }
