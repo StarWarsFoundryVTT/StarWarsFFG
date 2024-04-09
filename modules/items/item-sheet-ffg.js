@@ -457,7 +457,7 @@ export class ItemSheetFFG extends ItemSheet {
         new Item(item).sheet.render(true);
       });
     } else if (this.object.type === "species") {
-      //try {
+      try {
         const dragDrop = new DragDrop({
           dragSelector: ".item",
           dropSelector: ".tab.talents",
@@ -487,9 +487,9 @@ export class ItemSheetFFG extends ItemSheet {
           let item = await fromUuid(this.object.system.talents[itemId].source);
           new Item(item).sheet.render(true);
         });
-      //} catch (err) {
-      //  CONFIG.logger.debug(err);
-      //}
+      } catch (err) {
+        CONFIG.logger.debug(err);
+      }
     }
 
     // hidden here instead of css to prevent non-editable display of edit button
