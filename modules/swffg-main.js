@@ -41,6 +41,7 @@ import RollBuilderFFG from "./dice/roll-builder.js";
 import CrewSettings from "./settings/crew-settings.js";
 import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag_enricher} from "./helpers/journal.js";
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
+import {handleUpdate} from "./swffg-migration.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -630,6 +631,9 @@ Hooks.once("ready", async () => {
     game.settings.set("starwarsffg", "token_configured", true);
   }
 
+  // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
+  // this is intended to encourage migrating code to this file to clean up the main file
+  await handleUpdate();
 
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
