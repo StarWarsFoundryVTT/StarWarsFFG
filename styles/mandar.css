@@ -59,6 +59,11 @@ section {
   background: #d8cbc0 url(../images/bgSheet.jpg) no-repeat;
 }
 
+.chat-message.message .message-content .updateNotification {
+  background: #d8cbc0;
+  border-radius: 10px;
+}
+
 .window-app .window-content::after {
   content: "";
   display: block;
