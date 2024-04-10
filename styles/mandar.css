@@ -653,7 +653,7 @@ img {
 }
 
 .starwarsffg.sheet .sheet-body.shipattachment {
-  height: calc(100% - 22.75rem);
+  height: calc(100% - 24rem);
 }
 
 .starwarsffg.sheet .sheet-body.homesteadupgrade {
@@ -666,6 +666,10 @@ img {
 
 .starwarsffg.sheet .sheet-body.species {
   height: calc(100% - 24rem);
+}
+
+.starwarsffg.sheet .sheet-body.vehicle {
+  height: calc(100% - 35rem);
 }
 
 .starwarsffg.sheet .sheet-body .tab {
