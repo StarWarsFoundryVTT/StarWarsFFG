@@ -218,6 +218,7 @@ export class CombatFFG extends Combat {
                   pool.threat += +addPool.threat;
                   pool.boost += +addPool.boost;
                   pool.setback += +addPool.setback;
+                  pool.upgrade(addPool.upgrades)
 
                   const rollData = c.actor ? c.actor.getRollData() : {};
                   let roll = new RollFFG(pool.renderDiceExpression(), rollData, { success: pool.success, advantage: pool.advantage, failure: pool.failure, threat: pool.threat }).roll();
