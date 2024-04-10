@@ -719,7 +719,8 @@
       "label": "Ship Attachment"
     },
     "species": {
-      "templates": ["core"]
+      "templates": ["core"],
+      "talents": {}
     },
     "criticalinjury": {
       "templates": ["core"],
