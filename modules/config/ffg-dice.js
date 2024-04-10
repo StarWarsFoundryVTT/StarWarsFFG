@@ -22,6 +22,14 @@ export function configureDice() {
   CONFIG.FFG.SETBACK_ICON = `systems/starwarsffg/images/dice/${dicetheme}/black.png`;
   CONFIG.FFG.REMOVESETBACK_ICON = `systems/starwarsffg/images/dice/${dicetheme}/black-minus.png`;
   CONFIG.FFG.FORCE_ICON = `systems/starwarsffg/images/dice/${dicetheme}/whiteHex.png`;
+  CONFIG.FFG.SUCCESS_ICON = `systems/starwarsffg/images/dice/${dicetheme}/success.png`;
+  CONFIG.FFG.ADVANTAGE_ICON = `systems/starwarsffg/images/dice/${dicetheme}/advantage.png`;
+  CONFIG.FFG.TRIUMPH_ICON = `systems/starwarsffg/images/dice/${dicetheme}/triumph.png`;
+  CONFIG.FFG.LIGHT_ICON = `systems/starwarsffg/images/dice/${dicetheme}/lightpip.png`;
+  CONFIG.FFG.FAILURE_ICON = `systems/starwarsffg/images/dice/${dicetheme}/failure.png`;
+  CONFIG.FFG.THREAT_ICON = `systems/starwarsffg/images/dice/${dicetheme}/threat.png`;
+  CONFIG.FFG.DESPAIR_ICON = `systems/starwarsffg/images/dice/${dicetheme}/despair.png`;
+  CONFIG.FFG.DARK_ICON = `systems/starwarsffg/images/dice/${dicetheme}/darkpip.png`;
 
   CONFIG.FFG.ABILITY_RESULTS = {
     1: { label: "SWFFG.DiceResult.Blank", image: `systems/starwarsffg/images/dice/${dicetheme}/green.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
