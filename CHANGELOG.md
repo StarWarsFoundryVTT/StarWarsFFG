@@ -24,6 +24,7 @@
     * Fixed giant dice in expanded roll card in the Mandar theme. Again.
   * Importer improvements:
     * Ship attachments are now set to the correct item type
+    * Misc qualities on weapons/armor are now imported properly
   * Improved GM detection for combat events
   * Fixed expanding items with `null` item qualities (e.g. expanding a weapon on an actor sheet)
   * Fixed viewing item qualities with HTML elements in them

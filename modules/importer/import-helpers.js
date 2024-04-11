@@ -2476,6 +2476,7 @@ export default class ImportHelpers {
           mods = modifiersData.Quality;
         }
       }
+      let unique_mods = 0;
       await this.asyncForEach(mods, async (modifier) => {
         if (modifier.Key) {
           // this is a characteristic or stat or skill or quality modifier.
@@ -2513,9 +2514,10 @@ export default class ImportHelpers {
           const dieModifiers = await ImportHelpers.processDieMod(modifier.DieModifiers);
           output.attributes = mergeObject(output.attributes, dieModifiers.attributes);
         } else {
+          unique_mods++;
           // this is just a text modifier
           const unique = {
-            name: "Unique Mod",
+            name: `Unique Mod ${unique_mods}`,
             type: "itemmodifier",
             data: {
               description: modifier.MiscDesc,
@@ -2524,10 +2526,7 @@ export default class ImportHelpers {
               rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
             },
           };
-          const descriptor = Item.create(unique, { temporary: true });
-          descriptor.id = randomID();
-          // TODO: should this really be a different value, or should it be the same thing?
-          descriptor._id = descriptor.id;
+          const descriptor = await Item.create(unique, { temporary: true });
           let rank = "";
           if (unique.data.rank > 1) {
             rank = `${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}`;
