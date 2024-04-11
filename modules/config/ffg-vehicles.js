@@ -9,7 +9,7 @@ export const vehicle_stats = {
   },
   "hullTrauma": {
     value: "Hulltrauma",
-    label: "SWFFG.VehicleHullTrama",
+    label: "SWFFG.VehicleHullTrauma",
   },
   "shields": {
     value: "Shields",
