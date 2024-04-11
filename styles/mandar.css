@@ -2896,11 +2896,6 @@ img {
   bottom: 1rem;
 }
 
-.starwarsffg.sheet.actor .vehicle .sheet-body {
-  height: calc(100% - 31rem);
-  overflow: auto;
-}
-
 .starwarsffg.sheet.actor .vehicle .injuries .resource.full {
   flex: 100%;
 }
