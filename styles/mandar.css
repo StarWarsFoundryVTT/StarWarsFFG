@@ -4062,3 +4062,8 @@ img {
   width: 24px;
   float: left;
 }
+
+.starwarsffg.sheet.actor .title-card.rival {
+  background: rgba(73, 12, 11, 0.85);
+  color:#ffffff
+}

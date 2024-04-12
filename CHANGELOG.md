@@ -1,6 +1,7 @@
 `1.809`
 * Features: 
   * You can now (optionally) spend XP! See [the wiki](https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki/new%E2%80%90features%E2%80%90v1.809#xp-spending) for more info
+  * Added actor types for Nemesis and Rival
   * Weapons can now have stat mods (permitting setting e.g. the `defensive` quality)
   * Initiative rolls can be upgraded
   * Actor dice pools now show fixed results
@@ -16,6 +17,7 @@
     * Career specializations and signature abilities are now imported
     * Signature ability base cost is imported
     * Force power base cost and minimum force rating is imported
+    * SWA importer imports actors as Nemesis/Rival/Minion as appropriate
 * Fixes:
   * Corrected dice images for Genesys not properly embedded in Journals
   * CSS:
@@ -28,3 +30,4 @@
   * Improved GM detection for combat events
   * Fixed expanding items with `null` item qualities (e.g. expanding a weapon on an actor sheet)
   * Fixed viewing item qualities with HTML elements in them
+  * Fixed a bug for adversary levels above 5 not showing up

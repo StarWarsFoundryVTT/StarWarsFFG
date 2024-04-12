@@ -1009,7 +1009,7 @@ Hooks.once("ready", async () => {
     if (token?.actor?.type === "minion") {
       drawMinionCount(token);
     }
-    if (["character"].includes(token?.actor?.type)) {
+    if (["character", "nemesis", "rival"].includes(token?.actor?.type)) {
       drawAdversaryCount(token);
     }
     return token;
