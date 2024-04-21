@@ -207,11 +207,17 @@ export async function xpLogSpend(actor, action, cost, available, total) {
  * @param grant - XP granted
  * @param available - XP available
  * @param total - XP total
+ * @param note - note about the grant
  * @returns {Promise<void>}
  */
-export async function xpLogEarn(actor, grant, available, total) {
+export async function xpLogEarn(actor, grant, available, total, note) {
   const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
   const date = new Date().toISOString().slice(0, 10);
-  let newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP (${available} available, ${total} total)</font>`;
+  let newEntry;
+  if (note) {
+    newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP, reason: ${note} (${available} available, ${total} total)</font>`;
+  } else {
+    newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP (${available} available, ${total} total)</font>`;
+  }
   await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
 }
