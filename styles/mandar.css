@@ -4050,6 +4050,10 @@ img {
   width: fit-content;
 }
 
+.starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2.link-broken, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2.link-broken, .starwarsffg.sheet.item .item-sheet-species .talent-pill.item-pill2.link-broken {
+  color: darkred;
+}
+
 .starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-species .talent-pill.item-pill2 .item-delete {
   cursor: pointer;
 }
