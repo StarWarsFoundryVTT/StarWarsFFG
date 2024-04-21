@@ -348,8 +348,8 @@ export class GroupManager extends FormApplication {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
             const note = container.querySelector('input[name="note"]').value;
-            const available = character.system.experience.available + amount.value;
-            const total = character.system.experience.total + amount.value;
+            const available = +character.system.experience.available + +amount.value;
+            const total = +character.system.experience.total + +amount.value;
             character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
             character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
             await xpLogEarn(character, amount.value, available, total, note);
