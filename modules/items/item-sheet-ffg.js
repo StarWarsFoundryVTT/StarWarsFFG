@@ -670,6 +670,9 @@ export class ItemSheetFFG extends ItemSheet {
             ffgParentApp: this.appId, // TODO: check if this is needed
           }
         },
+        permission: {
+          default: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+        },
       };
       if (this.object.isEmbedded) {
         let ownerObject = await fromUuid(this.object.uuid);
@@ -686,11 +689,17 @@ export class ItemSheetFFG extends ItemSheet {
               ffgIsOwned: this.object.isEmbedded, // TODO: check if this is needed (needed when item on actor)
             }
           },
+          permission: {
+            default: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+          }
         };
       }
 
       delete temp.id;
       delete temp._id;
+      temp.ownership = {
+        default: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+      }
       let tempItem = await Item.create(temp, { temporary: true });
 
       tempItem.sheet.render(true);

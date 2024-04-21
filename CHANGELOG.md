@@ -28,3 +28,4 @@
   * Improved GM detection for combat events
   * Fixed expanding items with `null` item qualities (e.g. expanding a weapon on an actor sheet)
   * Fixed viewing item qualities with HTML elements in them
+  * Fix for non-GMs being unable to open some item qualities
