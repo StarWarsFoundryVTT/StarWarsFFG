@@ -1217,6 +1217,7 @@ export class ActorSheetFFG extends ActorSheet {
     const skill = $(a).data("ability");
     const curRank = this.object.system.skills[skill].rank;
     const availableXP = this.object.system.experience.available;
+    const totalXP = this.object.system.experience.total;
     const careerSkill = this.object.system.skills[skill].careerskill;
     const cost = careerSkill ? (curRank + 1) * 5 : (curRank + 1) * 5 + 5;
 
@@ -1243,7 +1244,7 @@ export class ActorSheetFFG extends ActorSheet {
                   }
                 }
               });
-              await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost);
+              await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {
@@ -1595,6 +1596,7 @@ export class ActorSheetFFG extends ActorSheet {
     const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
     let content;
     const availableXP = this.object.system.experience.available;
+    const totalXP = this.object.system.experience.total;
     let itemType;
     if (action === "specialization") {
       const inCareer = this.object.items.find(i => i.type === "career").system.specializations;
@@ -1727,7 +1729,7 @@ export class ActorSheetFFG extends ActorSheet {
                   },
                 },
               });
-              await xpLogSpend(game.actors.get(this.object.id), `new ${action} ${purchasedItem.name}`, cost);
+              await xpLogSpend(game.actors.get(this.object.id), `new ${action} ${purchasedItem.name}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {

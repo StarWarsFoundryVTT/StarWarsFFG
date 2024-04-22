@@ -271,6 +271,7 @@
   "SWFFG.InitiativeMode": "Initiative Mode",
   "SWFFG.InitiativeModeHint": "Choose between Vigilance or Cool for Initiative rolls.",
   "SWFFG.Amount": "Amount",
+  "SWFFG.Note": "Note",
   "SWFFG.NoPlayersConnected": "No players connected",
   "SWFFG.GroupActions": "Group Actions",
   "SWFFG.GrantXP": "Grant XP",
