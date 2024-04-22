@@ -249,10 +249,24 @@ export class ItemSheetFFG extends ItemSheet {
         if (Object.keys(this.object.system.specializations).length === 0) {
           // handlebars sucks
           data.data.specializations = false;
+        } else {
+          for (const specializationId of Object.keys(data.data.specializations)) {
+            if (!fromUuidSync(data.data.specializations[specializationId].source)) {
+              // this item no longer exists, tag it as broken
+              data.data.specializations[specializationId].broken = true;
+            }
+          }
         }
         if (Object.keys(this.object.system.signatureabilities).length === 0) {
           // handlebars sucks
           data.data.signatureabilities = false;
+        } else {
+          for (const signatureAbilityId of Object.keys(data.data.signatureabilities)) {
+            if (!fromUuidSync(data.data.signatureabilities[signatureAbilityId].source)) {
+              // this item no longer exists, tag it as broken
+              data.data.signatureabilities[signatureAbilityId].broken = true;
+            }
+          }
         }
         break;
       case "signatureability": {
