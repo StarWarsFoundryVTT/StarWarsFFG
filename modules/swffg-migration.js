@@ -6,7 +6,7 @@ export async function handleUpdate() {
   const registeredVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
   const runningVersion = game.system.version;
   if (registeredVersion !== runningVersion) {
-    await handleMigration(runningVersion);
+    await handleMigration(registeredVersion, runningVersion);
     await sendChanges(runningVersion);
     await game.settings.set("starwarsffg", "systemMigrationVersion", runningVersion);
   }
@@ -20,6 +20,7 @@ export async function handleUpdate() {
  */
 async function handleMigration(oldVersion, newVersion) {
   // migration handlers should be added here going forward
+  await warnTheme();
 }
 
 /**
@@ -36,4 +37,19 @@ async function sendChanges(newVersion) {
     content: html,
   };
   ChatMessage.create(messageData);
+}
+
+/**
+ * Notify users if they are using the now-retired theme
+ * @returns {Promise<void>}
+ */
+async function warnTheme() {
+  if (game.settings.get("starwarsffg", "ui-uitheme") === "default") {
+    const messageData = {
+      user: game.user.id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: "You are using an unsupported theme. Expected issues, or swap to the Mandar theme.<br>(This message will only show once.)",
+    };
+    ChatMessage.create(messageData);
+  }
 }
