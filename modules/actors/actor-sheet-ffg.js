@@ -46,6 +46,25 @@ export class ActorSheetFFG extends ActorSheet {
     return `${path}/ffg-${this.actor.type}-sheet.html`;
   }
 
+  /** @override */
+  async _onDropItem(event, data) {
+    if (data?.type === "Item") {
+      // this is the stock implementation, except that we do not pass "true" to item.toObject
+      if ( !this.actor.isOwner ) return false;
+      const item = await Item.implementation.fromDropData(data);
+      // do not Draw values from the underlying data source rather than transformed values - we want to use adjusted values
+      const itemData = item.toObject(false);
+
+      // Handle item sorting within the same Actor
+      if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
+
+      // Create the owned item
+      return this._onDropItemCreate(itemData);
+    } else {
+      return super._onDropItem(event, data);
+    }
+  }
+
   /* -------------------------------------------- */
 
   /** @override */
