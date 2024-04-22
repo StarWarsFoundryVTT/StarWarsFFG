@@ -918,6 +918,7 @@ Hooks.once("ready", async () => {
       }
     }
   });
+  // data for _onDropItemCreate has system.encumbrance.adjusted = 0, despite it being proper in the item itself
   Hooks.on("deleteItem", (item, options, userId) => {
     // remove talents added by species
     if (item.isEmbedded && item.parent.documentName === "Actor") {

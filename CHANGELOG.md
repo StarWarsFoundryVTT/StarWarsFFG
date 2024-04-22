@@ -30,4 +30,5 @@
   * Improved GM detection for combat events
   * Fixed expanding items with `null` item qualities (e.g. expanding a weapon on an actor sheet)
   * Fixed viewing item qualities with HTML elements in them
+  * Fix for drag-and-drop items from compendiums not working until the item sheet was opened at least once
   * Fixed a bug for adversary levels above 5 not showing up
