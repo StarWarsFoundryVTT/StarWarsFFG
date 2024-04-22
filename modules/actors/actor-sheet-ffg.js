@@ -589,6 +589,9 @@ export class ActorSheetFFG extends ActorSheet {
                 rank: li.attr('data-item-embed-rank'),
                 rank_current: li.attr('data-item-embed-rank'),
               },
+              permission: {
+                default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+              }
             };
             const tempItem = await Item.create(itemData, {temporary: true});
             tempItem.sheet.render(true);
