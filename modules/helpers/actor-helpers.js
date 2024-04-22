@@ -29,8 +29,14 @@ export default class ActorHelpers {
             }
           });
           // Handle stat updates
-          Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
-            const key = CONFIG.FFG.character_stats[k].value;
+          let stats;
+          if (this.actor.type === "rival") {
+            stats = CONFIG.FFG.rival_stats;
+          } else {
+            stats = CONFIG.FFG.character_stats;
+          }
+          Object.keys(stats).forEach((k) => {
+            const key = stats[k].value;
 
             let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Stat");
 

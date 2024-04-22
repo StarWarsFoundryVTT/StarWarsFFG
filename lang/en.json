@@ -1,5 +1,7 @@
 {
   "TYPES.Actor.character": "Character",
+  "TYPES.Actor.nemesis": "Nemesis",
+  "TYPES.Actor.rival": "Rival",
   "TYPES.Actor.minion": "Minion",
   "TYPES.Actor.vehicle": "Vehicle",
   "TYPES.Actor.homestead": "Homestead",
