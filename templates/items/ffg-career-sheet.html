@@ -28,7 +28,9 @@
       <h2>{{localize "SWFFG.Actors.Sheets.Purchase.Career.Specializations.Header"}}</h2>
       {{#if data.specializations}}
       {{#each data.specializations as |s_data id|}}
-        <div class="specialization-pill item-pill2" data-item-type="specialization" data-specialization-id="{{id}}">{{s_data.name}}<i class="fas fa-times item-delete" data-item-type="specialization" data-specialization-id="{{id}}"></i></div>
+        <div class="specialization-pill item-pill2 {{#if s_data.broken}}link-broken{{/if}}" data-item-type="specialization" data-specialization-id="{{id}}">
+          {{s_data.name}}<i class="fas fa-times item-delete" data-item-type="specialization" data-specialization-id="{{id}}"></i>
+        </div>
       {{/each}}
       {{else}}
         {{ localize "SWFFG.Actors.Sheets.Purchase.Career.Specialization.DropHint" }}
@@ -36,7 +38,9 @@
       <h2>{{localize "SWFFG.Actors.Sheets.Purchase.Career.SignatureAbility.Header"}}</h2>
       {{#if data.signatureabilities}}
       {{#each data.signatureabilities as |s_data id|}}
-        <div class="signatureability-pill item-pill2" data-item-type="signatureability" data-specialization-id="{{id}}">{{s_data.name}}<i class="fas fa-times item-delete" data-item-type="signatureability" data-specialization-id="{{id}}"></i></div>
+        <div class="signatureability-pill item-pill2 {{#if s_data.broken}}link-broken{{/if}}" data-item-type="signatureability" data-specialization-id="{{id}}">
+          {{s_data.name}}<i class="fas fa-times item-delete" data-item-type="signatureability" data-specialization-id="{{id}}"></i>
+        </div>
       {{/each}}
       {{else}}
         {{ localize "SWFFG.Actors.Sheets.Purchase.Career.SignatureAbility.DropHint" }}

@@ -249,10 +249,24 @@ export class ItemSheetFFG extends ItemSheet {
         if (Object.keys(this.object.system.specializations).length === 0) {
           // handlebars sucks
           data.data.specializations = false;
+        } else {
+          for (const specializationId of Object.keys(data.data.specializations)) {
+            if (!fromUuidSync(data.data.specializations[specializationId].source)) {
+              // this item no longer exists, tag it as broken
+              data.data.specializations[specializationId].broken = true;
+            }
+          }
         }
         if (Object.keys(this.object.system.signatureabilities).length === 0) {
           // handlebars sucks
           data.data.signatureabilities = false;
+        } else {
+          for (const signatureAbilityId of Object.keys(data.data.signatureabilities)) {
+            if (!fromUuidSync(data.data.signatureabilities[signatureAbilityId].source)) {
+              // this item no longer exists, tag it as broken
+              data.data.signatureabilities[signatureAbilityId].broken = true;
+            }
+          }
         }
         break;
       case "signatureability": {
@@ -810,6 +824,7 @@ export class ItemSheetFFG extends ItemSheet {
       throw new Error("Refused to buy for item with no found owner actor");
     }
     const availableXP = owner.system.experience.available;
+    const totalXP = owner.system.experience.total;
     const cost = $(li).data("cost");
     if (cost > availableXP) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
@@ -819,6 +834,7 @@ export class ItemSheetFFG extends ItemSheet {
       owner: owner,
       cost: cost,
       availableXP: availableXP,
+      totalXP: totalXP,
     }
   }
 
@@ -826,11 +842,13 @@ export class ItemSheetFFG extends ItemSheet {
     let owner;
     let cost;
     let availableXP;
+    let totalXP;
     try {
       const basic_data = await this._buyHandleClick(li, "specialization");
       owner = basic_data.owner;
       cost = basic_data.cost;
       availableXP = basic_data.availableXP;
+      totalXP = basic_data.totalXP;
     } catch (e) {
       return;
     }
@@ -851,7 +869,7 @@ export class ItemSheetFFG extends ItemSheet {
               input.checked = true;
               await this.object.sheet.submit({preventClose: true});
               owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost);
+              await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {
@@ -870,11 +888,13 @@ export class ItemSheetFFG extends ItemSheet {
     let owner;
     let cost;
     let availableXP;
+    let totalXP;
     try {
       const basic_data = await this._buyHandleClick(li, "forcepower");
       owner = basic_data.owner;
       cost = basic_data.cost;
       availableXP = basic_data.availableXP;
+      totalXP = basic_data.totalXP;
     } catch (e) {
       return;
     }
@@ -895,7 +915,7 @@ export class ItemSheetFFG extends ItemSheet {
               input.checked = true;
               await this.object.sheet.submit({preventClose: true});
               owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `force power ${baseName} upgrade ${upgrade}`, cost);
+              await xpLogSpend(owner, `force power ${baseName} upgrade ${upgrade}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {
@@ -914,11 +934,13 @@ export class ItemSheetFFG extends ItemSheet {
     let owner;
     let cost;
     let availableXP;
+    let totalXP;
     try {
       const basic_data = await this._buyHandleClick(li, "signatureability");
       owner = basic_data.owner;
       cost = basic_data.cost;
       availableXP = basic_data.availableXP;
+      totalXP = basic_data.totalXP;
     } catch (e) {
       return;
     }
@@ -939,7 +961,7 @@ export class ItemSheetFFG extends ItemSheet {
               input.checked = true;
               await this.object.sheet.submit({preventClose: true});
               owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgrade}`, cost);
+              await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgrade}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {

@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character", "minion", "vehicle", "homestead"],
+    "types": ["character", "minion", "vehicle", "homestead", "rival", "nemesis"],
     "templates": {
       "biography": {
         "biography": ""
@@ -547,6 +547,45 @@
         "type": "Number",
         "label": "SWFFG.Consumables"
       }
+    },
+    "rival": {
+      "templates": ["biography", "species", "characteristics", "skills", "attributes"],
+      "stats": {
+          "wounds": {
+            "value": 0,
+            "min": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "soak": {
+            "value": 0,
+            "adjusted": 0
+          },
+          "defence": {
+            "ranged": 0,
+            "melee": 0,
+            "adjusted": 0
+          },
+          "encumbrance": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "forcePool": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "credits": {
+            "value": 0,
+            "type": "Number",
+            "label": "Credits",
+            "adjusted": 0
+          }
+        }
+    },
+    "nemesis": {
+      "templates": ["biography", "species", "stats", "characteristics", "skills", "attributes"]
     }
   },
   "Item": {
