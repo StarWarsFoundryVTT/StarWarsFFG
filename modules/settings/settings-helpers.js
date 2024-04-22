@@ -222,7 +222,7 @@ export default class SettingsHelpers {
       type: String,
       onChange: this.debouncedReload,
       choices: {
-        default: "Default",
+        default: "Default (retired; expect issues)",
         mandar: "Mandar",
       },
     });
