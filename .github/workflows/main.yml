@@ -144,4 +144,4 @@ jobs:
                   package-token: ${{ secrets.PACKAGE_TOKEN }}
                   manifest-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/system.json
                   notes-url: https://github.com/${{github.repository}}/releases/tag/${{github.event.release.tag_name}}
-                  dry-run: true
+                  dry-run: false
