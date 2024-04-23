@@ -201,6 +201,14 @@ Hooks.once("init", async function () {
     default: "world.oggdudeforcepowers",
     type: String,
   });
+  game.settings.register("starwarsffg", "talentCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Hint"),
+    scope: "world",
+    config: true,
+    default: "",
+    type: String,
+  });
 
   /**
    * Set an initiative formula for the system
