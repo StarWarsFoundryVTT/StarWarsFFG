@@ -1847,6 +1847,14 @@ img {
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
 }
 
+.starwarsffg .item-sheet-weapon .header-fields .profile-img {
+  max-width: 500px;
+}
+
+.starwarsffg .item-sheet-armor .header-fields .profile-img, .starwarsffg .item-sheet-gear .header-fields .profile-img {
+  max-width: 300px;
+}
+
 .starwarsffg .header-fields .resource {
   flex: 4;
 }
