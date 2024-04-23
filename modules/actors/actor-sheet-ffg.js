@@ -307,7 +307,7 @@ export class ActorSheetFFG extends ActorSheet {
       },
     ]);
 
-    html.find("td.ffg-purchase").click(async (ev) => {
+    html.find(".ffg-purchase").click(async (ev) => {
       await this._buyCore(ev)
     });
 
@@ -1732,10 +1732,40 @@ export class ActorSheetFFG extends ActorSheet {
             cost: item.system.base_cost,
           });
         }
-        selectableItems = sortDataBy(selectableItems, "name");
-        itemType = game.i18n.localize("TYPES.Item.forcepower");
-        content = await renderTemplate(template, { selectableItems, itemType: itemType });
       }
+      selectableItems = sortDataBy(selectableItems, "name");
+      itemType = game.i18n.localize("TYPES.Item.forcepower");
+      content = await renderTemplate(template, { selectableItems, itemType: itemType });
+    } else if (action === "talent") {
+      const sources = game.settings.get("starwarsffg", "talentCompendiums").split(",");
+      let selectableItems = [];
+      const worldItems = game.items.filter(i => i.type === "talent");
+      for (const worldItem of worldItems) {
+        selectableItems.push({
+          name: worldItem.name,
+          id: worldItem.id,
+          source: worldItem.uuid,
+          cost: worldItem.system.tier * 5,
+        });
+      }
+      for (const source of sources) {
+        const pack = game.packs.get(source);
+        if (!pack) {
+          continue;
+        }
+        const items = await pack.getDocuments();
+        for (const item of items) {
+          selectableItems.push({
+            name: item.name,
+            id: item.id,
+            source: item.uuid,
+            cost: item.system.tier * 5,
+          });
+        }
+      }
+      selectableItems = sortDataBy(selectableItems, "name");
+      itemType = game.i18n.localize("TYPES.Item.talent");
+      content = await renderTemplate(template, { selectableItems, itemType: itemType });
     }
 
     const dialog = new Dialog(

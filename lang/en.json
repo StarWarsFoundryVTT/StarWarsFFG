@@ -679,5 +679,7 @@
   "SWFFG.Settings.Purchase.ForcePower.Name": "Force Power Compendiums",
   "SWFFG.Settings.Purchase.ForcePower.Hint": "Comma seperated compendiums to search for buying Force Powers (no spaces)",
   "SWFFG.Settings.Purchase.SignatureAbility.Name": "Signature Abilities Compendiums",
-  "SWFFG.Settings.Purchase.SignatureAbility.Hint": "Comma seperated compendiums to search for buying Signature Abilities (no spaces)"
+  "SWFFG.Settings.Purchase.SignatureAbility.Hint": "Comma seperated compendiums to search for buying Signature Abilities (no spaces)",
+  "SWFFG.Settings.Purchase.Talent.Name": "Talent Compendiums",
+  "SWFFG.Settings.Purchase.Talent.Hint": "Comma seperated compendiums to search for buying Talents (no spaces)"
 }

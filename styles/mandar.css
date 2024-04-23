@@ -4057,6 +4057,10 @@ img {
   cursor: pointer;
 }
 
+.starwarsffg.sheet.actor .character .ffg-purchase {
+  cursor: pointer;
+}
+
 .starwarsffg .dice-tooltip .dice-rolls .roll {
   width: 24px;
   float: left;
