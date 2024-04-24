@@ -57,6 +57,11 @@
             "max": 0,
             "adjusted": 0
           },
+          "advantages": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
           "credits": {
             "value": 0,
             "type": "Number",
