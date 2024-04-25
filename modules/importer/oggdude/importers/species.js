@@ -26,6 +26,7 @@ export default class Species {
             data.data = {
               attributes: {},
               description: item.Description,
+              talents: {},
             };
 
             // populate starting characteristics
@@ -77,6 +78,22 @@ export default class Species {
                   };
                 }
               });
+            }
+
+            // populate talents
+            if (item?.TalentModifiers?.TalentModifier) {
+              for (const talentData of Object.values(item.TalentModifiers)) {
+                const talentKey = talentData.Key;
+                let talent = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, "world.oggdudetalents", "talent", true);
+                if (!talent) {
+                  continue;
+                }
+                data.data.talents[talent._id] = {
+                  name: talent.name,
+                  source: talent.uuid,
+                  id: talent._id,
+                }
+              }
             }
 
             if (item?.OptionChoices?.OptionChoice) {

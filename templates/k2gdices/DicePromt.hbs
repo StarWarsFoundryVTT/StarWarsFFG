@@ -1,0 +1,45 @@
+<form class="zol-dice-prompt" autocomplete="off">
+    <div class="zol-dice-prompt">
+        <header >
+            <span style='color: #2b4b73;font-family: "Bebas Neue", sans-serif;font-size: 2em;'>Réserve de Dés</span>
+            <span class="hint" style='font-family: "Roboto", serif;font-size: 0.8rem;color: #384455;'>{{description}}</span>
+        </header>
+
+        <div class="preview" style="display: grid;grid-template-columns: 1fr auto;grid-template-rows: 1fr 1fr;gap: 0.5em;background: linear-gradient(to bottom, black -40%, #2b4b73 20%, #1d334e 70%, black 130%);border-top: 1px solid black;border-bottom: 1px solid black;margin-left: -0.5rem;margin-right: -0.5rem;padding-left: 0.5em;grid-column: 1/span all;grid-row: 2/span 1;">
+            <div class="positive" style="grid-column: 1/span 1;display: flex;align-items: center;flex-direction: row;flex-wrap: wrap;font-size: xx-large;">
+                {{{lstDesPos}}}
+            </div>
+                
+            <div class="negative" style="grid-column: 1/span 1;display: flex;align-items: center;flex-direction: row;flex-wrap: wrap;font-size: xx-large;">
+                {{{lstDesNeg}}}
+            </div>
+            <div class="dice-box" style='font-family: "Genesys Symbols", sans-serif;grid-column: 2/span 1;grid-row: 1/span all;background: rgba(0, 0, 0, 0.25);border-top-left-radius: 0.5rem;border-bottom-left-radius: 0.5rem;color: white;padding: 0.5em;column-gap: 0.25em;align-items: center;justify-items: center;font-size: 1.25em;display: grid;grid-template-columns: repeat(3, auto);'>
+                <a class="die die-A" data-die="A" data-cmd="A+" zoldice="">A<i class="fas fa-plus"></i></a>
+                <a class="die die-P" data-die="P" data-cmd="P+" zoldice="">P<i class="fas fa-plus"></i></a>
+                <a class="die die-B" data-die="B" data-cmd="B+" zoldice="">B<i class="fas fa-plus"></i></a>
+                <a class="die die-A" data-die="A" data-cmd="AU" zoldice="">A<i class="fas fa-arrow-up"></i></a>
+                <a class="die die-P"  data-die="P" data-cmd="PD" zoldice="">P<i class="fas fa-arrow-down"></i></a>
+                <span ></span>
+                <a class="die die-D" data-die="D" data-cmd="I+" zoldice="">D<i class="fas fa-plus"></i></a>
+                <a class="die die-C" data-die="C" data-cmd="C+" zoldice="">C<i class="fas fa-plus"></i></a>
+                <a class="die die-S" data-die="S" data-cmd="S+" zoldice="">S<i class="fas fa-plus"></i></a>
+                <a class="die die-D" data-die="D" data-cmd="IU" zoldice="">D<i class="fas fa-arrow-up"></i></a>
+                <a class="die die-C" data-die="C" data-cmd="CD" zoldice="">C<i class="fas fa-arrow-down"></i></a>
+                <span ></span>
+                <a data-cmd="a+" zoldice="">a<i class="fas fa-plus"></i></a>
+                <a data-cmd="s+" zoldice="">s<i class="fas fa-plus"></i></a>
+                <a data-cmd="t+" zoldice="">t<i class="fas fa-plus"></i></a>
+                <a data-cmd="h+" zoldice="">h<i class="fas fa-plus"></i></a>
+                <a data-cmd="f+" zoldice="">f<i class="fas fa-plus"></i></a>
+                <a data-cmd="d+" zoldice="">d<i class="fas fa-plus"></i></a>
+            </div>
+        </div>
+        <select name="characteristic" zoldice="" >
+            {{selectOptions attribV selected=SelectAttrib}}
+        </select>
+        <select name="skill" zoldice="">
+            {{selectOptions lstCmp selected=SelectCmp}}
+        </select>
+        <input name="obj" type="hidden" value='{{objValue}}' />
+    </div>
+</form>

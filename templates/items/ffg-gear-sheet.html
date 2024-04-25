@@ -20,6 +20,7 @@
                 {{localize "SWFFG.ItemWeaponEncumbrance"}}
               </div>
             </div>
+            {{#if (or (eq item.flags.starwarsffg.config.enableRarity undefined) (eq item.flags.starwarsffg.config.enableRarity true) )}}
             <div class="characteristic-item flex-group-center">
               <div class="characteristic">
                 <div class="characteristic-value {{#if data.rarity.isrestricted}}restricted{{/if}}">
@@ -30,10 +31,15 @@
                 {{localize "SWFFG.ItemWeaponRarity"}}
               </div>
             </div>
+            {{/if}}
           </div>
 
           <div class="container flex-group-center weapon-values">
-            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}{{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
+            {{#if (or (eq item.flags.genesysk2.config.enablePrice undefined) (eq item.flags.genesysk2.config.enablePrice true) )}}
+              {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}}
+            {{/if}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
           </div>
         </div>
       </div>
@@ -41,7 +47,7 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
-  <section class="sheet-body small">
+  <section class="sheet-body small gear">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
       {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}

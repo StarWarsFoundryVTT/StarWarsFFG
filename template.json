@@ -1,6 +1,6 @@
 {
   "Actor": {
-    "types": ["character", "minion", "vehicle", "homestead"],
+    "types": ["character", "minion", "vehicle", "homestead", "rival", "nemesis"],
     "templates": {
       "biography": {
         "biography": ""
@@ -53,6 +53,11 @@
             "adjusted": 0
           },
           "forcePool": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "advantages": {
             "value": 0,
             "max": 0,
             "adjusted": 0
@@ -582,6 +587,45 @@
         "type": "Number",
         "label": "SWFFG.Consumables"
       }
+    },
+    "rival": {
+      "templates": ["biography", "species", "characteristics", "skills", "attributes"],
+      "stats": {
+          "wounds": {
+            "value": 0,
+            "min": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "soak": {
+            "value": 0,
+            "adjusted": 0
+          },
+          "defence": {
+            "ranged": 0,
+            "melee": 0,
+            "adjusted": 0
+          },
+          "encumbrance": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "forcePool": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "credits": {
+            "value": 0,
+            "type": "Number",
+            "label": "Credits",
+            "adjusted": 0
+          }
+        }
+    },
+    "nemesis": {
+      "templates": ["biography", "species", "stats", "characteristics", "skills", "attributes"]
     }
   },
   "Item": {
@@ -754,7 +798,8 @@
       "label": "Ship Attachment"
     },
     "species": {
-      "templates": ["core"]
+      "templates": ["core"],
+      "talents": {}
     },
     "criticalinjury": {
       "templates": ["core"],
@@ -830,7 +875,9 @@
       }
     },
     "career" : {
-      "templates": ["core"]
+      "templates": ["core"],
+      "specializations": {},
+      "signatureabilities": {}
     },
     "signatureability": {
       "templates": ["core"],
@@ -843,7 +890,8 @@
         "upgrade5": {},
         "upgrade6": {},
         "upgrade7": {}
-      }
+      },
+      "base_cost": 0
     },
     "itemattachment": {
       "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],

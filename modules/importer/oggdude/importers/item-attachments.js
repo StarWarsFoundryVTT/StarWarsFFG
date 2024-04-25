@@ -13,7 +13,12 @@ export default class ItemAttachments {
 
       await ImportHelpers.asyncForEach(items, async (item) => {
         try {
-          let data = ImportHelpers.prepareBaseObject(item, "itemattachment");
+          let data;
+          if (item.Type.toLowerCase() === "vehicle") {
+            data = ImportHelpers.prepareBaseObject(item, "shipattachment");
+          } else {
+            data = ImportHelpers.prepareBaseObject(item, "itemattachment");
+          }
           if (Array.isArray(item.Type)) item.Type = item.Type[0];
           data.img = `/systems/genesysk2/images/mod-${item?.Type ? item.Type.toLowerCase() : "all"}.png`;
           data.data = {
