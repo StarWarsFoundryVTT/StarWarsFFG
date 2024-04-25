@@ -14,9 +14,4 @@ export class ItemSheetFFGV2 extends ItemSheetFFG {
     const data = super.getData();
     return data;
   }
-
-  /** @override */
-  activateListeners(html) {
-    super.activateListeners(html);
-  }
 }

@@ -9,13 +9,25 @@
       </div>
 
       <div class="container flex-group-center">
-        {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsActivation" type="Dropdown" name="data.activation.value" value=data.activation.value options=this.FFG.activations) }} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemTalentRanked" type="Boolean" name="data.ranks.ranked" value=data.ranks.ranked)}} {{#if data.ranks.ranked}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsRank" type="Number" name="data.ranks.current" value=data.ranks.current)}} {{/if}} {{#if (ne this.FFG.theme "starwars" )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentTier" type="Dropdown" name="data.tier" value=data.tier options=(array (object label="1" value=1) (object label="2" value=2) (object label="3" value=3) (object label="4" value=4) (object label="5" value=5) )) }} {{else}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsForce" type="Boolean" name="data.isForceTalent" value=data.isForceTalent)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsConflict" type="Boolean" name="data.isConflictTalent" value=data.isConflictTalent)}} {{/if}}
+        {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsActivation" type="Dropdown" name="data.activation.value" value=data.activation.value options=this.FFG.activations) }}
+      </div>
+      <div class="container flex-group-center">
+        {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemTalentRanked" type="Boolean" name="data.ranks.ranked" value=data.ranks.ranked)}}
+        {{#if data.ranks.ranked}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsRank" type="Number" name="data.ranks.current" value=data.ranks.current)}}
+        {{/if}}
+        {{#if (ne this.FFG.theme "starwars" )}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentTier" type="Dropdown" name="data.tier" value=data.tier options=(array (object label="1" value=1) (object label="2" value=2) (object label="3" value=3) (object label="4" value=4) (object label="5" value=5) )) }}
+        {{else}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsForce" type="Boolean" name="data.isForceTalent" value=data.isForceTalent)}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.TalentsConflict" type="Boolean" name="data.isConflictTalent" value=data.isConflictTalent)}}
+        {{/if}}
       </div>
     </div>
   </header>
 
   {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) )}} {{!-- Sheet Body --}}
-  <section class="sheet-body small">
+  <section class="sheet-body small talent">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
       {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}

@@ -32,6 +32,11 @@
       <td class="pool-additional">{{{ffgDiceSymbols "[TH]"}}}<input type="button" name="threat" min="0" />{{localize "SWFFG.Threat"}}</td>
       <td class="pool-additional">{{{ffgDiceSymbols "[FA]"}}}<input type="button" name="failure" min="0" />{{localize "SWFFG.Failure"}}</td>
     </tr>
+    <tr>
+      <td class="pool-additional"></td>
+      <td class="pool-additional">{{{ffgDiceSymbols "[PR]"}}}<input type="button" name="upgrades" min="0" />{{localize "SWFFG.Upgrade"}}</td>
+      <td class="pool-additional"></td>
+    </tr>
   </table>
 </div>
 
@@ -82,6 +87,7 @@
       setupInput(scope, pool, "success", true);
       setupInput(scope, pool, "threat", true);
       setupInput(scope, pool, "failure", true);
+      setupInput(scope, pool, "upgrades", true);
       // setupInput(scope, pool, "light", true);
       // setupInput(scope, pool, "dark", true);
   })();

@@ -11,7 +11,7 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) )}} {{!-- Sheet Body --}}
-  <section class="sheet-body small">
+  <section class="sheet-body small ability">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
       {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}

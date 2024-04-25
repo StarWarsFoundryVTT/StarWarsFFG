@@ -38,13 +38,19 @@ export default class ModifierHelpers {
 
     try {
       items.forEach((item) => {
+        if (!item) {
+          // don't process null items
+          return;
+        }
         if (item.system?.attributes) {
           const attrsToApply = Object.keys(item.system.attributes)
             .filter((id) => (item.system.attributes[id].mod === key || item.system.attributes[id].mod === "*") && item.system.attributes[id].modtype === modtype)
             .map((i) => item.system.attributes[i]);
-
           if (item.type === "armour" || item.type === "weapon") {
             if (item?.system?.equippable?.equipped) {
+              if (item.system?.itemmodifier) {
+                total += this.getCalculatedValueFromItems(item.system.itemmodifier, key, "Stat");
+              }
               if (key === "Soak" && item.system?.soak) {
                 sources.push({ modtype, key, name: item.name, value: item.system.soak.adjusted, type: item.type });
                 total += parseInt(item.system.soak.adjusted, 10);
