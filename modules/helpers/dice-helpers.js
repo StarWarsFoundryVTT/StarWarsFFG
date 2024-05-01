@@ -5,7 +5,7 @@ import ImportHelpers from "../importer/import-helpers.js";
 
 export default class DiceHelpers {
   static async rollSkill(obj, event, type, flavorText, sound) {
-    const data = obj.getData();
+    const data = await obj.getData();
     const row = event.target.parentElement.parentElement;
     let skillName = row.parentElement.dataset["ability"];
     if (skillName === undefined) {
@@ -110,7 +110,7 @@ export default class DiceHelpers {
   }
 
   static async addSkillDicePool(obj, elem) {
-    const data = obj.getData();
+    const data = await obj.getData();
     const skillName = elem.dataset["ability"];
     if (data.data.skills[skillName]) {
       const skill = data.data.skills[skillName];

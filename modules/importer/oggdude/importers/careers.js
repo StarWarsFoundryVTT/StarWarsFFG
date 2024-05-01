@@ -36,12 +36,12 @@ export default class Career {
             item.CareerSkills.Key.forEach((skillKey) => {
               let skill = CONFIG.temporary.skills[skillKey];
               if (skill) {
-                data.data.attributes[`attr${randomID()}`] = {
+                data.data.attributes[`attr${foundry.utils.randomID()}`] = {
                   mod: skill,
                   modtype: "Career Skill",
                   value: true,
                 };
-                data.data.attributes[`attr${randomID()}`] = {
+                data.data.attributes[`attr${foundry.utils.randomID()}`] = {
                   mod: skill,
                   modtype: "Skill Rank",
                   value: 0,
@@ -54,7 +54,7 @@ export default class Career {
               Object.keys(item.Attributes).forEach((attr) => {
                 switch (attr) {
                   case "ForceRating": {
-                    data.data.attributes[`attr${randomID()}`] = {
+                    data.data.attributes[`attr${foundry.utils.randomID()}`] = {
                       mod: "ForcePool",
                       modtype: "Stat",
                       value: item.Attributes[attr],

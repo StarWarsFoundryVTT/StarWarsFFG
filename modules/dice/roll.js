@@ -1,5 +1,6 @@
 import PopoutEditor from "../popout-editor.js";
 import { ForceDie } from "./dietype/ForceDie.js";
+import {migrateDataToSystem} from "../helpers/migration.js";
 
 /**
  * New extension of the core DicePool class for evaluating rolls with the FFG DiceTerms
@@ -134,7 +135,7 @@ export class RollFFG extends Roll {
     this.results = await Promise.all(this.terms.map(async (term) => {
       if (!game.ffg.diceterms.includes(term.constructor)) {
         if (term.evaluate) {
-          if (!(term instanceof OperatorTerm)) this.hasStandard = true;
+          if (!(term instanceof foundry.dice.terms.OperatorTerm)) this.hasStandard = true;
           return await term.evaluate({ minimize, maximize }).total;
         } else return term;
       } else {
@@ -224,7 +225,7 @@ export class RollFFG extends Roll {
   /* -------------------------------------------- */
   /** @override */
   async render(chatOptions = {}) {
-    chatOptions = mergeObject(
+    chatOptions = foundry.utils.mergeObject(
       {
         user: game.user.id,
         flavor: null,
@@ -312,8 +313,10 @@ export class RollFFG extends Roll {
       }
     }
 
+    const v12ChatData = migrateDataToSystem(chatData);
+
     // Render the roll display template
-    return await renderTemplate(chatOptions.template, chatData);
+    return await renderTemplate(chatOptions.template, v12ChatData);
   }
 
   /* -------------------------------------------- */
@@ -324,7 +327,6 @@ export class RollFFG extends Roll {
 
     const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
 
-    let template = CONST.CHAT_MESSAGE_TYPES.ROLL;
     if (["gmroll", "blindroll"].includes(rMode)) {
       messageData.whisper = ChatMessage.getWhisperRecipients("GM");
     }
@@ -332,10 +334,9 @@ export class RollFFG extends Roll {
     if (rMode === "selfroll") messageData.whisper = [game.user.id];
 
     // Prepare chat data
-    messageData = mergeObject(
+    messageData = foundry.utils.mergeObject(
       {
         user: game.user.id,
-        type: template,
         content: this.total,
         sound: CONFIG.sounds.dice,
       },
@@ -382,7 +383,7 @@ export class RollFFG extends Roll {
   parseShortHand(terms) {
     return terms
       .flatMap(t => {
-        if(!(t instanceof StringTerm) || /\d/.test(t.term))
+        if(!(t instanceof foundry.dice.terms.StringTerm) || /\d/.test(t.term))
           return t;
 
         return t.term.replaceAll('d', 'i').split('').reduce((acc, next) => {
@@ -398,7 +399,7 @@ export class RollFFG extends Roll {
       })
       .flatMap((value, index, array) => //Put addition operators between each die.
         array.length - 1 !== index
-          ? [value, new OperatorTerm({operator: '+'})]
+          ? [value, new foundry.dice.terms.OperatorTerm({operator: '+'})]
           : value)
   }
 }

@@ -111,7 +111,7 @@ export default class Species {
 
                 if (option[0].DieModifiers) {
                   const dieModifiers = await ImportHelpers.processDieMod(option[0].DieModifiers);
-                  data.data.attributes = mergeObject(data.data.attributes, dieModifiers.attributes);
+                  data.data.attributes = foundry.utils.mergeObject(data.data.attributes, dieModifiers.attributes);
                 }
 
                 data.data.description += `<p>${option[0].Name} : ${option[0].Description}</p>`;

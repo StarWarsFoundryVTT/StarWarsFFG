@@ -1,8 +1,9 @@
 import ModifierHelpers from "./modifiers.js";
+import {migrateDataToSystem} from "./migration.js";
 
 export default class ActorHelpers {
   static updateActor(event, formData) {
-    formData = expandObject(formData);
+    formData = foundry.utils.expandObject(formData);
     const ownedItems = this.actor.items;
 
     // as of Foundry v10, saving an editor only submits the single entry for that editor
@@ -167,7 +168,7 @@ export default class ActorHelpers {
       }
     }
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData)?.data?.attributes || {};
+    const formAttrs = foundry.utils.expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
       delete v["key"];
@@ -186,7 +187,11 @@ export default class ActorHelpers {
     formData.data.attributes = attributes;
 
     // Update the Actor
-    setProperty(formData, `flags.starwarsffg.loaded`, false);
+    foundry.utils.setProperty(formData, `flags.starwarsffg.loaded`, false);
+
+    // as of v12, "data" is no longer shimmed into "system" for you, so we must do it ourselves
+    formData = migrateDataToSystem(formData);
+
     return this.object.update(formData);
   }
 }

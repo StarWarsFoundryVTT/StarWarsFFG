@@ -362,5 +362,5 @@ export default class SettingsHelpers {
     });
   }
 
-  static debouncedReload = debounce(() => window.location.reload(), 100);
+  static debouncedReload = foundry.utils.debounce(() => window.location.reload(), 100);
 }

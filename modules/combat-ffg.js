@@ -93,7 +93,7 @@ export class CombatFFG extends Combat {
   }, 200);
 
   /** @override */
-  _getInitiativeRoll(combatant, formula) {
+  async _getInitiativeRoll(combatant, formula) {
     const cData = duplicate(combatant.actor.system);
 
     if (combatant.actor.type === "vehicle") {
@@ -108,7 +108,7 @@ export class CombatFFG extends Combat {
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
 
-    let roll = new RollFFG(formula, rollData).roll();
+    let roll = await new RollFFG(formula, rollData).roll();
 
     const total = roll.ffg.success + roll.ffg.advantage * 0.01;
     roll._result = total;
@@ -221,7 +221,7 @@ export class CombatFFG extends Combat {
                   pool.upgrade(addPool.upgrades)
 
                   const rollData = c.actor ? c.actor.getRollData() : {};
-                  let roll = new RollFFG(pool.renderDiceExpression(), rollData, { success: pool.success, advantage: pool.advantage, failure: pool.failure, threat: pool.threat }).roll();
+                  let roll = await new RollFFG(pool.renderDiceExpression(), rollData, { success: pool.success, advantage: pool.advantage, failure: pool.failure, threat: pool.threat }).roll();
                   const total = roll.ffg.success + roll.ffg.advantage * 0.01;
                   roll._result = total;
                   roll._total = total;

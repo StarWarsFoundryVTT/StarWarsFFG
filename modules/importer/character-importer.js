@@ -3,7 +3,7 @@ import ImportHelpers from "./import-helpers.js";
 export default class CharacterImporter extends FormApplication {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "ogc-importer",
       classes: ["starwarsffg", "data-import"],
       title: "OggDude Character Importer",

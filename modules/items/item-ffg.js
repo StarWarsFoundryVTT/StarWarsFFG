@@ -448,13 +448,13 @@ export class ItemFFG extends ItemBaseFFG {
   /**
    * Prepare and return details of the item for display in inventory or chat.
    */
-  getItemDetails() {
-    const data = duplicate(this.system);
+  async getItemDetails() {
+    const data = foundry.utils.duplicate(this.system);
 
     // Item type specific properties
     const props = [];
 
-    data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor);
+    data.prettyDesc = await PopoutEditor.renderDiceImages(data.description, this.actor);
 
     if (this.type === "forcepower") {
       //Display upgrades
@@ -480,10 +480,10 @@ export class ItemFFG extends ItemBaseFFG {
         }
       });
 
-      upgradeDescriptions.forEach((upd) => {
+      upgradeDescriptions.forEach(async (upd) => {
         props.push(`<div class="ffg-sendtochat hover" onclick="">${upd.name} ${upd.rank}
           <div class="tooltip2">
-            ${PopoutEditor.renderDiceImages(upd.description, this?.actor?.system)}
+            ${await PopoutEditor.renderDiceImages(upd.description, this?.actor?.system)}
           </div>
         </div>`);
       });
@@ -492,7 +492,7 @@ export class ItemFFG extends ItemBaseFFG {
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
         const modifiers = data.adjusteditemmodifier?.filter(i => Object.keys(i).length > 0);
-        const qualities = modifiers?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${escape(m.system.description)}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = modifiers?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${escape(m.system.enrichedDescription)}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }

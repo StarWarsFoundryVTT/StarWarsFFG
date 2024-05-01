@@ -58,9 +58,9 @@ export default class Weapons {
 
             //New setting to be able to use a characteristic as base damage for any weapon.
             if (data.data.skill.useBrawn) {
-              data.data.characteristic = mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: "Brawn"});
+              data.data.characteristic = foundry.utils.mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: "Brawn"});
             } else {
-              data.data.characteristic = mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: ""});
+              data.data.characteristic = foundry.utils.mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: ""});
             }
 
             const mods = await ImportHelpers.processMods(item);
@@ -77,7 +77,7 @@ export default class Weapons {
             }
 
             if (item?.DamageAdd && parseInt(item.DamageAdd, 10) > 0 && data.type === "weapon") {
-              data.data.attributes[randomID()] = {
+              data.data.attributes[foundry.utils.randomID()] = {
                 isCheckbox: false,
                 mod: "damage",
                 modtype: "Weapon Stat",

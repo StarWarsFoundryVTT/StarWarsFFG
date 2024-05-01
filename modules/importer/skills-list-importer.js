@@ -4,7 +4,7 @@ import { defaultSkillList } from "../config/ffg-skillslist.js";
 export default class SkillListImporter extends FormApplication {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "swffg-skilllist-importer",
       classes: ["starwarsffg", "data-import"],
       title: "Skill List Importer",
@@ -56,7 +56,7 @@ export default class SkillListImporter extends FormApplication {
       game.settings.set("starwarsffg", "arraySkillList", defaultSkillList);
       game.settings.set("starwarsffg", "skilltheme", "starwars");
 
-      debounce(() => window.location.reload(), 100);
+      foundry.utils.debounce(() => window.location.reload(), 100);
 
       this.close();
     });
@@ -105,7 +105,7 @@ export default class SkillListImporter extends FormApplication {
 
         const newMasterSkillListData = currentSkillList;
         await game.settings.set("starwarsffg", "arraySkillList", newMasterSkillListData);
-        debounce(() => window.location.reload(), 100);
+        foundry.utils.debounce(() => window.location.reload(), 100);
 
         this.close();
       } catch (error) {

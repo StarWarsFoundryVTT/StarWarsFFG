@@ -31,8 +31,8 @@ export default class Specializations {
             };
 
             data.system.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
-            data.system.attributes = mergeObject(data.system.attributes, ImportHelpers.processStatMod(item?.Attributes));
-            data.system.attributes = mergeObject(data.system.attributes, ImportHelpers.processCareerSkills(item?.CareerSkills, true));
+            data.system.attributes = foundry.utils.mergeObject(data.system.attributes, ImportHelpers.processStatMod(item?.Attributes));
+            data.system.attributes = foundry.utils.mergeObject(data.system.attributes, ImportHelpers.processCareerSkills(item?.CareerSkills, true));
 
             for (let i = 0; i < item.TalentRows.TalentRow.length; i += 1) {
               const row = item.TalentRows.TalentRow[i];
