@@ -456,7 +456,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     data.prettyDesc = await PopoutEditor.renderDiceImages(data.description, this.actor);
 
-    if (this.type === "forcepower") {
+    if (this.type === "forcepower" || this.type === "signatureability") {
       //Display upgrades
 
       // Get learned upgrades
@@ -464,7 +464,7 @@ export class ItemFFG extends ItemBaseFFG {
 
       const upgradeDescriptions = [];
 
-      upgrades.forEach((up) => {
+      for (const up of upgrades) {
         let index = upgradeDescriptions.findIndex((obj) => {
           return obj.name === up.name;
         });
@@ -474,19 +474,19 @@ export class ItemFFG extends ItemBaseFFG {
         } else {
           upgradeDescriptions.push({
             name: up.name,
-            description: up.description,
+            description: await TextEditor.enrichHTML(up.description),
             rank: 1,
           });
         }
-      });
+      }
 
-      upgradeDescriptions.forEach(async (upd) => {
+      for (const upd of upgradeDescriptions) {
         props.push(`<div class="ffg-sendtochat hover" onclick="">${upd.name} ${upd.rank}
           <div class="tooltip2">
-            ${await PopoutEditor.renderDiceImages(upd.description, this?.actor?.system)}
+            ${upd.description}
           </div>
         </div>`);
-      });
+      }
     }
     // General equipment properties
     else if (this.type !== "talent") {

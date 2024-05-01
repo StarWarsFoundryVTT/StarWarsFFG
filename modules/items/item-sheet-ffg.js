@@ -140,6 +140,9 @@ export class ItemSheetFFG extends ItemSheet {
           data.isEditing = false;
           data.isReadOnly = true;
         }
+        for (let x = 0; x < 16; x++) {
+          data.data.upgrades[`upgrade${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
+        }
         break;
       case "specialization":
         this.position.width = 715;
@@ -280,6 +283,9 @@ export class ItemSheetFFG extends ItemSheet {
         if (!this.options.editable) {
           data.data.isEditing = false;
           data.data.isReadOnly = true;
+        }
+        for (let x = 0; x < 8; x++) {
+          data.data.upgrades[`upgrade${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
         }
         break;
       }

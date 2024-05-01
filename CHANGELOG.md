@@ -1,6 +1,8 @@
 `1.810`
 * Features:
   * Support for FoundryVTT v12
+* Fixes:
+  * Sending a signature ability to chat now includes purchased upgrades
 
 `1.809`
 * Features: 
