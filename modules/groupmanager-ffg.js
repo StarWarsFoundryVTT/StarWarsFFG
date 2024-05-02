@@ -350,8 +350,8 @@ export class GroupManager extends FormApplication {
             const note = container.querySelector('input[name="note"]').value;
             const available = +character.system.experience.available + +amount.value;
             const total = +character.system.experience.total + +amount.value;
-            character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
-            character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
+            character.update({ ["system.experience.total"]: +character.system.experience.total + +amount.value });
+            character.update({ ["system.experience.available"]: +character.system.experience.available + +amount.value });
             await xpLogEarn(character, amount.value, available, total, note);
             ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
           },
@@ -365,7 +365,7 @@ export class GroupManager extends FormApplication {
   }
 
   async _bulkXP(characters) {
-    const id = randomID();
+    const id = foundry.utils.randomID();
     const description = game.i18n.localize("SWFFG.GrantXPToAllCharacters");
     const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
       id,
@@ -378,15 +378,19 @@ export class GroupManager extends FormApplication {
         one: {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize("SWFFG.GrantXP"),
-          callback: () => {
+          callback: async () => {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
-            characters.forEach((c) => {
+            const note = container.querySelector('input[name="note"]').value;
+            for (const c of characters) {
               const character = game.actors.get(c);
-              character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
-              character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
+              const available = +character.system.experience.available + +amount.value;
+              const total = +character.system.experience.total + +amount.value;
+              character.update({ ["system.experience.total"]: +character.system.experience.total + +amount.value });
+              character.update({ ["system.experience.available"]: +character.system.experience.available + +amount.value });
+              await xpLogEarn(character, amount.value, available, total, note);
               ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
-            });
+            }
           },
         },
         two: {
