@@ -1092,7 +1092,6 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     const itemDetails = await item?.getItemDetails();
-    console.log(itemDetails)
     const template = "systems/starwarsffg/templates/chat/item-card.html";
     const html = await renderTemplate(template, { itemDetails, item });
 
