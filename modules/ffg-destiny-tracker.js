@@ -21,7 +21,7 @@ export default class DestinyTracker extends FormApplication {
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "destiny-tracker",
       classes: ["starwarsffg"],
       title: "Destiny Tracker",

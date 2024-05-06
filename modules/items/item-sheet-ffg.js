@@ -16,7 +16,7 @@ import ItemOptions from "./item-ffg-options.js";
 export class ItemSheetFFG extends ItemSheet {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "item"],
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "description" }],
       scrollY: [".sheet-body", ".tab"],
@@ -64,17 +64,17 @@ export class ItemSheetFFG extends ItemSheet {
 
     if (options?.action === "update" && this.object.compendium) {
       delete options.data._id;
-      data.item = mergeObject(data.item, options.data);
+      data.item = foundry.utils.mergeObject(data.item, options.data);
     } else if (options?.action === "ffgUpdate") {
       delete options?.data?.system?.description;
       if (options?.data?.data) {
-        data.data = mergeObject(data.data, options.data.data);
+        data.data = foundry.utils.mergeObject(data.data, options.data.data);
         // we are going to merge options.data into data.item and can't set data.item.data this way
         delete options.data.data;
       } else {
-        data.data = mergeObject(data.data, options.data);
+        data.data = foundry.utils.mergeObject(data.data, options.data);
       }
-      data.item = mergeObject(data.item, options.data); // some fields are read out of item, some are read out of data
+      data.item = foundry.utils.mergeObject(data.item, options.data); // some fields are read out of item, some are read out of data
     }
 
     data.classType = this.constructor.name;
@@ -87,6 +87,10 @@ export class ItemSheetFFG extends ItemSheet {
           attr.isCheckbox = attr.dtype === "Boolean";
         }
       }
+    }
+
+    if (data?.data?.description) {
+      data.data.enrichedDescription = await TextEditor.enrichHTML(data.data.description);
     }
 
     data.isTemp = false;
@@ -135,6 +139,9 @@ export class ItemSheetFFG extends ItemSheet {
         if (!this.options.editable) {
           data.isEditing = false;
           data.isReadOnly = true;
+        }
+        for (let x = 0; x < 16; x++) {
+          data.data.upgrades[`upgrade${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
         }
         break;
       case "specialization":
@@ -277,6 +284,9 @@ export class ItemSheetFFG extends ItemSheet {
           data.data.isEditing = false;
           data.data.isReadOnly = true;
         }
+        for (let x = 0; x < 8; x++) {
+          data.data.upgrades[`upgrade${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
+        }
         break;
       }
       default:
@@ -345,7 +355,7 @@ export class ItemSheetFFG extends ItemSheet {
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
-    new TabsV2(tabs, {
+    new Tabs(tabs, {
       initial: initial,
       callback: (clicked) => (this._sheetTab = clicked.data("tab")),
     });
@@ -375,7 +385,7 @@ export class ItemSheetFFG extends ItemSheet {
             let updateData = {};
             // build dataset if needed
             if (!pack.locked) {
-              setProperty(updateData, `data.talents.${parent.id}.itemId`, entity.id);
+              foundry.utils.setProperty(updateData, `data.talents.${parent.id}.itemId`, entity.id);
               this.object.update(updateData);
             }
           }
@@ -581,7 +591,7 @@ export class ItemSheetFFG extends ItemSheet {
       items.splice(itemIndex, 1);
 
       let formData = {};
-      setProperty(formData, `data.${itemType}`, items);
+      foundry.utils.setProperty(formData, `data.${itemType}`, items);
 
       this.object.update(formData);
     });
@@ -623,11 +633,11 @@ export class ItemSheetFFG extends ItemSheet {
                         let arrayItem = this.object.system[itemType].findIndex((i) => i._id === id);
 
                         if (arrayItem > -1) {
-                          setProperty(this.object.system[itemType][arrayItem], name, parseInt(input.val(), 10));
+                          foundry.utils.setProperty(this.object.system[itemType][arrayItem], name, parseInt(input.val(), 10));
                         }
                       });
 
-                      setProperty(formData, `data.${itemType}`, this.object.system[itemType]);
+                      foundry.utils.setProperty(formData, `data.${itemType}`, this.object.system[itemType]);
                       this.object.update(formData);
 
                       break;
@@ -685,7 +695,7 @@ export class ItemSheetFFG extends ItemSheet {
           }
         },
         permission: {
-          default: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+          default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
         },
       };
       if (this.object.isEmbedded) {
@@ -704,7 +714,7 @@ export class ItemSheetFFG extends ItemSheet {
             }
           },
           permission: {
-            default: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+            default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
           }
         };
       }
@@ -712,7 +722,7 @@ export class ItemSheetFFG extends ItemSheet {
       delete temp.id;
       delete temp._id;
       temp.ownership = {
-        default: CONST.DOCUMENT_PERMISSION_LEVELS.OWNER,
+        default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
       }
       let tempItem = await Item.create(temp, { temporary: true });
 
@@ -748,7 +758,7 @@ export class ItemSheetFFG extends ItemSheet {
 
       } else {
         let formData = {};
-        setProperty(formData, `data.${itemType}`, this.object.system[itemType]);
+        foundry.utils.setProperty(formData, `data.${itemType}`, this.object.system[itemType]);
         this.object.update(formData);
       }
 
@@ -1180,7 +1190,7 @@ export class ItemSheetFFG extends ItemSheet {
           tree.splice(index, 1);
 
           let formData;
-          setProperty(formData, `data.trees`, tree);
+          foundry.utils.setProperty(formData, `data.trees`, tree);
           itemObject.update(formData);
 
           //itemObject.update({ [`data.trees`]: tree });
@@ -1214,7 +1224,7 @@ export class ItemSheetFFG extends ItemSheet {
 
         if (!data.pack) {
           let formData = {};
-          setProperty(formData, `data.trees`, tree);
+          foundry.utils.setProperty(formData, `data.trees`, tree);
           itemObject.update(formData);
           //itemObject.update({ [`data.trees`]: tree });
         }
@@ -1249,11 +1259,11 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
-    const itemObject = duplicate(await fromUuid(data.uuid));
+    const itemObject = foundry.utils.duplicate(await fromUuid(data.uuid));
 
     if (!itemObject) return;
 
-    itemObject.id = randomID(); // why do we do this?!
+    itemObject.id = foundry.utils.randomID(); // why do we do this?!
 
     if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.type === "shipweapon" && itemObject.system.type === "weapon") || obj.type === itemObject.system.type || itemObject.system.type === "all" || obj.type === "itemattachment")) {
       let items = obj?.system[itemObject.type];
@@ -1292,7 +1302,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       let formData = {};
-      setProperty(formData, `data.${itemObject.type}`, items);
+      foundry.utils.setProperty(formData, `data.${itemObject.type}`, items);
 
       obj.update(formData);
     }

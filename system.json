@@ -4,8 +4,8 @@
   "description": "A system for playing Star Wars FFG games.",
   "version": "1.809",
   "compatibility": {
-    "minimum": 10,
-    "verified": 11
+    "minimum": 12,
+    "verified": 12
   },
   "templateVersion": 1,
   "authors": [{"name": "Esrin"}, {"name": "CStadther"}, {"name": "Wrycu"}, {"name": "Jaxxa"}],

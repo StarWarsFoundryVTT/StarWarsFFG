@@ -115,7 +115,7 @@ export default class ForcePowers {
 
                       if (rowAbilityData?.DieModifiers) {
                         const dieModifiers = await ImportHelpers.processDieMod(rowAbilityData.DieModifiers);
-                        rowAbility.attributes = mergeObject(rowAbility.attributes, dieModifiers.attributes);
+                        rowAbility.attributes = foundry.utils.mergeObject(rowAbility.attributes, dieModifiers.attributes);
                       }
 
                       const talentKey = `upgrade${(i - 1) * 4 + index}`;

@@ -107,7 +107,7 @@ export default class EmbeddedItemHelpers {
       }
     });
     CONFIG.logger.debug("Final dataPointer", dataPointer);
-    await mergeObject(
+    await foundry.utils.mergeObject(
         temporaryItem,
         ItemHelpers.normalizeDataStructure(data),
         {
@@ -117,8 +117,8 @@ export default class EmbeddedItemHelpers {
         },
     );
 
-    mergeObject(dataPointer, {...temporaryItem, ...ItemHelpers.normalizeDataStructure(data)});
-    mergeObject(dataPointer.flags, temporaryItem.flags);
+    foundry.utils.mergeObject(dataPointer, {...temporaryItem, ...ItemHelpers.normalizeDataStructure(data)});
+    foundry.utils.mergeObject(dataPointer.flags, temporaryItem.flags);
 
     let formData;
     if (reconstruct.length === 1) {
@@ -294,7 +294,7 @@ export default class EmbeddedItemHelpers {
 
     tempItem.data._id = temp.id;
     if (!temp.id) {
-      tempItem.data._id = randomID();
+      tempItem.data._id = foundry.utils.randomID();
     }
 
     return tempItem;

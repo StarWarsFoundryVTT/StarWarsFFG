@@ -385,10 +385,15 @@
       },
       "attributes": {
         "attributes": {}
+      },
+      "general": {
+        "general": {
+          "features": "<p></p>"
+        }
       }
     },
     "character": {
-      "templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes"],
+      "templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes", "general"],
       "encumbrance": {
         "value": 0,
         "type": "Number",
@@ -549,7 +554,7 @@
       }
     },
     "rival": {
-      "templates": ["biography", "species", "characteristics", "skills", "attributes"],
+      "templates": ["biography", "species", "characteristics", "skills", "attributes", "general"],
       "stats": {
           "wounds": {
             "value": 0,
@@ -585,7 +590,7 @@
         }
     },
     "nemesis": {
-      "templates": ["biography", "species", "stats", "characteristics", "skills", "attributes"]
+      "templates": ["biography", "species", "stats", "characteristics", "skills", "attributes", "general"]
     }
   },
   "Item": {

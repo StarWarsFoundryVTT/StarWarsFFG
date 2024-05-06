@@ -22,7 +22,7 @@ export class ActorFFG extends Actor {
     if (data.skills) {
       let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
 
-      data.skills = mergeObject(skills, data.skills);
+      data.skills = foundry.utils.mergeObject(skills, data.skills);
 
       // Filter out skills that are not custom (manually added) or part of the current system skill list
       Object.keys(data.skills)
@@ -48,7 +48,6 @@ export class ActorFFG extends Actor {
   _prepareSharedData(actorData) {
     const data = actorData.system;
     //data.biography = PopoutEditor.replaceRollTags(data.biography, actorData);
-    data.biography = PopoutEditor.renderDiceImages(data.biography, actorData);
 
     // localize characteristic names
     if (actorData.type !== "vehicle" && actorData.type !== "homestead") {

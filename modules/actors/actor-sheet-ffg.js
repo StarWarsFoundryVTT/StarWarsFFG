@@ -30,7 +30,7 @@ export class ActorSheetFFG extends ActorSheet {
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor"],
       template: "systems/starwarsffg/templates/actors/ffg-character-sheet.html",
       width: 710,
@@ -68,8 +68,8 @@ export class ActorSheetFFG extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  getData(options) {
-    const data = super.getData();
+  async getData(options) {
+    const data = await super.getData();
     data.classType = this.constructor.name;
 
     // Compatibility for Foundry 0.8.x with backwards compatibility (hopefully) for 0.7.x
@@ -83,7 +83,7 @@ export class ActorSheetFFG extends ActorSheet {
     data.items = this.actor.items;
 
     if (options?.action === "update" && this.object.compendium) {
-      data.item = mergeObject(data.actor, options.data);
+      data.item = foundry.utils.mergeObject(data.actor, options.data);
     }
 
     data.dtypes = ["String", "Number", "Boolean"];
@@ -124,6 +124,8 @@ export class ActorSheetFFG extends ActorSheet {
         if (data.data.stats.credits.value > 999) {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
+        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
+        data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         break;
       case "vehicle":
         // add the crew to the items of the vehicle
@@ -184,7 +186,7 @@ export class ActorSheetFFG extends ActorSheet {
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
-    new TabsV2(tabs, {
+    new Tabs(tabs, {
       initial: initial,
       callback: (clicked) => {
         this._sheetTab = clicked.data("tab");
@@ -336,7 +338,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
         const forcedice = this.actor.system.stats.forcePool.max - this.actor.system.stats.forcePool.value;
         if (forcedice > 0) {
-          let sheet = this.getData();
+          let sheet = await this.getData();
           const dicePool = new DicePoolFFG({
             force: forcedice,
           });
@@ -478,7 +480,7 @@ export class ActorSheetFFG extends ActorSheet {
         content: msg_content,
       });
 
-      setProperty(updateData, `data.stats.medical.uses`, newUses);
+      foundry.utils.setProperty(updateData, `system.stats.medical.uses`, newUses);
       this.object.update(updateData);
 
     });
@@ -497,9 +499,9 @@ export class ActorSheetFFG extends ActorSheet {
                           callback: (that) => {
                               // rest
                               let updateData = {};
-                              setProperty(updateData, `data.stats.medical.uses`, 0);
-                              setProperty(updateData, `data.stats.strain.value`, 0);
-                              setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
+                              foundry.utils.setProperty(updateData, `system.stats.medical.uses`, 0);
+                              foundry.utils.setProperty(updateData, `system.stats.strain.value`, 0);
+                              foundry.utils.setProperty(updateData, `system.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
                               this.object.update(updateData);
                               ChatMessage.create({
                                 speaker: { alias: this.object.name },
@@ -513,7 +515,7 @@ export class ActorSheetFFG extends ActorSheet {
                           callback: (that) => {
                               // reset
                               let updateData = {};
-                              setProperty(updateData, `data.stats.medical.uses`, 0);
+                              foundry.utils.setProperty(updateData, `system.stats.medical.uses`, 0);
                               this.object.update(updateData);
                               const item_name = this.object?.flags?.starwarsffg?.config?.medicalItemName || game.i18n.localize("SWFFG.DefaultMedicalItemName");
                               ChatMessage.create({
@@ -531,14 +533,14 @@ export class ActorSheetFFG extends ActorSheet {
       } else if (game.settings.get("starwarsffg", "HealingItemAction") === '1') {
         // rest
         let updateData = {};
-        setProperty(updateData, `data.stats.medical.uses`, 0);
-        setProperty(updateData, `data.stats.strain.value`, 0);
-        setProperty(updateData, `data.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
+        foundry.utils.setProperty(updateData, `system.stats.medical.uses`, 0);
+        foundry.utils.setProperty(updateData, `system.stats.strain.value`, 0);
+        foundry.utils.setProperty(updateData, `system.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
         this.object.update(updateData);
       } else if (game.settings.get("starwarsffg", "HealingItemAction") === '2') {
         // reset
         let updateData = {};
-        setProperty(updateData, `data.stats.medical.uses`, 0);
+        foundry.utils.setProperty(updateData, `system.stats.medical.uses`, 0);
         this.object.update(updateData);
       }
     });
@@ -618,7 +620,7 @@ export class ActorSheetFFG extends ActorSheet {
 
         if (item?.sheet) {
           if (item?.type == "forcepower") {
-            this._forcePowerDisplayDetails(desc, ev);
+            await this._forcePowerDisplayDetails(desc, ev);
           }
         }
       }
@@ -776,7 +778,7 @@ export class ActorSheetFFG extends ActorSheet {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
         }
       }
-      item.update({ ["data.quantity.value"]: item.system.quantity.value + 1 });
+      item.update({ ["system.quantity.value"]: item.system.quantity.value + 1 });
     });
 
     html.find(".item-quantity .quantity.decrease").click(async (ev) => {
@@ -792,13 +794,12 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
       let count = item.system.quantity.value - 1 > 0 ? item.system.quantity.value - 1 : 0;
-      item.update({ ["data.quantity.value"]: count });
+      item.update({ ["system.quantity.value"]: count });
     });
 
     // Roll Skill
     html
       .find(".roll-button")
-      .children()
       .on("click", async (event) => {
         let upgradeType = null;
         if (event.ctrlKey && !event.shiftKey) {
@@ -914,7 +915,7 @@ export class ActorSheetFFG extends ActorSheet {
 
       let data = event.currentTarget.dataset;
       if (data) {
-        let sheet = this.getData();
+        let sheet = await this.getData();
         let skill = sheet.data.skills[data["skill"]];
         let characteristic = sheet.data.characteristics[skill.characteristic];
         let difficulty = data["difficulty"];
@@ -1021,17 +1022,17 @@ export class ActorSheetFFG extends ActorSheet {
    * Display details of an item.
    * @private
    */
-  _itemDisplayDetails(item, event) {
+  async _itemDisplayDetails(item, event) {
     event.preventDefault();
     let li = $(event.currentTarget),
-      itemDetails = item.getItemDetails();
+      itemDetails = await item.getItemDetails();
 
     // Toggle summary
     if (li.hasClass("expanded")) {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(itemDetails.description, this.actor)}</div>`);
+      let div = $(`<div class="item-details">${await PopoutEditor.renderDiceImages(itemDetails.description, this.actor)}</div>`);
       let props = $(`<div class="item-properties"></div>`);
       itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
@@ -1044,7 +1045,7 @@ export class ActorSheetFFG extends ActorSheet {
 
           let data = event.currentTarget.dataset;
           if (data) {
-            let sheet = this.getData();
+            let sheet = await this.getData();
             let skill = sheet.data.skills[data["skill"]];
             let characteristic = sheet.data.characteristics[skill.characteristic];
             let difficulty = data["difficulty"];
@@ -1061,7 +1062,7 @@ export class ActorSheetFFG extends ActorSheet {
    * Display details of a Force Power.
    * @private
    */
-  _forcePowerDisplayDetails(desc, event) {
+  async _forcePowerDisplayDetails(desc, event) {
     event.preventDefault();
     let li = $(event.currentTarget);
 
@@ -1070,7 +1071,7 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${PopoutEditor.renderDiceImages(desc, this.actor.system)}</div>`);
+      let div = $(`<div class="item-details">${await PopoutEditor.renderDiceImages(desc, this.actor.system)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
@@ -1090,13 +1091,13 @@ export class ActorSheetFFG extends ActorSheet {
       item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
     }
 
-    const itemDetails = item?.getItemDetails();
+    const itemDetails = await item?.getItemDetails();
     const template = "systems/starwarsffg/templates/chat/item-card.html";
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.actor.id,

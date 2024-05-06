@@ -93,8 +93,8 @@ export class CombatFFG extends Combat {
   }, 200);
 
   /** @override */
-  _getInitiativeRoll(combatant, formula) {
-    const cData = duplicate(combatant.actor.system);
+  async _getInitiativeRoll(combatant, formula) {
+    const cData = foundry.utils.duplicate(combatant.actor.system);
 
     if (combatant.actor.type === "vehicle") {
       return new RollFFG("0");
@@ -108,7 +108,7 @@ export class CombatFFG extends Combat {
 
     const rollData = combatant.actor ? combatant.actor.getRollData() : {};
 
-    let roll = new RollFFG(formula, rollData).roll();
+    let roll = await new RollFFG(formula, rollData).roll();
 
     const total = roll.ffg.success + roll.ffg.advantage * 0.01;
     roll._result = total;
@@ -127,7 +127,7 @@ export class CombatFFG extends Combat {
     let initiative = this;
 
     let promise = new Promise(async function (resolve, reject) {
-      const id = randomID();
+      const id = foundry.utils.randomID();
 
       let whosInitiative = initiative.combatant?.name;
       let dicePools = [];
@@ -175,12 +175,21 @@ export class CombatFFG extends Combat {
         dicePools.push(coolDicePool);
       }
 
+      const diceSymbols = {
+        advantage: await TextEditor.enrichHTML("[AD]"),
+        success: await TextEditor.enrichHTML("[SU]"),
+        threat: await TextEditor.enrichHTML("[TH]"),
+        failure: await TextEditor.enrichHTML("[FA]"),
+        upgrade: await TextEditor.enrichHTML("[PR]"),
+      };
+
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
       const content = await renderTemplate("systems/starwarsffg/templates/dialogs/ffg-initiative.html", {
         id,
         dicePools,
         addDicePool,
         defaultInitiativeFormula,
+        diceSymbols,
       });
 
       new Dialog({
@@ -221,7 +230,7 @@ export class CombatFFG extends Combat {
                   pool.upgrade(addPool.upgrades)
 
                   const rollData = c.actor ? c.actor.getRollData() : {};
-                  let roll = new RollFFG(pool.renderDiceExpression(), rollData, { success: pool.success, advantage: pool.advantage, failure: pool.failure, threat: pool.threat }).roll();
+                  let roll = await new RollFFG(pool.renderDiceExpression(), rollData, { success: pool.success, advantage: pool.advantage, failure: pool.failure, threat: pool.threat }).roll();
                   const total = roll.ffg.success + roll.ffg.advantage * 0.01;
                   roll._result = total;
                   roll._total = total;
@@ -234,7 +243,7 @@ export class CombatFFG extends Combat {
                   if ((c.token.hidden || c.hidden) && rollMode === "roll") rollMode = "gmroll";
 
                   // Construct chat message data
-                  let messageData = mergeObject(
+                  let messageData = foundry.utils.mergeObject(
                     {
                       speaker: {
                         scene: canvas.scene.id,

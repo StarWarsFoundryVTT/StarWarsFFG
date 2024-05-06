@@ -1,13 +1,13 @@
 <div class="starwarsffg dice-roll">
-  {{#if data.additionalFlavorText}}
+  {{#if system.additionalFlavorText}}
   <div class="dice-additional-flavor">
-    {{data.additionalFlavorText}}
+    {{system.additionalFlavorText}}
   </div>
   {{/if}} {{#if publicRoll }}
   <div class="dice-result">
     {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
-    {{/if}} {{#if hasFFG}} {{#if data.crew.crew_card}} {{> "systems/starwarsffg/templates/chat/roll-vehicle-card.html"}} {{/if}} {{#if data._id}} {{#if (eq data.type "forcepower")}} {{> "systems/starwarsffg/templates/chat/roll-forcepower-card.html"}} {{/if}} {{#if (or (eq data.type "weapon") (eq data.type "shipweapon"))}} {{> "systems/starwarsffg/templates/chat/roll-weapon-card.html"}} {{/if}} {{/if}}
+    {{/if}} {{#if hasFFG}} {{#if system.crew.crew_card}} {{> "systems/starwarsffg/templates/chat/roll-vehicle-card.html"}} {{/if}} {{#if system._id}} {{#if (eq system.type "forcepower")}} {{> "systems/starwarsffg/templates/chat/roll-forcepower-card.html"}} {{/if}} {{#if (or (eq system.type "weapon") (eq system.type "shipweapon"))}} {{> "systems/starwarsffg/templates/chat/roll-weapon-card.html"}} {{/if}} {{/if}}
     <div class="ffgDiceArray">
       <ol class="dice-rolls">
         {{#each ffgDice}} {{#if this.isFFG}}{{#each this.rolls}}

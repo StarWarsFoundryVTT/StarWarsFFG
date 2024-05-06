@@ -1,7 +1,7 @@
 export default class CrewSettings extends FormApplication {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "data-importer",
       classes: ["starwarsffg", "data-import"],
       title: `${game.i18n.localize("SWFFG.UISettingsLabel")}`,
@@ -25,7 +25,7 @@ export default class CrewSettings extends FormApplication {
       if (!setting.key.includes("arrayCrewRoles") || (!canConfigure && setting.scope !== "client")) continue;
 
       // Update setting data
-      const s = duplicate(setting);
+      const s = foundry.utils.duplicate(setting);
       s.name = game.i18n.localize(s.name);
       s.hint = game.i18n.localize(s.hint);
       s.value = game.settings.get(s.namespace, s.key);

@@ -1,3 +1,5 @@
+import {migrateDataToSystem} from "./helpers/migration.js";
+
 /**
  * A specialized form used to pop out the editor.
  * @extends {FormApplication}
@@ -5,7 +7,7 @@
 export default class PopoutEditor extends FormApplication {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "popout-editor",
       classes: ["starwarsffg", "sheet"],
       title: "Pop-out Editor",
@@ -27,7 +29,7 @@ export default class PopoutEditor extends FormApplication {
   /** @override */
   getData() {
     // Get current value
-    let attr = getProperty(this.object.system, this.attribute.replace('data.', ''));
+    let attr = foundry.utils.getProperty(this.object.system, this.attribute.replace('data.', ''));
 
     // Return data
     return {
@@ -44,7 +46,9 @@ export default class PopoutEditor extends FormApplication {
     updateData[`${this.attribute}`] = formData.value;
 
     // Update the object
-    this.object.update(updateData);
+    this.object.update(
+        migrateDataToSystem(updateData)
+    );
 
     this.close();
   }
@@ -53,12 +57,12 @@ export default class PopoutEditor extends FormApplication {
    * Renders the dice symbols based on strings
    * @param  {String} string
    */
-  static renderDiceImages(str, actorData) {
+  static async renderDiceImages(str, actorData) {
     let html = str || "";
 
     html = this.replaceRollTags(html, actorData);
     try {
-      html = TextEditor.enrichHTML(html, { secrets: true, documents: true, async: false });
+      html = await TextEditor.enrichHTML(html, { secrets: true, documents: true, async: false });
     } catch (err) {
       // ignore the message below, it means that we already created an entity link (this could be part of an editor text)
       if (err.message !== "An Entity subclass must configure the EntityCollection it belongs to.") {

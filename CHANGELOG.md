@@ -1,3 +1,10 @@
+`1.810`
+* Features:
+  * Support for FoundryVTT v12
+* Fixes:
+  * Sending a signature ability to chat now includes purchased upgrades
+  * Granting XP to the entire group now updates the XP logs
+
 `1.809`
 * Features: 
   * You can now (optionally) spend XP! See [the wiki](https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki/new%E2%80%90features%E2%80%90v1.809#xp-spending) for more info

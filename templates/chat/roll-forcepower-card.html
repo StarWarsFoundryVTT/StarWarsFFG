@@ -1,12 +1,12 @@
-<div class="item-display" data-item-id="{{data._id}}">
-  {{#iff (defaultImage data.img) '!=' true}}
-    <img class="item-image" src="{{data.img}}" />
+<div class="item-display" data-item-id="{{system._id}}">
+  {{#iff (defaultImage system.img) '!=' true}}
+    <img class="item-image" src="{{system.img}}" />
   {{/iff}}
-  <h2 class="item-name">{{data.name}}</h2>
+  <h2 class="item-name">{{system.name}}</h2>
   <div class="item-details">
-    {{{ffgDiceSymbols data.data.description}}}
+    {{{ffgDiceSymbols system.system.description}}}
     <div class="item-properties">
-      {{#each data.powerUpgrades}}
+      {{#each system.powerUpgrades}}
       <span class="tag">
         <div class="ffg-sendtochat hover">
           {{{this.name}}} {{this.rank}}

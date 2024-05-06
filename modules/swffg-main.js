@@ -481,7 +481,9 @@ Hooks.once("init", async function () {
   });
 
   Handlebars.registerHelper("ffgDiceSymbols", function (text) {
-    return PopoutEditor.renderDiceImages(text);
+    //return PopoutEditor.renderDiceImages(text);
+    CONFIG.logger.warn("This function is no longer needed and should not be called. Please notify the devs if you see this message.");
+    return text;
   });
 
   Handlebars.registerHelper("object", function ({ hash }) {
@@ -557,9 +559,9 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
 });
 
 // Update chat messages with dice images
-Hooks.on("renderChatMessage", (app, html, messageData) => {
+Hooks.on("renderChatMessage", async (app, html, messageData) => {
   const content = html.find(".message-content");
-  content[0].innerHTML = PopoutEditor.renderDiceImages(content[0].innerHTML);
+  content[0].innerHTML = await PopoutEditor.renderDiceImages(content[0].innerHTML);
 
   html.on("click", ".ffg-pool-to-player", () => {
     const poolData = messageData.message.flags.starwarsffg;

@@ -1,4 +1,5 @@
 import Helpers from "../helpers/common.js";
+import {migrateDataToSystem} from "../helpers/migration.js";
 
 export default class ImportHelpers {
   /**
@@ -184,7 +185,7 @@ export default class ImportHelpers {
 
           const content = await pack.getDocuments();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = deepClone(content[i]);
+            CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = foundry.utils.deepClone(content[i]);
           }
         }
       } else {
@@ -1931,7 +1932,7 @@ export default class ImportHelpers {
             if (weaponItems.length > 0) {
               for (let i = 0; i < character.items.length; i += 1) {
                 if (character.items[i].type === "weapon" && character.items[i].flags.starwarsffg.ffgimportid === weapon.flags.starwarsffg.ffgimportid) {
-                  character.items[i] = mergeObject(weapon, character.items[i]);
+                  character.items[i] = foundry.utils.mergeObject(weapon, character.items[i]);
                 }
               }
             } else {
@@ -2210,8 +2211,8 @@ export default class ImportHelpers {
     if (!entry) {
       let compendiumItem;
       CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
-      data._id = randomID();
-      data.id = randomID();
+      data._id = foundry.utils.randomID();
+      data.id = foundry.utils.randomID();
       switch (type) {
         case "Item":
           compendiumItem = await new CONFIG.Item.documentClass(data, { temporary: true });
@@ -2225,9 +2226,11 @@ export default class ImportHelpers {
         default:
           CONFIG.logger.error(`Unable to import item type ${type}, unhandled type.`);
       }
+
+      compendiumItem = migrateDataToSystem(compendiumItem);
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
       const crt = await pack.importDocument(compendiumItem);
-      CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = deepClone(crt);
+      CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = foundry.utils.deepClone(crt);
       return crt;
     } else {
       CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name} : ${JSON.stringify(entry)}`);
@@ -2249,6 +2252,8 @@ export default class ImportHelpers {
           default:
             CONFIG.logger.error(`Unable to import item type ${type}, unhandled type.`);
         }
+
+        compendiumItem = migrateDataToSystem(compendiumItem);
         CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
         upd = await pack.importDocument(compendiumItem);
       } else {
@@ -2282,17 +2287,19 @@ export default class ImportHelpers {
           }
         }
 
+        updateData = migrateDataToSystem(updateData);
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
         try {
           await pack.get(updateData._id).update(updateData);
         } catch (e) {
           CONFIG.logger.error(`Failed to update ${type} ${dataType} ${data.name} : ${e.toString()}`);
         }
-        upd = duplicate(entry);
+        upd = foundry.utils.duplicate(entry);
         if (upd.data) {
-          upd.data = mergeObject(upd.data, data.data);
+          upd.data = foundry.utils.mergeObject(upd.data, data.data);
         }
       }
+      upd = migrateDataToSystem(upd);
       CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = upd;
       return upd;
     }
@@ -2489,8 +2496,8 @@ export default class ImportHelpers {
             const compendiumEntry = await ImportHelpers.findCompendiumEntityByImportId("Item", modifier.Key);
             if (compendiumEntry) {
               if (compendiumEntry?.type === "itemmodifier") {
-                const descriptor = duplicate(compendiumEntry);
-                descriptor.id = randomID();
+                const descriptor = foundry.utils.duplicate(compendiumEntry);
+                descriptor.id = foundry.utils.randomID();
                 descriptor.system.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
                 output.itemmodifier.push(descriptor);
                 let rank = "";
@@ -2512,28 +2519,31 @@ export default class ImportHelpers {
         } else if (modifier.DieModifiers) {
           // this is a die modifier
           const dieModifiers = await ImportHelpers.processDieMod(modifier.DieModifiers);
-          output.attributes = mergeObject(output.attributes, dieModifiers.attributes);
+          output.attributes = foundry.utils.mergeObject(output.attributes, dieModifiers.attributes);
         } else {
           unique_mods++;
           // this is just a text modifier
           const unique = {
             name: `Unique Mod ${unique_mods}`,
             type: "itemmodifier",
-            data: {
+            system: {
               description: modifier.MiscDesc,
               attributes: {},
               type: "all",
               rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
             },
           };
-          const descriptor = await Item.create(unique, { temporary: true });
+          const descriptor = await Item.create(
+              unique,
+              { temporary: true }
+          );
           let rank = "";
-          if (unique.data.rank > 1) {
-            rank = `${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}`;
+          if (unique.system.rank > 1) {
+            rank = `${game.i18n.localize("SWFFG.Count")} ${unique.system.rank}`;
           }
 
-          output.description += `<div>${unique.data.description} ${rank}</div>`;
-          output.itemmodifier.push(descriptor.data);
+          output.description += `<div>${unique.system.description} ${rank}</div>`;
+          output.itemmodifier.push(descriptor);
         }
       });
     }
@@ -2593,7 +2603,7 @@ export default class ImportHelpers {
         }
 
         if (type) {
-          attributes[randomID()] = { mod: type, modtype, value };
+          attributes[foundry.utils.randomID()] = { mod: type, modtype, value };
         }
       });
     }
@@ -2618,10 +2628,10 @@ export default class ImportHelpers {
           if (Object.keys(CONFIG.FFG.skills).includes(mod)) {
             if (mod) {
               const modtype = "Career Skill";
-              attributes[randomID()] = { mod, modtype, value: true };
+              attributes[foundry.utils.randomID()] = { mod, modtype, value: true };
 
               if (includeRank) {
-                attributes[randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+                attributes[foundry.utils.randomID()] = { mod, modtype: "Skill Rank", value: 0 };
               }
             } else {
               CONFIG.logger.warn(`Skill ${skill} was not found in the current skills list.`);
@@ -2646,7 +2656,7 @@ export default class ImportHelpers {
 
     if (item.templates) {
       item.templates.forEach((i) => {
-        item = mergeObject(item, obj.templates[i]);
+        item = foundry.utils.mergeObject(item, obj.templates[i]);
       });
       delete item.templates;
     }
