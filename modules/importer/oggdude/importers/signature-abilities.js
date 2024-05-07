@@ -121,8 +121,9 @@ export default class SignatureAbilities {
           // process careers
           if (item?.Careers) {
             for (const careerKey of Object.values(item.Careers)) {
-              let careerItem = await ImportHelpers.findCompendiumEntityByImportId("Item", careerKey, "world.oggdudecareers", "career");
+              let careerItem = await ImportHelpers.findCompendiumEntityByImportId("Item", careerKey, "starwarsffg.oggdudecareers", "career");
               if (!careerItem) {
+                CONFIG.logger.debug(`Could not find career item for signature ability ${sigAbility.name} in career ${careerKey}`);
                 continue;
               }
               const updateData = {
@@ -130,12 +131,13 @@ export default class SignatureAbilities {
                   signatureabilities: {
                     [sigAbility._id]: {
                       name: sigAbility.name,
-                      source: sigAbility.uuid,
+                      source: sigAbility.uuid, // not returned
                       id: sigAbility._id,
                     },
                   },
                 },
               }
+              CONFIG.logger.debug("Updating career item with signature ability", updateData, "(returned item: ", sigAbility, ")");
               await careerItem.update(updateData);
             }
           }

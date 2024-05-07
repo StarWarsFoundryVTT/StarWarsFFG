@@ -7,19 +7,27 @@ export default class ItemAttachments {
     if (items) {
       let totalCount = items.length;
       let currentCount = 0;
-      let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.ItemAttachments`);
+      const packMap = {
+        "armor": await ImportHelpers.getCompendiumPack("Item", "oggdudearmorattachments"),
+        "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdudeweaponattachments"),
+        "all": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericattachments"),
+        "gear": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericattachments"),
+        "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdudevehicleattachments"),
+        "mount": await ImportHelpers.getCompendiumPack("Item", "oggdudevehicleattachments"),
+      };
+      let pack;
       CONFIG.logger.debug(`Starting Oggdude Item Attachments Import`);
       $(".import-progress.itemattachments").toggleClass("import-hidden");
 
       await ImportHelpers.asyncForEach(items, async (item) => {
         try {
           let data;
+          if (Array.isArray(item.Type)) item.Type = item.Type[0];
           if (item.Type.toLowerCase() === "vehicle") {
             data = ImportHelpers.prepareBaseObject(item, "shipattachment");
           } else {
             data = ImportHelpers.prepareBaseObject(item, "itemattachment");
           }
-          if (Array.isArray(item.Type)) item.Type = item.Type[0];
           data.img = `/systems/starwarsffg/images/mod-${item?.Type ? item.Type.toLowerCase() : "all"}.png`;
           data.data = {
             description: item.Description,
@@ -36,6 +44,14 @@ export default class ItemAttachments {
             type: item.Type ? item.Type.toLowerCase() : "all",
             itemmodifier: [],
           };
+
+          try {
+            // attempt to select the specific compendium for this type of attachment
+            pack = packMap[data.data.type];
+          } catch (err) {
+            // but fail back to the generic compendium
+            pack = packMap["all"];
+          }
 
           data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
           const mods = await ImportHelpers.processMods(item);

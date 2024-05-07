@@ -1,5 +1,6 @@
 import Helpers from "../helpers/common.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
+import {ItemFFG} from "../items/item-ffg.js";
 
 export default class ImportHelpers {
   /**
@@ -2213,6 +2214,7 @@ export default class ImportHelpers {
       CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
       data._id = foundry.utils.randomID();
       data.id = foundry.utils.randomID();
+      data = migrateDataToSystem(data);
       switch (type) {
         case "Item":
           compendiumItem = await new CONFIG.Item.documentClass(data, { temporary: true });
@@ -2226,8 +2228,6 @@ export default class ImportHelpers {
         default:
           CONFIG.logger.error(`Unable to import item type ${type}, unhandled type.`);
       }
-
-      compendiumItem = migrateDataToSystem(compendiumItem);
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
       const crt = await pack.importDocument(compendiumItem);
       CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = foundry.utils.deepClone(crt);
@@ -2236,7 +2236,7 @@ export default class ImportHelpers {
       CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name} : ${JSON.stringify(entry)}`);
       let upd;
       if (removeFirst) {
-        await pack.delete(entry.id);
+        await pack.delete(entry._id);
         let compendiumItem;
         CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
         switch (type) {
@@ -2260,7 +2260,7 @@ export default class ImportHelpers {
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
 
         let updateData = data;
-        updateData["_id"] = entry.id;
+        updateData["_id"] = entry._id;
 
         if (updateData?.data?.attributes) {
           // Remove and repopulate all modifiers
@@ -2287,14 +2287,17 @@ export default class ImportHelpers {
           }
         }
 
+        upd = foundry.utils.duplicate(entry);
         updateData = migrateDataToSystem(updateData);
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
         try {
           await pack.get(updateData._id).update(updateData);
+          // update here does not return the UUID, so retrieve the item from the pack to get it
+          const updatedItem = await pack.get(updateData._id);
+          upd.uuid = updatedItem.uuid;
         } catch (e) {
           CONFIG.logger.error(`Failed to update ${type} ${dataType} ${data.name} : ${e.toString()}`);
         }
-        upd = foundry.utils.duplicate(entry);
         if (upd.data) {
           upd.data = foundry.utils.mergeObject(upd.data, data.data);
         }
@@ -2307,13 +2310,12 @@ export default class ImportHelpers {
 
   static async getCompendiumPack(type, name) {
     CONFIG.logger.debug(`Checking for existing compendium pack ${name}`);
-    const searchName = "world." + name.toString().replaceAll(".", "").toLowerCase();
-    let pack = game.packs.get(searchName);
+    const searchName = "starwarsffg." + name.toString().replaceAll(".", "").toLowerCase();
+    const pack = game.packs.get(searchName);
     if (!pack) {
-      CONFIG.logger.debug(`Compendium pack ${name} not found, creating new`);
-      pack = await CompendiumCollection.createCompendium({ type: type, label: name });
+      return ui.notifications.error(`Could not find compendium pack ${name}! (try restarting Foundry)`);
     } else {
-      CONFIG.logger.debug(`Existing compendium pack ${name} found`);
+      await pack.configure({locked: false});
     }
 
     return pack;

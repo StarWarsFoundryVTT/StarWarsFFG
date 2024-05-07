@@ -84,7 +84,7 @@ export default class Species {
             if (item?.TalentModifiers?.TalentModifier) {
               for (const talentData of Object.values(item.TalentModifiers)) {
                 const talentKey = talentData.Key;
-                let talent = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, "world.oggdudetalents", "talent", true);
+                let talent = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, "starwarsffg.oggdudetalents", "talent", true);
                 if (!talent) {
                   continue;
                 }
