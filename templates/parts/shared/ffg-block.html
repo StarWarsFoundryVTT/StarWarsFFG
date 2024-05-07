@@ -4,7 +4,7 @@
       <div class="block-title">
         {{#if headerlink}}
         <a class="{{headerclass}}" {{{headerattributes}}}>{{localize title}}</a>
-        {{else}} {{localize title}} {{/if}}
+        {{else}} {{localize title}} {{/if}}{{#if (eq title "SWFFG.DescriptionXP")}}<a class="alt-tab" data-tab="xp"><i class="far fa-note"></i></a>{{/if}}
       </div>
       <div class="block-attribute">
         {{#if (eq blocktype "pills")}}
