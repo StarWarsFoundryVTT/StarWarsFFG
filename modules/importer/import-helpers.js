@@ -2291,6 +2291,10 @@ export default class ImportHelpers {
         updateData = migrateDataToSystem(updateData);
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
         try {
+          if (dataType === "vehicle") {
+            // don't re-import items for existing vehicles, in order to avoid duplicating them
+            updateData.items = [];
+          }
           await pack.get(updateData._id).update(updateData);
           // update here does not return the UUID, so retrieve the item from the pack to get it
           const updatedItem = await pack.get(updateData._id);
