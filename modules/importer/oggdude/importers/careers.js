@@ -68,7 +68,7 @@ export default class Career {
             // process specializations
             if (item?.Specializations) {
               for (const specializationKey of Object.values(item.Specializations.Key)) {
-                let specializationItem = await ImportHelpers.findCompendiumEntityByImportId("Item", specializationKey, "world.oggdudespecializations", "specialization");
+                let specializationItem = await ImportHelpers.findCompendiumEntityByImportId("Item", specializationKey, "starwarsffg.oggdudespecializations", "specialization");
                 if (!specializationItem) {
                   continue;
                 }

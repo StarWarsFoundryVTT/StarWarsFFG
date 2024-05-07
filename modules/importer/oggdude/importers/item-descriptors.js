@@ -6,13 +6,26 @@ export default class ItemDescriptors {
     let items = base.ItemDescriptors.ItemDescriptor;
     let totalCount = items.length;
     let currentCount = 0;
-    let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.ItemQualities`);
+    let pack;
     CONFIG.logger.debug(`Starting Oggdude Item Descriptor Import`);
     $(".import-progress.itemdescriptors").toggleClass("import-hidden");
+    const packMap = {
+      "armor": await ImportHelpers.getCompendiumPack("Item", "oggdudearmormods"),
+      "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdudeweaponmods"),
+      "all": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericmods"),
+      "gear": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericmods"),
+      "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdudevehiclemods"),
+    };
 
     await ImportHelpers.asyncForEach(items, async (item) => {
       try {
-        let data = ImportHelpers.prepareBaseObject(item, "itemmodifier");
+        let data;
+        if (Array.isArray(item.Type)) item.Type = item.Type[0];
+        if (item?.Type?.toLowerCase() === "vehicle") {
+          data = ImportHelpers.prepareBaseObject(item, "shipattachment");
+        } else {
+          data = ImportHelpers.prepareBaseObject(item, "itemmodifier");
+        }
         data.img = `/systems/starwarsffg/images/mod-${item.Type ? item.Type.toLowerCase() : "all"}.png`;
         data.data = {
           description: item.Description?.length ? item.Description : item.ModDesc,
@@ -24,6 +37,14 @@ export default class ItemDescriptors {
         const mods = await ImportHelpers.processMods(item);
         if (mods) {
           if (mods?.baseMods?.attributes) data.data.attributes = mods.baseMods.attributes;
+        }
+
+        try {
+          // attempt to select the specific compendium for this type of mod
+          pack = packMap[data.data.type];
+        } catch (err) {
+          // but fail back to the generic compendium
+          pack = packMap["all"];
         }
 
         await ImportHelpers.addImportItemToCompendium("Item", data, pack);

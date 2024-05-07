@@ -1,9 +1,12 @@
 `1.810`
 * Features:
   * Support for FoundryVTT v12
+  * Compendiums moved to system defined, resulting in a cleaner compendium list
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
+  * Fixed career data not being properly set when running the OggDude importer
+  * Vehicle mods are now imported as the correct type (ship mods)
 
 `1.809`
 * Features: 

@@ -142,7 +142,7 @@ export default class SWAImporter extends FormApplication {
       $(".import-progress.current").toggleClass("import-hidden");
       $(".import-progress.overall").toggleClass("import-hidden");
 
-      let compendiumName = `swa.Adversaries`;
+      let compendiumName = `Star Wars Adversaries`;
 
       const filename = $("form.data-importer-window")[0].data.files[0].name;
 
@@ -151,6 +151,7 @@ export default class SWAImporter extends FormApplication {
       }
 
       let pack = await this._getCompendiumPack("Actor", compendiumName);
+      await pack.configure({locked: false});
 
       await ImportHelpers.asyncForEach(adversaryFiles, async (f) => {
         try {
