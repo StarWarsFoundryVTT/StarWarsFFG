@@ -27,9 +27,9 @@
       </div>
       <div>
         {{#if item.system.equippable.equipped}}
-        <a class="toggle-equipped active" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
+        <a class="toggle-equipped active" data-item-id="{{item._id}}" title="{{ localize "SWFFG.Equipped" }}"><i class="fas fa-fist-raised"></i></a>
         {{else}}
-        <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-fist-raised"></i></a>
+        <a class="toggle-equipped" data-item-id="{{item._id}}" title="{{ localize "SWFFG.Unequipped" }}"><i class="fas fa-fist-raised"></i></a>
         {{/if}}
       </div>
       <div>{{item.system.damage.value}} {{#if (and (ne item.system.damage.value item.system.damage.adjusted) (or (gt item.system.damage.adjusted.length 0) (gt item.system.damage.adjusted 0)))}}({{item.system.damage.adjusted}}){{/if}}</div>
