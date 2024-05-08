@@ -846,7 +846,13 @@
         "upgrade6": {},
         "upgrade7": {}
       },
-      "base_cost": 0
+      "base_cost": 0,
+      "uplink_nodes": {
+        "uplink0": false,
+        "uplink1": false,
+        "uplink2": false,
+        "uplink3": false
+      }
     },
     "itemattachment": {
       "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],

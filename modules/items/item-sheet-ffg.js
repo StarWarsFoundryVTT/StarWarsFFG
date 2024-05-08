@@ -1015,6 +1015,8 @@ export class ItemSheetFFG extends ItemSheet {
       $(`input[name='data.isEditing']`).val(!currentValue);
 
       $(".talent-grid").toggleClass("talent-disable-edit");
+      $(".talent-uplink-connections").toggleClass("talent-disable-edit");
+      await this._onSubmit(event);
     }
 
     if (action === "combine") {
@@ -1101,6 +1103,16 @@ export class ItemSheetFFG extends ItemSheet {
           left: this.position.left + 10,
         });
         return fp.browse();
+    }
+
+    if (action === "uplink") {
+      if ($(".talent-disable-edit").length === 0) {
+        const linkid = a.dataset.key;
+        const inputElement = $(`input[name='data.uplink_nodes.${linkid}']`);
+        const currentValue = inputElement.val() === "true";
+        inputElement.val(!currentValue);
+        await this._onSubmit(event);
+      }
     }
   }
 
