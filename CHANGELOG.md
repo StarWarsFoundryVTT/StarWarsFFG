@@ -2,7 +2,8 @@
 * Features:
   * Support for FoundryVTT v12
   * Compendiums moved to system defined, resulting in a cleaner compendium list
-  * Add XP log link to avaialble/total XP section
+  * Add XP log link to available/total XP section
+  * Move critical injuries to a dedicated tab in sheet v2
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
