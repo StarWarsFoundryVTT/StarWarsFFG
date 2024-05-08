@@ -12,6 +12,7 @@
   * Re-running the importer for vehicles no longer duplicates the weapons on those vehicles
   * Fix overflowing "special" field on weapons in Mandar theme
   * Corrected tooltip for equipped/unequipped gear (and localized it)
+  * non-character actors no longer show the option to buy skill ranks
 
 `1.809`
 * Features: 
