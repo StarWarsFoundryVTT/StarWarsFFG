@@ -1715,6 +1715,49 @@ export class ActorSheetFFG extends ActorSheet {
         ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.NotSet"));
         return;
       }
+      // filter purchasable signature abilities to those where the required specialization upgrades have been purchased
+      // filter specializations to those within the career
+      const career = this.object.items.find(i => i.type === "career");
+      if (!career) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CareerNotSet"));
+        return;
+      }
+      const permittedSpecializations = Object.values(career.system.specializations).map(i => i.name);
+      const matchingSpecializations = this.object.items.filter(i => i.type === "specialization" && permittedSpecializations.includes(i.name));
+      if (!matchingSpecializations) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Career.Specializations.NotSet"));
+        return;
+      }
+      // loop through signature abilities and build a map of required upgrades
+      let newSelectableItems = [];
+      for (const selectableItem of selectableItems) {
+        const fullItem = fromUuidSync(selectableItem.source);
+        // check if any specializations match the required upgrades, discarding them if they do not
+        let match;
+        for (const specialization of matchingSpecializations) {
+          match = true;
+          for (let i = 0; i < 4; i++) {
+            // if the upgrade is required, and we don't have it learned, this is not a match
+            if (fullItem.system.uplink_nodes[`uplink${i}`] && !specialization.system.talents[`talent${i + 16}`].islearned) {
+              match = false;
+              break;
+            }
+          }
+          if (match) {
+            // if any specialization matches the required upgrades, do not check further specializations
+            newSelectableItems.push(selectableItem);
+            break;
+          }
+        }
+      }
+      if (newSelectableItems.length === 0) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.NoMatch"));
+        return;
+      }
+
+      // update the list with the filtered list
+      selectableItems = newSelectableItems;
+
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.signatureability");
       content = await renderTemplate(template, { selectableItems, itemType: itemType });
@@ -1792,6 +1835,10 @@ export class ActorSheetFFG extends ActorSheet {
               const cost = $("#ffgPurchase option:selected", that).data("cost");
               const selected_id = $("#ffgPurchase option:selected", that).data("id");
               const selected_source = $("#ffgPurchase option:selected", that).data("source");
+              if (cost > availableXP) {
+                ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
+                return;
+              }
               let purchasedItem = game.items.get(selected_id);
               if (!purchasedItem) {
                 purchasedItem = await fromUuid(selected_source);

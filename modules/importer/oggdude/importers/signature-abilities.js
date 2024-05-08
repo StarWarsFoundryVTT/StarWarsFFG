@@ -31,6 +31,12 @@ export default class SignatureAbilities {
             attributes: {},
             upgrades: {},
             base_cost: 0,
+            uplink_nodes: {
+              uplink0: false,
+              uplink1: false,
+              uplink2: false,
+              uplink3: false,
+            }
           };
 
           data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
@@ -115,6 +121,10 @@ export default class SignatureAbilities {
           } else {
             data.img = `icons/svg/aura.svg`;
           }
+
+          item.MatchingNodes.Node.forEach((row, i) => {
+            data.data.uplink_nodes[`uplink${i}`] = row !== "false";
+          });
 
           const sigAbility = await ImportHelpers.addImportItemToCompendium("Item", data, pack);
           currentCount += 1;

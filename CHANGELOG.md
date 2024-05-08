@@ -4,6 +4,9 @@
   * Compendiums moved to system defined, resulting in a cleaner compendium list
   * Add XP log link to available/total XP section
   * Move critical injuries to a dedicated tab in sheet v2
+  * Signature abilities can now have required specialization upgrades defined
+    * Re-running the importer will automatically apply this to specializations in the compendium
+    * Purchasing Signature Abilities now takes these links into account, if defined
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
@@ -13,6 +16,7 @@
   * Fix overflowing "special" field on weapons in Mandar theme
   * Corrected tooltip for equipped/unequipped gear (and localized it)
   * non-character actors no longer show the option to buy skill ranks
+  * Players can no longer purchase Signature Abilities or Force Powers if they do not have enough XP for them
 
 `1.809`
 * Features: 
