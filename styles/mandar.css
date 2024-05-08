@@ -1603,6 +1603,11 @@ img {
   border-radius: 0.25rem;
 }
 
+.starwarsffg [data-target="data.special.value"] {
+  height: 50px;
+  width: 215px;
+}
+
 .starwarsffg .popout-editor p {
   line-height: .875rem;
 }
