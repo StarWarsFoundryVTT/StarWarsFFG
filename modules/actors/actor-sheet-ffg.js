@@ -268,7 +268,7 @@ export class ActorSheetFFG extends ActorSheet {
       this.sheetHeight = this.position.height;
     });
 
-    new ContextMenu(html, ".skillsGrid .skill", [
+    let contextMenuOptions = [
       {
         name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
         icon: '<i class="fas fa-wrench"></i>',
@@ -290,14 +290,25 @@ export class ActorSheetFFG extends ActorSheet {
           this._onRemoveSkill(li);
         },
       },
-      {
-        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
-        icon: '<i class="fas fa-dollar"></i>',
-        callback: (li) => {
-          this._buySkillRank(li);
+    ];
+
+    if (this.actor.type === "character") {
+      contextMenuOptions.push(
+        {
+          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
+          icon: '<i class="fas fa-dollar"></i>',
+          callback: (li) => {
+            this._buySkillRank(li);
+          },
         },
-      },
-    ]);
+      );
+    }
+
+    new ContextMenu(
+        html,
+        ".skillsGrid .skill",
+        contextMenuOptions,
+    );
 
     new ContextMenu(html, "div.skillsHeader", [
       {
