@@ -7,6 +7,6 @@
     <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{../increasedCost}}">{{data.name}} ({{../increasedCost}} XP)</option>
   {{/each}}
   {{#each selectableItems as |data id|}}
-    <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{data.cost}}">{{data.name}} ({{data.cost}} XP)</option>
+    <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{data.cost}}">{{data.name}} ({{data.cost}} XP{{#if (eq ../itemCategory "forcepower") }}, {{ data.requiredForceRating }} force rating{{/if}})</option>
   {{/each}}
 </select>
