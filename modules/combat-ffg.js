@@ -660,29 +660,21 @@ export class CombatTrackerFFG extends CombatTracker {
 
     // update visibility state for each token
     for (const turn of turnData['Friendly']) {
-      turn.hidden = this._getTokenHidden(turn.tokenId);
-      turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
+      const combatant = combat.combatants.get(turn.id);
+      turn.hidden = this._getTokenHidden(combatant.tokenId);
+      turn.claimed = combat.hasClaims(combatant.id);
     }
 
     for (const turn of turnData['Enemy']) {
       const combatant = combat.combatants.get(turn.id);
-      if (!combatant) {
-        //continue;
-      }
-      const claimantId = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
-      const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
-      if (combat.started && claimant) {
-        turn.hidden = this._getTokenHidden(claimant.tokenId);
-        turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === claimant.tokenId).id );
-      } else {
-        turn.hidden = this._getTokenHidden(combatant.tokenId);
-        turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === combatant.tokenId).id);
-      }
+      turn.hidden = this._getTokenHidden(combatant.tokenId);
+      turn.claimed = combat.hasClaims(combatant.id);
     }
 
     for (const turn of turnData['Neutral']) {
-      turn.hidden = this._getTokenHidden(turn.tokenId);
-      turn.claimed = combat.hasClaims(combat.combatants.find(i => i.tokenId === turn.tokenId).id);
+      const combatant = combat.combatants.get(turn.id);
+      turn.hidden = this._getTokenHidden(combatant.tokenId);
+      turn.claimed = combat.hasClaims(combatant.id);
     }
 
     return {

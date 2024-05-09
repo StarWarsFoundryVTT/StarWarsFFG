@@ -20,6 +20,7 @@
   * non-character actors no longer show the option to buy skill ranks
   * Players can no longer purchase Signature Abilities or Force Powers if they do not have enough XP for them
   * Minion sheets now show "group skill" instead of "career skill"
+  * Corrected a bug in the combat tracker where actors claiming a slot not originally belonging to them resulted in both the original slot owner and claiming actor being shown as having acted in the actor summary
 
 `1.809`
 * Features: 
