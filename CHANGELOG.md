@@ -7,6 +7,7 @@
   * Signature abilities can now have required specialization upgrades defined
     * Re-running the importer will automatically apply this to specializations in the compendium
     * Purchasing Signature Abilities now takes these links into account, if defined
+  * Purchasing Force Powers now checks the required force rating
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs

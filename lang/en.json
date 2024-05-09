@@ -666,6 +666,7 @@
   "SWFFG.Actors.Sheets.Purchase.FP.ContextMenuText": "Purchase Upgrade",
   "SWFFG.Actors.Sheets.Purchase.FP.ConfirmTitle": "Purchase Upgrade",
   "SWFFG.Actors.Sheets.Purchase.FP.ConfirmText": "Spend {cost} XP to purchase {upgrade}?",
+  "SWFFG.Actors.Sheets.Purchase.FP.FRTooLow": "Your force rating of {forceRating} is too low (needed: {requiredForceRating})",
   "SWFFG.Actors.Sheets.Purchase.SA.ContextMenuText": "Purchase Upgrade",
   "SWFFG.Actors.Sheets.Purchase.SA.ConfirmTitle": "Purchase Upgrade",
   "SWFFG.Actors.Sheets.Purchase.SA.ConfirmText": "Spend {cost} XP to purchase {upgrade}?",

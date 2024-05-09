@@ -1771,6 +1771,7 @@ export class ActorSheetFFG extends ActorSheet {
           id: worldItem.id,
           source: worldItem.uuid,
           cost: worldItem.system.base_cost,
+          requiredForceRating: worldItem.system.required_force_rating,
         });
       }
       for (const source of sources) {
@@ -1785,12 +1786,13 @@ export class ActorSheetFFG extends ActorSheet {
             id: item.id,
             source: item.uuid,
             cost: item.system.base_cost,
+            requiredForceRating: item.system.required_force_rating,
           });
         }
       }
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.forcepower");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType });
+      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower" });
     } else if (action === "talent") {
       const sources = game.settings.get("starwarsffg", "talentCompendiums").split(",");
       let selectableItems = [];
@@ -1842,6 +1844,14 @@ export class ActorSheetFFG extends ActorSheet {
               let purchasedItem = game.items.get(selected_id);
               if (!purchasedItem) {
                 purchasedItem = await fromUuid(selected_source);
+              }
+              if (purchasedItem.type === "forcepower") {
+                const currentForceRating = parseInt(this.actor.system.attributes.ForcePool.value);
+                const requiredForceRating = parseInt(purchasedItem.system.required_force_rating);
+                if (currentForceRating < requiredForceRating) {
+                  ui.notifications.warn(game.i18n.format("SWFFG.Actors.Sheets.Purchase.FP.FRTooLow", {forceRating: currentForceRating, requiredForceRating: requiredForceRating}));
+                  return;
+                }
               }
               await this.object.createEmbeddedDocuments("Item", [purchasedItem]);
               await this.object.update({
