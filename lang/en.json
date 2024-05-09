@@ -71,6 +71,8 @@
   "SWFFG.SkillsName": "Name",
   "SWFFG.SkillsCS": "CS",
   "SWFFG.SkillsCareerSkill": "Career Skill",
+  "SWFFG.SkillsGS": "GS",
+  "SWFFG.SkillsGroupSkill": "Group Skill",
   "SWFFG.SkillsRank": "Rank",
   "SWFFG.SkillsRoll": "Roll",
   "SWFFG.ItemsWeapons": "Weapons",
