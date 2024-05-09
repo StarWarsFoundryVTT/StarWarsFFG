@@ -19,6 +19,7 @@
   * Corrected tooltip for equipped/unequipped gear (and localized it)
   * non-character actors no longer show the option to buy skill ranks
   * Players can no longer purchase Signature Abilities or Force Powers if they do not have enough XP for them
+  * Minion sheets now show "group skill" instead of "career skill"
 
 `1.809`
 * Features: 
