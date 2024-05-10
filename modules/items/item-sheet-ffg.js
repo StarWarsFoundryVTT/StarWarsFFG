@@ -14,6 +14,10 @@ import ItemOptions from "./item-ffg-options.js";
  * @extends {ItemSheet}
  */
 export class ItemSheetFFG extends ItemSheet {
+  constructor(...args) {
+    super(...args);
+    this.listenersActive = false;
+  }
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -305,6 +309,9 @@ export class ItemSheetFFG extends ItemSheet {
 
   /** @override */
   activateListeners(html) {
+    if (this.listenersActive && this.object.type === "specialization") {
+      return;
+    }
     super.activateListeners(html);
     new ContextMenu(this.element, ".talent-upgrade.specialization-talent", [
       {
@@ -806,6 +813,7 @@ export class ItemSheetFFG extends ItemSheet {
       );
       this.object.sheet.render(true);
     });
+    this.listenersActive = true;
   }
 
   async _buyHandleClick(li, desired_item_type) {
@@ -877,7 +885,7 @@ export class ItemSheetFFG extends ItemSheet {
               const talentId = $(li).attr("id");
               const input = $(`[name="data.talents.${talentId}.islearned"]`, this.element)[0];
               input.checked = true;
-              await this.object.sheet.submit({preventClose: true});
+              await this.object.sheet.submit();
               owner.update({system: {experience: {available: availableXP - cost}}});
               await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost, availableXP - cost, totalXP);
             },

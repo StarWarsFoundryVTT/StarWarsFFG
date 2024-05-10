@@ -21,6 +21,7 @@
   * Players can no longer purchase Signature Abilities or Force Powers if they do not have enough XP for them
   * Minion sheets now show "group skill" instead of "career skill"
   * Corrected a bug in the combat tracker where actors claiming a slot not originally belonging to them resulted in both the original slot owner and claiming actor being shown as having acted in the actor summary
+  * The buy talent button on specializations no longer disappears when buying >1 talent at a time
 
 `1.809`
 * Features: 
