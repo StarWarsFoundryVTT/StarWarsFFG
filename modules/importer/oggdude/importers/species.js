@@ -27,6 +27,7 @@ export default class Species {
               attributes: {},
               description: item.Description,
               talents: {},
+              startingXP: item.StartingAttrs.Experience ? parseInt(item.StartingAttrs.Experience, 10) : 0,
             };
 
             // populate starting characteristics

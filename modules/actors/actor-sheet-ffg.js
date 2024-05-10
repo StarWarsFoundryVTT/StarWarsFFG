@@ -7,7 +7,7 @@ import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
-import ActorHelpers, {xpLogSpend} from "../helpers/actor-helpers.js";
+import ActorHelpers, {xpLogEarn, xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import {change_role, deregister_crew, build_crew_roll} from "../helpers/crew.js";
@@ -57,6 +57,24 @@ export class ActorSheetFFG extends ActorSheet {
 
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
+
+      if (this.actor.type === "character" && itemData.type === "species") {
+        // add starting XP from species
+        const curAvailable = parseInt(this.actor.system?.experience?.available);
+        const curTotal = parseInt(this.actor.system?.experience?.total);
+        const startingXP = parseInt(itemData.system?.startingXP);
+        await this.actor.update(
+          {
+            system: {
+              experience: {
+                available: curAvailable + startingXP,
+                total: curTotal + startingXP,
+              }
+            }
+          }
+        );
+        await xpLogEarn(this.actor, startingXP, curAvailable + startingXP, curTotal + startingXP, game.i18n.format("SWFFG.GrantXPSpecies", {species: itemData.name}) );
+      }
 
       // Create the owned item
       return this._onDropItemCreate(itemData);
@@ -1435,11 +1453,11 @@ export class ActorSheetFFG extends ActorSheet {
       let sameActor = data.actorId === this.actor.id;
       if (!sameActor) {
         try {
-          this.actor.createEmbeddedDocuments("Item", [duplicate(data.data)]); // Create a new Item
+          this.actor.createEmbeddedDocuments("Item", [foundry.utils.duplicate(data.data)]); // Create a new Item
           const actor = game.actors.get(data.actorId);
           await actor.items.get(data.data._id)?.delete(); // Delete originating item from other actor
         } catch (err) {
-          CONFIG.logger.error(`Error transfering item between actors.`, err);
+          CONFIG.logger.error(`Error transferring item between actors.`, err);
         }
       }
     }

@@ -9,6 +9,9 @@
     * Purchasing Signature Abilities now takes these links into account, if defined
   * Purchasing Force Powers now checks the required force rating
   * Sheets now default to the v2 version (they can still be manually changed back to v1)
+  * Species can now have starting XP defined
+    * Dragging a species onto a player character grants the starting XP
+    * The importer has been updated to import starting XP
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs

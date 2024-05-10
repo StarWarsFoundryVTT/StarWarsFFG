@@ -38,6 +38,9 @@
           <input class="attribute-key" type="text" name="data.attributes.Strain.key" value="Strain" style="display: none;" />
           <input type="text" name="data.attributes.Strain.modtype" value="Stat" style="display: none;" />
           <input type="text" name="data.attributes.Strain.mod" value="Strain" style="display: none;" />
+
+          {{!-- Starting XP Box --}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.StartingXP" type="Number" name="data.startingXP" value=data.startingXP)}}
         </div>
       </div>
     </div>
