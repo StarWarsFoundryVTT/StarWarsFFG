@@ -764,7 +764,8 @@
     },
     "species": {
       "templates": ["core"],
-      "talents": {}
+      "talents": {},
+      "startingXP": 0
     },
     "criticalinjury": {
       "templates": ["core"],

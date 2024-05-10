@@ -283,6 +283,8 @@
   "SWFFG.GrantXP": "Grant XP",
   "SWFFG.GrantXPTo": "Grant XP to",
   "SWFFG.GrantXPToAllCharacters": "Grant XP to all characters",
+  "SWFFG.GrantXPSpecies": "received species {species}",
+  "SWFFG.StartingXP": "Starting XP",
   "SWFFG.ObligationTable": "Obligation Table",
   "SWFFG.DutyTable": "Duty Table",
   "SWFFG.Range": "Range",
