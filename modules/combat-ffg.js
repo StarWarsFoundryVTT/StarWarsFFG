@@ -578,6 +578,7 @@ export class CombatTrackerFFG extends CombatTracker {
 
         claim = {
           id: claimant.id,
+          combatantId: combatant.id,
           name: claimant.name,
           img: claimant.img ?? CONST.DEFAULT_TOKEN,
           owner: claimant.isOwner,
@@ -592,6 +593,7 @@ export class CombatTrackerFFG extends CombatTracker {
       } else {
         CONFIG.logger.debug(`slot ${index} is unclaimed`);
         if (combatant) {
+          turn.combatantId = combatant.id;
           if (combatant && Object.keys(combatant).includes("tokenId")) {
             combatant.hidden = this._getTokenHidden(combatant.tokenId);
           } else {
@@ -858,12 +860,15 @@ export class CombatTrackerFFG extends CombatTracker {
    */
   _getTokenHidden(tokenId) {
     let hidden = true;
-    const scene = game.scenes.get(this.viewed.scene.id);
+    const scene = game.scenes.find(i => i.isView);
+    if (!scene) {
+      return false;
+    }
     const token = scene.tokens.get(tokenId);
     if (token) {
       hidden = token.hidden;
     }
-    CONFIG.logger.debug(`looking up hidden state for ${token?.name}/${tokenId} on scene ${scene.id}: ${hidden}`);
+    CONFIG.logger.debug(`looked up hidden state for ${token?.name}/${tokenId} on scene ${scene.id}: ${hidden}`);
     return hidden;
   }
 }
