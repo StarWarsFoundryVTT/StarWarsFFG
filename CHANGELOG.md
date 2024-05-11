@@ -26,6 +26,7 @@
   * Corrected a bug in the combat tracker where actors claiming a slot not originally belonging to them resulted in both the original slot owner and claiming actor being shown as having acted in the actor summary
   * The buy talent button on specializations no longer disappears when buying >1 talent at a time
   * Corrected a bug in the combat tracker where actors claiming a slot not originally belonging to them prevented them from being removed from combat
+  * Correct default Signature ability height so the bottom isn't ever-so-slightly cut off
 
 `1.809`
 * Features: 

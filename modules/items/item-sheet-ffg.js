@@ -278,7 +278,7 @@ export class ItemSheetFFG extends ItemSheet {
         break;
       case "signatureability": {
         this.position.width = 720;
-        this.position.height = 515;
+        this.position.height = 545;
         data.data.isReadOnly = false;
         if (!this.options.editable) {
           data.data.isEditing = false;
