@@ -1007,6 +1007,14 @@ export class ActorSheetFFG extends ActorSheet {
       await this._onSubmit(event);
     });
 
+    html.find(".edit-obligation").on("click", async (event) => {
+      event.preventDefault();
+      const a = event.currentTarget;
+      const id = a.dataset["id"];
+      console.log("editing obligation")
+      //this.object.update({ "data.obligationlist": { ["-=" + id]: null } });
+    });
+
     html.find(".remove-obligation").on("click", async (event) => {
       event.preventDefault();
       const a = event.currentTarget;
