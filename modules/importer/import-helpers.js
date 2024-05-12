@@ -1635,6 +1635,7 @@ export default class ImportHelpers {
               key: nk,
               type: CharObligation.Name,
               magnitude: CharObligation.Size,
+              description: CharObligation.Notes,
             };
             character.data.obligationlist[charobligation.key] = charobligation;
             if (parseInt(CharObligation.Size, 10)) {
@@ -1647,6 +1648,7 @@ export default class ImportHelpers {
             key: nk,
             type: characterData.Character.Obligations.CharObligation.Name,
             magnitude: characterData.Character.Obligations.CharObligation.Size,
+            description: characterData.Character.Obligations.CharObligation.Notes,
           };
           character.data.obligationlist[charobligation.key] = charobligation;
           if (parseInt(characterData.Character.Obligations.CharObligation.Size, 10)) {
