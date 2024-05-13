@@ -595,6 +595,12 @@ export class ActorSheetFFG extends ActorSheet {
         }
         if (!item) {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+          if (!item) {
+            const talentItemData = this.actor?.talentList.find(talent => talent.itemId === itemId);
+            if (talentItemData) {
+              item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
+            }
+          }
         }
         if (item?.sheet) {
           if (item?.type == "species" || item?.type == "career" || item?.type == "specialization" || item?.type == "forcepower" || item?.type == "signatureability") item.sheet.render(true);
@@ -1118,6 +1124,12 @@ export class ActorSheetFFG extends ActorSheet {
     }
     if (!item) {
       item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+      if (!item) {
+        const talentItemData = this.actor?.talentList.find(talent => talent.itemId === itemId);
+        if (talentItemData) {
+          item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
+        }
+      }
     }
 
     const itemDetails = await item?.getItemDetails();

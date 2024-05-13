@@ -364,7 +364,6 @@ export class ItemSheetFFG extends ItemSheet {
       const li = event.currentTarget;
       const parent = $(li).parents(".specialization-talent")[0];
       const itemId = parent.dataset.itemid;
-      const packName = $(parent).find(`input[name='data.talents.${parent.id}.pack']`).val();
       const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
 
       if (!itemId) {
@@ -372,22 +371,16 @@ export class ItemSheetFFG extends ItemSheet {
         return;
       }
 
-      let item = await Helpers.getSpecializationTalent(itemId, packName);
+      let item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
       if (!item) {
-        if (packName) {
-          // if we can't find the item by itemid, try by name
-          const pack = await game.packs.get(packName);
-          await pack.getIndex();
-          const entity = await pack.index.find((e) => e.name === talentName);
-          if (entity) {
-            item = await pack.getEntity(entity.id);
-
-            let updateData = {};
-            // build dataset if needed
-            if (!pack.locked) {
-              foundry.utils.setProperty(updateData, `data.talents.${parent.id}.itemId`, entity.id);
-              this.object.update(updateData);
-            }
+        // if we can't find the item by itemid, try by name
+        item = await ImportHelpers.findCompendiumEntityByName("Item", talentName);
+        if (item) {
+          let updateData = {};
+          // build dataset if needed
+          if (!item.locked) {
+            foundry.utils.setProperty(updateData, `data.talents.${parent.id}.itemId`, item.id);
+            this.object.update(updateData);
           }
         }
       }

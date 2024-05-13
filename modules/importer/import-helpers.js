@@ -159,6 +159,27 @@ export default class ImportHelpers {
     }
   }
 
+  /**
+   * Find a compendium entity by type and name
+   * we can encounter the ID changing seemingly during Foundry version transitions, even within minor version changes
+   * @param  {string} type - Entity type to search for
+   * @param {string} name - Name of the item (optional)
+   * @returns {object} - Entity Object Data
+   */
+  static async findCompendiumEntityByName(type, name) {
+    let packs = Array.from(await game.packs.keys());
+    for (let i = 0; i < packs.length; i += 1) {
+      let packId = packs[i];
+      const pack = await game.packs.get(packId);
+      if (pack.documentName === type) {
+        const entity = pack.index.find(t => t.name === name);
+        if (entity) {
+          return await pack.getDocument(entity._id);
+        }
+      }
+    }
+  }
+
   static clearCache() {
     CONFIG.temporary = {};
   }
