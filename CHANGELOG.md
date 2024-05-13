@@ -12,7 +12,6 @@
   * Species can now have starting XP defined
     * Dragging a species onto a player character grants the starting XP
     * The importer has been updated to import starting XP
-  * You can now edit talents on specialization trees (including on actors)
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
