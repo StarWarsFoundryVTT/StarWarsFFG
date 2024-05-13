@@ -12,6 +12,7 @@
   * Species can now have starting XP defined
     * Dragging a species onto a player character grants the starting XP
     * The importer has been updated to import starting XP
+  * You can now edit talents on specialization trees (including on actors)
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
@@ -27,6 +28,8 @@
   * The buy talent button on specializations no longer disappears when buying >1 talent at a time
   * Corrected a bug in the combat tracker where actors claiming a slot not originally belonging to them prevented them from being removed from combat
   * Correct default Signature ability height so the bottom isn't ever-so-slightly cut off
+  * Fixed a bug where talents displayed blank when expanded on actor sheets
+  * Fixed a bug where attempting to view a talent on a specialization tree did not open anything
 
 `1.809`
 * Features: 
