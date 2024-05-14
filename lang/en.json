@@ -320,6 +320,8 @@
   "SWFFG.SettingsDiceThemeHint": "Switch between Star Wars or Genesys style dice.",
   "SWFFG.SettingsVehicleRange": "Choose Vehicle Range System",
   "SWFFG.SettingsVehicleRangeHint": "Switch between Star Wars or Genesys vehicle range bands.",
+  "SWFFG.Settings.UseDefense.Name": "Use Defense When Building Pool",
+  "SWFFG.Settings.UseDefense.Hint": "Automatically add setback dice from targeted actors to the dice pool",
   "SWFFG.TalentsForce": "Force Talent?",
   "SWFFG.ForceTalent": "Force Talent",
   "SWFFG.LoadFile": "Load File",

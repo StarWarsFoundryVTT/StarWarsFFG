@@ -73,13 +73,29 @@ export default class DiceHelpers {
     }
     const itemData = item || {};
     const status = this.getWeaponStatus(itemData);
+    let defenseDice = 0;
+    if (game.settings.get("starwarsffg", "useDefense")) {
+      let isRanged = ["Ranged: Light", "Ranged: Heavy", "Gunnery"].includes(skill.value);
+      let isMelee = ["Melee", "Brawl", "Lightsaber"].includes(skill.value);
+      if (itemData?.type === "weapon") {
+        if (game.user.targets.size > 0) {
+          for (const target of game.user.targets) {
+            if (isRanged) {
+              defenseDice = Math.max(defenseDice, target.actor.system.stats.defence.ranged);
+            } else if (isMelee) {
+              defenseDice = Math.max(defenseDice, target.actor.system.stats.defence.melee);
+            }
+          }
+        }
+      }
+    }
 
     // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
 
     let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
-      setback: skill.setback + status.setback,
+      setback: skill.setback + status.setback + defenseDice,
       force: skill.force,
       advantage: skill.advantage,
       dark: skill.dark,
