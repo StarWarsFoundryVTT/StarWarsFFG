@@ -209,6 +209,14 @@ Hooks.once("init", async function () {
     default: "",
     type: String,
   });
+  game.settings.register("starwarsffg", "useDefense", {
+    name: game.i18n.localize("SWFFG.Settings.UseDefense.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.UseDefense.Hint"),
+    scope: "client",
+    config: true,
+    default: true,
+    type: Boolean,
+  });
 
   /**
    * Set an initiative formula for the system

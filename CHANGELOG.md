@@ -13,6 +13,7 @@
     * Dragging a species onto a player character grants the starting XP
     * The importer has been updated to import starting XP
   * Obligations and duties may now have notes set, and the character importer correctly populates this field
+  * Defense dice are now added if an actor is targeted (this is configurable per-client) 
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
