@@ -328,6 +328,11 @@ export class ActorSheetFFG extends ActorSheet {
         contextMenuOptions,
     );
 
+    html.find(".skill-purchase").click(async (ev) => {
+      const target = $(ev.currentTarget).parents().filter("[data-ability]");
+      await this._buySkillRank(target);
+    });
+
     new ContextMenu(html, "div.skillsHeader", [
       {
         name: game.i18n.localize("SWFFG.SkillAddContextItem"),

@@ -26,6 +26,7 @@
         <div data-ability="{{skill.name}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill" draggable="true">
           <div class="pure-u-12-24">
             <div class="skill-name">
+              {{#if (eq ../../this.actor.type "character")}}<i class="fas fa-dollar skill-purchase"></i>{{/if}}
               {{#if skill.useForInitiative}}*{{/if}}{{skill.label}} {{#with (lookup ../../this.FFG.characteristics [characteristic])~}}
               <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">({{localize abrev}})</div>
               {{/with}}

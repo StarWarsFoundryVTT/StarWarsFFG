@@ -31,6 +31,7 @@
   * Correct default Signature ability height so the bottom isn't ever-so-slightly cut off
   * Fixed a bug where talents displayed blank when expanded on actor sheets
   * Fixed a bug where attempting to view a talent on a specialization tree did not open anything
+  * Allow purchasing skills at the bottom of the skill list by adding a dedicated purchase button
 
 `1.809`
 * Features: 

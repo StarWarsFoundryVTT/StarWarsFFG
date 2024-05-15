@@ -2083,10 +2083,14 @@ img {
   position: relative;
   overflow-y: auto;
   overflow-x: hidden;
-  height: calc(100% - 5rem);
+  height: calc(100% - 6rem);
   float: left;
   width: 100%;
   padding: 0.25rem 0.25rem 0.25rem 0;
+}
+
+.starwarsffg .skill-name .skill-purchase {
+  cursor: pointer;
 }
 
 .starwarsffg .skillsGrid {
