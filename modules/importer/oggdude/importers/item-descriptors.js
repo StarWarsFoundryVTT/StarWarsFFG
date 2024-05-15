@@ -32,7 +32,19 @@ export default class ItemDescriptors {
           attributes: {},
           type: item.Type ? item.Type.toLowerCase() : "all",
           rank: 1,
+          metadata: {
+            tags: [],
+          },
         };
+
+        if (item?.Type?.toLowerCase() === "vehicle") {
+          data.data.metadata.tags.push("shipattachment");
+        } else {
+          data.data.metadata.tags.push("itemmodifier");
+        }
+        if (item?.Type) {
+          data.data.metadata.tags.push(item.Type.toLowerCase());
+        }
 
         const mods = await ImportHelpers.processMods(item);
         if (mods) {

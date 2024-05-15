@@ -43,7 +43,16 @@ export default class ItemAttachments {
             },
             type: item.Type ? item.Type.toLowerCase() : "all",
             itemmodifier: [],
+            metadata: {
+              tags: [],
+            },
           };
+
+          if (item?.Type?.toLowerCase() === "vehicle") {
+            data.data.metadata.tags.push("shipattachment");
+          } else {
+            data.data.metadata.tags.push("itemattachment");
+          }
 
           try {
             // attempt to select the specific compendium for this type of attachment
@@ -60,6 +69,23 @@ export default class ItemAttachments {
             if (mods?.baseMods?.itemattachment) data.data.itemattachment = mods.baseMods.itemattachment;
             if (mods?.baseMods?.description) data.data.description += `<h3>Base Mods</h3>${mods.baseMods.description}`;
             if (mods?.addedMods?.itemmodifier) data.data.itemmodifier = mods.addedMods.itemmodifier;
+          }
+
+          // populate tags
+          try {
+            if (Array.isArray(item.CategoryLimit.Category)) {
+              for (const tag of item.CategoryLimit.Category) {
+                data.data.metadata.tags.push(tag.toLowerCase());
+              }
+            } else {
+              data.data.metadata.tags.push(item.CategoryLimit.Category.toLowerCase());
+            }
+          } catch (err) {
+            CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+          }
+          if (item?.Type) {
+            // the "type" can be useful as a tag as well
+            data.data.metadata.tags.push(item.Type.toLowerCase());
           }
 
           await ImportHelpers.addImportItemToCompendium("Item", data, pack);

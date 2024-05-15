@@ -51,6 +51,11 @@ export default class Weapons {
               },
               itemmodifier: [],
               itemattachment: [],
+              metadata: {
+                tags: [
+                  itemType,
+                ],
+              },
             };
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
 
@@ -83,6 +88,23 @@ export default class Weapons {
                 modtype: "Weapon Stat",
                 value: parseInt(item.DamageAdd, 10),
               };
+            }
+
+            // populate tags
+            try {
+              if (Array.isArray(item.Categories.Category)) {
+                for (const tag of item.Categories.Category) {
+                  data.data.metadata.tags.push(tag.toLowerCase());
+                }
+              } else {
+                data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+              }
+            } catch (err) {
+              CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+            }
+            if (item?.Type) {
+              // the "type" can be useful as a tag as well
+              data.data.metadata.tags.push(item.Type.toLowerCase());
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", data.flags.starwarsffg.ffgimportid);
