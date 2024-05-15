@@ -36,7 +36,12 @@ export default class SignatureAbilities {
               uplink1: false,
               uplink2: false,
               uplink3: false,
-            }
+            },
+            metadata: {
+              tags: [
+                "signatureability",
+              ],
+            },
           };
 
           data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
@@ -115,6 +120,24 @@ export default class SignatureAbilities {
               CONFIG.logger.error(`Error importing record : `, data.name);
             }
           });
+
+          // populate tags
+          try {
+            if (Array.isArray(item.Categories.Category)) {
+              for (const tag of item.Categories.Category) {
+                data.data.metadata.tags.push(tag.toLowerCase());
+              }
+            } else {
+              data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+            }
+          } catch (err) {
+            CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+          }
+          if (item?.Type) {
+            // the "type" can be useful as a tag as well
+            data.data.metadata.tags.push(item.Type.toLowerCase());
+          }
+
           let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", data.flags.starwarsffg.ffgimportid);
           if (imgPath) {
             data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);

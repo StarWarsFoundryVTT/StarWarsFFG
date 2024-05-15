@@ -82,6 +82,11 @@ export default class Vehicles {
               },
               itemmodifier: [],
               itemattachment: [],
+              metadata: {
+                tags: [
+                  "vehicle",
+                ],
+              },
             };
 
             data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
@@ -117,6 +122,28 @@ export default class Vehicles {
                   CONFIG.logger.warn(`Unable to find weapon : ${weapon.Key}`);
                 }
               });
+            }
+
+            // populate tags
+            try {
+              if (Array.isArray(item.Categories.Category)) {
+                for (const tag of item.Categories.Category) {
+                  data.system.metadata.tags.push(tag.toLowerCase());
+                }
+              } else {
+                data.system.metadata.tags.push(item.Categories.Category.toLowerCase());
+              }
+            } catch (err) {
+              CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+            }
+            if (item?.Type) {
+              // the "type" can be useful as a tag as well
+              data.system.metadata.tags.push(item.Type.toLowerCase());
+            }
+
+            let imgPath = await ImportHelpers.getImageFilename(zip, "Vehicle", "", data.flags.starwarsffg.ffgimportid);
+            if (imgPath) {
+              data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }
 
             await ImportHelpers.addImportItemToCompendium("Actor", data, pack);

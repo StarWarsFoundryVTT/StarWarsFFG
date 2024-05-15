@@ -13,13 +13,13 @@
     * Dragging a species onto a player character grants the starting XP
     * The importer has been updated to import starting XP
   * Obligations and duties may now have notes set, and the character importer correctly populates this field
-  * Defense dice are now added if an actor is targeted (this is configurable per-client) 
+  * Defense dice are now added if an actor is targeted (this is configurable per-client)
+  * Items imported via OggDude importer now include the categories from the source dataset (e.g. the Holdout Blaster is tagged with "Blaster Pistol", "Holdout blaster", "Blaster", "Pistol", "Ranged")
+  * Abilities created during the SWA import process are now created as "Ability" items instead of populating in the biography section
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
-  * Fixed career data not being properly set when running the OggDude importer
   * Vehicle mods are now imported as the correct type (ship mods)
-  * Re-running the importer for vehicles no longer duplicates the weapons on those vehicles
   * Fix overflowing "special" field on weapons in Mandar theme
   * Corrected tooltip for equipped/unequipped gear (and localized it)
   * non-character actors no longer show the option to buy skill ranks
@@ -32,6 +32,10 @@
   * Fixed a bug where talents displayed blank when expanded on actor sheets
   * Fixed a bug where attempting to view a talent on a specialization tree did not open anything
   * Allow purchasing skills at the bottom of the skill list by adding a dedicated purchase button
+  * Importer fixes:
+    * Career data is now properly set when the OggDude importer is run
+    * Re-running the importer no longer duplicates weapons on vehicles
+    * Vehicle images are now imported when "vehicles" are imported
 
 `1.809`
 * Features: 

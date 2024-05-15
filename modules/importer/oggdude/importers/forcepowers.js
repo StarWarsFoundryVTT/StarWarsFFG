@@ -37,6 +37,11 @@ export default class ForcePowers {
                 description: basepower.Description,
                 upgrades: {},
                 required_force_rating: item?.MinForceRating ? item.MinForceRating : 1,
+                metadata: {
+                  tags: [
+                      "forcepower",
+                  ],
+                },
               };
 
               try {
@@ -138,6 +143,23 @@ export default class ForcePowers {
                     data.data.upgrades[talentKey] = rowAbility;
                   }
                 }
+              }
+
+              // populate tags
+              try {
+                if (Array.isArray(item.Categories.Category)) {
+                  for (const tag of item.Categories.Category) {
+                    data.data.metadata.tags.push(tag.toLowerCase());
+                  }
+                } else {
+                  data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+                }
+              } catch (err) {
+                CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+              }
+              if (item?.Type) {
+                // the "type" can be useful as a tag as well
+                data.data.metadata.tags.push(item.Type.toLowerCase());
               }
 
               let imgPath = await ImportHelpers.getImageFilename(zip, "ForcePowers", "", data.flags.starwarsffg.ffgimportid);

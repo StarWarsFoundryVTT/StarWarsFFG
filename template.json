@@ -599,7 +599,10 @@
     "templates": {
       "core": {
         "description": "",
-        "attributes": {}
+        "attributes": {},
+        "metadata": {
+          "tags": []
+        }
       },
       "basic": {
         "quantity": {
