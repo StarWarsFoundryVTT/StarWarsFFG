@@ -770,19 +770,29 @@ export default class SWAImporter extends FormApplication {
                 }
 
                 if (item.abilities) {
-                  biography += `<h2>Abilities:</h2>`;
-                  item.abilities.forEach((ability) => {
+                  for (const ability of item.abilities) {
                     if (typeof ability === "object") {
-                      biography += `<p><b>${ability.name}:</b> ${ability.description}</p>`;
+                      adversary.items.push({
+                        name: ability.name,
+                        type: "ability",
+                        system: {
+                          description: ability.description,
+                        },
+                      });
                     } else {
                       const swaAbilityKey = Object.keys(CONFIG.temporary.swa.abilities).find((t) => ability.includes(t));
-
                       if (swaAbilityKey) {
                         const swaAbility = CONFIG.temporary.swa.abilities[swaAbilityKey];
-                        biography += `<p><b>${swaAbility.name}:</b> ${swaAbility.description}</p>`;
+                        adversary.items.push({
+                          name: swaAbility.name,
+                          type: "ability",
+                          system: {
+                            description: swaAbility.description,
+                          },
+                        });
                       }
                     }
-                  });
+                  }
                 }
 
                 adversary.system.biography = biography;
