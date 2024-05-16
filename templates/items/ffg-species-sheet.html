@@ -46,7 +46,7 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fas fa-cog" cls=classType))}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType))}} {{!-- Sheet Body --}}
   <section class="sheet-body small species">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -59,12 +59,39 @@
     </div>
 
     {{!-- Talents Tab --}}
-    <div class="tab talents" data-group="primary" data-tab="talents">
-      {{#each data.talents as |talent id|}}
-        <div class="talent-pill item-pill2" data-item-type="talent" data-talent-id="{{id}}">{{talent.name}}
-          <i class="fas fa-times item-delete" data-item-type="talent" data-talent-id="{{id}}"></i>
-        </div>
-      {{/each}}
+    <div class="tab talents items" data-group="primary" data-tab="talents">
+      <ul class="items-list">
+        <li class="items-header flexrow">
+          <div class="header-name">{{localize "SWFFG.Talents"}}</div>
+        </li>
+        <ul class="items-list">
+          {{#each data.talents as |talent id|}}
+            <li class="item specialization-talent-item flexrow" data-item-type="talent" data-item-id="{{id}}">
+              <div class="item-name">
+                {{talent.name}}
+              </div>
+              <div class="item-controls">
+                <a class="item-control item-delete" data-item-type="talent" data-item-id="{{ id }}" title="Delete Item"><i class="fas fa-trash"></i></a>
+              </div>
+            </li>
+          {{/each}}
+        </ul>
+        <li class="items-header flexrow">
+          <div class="header-name">{{localize "SWFFG.ItemsAbility"}}</div>
+        </li>
+        <ul class="items-list">
+          {{#each data.abilities as |ability id|}}
+            <li class="item specialization-talent-item flexrow" data-item-type="ability" data-item-id="{{id}}">
+              <div class="item-name">
+                {{ability.name}}
+              </div>
+              <div class="item-controls">
+                <a class="item-control item-delete" data-item-type="ability" data-item-id="{{ id }}" title="Delete Item"><i class="fas fa-trash"></i></a>
+              </div>
+            </li>
+          {{/each}}
+        </ul>
+      </ul>
     </div>
   </section>
 </form>

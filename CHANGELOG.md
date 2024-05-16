@@ -16,6 +16,7 @@
   * Defense dice are now added if an actor is targeted (this is configurable per-client)
   * Items imported via OggDude importer now include the categories from the source dataset (e.g. the Holdout Blaster is tagged with "Blaster Pistol", "Holdout blaster", "Blaster", "Pistol", "Ranged")
   * Abilities created during the SWA import process are now created as "Ability" items instead of populating in the biography section
+  * Species can now include abilities (and are now included on import)
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
@@ -32,6 +33,7 @@
   * Fixed a bug where talents displayed blank when expanded on actor sheets
   * Fixed a bug where attempting to view a talent on a specialization tree did not open anything
   * Allow purchasing skills at the bottom of the skill list by adding a dedicated purchase button
+  * The "talent" tab on species items now uses the talent icon
   * Importer fixes:
     * Career data is now properly set when the OggDude importer is run
     * Re-running the importer no longer duplicates weapons on vehicles

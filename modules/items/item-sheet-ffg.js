@@ -360,6 +360,45 @@ export class ItemSheetFFG extends ItemSheet {
       callback: (clicked) => (this._sheetTab = clicked.data("tab")),
     });
 
+    html.find(".items .item, .header-description-block .item, .injuries .item").click(async (ev) => {
+      const li = $(ev.currentTarget);
+      let itemId = li.data("itemId");
+      const itemType = li.data("itemType");
+      let item;
+      let itemDetails;
+      if (itemType === "ability") {
+        item = this.item.system.abilities[itemId];
+        itemDetails = {
+          name: item.name,
+          description: item.system.description,
+        };
+      } else if (itemType === "talent") {
+        item = await fromUuid(this.item.system.talents[itemId].source);
+        if (item) {
+          itemDetails = {
+            name: item.name,
+            description: item.system.description,
+          };
+        }
+      }
+      if (item) {
+        await this._itemDisplayDetails(item, ev, itemDetails);
+      }
+    });
+
+    html.find(".item-delete").click(async (ev) => {
+      const li = $(ev.currentTarget);
+      let itemId = li.data("itemId");
+      const itemType = li.data("itemType");
+      if (itemType === "ability") {
+        const item = this.item.system.abilities[itemId];
+        await this._deleteAbility(item, event);
+      } else if (itemType === "talent") {
+        const item = this.item.system.talents[itemId];
+        await this._deleteTalent(item, event);
+      }
+    });
+
     html.find(".specialization-talent .talent-body").on("click", async (event) => {
       const li = event.currentTarget;
       const parent = $(li).parents(".specialization-talent")[0];
@@ -479,7 +518,7 @@ export class ItemSheetFFG extends ItemSheet {
           dragSelector: ".item",
           dropSelector: ".tab.talents",
           permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
-          callbacks: { drop: this.onDropTalentToSpecies.bind(this) },
+          callbacks: { drop: this.onDropItemToSpecies.bind(this) },
         });
 
         dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
@@ -1347,7 +1386,7 @@ export class ItemSheetFFG extends ItemSheet {
    * @param event
    * @returns {Promise<boolean>}
    */
-  async onDropTalentToSpecies(event) {
+  async onDropItemToSpecies(event) {
     let data;
 
     try {
@@ -1364,8 +1403,92 @@ export class ItemSheetFFG extends ItemSheet {
 
     if (itemObject.type === "talent") {
       await this.object.update({system: {talents: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
+    } else if (itemObject.type === "ability") {
+      await this.object.update({system: {abilities: {[itemObject.id]: {name: itemObject.name, system: {description: itemObject.system.description}}}}});
     }
   }
 
   async _onDragItemStart(event) {}
+
+  /**
+   * Remove an talent from a species item
+   * @param item - the item data for the talent to be removed
+   * @param event - the event data from the onclick event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _deleteTalent(item, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const li = $(event.currentTarget);
+    const deleteId = li.data("item-id");
+    delete this.item.system.talents[deleteId];
+    await this.item.update({
+      system: {
+        talents: {
+          [`-=${deleteId}`]: null
+        },
+      },
+    });
+    await this.render();
+  }
+
+  /**
+   * Remove an ability from a species item
+   * @param item - the item data for the ability to be removed
+   * @param event - the event data from the onclick event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _deleteAbility(item, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const li = $(event.currentTarget);
+    const deleteId = li.data("item-id");
+    delete this.item.system.abilities[deleteId];
+    await this.item.update({
+      system: {
+        abilities: {
+          [`-=${deleteId}`]: null
+        },
+      },
+    });
+    await this.render();
+  }
+
+   /**
+   * Display details of an ability embedded in a species.
+   * @private
+   */
+  async _itemDisplayDetails(item, event, itemDetails) {
+    event.preventDefault();
+    let li = $(event.currentTarget);
+
+    // Toggle summary
+    if (li.hasClass("expanded")) {
+      let details = li.children(".item-details");
+      details.slideUp(200, () => details.remove());
+    } else {
+      let div = $(`<div class="item-details">${await PopoutEditor.renderDiceImages(itemDetails.description, this.item)}</div>`);
+      li.append(div.hide());
+      $(div)
+        .find(".rollSkillDirect")
+        .on("click", async (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+
+          let data = event.currentTarget.dataset;
+          if (data) {
+            let sheet = await this.getData();
+            let skill = sheet.data.skills[data["skill"]];
+            let characteristic = sheet.data.characteristics[skill.characteristic];
+            let difficulty = data["difficulty"];
+            await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
+          }
+        });
+
+      div.slideDown(200);
+    }
+    li.toggleClass("expanded");
+  }
 }

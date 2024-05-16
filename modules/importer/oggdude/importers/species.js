@@ -27,6 +27,7 @@ export default class Species {
               attributes: {},
               description: item.Description,
               talents: {},
+              abilities: {},
               startingXP: item.StartingAttrs.Experience ? parseInt(item.StartingAttrs.Experience, 10) : 0,
               metadata: {
                 tags: [
@@ -109,10 +110,21 @@ export default class Species {
 
               data.data.description += "<h4>Abilities</h4>";
 
+              // populate abilities
               await ImportHelpers.asyncForEach(item.OptionChoices.OptionChoice, async (o) => {
                 let option = o.Options.Option;
                 if (!Array.isArray(o.Options.Option)) {
                   option = [o.Options.Option];
+                }
+
+                for (const curOption of option) {
+                  data.data.abilities[foundry.utils.randomID()] = {
+                    name: curOption.Name,
+                    type: "ability",
+                    system: {
+                      description: curOption.Description,
+                    },
+                  };
                 }
 
                 if (option[0].DieModifiers) {
