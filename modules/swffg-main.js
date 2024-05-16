@@ -182,7 +182,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Hint"),
     scope: "world",
     config: true,
-    default: "world.oggdudespecializations",
+    default: "starwarsffg.oggdudespecializations",
     type: String,
   });
   game.settings.register("starwarsffg", "signatureAbilityCompendiums", {
@@ -190,7 +190,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Hint"),
     scope: "world",
     config: true,
-    default: "world.oggdudesignatureabilities",
+    default: "starwarsffg.oggdudesignatureabilities",
     type: String,
   });
   game.settings.register("starwarsffg", "forcePowerCompendiums", {
@@ -198,7 +198,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Hint"),
     scope: "world",
     config: true,
-    default: "world.oggdudeforcepowers",
+    default: "starwarsffg.oggdudeforcepowers",
     type: String,
   });
   game.settings.register("starwarsffg", "talentCompendiums", {
