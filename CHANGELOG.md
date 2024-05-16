@@ -38,6 +38,7 @@
   * Allow purchasing skills at the bottom of the skill list by adding a dedicated purchase button
   * The "talent" tab on species items now uses the talent icon
   * The XP log no longer shows an edit button, as it is currently read only
+  * Swapped "melee" and "ranged" defense to match the printed books
   * Importer fixes:
     * Career data is now properly set when the OggDude importer is run
     * Re-running the importer no longer duplicates weapons on vehicles
