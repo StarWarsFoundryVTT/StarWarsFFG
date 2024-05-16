@@ -1858,6 +1858,13 @@ export class ActorSheetFFG extends ActorSheet {
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.talent");
       content = await renderTemplate(template, { selectableItems, itemType: itemType });
+    } else if (action === "characteristic") {
+      const characteristic = $(event.target).data("buy-characteristic");
+      await this._buyCharacteristicRank(characteristic);
+      return;
+    } else {
+      CONFIG.logger.debug(`Refusing purchase action ${action} since it is not registered`);
+      return;
     }
 
     const dialog = new Dialog(
@@ -1897,6 +1904,53 @@ export class ActorSheetFFG extends ActorSheet {
                 },
               });
               await xpLogSpend(game.actors.get(this.object.id), `new ${action} ${purchasedItem.name}`, cost, availableXP - cost, totalXP);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+      }
+    ).render(true);
+  }
+
+  _buyCharacteristicRank(characteristic) {
+    const characteristicValue = this.actor.system.characteristics[characteristic].value;
+    if (characteristicValue >= 6) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Characteristic.Max"));
+      return;
+    }
+    const availableXP = this.actor.system.experience.available;
+    const totalXP = this.actor.system.experience.total;
+    const cost = (characteristicValue + 1) * 10;
+    if (cost > availableXP) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
+      return;
+    }
+    const dialog = new Dialog(
+      {
+        title: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Characteristic.ConfirmTitle", {characteristic: characteristic}),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Characteristic.ConfirmText", {cost: cost, level: characteristicValue + 1, characteristic: characteristic}),
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              // update the form because the fields are read when an update is performed
+              this.object.sheet.element.find(`[name="data.characteristics.${characteristic}.value"]`).val(characteristicValue + 1);
+              await this.object.sheet.submit({preventClose: true});
+              await this.object.update({
+                system: {
+                  experience: {
+                    available: availableXP - cost,
+                  }
+                }
+              });
+              await xpLogSpend(game.actors.get(this.object.id), `characteristic ${characteristic} level ${characteristicValue} --> ${characteristicValue + 1}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {
