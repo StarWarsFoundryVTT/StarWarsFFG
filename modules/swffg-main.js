@@ -917,18 +917,36 @@ Hooks.once("ready", async () => {
     Hooks.call(`closeAssociatedTalent_${item.object._id}`, item);
   });
 
-  Hooks.on("createItem", (item, options, userId) => {
+  Hooks.on("createItem", async (item, options, userId) => {
     // add talents from species to character
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
       if (item.type === "species" && actor.type === "character") {
         const toAdd = [];
+        // talents
         for(const talentId of Object.keys(item.system.talents)) {
           const talentUuid = item.system.talents[talentId].source;
           const talent = fromUuidSync(talentUuid);
           if (talent) {
             toAdd.push(talent);
           }
+        }
+        // abilities
+        for(const abilityId of Object.keys(item.system.abilities)) {
+          const abilityData = item.system.abilities[abilityId];
+          const abilityItem = await Item.create(
+            {
+              name: abilityData.name,
+              type: "ability",
+              system: {
+                description: abilityData.system.description,
+              }
+            },
+            {
+              temporary: true,
+            },
+          );
+          toAdd.push(abilityItem);
         }
         if (toAdd.length > 0) {
           actor.createEmbeddedDocuments("Item", toAdd);
