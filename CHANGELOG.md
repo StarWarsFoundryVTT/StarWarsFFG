@@ -18,6 +18,8 @@
   * Abilities created during the SWA import process are now created as "Ability" items instead of populating in the biography section
   * Species can now include abilities (and are now included on import)
   * Players can now buy levels in characteristics by clicking the characteristic name
+  * Moved XP amounts to XP log tab
+  * Moved morality/duty/conflict/obligation to a dedicated tab
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
@@ -35,6 +37,7 @@
   * Fixed a bug where attempting to view a talent on a specialization tree did not open anything
   * Allow purchasing skills at the bottom of the skill list by adding a dedicated purchase button
   * The "talent" tab on species items now uses the talent icon
+  * The XP log no longer shows an edit button, as it is currently read only
   * Importer fixes:
     * Career data is now properly set when the OggDude importer is run
     * Re-running the importer no longer duplicates weapons on vehicles
