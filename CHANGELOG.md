@@ -17,6 +17,7 @@
   * Items imported via OggDude importer now include the categories from the source dataset (e.g. the Holdout Blaster is tagged with "Blaster Pistol", "Holdout blaster", "Blaster", "Pistol", "Ranged")
   * Abilities created during the SWA import process are now created as "Ability" items instead of populating in the biography section
   * Species can now include abilities (and are now included on import)
+  * Players can now buy levels in characteristics by clicking the characteristic name
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs
