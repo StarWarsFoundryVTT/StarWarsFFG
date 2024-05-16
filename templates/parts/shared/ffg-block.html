@@ -4,7 +4,7 @@
       <div class="block-title">
         {{#if headerlink}}
         <a class="{{headerclass}}" {{{headerattributes}}}>{{localize title}}</a>
-        {{else}} {{localize title}} {{/if}}{{#if (eq title "SWFFG.DescriptionXP")}}<a class="alt-tab" data-tab="xp"><i class="far fa-note"></i></a>{{/if}}
+        {{else}} {{localize title}}{{/if}}
       </div>
       <div class="block-attribute">
         {{#if (eq blocktype "pills")}}
@@ -44,7 +44,7 @@
         {{/if}} {{#if (eq type "PopoutEditor")}}
         <div class="block-value block-single">
           <div class="popout-editor" data-target="{{name}}" data-value="{{value}}" data-label="{{localize title}}">
-            <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
+            <div class="popout-editor-button">{{#if readonly}}{{ else }}<i class="fas fa-edit"></i>{{/if}}</div>
             {{{value}}}
           </div>
         </div>

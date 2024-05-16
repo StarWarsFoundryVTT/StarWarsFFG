@@ -180,24 +180,7 @@
         {{!-- Experience Box --}}
 
         <div class="grid bio-grid">
-          {{!-- Experience Box --}}
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}}
-          {{!-- Obligation Box --}}
-            {{#if (or (eq actor.flags.starwarsffg.config.enableObligation undefined) (eq actor.flags.starwarsffg.config.enableObligation true) )}}
-              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" type="Number" name="data.obligation.value" value=data.obligation.value )}}
-            {{/if}}
-          {{!-- Duty Box --}}
-            {{#if (or (eq actor.flags.starwarsffg.config.enableDuty undefined) (eq actor.flags.starwarsffg.config.enableDuty true) )}}
-              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'")}}
-            {{/if}}
-          {{!-- Morality Box --}}
-            {{#if (or (eq actor.flags.starwarsffg.config.enableMorality undefined) (eq actor.flags.starwarsffg.config.enableMorality true) )}}
-              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}}
-            {{/if}}
-          {{!-- Conflict Box --}}
-            {{#if (or (eq actor.flags.starwarsffg.config.enableConflict undefined) (eq actor.flags.starwarsffg.config.enableConflict true) )}}
-              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}}
-            {{/if}}
+
         </div>
       </div>
     </div>
@@ -267,10 +250,29 @@
     </div>
 
     <div class="tab xp" data-group="primary" data-tab="xp">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog)}}
+      {{!-- Experience Box --}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}}
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog readonly=true)}}
     </div>
 
     <div class="tab obligation" data-group="primary" data-tab="obligation">
+      {{!-- Obligation Tab --}}
+      {{!-- Obligation Box --}}
+        {{#if (or (eq actor.flags.starwarsffg.config.enableObligation undefined) (eq actor.flags.starwarsffg.config.enableObligation true) )}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" type="Number" name="data.obligation.value" value=data.obligation.value )}}
+        {{/if}}
+      {{!-- Duty Box --}}
+        {{#if (or (eq actor.flags.starwarsffg.config.enableDuty undefined) (eq actor.flags.starwarsffg.config.enableDuty true) )}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'")}}
+        {{/if}}
+      {{!-- Morality Box --}}
+        {{#if (or (eq actor.flags.starwarsffg.config.enableMorality undefined) (eq actor.flags.starwarsffg.config.enableMorality true) )}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}}
+        {{/if}}
+      {{!-- Conflict Box --}}
+        {{#if (or (eq actor.flags.starwarsffg.config.enableConflict undefined) (eq actor.flags.starwarsffg.config.enableConflict true) )}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}}
+        {{/if}}
       {{#if (or (eq actor.flags.starwarsffg.config.enableObligation undefined) (eq actor.flags.starwarsffg.config.enableObligation true) )}}
       <div class="resource full">
         <div class="attribute flex-group-center">
