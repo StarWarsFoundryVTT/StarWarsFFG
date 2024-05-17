@@ -10,7 +10,14 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers, {xpLogEarn, xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
-import {change_role, deregister_crew, build_crew_roll, updateRoles} from "../helpers/crew.js";
+import {
+  change_role,
+  deregister_crew,
+  build_crew_roll,
+  updateRoles,
+  handlePilotCheck,
+  buildPilotRoll
+} from "../helpers/crew.js";
 import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
 
@@ -158,7 +165,12 @@ export class ActorSheetFFG extends ActorSheet {
             const img = actor?.img || 'icons/svg/mystery-man.svg';
 
             // add them to the items, so we can render them on the sheet
-            let roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+            let roll;
+            if (crew[i].role !== "Pilot") {
+              roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+            } else {
+              roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+            }
             if (!roll) {
               roll = 'N/A';
             }
@@ -864,6 +876,11 @@ export class ActorSheetFFG extends ActorSheet {
       const crew_role = roles[2];
       const ship = this.actor;
 
+      if (crew_role === 'Pilot') {
+        await handlePilotCheck(ship, crew_id);
+        return;
+      }
+
       // look up the sheet for passing to the roller
       const crew_member = game.actors.get(crew_id);
       if (crew_member === undefined) {
@@ -905,7 +922,7 @@ export class ActorSheetFFG extends ActorSheet {
           "crew_card": true,
           "role": role_info[0].role_name,
         }
-      }
+      };
       // create the starting pool
       let pool = new DicePoolFFG(starting_pool);
       if (role_info[0].use_weapons) {

@@ -1287,18 +1287,6 @@ Hooks.on("pauseGame", () => {
 async function registerCrewRoles() {
   const defaultArrayCrewRoles = [
     {
-      "role_name":  game.i18n.localize("SWFFG.Crew.Roles.None"),
-      "role_skill": undefined,
-      "use_weapons": false,
-      "use_handling": false
-    },
-    {
-      "role_name":  game.i18n.localize("SWFFG.Crew.Roles.Pilot_Space"),
-      "role_skill":  game.i18n.localize("SWFFG.SkillsNamePilotingSpace").replace(' ', ' '),
-      "use_weapons": false,
-      "use_handling": true
-    },
-    {
       "role_name":  game.i18n.localize("SWFFG.Crew.Roles.Gunner.Name"),
       "role_skill":  game.i18n.localize("SWFFG.SkillsNameGunnery"),
       "use_weapons": true,
