@@ -536,7 +536,8 @@
           "type": "Boolean",
           "label": "SWFFG.VehicleNavicomputer"
         }
-      }
+      },
+      "spaceShip": false
     },
     "homestead": {
       "templates": ["biography", "attributes"],

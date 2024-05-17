@@ -20,6 +20,9 @@
   * Players can now buy levels in characteristics by clicking the characteristic name
   * Moved XP amounts to XP log tab
   * Moved morality/duty/conflict/obligation to a dedicated tab
+  * Vehicles can now be classified as "space" vs "not space" (and a single piloting role uses the appropriate skill)
+  * Vehicle sheets have undergone some improvements, with new tabs being introduced
+  * You can now directly roll a vehicle weapon using a crew member instead of having to select the crew member first
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs

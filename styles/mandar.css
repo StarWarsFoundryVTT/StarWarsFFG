@@ -2471,11 +2471,12 @@ img {
   width: 10rem;
 }
 
-.starwarsffg.actor .biography .container.biography-values {
+.starwarsffg.actor .tab .container.biography-values {
   height: auto;
   display: flex;
   flex-direction: column-reverse;
   flex-wrap: initial;
+  padding-bottom: 10px;
 }
 
 .starwarsffg .sheet-body .biography .editor {
@@ -2483,20 +2484,20 @@ img {
 }
 
 .starwarsffg.actor .vehicle .biography .biography-editor {
-  height: 42%;
+  height: 100%;
 }
 
-.starwarsffg.actor .vehicle .biography .container.biography-values {
+.starwarsffg.actor .vehicle .tab .container.biography-values {
   display: flex;
   flex-wrap: wrap;
   flex-direction: initial;
 }
 
-.starwarsffg.actor .vehicle .biography .container.biography-values .block-title {
+.starwarsffg.actor .vehicle .tab .container.biography-values .block-title {
   font-size: 0.6rem;
 }
 
-.starwarsffg.actor .vehicle .biography .container.biography-values .resource {
+.starwarsffg.actor .vehicle .tab .container.biography-values .resource {
   flex: 15%;
 }
 

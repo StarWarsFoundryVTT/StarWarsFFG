@@ -415,8 +415,8 @@ function _findActorForInitiative(c) {
   const initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
   CONFIG.logger.debug("Attempting to find initiative data for actor in combat");
   if (c.actor.type === "vehicle") {
-    const crew = c.actor.getFlag("starwarsffg", "crew");
     CONFIG.logger.debug("Actor is a vehicle, looking for initiative crew role.");
+    const crew = c.actor.getFlag("starwarsffg", "crew");
     if (crew !== undefined && crew !== []) {
       const initiativeCrew = crew.find((c) => c.role === initiativeRole.role_name);
       if (initiativeCrew) {

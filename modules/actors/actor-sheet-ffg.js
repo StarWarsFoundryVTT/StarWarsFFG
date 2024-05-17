@@ -920,7 +920,7 @@ export class ActorSheetFFG extends ActorSheet {
                 pool,
                 `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
                 skill,
-                mergeObject(raw_weapons[i], card_data)
+                foundry.utils.mergeObject(raw_weapons[i], card_data)
               );
             }
           }
@@ -945,6 +945,58 @@ export class ActorSheetFFG extends ActorSheet {
           `${role_info[0].role_skill}`,
           card_data
         );
+      }
+    });
+
+    // roll vehicle weapon by crew member
+    html.find(".roll-button-weapon").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const ship = this.actor;
+      const weaponId = $(event.currentTarget).data("item-id");
+      const weapon = ship.items.get(weaponId);
+      // validate the weapon still exists
+      if (!weapon) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Weapon.Removed"));
+        return;
+      }
+      const weaponSkill = weapon.system.skill.value;
+      const crew = await ship.getFlag("starwarsffg", "crew");
+      const skillRoles = game.settings.get("starwarsffg", "arrayCrewRoles").filter(role => role.role_skill === weaponSkill);
+      // validate the vehicle has a crew and there is a role that matches the weapon skill
+      if (!crew || crew.length === 0) {
+        CONFIG.logger.warn("Could not find crew for vehicle or could not find relevant skill; presenting default roller");
+        return await DiceHelpers.rollSkill(this, event, null);
+      }
+      const crewGunners = crew.filter(member => skillRoles.some(role => role.role_name === member.role));
+      if (crewGunners.length === 0) {
+        CONFIG.logger.warn("Could not find crew for this skill type; presenting default roller");
+        return await DiceHelpers.rollSkill(this, event, null);
+      } else if (crewGunners.length > 1) {
+        // create a dialog to ask the user which crew member should use the weapon
+        // build the dialog to select which gunner to use
+        const crewMembers = {};
+        for (let i = 0; i < crewGunners.length; i++) {
+          const actor = game.actors.get(crewGunners[i].actor_id);
+          const img = actor?.img ? actor.img : "icons/svg/mystery-man.svg";
+          crewMembers['crew ' + i] = {
+            icon: `<img src="${img}" style="max-width: 24px; max-height: 24px">`,
+            label: crewGunners[i].actor_name,
+            callback: async (html) => {
+              await this.vehicleCrewGunneryRoll(weapon, weaponSkill, crewGunners[i]);
+            }
+          }
+        }
+        // actually show the dialog
+        await new Dialog(
+          {
+            title: game.i18n.localize("SWFFG.Crew.Roles.Weapon.Title"),
+            content: `<p>${game.i18n.localize("SWFFG.Crew.Roles.Weapon.Description")}</p>`,
+            buttons: crewMembers,
+          },
+        ).render(true);
+      } else {
+        await this.vehicleCrewGunneryRoll(weapon, weaponSkill, crewGunners[0]);
       }
     });
 
@@ -1056,6 +1108,41 @@ export class ActorSheetFFG extends ActorSheet {
           this.actor.items.get(i.id).delete();
       });
     });
+  }
+
+  /**
+   * Display the roll dialog for a crew member rolling a ship weapon
+   * @param weapon - weapon item
+   * @param weaponSkill - skill used by the weapon
+   * @param selectedGunner - the crew member rolling the weapon (from the crew, not the actual actor)
+   * @returns {Promise<void>}
+   */
+  async vehicleCrewGunneryRoll(weapon, weaponSkill, selectedGunner) {
+    const starting_pool = {'difficulty': 2};
+    const ship = this.actor;
+    const crewSheet = game.actors.get(selectedGunner.actor_id)?.sheet;
+    // create chat card data
+    const card_data = {
+      "crew": {
+        "name": ship.name,
+        "img": ship.img,
+        "crew_card": true,
+        "role": selectedGunner.role,
+      }
+    }
+    // create the starting pool
+    let pool = new DicePoolFFG(starting_pool);
+    // update the pool with actor data
+    pool = get_dice_pool(selectedGunner.actor_id, weaponSkill, pool);
+    pool = await DiceHelpers.getModifiers(pool, weapon);
+    // display the roll dialog
+    await DiceHelpers.displayRollDialog(
+      crewSheet,
+      pool,
+      `${game.i18n.localize("SWFFG.Rolling")} ${weaponSkill}`,
+      weaponSkill,
+      foundry.utils.mergeObject(weapon, card_data)
+    );
   }
 
   /**
