@@ -418,7 +418,7 @@ function _findActorForInitiative(c) {
     CONFIG.logger.debug("Actor is a vehicle, looking for initiative crew role.");
     const crew = c.actor.getFlag("starwarsffg", "crew");
     if (crew !== undefined && crew !== []) {
-      const initiativeCrew = crew.find((c) => c.role === initiativeRole.role_name);
+      const initiativeCrew = crew.find((c) => c.role === "Pilot");
       if (initiativeCrew) {
         CONFIG.logger.debug("Found initiative crew role, swapping data to crew member");
         const realActor = game.actors.get(initiativeCrew.actor_id);
@@ -427,7 +427,7 @@ function _findActorForInitiative(c) {
         }
       }
     } else {
-      CONFIG.logger.warn("You must set a crew member with the initiative role to roll initiative for a vehicle");
+      CONFIG.logger.warn("You must set a crew member with the pilot role to roll initiative for a vehicle");
     }
   }
   CONFIG.logger.debug("Finished checking");

@@ -128,6 +128,44 @@ export async function change_role(vehicle_actor, crew_member, old_crew_role, new
 }
 
 /**
+ * Set the roles of a crew member on a vehicle to a new array of roles (deleting any not in the new array)
+ * @param vehicle_actor - actor object of the vehicle receiving the crew change
+ * @param crew_member_id - actor ID of the crew member being changed
+ * @param new_crew_roles - array of new roles for the crew member
+ * @returns {Promise<void>}
+ */
+export async function updateRoles(vehicle_actor, crew_member_id, new_crew_roles) {
+  const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
+  let new_flag_data = [];
+  const crew_member = game.actors.get(crew_member_id);
+
+  for (let i = 0; i < flag_data.length; i++) {
+      if (flag_data[i].actor_id === crew_member_id) {
+        const crewIndex = new_crew_roles.indexOf(flag_data[i].role);
+        if (crewIndex >= 0) {
+          new_flag_data.push(flag_data[i]);
+          new_crew_roles.splice(crewIndex, 1);
+        }
+      } else {
+          new_flag_data.push(flag_data[i]);
+      }
+  }
+
+  for (const newRole of new_crew_roles) {
+    new_flag_data.push({
+      'actor_id': crew_member.id,
+      'actor_name': crew_member.name,
+      'role': newRole,
+      'link':  await TextEditor.enrichHTML(crew_member?.link) || null,
+    });
+  }
+
+  CONFIG.logger.debug("Final updated flag data: ", new_flag_data);
+  // set the updated flag data
+  vehicle_actor.setFlag('starwarsffg', 'crew', new_flag_data);
+}
+
+/**
  * Create a string representation of a skill check for a crew member in a particular role on a vehicle
  * @param vehicle actor object for the vehicle the crew is on
  * @param crew_id actor ID of the crew member

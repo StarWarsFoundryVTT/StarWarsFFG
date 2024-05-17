@@ -10,7 +10,7 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers, {xpLogEarn, xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
-import {change_role, deregister_crew, build_crew_roll} from "../helpers/crew.js";
+import {change_role, deregister_crew, build_crew_roll, updateRoles} from "../helpers/crew.js";
 import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
 
@@ -601,7 +601,7 @@ export class ActorSheetFFG extends ActorSheet {
         if (!item) {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
           if (!item) {
-            const talentItemData = this.actor?.talentList.find(talent => talent.itemId === itemId);
+            const talentItemData = this.actor?.talentList?.find(talent => talent.itemId === itemId);
             if (talentItemData) {
               item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
             }
@@ -733,29 +733,36 @@ export class ActorSheetFFG extends ActorSheet {
     // Edit Crew
     html.find(".crew-edit").click(async (ev) => {
       const crew_member_id = $(ev.currentTarget).parents(".item").data("actor-id");
-      const crew_role = $(ev.currentTarget).parents(".item").data("role-name");
-      const initial_registered_roles = game.settings.get('starwarsffg', 'arrayCrewRoles');
-      let registered_roles = [
-        ...initial_registered_roles,
-        ...[game.settings.get('starwarsffg', 'initiativeCrewRole')],
-      ];
-      const role_buttons = {};
+      const crew_member = game.actors.get(crew_member_id);
+      const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
       const actor = this.actor;
+      const vehicleRoles = actor.getFlag('starwarsffg', 'crew');
 
-      for (let i = 0; i < registered_roles.length; i++) {
-        role_buttons[registered_roles[i].role_name] = {
-          label: registered_roles[i].role_name,
-          callback: (html) => {
-            change_role(actor, crew_member_id, crew_role, registered_roles[i].role_name);
-          }
+      const crewMemberRoles = vehicleRoles.filter(role => role.actor_id === crew_member_id);
+      const rolesInUse = crewMemberRoles.map(role => role.role);
+
+      const content = await renderTemplate(
+        "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
+        {
+          actor: crew_member,
+          roles: registeredRoles,
+          rolesInUse: rolesInUse,
         }
-      }
+      );
 
       new Dialog(
         {
           title: game.i18n.localize("SWFFG.Crew.Title"),
-          content: `<p>${game.i18n.localize("SWFFG.Crew.Role.Content")}</p>`,
-          buttons: role_buttons
+          content: content,
+          buttons: {
+            confirm: {
+              label: 'Update Roles',
+              callback: async (html) => {
+                const newRoles = html.find('[name="select-many-things"]').val();
+                await updateRoles(actor, crew_member_id, newRoles);
+              }
+            }
+          }
         },
       ).render(true);
     });

@@ -1,0 +1,13 @@
+<p>
+  Update roles for {{ actor.name }}<br>
+  <multi-select name="select-many-things">
+    <optgroup label="Built In Roles">
+      <option value="Pilot" {{#iff rolesInUse 'contains' 'Pilot' }} selected{{/iff}}>Pilot</option>
+    </optgroup>
+    <optgroup label="User-defined Roles">
+      {{# each roles as |role| }}
+        <option value="{{ role.role_name }}"{{#iff ../rolesInUse 'contains' role.role_name }} selected{{/iff}}>{{ role.role_name }}</option>
+      {{/each }}
+    </optgroup>
+  </multi-select>
+</p>
