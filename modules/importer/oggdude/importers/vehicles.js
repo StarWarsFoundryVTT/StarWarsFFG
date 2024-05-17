@@ -87,6 +87,7 @@ export default class Vehicles {
                   "vehicle",
                 ],
               },
+              spaceShip: isSpaceVehicle,
             };
 
             data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);

@@ -21,6 +21,7 @@
   * Moved XP amounts to XP log tab
   * Moved morality/duty/conflict/obligation to a dedicated tab
   * Vehicles can now be classified as "space" vs "not space" (and a single piloting role uses the appropriate skill)
+    * The importer has been updated to include this information
   * Vehicle sheets have undergone some improvements, with new tabs being introduced
   * You can now directly roll a vehicle weapon using a crew member instead of having to select the crew member first
   * Vehicle crew selection is now a multi-select dropdown instead of requiring you to drag-and-drop the same actor multiple times
