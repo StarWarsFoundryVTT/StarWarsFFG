@@ -12,29 +12,29 @@
         <div class="container flex-group-right">
           {{#if limited}}{{else}}
             <div class="block-background defense-group">
-            <div class="defense-decoration">
-              <img src="systems/starwarsffg/images/shipdefence.png" />
+              <div class="defense-decoration">
+              </div>
+              <div class="defense-block">
+                <div class="defense-block-title">{{localize "SWFFG.Defense"}}</div>
+                <div class="defense-value fore">
+                  <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" />
+                  <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseFore"}}</div>
+                </div>
+                <div class="defense-value aft">
+                  <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" />
+                  <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseAft"}}</div>
+                </div>
+                <div class="defense-value port">
+                  <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" />
+                  <div class="defense-value-label">{{localize "SWFFG.VehicleDefensePort"}}</div>
+                </div>
+                <div class="defense-value starboard">
+                  <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" />
+                  <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseStarboard"}}</div>
+                </div>
+                <img class="defense-img" src="{{ data.silhouetteImage }}" data-edit="system.silhouetteImage"/>
+              </div>
             </div>
-            <div class="defense-block">
-              <div class="defense-block-title">{{localize "SWFFG.Defense"}}</div>
-              <div class="defense-value fore">
-                <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" />
-                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseFore"}}</div>
-              </div>
-              <div class="defense-value aft">
-                <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" />
-                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseAft"}}</div>
-              </div>
-              <div class="defense-value port">
-                <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" />
-                <div class="defense-value-label">{{localize "SWFFG.VehicleDefensePort"}}</div>
-              </div>
-              <div class="defense-value starboard">
-                <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" />
-                <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseStarboard"}}</div>
-              </div>
-            </div>
-          </div>
           {{/if}}
         </div>
       </div>
@@ -92,28 +92,67 @@
     </div>
   </header>
   {{#if limited}}{{else}}
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="items" label="SWFFG.VehicleTabCargo" icon="fas fa-toolbox" cls=classType) (object tab="description" label="SWFFG.VehicleTabDescription" icon="fas fa-sticky-note" cls=classType) (object tab="damage" label="SWFFG.CriticalDamage" icon="fas fa-exclamation-triangle" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}}
+  {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array
+      (object tab="components" label="SWFFG.VehicleTabComponents" icon="fa-solid fa-cannon" cls=classType)
+      (object tab="crew" label="SWFFG.VehicleTabCrew" icon="fa-solid fa-person" cls=classType)
+      (object tab="items" label="SWFFG.VehicleTabCargo" icon="fas fa-toolbox" cls=classType)
+      (object tab="description" label="SWFFG.VehicleTabDescription" icon="fas fa-sticky-note" cls=classType)
+      (object tab="damage" label="SWFFG.CriticalDamage" icon="fas fa-exclamation-triangle" cls=classType)
+  )}}
+  {{!-- Sheet Body --}}
   <section class="sheet-body vehicle">
-    {{!-- Owned Items Tab --}}
-    <div class="tab items" data-group="primary" data-tab="items">
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-weapon-armor-gear.html"}}
+    {{!-- Components Tab --}}
+    <div class="tab components" data-group="primary" data-tab="components">
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-vehicle-weapon-attachments.html"}}
     </div>
 
-    {{!-- Biography Tab --}}
+    {{!-- Crew Tab --}}
+    <div class="tab crew" data-group="primary" data-tab="crew">
+      {{!-- Additional vehicle info --}}
+      <div class="container flex-group-center biography-values">
+        {{!-- Hyperdrive Box --}}
+        {{#if (or (eq actor.flags.starwarsffg.config.enableHyperdrive undefined) (eq actor.flags.starwarsffg.config.enableHyperdrive true) )}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Hyperdrive" fields=(array (object name="data.stats.hyperdrive.value" value=data.stats.hyperdrive.value type="Number" label="SWFFG.HyperdrivePrimary") (object name="data.stats.hyperdrive.backup" value=data.stats.hyperdrive.backup type="Number" label="SWFFG.HyperdriveBackup") ))}}
+        {{/if}}
+        {{!-- Hard Points Box --}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleHardPoints" type="Number" name="data.stats.customizationHardPoints.value" value=data.stats.customizationHardPoints.value )}}
+        {{!-- Passenger Capacity Box --}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehiclePassengerCapacity" type="Number" name="data.stats.passengerCapacity.value" value=data.stats.passengerCapacity.value )}}
+        {{!-- Consumables Box --}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Consumables" fields=(array (object name="data.stats.consumables.value" value=data.stats.consumables.value type="Number" label="SWFFG.ConsumablesAmount") (object name="data.stats.consumables.duration" value=data.stats.consumables.duration type="String" label="SWFFG.ConsumablesDuration") ))}}
+      </div>
+      <div class="container flex-group-center biography-values">
+        {{!-- Sensor Range Box --}}
+        {{#if (or (eq actor.flags.starwarsffg.config.enableSensors undefined) (eq actor.flags.starwarsffg.config.enableSensors true) )}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleSensorRange" type="Dropdown" name="data.stats.sensorRange.value" value=data.stats.sensorRange.value options=this.FFG.sensor_ranges)}}
+        {{/if}}
+
+        {{!-- Navicomputer Box --}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleNavicomputer" type="Boolean" name="data.stats.navicomputer.value" value=data.stats.navicomputer.value)}}
+
+        {{!-- Vehicle type box --}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="Space Vehicle" type="Boolean" name="data.spaceShip" value=data.spaceShip)}}
+      </div>
+
+      {{!-- Crew List --}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-vehicle-crew.html"}}
+    </div>
+
+    {{!-- Cargo Tab --}}
+    <div class="tab items" data-group="primary" data-tab="items">
+      {{!-- Cargo List --}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-vehicle-cargo.html"}}
+    </div>
+
+    {{!-- Bio Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
         {{editor data.biography target="system.biography" button=true owner=owner editable=editable}}
       </div>
-      <div class="container flex-group-center biography-values">
-        {{!-- Hyperdrive Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableHyperdrive undefined) (eq actor.flags.starwarsffg.config.enableHyperdrive true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Hyperdrive" fields=(array (object name="data.stats.hyperdrive.value" value=data.stats.hyperdrive.value type="Number" label="SWFFG.HyperdrivePrimary") (object name="data.stats.hyperdrive.backup" value=data.stats.hyperdrive.backup type="Number" label="SWFFG.HyperdriveBackup") ))}} {{/if}}
-        {{!-- Hard Points Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleHardPoints" type="Number" name="data.stats.customizationHardPoints.value" value=data.stats.customizationHardPoints.value )}}
-        {{!-- Sensor Range Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableSensors undefined) (eq actor.flags.starwarsffg.config.enableSensors true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleSensorRange" type="Dropdown" name="data.stats.sensorRange.value" value=data.stats.sensorRange.value options=this.FFG.sensor_ranges)}} {{/if}}
-        {{!-- Passenger Capacity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehiclePassengerCapacity" type="Number" name="data.stats.passengerCapacity.value" value=data.stats.passengerCapacity.value )}}
-        {{!-- Consumables Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Consumables" fields=(array (object name="data.stats.consumables.value" value=data.stats.consumables.value type="Number" label="SWFFG.ConsumablesAmount") (object name="data.stats.consumables.duration" value=data.stats.consumables.duration type="String" label="SWFFG.ConsumablesDuration") ))}}
-        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleNavicomputer" type="Boolean" name="data.stats.navicomputer.value" value=data.stats.navicomputer.value)}}
-      </div>
     </div>
 
+    {{!-- Critical Damage Tab --}}
     <div class="tab damage" data-group="primary" data-tab="damage">
       {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticaldamage"}}
     </div>

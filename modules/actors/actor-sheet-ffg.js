@@ -10,7 +10,14 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers, {xpLogEarn, xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
-import {change_role, deregister_crew, build_crew_roll} from "../helpers/crew.js";
+import {
+  change_role,
+  deregister_crew,
+  build_crew_roll,
+  updateRoles,
+  handlePilotCheck,
+  buildPilotRoll
+} from "../helpers/crew.js";
 import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
 
@@ -158,7 +165,12 @@ export class ActorSheetFFG extends ActorSheet {
             const img = actor?.img || 'icons/svg/mystery-man.svg';
 
             // add them to the items, so we can render them on the sheet
-            let roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+            let roll;
+            if (crew[i].role !== "Pilot") {
+              roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+            } else {
+              roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+            }
             if (!roll) {
               roll = 'N/A';
             }
@@ -601,7 +613,7 @@ export class ActorSheetFFG extends ActorSheet {
         if (!item) {
           item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
           if (!item) {
-            const talentItemData = this.actor?.talentList.find(talent => talent.itemId === itemId);
+            const talentItemData = this.actor?.talentList?.find(talent => talent.itemId === itemId);
             if (talentItemData) {
               item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
             }
@@ -733,29 +745,36 @@ export class ActorSheetFFG extends ActorSheet {
     // Edit Crew
     html.find(".crew-edit").click(async (ev) => {
       const crew_member_id = $(ev.currentTarget).parents(".item").data("actor-id");
-      const crew_role = $(ev.currentTarget).parents(".item").data("role-name");
-      const initial_registered_roles = game.settings.get('starwarsffg', 'arrayCrewRoles');
-      let registered_roles = [
-        ...initial_registered_roles,
-        ...[game.settings.get('starwarsffg', 'initiativeCrewRole')],
-      ];
-      const role_buttons = {};
+      const crew_member = game.actors.get(crew_member_id);
+      const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
       const actor = this.actor;
+      const vehicleRoles = actor.getFlag('starwarsffg', 'crew');
 
-      for (let i = 0; i < registered_roles.length; i++) {
-        role_buttons[registered_roles[i].role_name] = {
-          label: registered_roles[i].role_name,
-          callback: (html) => {
-            change_role(actor, crew_member_id, crew_role, registered_roles[i].role_name);
-          }
+      const crewMemberRoles = vehicleRoles.filter(role => role.actor_id === crew_member_id);
+      const rolesInUse = crewMemberRoles.map(role => role.role);
+
+      const content = await renderTemplate(
+        "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
+        {
+          actor: crew_member,
+          roles: registeredRoles,
+          rolesInUse: rolesInUse,
         }
-      }
+      );
 
       new Dialog(
         {
           title: game.i18n.localize("SWFFG.Crew.Title"),
-          content: `<p>${game.i18n.localize("SWFFG.Crew.Role.Content")}</p>`,
-          buttons: role_buttons
+          content: content,
+          buttons: {
+            confirm: {
+              label: 'Update Roles',
+              callback: async (html) => {
+                const newRoles = html.find('[name="select-many-things"]').val();
+                await updateRoles(actor, crew_member_id, newRoles);
+              }
+            }
+          }
         },
       ).render(true);
     });
@@ -857,6 +876,11 @@ export class ActorSheetFFG extends ActorSheet {
       const crew_role = roles[2];
       const ship = this.actor;
 
+      if (crew_role === 'Pilot') {
+        await handlePilotCheck(ship, crew_id);
+        return;
+      }
+
       // look up the sheet for passing to the roller
       const crew_member = game.actors.get(crew_id);
       if (crew_member === undefined) {
@@ -898,7 +922,7 @@ export class ActorSheetFFG extends ActorSheet {
           "crew_card": true,
           "role": role_info[0].role_name,
         }
-      }
+      };
       // create the starting pool
       let pool = new DicePoolFFG(starting_pool);
       if (role_info[0].use_weapons) {
@@ -920,7 +944,7 @@ export class ActorSheetFFG extends ActorSheet {
                 pool,
                 `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
                 skill,
-                mergeObject(raw_weapons[i], card_data)
+                foundry.utils.mergeObject(raw_weapons[i], card_data)
               );
             }
           }
@@ -945,6 +969,58 @@ export class ActorSheetFFG extends ActorSheet {
           `${role_info[0].role_skill}`,
           card_data
         );
+      }
+    });
+
+    // roll vehicle weapon by crew member
+    html.find(".roll-button-weapon").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const ship = this.actor;
+      const weaponId = $(event.currentTarget).data("item-id");
+      const weapon = ship.items.get(weaponId);
+      // validate the weapon still exists
+      if (!weapon) {
+        ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Weapon.Removed"));
+        return;
+      }
+      const weaponSkill = weapon.system.skill.value;
+      const crew = await ship.getFlag("starwarsffg", "crew");
+      const skillRoles = game.settings.get("starwarsffg", "arrayCrewRoles").filter(role => role.role_skill === weaponSkill);
+      // validate the vehicle has a crew and there is a role that matches the weapon skill
+      if (!crew || crew.length === 0) {
+        CONFIG.logger.warn("Could not find crew for vehicle or could not find relevant skill; presenting default roller");
+        return await DiceHelpers.rollSkill(this, event, null);
+      }
+      const crewGunners = crew.filter(member => skillRoles.some(role => role.role_name === member.role));
+      if (crewGunners.length === 0) {
+        CONFIG.logger.warn("Could not find crew for this skill type; presenting default roller");
+        return await DiceHelpers.rollSkill(this, event, null);
+      } else if (crewGunners.length > 1) {
+        // create a dialog to ask the user which crew member should use the weapon
+        // build the dialog to select which gunner to use
+        const crewMembers = {};
+        for (let i = 0; i < crewGunners.length; i++) {
+          const actor = game.actors.get(crewGunners[i].actor_id);
+          const img = actor?.img ? actor.img : "icons/svg/mystery-man.svg";
+          crewMembers['crew ' + i] = {
+            icon: `<img src="${img}" style="max-width: 24px; max-height: 24px">`,
+            label: crewGunners[i].actor_name,
+            callback: async (html) => {
+              await this.vehicleCrewGunneryRoll(weapon, weaponSkill, crewGunners[i]);
+            }
+          }
+        }
+        // actually show the dialog
+        await new Dialog(
+          {
+            title: game.i18n.localize("SWFFG.Crew.Roles.Weapon.Title"),
+            content: `<p>${game.i18n.localize("SWFFG.Crew.Roles.Weapon.Description")}</p>`,
+            buttons: crewMembers,
+          },
+        ).render(true);
+      } else {
+        await this.vehicleCrewGunneryRoll(weapon, weaponSkill, crewGunners[0]);
       }
     });
 
@@ -1056,6 +1132,41 @@ export class ActorSheetFFG extends ActorSheet {
           this.actor.items.get(i.id).delete();
       });
     });
+  }
+
+  /**
+   * Display the roll dialog for a crew member rolling a ship weapon
+   * @param weapon - weapon item
+   * @param weaponSkill - skill used by the weapon
+   * @param selectedGunner - the crew member rolling the weapon (from the crew, not the actual actor)
+   * @returns {Promise<void>}
+   */
+  async vehicleCrewGunneryRoll(weapon, weaponSkill, selectedGunner) {
+    const starting_pool = {'difficulty': 2};
+    const ship = this.actor;
+    const crewSheet = game.actors.get(selectedGunner.actor_id)?.sheet;
+    // create chat card data
+    const card_data = {
+      "crew": {
+        "name": ship.name,
+        "img": ship.img,
+        "crew_card": true,
+        "role": selectedGunner.role,
+      }
+    }
+    // create the starting pool
+    let pool = new DicePoolFFG(starting_pool);
+    // update the pool with actor data
+    pool = get_dice_pool(selectedGunner.actor_id, weaponSkill, pool);
+    pool = await DiceHelpers.getModifiers(pool, weapon);
+    // display the roll dialog
+    await DiceHelpers.displayRollDialog(
+      crewSheet,
+      pool,
+      `${game.i18n.localize("SWFFG.Rolling")} ${weaponSkill}`,
+      weaponSkill,
+      foundry.utils.mergeObject(weapon, card_data)
+    );
   }
 
   /**

@@ -71,16 +71,56 @@ export default class ImportHelpers {
   }
 
   /**
+   * Imports binary file, by extracting from zip file and uploading to path.
+   * Uploads to a different directory than the standard importer
+   *
+   * @param  {string} path - Path to image within zip file
+   * @param  {object} zip - Zip file
+   * @param  {object} pack - Compendium Pack
+   * @returns {string} - Path to file within VTT
+   */
+  static async importSilhouetteImage(path, zip, pack) {
+    if (path) {
+      const serverPath = `worlds/${game.world.id}/images/packs/${pack.metadata.name}Silhouettes`;
+      const filename = path.replace(/^.*[\\\/]/, "");
+      if (!CONFIG.temporary.images) {
+        CONFIG.temporary.images = [];
+      }
+      try {
+        if (!CONFIG.temporary.images.includes(`${serverPath}/${filename}`)) {
+          CONFIG.temporary.images.push(`${serverPath}/${filename}`);
+          await ImportHelpers.verifyPath("data", serverPath);
+          const img = await zip.file(path).async("uint8array");
+          var arr = img.subarray(0, 4);
+          var header = "";
+          for (var a = 0; a < arr.length; a++) {
+            header += arr[a].toString(16);
+          }
+          const type = Helpers.getMimeType(header);
+
+          const i = new File([img], filename, { type });
+          await Helpers.UploadFile("data", `${serverPath}`, i, { bucket: null });
+        }
+
+        return `${serverPath}/${filename}`;
+      } catch (err) {
+        CONFIG.logger.error(`Error Uploading File: ${path} to ${serverPath}`);
+      }
+    }
+  }
+
+  /**
    * Returns the name of a file within the zip file based on a built string.
    *
    * @param  {object} zip - Zip file
    * @param  {string} type - Object Type
    * @param  {string} itemtype - Item Type
    * @param  {string} key - Item Key
+   * @param {string} secondStageFilename - optional string to append to the object type; defaults to 'Images'
    * @returns {string} - Path to file within Zip File
    */
-  static async getImageFilename(zip, type, itemtype, key) {
-    const imgFileName = `${type}Images/${itemtype}${key}`;
+  static async getImageFilename(zip, type, itemtype, key, secondStageFilename='Images') {
+    const imgFileName = `${type}${secondStageFilename}/${itemtype}${key}`;
 
     return Object.values(zip.files).find((file) => {
       if (file.name.includes(imgFileName)) {
