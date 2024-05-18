@@ -1,56 +1,69 @@
 `1.810`
 * Features:
   * Support for FoundryVTT v12
-  * Compendiums moved to system defined, resulting in a cleaner compendium list
-  * Add XP log link to available/total XP section
-  * Move critical injuries to a dedicated tab in sheet v2
-  * Signature abilities can now have required specialization upgrades defined
-    * Re-running the importer will automatically apply this to specializations in the compendium
-    * Purchasing Signature Abilities now takes these links into account, if defined
-  * Purchasing Force Powers now checks the required force rating
-  * Sheets now default to the v2 version (they can still be manually changed back to v1)
-  * Species can now have starting XP defined
-    * Dragging a species onto a player character grants the starting XP
-    * The importer has been updated to import starting XP
-  * Obligations and duties may now have notes set, and the character importer correctly populates this field
-  * Defense dice are now added if an actor is targeted (this is configurable per-client)
-  * Items imported via OggDude importer now include the categories from the source dataset (e.g. the Holdout Blaster is tagged with "Blaster Pistol", "Holdout blaster", "Blaster", "Pistol", "Ranged")
-  * Abilities created during the SWA import process are now created as "Ability" items instead of populating in the biography section
-  * Species can now include abilities (and are now included on import)
-  * Players can now buy levels in characteristics by clicking the characteristic name
-  * Moved XP amounts to XP log tab
-  * Moved morality/duty/conflict/obligation to a dedicated tab
-  * Vehicles can now be classified as "space" vs "not space" (and a single piloting role uses the appropriate skill)
-    * The importer has been updated to include this information
-  * Vehicle sheets have undergone some improvements, with new tabs being introduced
-  * You can now directly roll a vehicle weapon using a crew member instead of having to select the crew member first
-  * Vehicle crew selection is now a multi-select dropdown instead of requiring you to drag-and-drop the same actor multiple times
-  * Dragging crew onto vehicles now prompts for the initial role selection, instead of assigning "(none)"
-  * A single, built-in piloting skill has been added to vehicles, which automatically selects the proper skill for rolling that type of vehicle
-  * Vehicle defense silhouettes are now customizable
+    * Compendiums are now system defined. This means they cannot be deleted, but was required for the v12 migration
+  * **Characters / Nemesis / Rivals / Minions**
+    * All actor sheets now default to v2 (they can still be manually changed back to v1)
+    * v2 sheets: Critical injuries are now in a dedicated tab
+    * Characters: Players can now buy levels in characteristics by clicking the characteristic name
+    * Characters: XP available/total moved to XP log tab
+    * Characters with v2 sheets: Obligation / morality / conflict moved to a dedicated tab
+    * Nemesis / Rivals / Minions: Abilities created during the SWA import process are now created as "Ability" items instead of populating in the biography section
+  * **Vehicles**
+    * Overall tab layout updated
+    * Vehicles can now be classified as "space" or "not space"
+      * This data is automatically included when the importer is run
+    * A single, dedicated "pilot" role was created which selects the appropriate skill based on how the vehicle is classified ("space" or "not space")
+    * You can now roll a vehicle weapon using a crew member from that weapon
+    * Crew selection is now a multi-select dropdown instead of requiring you to drag-and-drop the same actor multiple times
+    * Dragging crew onto vehicles now prompts for the initial role selection, instead of assigning "(none)"
+    * Defense silhouettes are now customizable
+      * This data is automatically included when the importer is run
+  * **Items**
+    * All item sheets now default to v2 (they can still be manually changed back to v1)
+    * Signature abilities can now have required specialization upgrades defined
+      * This data is automatically included when the importer is run
+      * If defined on a signature ability, attempting to purchasing it checks if the required specialization upgrades are purchased
+    * Purchasing Force Powers now checks the required force rating
+    * Species can now have starting XP defined
+      * This data is automatically included when the importer is run
+      * Dragging a species onto a player character grants the starting XP
+    * Species can now include abilities to grant the actor they are added to
+      * This data is automatically included when the importer is run
+    * Obligations and duties may now have notes set on them
+      * This data is automatically included when the character importer is run
+  * **Combat**
+    * The target's defense dice are now added if you target it (this is configurable per-client)
+  * **Importer-specific changes**
+    * The importer now includes categories from the source dataset intended for programmatic interpretation, e.g. the Holdout Blaster is tagged with "Blaster Pistol", "Holdout blaster", "Blaster", "Pistol", "Ranged"
 * Fixes:
-  * Sending a signature ability to chat now includes purchased upgrades
-  * Granting XP to the entire group now updates the XP logs
-  * Vehicle mods are now imported as the correct type (ship mods)
-  * Fix overflowing "special" field on weapons in Mandar theme
-  * Corrected tooltip for equipped/unequipped gear (and localized it)
-  * non-character actors no longer show the option to buy skill ranks
-  * Players can no longer purchase Signature Abilities or Force Powers if they do not have enough XP for them
-  * Minion sheets now show "group skill" instead of "career skill"
-  * Corrected a bug in the combat tracker where actors claiming a slot not originally belonging to them resulted in both the original slot owner and claiming actor being shown as having acted in the actor summary
-  * The buy talent button on specializations no longer disappears when buying >1 talent at a time
-  * Corrected a bug in the combat tracker where actors claiming a slot not originally belonging to them prevented them from being removed from combat
-  * Correct default Signature ability height so the bottom isn't ever-so-slightly cut off
-  * Fixed a bug where talents displayed blank when expanded on actor sheets
-  * Fixed a bug where attempting to view a talent on a specialization tree did not open anything
-  * Allow purchasing skills at the bottom of the skill list by adding a dedicated purchase button
-  * The "talent" tab on species items now uses the talent icon
-  * The XP log no longer shows an edit button, as it is currently read only
-  * Swapped "melee" and "ranged" defense to match the printed books
-  * Importer fixes:
-    * Career data is now properly set when the OggDude importer is run
+  * **Characters / Nemesis / Rivals / Minions**
+    * Corrected tooltip for equipped/unequipped gear (and localized it)
+    * Fixed a bug where talents displayed blank
+    * Fixed a bug where attempting to view a talent on a specialization tree did not open anything
+    * Swapped "melee" and "ranged" defense to match the printed books
+    * Nemesis / Rivals / Minions: Removed ability to buy skill ranks
+    * Characters: Added a check for sufficient XP for purchasing Signature Abilities and Force powers
+    * Characters: The buy talent button on specializations no longer disappears when buying >1 talent at a time
+    * Characters: "Fix" purchasing skills at the bottom of the skill list by adding a dedicated purchase button
+    * Characters: The XP log no longer shows an edit button, as it is currently read only
+    * Minions: Show "group skill" instead of "career skill"
+  * **Vehicles**
+    * Vehicle mods are now imported as the correct type (ship mods)
+  * **Items**
+    * Sending a signature ability to chat now includes purchased upgrades
+    * Fix overflowing "special" field on weapons in Mandar theme
+    * Correct default Signature ability height so the bottom isn't ever-so-slightly cut off
+    * The "talent" tab on species items now uses the talent icon instead of the configure icon
+  * **Combat**
+    * Fixed double-slot-claim bug in the combat tracker
+    * Fixed a bug preventing removing combatants from combat
+  * **Importer**:
+    * Career data (signature abilities, specializations) is now properly set when the OggDude importer is run with existing compendiums
     * Re-running the importer no longer duplicates weapons on vehicles
     * Vehicle images are now imported when "vehicles" are imported
+  * **Misc**
+    * Granting XP to the entire group now updates the XP logs for those players (previously, only single-actor grants updated the log)
 
 `1.809`
 * Features: 

@@ -113,7 +113,7 @@ export async function change_role(vehicle_actor, crew_member, old_crew_role, new
  * @returns {Promise<void>}
  */
 export async function updateRoles(vehicle_actor, crew_member_id, new_crew_roles) {
-  const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew');
+  const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew') || [];
   let new_flag_data = [];
   const crew_member = game.actors.get(crew_member_id);
 
@@ -268,7 +268,7 @@ export async function handlePilotCheck(vehicle, pilot_id) {
 export async function selectRoles(vehicle, crew_member_id) {
   const crew_member = game.actors.get(crew_member_id);
   const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
-  const vehicleRoles = vehicle.getFlag('starwarsffg', 'crew');
+  const vehicleRoles = vehicle.getFlag('starwarsffg', 'crew') || [];
 
   const crewMemberRoles = vehicleRoles.filter(role => role.actor_id === crew_member_id);
   const rolesInUse = crewMemberRoles.map(role => role.role);
