@@ -143,7 +143,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
         // we need to update all specialization talents with the latest talent information
         if (!this.actor.flags.starwarsffg?.loaded && this.actor.type !== "rival") {
-          this._updateSpecialization(data);
+          await this._updateSpecialization(data);
         }
 
         if (data.data.stats.credits.value > 999) {
@@ -1610,7 +1610,7 @@ export class ActorSheetFFG extends ActorSheet {
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
     CONFIG.logger.debug(data.talentList.slice());
 
-    const globalTalentList = [];
+    const globalTalentList = data.talentList.filter(i => !Object.keys(i).includes("canCombine"));
 
     for await (const spec of specializations) {
       CONFIG.logger.debug(`_updateSpecialization(): starting work on ${spec.name}`);
