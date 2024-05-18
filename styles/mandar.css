@@ -2184,6 +2184,7 @@ img {
 
 .starwarsffg .skillsGrid .dice-pool {
   margin: 0.5em 0;
+  cursor: pointer;
 }
 
 .starwarsffg .skillsGrid .dice-pool img {
