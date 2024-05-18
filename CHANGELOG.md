@@ -27,6 +27,7 @@
   * Vehicle crew selection is now a multi-select dropdown instead of requiring you to drag-and-drop the same actor multiple times
   * Dragging crew onto vehicles now prompts for the initial role selection, instead of assigning "(none)"
   * A single, built-in piloting skill has been added to vehicles, which automatically selects the proper skill for rolling that type of vehicle
+  * Vehicle defense silhouettes are now customizable
 * Fixes:
   * Sending a signature ability to chat now includes purchased upgrades
   * Granting XP to the entire group now updates the XP logs

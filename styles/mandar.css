@@ -2832,11 +2832,11 @@ img {
   background: conic-gradient(#c7794b 0% 25%, #dbc48e 25% 50%, #c7794b 50% 75%, #dbc48e 75% 100%);
 }
 
-.starwarsffg.sheet.actor .vehicle .defense-group .defense-decoration img {
+.starwarsffg.sheet.actor .vehicle .defense-group img {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) rotate(-45deg);
+  transform: translate(-50%, -50%);
   border: 0;
 }
 

@@ -537,7 +537,8 @@
           "label": "SWFFG.VehicleNavicomputer"
         }
       },
-      "spaceShip": false
+      "spaceShip": false,
+      "silhouetteImage": "systems/starwarsffg/images/shipdefence.png"
     },
     "homestead": {
       "templates": ["biography", "attributes"],

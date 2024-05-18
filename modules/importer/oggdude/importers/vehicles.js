@@ -88,6 +88,7 @@ export default class Vehicles {
                 ],
               },
               spaceShip: isSpaceVehicle,
+              silhouetteImage: "systems/starwarsffg/images/shipdefence.png",
             };
 
             data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
@@ -145,6 +146,11 @@ export default class Vehicles {
             let imgPath = await ImportHelpers.getImageFilename(zip, "Vehicle", "", data.flags.starwarsffg.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+            }
+
+            let silhouettePath = await ImportHelpers.getImageFilename(zip, "Vehicle", "", data.flags.starwarsffg.ffgimportid, "Silhouettes");
+            if (silhouettePath) {
+              data.data.silhouetteImage = await ImportHelpers.importSilhouetteImage(silhouettePath.name, zip, pack);
             }
 
             await ImportHelpers.addImportItemToCompendium("Actor", data, pack);
