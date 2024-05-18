@@ -47,6 +47,7 @@
     * Characters: The buy talent button on specializations no longer disappears when buying >1 talent at a time
     * Characters: "Fix" purchasing skills at the bottom of the skill list by adding a dedicated purchase button
     * Characters: The XP log no longer shows an edit button, as it is currently read only
+    * Characters: Fixed a bug where talents directly granted to an actor (i.e. not via a specialization) did not appear on the first opening of the character sheet each load
     * Minions: Show "group skill" instead of "career skill"
   * **Vehicles**
     * Vehicle mods are now imported as the correct type (ship mods)
