@@ -1662,11 +1662,7 @@ export class ActorSheetFFG extends ActorSheet {
       CONFIG.logger.debug(globalTalentList.slice());
     }
 
-    data.talentList = globalTalentList.sort((a, b) => {
-      if (a.name > b.name) return 1;
-      if (a.name < b.name) return -1;
-      return 0;
-    });
+    data.talentList = globalTalentList;
 
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList after update:`);
     CONFIG.logger.debug(data.talentList.slice());
