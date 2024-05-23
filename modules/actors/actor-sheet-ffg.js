@@ -863,6 +863,7 @@ export class ActorSheetFFG extends ActorSheet {
     html
       .find(".roll-button")
       .on("click", async (event) => {
+        event.stopPropagation();
         let upgradeType = null;
         if (event.ctrlKey && !event.shiftKey) {
           upgradeType = "ability";
