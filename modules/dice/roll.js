@@ -19,7 +19,7 @@ export class RollFFG extends Roll {
       this.ffg.success += +args[2].success;
       this.addedResults.push({
         type: "Success",
-        symbol: PopoutEditor.renderDiceImages("[SU]"),
+        symbol: "[SU]",
         value: Math.abs(+args[2].success),
         negative: +args[2].success < 0,
       });
@@ -28,7 +28,7 @@ export class RollFFG extends Roll {
       this.ffg.failure += +args[2].failure;
       this.addedResults.push({
         type: "Failure",
-        symbol: PopoutEditor.renderDiceImages("[FA]"),
+        symbol: "[FA]",
         value: Math.abs(+args[2].failure),
         negative: +args[2].failure < 0,
       });
@@ -37,7 +37,7 @@ export class RollFFG extends Roll {
       this.ffg.advantage += +args[2].advantage;
       this.addedResults.push({
         type: "Advantage",
-        symbol: PopoutEditor.renderDiceImages("[AD]"),
+        symbol: "[AD]",
         value: Math.abs(+args[2].advantage),
         negative: +args[2].advantage < 0,
       });
@@ -46,7 +46,7 @@ export class RollFFG extends Roll {
       this.ffg.threat += +args[2].threat;
       this.addedResults.push({
         type: "Threat",
-        symbol: PopoutEditor.renderDiceImages("[TH]"),
+        symbol: "[TH]",
         value: Math.abs(+args[2].threat),
         negative: +args[2].threat < 0,
       });
@@ -55,7 +55,7 @@ export class RollFFG extends Roll {
       this.ffg.light += +args[2].light;
       this.addedResults.push({
         type: "Light",
-        symbol: PopoutEditor.renderDiceImages("[LI]"),
+        symbol: "[LI]",
         value: Math.abs(+args[2].light),
         negative: +args[2].light < 0,
       });
@@ -64,7 +64,7 @@ export class RollFFG extends Roll {
       this.ffg.dark += +args[2].dark;
       this.addedResults.push({
         type: "Dark",
-        symbol: PopoutEditor.renderDiceImages("[DA]"),
+        symbol: "[DA]",
         value: Math.abs(+args[2].dark),
         negative: +args[2].dark < 0,
       });
@@ -74,7 +74,7 @@ export class RollFFG extends Roll {
       this.ffg.success += +args[2].triumph;
       this.addedResults.push({
         type: "Triumph",
-        symbol: PopoutEditor.renderDiceImages("[TR]"),
+        symbol: "[TR]",
         value: Math.abs(+args[2].triumph),
         negative: +args[2].triumph < 0,
       });
@@ -84,7 +84,7 @@ export class RollFFG extends Roll {
       this.ffg.failure += +args[2].despair;
       this.addedResults.push({
         type: "Despair",
-        symbol: PopoutEditor.renderDiceImages("[DE]"),
+        symbol: "[DE]",
         value: Math.abs(+args[2].despair),
         negative: +args[2].despair < 0,
       });
@@ -98,6 +98,12 @@ export class RollFFG extends Roll {
   static CHAT_TEMPLATE = "systems/starwarsffg/templates/dice/roll-ffg.html";
 
   static TOOLTIP_TEMPLATE = "systems/starwarsffg/templates/dice/tooltip-ffg.html";
+
+  async updateSymbols() {
+    for (const addedResult of this.addedResults) {
+      addedResult.symbol = await TextEditor.enrichHTML(addedResult.symbol);
+    }
+  }
 
   /* -------------------------------------------- */
 
@@ -238,6 +244,7 @@ export class RollFFG extends Roll {
 
     // Execute the roll, if needed
     if (!this._evaluated) await this.roll();
+    await this.updateSymbols();
 
     // Define chat data
     if (this?.data) {

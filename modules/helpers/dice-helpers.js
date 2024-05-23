@@ -118,7 +118,7 @@ export default class DiceHelpers {
     }
 
     dicePool = new DicePoolFFG(await this.getModifiers(dicePool, itemData));
-    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(skill.label)}`, skill.label, itemData, flavorText, sound);
+    await this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(skill.label)}`, skill.label, itemData, flavorText, sound);
   }
 
   static async displayRollDialog(data, dicePool, description, skillName, item, flavorText, sound) {

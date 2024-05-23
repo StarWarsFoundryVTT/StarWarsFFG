@@ -604,30 +604,31 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".items .item, .header-description-block .item, .injuries .item").click(async (ev) => {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
         const li = $(ev.currentTarget);
-        let itemId = li.data("itemId");
-        let item = this.actor.items.get(itemId);
+        if (ev?.originalEvent?.target && !$(ev?.originalEvent?.target).hasClass("item-pill")) {
+          let itemId = li.data("itemId");
+          let item = this.actor.items.get(itemId);
 
-        if (!item) {
-          item = game.items.get(itemId);
-        }
-        if (!item) {
-          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
           if (!item) {
-            const talentItemData = this.actor?.talentList?.find(talent => talent.itemId === itemId);
-            if (talentItemData) {
-              item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
+            item = game.items.get(itemId);
+          }
+          if (!item) {
+            item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+            if (!item) {
+              const talentItemData = this.actor?.talentList?.find(talent => talent.itemId === itemId);
+              if (talentItemData) {
+                item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
+              }
             }
           }
+          if (item?.sheet) {
+            if (item?.type == "species" || item?.type == "career" || item?.type == "specialization" || item?.type == "forcepower" || item?.type == "signatureability") item.sheet.render(true);
+            else this._itemDisplayDetails(item, ev);
+          }
         }
-        if (item?.sheet) {
-          if (item?.type == "species" || item?.type == "career" || item?.type == "specialization" || item?.type == "forcepower" || item?.type == "signatureability") item.sheet.render(true);
-          else this._itemDisplayDetails(item, ev);
-        }
-
-        html.find("li.item-pill").on("click", async (event) => {
+        if (ev?.originalEvent?.target && $(ev?.originalEvent?.target).hasClass("item-pill")) {
           event.preventDefault();
           event.stopPropagation();
-          const li = $(event.currentTarget);
+          const li = $(ev.originalEvent.target);
           const itemType = li.attr("data-item-embed-type");
           let itemData = {};
           const newEmbed = li.attr("data-item-embed");
@@ -644,7 +645,7 @@ export class ActorSheetFFG extends ActorSheet {
                 rank_current: li.attr('data-item-embed-rank'),
               },
               permission: {
-                default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+                default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
               }
             };
             const tempItem = await Item.create(itemData, {temporary: true});
@@ -657,7 +658,7 @@ export class ActorSheetFFG extends ActorSheet {
 
             await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor.id, this.actor.compendium);
           }
-        });
+        };
       }
     });
 
