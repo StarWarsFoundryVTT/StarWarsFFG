@@ -674,7 +674,24 @@ export class ActorSheetFFG extends ActorSheet {
         const desc = li.data("desc");
 
         if (item?.sheet) {
-          if (item?.type == "forcepower") {
+          if (item?.type === "forcepower") {
+            await this._forcePowerDisplayDetails(desc, ev);
+          }
+        }
+      }
+    });
+
+    // Toggle Signature Ability details
+    html.find(".signature-ability").click(async (ev) => {
+      ev.stopPropagation();
+      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
+        const li = $(ev.currentTarget);
+        const itemId = li.data("itemId");
+        const item = this.actor.items.get(itemId);
+        const desc = li.data("desc");
+
+        if (item?.sheet) {
+          if (item?.type === "signatureability") {
             await this._forcePowerDisplayDetails(desc, ev);
           }
         }
@@ -1226,7 +1243,7 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${await PopoutEditor.renderDiceImages(desc, this.actor.system)}</div>`);
+      let div = $(`<div class="item-details">${await TextEditor.enrichHTML(desc)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
