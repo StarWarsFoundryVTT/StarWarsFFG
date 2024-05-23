@@ -1101,7 +1101,7 @@ export class ActorSheetFFG extends ActorSheet {
       event.preventDefault();
       const a = event.currentTarget;
       const id = a.dataset["id"];
-      this.object.update({ "data.obligationlist": { ["-=" + id]: null } });
+      this.object.update({ "system.obligationlist": { ["-=" + id]: null } });
     });
 
     html.find(".add-duty").on("click", async (event) => {
@@ -1120,7 +1120,7 @@ export class ActorSheetFFG extends ActorSheet {
       event.preventDefault();
       const a = event.currentTarget;
       const id = a.dataset["id"];
-      this.object.update({ "data.dutylist": { ["-=" + id]: null } });
+      this.object.update({ "system.dutylist": { ["-=" + id]: null } });
     });
 
     html.find(".force-conflict .enable-dice-pool").on("click", async (event) => {
@@ -1459,7 +1459,7 @@ export class ActorSheetFFG extends ActorSheet {
    */
   _onRemoveSkill(a) {
     const ability = $(a).data("ability");
-    this.object.update({ "data.skills": { ["-=" + ability]: null } });
+    this.object.update({ "system.skills": { ["-=" + ability]: null } });
   }
 
   /**
