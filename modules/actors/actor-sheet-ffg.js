@@ -150,6 +150,7 @@ export class ActorSheetFFG extends ActorSheet {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
+        data.data.general.enrichedNotes = await TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
         data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         break;
       case "vehicle":
