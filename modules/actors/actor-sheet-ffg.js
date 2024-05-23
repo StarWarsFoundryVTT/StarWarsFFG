@@ -154,6 +154,7 @@ export class ActorSheetFFG extends ActorSheet {
         data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         break;
       case "vehicle":
+        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
         // add the crew to the items of the vehicle
         data.crew = [];
         // look up the flag data
