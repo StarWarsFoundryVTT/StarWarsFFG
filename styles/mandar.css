@@ -665,6 +665,12 @@ img {
   height: calc(100% - 21.5rem);
 }
 
+.starwarsffg.sheet .sheet-body.weapon .editor {
+  height: calc(100% - 1rem);
+}
+.starwarsffg.sheet.v2 .sheet-body.weapon .editor {
+  height: calc(100% - 2rem);
+}
 .starwarsffg.sheet .sheet-body.weapon, .starwarsffg.sheet .sheet-body.armour {
   height: calc(100% - 32rem);
 }
@@ -684,6 +690,13 @@ img {
 }
 .starwarsffg.sheet.v2 .sheet-body.itemattachment {
   height: calc(100% - 15.5rem);
+}
+
+.starwarsffg.sheet .sheet-body.itemmodifier .editor {
+  height: calc(100% - 2rem);
+}
+.starwarsffg.sheet.v2 .sheet-body.itemmodifier .editor {
+  height: calc(100% - 4rem);
 }
 
 .starwarsffg.sheet.v2 .sheet-body.ability {

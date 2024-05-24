@@ -1631,7 +1631,8 @@ export class ActorSheetFFG extends ActorSheet {
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
     CONFIG.logger.debug(data.talentList.slice());
 
-    const globalTalentList = data.talentList.filter(i => !Object.keys(i).includes("canCombine"));
+    // start the talent list only with talents that did not come from a specialization
+    const globalTalentList = data.talentList.filter(i => i.source.filter(s => s.type === "talent").length > 0)
 
     for await (const spec of specializations) {
       CONFIG.logger.debug(`_updateSpecialization(): starting work on ${spec.name}`);

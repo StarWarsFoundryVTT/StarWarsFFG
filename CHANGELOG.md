@@ -56,6 +56,7 @@
     * Fix overflowing "special" field on weapons in Mandar theme
     * Correct default Signature ability height so the bottom isn't ever-so-slightly cut off
     * The "talent" tab on species items now uses the talent icon instead of the configure icon
+    * The "item modifier" item type has had the description height corrected
   * **Combat**
     * Fixed double-slot-claim bug in the combat tracker
     * Fixed a bug preventing removing combatants from combat
