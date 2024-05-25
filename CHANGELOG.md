@@ -60,6 +60,8 @@
   * **Combat**
     * Fixed double-slot-claim bug in the combat tracker
     * Fixed a bug preventing removing combatants from combat
+    * Fixed a bug  where removing a combatant would un-claim another slot 
+    * Fixed a bug where removing a combatant from the canvas would not properly update the tracker
   * **Importer**:
     * Career data (signature abilities, specializations) is now properly set when the OggDude importer is run with existing compendiums
     * Re-running the importer no longer duplicates weapons on vehicles
