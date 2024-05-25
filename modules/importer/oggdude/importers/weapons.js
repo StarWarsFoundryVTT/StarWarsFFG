@@ -23,7 +23,7 @@ export default class Weapons {
             let data = ImportHelpers.prepareBaseObject(item, itemType);
             data.data = {
               attributes: {},
-              description: item.Description,
+              description: item.Description.replace('[H3]', '<h3>').replace('[h3]', '</h3>'),
               encumbrance: {
                 value: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
               },

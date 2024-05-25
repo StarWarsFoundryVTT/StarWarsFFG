@@ -15,22 +15,20 @@ export class CombatFFG extends Combat {
    */
   async addExtraSlot(round, disposition, initiative) {
     const extraSlot = await new CombatantFFG(
-  {
-          name: "__GENERIC_SLOT__",
+{
+        name: "__GENERIC_SLOT__",
+        disposition: disposition,
+        combatantId: foundry.utils.randomID(),
+        hidden: false,
+        visible: true,
+        initiative: initiative,
+        flags: {
+          fake: true,
           disposition: disposition,
-          id: foundry.utils.randomID(),
-          combatantId: foundry.utils.randomID(),
-          hidden: false,
-          visible: true,
-          initiative: initiative,
-          flags: {
-            fake: true,
-            disposition: disposition,
-          }
-        },
-      );
-    await this.createEmbeddedDocuments("Combatant", [extraSlot]);
-    return extraSlot.id;
+        }
+      },
+    );
+    return (await this.createEmbeddedDocuments("Combatant", [extraSlot]))[0].id;
   }
 
   /**
@@ -295,7 +293,8 @@ export class CombatFFG extends Combat {
   }
 
   /**
-   * gets any existing initiative claims for this turn within the round of a given combat
+   * Given an original combatant's ID, look up claims for that slot
+   * Note: this is a key lookup
    * @param round - INT - the round
    * @param slot_id - STRING - the ID of the native combatant for this turn
    * @returns {undefined|*}
@@ -306,6 +305,22 @@ export class CombatFFG extends Combat {
       return undefined;
     }
     return claims[round]?.[slot_id];
+  }
+
+  /**
+   * Given a claimant's ID, look up the slot they've claimed
+   * Note: This is a search-by-value
+   * @param round - INT - the round
+   * @param combatantId - STRING - the ID of the native combatant for this turn
+   * @returns {string|undefined} - an array of
+   */
+  findSlotClaims(round, combatantId) {
+    const claims = this.getFlag('starwarsffg', 'combatClaims') || undefined;
+    if (!claims) {
+      return undefined;
+    }
+    const roundClaims = claims[round];
+    return Object.keys(roundClaims).find(key => roundClaims[key] === combatantId) || undefined;
   }
 
   /**
@@ -338,17 +353,13 @@ export class CombatFFG extends Combat {
     }
   }
 
-
-  async handleCombatantRemoval(combatant, options, combatantId) {
-    CONFIG.logger.debug(`Handling combatant removal of ${combatant?.name}`);
-    const claims = this.hasClaims(combatant.id);
-    if (!claims) {
-      CONFIG.logger.debug("No claimed slots found, nothing to do!");
-      return;
+  async handleCombatantRemoval(combatant, options, userId) {
+    const claimedSlot = this.findSlotClaims(this.round, combatant.id);
+    const element = $(`.directory-item[data-combatant-id="${claimedSlot}"]`, combat);
+    if (element.length === 0) {
+      return ui.notifications.warn("You must claim a slot before you can remove the combatant (sorry...)");
     }
-    CONFIG.logger.debug("Claimed slots found, unclaiming...");
-    await this.unclaimSlot(this.round, claims);
-    CONFIG.logger.debug("...Done!");
+    await this.removeCombatant(element);
   }
 
   async handleCombatantAddition(combatant, context, options, combatantI) {
@@ -396,6 +407,56 @@ export class CombatFFG extends Combat {
       return;
     }
     await this.unsetFlag('starwarsffg', `combatClaims.${round}.${slot_id}`);
+  }
+
+  async removeCombatant(li) {
+    const round = this.round;
+    // find the combatant being right-clicked
+    const clickedCombatantId = li.data("combatant-id");
+    const clickedCombatantName = this.combatants.get(clickedCombatantId)?.name;
+    CONFIG.logger.debug("Detected combatant removal on custom combat tracker, working...");
+    CONFIG.logger.debug(`Right clicked original actor was ${clickedCombatantName} (${clickedCombatantId})`);
+    // find the claimant on the slot being right-clicked
+    const toRemoveCombatantId = this.getSlotClaims(round, clickedCombatantId);
+    const toRemoveCombatantName = this.combatants.get(toRemoveCombatantId)?.name;
+    CONFIG.logger.debug(`Actor actually being removed is ${toRemoveCombatantName} (${toRemoveCombatantId})`);
+    // pull disposition and initiative from the actor being removed (so we can re-create the slot with those values)
+    const disposition = CONST.TOKEN_DISPOSITIONS[li.data("disposition").replace('Enemy', 'Hostile').toUpperCase()];
+    const initiative = this.combatants.get(toRemoveCombatantId).initiative;
+
+    // see if there is a claim on the slot for the actor being removed (which may not have been the one right-clicked)
+    const toRemoveClaimantId = this.getSlotClaims(round, toRemoveCombatantId);
+    const toRemoveClaimantName = this.combatants.get(toRemoveClaimantId)?.name;
+    // prevent constant re-rendering of the tracker
+    this.debounceRender();
+    if (toRemoveClaimantId) {
+      CONFIG.logger.debug(`Located claim on actor's slot by ${toRemoveClaimantName} (${toRemoveClaimantId}), un-claiming it`);
+      // if there is a claim on the slot being removed, un-claim it
+      await this.unclaimSlot(round, toRemoveCombatantId);
+    }
+
+    // un-claim the slot we're removing the actor from
+    CONFIG.logger.debug("Releasing the claim of the actor being removed");
+    await this.unclaimSlot(round, clickedCombatantId);
+    // now delete the toRemoveCombatantId slot
+    CONFIG.logger.debug("Ok, actually removing the actor");
+    Hooks.off("preDeleteCombatant", CONFIG.FFG.preCombatDelete);
+    await this.combatants.get(toRemoveCombatantId).delete();
+    CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    // now create a new slot to replace it
+    CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
+    const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
+
+    // if there was a claim on the slot replaced, add it back
+    if (toRemoveClaimantId && toRemoveClaimantId !== toRemoveCombatantId) {
+      CONFIG.logger.debug(`Since this slot was originally claimed by ${toRemoveClaimantName}, we are re-claiming it for them`);
+      await this.claimSlot(round, replacementTurnId, toRemoveClaimantId);
+    }
+    // re-render the tracker / re-order the turns
+    CONFIG.logger.debug("Re-rendering the tracker and emitting a socket event for other clients");
+    this.setupTurns();
+    // emit a socket event
+    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
   }
 }
 
@@ -721,7 +782,7 @@ export class CombatTrackerFFG extends CombatTracker {
     const removeCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantRemove");
     if (removeCombatantEntry) {
       removeCombatantEntry.callback = li => {
-        this._removeCombatant(this, li);
+        this.viewed.removeCombatant(li);
       };
       baseEntries[3] = removeCombatantEntry;
     }
@@ -750,38 +811,6 @@ export class CombatTrackerFFG extends CombatTracker {
     };
 
     return [...baseEntries, removeSlot, unClaimSlot];
-  }
-
-  async _removeCombatant(tracker, li) {
-    const combat = this.viewed;
-    if (!combat) {
-      ui.notifications.error("Error detecting combat, try starting/ending combat?");
-    }
-    const round = combat.round;
-    const turn = li.data("slot-index");
-    const combatantId = li.data("combatant-id");
-    const claim = combat.getSlotClaims(round, combatantId);
-    const claimed = claim !== undefined;
-    if (!claimed) {
-      ui.notifications.warn("You cannot remove a combatant without having the slot claimed");
-      return;
-    }
-    // note the combatant's information
-    // create a generic slot mirroring the combatant's data
-    // remove the combatant's true slot
-    const claimant = combat.combatants.get(claim);
-    const disposition = CONST.TOKEN_DISPOSITIONS[li.data("disposition").replace('Enemy', 'Hostile').toUpperCase()];
-    if (!claimant) {
-      ui.notifications.error("Unable to find actor which claimed this slot, please report");
-      return;
-    }
-    const initiative = claimant.initiative;
-    combat.debounceRender();
-    claimant.delete();
-    // we create a generic slot to keep slots consistent (deleting a combatant removes their slot as well, which we do not want)
-    await combat.addExtraSlot(round, disposition, initiative);
-    combat.setupTurns();
-    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
   }
 
   async _removeSlot(tracker, li) {
@@ -912,4 +941,9 @@ function sortInit(a, b) {
       return 1;
   }
   return a < b ? -1 : 1;
+}
+
+export function registerHandleCombatantRemoval(combatant, options, userId) {
+  game.combat.handleCombatantRemoval(combatant, options, userId);
+  return false;
 }

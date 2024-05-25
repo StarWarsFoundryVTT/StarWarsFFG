@@ -31,6 +31,17 @@ export default class RollBuilderFFG extends FormApplication {
   async getData() {
     //get all possible sounds
     let sounds = [];
+    const diceSymbols = {
+      advantage: await TextEditor.enrichHTML("[AD]"),
+      success: await TextEditor.enrichHTML("[SU]"),
+      threat: await TextEditor.enrichHTML("[TH]"),
+      failure: await TextEditor.enrichHTML("[FA]"),
+      upgrade: await TextEditor.enrichHTML("[PR]"),
+      triumph: await TextEditor.enrichHTML("[TR]"),
+      despair: await TextEditor.enrichHTML("[DE]"),
+      light: await TextEditor.enrichHTML("[LI]"),
+      dark: await TextEditor.enrichHTML("[DA]"),
+    };
 
     let canUserAddAudio = await game.settings.get("starwarsffg", "allowUsersAddRollAudio");
     let canUserAddFlavor = game.user.isGM || !this?.roll?.flavor;
@@ -88,6 +99,7 @@ export default class RollBuilderFFG extends FormApplication {
       users,
       enableForceDie,
       labels,
+      diceSymbols,
     };
   }
 

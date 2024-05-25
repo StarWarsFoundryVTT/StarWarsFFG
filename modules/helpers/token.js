@@ -57,8 +57,6 @@ export function drawMinionCount(token) {
   const insideGap = 5;
   const availableSpace = tokenWidth - ((markerWidth * maxCount) + (insideGap * (maxCount - 1)));
   const outsideGap = availableSpace / 2;
-  CONFIG.logger.debug(`drawing minion count. calculated tokenWidth: ${tokenWidth}, insideGap: ${insideGap}, availableSpace: ${availableSpace}, outsideGap: ${outsideGap}`);
-  CONFIG.logger.debug(`curCount: ${curCount}, maxCount: ${maxCount}`);
 
   if (maxCount > maxRender) {
     const text = new PIXI.Text(

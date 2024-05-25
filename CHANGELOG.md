@@ -56,9 +56,12 @@
     * Fix overflowing "special" field on weapons in Mandar theme
     * Correct default Signature ability height so the bottom isn't ever-so-slightly cut off
     * The "talent" tab on species items now uses the talent icon instead of the configure icon
+    * The "item modifier" item type has had the description height corrected
   * **Combat**
     * Fixed double-slot-claim bug in the combat tracker
     * Fixed a bug preventing removing combatants from combat
+    * Fixed a bug  where removing a combatant would un-claim another slot 
+    * Fixed a bug where removing a combatant from the canvas would not properly update the tracker
   * **Importer**:
     * Career data (signature abilities, specializations) is now properly set when the OggDude importer is run with existing compendiums
     * Re-running the importer no longer duplicates weapons on vehicles

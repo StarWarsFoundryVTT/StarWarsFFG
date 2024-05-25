@@ -150,9 +150,11 @@ export class ActorSheetFFG extends ActorSheet {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
         data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
+        data.data.general.enrichedNotes = await TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
         data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         break;
       case "vehicle":
+        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
         // add the crew to the items of the vehicle
         data.crew = [];
         // look up the flag data
@@ -604,30 +606,31 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".items .item, .header-description-block .item, .injuries .item").click(async (ev) => {
       if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
         const li = $(ev.currentTarget);
-        let itemId = li.data("itemId");
-        let item = this.actor.items.get(itemId);
+        if (ev?.originalEvent?.target && !$(ev?.originalEvent?.target).hasClass("item-pill")) {
+          let itemId = li.data("itemId");
+          let item = this.actor.items.get(itemId);
 
-        if (!item) {
-          item = game.items.get(itemId);
-        }
-        if (!item) {
-          item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
           if (!item) {
-            const talentItemData = this.actor?.talentList?.find(talent => talent.itemId === itemId);
-            if (talentItemData) {
-              item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
+            item = game.items.get(itemId);
+          }
+          if (!item) {
+            item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+            if (!item) {
+              const talentItemData = this.actor?.talentList?.find(talent => talent.itemId === itemId);
+              if (talentItemData) {
+                item = await ImportHelpers.findCompendiumEntityByName("Item", talentItemData.name);
+              }
             }
           }
+          if (item?.sheet) {
+            if (item?.type == "species" || item?.type == "career" || item?.type == "specialization" || item?.type == "forcepower" || item?.type == "signatureability") item.sheet.render(true);
+            else this._itemDisplayDetails(item, ev);
+          }
         }
-        if (item?.sheet) {
-          if (item?.type == "species" || item?.type == "career" || item?.type == "specialization" || item?.type == "forcepower" || item?.type == "signatureability") item.sheet.render(true);
-          else this._itemDisplayDetails(item, ev);
-        }
-
-        html.find("li.item-pill").on("click", async (event) => {
+        if (ev?.originalEvent?.target && $(ev?.originalEvent?.target).hasClass("item-pill")) {
           event.preventDefault();
           event.stopPropagation();
-          const li = $(event.currentTarget);
+          const li = $(ev.originalEvent.target);
           const itemType = li.attr("data-item-embed-type");
           let itemData = {};
           const newEmbed = li.attr("data-item-embed");
@@ -644,7 +647,7 @@ export class ActorSheetFFG extends ActorSheet {
                 rank_current: li.attr('data-item-embed-rank'),
               },
               permission: {
-                default: CONST.DOCUMENT_PERMISSION_LEVELS.OBSERVER,
+                default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
               }
             };
             const tempItem = await Item.create(itemData, {temporary: true});
@@ -657,7 +660,7 @@ export class ActorSheetFFG extends ActorSheet {
 
             await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(itemId, modifierType, modifierId, this.actor.id, this.actor.compendium);
           }
-        });
+        };
       }
     });
 
@@ -671,7 +674,24 @@ export class ActorSheetFFG extends ActorSheet {
         const desc = li.data("desc");
 
         if (item?.sheet) {
-          if (item?.type == "forcepower") {
+          if (item?.type === "forcepower") {
+            await this._forcePowerDisplayDetails(desc, ev);
+          }
+        }
+      }
+    });
+
+    // Toggle Signature Ability details
+    html.find(".signature-ability").click(async (ev) => {
+      ev.stopPropagation();
+      if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
+        const li = $(ev.currentTarget);
+        const itemId = li.data("itemId");
+        const item = this.actor.items.get(itemId);
+        const desc = li.data("desc");
+
+        if (item?.sheet) {
+          if (item?.type === "signatureability") {
             await this._forcePowerDisplayDetails(desc, ev);
           }
         }
@@ -860,6 +880,7 @@ export class ActorSheetFFG extends ActorSheet {
     html
       .find(".roll-button")
       .on("click", async (event) => {
+        event.stopPropagation();
         let upgradeType = null;
         if (event.ctrlKey && !event.shiftKey) {
           upgradeType = "ability";
@@ -1098,7 +1119,7 @@ export class ActorSheetFFG extends ActorSheet {
       event.preventDefault();
       const a = event.currentTarget;
       const id = a.dataset["id"];
-      this.object.update({ "data.obligationlist": { ["-=" + id]: null } });
+      this.object.update({ "system.obligationlist": { ["-=" + id]: null } });
     });
 
     html.find(".add-duty").on("click", async (event) => {
@@ -1117,7 +1138,7 @@ export class ActorSheetFFG extends ActorSheet {
       event.preventDefault();
       const a = event.currentTarget;
       const id = a.dataset["id"];
-      this.object.update({ "data.dutylist": { ["-=" + id]: null } });
+      this.object.update({ "system.dutylist": { ["-=" + id]: null } });
     });
 
     html.find(".force-conflict .enable-dice-pool").on("click", async (event) => {
@@ -1222,7 +1243,7 @@ export class ActorSheetFFG extends ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${await PopoutEditor.renderDiceImages(desc, this.actor.system)}</div>`);
+      let div = $(`<div class="item-details">${await TextEditor.enrichHTML(desc)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
@@ -1456,7 +1477,7 @@ export class ActorSheetFFG extends ActorSheet {
    */
   _onRemoveSkill(a) {
     const ability = $(a).data("ability");
-    this.object.update({ "data.skills": { ["-=" + ability]: null } });
+    this.object.update({ "system.skills": { ["-=" + ability]: null } });
   }
 
   /**
@@ -1610,7 +1631,8 @@ export class ActorSheetFFG extends ActorSheet {
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
     CONFIG.logger.debug(data.talentList.slice());
 
-    const globalTalentList = data.talentList.filter(i => !Object.keys(i).includes("canCombine"));
+    // start the talent list only with talents that did not come from a specialization
+    const globalTalentList = data.talentList.filter(i => i.source.filter(s => s.type === "talent").length > 0)
 
     for await (const spec of specializations) {
       CONFIG.logger.debug(`_updateSpecialization(): starting work on ${spec.name}`);

@@ -190,6 +190,9 @@ export class ItemSheetFFG extends ItemSheet {
             }
           });
         }
+        for (let x = 0; x < 20; x++) {
+          data.data.talents[`talent${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.talents[`talent${x}`].description);
+        }
         break;
       case "species":
         this.position.width = 550;

@@ -2223,13 +2223,13 @@ export default class ImportHelpers {
 
     const text = sourceArray.map((s) => {
       if (s?.$Page) {
-        return `[H4]Page ${s.$Page} - ${s._}[h4]`;
+        return `<h4>Page ${s.$Page} - ${s._}</h4>`;
       } else {
-        return `[H4]${s}[h4]`;
+        return `<h4>${s}</h4>`;
       }
     });
 
-    const sourceText = `[P][H3]Sources:[h3]${text.join("")}`;
+    const sourceText = `<p><h3>Sources:</h3>${text.join("")}</p>`;
 
     return sourceText;
   }

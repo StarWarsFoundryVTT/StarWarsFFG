@@ -492,7 +492,7 @@ export class ItemFFG extends ItemBaseFFG {
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
         const modifiers = data.adjusteditemmodifier?.filter(i => Object.keys(i).length > 0);
-        const qualities = modifiers?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${escape(m.system.enrichedDescription)}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = modifiers?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${escape(m.system.enrichedDescription? m.system.enrichedDescription : m.system.description)}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }

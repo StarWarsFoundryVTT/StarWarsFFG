@@ -365,9 +365,10 @@ export function register_oggdude_tag_enricher() {
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[H3\])(.[^\[]*)\[h3\]/gm,
     enricher: async (match, options) => {
-        let element = document.createElement("h3");
-        return element;
-      }
+      let element = document.createElement("h3");
+      element.textContent = match[2];
+      return element;
+    }
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[H4\])(.[^\[]*)\[h4\]/gim,
@@ -375,6 +376,13 @@ export function register_oggdude_tag_enricher() {
         let element = document.createElement("h4");
         return element;
       }
+  });
+  CONFIG.TextEditor.enrichers.push({
+    pattern: /\[h3\]/gm,
+    enricher: async (match, options) => {
+      let element = document.createElement("hr");
+      return element;
+    }
   });
 }
 
