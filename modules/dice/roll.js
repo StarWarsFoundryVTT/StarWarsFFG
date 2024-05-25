@@ -151,6 +151,11 @@ export class RollFFG extends Roll {
       }
     }));
 
+    // Step 3.5 - if non-FFG dice are roll, skip our custom logic
+    if (!this?.hasFFG) {
+      return super.evaluate({ minimize, maximize });
+    }
+
     // Step 4 - safely evaluate the final total
     const total = Roll.safeEval(this.results.join(" "));
     if (!Number.isNumeric(total)) {
