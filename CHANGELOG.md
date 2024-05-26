@@ -1,4 +1,4 @@
-`1.810`
+`1.900`
 * Features:
   * Support for FoundryVTT v12
     * Compendiums are now system defined. This means they cannot be deleted, but was required for the v12 migration
