@@ -30,13 +30,21 @@ export default class SignatureAbilities {
             description: item.Description,
             attributes: {},
             upgrades: {},
+            base_cost: 0,
           };
 
           data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
           item.AbilityRows.AbilityRow.forEach((row, i) => {
             try {
-              // skip the first row because it is the large primary ability box
-              if (i > 0) {
+              if (i === 0) {
+                try {
+                  data.data.base_cost = row.Costs.Cost[0];
+                } catch (err) {
+                  data.data.base_cost = 0;
+                }
+              }
+              else {
+                // skip the first row because it is the large primary ability box
                 row.Abilities.Key.forEach((keyName, index) => {
                   let rowAbility = {};
 
@@ -108,8 +116,29 @@ export default class SignatureAbilities {
             data.img = `icons/svg/aura.svg`;
           }
 
-          await ImportHelpers.addImportItemToCompendium("Item", data, pack);
+          const sigAbility = await ImportHelpers.addImportItemToCompendium("Item", data, pack);
           currentCount += 1;
+          // process careers
+          if (item?.Careers) {
+            for (const careerKey of Object.values(item.Careers)) {
+              let careerItem = await ImportHelpers.findCompendiumEntityByImportId("Item", careerKey, "world.oggdudecareers", "career");
+              if (!careerItem) {
+                continue;
+              }
+              const updateData = {
+                system: {
+                  signatureabilities: {
+                    [sigAbility._id]: {
+                      name: sigAbility.name,
+                      source: sigAbility.uuid,
+                      id: sigAbility._id,
+                    },
+                  },
+                },
+              }
+              await careerItem.update(updateData);
+            }
+          }
 
           $(".signatureabilities .import-progress-bar")
             .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)

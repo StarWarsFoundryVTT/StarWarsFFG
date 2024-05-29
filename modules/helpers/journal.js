@@ -9,7 +9,7 @@ export function register_dice_enricher() {
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("dietype");
-        element.classList.add(dicetheme);
+        element.classList.add("starwars");
         element.classList.add("ability");
         element.append("d");
         return element;
@@ -45,7 +45,7 @@ export function register_dice_enricher() {
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("dietype");
-        element.classList.add(dicetheme);
+        element.classList.add("starwars");
         element.classList.add("boost");
         element.append("b");
         return element;
@@ -57,7 +57,7 @@ export function register_dice_enricher() {
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("dietype");
-        element.classList.add(dicetheme);
+        element.classList.add("starwars");
         element.classList.add("challenge");
         element.append("c");
         return element;
@@ -105,7 +105,7 @@ export function register_dice_enricher() {
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("dietype");
-        element.classList.add(dicetheme);
+        element.classList.add("starwars");
         element.classList.add("difficulty");
         element.append("d");
         return element;
@@ -213,7 +213,7 @@ export function register_dice_enricher() {
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("dietype");
-        element.classList.add(dicetheme);
+        element.classList.add("starwars");
         element.classList.add("proficiency");
         element.append("c");
         return element;
@@ -237,7 +237,7 @@ export function register_dice_enricher() {
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("dietype");
-        element.classList.add(dicetheme);
+        element.classList.add("starwars");
         element.classList.add("setback");
         element.append("b");
         return element;

@@ -33,7 +33,7 @@ import {register_crew} from "./helpers/crew.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
-import { createFFGMacro } from "./helpers/macros.js";
+import { createFFGMacro, updateMacro } from "./helpers/macros.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
 import PauseFFG from "./apps/pause-ffg.js";
@@ -42,6 +42,7 @@ import RollBuilderFFG from "./dice/roll-builder.js";
 import CrewSettings from "./settings/crew-settings.js";
 import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag_enricher} from "./helpers/journal.js";
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
+import {handleUpdate} from "./swffg-migration.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -174,6 +175,42 @@ Hooks.once("init", async function () {
   if (game.settings.get("genesysk2", "useGenericSlots")) {
     CONFIG.ui.combat = CombatTrackerFFG;
   }
+
+  /**
+   * Register compendiums for sources for purchasing
+   */
+  game.settings.register("starwarsffg", "specializationCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Hint"),
+    scope: "world",
+    config: true,
+    default: "world.oggdudespecializations",
+    type: String,
+  });
+  game.settings.register("starwarsffg", "signatureAbilityCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Hint"),
+    scope: "world",
+    config: true,
+    default: "world.oggdudesignatureabilities",
+    type: String,
+  });
+  game.settings.register("starwarsffg", "forcePowerCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Hint"),
+    scope: "world",
+    config: true,
+    default: "world.oggdudeforcepowers",
+    type: String,
+  });
+  game.settings.register("starwarsffg", "talentCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Hint"),
+    scope: "world",
+    config: true,
+    default: "",
+    type: String,
+  });
 
   /**
    * Set an initiative formula for the system
@@ -599,6 +636,26 @@ function isCurrentVersionNullOrBlank(currentVersion) {
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
 
+  if (!game.settings.get("genesysk2", "token_configured")) {
+    const tokenData = {
+      bar1: {
+        attribute: "stats.wounds",
+      },
+      bar2: {
+        attribute: "stats.strain",
+      },
+      displayBars: 20, // hovered by owner
+    };
+    const existingSettings = game.settings.get("core", "defaultToken");
+    const updateData = foundry.utils.mergeObject(existingSettings, tokenData);
+    game.settings.set("core", "defaultToken", updateData);
+    game.settings.set("genesysk2", "token_configured", true);
+  }
+
+  // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
+  // this is intended to encourage migrating code to this file to clean up the main file
+  await handleUpdate();
+
   const currentVersion = game.settings.get("genesysk2", "systemMigrationVersion");
 
   const version = game.system.version;
@@ -853,10 +910,54 @@ Hooks.once("ready", async () => {
   }
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-  Hooks.on("hotbarDrop", (bar, data, slot) => createFFGMacro(data, slot));
+  Hooks.on("hotbarDrop", async (bar, data, slot) => await createFFGMacro(bar, data, slot));
+  Hooks.on("createMacro", async function (...args) {
+    args[0] = await updateMacro(args[0]);
+    return args;
+  });
 
   Hooks.on("closeItemSheetFFG", (item) => {
     Hooks.call(`closeAssociatedTalent_${item.object._id}`, item);
+  });
+
+  Hooks.on("createItem", (item, options, userId) => {
+    // add talents from species to character
+    if (item.isEmbedded && item.parent.documentName === "Actor") {
+      const actor = item.actor
+      if (item.type === "species" && actor.type === "character") {
+        const toAdd = [];
+        for(const talentId of Object.keys(item.system.talents)) {
+          const talentUuid = item.system.talents[talentId].source;
+          const talent = fromUuidSync(talentUuid);
+          if (talent) {
+            toAdd.push(talent);
+          }
+        }
+        if (toAdd.length > 0) {
+          actor.createEmbeddedDocuments("Item", toAdd);
+        }
+      }
+    }
+  });
+  // data for _onDropItemCreate has system.encumbrance.adjusted = 0, despite it being proper in the item itself
+  Hooks.on("deleteItem", (item, options, userId) => {
+    // remove talents added by species
+    if (item.isEmbedded && item.parent.documentName === "Actor") {
+      const actor = item.actor
+      if (item.type === "species" && actor.type === "character") {
+        const toDelete = [];
+        for(const talentId of Object.keys(item.system.talents)) {
+          const speciesTalent = item.system.talents[talentId];
+          const actorTalent = actor.items.find(i => i.name === speciesTalent.name && i.type === "talent");
+          if (actorTalent) {
+            toDelete.push(actorTalent.id);
+          }
+        }
+        if (toDelete.length > 0) {
+          actor.deleteEmbeddedDocuments("Item", toDelete);
+        }
+      }
+    }
   });
 
   // Display Destiny Pool
@@ -903,7 +1004,7 @@ Hooks.once("ready", async () => {
 
     game.socket.on("system.starwarsffg", async (...args) => {
       const event_type = args[0].event;
-      if (game.user.id === game.users.find(i => i.isGM)?.id) {
+      if (game.user.id === game.users.activeGM?.id) {
         if (event_type === "combat") {
           CONFIG.logger.debug("Processing combat event from player");
           const data = args[0]?.data;
@@ -930,9 +1031,8 @@ Hooks.once("ready", async () => {
     if (token?.actor?.type === "minion") {
       drawMinionCount(token);
     }
-    if (["character"].includes(token?.actor?.type)) {
-      // suite a une erreur 
-      //drawAdversaryCount(token);
+    if (["character", "nemesis", "rival"].includes(token?.actor?.type)) {
+      drawAdversaryCount(token);
     }
     return token;
   });

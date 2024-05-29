@@ -1,0 +1,12 @@
+<select name="purchase" id="ffgPurchase">
+  <option>{{localize "SWFFG.Actors.Sheets.Purchase.Dropdown" itemType=itemType}}</option>
+  {{#each inCareer as |data id|}}
+    <option value="{{id}}" data-source="{{data.source}}" data-cost="{{../baseCost}}">{{data.name}} ({{../baseCost}} XP)</option>
+  {{/each}}
+  {{#each outCareer as |data id|}}
+    <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{../increasedCost}}">{{data.name}} ({{../increasedCost}} XP)</option>
+  {{/each}}
+  {{#each selectableItems as |data id|}}
+    <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{data.cost}}">{{data.name}} ({{data.cost}} XP)</option>
+  {{/each}}
+</select>

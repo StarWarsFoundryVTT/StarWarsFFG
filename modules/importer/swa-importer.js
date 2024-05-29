@@ -368,9 +368,18 @@ export default class SWAImporter extends FormApplication {
                   skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("genesysk2", "skilltheme")).skills));
                 }
 
+                let importType;
+                if (item.type === "Nemesis") {
+                  importType = "nemesis";
+                } else if (item.type === "Rival") {
+                  importType = "rival";
+                } else {
+                  importType = "minion";
+                }
+
                 let adversary = {
                   name: item.name,
-                  type: item.type === "Nemesis" ? "character" : "minion",
+                  type: importType,
                   flags: {
                     genesysk2: {
                       ffgimportid: `${f.name}-${item.type}-${item.name}`,

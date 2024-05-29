@@ -41,7 +41,7 @@ export class ActorFFG extends Actor {
     this._prepareSharedData.bind(this);
     this._prepareSharedData(actor);
     if (actor.type === "minion") this._prepareMinionData(actor);
-    if (actor.type === "character") this._prepareCharacterData(actor);
+    if (["character", "nemesis", "rival"].includes(actor.type)) this._prepareCharacterData(actor);
   }
 
   _prepareSharedData(actorData) {
@@ -73,13 +73,13 @@ export class ActorFFG extends Actor {
       }
     }
 
-    if (actorData.type === "minion" || actorData.type === "character") {
+    if (["character", "nemesis", "rival", "minion"].includes(actorData.type)) {
       this._applyModifiers.bind(this);
       this._applyModifiers(actorData);
       if (game.settings.get("genesysk2", "enableSoakCalc")) {
         this._calculateDerivedValues(actorData);
       }
-    } else if (actorData.type === "vehicle") {
+    } else if (["vehicle"].includes(actorData.type)) {
       this._applyVehicleModifiers(actorData);
       this._calculateDerivedValues(actorData);
     }
@@ -524,9 +524,15 @@ export class ActorFFG extends Actor {
     });
 
     /* Stats */
-    this._setModifiers(actorData, CONFIG.FFG.character_stats, "stats", "Stat");
-    Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
-      const key = CONFIG.FFG.character_stats[k].value;
+    let stats;
+    if (actorData.type === "rival") {
+      stats = CONFIG.FFG.rival_stats;
+    } else {
+      stats = CONFIG.FFG.character_stats;
+    }
+    this._setModifiers(actorData, stats, "stats", "Stat");
+    Object.keys(stats).forEach((k) => {
+      const key = stats[k].value;
 
       let total = 0;
 
