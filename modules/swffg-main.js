@@ -485,7 +485,7 @@ Hooks.once("init", async function () {
 });
 
 Hooks.on("renderSidebarTab", (app, html, data) => {
-  html.find(".chat-control-icon").click(async (event) => {
+  html.find(".chat-control-icon").click(async (event) => { // modification du bouton de lancer de dés
     const dicePool = new DicePoolFFG();
 
     let user = {

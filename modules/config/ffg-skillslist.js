@@ -3,6 +3,16 @@ export const defaultSkillList = [
   {
     "id": "k2genesys",
     "skills": {
+      "Assurance": {
+        "rank": 0,
+        "characteristic": "Cunning",
+        "groupskill": false,
+        "careerskill": false,
+        "type": "General",
+        "max": 6,
+        "label": "K2G.SkillsNameAssurance",
+        "abrev": "K2G.SkillsNameAssuranceAbv",
+      },
       "Alchemy": {
         "rank": 0,
         "characteristic": "Intellect",
@@ -13,7 +23,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameAlchemy",
         "abrev": "SWFFG.SkillsNameAlchemy",
       },
-      "Arcana": {
+      "Arcana": { // Arcanes (magie)
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -23,7 +33,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameArcana",
         "abrev": "SWFFG.SkillsNameArcana",
       },
-      "Athletics": {
+      "Athletics": { // Athéltisme
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
@@ -33,7 +43,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameAthletics",
         "abrev": "SWFFG.SkillsNameAthletics",
       },
-      "Brawl": { // Pugilat, ou bagarre
+      "Brawl": { // Pugilat, ou bagarre K²
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
@@ -43,7 +53,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameBrawl",
         "abrev": "K2G.SkillsNameBrawlAbbreviation",
       },
-      "Charm": {
+      "Charm": { //Charme
         "rank": 0,
         "characteristic": "Presence",
         "groupskill": false,
@@ -53,7 +63,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameCharm",
         "abrev": "SWFFG.SkillsNameCharm",
       },
-      "Coercion": {
+      "Coercion": { // Corecision
         "rank": 0,
         "characteristic": "Willpower",
         "groupskill": false,
@@ -63,7 +73,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameCoercion",
         "abrev": "SWFFG.SkillsNameCoercion",
       },
-      "Cool": {
+      "Cool": { //Calme/Tranquilité/maitrise de soi
         "rank": 0,
         "characteristic": "Presence",
         "groupskill": false,
@@ -73,7 +83,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameCool",
         "abrev": "SWFFG.SkillsNameCool",
       },
-      "Coordination": {
+      "Coordination": { //Acrobatie
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -83,7 +93,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameAcrobatic",
         "abrev": "K2G.SkillsNameAcrobaticAbv",
       },
-      "Deception": {
+      "Deception": { // tromperie
         "rank": 0,
         "characteristic": "Cunning",
         "groupskill": false,
@@ -93,7 +103,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameDeception",
         "abrev": "SWFFG.SkillsNameDeception",
       },
-      "Discipline": {
+      "Discipline": { //sang froid
         "rank": 0,
         "characteristic": "Willpower",
         "groupskill": false,
@@ -103,7 +113,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameDiscipline",
         "abrev": "SWFFG.SkillsNameDiscipline",
       },
-      "Divine": {
+      "Divine": { // Divin
         "rank": 0,
         "characteristic": "Willpower",
         "groupskill": false,
@@ -113,7 +123,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameDivine",
         "abrev": "SWFFG.SkillsNameDivine",
       },
-      "Knowledge(Adventuring)": {
+      "Knowledge(Adventuring)": { // Cn:Aventures
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -123,7 +133,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameKnowledgeAdventuring",
         "abrev": "SWFFG.SkillsNameKnowledgeAdventuringAbbrev",
       },
-      "Knowledge(Forbidden)": {
+      "Knowledge(Forbidden)": { //Cn:Interdit
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -133,7 +143,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameKnowledgeForbidden",
         "abrev": "SWFFG.SkillsNameKnowledgeForbiddenAbbrev",
       },
-      "Knowledge(Geography)": {
+      "Knowledge(Geography)": { //Cn:Géographie
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -143,7 +153,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameKnowledgeGeography",
         "abrev": "SWFFG.SkillsNameKnowledgeGeographyAbbrev",
       },
-      "Knowledge(savoir)": {
+      "Knowledge(savoir)": { // Cn:Savoir
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -153,7 +163,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameKnowledge",
         "abrev": "SWFFG.SkillsNameKnowledgeAbbrev",
       },
-      "Knowledge(Lore)": {
+      "Knowledge(Lore)": { // Cn: Historique
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -163,7 +173,17 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameKnowledgeLore",
         "abrev": "SWFFG.SkillsNameKnowledgeLore",
       },
-      "Leadership": {
+      "Knowledge(Megagantic)": { // Cn: Historique
+        "rank": 0,
+        "characteristic": "Intellect",
+        "groupskill": false,
+        "careerskill": false,
+        "type": "Knowledge",
+        "max": 6,
+        "label": "K2G.SkillsNameKnowledgeMegagantic",
+        "abrev": "K2G.SkillsNameKnowledgMegagantic",
+      },
+      "Leadership": { //Commandement
         "rank": 0,
         "characteristic": "Presence",
         "groupskill": false,
@@ -173,7 +193,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameLeadership",
         "abrev": "SWFFG.SkillsNameLeadership",
       },
-      "Mechanics": {
+      "Mechanics": { //Mécanique
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -183,17 +203,17 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameMechanics",
         "abrev": "SWFFG.SkillsNameMechanics",
       },
-      "Megantique": {
+      "Megagantique": { //Cn : Magangatique
         "rank": 0,
         "characteristic": "Cunning",
         "groupskill": false,
         "careerskill": false,
         "type": "Magic",
         "max": 6,
-        "label": "K2G.SkillsNameMegantique",
-        "abrev": "K2G.SkillsNameMegantique",
+        "label": "K2G.SkillsNameMegagantique",
+        "abrev": "K2G.SkillsNameMegagantique",
       },
-      "Medicine": {
+      "Medicine": { //médecine
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -203,7 +223,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameMedicine",
         "abrev": "SWFFG.SkillsNameMedicine",
       },
-      "Melee-Heavy": {
+      "Melee-Heavy": { //Mêlée : Armes lourdes
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
@@ -213,7 +233,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameMeleeHeavy",
         "abrev": "K2G.SkillsNameMeleeHeavyAbbreviation",
       },
-      "Melee-Light": {
+      "Melee-Light": { //Mêlée : Armes légères
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
@@ -223,7 +243,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameMeleeLight",
         "abrev": "K2G.SkillsNameMeleeLightAbbreviation",
       },
-      "Melee-Short": {
+      "Melee-Short": { // Mélée : Courtes
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -233,7 +253,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameMeleeShort",
         "abrev": "K2F.SkillsNameMeleeShortAbbreviation",
       },
-      "Negotiation": {
+      "Negotiation": { // Négocation
         "rank": 0,
         "characteristic": "Presence",
         "groupskill": false,
@@ -243,7 +263,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameNegotiation",
         "abrev": "SWFFG.SkillsNameNegotiation",
       },
-      "Perception": {
+      "Perception": { // Perception
         "rank": 0,
         "characteristic": "Cunning",
         "groupskill": false,
@@ -253,7 +273,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNamePerception",
         "abrev": "SWFFG.SkillsNamePerception",
       },
-      "Primal": {
+      "Primal": { // Primal
         "rank": 0,
         "characteristic": "Cunning",
         "groupskill": false,
@@ -263,7 +283,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNamePrimal",
         "abrev": "SWFFG.SkillsNamePrimal",
       },
-      "Ranged-Bow": {
+      "Ranged-Bow": { // Distance : Arc
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -273,7 +293,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameRangedBow",
         "abrev": "K2G.SkillsNameRangedBowAbbreviation",
       },
-      "Ranged-Right": {
+      "Ranged-Right": { // Distance : Tir
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -283,7 +303,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameRangedRight",
         "abrev": "K2G.SkillsNameRangedRightAbbreviation",
       },
-      "Resilience": {
+      "Resilience": { // Résistance
         "rank": 0,
         "characteristic": "Brawn",
         "groupskill": false,
@@ -293,7 +313,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameResilience",
         "abrev": "SWFFG.SkillsNameResilience",
       },
-      "Riding": {
+      "Riding": { // Equitation
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -303,7 +323,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameRiding",
         "abrev": "K2G.SkillsNameRidingAbbreviation",
       },
-      "Riding3D": {
+      "Riding3D": { // Equitaiton 3D
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -313,7 +333,7 @@ export const defaultSkillList = [
         "label": "K2G.SkillsNameRiding3D",
         "abrev": "K2G.SkillsNameRiding3D",
       },
-      "Runes": {
+      "Runes": { // Runes
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -323,7 +343,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameRunes",
         "abrev": "SWFFG.SkillsNameRunes",
       },
-      "Skulduggery": {
+      "Skulduggery": { // Larcins/Magouille
         "rank": 0,
         "characteristic": "Cunning",
         "groupskill": false,
@@ -333,7 +353,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameSkulduggery",
         "abrev": "SWFFG.SkillsNameSkulduggery",
       },
-      "Stealth": {
+      "Stealth": { // Discrétion
         "rank": 0,
         "characteristic": "Agility",
         "groupskill": false,
@@ -343,7 +363,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameStealth",
         "abrev": "SWFFG.SkillsNameStealth",
       },
-      "Streetwise": {
+      "Streetwise": { // Bas fond ou connaissance de la rue
         "rank": 0,
         "characteristic": "Cunning",
         "groupskill": false,
@@ -353,7 +373,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameStreetwise",
         "abrev": "SWFFG.SkillsNameStreetwise",
       },
-      "Survival": {
+      "Survival": { // Survie
         "rank": 0,
         "characteristic": "Cunning",
         "groupskill": false,
@@ -373,7 +393,7 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameVerse",
         "abrev": "SWFFG.SkillsNameVerse",
       },
-      "Vigilance": {
+      "Vigilance": { // Vigilance
         "rank": 0,
         "characteristic": "Willpower",
         "groupskill": false,
@@ -387,6 +407,16 @@ export const defaultSkillList = [
   },{
     "id": "roguetrader",
     "skills": {
+      "Assurance": { // Confiance en soi : Ruse
+        "rank": 0,
+        "characteristic": "Cunning",
+        "groupskill": false,
+        "careerskill": false,
+        "type": "General",
+        "max": 6,
+        "label": "K2G.SkillsNameAssurance",
+        "abrev": "K2G.SkillsNameAssuranceAbv",
+      },
       "Acrobatic": {
         "rank": 0,
         "characteristic": "Agility",
@@ -397,7 +427,7 @@ export const defaultSkillList = [
         "label": "RTG.SkillsNameAcrobatic",
         "abrev": "RTG.SkillsNameAcrobaticAbv",
       },
-      "Alchemy": { // spé RTG ChimioMaitrise
+      "Alchemy": { // spé RTG ChimioMaitrise, Non Auto
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
@@ -417,7 +447,7 @@ export const defaultSkillList = [
         "label": "RTG.SkillsNamePsyker",
         "abrev": "RTG.SkillsNamePsyker",
       },
-      "Astrocartography": {
+      "Astrocartography": { // Espace 
         "rank": 0,
         "characteristic": "Intellect",
         "groupskill": false,
