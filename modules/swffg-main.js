@@ -98,6 +98,7 @@ Hooks.once("init", async function () {
   CONFIG.Dice.rolls[0] = RollFFG;
 
   // Define DiceTerms
+  CONFIG.Dice.terms['g'] = CONFIG.Dice.terms['f']; // Svg fate ;-)
   CONFIG.Dice.terms["a"] = AbilityDie;
   CONFIG.Dice.terms["b"] = BoostDie;
   CONFIG.Dice.terms["c"] = ChallengeDie;
@@ -105,6 +106,7 @@ Hooks.once("init", async function () {
   CONFIG.Dice.terms["f"] = ForceDie;
   CONFIG.Dice.terms["p"] = ProficiencyDie;
   CONFIG.Dice.terms["s"] = SetbackDie;
+  
 
   // Give global access to FFG config.
   CONFIG.FFG = FFG;

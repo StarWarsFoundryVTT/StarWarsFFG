@@ -123,7 +123,8 @@
           {{/if}}
           {{!-- Soak Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
           {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
-          {{!-- Pt Hero Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES1" headerlink="true" headerclass="cmd" headerattributes="data-cmd='reboot.PdH'" type="Number" name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value )}}
+          {{!-- Pt Hero Box --}}   {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES1" headerlink="true" headerclass="cmd" headerattributes="data-cmd='reboot.PdH'" type="Number" name="data.stats.ressources.pool1.value" value=data.stats.ressources.pool1.value )}}
+          {{!-- Pt Charge Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="K2G.RES2" type="Number" name="data.stats.ressources.pool2.value" value=data.stats.ressources.pool2.value )}}
         </div>
       </div>
     </div>

@@ -123,6 +123,16 @@ export const defaultSkillList = [
         "label": "SWFFG.SkillsNameDivine",
         "abrev": "SWFFG.SkillsNameDivine",
       },
+      "Gunnery": {
+        "rank": 0,
+        "characteristic": "Agility",
+        "groupskill": false,
+        "careerskill": false,
+        "type": "Combat",
+        "max": 6,
+        "label": "SWFFG.SkillsNameGunnery",
+        "abrev": "SWFFG.SkillsNameGunneryAbbreviation",
+      },
       "Knowledge(Adventuring)": { // Cn:Aventures
         "rank": 0,
         "characteristic": "Intellect",
@@ -262,6 +272,16 @@ export const defaultSkillList = [
         "max": 6,
         "label": "SWFFG.SkillsNameNegotiation",
         "abrev": "SWFFG.SkillsNameNegotiation",
+      },
+      "Operating": { // manoeuvre d'engins lourds
+        "rank": 0,
+        "characteristic": "Intellect",
+        "groupskill": false,
+        "careerskill": false,
+        "type": "General",
+        "max": 6,
+        "label": "SWFFG.SkillsNameOperating",
+        "abrev": "SWFFG.SkillsNameOperating",
       },
       "Perception": { // Perception
         "rank": 0,
