@@ -139,6 +139,10 @@ export const itemmodifier_modifiertypes = {
     "value": "Vehicle Stat",
     "label": "SWFFG.ModTypeStatVehicle",
   },
+  "Stat": {
+    "value": "Stat",
+    "label": "SWFFG.ModTypeStat",
+  },
 };
 
 export const itemmodifier_rollmodifiers = {

@@ -36,7 +36,14 @@ export default class ForcePowers {
                 attributes: {},
                 description: basepower.Description,
                 upgrades: {},
+                required_force_rating: item?.MinForceRating ? item.MinForceRating : 1,
               };
+
+              try {
+                data.data.base_cost = item.AbilityRows.AbilityRow[0].Costs.Cost[0];
+              } catch (err) {
+                data.data.base_cost = 0;
+              }
 
               data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
               if (item?.DieModifiers) {

@@ -138,6 +138,7 @@ export function drawAdversaryCount(token) {
     sprite.y = token.h / 2 + 15;
     if (adversaryLevel > 5) {
       sprite.tint = overflowColor;
+      adversaryLevel = 6;
     }
     token.adversaryLevel.addChild(sprite);
   }

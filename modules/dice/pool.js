@@ -84,6 +84,66 @@ export class DicePoolFFG {
           return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
+    if (obj?.source?.success?.length) {
+      this.source.success = obj.source.success
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Success") {
+            return `${rank.name} (${rank.type}): ${rank.value} Success`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
+    if (obj?.source?.advantage?.length) {
+      this.source.advantage = obj.source.advantage
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Advantage") {
+            return `${rank.name} (${rank.type}): ${rank.value} Advantage`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
+    if (obj?.source?.light?.length) {
+      this.source.light = obj.source.light
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Light") {
+            return `${rank.name} (${rank.type}): ${rank.value} Light`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
+    if (obj?.source?.failure?.length) {
+      this.source.failure = obj.source.failure
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Failure") {
+            return `${rank.name} (${rank.type}): ${rank.value} Failure`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
+    if (obj?.source?.threat?.length) {
+      this.source.threat = obj.source.threat
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Threat") {
+            return `${rank.name} (${rank.type}): ${rank.value} Threat`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
+    if (obj?.source?.dark?.length) {
+      this.source.dark = obj.source.dark
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Dark") {
+            return `${rank.name} (${rank.type}): ${rank.value} Dark`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
   }
 
   /**
@@ -195,6 +255,14 @@ export class DicePoolFFG {
     this._addIcons(container, CONFIG.FFG.SETBACK_ICON, this.setback, height, width);
     this._addIcons(container, CONFIG.FFG.REMOVESETBACK_ICON, this.remsetback, height, width);
     this._addIcons(container, CONFIG.FFG.FORCE_ICON, this.force, height, width);
+    this._addIcons(container, CONFIG.FFG.SUCCESS_ICON, this.success, height, width);
+    this._addIcons(container, CONFIG.FFG.ADVANTAGE_ICON, this.advantage, height, width);
+    this._addIcons(container, CONFIG.FFG.TRIUMPH_ICON, this.triumph, height, width);
+    this._addIcons(container, CONFIG.FFG.LIGHT_ICON, this.light, height, width);
+    this._addIcons(container, CONFIG.FFG.FAILURE_ICON, this.failure, height, width);
+    this._addIcons(container, CONFIG.FFG.THREAT_ICON, this.threat, height, width);
+    this._addIcons(container, CONFIG.FFG.DESPAIR_ICON, this.despair, height, width);
+    this._addIcons(container, CONFIG.FFG.DARK_ICON, this.dark, height, width);
 
     this._addSourceToolTip(container);
 
@@ -263,7 +331,7 @@ export class DicePoolFFG {
   }
 
   _addSourceToolTip(container) {
-    const createToolTip = this.source?.skill?.length || this.source?.boost?.length || this.source?.remsetback?.length || this.source?.setback?.length || this.source?.upgrades?.length;
+    const createToolTip = this.source?.skill?.length || this.source?.boost?.length || this.source?.remsetback?.length || this.source?.setback?.length || this.source?.upgrades?.length || this.source?.success?.length || this.source?.advantage?.length || this.source?.light?.length || this.source?.failure?.length || this.source?.threat?.length || this.source?.dark?.length;
 
     if (createToolTip) {
       const mapDataToString = (values) => {
@@ -288,6 +356,24 @@ export class DicePoolFFG {
       }
       if (this.source?.upgrades?.length) {
         mapDataToString(this.source.upgrades);
+      }
+      if (this.source?.success?.length) {
+        mapDataToString(this.source.success);
+      }
+      if (this.source?.advantage?.length) {
+        mapDataToString(this.source.advantage);
+      }
+      if (this.source?.light?.length) {
+        mapDataToString(this.source.light);
+      }
+      if (this.source?.failure?.length) {
+        mapDataToString(this.source.failure);
+      }
+      if (this.source?.threat?.length) {
+        mapDataToString(this.source.threat);
+      }
+      if (this.source?.dark?.length) {
+        mapDataToString(this.source.dark);
       }
 
       container.classList.add("hover");

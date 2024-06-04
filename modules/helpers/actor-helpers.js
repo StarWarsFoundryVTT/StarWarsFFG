@@ -29,8 +29,14 @@ export default class ActorHelpers {
             }
           });
           // Handle stat updates
-          Object.keys(CONFIG.FFG.character_stats).forEach((k) => {
-            const key = CONFIG.FFG.character_stats[k].value;
+          let stats;
+          if (this.actor.type === "rival") {
+            stats = CONFIG.FFG.rival_stats;
+          } else {
+            stats = CONFIG.FFG.character_stats;
+          }
+          Object.keys(stats).forEach((k) => {
+            const key = stats[k].value;
 
             let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Stat");
 
@@ -186,4 +192,41 @@ export default class ActorHelpers {
     setProperty(formData, `flags.genesysk2.loaded`, false);
     return this.object.update(formData);
   }
+}
+
+/**
+ * Adds a SPEND log entry to the actor's XP log (accessed via the notebook under specializations)
+ * @param actor - ffgActor object
+ * @param action - action taken (e.g. "skill rank Astrogation 1 --> 2")
+ * @param cost - XP spent
+ * @param available - XP available
+ * @param total - XP total
+ * @returns {Promise<void>}
+ */
+export async function xpLogSpend(actor, action, cost, available, total) {
+    const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+    const date = new Date().toISOString().slice(0, 10);
+    let newEntry = `<font color="red"><b>${date}</b>: spent <b>${cost}</b> XP for <b>${action}</b> (${available} available, ${total} total)</font>`;
+    await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+}
+
+/**
+ * Adds a GRANT log entry to the actor's XP log (accessed via the notebook under specializations)
+ * @param actor - ffgActor object
+ * @param grant - XP granted
+ * @param available - XP available
+ * @param total - XP total
+ * @param note - note about the grant
+ * @returns {Promise<void>}
+ */
+export async function xpLogEarn(actor, grant, available, total, note) {
+  const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+  const date = new Date().toISOString().slice(0, 10);
+  let newEntry;
+  if (note) {
+    newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP, reason: ${note} (${available} available, ${total} total)</font>`;
+  } else {
+    newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP (${available} available, ${total} total)</font>`;
+  }
+  await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
 }

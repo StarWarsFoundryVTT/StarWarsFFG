@@ -2,7 +2,7 @@
   "id": "genesysk2",
   "title": "K² Genesys avancé",
   "description": "Un système pour pouvoir jouer à K² avec Genesys.",
-  "version": "1.808",
+  "version": "1.809",
   "compatibility": {
     "minimum": 10,
     "verified": 11
@@ -54,6 +54,6 @@
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/ZolOnTheNet/genesysK2",
   "manifest": "https://github.com/ZolOnTheNet/genesysK2/releases/latest/download/system.json",
-  "download": "https://github.com/ZolOnTheNet/genesysK2/genesysK2_1.808.zip",
+  "download": "https://github.com/ZolOnTheNet/genesysK2/genesysK2_1.809.zip",
   "license": "LICENSE.txt"
 }

@@ -66,3 +66,30 @@ export const character_stats = {
   //   }
   // }
 };
+
+export const rival_stats = {
+  "wounds": {
+    value: "Wounds",
+    label: "SWFFG.Wounds",
+  },
+  "soak": {
+    value: "Soak",
+    label: "SWFFG.Soak",
+  },
+  "defencemelee": {
+    value: "Defence-Melee",
+    label: "SWFFG.DefenseMeleeLabel",
+  },
+  "defenceranged": {
+    value: "Defence-Ranged",
+    label: "SWFFG.DefenseRangedLabel",
+  },
+  "encumbrance": {
+    value: "Encumbrance",
+    label: "SWFFG.Encumbrance",
+  },
+  "forcePool": {
+    value: "ForcePool",
+    label: "SWFFG.ForcePool",
+  },
+};
