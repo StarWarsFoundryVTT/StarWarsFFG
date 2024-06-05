@@ -117,7 +117,7 @@ export class ActorSheetFFG extends ActorSheet {
           this.position.height = 165;
         }
         // we need to update all specialization talents with the latest talent information
-        if (!this.actor.flags.starwarsffg?.loaded && this.actor.type !== "rival") {
+        if (!this.actor.flags.genesysk2?.loaded && this.actor.type !== "rival") {
           this._updateSpecialization(data);
         }
 
@@ -173,8 +173,8 @@ export class ActorSheetFFG extends ActorSheet {
     if (this.actor.flags?.config?.enableObligation === false && this.actor.flags?.config?.enableDuty === false && this.actor.flags?.config?.enableMorality === false && this.actor.flags?.config?.enableConflict === false) {
       data.hideObligationDutyMoralityConflictTab = true;
     }
-    if (this.actor.flags?.starwarsffg?.xpLog) {
-      data.xpLog = this.actor.flags.starwarsffg.xpLog.join("<br>");
+    if (this.actor.flags?.genesysk2?.xpLog) {
+      data.xpLog = this.actor.flags.genesysk2.xpLog.join("<br>");
     }
 
     return data;
@@ -1456,8 +1456,9 @@ export class ActorSheetFFG extends ActorSheet {
     return item.type === "specialization";
   });
 
-    CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
-    CONFIG.logger.debug(data.talentList.slice());
+// appeler beaucoup de fois !
+//    CONFIG.logger.debug(`_updateSpecialization(): data.talentList before we start:`);
+//    CONFIG.logger.debug(data.talentList.slice());
 
     const globalTalentList = [];
 
@@ -1633,7 +1634,7 @@ export class ActorSheetFFG extends ActorSheet {
 
   async _buyCore(event) {
     const action = $(event.target).data("buy-action");
-    const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
+    const template = "systems/genesysk2/templates/dialogs/ffg-confirm-purchase.html";
     let content;
     const availableXP = this.object.system.experience.available;
     const totalXP = this.object.system.experience.total;
@@ -1641,7 +1642,7 @@ export class ActorSheetFFG extends ActorSheet {
     if (action === "specialization") {
       const inCareer = this.object.items.find(i => i.type === "career").system.specializations;
       const inCareerNames = Object.values(inCareer).map(i => i.name);
-      const sources = game.settings.get("starwarsffg", "specializationCompendiums").split(",");
+      const sources = game.settings.get("genesysk2", "specializationCompendiums").split(",");
       let outCareer = [];
       for (const source of sources) {
         const pack = game.packs.get(source);
@@ -1671,7 +1672,7 @@ export class ActorSheetFFG extends ActorSheet {
       itemType =  game.i18n.localize("TYPES.Item.specialization");
       content = await renderTemplate(template, { inCareer, outCareer, baseCost, increasedCost, itemType: itemType });
     } else if (action === "signatureability") {
-      const sources = game.settings.get("starwarsffg", "signatureAbilityCompendiums").split(",");
+      const sources = game.settings.get("genesysk2", "signatureAbilityCompendiums").split(",");
       const rawSelectableItems =  this.object.items.find(i => i.type === "career").system.signatureabilities;
       const sigAbilityNames = Object.values(rawSelectableItems).map(i => i.name);
       let selectableItems = [];
@@ -1714,7 +1715,7 @@ export class ActorSheetFFG extends ActorSheet {
       itemType = game.i18n.localize("TYPES.Item.signatureability");
       content = await renderTemplate(template, { selectableItems, itemType: itemType });
     } else if (action === "forcepower") {
-      const sources = game.settings.get("starwarsffg", "forcePowerCompendiums").split(",");
+      const sources = game.settings.get("genesysk2", "forcePowerCompendiums").split(",");
       let selectableItems = [];
       const worldItems = game.items.filter(i => i.type === "forcepower");
       for (const worldItem of worldItems) {
@@ -1744,7 +1745,7 @@ export class ActorSheetFFG extends ActorSheet {
       itemType = game.i18n.localize("TYPES.Item.forcepower");
       content = await renderTemplate(template, { selectableItems, itemType: itemType });
     } else if (action === "talent") {
-      const sources = game.settings.get("starwarsffg", "talentCompendiums").split(",");
+      const sources = game.settings.get("genesysk2", "talentCompendiums").split(",");
       let selectableItems = [];
       const worldItems = game.items.filter(i => i.type === "talent");
       for (const worldItem of worldItems) {

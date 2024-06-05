@@ -3,12 +3,12 @@
  * @returns {Promise<void>}
  */
 export async function handleUpdate() {
-  const registeredVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
+  const registeredVersion = game.settings.get("genesysk2", "systemMigrationVersion");
   const runningVersion = game.system.version;
   if (registeredVersion !== runningVersion) {
     await handleMigration(registeredVersion, runningVersion);
     await sendChanges(runningVersion);
-    await game.settings.set("starwarsffg", "systemMigrationVersion", runningVersion);
+    await game.settings.set("genesysk2", "systemMigrationVersion", runningVersion);
   }
 }
 
@@ -29,7 +29,7 @@ async function handleMigration(oldVersion, newVersion) {
  * @returns {Promise<void>}
  */
 async function sendChanges(newVersion) {
-  const template = "systems/starwarsffg/templates/notifications/new_version.html";
+  const template = "systems/genesysk2/templates/notifications/new_version.html";
   const html = await renderTemplate(template, { version: newVersion });
   const messageData = {
     user: game.user.id,
@@ -44,7 +44,7 @@ async function sendChanges(newVersion) {
  * @returns {Promise<void>}
  */
 async function warnTheme() {
-  if (game.settings.get("starwarsffg", "ui-uitheme") === "default") {
+  if (game.settings.get("genesysk2", "ui-uitheme") === "default") {
     const messageData = {
       user: game.user.id,
       type: CONST.CHAT_MESSAGE_TYPES.OTHER,

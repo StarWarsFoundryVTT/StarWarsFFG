@@ -99,12 +99,12 @@ Hooks.once("init", async function () {
   CONFIG.Dice.rolls[0] = RollFFG;
 
   // Define DiceTerms
-  CONFIG.Dice.terms['g'] = CONFIG.Dice.terms['f']; // Svg fate ;-)
+  //CONFIG.Dice.terms['g'] = CONFIG.Dice.terms['f']; // Svg fate ;-)
   CONFIG.Dice.terms["a"] = AbilityDie;
   CONFIG.Dice.terms["b"] = BoostDie;
   CONFIG.Dice.terms["c"] = ChallengeDie;
   CONFIG.Dice.terms["i"] = DifficultyDie;
-  CONFIG.Dice.terms["f"] = ForceDie;
+  CONFIG.Dice.terms["m"] = ForceDie;
   CONFIG.Dice.terms["p"] = ProficiencyDie;
   CONFIG.Dice.terms["s"] = SetbackDie;
   
@@ -181,7 +181,7 @@ Hooks.once("init", async function () {
   /**
    * Register compendiums for sources for purchasing
    */
-  game.settings.register("starwarsffg", "specializationCompendiums", {
+  game.settings.register("genesysk2", "specializationCompendiums", {
     name: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Hint"),
     scope: "world",
@@ -189,7 +189,7 @@ Hooks.once("init", async function () {
     default: "world.oggdudespecializations",
     type: String,
   });
-  game.settings.register("starwarsffg", "signatureAbilityCompendiums", {
+  game.settings.register("genesysk2", "signatureAbilityCompendiums", {
     name: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Hint"),
     scope: "world",
@@ -197,7 +197,7 @@ Hooks.once("init", async function () {
     default: "world.oggdudesignatureabilities",
     type: String,
   });
-  game.settings.register("starwarsffg", "forcePowerCompendiums", {
+  game.settings.register("genesysk2", "forcePowerCompendiums", {
     name: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Hint"),
     scope: "world",
@@ -205,7 +205,7 @@ Hooks.once("init", async function () {
     default: "world.oggdudeforcepowers",
     type: String,
   });
-  game.settings.register("starwarsffg", "talentCompendiums", {
+  game.settings.register("genesysk2", "talentCompendiums", {
     name: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Hint"),
     scope: "world",
@@ -638,6 +638,10 @@ function isCurrentVersionNullOrBlank(currentVersion) {
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
 
+  // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
+  // this is intended to encourage migrating code to this file to clean up the main file
+  await handleUpdate();
+
   if (!game.settings.get("genesysk2", "token_configured")) {
     const tokenData = {
       bar1: {
@@ -653,11 +657,7 @@ Hooks.once("ready", async () => {
     game.settings.set("core", "defaultToken", updateData);
     game.settings.set("genesysk2", "token_configured", true);
   }
-
-  // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
-  // this is intended to encourage migrating code to this file to clean up the main file
-  await handleUpdate();
-
+  
   const currentVersion = game.settings.get("genesysk2", "systemMigrationVersion");
 
   const version = game.system.version;
@@ -1004,7 +1004,7 @@ Hooks.once("ready", async () => {
 
   if (game.settings.get("genesysk2", "useGenericSlots")) {
 
-    game.socket.on("system.starwarsffg", async (...args) => {
+    game.socket.on("system.genesysk2", async (...args) => {
       const event_type = args[0].event;
       if (game.user.id === game.users.activeGM?.id) {
         if (event_type === "combat") {

@@ -204,10 +204,10 @@ export default class ActorHelpers {
  * @returns {Promise<void>}
  */
 export async function xpLogSpend(actor, action, cost, available, total) {
-    const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+    const xpLog = actor.getFlag("genesysk2", "xpLog") || [];
     const date = new Date().toISOString().slice(0, 10);
     let newEntry = `<font color="red"><b>${date}</b>: spent <b>${cost}</b> XP for <b>${action}</b> (${available} available, ${total} total)</font>`;
-    await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+    await actor.setFlag("genesysk2", "xpLog", [newEntry, ...xpLog]);
 }
 
 /**
@@ -220,7 +220,7 @@ export async function xpLogSpend(actor, action, cost, available, total) {
  * @returns {Promise<void>}
  */
 export async function xpLogEarn(actor, grant, available, total, note) {
-  const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+  const xpLog = actor.getFlag("genesysk2", "xpLog") || [];
   const date = new Date().toISOString().slice(0, 10);
   let newEntry;
   if (note) {
@@ -228,5 +228,5 @@ export async function xpLogEarn(actor, grant, available, total, note) {
   } else {
     newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP (${available} available, ${total} total)</font>`;
   }
-  await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+  await actor.setFlag("genesysk2", "xpLog", [newEntry, ...xpLog]);
 }

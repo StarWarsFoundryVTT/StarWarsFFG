@@ -77,7 +77,7 @@ export class CombatFFG extends Combat {
             this.debounceRender();
             await this.addExtraSlot(this.round, disposition, parseInt(initiative));
             this.setupTurns();
-            game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: this.id});
+            game.socket.emit("system.genesysk2", {event: "trackerRender", combatId: this.id});
           }
         }
       },
@@ -779,7 +779,7 @@ export class CombatTrackerFFG extends CombatTracker {
     // we create a generic slot to keep slots consistent (deleting a combatant removes their slot as well, which we do not want)
     await combat.addExtraSlot(round, disposition, initiative);
     combat.setupTurns();
-    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
+    game.socket.emit("system.genesysk2", {event: "trackerRender", combatId: combat.id});
   }
 
   async _removeSlot(tracker, li) {
@@ -883,7 +883,7 @@ export default class CombatantFFG extends Combatant {
  */
 export function updateCombatTracker() {
   // Used to force the tracker to re-render based on updated visibility state
-  if (game.combat && game.settings.get("starwarsffg", "useGenericSlots")) {
+  if (game.combat && game.settings.get("genesysk2", "useGenericSlots")) {
     ui.combat.render(true);
   }
 }

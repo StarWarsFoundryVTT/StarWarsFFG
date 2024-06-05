@@ -112,11 +112,11 @@ export function drawMinionCount(token) {
 }
 
 export function drawAdversaryCount(token) {
-  if (!game.settings.get("starwarsffg", "showAdversaryCount")) {
+  if (!game.settings.get("genesysk2", "showAdversaryCount")) {
     return;
   }
   const overflowColor = "0xDAA520";
-  const itemName = game.settings.get("starwarsffg", "adversaryItemName");
+  const itemName = game.settings.get("genesysk2", "adversaryItemName");
   const adversaryItems = token?.actor?.items?.filter(i => i.name === itemName) || [];
   let adversaryLevel = 0;
   adversaryItems.forEach(function (item) {
@@ -132,7 +132,7 @@ export function drawAdversaryCount(token) {
     } else {
       token.adversaryLevel.removeChildren().forEach(i => i.destroy());
     }
-    const sprite = PIXI.Sprite.from(`systems/starwarsffg/images/adversary/adversary-${adversaryLevel}.png`);
+    const sprite = PIXI.Sprite.from(`systems/genesysk2/images/adversary/adversary-${adversaryLevel}.png`);
     sprite.scale.set(0.15, 0.15);
     sprite.x = (token.w / 2) - 20;
     sprite.y = token.h / 2 + 15;

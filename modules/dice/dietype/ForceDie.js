@@ -5,7 +5,7 @@ export class ForceDie extends DiceTerm {
   }
   /* -------------------------------------------- */
   /** @override */
-  static DENOMINATION = "f";
+  static DENOMINATION = "m";
 
   /* -------------------------------------------- */
   /** @override */
