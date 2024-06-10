@@ -1346,7 +1346,7 @@ export class ActorSheetFFG extends ActorSheet {
               CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
               let updateData = {};
-              setProperty(updateData, `data.skills.${ability}.characteristic`, newCharacteristic);
+              setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
 
               this.object.update(updateData);
             },
@@ -1400,7 +1400,7 @@ export class ActorSheetFFG extends ActorSheet {
               if (name.trim().length > 0) {
                 CONFIG.logger.debug(`Creating new skill ${name} (${characteristic})`);
                 let updateData = {};
-                setProperty(updateData, `data.skills.${name}`, newSkill);
+                setProperty(updateData, `system.skills.${name}`, newSkill);
 
                 this.object.update(updateData);
               }
