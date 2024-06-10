@@ -407,6 +407,12 @@ export class ActorSheetFFG extends ActorSheet {
         type: "Boolean",
         default: true,
       });
+      this.sheetoptions.register("enableForcePool", {
+        name: game.i18n.localize("SWFFG.EnableForcePool"),
+        hint: game.i18n.localize("SWFFG.EnableForcePoolHint"),
+        type: "Boolean",
+        default: true,
+      });
     }
     if (this.actor.type === "character") {
       this.sheetoptions = new ActorOptions(this, html);
