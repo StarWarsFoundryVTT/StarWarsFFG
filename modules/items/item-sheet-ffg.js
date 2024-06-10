@@ -729,7 +729,7 @@ export class ItemSheetFFG extends ItemSheet {
             ffgParentApp: this.appId, // TODO: check if this is needed
           }
         },
-        permission: {
+        ownership: {
           default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER
         },
       };
@@ -748,7 +748,7 @@ export class ItemSheetFFG extends ItemSheet {
               ffgIsOwned: this.object.isEmbedded, // TODO: check if this is needed (needed when item on actor)
             }
           },
-          permission: {
+          ownership: {
             default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
           }
         };

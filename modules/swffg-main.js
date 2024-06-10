@@ -601,6 +601,9 @@ Hooks.on("renderChatMessage", async (app, html, messageData) => {
           rank: li.attr('data-item-embed-rank'),
           rank_current: li.attr('data-item-embed-rank'),
         },
+        ownership: {
+          default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
+        }
       };
       const tempItem = await Item.create(itemData, {temporary: true});
       tempItem.sheet.render(true);

@@ -646,7 +646,7 @@ export class ActorSheetFFG extends ActorSheet {
                 rank: li.attr('data-item-embed-rank'),
                 rank_current: li.attr('data-item-embed-rank'),
               },
-              permission: {
+              ownership: {
                 default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
               }
             };
