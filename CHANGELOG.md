@@ -1,3 +1,8 @@
+`1.901`
+* Features:
+* Fixes:
+  * Fixed a bug where item qualities sometimes showed "you do not have permission to view this item" for non-GMs
+
 `1.900`
 * Features:
   * Support for FoundryVTT v12
