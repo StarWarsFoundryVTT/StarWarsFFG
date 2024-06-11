@@ -24,7 +24,14 @@ export default class Skills {
               ffgimportid: item.Key,
             }
           },
-          content: item?.Description?.length && item.Description.length > 0 ? item.Description : "Dataset did not have a description",
+          pages: [{
+            name: `${item.TypeValue === "stKnowledge" ? "Knowledge: " : ""}${item.Name.replace(" - ", ": ")}`,
+            type: 'text',
+            text: {
+              content: item?.Description?.length && item.Description.length > 0 ? item.Description : "Dataset did not have a description",
+              format: CONST.JOURNAL_ENTRY_PAGE_FORMATS.HTML
+            },
+          }],
         };
         CONFIG.temporary.skills[data.flags.starwarsffg.ffgimportid] = data.name;
 

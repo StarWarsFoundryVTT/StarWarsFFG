@@ -4,6 +4,7 @@
 * Fixes:
   * Fixed a bug where item qualities sometimes showed "you do not have permission to view this item" for non-GMs ([#1552](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1552))
   * Fixed changing skill characteristics not working ([#1550](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1550))
+  * Skill descriptions are now properly imported ([#1551](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1551))
 
 `1.900`
 * Features:
