@@ -20,6 +20,7 @@ export async function handleUpdate() {
  */
 async function handleMigration(oldVersion, newVersion) {
   // migration handlers should be added here going forward
+  await migrateTo1_901();
   await warnTheme();
 }
 
@@ -51,5 +52,19 @@ async function warnTheme() {
       content: "You are using an unsupported theme. Expected issues, or swap to the Mandar theme.<br>(This message will only show once.)",
     };
     ChatMessage.create(messageData);
+  }
+}
+
+/**
+ * Handles updating talents from species on actors to be a "species" talent rather than the default type
+ * @returns {Promise<void>}
+ */
+async function migrateTo1_901() {
+  for (const actor of game.actors) {
+    for (const species of actor.items.filter(a => a.type === "species")) {
+      for (const talent of Object.values(species.system.talents)) {
+        await actor.items.find(i => i.name === talent.name)?.update({flags: {starwarsffg: {fromSpecies: true}}});
+      }
+    }
   }
 }
