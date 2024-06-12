@@ -12,6 +12,10 @@
   * Creating combat via the group manager now works again ([#1545](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1545))
   * Removing initiative slots from combat now works ([#1545](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1545))
   * Soak can now go below the Brawn value if auto-calculation is turned off ([#1371](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1371))
+  * Imported Vehicle improvements ([#1537](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1537)):
+    * Navicomputer is now imported
+    * Hyperdrive primary is set to null if no hyperdrive is installed
+    * Hyperdrive secondary is imported (and set to null if no hyperdrive is installed)
 
 `1.900`
 * Features:

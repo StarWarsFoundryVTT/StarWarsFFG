@@ -73,12 +73,16 @@ export default class Vehicles {
                   value: item.HP ? parseInt(item.HP, 10) : 0,
                 },
                 hyperdrive: {
-                  value: item.HyperdrivePrimary ? parseInt(item.HyperdrivePrimary, 10) : 1,
+                  value: parseInt(item.HyperdrivePrimary, 10) > 0 ? parseInt(item.HyperdrivePrimary, 10) : null,
+                  backup: parseInt(item.HyperdriveBackup, 10) > 0 ? parseInt(item.HyperdriveBackup, 10) : null,
                 },
                 consumables: {
                   value: 1,
                   duration: "months",
                 },
+                navicomputer: {
+                  value: item.NaviComputer,
+                }
               },
               itemmodifier: [],
               itemattachment: [],
