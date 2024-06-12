@@ -842,7 +842,9 @@ export class CombatTrackerFFG extends CombatTracker {
     // otherwise, pick another slot, copy the data from it, copy claims over (if applicable), and delete this slot
     const fakeTurn = combatant?.flags?.fake || false;
     if (fakeTurn) {
-      combatant.delete();
+      Hooks.off("preDeleteCombatant", registerHandleCombatantRemoval);
+      await combatant.delete();
+      CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
     } else {
       // this is a real slot, we need to find a replacement
       // locate a fake turn

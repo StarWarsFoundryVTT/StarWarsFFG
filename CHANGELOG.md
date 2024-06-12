@@ -9,6 +9,8 @@
   * Talents from species no longer multiply ranks when combined with purchased talents ([#1540](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1540))
   * Fixed a bug where some text disappeared from descriptions ([#1559](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1559))
   * Fixed a bug where paragraph tags did not properly result in new lines
+  * Creating combat via the group manager now works again ([#1545](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1545))
+  * Removing initiative slots from combat now works ([#1545](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1545))
 
 `1.900`
 * Features:
