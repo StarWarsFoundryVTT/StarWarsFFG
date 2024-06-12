@@ -932,7 +932,7 @@ Hooks.once("ready", async () => {
         // talents
         for(const talentId of Object.keys(item.system.talents)) {
           const talentUuid = item.system.talents[talentId].source;
-          const talent = fromUuidSync(talentUuid);
+          const talent = await fromUuid(talentUuid);
           if (talent) {
             toAdd.push(talent);
           }
@@ -955,7 +955,11 @@ Hooks.once("ready", async () => {
           toAdd.push(abilityItem);
         }
         if (toAdd.length > 0) {
-          actor.createEmbeddedDocuments("Item", toAdd);
+          const created = await actor.createEmbeddedDocuments("Item", toAdd);
+          created.forEach(created_item => {
+            // mark the items as coming from a species
+            created_item.update({flags: {starwarsffg: {fromSpecies: true}}});
+          });
         }
       }
     }
