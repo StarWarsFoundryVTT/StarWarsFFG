@@ -2223,9 +2223,9 @@ export default class ImportHelpers {
 
     const text = sourceArray.map((s) => {
       if (s?.$Page) {
-        return `<h4>Page ${s.$Page} - ${s._}</h4>`;
+        return `Page ${s.$Page} - ${s._}<br>`;
       } else {
-        return `<h4>${s}</h4>`;
+        return `${s}<br>`;
       }
     });
 
