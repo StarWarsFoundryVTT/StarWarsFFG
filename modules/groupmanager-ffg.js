@@ -37,7 +37,7 @@ export class GroupManager extends FormApplication {
   }
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "form", "group-manager"],
       closeOnSubmit: false,
       submitOnChange: true,
@@ -227,7 +227,7 @@ export class GroupManager extends FormApplication {
    * @private
    */
   _updateObject(event, formData) {
-    const formDPool = expandObject(formData).dPool || {};
+    const formDPool = foundry.utils.expandObject(formData).dPool || {};
     game.settings.set("starwarsffg", "dPoolLight", formDPool.light);
     game.settings.set("starwarsffg", "dPoolDark", formDPool.dark);
     return formData;
