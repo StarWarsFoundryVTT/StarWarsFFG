@@ -569,7 +569,10 @@ export class ActorFFG extends Actor {
       total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Stat");
 
       if (key === "Soak") {
-        data.stats[k].value = total;
+        const enableAutoSoakCalc = (typeof this.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.flags.starwarsffg?.config.enableAutoSoakCalculation;
+        if (enableAutoSoakCalc) {
+          data.stats[k].value = total;
+        }
       } else if (key === "Defence-Melee") {
         data.stats.defence.melee = total;
       } else if (key === "Defence-Ranged") {

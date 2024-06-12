@@ -1521,13 +1521,13 @@ export class ActorSheetFFG extends ActorSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  _updateObject(event, formData) {
+  async _updateObject(event, formData) {
     const actorUpdate = ActorHelpers.updateActor.bind(this);
     // Save persistent sheet height and width for future use.
     this.sheetWidth = this.position.width;
     this.sheetHeight = this.position.height;
 
-    actorUpdate(event, formData);
+    await actorUpdate(event, formData);
   }
 
   /**
