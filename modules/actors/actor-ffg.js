@@ -232,7 +232,12 @@ export class ActorFFG extends Actor {
         activation: element.system?.activation?.value,
         activationLabel: element.system?.activation?.label,
         isRanked: element.system?.ranks?.ranked,
-        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
+        source: [{
+          type: element?.flags?.starwarsffg?.fromSpecies ? "species" : "talent",
+          typeLabel: element?.flags?.starwarsffg?.fromSpecies ? "SWFFG.Species" : "SWFFG.Talent",
+          name: element.name,
+          id: element.id,
+        }],
       };
 
       if (item.isRanked) {
@@ -252,7 +257,12 @@ export class ActorFFG extends Actor {
       if (index < 0 || !item.isRanked) {
         globalTalentList.push(item);
       } else {
-        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
+        globalTalentList[index].source.push({
+          type: element?.flags?.starwarsffg?.fromSpecies ? "species" : "talent",
+          typeLabel: element?.flags?.starwarsffg?.fromSpecies ? "SWFFG.Species" : "SWFFG.Talent",
+          name: element.name,
+          id: element.id,
+        });
         globalTalentList[index].rank += element.system.ranks.current;
         if (CONFIG.FFG.theme !== "starwars") {
           globalTalentList[index].tier = Math.abs(parseInt(globalTalentList[index].rank) + (parseInt(element.system?.tier, 10) - 1));
