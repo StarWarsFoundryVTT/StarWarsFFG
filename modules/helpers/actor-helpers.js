@@ -2,7 +2,7 @@ import ModifierHelpers from "./modifiers.js";
 import {migrateDataToSystem} from "./migration.js";
 
 export default class ActorHelpers {
-  static updateActor(event, formData) {
+  static async updateActor(event, formData) {
     formData = foundry.utils.expandObject(formData);
     const ownedItems = this.actor.items;
 
@@ -36,6 +36,8 @@ export default class ActorHelpers {
           } else {
             stats = CONFIG.FFG.character_stats;
           }
+          const autoSoakCalculation = (typeof this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.flags.starwarsffg?.config.enableAutoSoakCalculation;
+
           Object.keys(stats).forEach((k) => {
             const key = stats[k].value;
 
@@ -78,8 +80,6 @@ export default class ActorHelpers {
 
             let y = parseInt(formData.data.attributes[key].value, 10) + x;
             if (key === "Soak") {
-              const autoSoakCalculation = (typeof this.actor.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.actor.flags.starwarsffg?.config.enableAutoSoakCalculation;
-
               if (autoSoakCalculation) {
                 y = 0;
               }
@@ -192,7 +192,7 @@ export default class ActorHelpers {
     // as of v12, "data" is no longer shimmed into "system" for you, so we must do it ourselves
     formData = migrateDataToSystem(formData);
 
-    return this.object.update(formData);
+    return await this.object.update(formData);
   }
 }
 

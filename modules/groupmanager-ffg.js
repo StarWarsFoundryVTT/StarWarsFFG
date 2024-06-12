@@ -37,7 +37,7 @@ export class GroupManager extends FormApplication {
   }
 
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "form", "group-manager"],
       closeOnSubmit: false,
       submitOnChange: true,
@@ -227,7 +227,7 @@ export class GroupManager extends FormApplication {
    * @private
    */
   _updateObject(event, formData) {
-    const formDPool = expandObject(formData).dPool || {};
+    const formDPool = foundry.utils.expandObject(formData).dPool || {};
     game.settings.set("starwarsffg", "dPoolLight", formDPool.light);
     game.settings.set("starwarsffg", "dPoolDark", formDPool.dark);
     return formData;
@@ -323,15 +323,12 @@ export class GroupManager extends FormApplication {
   async _setupCombat(cbt) {
     // If no combat encounter is active, create one.
     if (!cbt) {
-      let scene = game.scenes.viewed;
-      if (!scene) return;
-      let cbt = await game.combats.object.create({ scene: scene.id, active: true });
-      await cbt.activate();
+      cbt = await Combat.create({scene: canvas.scene.id, active: true});
     }
   }
 
   async _grantXP(character) {
-    const id = randomID();
+    const id = foundry.utils.randomID();
     const description = game.i18n.localize("SWFFG.GrantXPTo") + ` ${character.name}...`;
     const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
       id,
