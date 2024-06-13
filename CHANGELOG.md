@@ -17,6 +17,7 @@
     * Hyperdrive primary is set to null if no hyperdrive is installed
     * Hyperdrive secondary is imported (and set to null if no hyperdrive is installed)
   * `system.json` no longer generates warnings ([#1538](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1538))
+  * Weapon-on-actor macros now work with the Enhancements module animations ([enhancements module #202](https://github.com/wrycu/StarWarsFFG-Enhancements/issues/202))
 
 `1.900`
 * Features:
