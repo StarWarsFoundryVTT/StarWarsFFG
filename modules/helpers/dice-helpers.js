@@ -170,7 +170,7 @@ export default class DiceHelpers {
 
   static async rollItem(itemId, actorId, flavorText, sound) {
     const actor = game.actors.get(actorId);
-    const actorSheet = actor.sheet.getData();
+    const actorSheet = await actor.sheet.getData();
 
     const item = actor.items.get(itemId);
     const itemData = item.system;
