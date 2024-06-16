@@ -145,7 +145,8 @@ export class ItemSheetFFG extends ItemSheet {
         }
         break;
       case "specialization":
-        this.position.width = 715;
+        this.position.width = 850;
+        this.position.height = 1005;
         data.isReadOnly = false;
         if (!this.options.editable) {
           data.isEditing = false;
@@ -309,33 +310,38 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
-    new ContextMenu(html, ".talent-upgrade.specialization-talent", [
-      {
-        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.ContextMenuText"),
-        icon: '<i class="fas fa-dollar"></i>',
-        callback: (li) => {
-          this._buyTalent(li);
+    
+    // Prevent "purchase" context menu options when editing a sheet not attached to a character.
+    const isOwned = this.object?.flags?.starwarsffg?.ffgIsOwned;
+    if (isOwned) {
+      new ContextMenu(html, ".talent-upgrade.specialization-talent", [
+        {
+          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.ContextMenuText"),
+          icon: '<i class="fas fa-dollar"></i>',
+          callback: (li) => {
+            this._buyTalent(li);
+          },
         },
-      },
-    ]);
-    new ContextMenu(this.element, ".talent-upgrade.force-power", [
-      {
-        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.FP.ContextMenuText"),
-        icon: '<i class="fas fa-dollar"></i>',
-        callback: (li) => {
-          this._buyForcePower(li);
+      ]);
+      new ContextMenu(this.element, ".talent-upgrade.force-power", [
+        {
+          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.FP.ContextMenuText"),
+          icon: '<i class="fas fa-dollar"></i>',
+          callback: (li) => {
+            this._buyForcePower(li);
+          },
         },
-      },
-    ]);
-    new ContextMenu(this.element, ".talent-upgrade.signature-ability", [
-      {
-        name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.ContextMenuText"),
-        icon: '<i class="fas fa-dollar"></i>',
-        callback: (li) => {
-          this._buySignatureAbility(li);
+      ]);
+      new ContextMenu(this.element, ".talent-upgrade.signature-ability", [
+        {
+          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.ContextMenuText"),
+          icon: '<i class="fas fa-dollar"></i>',
+          callback: (li) => {
+            this._buySignatureAbility(li);
+          },
         },
-      },
-    ]);
+      ]);
+    }
 
     // register sheet options
     if (["gear", "weapon", "armour"].includes(this.object.type)) {
@@ -1160,7 +1166,7 @@ export class ItemSheetFFG extends ItemSheet {
     const parent = $(a.parentElement);
     const parentPosition = $(parent).offset();
 
-    const windowHeight = parseInt($(parent).height(), 10) + 100 < 200 ? 200 : parseInt($(parent).height(), 10) + 100;
+    const windowHeight = parseInt($(parent).height(), 10) + 100 < 400 ? 400 : parseInt($(parent).height(), 10) + 100;
     const windowWidth = parseInt($(parent).width(), 10) < 320 ? 320 : parseInt($(parent).width(), 10);
     const windowLeft = parseInt(parentPosition.left, 10);
     const windowTop = parseInt(parentPosition.top, 10);
