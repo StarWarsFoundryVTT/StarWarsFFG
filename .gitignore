@@ -3,3 +3,5 @@ node_modules
 cypress/audio/
 cypress/videos/
 cypress/screenshots/
+
+packs
