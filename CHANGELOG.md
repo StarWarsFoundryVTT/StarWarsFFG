@@ -1,3 +1,7 @@
+`1.902`
+* Fixes:
+  * Improves nested tag formatting (e.g., allows for strings like `[B]Average ([di][di]) Skill[b]` to properly render)
+
 `1.901`
 * Features:
   * Added a sheet option to disable Force Pool on Rival and Nemesis actor sheets ([#1502](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1502))
