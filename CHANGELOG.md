@@ -1,3 +1,10 @@
+`1.902`
+* Features:
+  * Modified the Specialization sheet; moved the XP cost off of the talents, changed the appearance of talent connections, and improved how the sheet scales when the window is resized.
+  * Increased the default size of the popout editor (e.g., used for editing the description of a Specialization)
+* Fixes:
+  * Removed the "purchase" context menu option when editing a Specialization that is not attached to a character
+
 `1.901`
 * Features:
   * Added a sheet option to disable Force Pool on Rival and Nemesis actor sheets ([#1502](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1502))
