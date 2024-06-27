@@ -988,9 +988,50 @@ img {
   position: relative;
 }
 
+.starwarsffg .talent-grid.specialization-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  position: relative;
+  height: calc(100% - 15px);
+  max-height: calc(100% - 15px);
+}
+
+.starwarsffg .talent-grid .talent-tier-row {
+  flex: 1 0 16%;
+  display: flex;
+  flex-direction: row;
+  max-height: 20%;
+}
+
+.starwarsffg .talent-grid .talent-tier-row-label {
+  flex: 0 0 30px;
+  max-width: 30px;
+}
+.starwarsffg .talent-grid .talent-tier-row-label .talent-tier-row-label-text {
+  transform: rotate(-90deg);
+  transform-origin: bottom right;
+  width: auto;
+  height: 1rem;
+  line-height: 1rem;
+  text-align: center;
+  font-size: 1.1rem;
+  margin-left: -6rem;
+  overflow: visible;
+  text-wrap: nowrap;
+}
+
+.starwarsffg .talent-grid .talent-tier-row .talent-body > input {
+  background-color: rgba(0, 0, 0, 0.125);
+  font-size: 0.8rem;
+  height: 1.1rem;
+  margin-bottom: 5px;
+}
+
 .starwarsffg .talent-upgrade {
   position: relative;
   margin: 10px 10px 5px 10px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
 }
 
 .starwarsffg .talent-upgrade .talent-actions {
@@ -1062,6 +1103,7 @@ img {
   z-index: 10;
   background-color: #ddd;
   padding: 5px;
+  height: 100%;
   --notchSize: 0.25rem;
   -webkit-clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
   clip-path: polygon(0% 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
@@ -1089,6 +1131,16 @@ img {
   text-align: right;
 }
 
+.starwarsffg .talent-grid .talent-background .talent-header div.talent-name {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  max-width: calc(100% - 25px);
+  line-height: 1rem;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
 .starwarsffg .talent-background .talent-header div.talent-name.talent-modifiers {
   cursor: pointer;
 }
@@ -1112,6 +1164,10 @@ img {
   padding: 0;
   line-height: 0.75rem;
   width: 1rem;
+}
+
+.starwarsffg .talent-tier-row .talent-background .talent-body {
+  height: 100%;
 }
 
 .starwarsffg .talent-background.talent-active .talent-header {
@@ -1166,7 +1222,7 @@ img {
 
 .starwarsffg .talent-connection-point-top {
   position: absolute;
-  top: -6px;
+  top: -7px;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
@@ -1232,35 +1288,51 @@ img {
   display: inline-block;
   width: 34px;
   height: 12px;
-  background-color: black;
+  background-color: white;
+  box-shadow: 0px 0px 25px red;
   position: absolute;
   top: -3px;
 }
 
+/* Some various color schemes for talent connectors */
+.lightsaber-red {
+  background-color: white !important;
+  box-shadow: 0px 0px 25px red !important;
+}
+.lightsaber-blue {
+  background-color: white !important;
+  box-shadow: 0px 0px 25px blue !important;
+}
+.lightsaber-purple {
+  background-color: white !important;
+  box-shadow: 0px 0px 25px purple !important;
+}
+
+
 .starwarsffg .talent-connector .talent-connector-up i,
 .starwarsffg .talent-connector .talent-connector-side i {
   display: initial;
-  color: white;
+  color: black;
 }
 
 .starwarsffg .talent-connector .talent-connector-up {
-  height: 100px;
-  top: -50px;
+  height: 35px;
+  width: 20px;
+  top: -10px;
   z-index: 5;
 }
 
 .starwarsffg .talent-connector .talent-connector-up i {
   position: absolute;
-  top: 50%;
+  top: 25%;
   left: 0;
-  width: 34px;
+  width: 20px;
 }
 
 .starwarsffg .talent-connector .talent-connector-side {
   width: 35px;
-  height: 35px;
+  height: 20px;
   left: -15px;
-  padding-top: 8px;
 }
 
 .starwarsffg .talent-disable-edit .talent-actions {
@@ -1271,7 +1343,7 @@ img {
   display: none !important;
 }
 
-.starwarsffg .talent-disable-edit i {
+.starwarsffg .talent-disable-edit i.talent-button {
   display: none !important;
 }
 .starwarsffg .talent-action {
@@ -3491,7 +3563,7 @@ img {
 }
 
 .starwarsffg .item-sheet-specialization .sheet-body {
-  height: calc(100% - 10.5rem);
+  height: calc(100% - 9.5rem);
   margin: 0;
   padding: 0;
   word-break: break-word;
