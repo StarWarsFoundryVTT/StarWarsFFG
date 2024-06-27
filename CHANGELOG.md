@@ -4,6 +4,7 @@
   * Increased the default size of the popout editor (e.g., used for editing the description of a Specialization)
 * Fixes:
   * Removed the "purchase" context menu option when editing a Specialization that is not attached to a character
+  * Improves nested tag formatting (e.g., allows for strings like `[B]Average ([di][di]) Skill[b]` to properly render)
 
 `1.901`
 * Features:
