@@ -2030,7 +2030,7 @@ export class ActorSheetFFG extends ActorSheet {
                 purchasedItem = await fromUuid(selected_source);
               }
               if (purchasedItem.type === "forcepower") {
-                const currentForceRating = parseInt(this.actor.system.attributes.ForcePool.value);
+                const currentForceRating = parseInt(this.actor.system.stats.forcePool.max);
                 const requiredForceRating = parseInt(purchasedItem.system.required_force_rating);
                 if (currentForceRating < requiredForceRating) {
                   ui.notifications.warn(game.i18n.format("SWFFG.Actors.Sheets.Purchase.FP.FRTooLow", {forceRating: currentForceRating, requiredForceRating: requiredForceRating}));

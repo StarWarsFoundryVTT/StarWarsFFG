@@ -10,6 +10,7 @@
 * Fixes:
   * Removed the "purchase" context menu option when editing a Specialization that is not attached to a character
   * Improves nested tag formatting (e.g., allows for strings like `[B]Average ([di][di]) Skill[b]` to properly render)
+  * Purchasing force powers now looks at the correct attribute (it should no longer claim you are not strong enough in the force for powers!) ([#1584](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1584))
 
 `1.901`
 * Features:
