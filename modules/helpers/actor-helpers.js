@@ -210,6 +210,26 @@ export async function xpLogSpend(actor, action, cost, available, total) {
     const date = new Date().toISOString().slice(0, 10);
     let newEntry = `<font color="red"><b>${date}</b>: spent <b>${cost}</b> XP for <b>${action}</b> (${available} available, ${total} total)</font>`;
     await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+    await notifyXpSpend(actor, action);
+}
+
+/**
+ * Whisper the GM notifying them of spending XP
+ * @param actor
+ * @param action
+ * @returns {Promise<void>}
+ */
+async function notifyXpSpend(actor, action) {
+  if (game.settings.get("starwarsffg", "notifyOnXpSpend")) {
+    const chatData = {
+      speaker: {
+        actor: actor,
+      },
+      content: `bought ${action}`,
+      whisper: ChatMessage.getWhisperRecipients("GM"),
+    };
+    await ChatMessage.create(chatData);
+  }
 }
 
 /**
