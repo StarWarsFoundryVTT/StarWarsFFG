@@ -163,6 +163,18 @@ Hooks.once("init", async function () {
   }
 
   /**
+   * Register default XP spend notification
+   */
+  game.settings.register("starwarsffg", "notifyOnXpSpend", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Notify.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Notify.Hint"),
+    scope: "world",
+    config: true,
+    default: true,
+    type: Boolean,
+  });
+
+  /**
    * Register the option to use generic slots for combat
    */
   game.settings.register("starwarsffg", "useGenericSlots", {
