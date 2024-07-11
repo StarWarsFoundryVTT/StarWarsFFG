@@ -1814,6 +1814,7 @@ export class ActorSheetFFG extends ActorSheet {
     const availableXP = this.object.system.experience.available;
     const totalXP = this.object.system.experience.total;
     let itemType;
+    const groups = [];
     if (action === "specialization") {
       const inCareer = this.object.items.find(i => i.type === "career").system.specializations;
       const inCareerNames = Object.values(inCareer).map(i => i.name);
@@ -1845,7 +1846,9 @@ export class ActorSheetFFG extends ActorSheet {
         outCareer = [];
       }
       itemType =  game.i18n.localize("TYPES.Item.specialization");
-      content = await renderTemplate(template, { inCareer, outCareer, baseCost, increasedCost, itemType: itemType });
+      groups.push("In Career");
+      groups.push("Out of Career");
+      content = await renderTemplate(template, { inCareer, outCareer, baseCost, increasedCost, itemType: itemType, itemCategory: "specialization", groups: groups });
     } else if (action === "signatureability") {
       const sources = game.settings.get("starwarsffg", "signatureAbilityCompendiums").split(",");
       const rawSelectableItems =  this.object.items.find(i => i.type === "career").system.signatureabilities;
@@ -1931,7 +1934,7 @@ export class ActorSheetFFG extends ActorSheet {
 
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.signatureability");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType });
+      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "signatureability" });
     } else if (action === "forcepower") {
       const sources = game.settings.get("starwarsffg", "forcePowerCompendiums").split(",");
       let selectableItems = [];
@@ -1942,8 +1945,9 @@ export class ActorSheetFFG extends ActorSheet {
           id: worldItem.id,
           source: worldItem.uuid,
           cost: worldItem.system.base_cost,
-          requiredForceRating: worldItem.system.required_force_rating,
+          requiredForceRating: parseInt(worldItem.system.required_force_rating),
         });
+        addIfNotExist(groups, parseInt(worldItem.system.required_force_rating));
       }
       for (const source of sources) {
         const pack = game.packs.get(source);
@@ -1957,13 +1961,15 @@ export class ActorSheetFFG extends ActorSheet {
             id: item.id,
             source: item.uuid,
             cost: item.system.base_cost,
-            requiredForceRating: item.system.required_force_rating,
+            requiredForceRating: parseInt(item.system.required_force_rating),
           });
+          addIfNotExist(groups, parseInt(item.system.required_force_rating));
         }
       }
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.forcepower");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower" });
+      groups.sort();
+      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower", groups: groups });
     } else if (action === "talent") {
       const sources = game.settings.get("starwarsffg", "talentCompendiums").split(",");
       let selectableItems = [];
@@ -2118,4 +2124,20 @@ function sortDataBy(data, byKey) {
     }
     return 0;
  });
+}
+
+/**
+ * Add an element to an array only if it isn't already present in that array
+ * @param array
+ * @param element
+ * @returns {*}
+ */
+function addIfNotExist(array, element) {
+  let index = array.indexOf(element);
+  // Check if the object with the specified property value exists in the array
+  if (index === -1) {
+    // If not found, push a new object with the desired properties
+    array.push(element);
+  }
+  return array;
 }

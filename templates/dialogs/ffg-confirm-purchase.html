@@ -1,12 +1,37 @@
 <select name="purchase" id="ffgPurchase">
   <option>{{localize "SWFFG.Actors.Sheets.Purchase.Dropdown" itemType=itemType}}</option>
-  {{#each inCareer as |data id|}}
-    <option value="{{id}}" data-source="{{data.source}}" data-cost="{{../baseCost}}">{{data.name}} ({{../baseCost}} XP)</option>
-  {{/each}}
-  {{#each outCareer as |data id|}}
-    <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{../increasedCost}}">{{data.name}} ({{../increasedCost}} XP)</option>
-  {{/each}}
+  {{#each groups as |group| }}
+    {{#if (eq ../itemCategory "forcepower") }} %}
+      <optgroup label="{{ group }} {{ localize 'SWFFG.ForceRating' }}">
+    {{else}}
+        {{#if (eq ../itemCategory "specialization") }}
+          <optgroup label="{{ group }}">
+        {{else}}
+          <optgroup label="{{ group }}">
+        {{/if}}
+    {{/if}}
+    <!-- force rating -->
+    {{#each ../selectableItems as |data id|}}
+      {{#if (eq data.requiredForceRating group) }}
+        <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{data.cost}}">{{data.name}} ({{data.cost}} XP)</option>
+      {{/if}}
+    {{/each}}
+    <!-- specialization -->
+    {{#if (eq group "In Career") }}
+      {{#each ../inCareer as |data id|}}
+        <option value="{{id}}" data-source="{{data.source}}" data-cost="{{../../baseCost}}">{{data.name}} ({{../../baseCost}} XP)</option>
+      {{/each}}
+    {{/if}}
+    {{#if (eq group "Out of Career") }}
+      {{#each ../outCareer as |data id|}}
+        <option value="{{id}}" data-source="{{data.source}}" data-cost="{{../../increasedCost}}">{{data.name}} ({{../../increasedCost}} XP)</option>
+      {{/each}}
+    {{/if}}
+    </optgroup>
+  {{/each }}
+  {{#if (eq itemCategory "signatureability") }}
   {{#each selectableItems as |data id|}}
-    <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{data.cost}}">{{data.name}} ({{data.cost}} XP{{#if (eq ../itemCategory "forcepower") }}, {{ data.requiredForceRating }} force rating{{/if}})</option>
+    <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{data.cost}}">{{data.name}} ({{data.cost}} XP)</option>
   {{/each}}
+  {{/if}}
 </select>

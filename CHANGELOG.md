@@ -2,6 +2,9 @@
 * Features:
   * Modified the Specialization sheet; moved the XP cost off of the talents, changed the appearance of talent connections, and improved how the sheet scales when the window is resized.
   * Increased the default size of the popout editor (e.g., used for editing the description of a Specialization)
+  * Purchase improvements
+    * Grouped specializations in selection popup by in and out of career
+    * Grouped force powers in selection popup  by required force rating
 * Fixes:
   * Removed the "purchase" context menu option when editing a Specialization that is not attached to a character
   * Improves nested tag formatting (e.g., allows for strings like `[B]Average ([di][di]) Skill[b]` to properly render)
