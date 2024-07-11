@@ -192,6 +192,16 @@ export default class ActorHelpers {
     // as of v12, "data" is no longer shimmed into "system" for you, so we must do it ourselves
     formData = migrateDataToSystem(formData);
 
+    const curXP = this.object?.system?.experience?.available ? this.object.system.experience.available : 0;
+    const newXP = formData?.system?.experience?.available ? formData.system.experience.available : 0;
+    if (curXP > newXP) {
+      // XP has been manually edited to a lower value (spent)
+      await xpLogSpend(this.object, "manual spend", curXP - newXP, newXP, formData?.system?.experience?.total);
+    } else if (curXP < newXP) {
+      // XP has been manually edited to a higher value (granted)
+      await xpLogEarn(this.object, newXP - curXP, newXP, formData?.system?.experience?.total, "manual grant", "Self");
+    }
+
     return await this.object.update(formData);
   }
 }
@@ -239,16 +249,17 @@ async function notifyXpSpend(actor, action) {
  * @param available - XP available
  * @param total - XP total
  * @param note - note about the grant
+ * @param granter - string for who did the granting
  * @returns {Promise<void>}
  */
-export async function xpLogEarn(actor, grant, available, total, note) {
+export async function xpLogEarn(actor, grant, available, total, note, granter="GM") {
   const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
   const date = new Date().toISOString().slice(0, 10);
   let newEntry;
   if (note) {
-    newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP, reason: ${note} (${available} available, ${total} total)</font>`;
+    newEntry = `<font color="green"><b>${date}</b>: ${granter} granted <b>${grant}</b> XP, reason: ${note} (${available} available, ${total} total)</font>`;
   } else {
-    newEntry = `<font color="green"><b>${date}</b>: GM granted <b>${grant}</b> XP (${available} available, ${total} total)</font>`;
+    newEntry = `<font color="green"><b>${date}</b>: ${granter} granted <b>${grant}</b> XP (${available} available, ${total} total)</font>`;
   }
   await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
 }
