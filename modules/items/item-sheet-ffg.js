@@ -310,7 +310,7 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
-    
+
     // Prevent "purchase" context menu options when editing a sheet not attached to a character.
     const isOwned = this.object?.flags?.starwarsffg?.ffgIsOwned;
     if (isOwned) {
@@ -1251,7 +1251,6 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.name);
-      $(li).find(`input[name='data.talents.${talentId}.description']`).val(itemObject.system.description);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.system.activation.value);
       $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.system.activation.label);
       $(li).find(`input[name='data.talents.${talentId}.isRanked']`).val(itemObject.system.ranked);
@@ -1284,6 +1283,8 @@ export class ItemSheetFFG extends ItemSheet {
       }
 
       await this._onSubmit(event);
+      await this.object.update({system: {talents: {[talentId]: {description: itemObject.system.description}}}});
+      this.render(true);
     }
   }
 

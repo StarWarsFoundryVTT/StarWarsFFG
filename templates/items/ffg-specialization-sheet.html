@@ -55,10 +55,12 @@
               </div>
               <div class="talent-body">
                 <input type="text" value="{{localize talent.activationLabel}}" disabled />
-                {{{ talent.enrichedDescription}}}
+                <div class="popout-editor" data-target="data.talents.{{key}}.description" data-label="{{talent.name}}">
+                  <div class="popout-editor-button"></div>
+                  {{{ talent.enrichedDescription }}}
+                </div>
                 <div class="talent-hidden">
                   <input class="talent-hidden" type="text" name="data.talents.{{key}}.name" value="{{talent.name}}" />
-                  <input class="talent-hidden" type="text" name="data.talents.{{key}}.enrichedDescription" value="{{talent.enrichedDescription}}" />
                   <input class="talent-hidden" type="text" name="data.talents.{{key}}.activation" value="{{talent.activation}}" />
                   <input class="talent-hidden" type="text" name="data.talents.{{key}}.activationLabel" value="{{talent.activationLabel}}" />
                   <input class="talent-hidden" type="text" name="data.talents.{{key}}.itemId" value="{{talent.itemId}}" />
