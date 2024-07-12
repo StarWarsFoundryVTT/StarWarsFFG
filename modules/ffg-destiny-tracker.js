@@ -182,7 +182,7 @@ export default class DestinyTracker extends FormApplication {
     game.socket.on("system.starwarsffg", async (...args) => {
       if (args[0]?.canIRollDestinyResponse === game.user.id && !game.user.isGM) {
         if (!args[0]?.rolled) {
-          const roll = this._rollDestiny();
+          const roll = await this._rollDestiny();
           await game.socket.emit("system.starwarsffg", { destiny: game.user.id, light: roll.ffg.light, dark: roll.ffg.dark });
         } else {
           ui.notifications.error(`${game.i18n.localize("SWFFG.DestinyAlreadyRolled")}`);
@@ -305,13 +305,13 @@ export default class DestinyTracker extends FormApplication {
     this.isRunningQueue = false;
   }
 
-  _rollDestiny() {
+  async _rollDestiny() {
     const pool = new DicePoolFFG({
       force: 1,
     });
 
     const roll = new game.ffg.RollFFG(pool.renderDiceExpression());
-    roll.toMessage({
+    await roll.toMessage({
       user: game.user.id,
       flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.DestinyPool")}...`,
     });
