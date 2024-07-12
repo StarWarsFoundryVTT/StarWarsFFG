@@ -1935,7 +1935,7 @@ img {
   flex: 0 0 100px;
   height: 130px;
   width: auto;
-  max-width: 130px;
+  max-width: 500px;
   border: 0;
   margin: auto;
   -o-object-fit: contain;
