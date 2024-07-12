@@ -974,8 +974,7 @@ img {
 }
 
 .starwarsffg .talent-body {
-  height: 100px;
-  overflow: auto;
+  height: 90px;
 }
 
 .starwarsffg .talent-hidden {
@@ -1164,10 +1163,6 @@ img {
   padding: 0;
   line-height: 0.75rem;
   width: 1rem;
-}
-
-.starwarsffg .talent-tier-row .talent-background .talent-body {
-  height: 100%;
 }
 
 .starwarsffg .talent-background.talent-active .talent-header {

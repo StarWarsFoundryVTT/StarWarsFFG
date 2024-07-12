@@ -12,6 +12,7 @@
   * Improves nested tag formatting (e.g., allows for strings like `[B]Average ([di][di]) Skill[b]` to properly render)
   * Purchasing force powers now looks at the correct attribute (it should no longer claim you are not strong enough in the force for powers!) ([#1584](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1584))
   * Vehicle weapon images now have a max width of 500px (up from 130px) ([#1576](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1576))
+  * Fixed talent descriptions not showing up on specializations after being dragged-and-dropped ([#1573](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1573))
 
 `1.901`
 * Features:
