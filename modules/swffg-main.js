@@ -192,6 +192,26 @@ Hooks.once("init", async function () {
   }
 
   /**
+   * Register the max value for characteristics and skills
+   */
+  game.settings.register("starwarsffg", "maxAttribute", {
+    name: game.i18n.localize("SWFFG.Settings.maxAttribute.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.maxAttribute.Hint"),
+    scope: "world",
+    config: true,
+    default: 7,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "maxSkill", {
+    name: game.i18n.localize("SWFFG.Settings.maxSkill.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.maxSkill.Hint"),
+    scope: "world",
+    config: true,
+    default: 6,
+    type: Number,
+  });
+
+  /**
    * Register compendiums for sources for purchasing
    */
   game.settings.register("starwarsffg", "specializationCompendiums", {

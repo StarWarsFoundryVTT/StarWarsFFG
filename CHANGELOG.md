@@ -7,6 +7,7 @@
     * Grouped force powers in selection popup  by required force rating
     * Spending XP now whispers the GM to notify them (this can be disabled in the system settings)
   * Manual XP adjustments now result in an entry in the XP log
+  * Max characteristic and skill ranks are now configurable ([#1532](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1532))
 * Fixes:
   * Removed the "purchase" context menu option when editing a Specialization that is not attached to a character
   * Improves nested tag formatting (e.g., allows for strings like `[B]Average ([di][di]) Skill[b]` to properly render)

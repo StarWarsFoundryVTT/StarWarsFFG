@@ -153,6 +153,7 @@ export class ActorSheetFFG extends ActorSheet {
         data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
         data.data.general.enrichedNotes = await TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
         data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
+        data.maxAttribute = game.settings.get("starwarsffg", "maxAttribute");
         break;
       case "vehicle":
         data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
@@ -1397,7 +1398,7 @@ export class ActorSheetFFG extends ActorSheet {
                 characteristic,
                 groupskill: false,
                 label: name,
-                max: 6,
+                max: game.settings.get("starwarsffg", "maxSkill"),
                 rank: 0,
                 type: group,
                 custom: true,
@@ -2062,7 +2063,7 @@ export class ActorSheetFFG extends ActorSheet {
 
   _buyCharacteristicRank(characteristic) {
     const characteristicValue = this.actor.system.characteristics[characteristic].value;
-    if (characteristicValue >= 6) {
+    if (characteristicValue >= game.settings.get("starwarsffg", "maxAttribute")) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Characteristic.Max"));
       return;
     }
