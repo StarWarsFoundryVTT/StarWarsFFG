@@ -530,7 +530,7 @@ export class ActorFFG extends Actor {
       let total = 0;
       total += data.attributes[key].value;
       total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Characteristic");
-      data.characteristics[key].value = total > 7 ? 7 : total;
+      data.characteristics[key].value = total > game.settings.get("starwarsffg", "maxAttribute") ? game.settings.get("starwarsffg", "maxAttribute") : total;
     });
 
     /* Stats */
@@ -649,7 +649,7 @@ export class ActorFFG extends Actor {
       data.skills[key].remsetbacksource = remsetback.sources;
 
       if (isPC) {
-        data.skills[key].rank = total > 6 ? 6 : total;
+        data.skills[key].rank = total > game.settings.get("starwarsffg", "maxSkill") ? game.settings.get("starwarsffg", "maxSkill") : total;
       } else {
         data.skills[key].rank = total;
       }
