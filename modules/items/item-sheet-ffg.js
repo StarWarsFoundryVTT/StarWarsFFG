@@ -160,36 +160,6 @@ export class ItemSheetFFG extends ItemSheet {
               return;
           }
           this.item.flags.starwarsffg.loaded = true;
-
-          const specializationTalents = data.data.talents;
-
-          await ImportHelpers.asyncForEach(Object.keys(specializationTalents), async (talent) => {
-            let gameItem;
-            if (specializationTalents?.[talent]?.pack?.length) {
-              try {
-                const pack = await game.packs.get(specializationTalents[talent].pack);
-
-                // this may be a coverted specialization talent from a world to a module.
-                if (!pack) {
-                  gameItem = await ImportHelpers.findCompendiumEntityById("Item", specializationTalents[talent].itemId);
-                } else {
-                  await pack.getIndex();
-                  const entry = await pack.index.find((e) => e.id === specializationTalents[talent].itemId);
-                  if (entry) {
-                    gameItem = await pack.getEntity(entry.id);
-                  }
-                }
-              } catch (err) {
-                CONFIG.logger.warn(`Unable to load ${specializationTalents[talent].pack}`, err);
-              }
-            } else {
-              gameItem = await game.items.get(specializationTalents[talent].itemId);
-            }
-
-            if (gameItem) {
-              this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
-            }
-          });
         }
         for (let x = 0; x < 20; x++) {
           data.data.talents[`talent${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.talents[`talent${x}`].description);
