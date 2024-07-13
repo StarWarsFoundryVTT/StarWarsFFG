@@ -1523,7 +1523,6 @@ export class ActorSheetFFG extends ActorSheet {
 
   /** @override */
   async _updateObject(event, formData) {
-    console.log(formData)
     const actorUpdate = ActorHelpers.updateActor.bind(this);
     // Save persistent sheet height and width for future use.
     this.sheetWidth = this.position.width;
