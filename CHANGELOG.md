@@ -16,6 +16,8 @@
   * Fixed talent descriptions not showing up on specializations after being dragged-and-dropped ([#1573](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1573))
   * Fixed destiny pool roll not populating in tracker ([#1592](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1592))
   * Specializations no longer take forever to open ([#1593](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1593))
+  * SWA import now properly imports ranked talents ([#1572](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1572))
+  * SWA import no longer improperly matches the wrong talents in rare occasions
 
 `1.901`
 * Features:

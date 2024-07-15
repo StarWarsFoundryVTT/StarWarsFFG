@@ -486,18 +486,21 @@ export default class SWAImporter extends FormApplication {
                         name: talent.name,
                         type: "talent",
                         flags: {},
-                        data: {
+                        system: {
                           attributes: {},
                           description: talent.description,
                           activation: {
                             value: "Passive",
+                          },
+                          ranks: {
+                            ranked: false,
                           },
                         },
                       };
 
                       adversary.items.push(adversaryTalent);
                     } else {
-                      const swaTalentKey = Object.keys(CONFIG.temporary.swa.talents).find((t) => talent.includes(t));
+                      const swaTalentKey = Object.keys(CONFIG.temporary.swa.talents).find((t) => talent.substr(0, talent.lastIndexOf(' ')) === t);
 
                       if (swaTalentKey) {
                         const swaTalent = CONFIG.temporary.swa.talents[swaTalentKey];
@@ -512,7 +515,7 @@ export default class SWAImporter extends FormApplication {
                           name: swaTalent.name,
                           type: "talent",
                           flags: {},
-                          data: {
+                          system: {
                             attributes: {},
                             description: swaTalent.description,
                             ranks: {
