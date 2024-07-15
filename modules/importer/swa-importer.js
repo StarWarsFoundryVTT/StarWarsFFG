@@ -486,7 +486,7 @@ export default class SWAImporter extends FormApplication {
                         name: talent.name,
                         type: "talent",
                         flags: {},
-                        data: {
+                        system: {
                           attributes: {},
                           description: talent.description,
                           activation: {
