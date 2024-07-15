@@ -18,6 +18,7 @@
   * Specializations no longer take forever to open ([#1593](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1593))
   * SWA import now properly imports ranked talents ([#1572](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1572))
   * SWA import no longer improperly matches the wrong talents in rare occasions
+  * Characteristic XP cost is now calculated excluding any boosts from modifiers ([#1594](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1594))
 
 `1.901`
 * Features:
