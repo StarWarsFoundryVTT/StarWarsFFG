@@ -1,3 +1,10 @@
+`1.903`
+* Features:
+  * Updated "item cards" to match the Mandar theme
+    * This change includes many minor improvements to the cards, such as showing damage on weapons and purchased talents on specializations
+* Fixes:
+  * TBD, but sure to come :)
+
 `1.902`
 * Features:
   * Modified the Specialization sheet; moved the XP cost off of the talents, changed the appearance of talent connections, and improved how the sheet scales when the window is resized.

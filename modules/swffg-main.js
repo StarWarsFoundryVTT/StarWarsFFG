@@ -614,13 +614,33 @@ Hooks.on("renderChatMessage", async (app, html, messageData) => {
     DiceHelpers.displayRollDialog(poolData.roll.data, dicePool, poolData.description, poolData.roll.skillName, poolData.roll.item, poolData.roll.flavor, poolData.roll.sound);
   });
 
-  html.find(".item-display .item-pill, .item-properties .item-pill").on("click", async (event) => {
+  // collapse / expand item details
+  html.find(".starwarsffg.item-card .summary").on("click", async (event) => {
+    console.log("clicked!")
+    event.preventDefault();
+    const li = $(event.currentTarget);
+    const details = li.parent().children(".collapsible-content");
+    const collapseButton = li.children(".collapse-toggle");
+    // Toggle summary
+    if (li.hasClass("expanded")) {
+      details.slideUp(200, () => details.hide());
+    } else {
+      details.show();
+      details.slideDown(200);
+    }
+    li.toggleClass("expanded");
+    collapseButton.toggleClass("fa-chevron-down");
+    collapseButton.toggleClass("fa-chevron-left");
+  });
+
+  html.find(".item-display .item-pill, .item-properties .item-pill, .tag .item-pill").on("click", async (event) => {
     event.preventDefault();
     event.stopPropagation();
     const li = $(event.currentTarget);
     const itemType = li.attr("data-item-embed-type");
     let itemData = {};
     const newEmbed = li.attr("data-item-embed");
+    console.log(newEmbed)
 
     if (newEmbed === "true" && itemType === "itemmodifier") {
       itemData = {
