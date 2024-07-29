@@ -1,0 +1,144 @@
+{{#if (eq item.type "weapon")}}
+  <span class="subtitle">{{ item.system.skill.value }}</span>
+  <span class="basic-stats">
+    <span class="stat stat-right" title="{{ localize "SWFFG.ItemsDamage" }}">
+      <i class="fa-solid fa-hand-fist"></i>
+      {{ item.system.damage.adjusted }}
+    </span>
+    <span class="stat stat-right" title="{{ localize "SWFFG.ItemsCritRating" }}">
+      <i class="fa-solid fa-skull"></i>
+      {{ item.system.crit.adjusted }}
+    </span>
+    <span class="stat" title="{{ localize "SWFFG.ItemWeaponRange" }}">
+      <i class="fa-solid fa-bullseye"></i>
+      {{ item.system.range.adjusted }}
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "shipweapon")}}
+  <span class="subtitle">{{ item.system.skill.value }}</span>
+  <span class="basic-stats">
+    <span class="stat stat-right" title="{{ localize "SWFFG.VehicleTabDamage" }}">
+      <i class="fa-solid fa-hand-fist"></i>
+      {{ item.system.damage.adjusted }}
+    </span>
+    <span class="stat stat-right" title="{{ localize "SWFFG.ItemsCritRating" }}">
+      <i class="fa-solid fa-skull"></i>
+      {{ item.system.crit.adjusted }}
+    </span>
+    <span class="stat" title="{{ localize "SWFFG.ItemWeaponRange" }}">
+      <i class="fa-solid fa-bullseye"></i>
+      {{ item.system.range.adjusted }}
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "armour")}}
+  <span class="subtitle">{{ localize "SWFFG.ItemsArmor" }}</span>
+  <span class="basic-stats">
+    <span class="stat stat-right" title="{{ localize "SWFFG.ItemsDefense" }}">
+      <i class="fa-solid fa-shield-halved"></i>
+      {{ item.system.defence.adjusted }}
+    </span>
+    <span class="stat" title="{{ localize "SWFFG.ItemsSoak" }}">
+      <i class="fa-solid fa-helmet-battle"></i>
+      {{ item.system.soak.adjusted }}
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "gear")}}
+  <span class="subtitle">Gear</span>
+  <span class="basic-stats">
+    <span class="stat stat-right" title="{{ localize "SWFFG.Encumbrance" }}">
+      <i class="fa-solid fa-weight-hanging"></i>
+      {{ item.system.encumbrance.value }}
+    </span>
+    <span class="stat stat-right" title="{{ localize "SWFFG.ItemsRarity" }}">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span{{#if item.system.rarity.isrestricted }} class="restricted"{{/if }}>{{ item.system.rarity.value }}</span>
+    </span>
+    <span class="stat" title="{{ localize "SWFFG.ItemsPrice" }}">
+      <i class="fa-solid fa-dollar-sign"></i>
+      {{ item.system.price.value }}
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "talent")}}
+  <span class="subtitle">{{ item.system.activation.value }} {{ localize "SWFFG.Talent" }}</span>
+  <span class="basic-stats">
+    <span class="stat stat-right{{#if item.system.ranks.ranked }}{{ else }} not-present{{/if }}" title="{{ localize "SWFFG.Ranked" }}">
+      <i class="fa-solid fa-weight-hanging"></i>
+      {{#if item.system.ranks.ranked }}
+        {{ item.system.ranks.current }}
+      {{/if }}
+    </span>
+    <span class="stat stat-right{{# if item.system.isForceTalent }}{{ else }} not-present{{/if }}" title="{{ localize "SWFFG.ForceTalent" }}">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </span>
+    <span class="stat{{# if item.system.isConflictTalent }}{{ else }} not-present{{/if }}" title="{{ localize "SWFFG.ConflictTalent" }}">
+      <i class="fa-solid fa-dollar-sign"></i>
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "ability")}}
+  <span class="subtitle">{{ localize "TYPES.Item.ability" }}</span>
+  <span class="basic-stats">
+  </span>
+{{/if}}
+{{#if (eq item.type "forcepower")}}
+  <span class="subtitle">{{ localize "TYPES.Item.forcepower" }}</span>
+  <span class="basic-stats">
+    <span class="stat stat-right" title="{{ localize "SWFFG.XPCost" }}">
+      <i class="fa-solid fa-turn-up"></i>
+      {{ item.system.base_cost}}
+    </span>
+    <span class="stat" title="{{ localize "SWFFG.ForcePowerRequiredFR" }}">
+      <i class="fa-solid fa-jedi"></i>
+      {{ item.system.required_force_rating }}
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "species")}}
+  <span class="subtitle">{{ localize "TYPES.Item.species" }}</span>
+  <span class="basic-stats">
+    <span class="stat stat-right" title="{{ localize "SWFFG.Thresholds.Wound" }}">
+      <i class="fa-solid fa-kit-medical"></i>
+      {{ item.system.attributes.Wounds.value}}
+    </span>
+    <span class="stat stat-right" title="{{ localize "SWFFG.Thresholds.Strain" }}">
+      <i class="fa-solid fa-mug-hot"></i>
+      {{ item.system.attributes.Strain.value }}
+    </span>
+    <span class="stat" title="{{ localize "SWFFG.StartingXP" }}">
+      <i class="fa-solid fa-turn-up"></i>
+      {{ item.system.startingXP }}
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "career")}}
+  <span class="subtitle">{{ localize "TYPES.Item.career" }}</span>
+  <span class="basic-stats">
+  </span>
+{{/if}}
+{{#if (eq item.type "specialization")}}
+  <span class="subtitle">{{ localize "TYPES.Item.specialization" }}</span>
+  <span class="basic-stats">
+  </span>
+{{/if}}
+{{#if (eq item.type "signatureability")}}
+  <span class="subtitle">{{ localize "SWFFG.SignatureAbility" }}</span>
+  <span class="basic-stats">
+    <span class="stat" title="{{ localize "SWFFG.XPCost" }}">
+      <i class="fa-solid fa-turn-up"></i>
+      {{ item.system.base_cost}}
+    </span>
+  </span>
+{{/if}}
+{{#if (eq item.type "shipattachment")}}
+  <span class="subtitle">{{ localize "SWFFG.Labels.VehicleAttachment" }}</span>
+  <span class="basic-stats">
+    <span class="stat" title="{{ localize "SWFFG.Labels.RequiredHardPoints" }}">
+      <i class="fa-solid fa-shield-halved"></i>
+      {{ item.system.hardpoints.value}}
+    </span>
+  </span>
+{{/if}}

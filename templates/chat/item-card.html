@@ -1,10 +1,91 @@
-<div class="starwarsffg item-card" data-item-id="{{item._id}}">
-  {{#iff (defaultImage item.img) '!=' true}}
-    <h3><img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" /></h3>
-  {{/iff}}
-  <h2>{{item.name}}</h2>
-  <div class="item-details">
-    {{{itemDetails.prettyDesc}}}
-    <div class="item-properties">{{#each itemDetails.properties}}<span class="tag">{{{this}}}</span>{{/each}}</div>
-  </div>
+
+<div class="starwarsffg item-card">
+  <section class="card-header collapsible">
+    <span class="title"><b>{{ item.name }}</b></span>
+    <header class="summary expanded">
+      <img class="icon" src="{{ item.img }}" alt="{{ item.name }}" title="{{ item.name }}"/>
+      <div class="name-stacked border">
+        {{> "systems/starwarsffg/templates/chat/parts/item/ffg-header.html" item=item }}
+      </div>
+      <i class="fas fa-chevron-down fa-fw collapse-toggle"></i>
+    </header>
+    <section class="card-content details collapsible-content">
+      <div class="wrapper">
+        <p>
+          {{{itemDetails.prettyDesc}}}
+        </p>
+        {{#if item.system.adjusteditemmodifier.length }}
+        <div class="properties">
+          <span class="tag">
+            <b>{{ localize "SWFFG.ItemDescriptors" }}:</b>
+            <ul>
+            {{#each item.system.adjusteditemmodifier }}
+              <li class="item-pill" data-item-embed-type="itemmodifier" data-item-embed-name="{{ name }}" data-item-embed-img="{{ img }}" data-item-embed-description="{{ system.description }}" data-item-embed-modifiers="{{#if system.adjusteditemmodifer }}{{ system.adjusteditemmodifer }}{{ else }}{}{{/if }}" data-item-embed-rank="{{ system.rank }}" data-item-embed="true">
+                {{{name}}}
+              </li>
+            {{/each}}
+            </ul>
+          </span>
+        </div>
+        {{/if}}
+        {{#if item.system.itemattachment.length }}
+        <div class="properties">
+          <span class="tag">
+            <b>{{ localize "SWFFG.Labels.ItemAttachments" }}:</b>
+            <ul>
+            {{#each item.system.itemattachment }}
+              <li class="item-pill" data-item-embed-type="itemmodifier" data-item-embed-name="{{ name }}" data-item-embed-img="{{ img }}" data-item-embed-description="{{ system.description }}" data-item-embed-modifiers="{{#if system.adjusteditemmodifer }}{{ system.adjusteditemmodifer }}{{ else }}{}{{/if }}" data-item-embed-rank="{{ system.rank }}" data-item-embed="true">
+                {{{name}}}
+              </li>
+            {{/each}}
+            </ul>
+          </span>
+        </div>
+        {{/if}}
+        {{#if itemDetails.textProperties.length }}
+        <div class="properties">
+          <span class="tag">
+            <b>{{ localize "SWFFG.HomesteadTabUpgrades" }}:</b>
+            <ul>
+            {{#each itemDetails.textProperties }}
+              <li class="item-pill hover">
+                <span data-tooltip="{{ description }}">{{name}} {{ rank }}</span>
+              </li>
+            {{/each}}
+            </ul>
+          </span>
+        </div>
+        {{/if}}
+        {{#if itemDetails.specializations.length }}
+        <div class="properties">
+          <span class="tag">
+            <b>{{ localize "SWFFG.Specializations" }}:</b>
+            <ul>
+            {{#each itemDetails.specializations }}
+              <li class="item-pill hover">
+                {{name}}
+              </li>
+            {{/each}}
+            </ul>
+          </span>
+        </div>
+        {{/if}}
+        {{#if itemDetails.signatureAbilities.length }}
+        <div class="properties">
+          <span class="tag">
+            <b>{{ localize "SWFFG.SignatureAbilities" }}:</b>
+            <ul>
+            {{#each itemDetails.signatureAbilities }}
+              <li class="item-pill hover">
+                {{name}}
+              </li>
+            {{/each}}
+            </ul>
+          </span>
+        </div>
+        {{/if}}
+      </div>
+    </section>
+    {{> "systems/starwarsffg/templates/chat/parts/item/ffg-footer.html" item=item }}
+  </section>
 </div>

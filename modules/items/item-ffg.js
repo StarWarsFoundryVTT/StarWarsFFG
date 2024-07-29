@@ -453,6 +453,9 @@ export class ItemFFG extends ItemBaseFFG {
 
     // Item type specific properties
     const props = [];
+    const purchasedUpgrades = [];
+    const specializations = [];
+    const signatureAbilities = [];
 
     data.prettyDesc = await PopoutEditor.renderDiceImages(data.description, this.actor);
 
@@ -486,6 +489,11 @@ export class ItemFFG extends ItemBaseFFG {
             ${upd.description}
           </div>
         </div>`);
+        purchasedUpgrades.push({
+          name: upd.name,
+          rank: upd.rank,
+          description: upd.description,
+        })
       }
     }
     // General equipment properties
@@ -505,6 +513,36 @@ export class ItemFFG extends ItemBaseFFG {
       }
       if (data.hasOwnProperty("rarity")) {
         props.push(`${game.i18n.localize("SWFFG.ItemsRarity")}: ${data.rarity?.adjusted ? data.rarity.adjusted : data.rarity.value} ${data.rarity.isrestricted ? "<span class='restricted'>" + game.i18n.localize("SWFFG.IsRestricted") + "</span>" : ""}`);
+      }
+      if (data.hasOwnProperty("talents")) {
+        for (const talentKey of Object.keys(data.talents)) {
+          const talent = data.talents[talentKey];
+          if (talent?.islearned) {
+            purchasedUpgrades.push({
+              name: talent.name,
+              rank: 0,
+              description: talent.enrichedDescription,
+            });
+          }
+        }
+      }
+      if (data.hasOwnProperty("specializations")) {
+        for (const specializationKey of Object.keys(data.specializations)) {
+          const specialization = data.specializations[specializationKey];
+          specializations.push({
+            name: specialization.name,
+            uuid: specialization.uuid,
+          });
+        }
+      }
+      if (data.hasOwnProperty("signatureabilities")) {
+        for (const SAKey of Object.keys(data.signatureabilities)) {
+          const signatureAbility = data.signatureabilities[SAKey];
+          signatureAbilities.push({
+            name: signatureAbility.name,
+            uuid: signatureAbility.uuid,
+          });
+        }
       }
     }
 
@@ -527,6 +565,9 @@ export class ItemFFG extends ItemBaseFFG {
 
     // Filter properties and return
     data.properties = props.filter((p) => !!p);
+    data.textProperties = purchasedUpgrades;
+    data.specializations = specializations;
+    data.signatureAbilities = signatureAbilities;
     return data;
   }
 }

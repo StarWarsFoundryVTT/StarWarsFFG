@@ -1,0 +1,72 @@
+{{#if (eq item.type "weapon")}}
+  <span class="stat stat-right" title="{{ localize "SWFFG.Encumbrance" }}">
+    <i class="fa-solid fa-weight-hanging"></i>
+    {{ item.system.encumbrance.adjusted }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.Labels.HardPoints" }}">
+    <i class="fa-solid fa-wrench"></i>
+    {{ item.system.hardpoints.current }} / {{ item.system.hardpoints.adjusted }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.ItemsRarity" }}">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span{{#if item.system.rarity.isrestricted }} class="restricted"{{/if }}>{{ item.system.rarity.adjusted }}</span>
+  </span>
+  <span class="stat" title="{{ localize "SWFFG.ItemWeaponPrice" }}">
+    <i class="fa-solid fa-dollar-sign"></i>
+    {{ item.system.price.adjusted }}
+  </span>
+{{/if}}
+{{#if (eq item.type "shipattachment")}}
+  <span class="stat stat-right" title="{{ localize "SWFFG.Encumbrance" }}">
+    <i class="fa-solid fa-weight-hanging"></i>
+    {{ item.system.encumbrance.value }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.Labels.HardPoints" }}">
+    <i class="fa-solid fa-wrench"></i>
+    {{ item.system.hardpoints.value }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.ItemsRarity" }}">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span{{#if item.system.rarity.isrestricted }} class="restricted"{{/if }}>{{ item.system.rarity.value }}</span>
+  </span>
+  <span class="stat" title="{{ localize "SWFFG.ItemsPrice" }}">
+    <i class="fa-solid fa-dollar-sign"></i>
+    {{ item.system.price.value }}
+  </span>
+{{/if}}
+{{#if (eq item.type "shipweapon")}}
+  <span class="stat stat-right" title="{{ localize "SWFFG.Encumbrance" }}">
+    <i class="fa-solid fa-weight-hanging"></i>
+    {{ item.system.encumbrance.adjusted }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.Labels.HardPoints" }}">
+    <i class="fa-solid fa-wrench"></i>
+    {{ item.system.hardpoints.current }} / {{ item.system.hardpoints.adjusted }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.ItemsRarity" }}">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span{{#if item.system.rarity.isrestricted }} class="restricted"{{/if }}>{{ item.system.rarity.adjusted }}</span>
+  </span>
+  <span class="stat" title="{{ localize "SWFFG.ItemsPrice" }}">
+    <i class="fa-solid fa-dollar-sign"></i>
+    {{ item.system.price.adjusted }}
+  </span>
+{{/if}}
+{{#if (eq item.type "armour")}}
+  <span class="stat stat-right" title="{{ localize "SWFFG.Encumbrance" }}">
+    <i class="fa-solid fa-weight-hanging"></i>
+    {{ item.system.encumbrance.adjusted }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.Labels.HardPoints" }}">
+    <i class="fa-solid fa-wrench"></i>
+    {{ item.system.hardpoints.current }} / {{ item.system.hardpoints.adjusted }}
+  </span>
+  <span class="stat stat-right" title="{{ localize "SWFFG.ItemsRarity" }}">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span{{#if item.system.rarity.isrestricted }} class="restricted"{{/if }}>{{ item.system.rarity.adjusted }}</span>
+  </span>
+  <span class="stat" title="{{ localize "SWFFG.ItemsPrice" }}">
+    <i class="fa-solid fa-dollar-sign"></i>
+    {{ item.system.price.adjusted }}
+  </span>
+{{/if}}

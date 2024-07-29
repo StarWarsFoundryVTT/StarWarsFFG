@@ -4208,3 +4208,116 @@ img {
   background: rgba(73, 12, 11, 0.85);
   color:#ffffff
 }
+
+.starwarsffg.dice-roll {
+  border: 1px solid #9f9275;
+  border-radius: 3px;
+  background: #d8cbc0;
+}
+
+.starwarsffg.item-card .card-header {
+  padding: 0.5rem;
+  border: 1px solid #9f9275;
+  border-radius: 3px;
+  background: #d8cbc0;
+  overflow: hidden;
+}
+
+.starwarsffg.item-card .title {
+  background-color: #415064;
+  color: white;
+  text-transform: uppercase;
+  display: block;
+  padding: 2px 2px 2px 2px;
+  --notchSize: 0.25rem;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.starwarsffg.item-card .title b {
+  padding-left: 4px;
+}
+
+.starwarsffg.item-card .summary {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.starwarsffg.item-card .icon {
+  width: 32px;
+  height: 32px;
+  border: 2px solid #919275;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.45);
+  border-radius: 0;
+  background-color: #3d3d3d;
+  object-fit: cover;
+  object-position: top;
+}
+
+.starwarsffg.item-card .name-stacked {
+  border-right: 1px solid #ddd;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.starwarsffg.item-card .stat {
+  border-right: 0 groove #8060554C;
+  padding: 0 2px 0 2px;
+}
+
+.starwarsffg.item-card .stat.stat-right {
+  border-right: 2px groove #8060554C;
+}
+
+.starwarsffg.item-card .stat.not-present {
+  color: gray;
+}
+
+.starwarsffg.item-card .subtitle {
+  color: #781428;
+}
+
+.starwarsffg.item-card .stat .restricted {
+  color: #8b0000;
+}
+
+.starwarsffg.item-card .collapse-toggle {
+  margin-right: 0.25rem;
+}
+
+.starwarsffg.item-card .card-content {
+  padding: 0;
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.starwarsffg.item-card .properties {
+  margin: 5px 5px 5px 0;
+  padding-right: 5px;
+}
+
+.starwarsffg.item-card .properties .tag {
+  display: inline-block;
+  margin: 0 2px 0 0;
+  padding: 0 3px;
+  font-size: 10px;
+  line-height: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.1);
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.starwarsffg.item-card .properties .tag .item-pill {
+  list-style-type: none;
+  display: inline-block;
+  cursor: pointer;
+  padding: 0.1rem 0.5rem;
+  margin: 0.1rem;
+  background-color: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 1rem;
+}
