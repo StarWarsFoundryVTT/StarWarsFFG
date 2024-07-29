@@ -4209,6 +4209,12 @@ img {
   color:#ffffff
 }
 
+.starwarsffg.dice-roll {
+  border: 1px solid #9f9275;
+  border-radius: 3px;
+  background: #d8cbc0;
+}
+
 .starwarsffg.item-card .card-header {
   padding: 0.5rem;
   border: 1px solid #9f9275;

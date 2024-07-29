@@ -616,7 +616,6 @@ Hooks.on("renderChatMessage", async (app, html, messageData) => {
 
   // collapse / expand item details
   html.find(".starwarsffg.item-card .summary").on("click", async (event) => {
-    console.log("clicked!")
     event.preventDefault();
     const li = $(event.currentTarget);
     const details = li.parent().children(".collapsible-content");
