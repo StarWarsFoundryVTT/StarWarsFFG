@@ -390,9 +390,34 @@ export class CombatFFG extends Combat {
 
     let action = game.settings.get("starwarsffg", "removeCombatantAction")
     if (action === "prompt") {
-      // TODO: prompt for a selection
+      new Dialog({
+        title: game.i18n.localize("SWFFG.CombatantRemoval.Title"),
+        content: game.i18n.localize("SWFFG.CombatantRemoval.Body"),
+        buttons: {
+          one: {
+            label: game.i18n.localize("SWFFG.CombatantRemoval.CombatantOnly"),
+            callback: async () => {
+              await this.doRemoval(combatant, "combatant_only");
+            },
+          },
+          two: {
+            label: game.i18n.localize("SWFFG.CombatantRemoval.LastSlot"),
+            callback: async () => {
+              await this.doRemoval(combatant, "last_slot");
+            },
+          },
+          three: {
+            icon: '<i class="fas fa-times"></i>',
+            label: game.i18n.localize("SWFFG.Cancel"),
+          },
+        },
+      }).render(true);
+    } else {
+      await this.doRemoval(combatant, action);
     }
+  }
 
+  async doRemoval(combatant, action) {
     switch (action) {
       case "combatant_only": {
         await this.removeCombatantOnly(combatant.id);

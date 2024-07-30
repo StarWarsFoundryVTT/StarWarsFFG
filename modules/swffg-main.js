@@ -199,7 +199,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.RemoveCombatantAction.Hint"),
     scope: "world",
     config: true,
-    default: "combatant_only",
+    default: "prompt",
     type: String,
     choices: {
       combatant_only: "Combatant Only",
