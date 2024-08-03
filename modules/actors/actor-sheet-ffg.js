@@ -1988,19 +1988,23 @@ export class ActorSheetFFG extends ActorSheet {
         if (!pack) {
           continue;
         }
+        const purchasedItems = this.object.talentList;
         const items = await pack.getDocuments();
         for (const item of items) {
-          selectableItems.push({
-            name: item.name,
-            id: item.id,
-            source: item.uuid,
-            cost: item.system.tier * 5,
-          });
+          const purchasedItem = purchasedItems.find((pItem) => pItem.name === item.name)
+          if(!purchasedItem || purchasedItem.isRanked) {
+            selectableItems.push({
+              name: item.name,
+              id: item.id,
+              source: item.uuid,
+              cost: purchasedItem?.isRanked ? item.system.tier * 5 + 5 * purchasedItem.rank: item.system.tier * 5,
+            });
+          }
         }
       }
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.talent");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType });
+      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "talent" });
     } else if (action === "characteristic") {
       const characteristic = $(event.target).data("buy-characteristic");
       await this._buyCharacteristicRank(characteristic);
