@@ -3,7 +3,7 @@
   * Updated "item cards" to match the Mandar theme
     * This change includes many minor improvements to the cards, such as showing damage on weapons and purchased talents on specializations
 * Fixes:
-  * TBD, but sure to come :)
+  * Includes species characteristics bonus when calculating upgrade cost
 
 `1.902`
 * Features:
