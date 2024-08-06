@@ -1989,7 +1989,6 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
       worldItemsPack = sortDataBy(worldItemsPack, "name");
-      // TODO: Add translation key
       selectableItems.push({pack: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.WorldItemsGroup"), items: worldItemsPack});
       
       for (const source of sources) {
