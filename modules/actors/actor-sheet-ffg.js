@@ -1972,28 +1972,37 @@ export class ActorSheetFFG extends ActorSheet {
       groups.sort();
       content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower", groups: groups });
     } else if (action === "talent") {
+      const purchasedItems = this.object.talentList;
       const sources = game.settings.get("starwarsffg", "talentCompendiums").split(",");
       let selectableItems = [];
       const worldItems = game.items.filter(i => i.type === "talent");
+      let worldItemsPack = [];
       for (const worldItem of worldItems) {
-        selectableItems.push({
-          name: worldItem.name,
-          id: worldItem.id,
-          source: worldItem.uuid,
-          cost: worldItem.system.tier * 5,
-        });
+        const purchasedItem = purchasedItems.find((pItem) => pItem.name === worldItem.name)
+        if(!purchasedItem || purchasedItem.isRanked) {
+          worldItemsPack.push({
+            name: worldItem.name,
+            id: worldItem.id,
+            source: worldItem.uuid,
+            cost: purchasedItem?.isRanked ? worldItem.system.tier * 5 + 5 * purchasedItem.rank: worldItem.system.tier * 5,
+          });
+        }
       }
+      worldItemsPack = sortDataBy(worldItemsPack, "name");
+      // TODO: Add translation key
+      selectableItems.push({pack: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.WorldItemsGroup"), items: worldItemsPack});
+      
       for (const source of sources) {
         const pack = game.packs.get(source);
         if (!pack) {
           continue;
         }
-        const purchasedItems = this.object.talentList;
+        let packItems = [];
         const items = await pack.getDocuments();
         for (const item of items) {
           const purchasedItem = purchasedItems.find((pItem) => pItem.name === item.name)
           if(!purchasedItem || purchasedItem.isRanked) {
-            selectableItems.push({
+            packItems.push({
               name: item.name,
               id: item.id,
               source: item.uuid,
@@ -2001,8 +2010,9 @@ export class ActorSheetFFG extends ActorSheet {
             });
           }
         }
+        packItems = sortDataBy(packItems, "name");
+        selectableItems.push({pack: pack.metadata.label, items: packItems});
       }
-      selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.talent");
       content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "talent" });
     } else if (action === "characteristic") {

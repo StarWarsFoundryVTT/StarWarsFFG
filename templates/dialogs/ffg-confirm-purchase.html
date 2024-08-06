@@ -36,8 +36,12 @@
   {{/if}}
   <!-- talents -->
   {{#if (eq itemCategory "talent") }}
-  {{#each selectableItems as |data id|}}
+  {{#each selectableItems as |pack|}}
+  <optgroup label="{{pack.pack}}">
+  {{#each pack.items as |data id|}}
     <option value="{{id}}" data-id="{{id}}" data-source="{{data.source}}" data-cost="{{data.cost}}">{{data.name}} ({{data.cost}} XP)</option>
+  {{/each}}
+  </optgroup>
   {{/each}}
   {{/if}}
 </select>
