@@ -919,9 +919,6 @@ export class CombatTrackerFFG extends CombatTracker {
       const aliveCount = this._getCombatantStateCount(combat, disposition);
       let unused = false;
       turnTracker[disposition]++;
-      if (turnTracker[disposition] > aliveCount) {
-        unused = true;
-      }
 
       // we do not care about the defeated status since defeated units get their slot marked unused
       turn.css = turn.css.replace('defeated', '');
