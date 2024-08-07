@@ -4,6 +4,23 @@ import PopoutEditor from "./popout-editor.js";
 /**
  * Extend the base Combat entity.
  * @extends {Combat}
+ * Note: slot claiming is in the following format:
+ * {
+ *   <round>: {
+ *     <turnCombatantId>:<claimantCombatantId>,
+ *   }
+ * }
+ *
+ * for example, if we had two combatants:
+ * combatant "hello" - ID 111
+ * combatant "world" - ID 222
+ * and "hello" claimed "world's" slot for round one, the structure would look like this:
+ * {
+ *   1: {
+ *     222: 111,
+ *   }
+ * }
+ * and the UI would show "hello" as the sole claimant for this round (the other slot would say "claim this slot")
  */
 export class CombatFFG extends Combat {
   /**
@@ -26,6 +43,32 @@ export class CombatFFG extends Combat {
           fake: true,
           disposition: disposition,
         }
+      },
+    );
+    return (await this.createEmbeddedDocuments("Combatant", [extraSlot]))[0].id;
+  }
+
+  /**
+   * Adds a slot to the combat with a specific combatant ID
+   * @param disposition - disposition to create the combatant with
+   * @param initiative - initiative to create the combatant with
+   * @param actorId - the ID of the existing actor to assign to the combatant
+   * @param tokenId - the ID of the existing token to assign to the combatant
+   * @param sceneId - the ID of the existing scene to assign to the combatant
+   * @param claimantName - the name of the claimant to assign to the combatant
+   * @returns {Promise<void>}
+   */
+  async addIDedExtraSlot(disposition, initiative, actorId, tokenId, sceneId, claimantName) {
+    const extraSlot = await new CombatantFFG(
+{
+        name: claimantName,
+        disposition: disposition,
+        actorId: actorId,
+        tokenId: tokenId,
+        sceneId: sceneId,
+        hidden: false,
+        visible: true,
+        initiative: initiative,
       },
     );
     return (await this.createEmbeddedDocuments("Combatant", [extraSlot]))[0].id;
@@ -355,16 +398,200 @@ export class CombatFFG extends Combat {
 
   async handleCombatantRemoval(combatant, options, userId) {
     const claimedSlot = this.findSlotClaims(this.round, combatant.id);
-    const element = $(`.directory-item[data-combatant-id="${claimedSlot}"]`, combat);
-    if (element.length === 0) {
-      return ui.notifications.warn("You must claim a slot before you can remove the combatant (sorry...)");
+    if (!combatant.combat.started) {
+      // the combat hasn't started, remove the actual initiative slot
+      await this.removeCombatantOnly(combatant.id);
     }
-    await this.removeCombatant(element);
+
+    let action = game.settings.get("starwarsffg", "removeCombatantAction")
+    if (action === "prompt") {
+      new Dialog({
+        title: game.i18n.localize("SWFFG.CombatantRemoval.Title"),
+        content: game.i18n.localize("SWFFG.CombatantRemoval.Body"),
+        buttons: {
+          one: {
+            label: game.i18n.localize("SWFFG.CombatantRemoval.CombatantOnly"),
+            callback: async () => {
+              await this.doRemoval(combatant, "combatant_only");
+            },
+          },
+          two: {
+            label: game.i18n.localize("SWFFG.CombatantRemoval.LastSlot"),
+            callback: async () => {
+              await this.doRemoval(combatant, "last_slot");
+            },
+          },
+          three: {
+            icon: '<i class="fas fa-times"></i>',
+            label: game.i18n.localize("SWFFG.Cancel"),
+          },
+        },
+      }).render(true);
+    } else {
+      await this.doRemoval(combatant, action);
+    }
+  }
+
+  async doRemoval(combatant, action) {
+    switch (action) {
+      case "combatant_only": {
+        await this.removeCombatantOnly(combatant.id);
+        break;
+      }
+      case "last_slot": {
+        await this.removeLastSlot(combatant.id);
+        break;
+      }
+    }
   }
 
   async handleCombatantAddition(combatant, context, options, combatantI) {
     // there may be cases when this is needed, but for now, we don't need to do anything
     // (leaving as a placeholder until we know for sure)
+  }
+
+  async removeCombatantOnly(combatantId) {
+    const round = this.round;
+    const combatant = this.combatants.get(combatantId);
+    const disposition = combatant.disposition;
+    const initiative = combatant.initiative;
+
+    // find if the combatant has any slots claimed
+    const claimedSlot = this.getSlotClaims(round, combatantId);
+    // prevent constant re-rendering of the tracker
+    this.debounceRender();
+    if (claimedSlot) {
+      // un-claim the slot
+      console.log("Someone claimed the actors slot, un-claiming it")
+      await this.unclaimSlot(round, claimedSlot);
+    }
+    console.log("un-claiming any slots claimed by the actor")
+    await this.unclaimSlot(round, combatantId);
+    console.log("deleting the combatant")
+    // now delete the toRemoveCombatantId slot
+    Hooks.off("preDeleteCombatant", CONFIG.FFG.preCombatDelete);
+    await this.combatants.get(combatantId).delete();
+    CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    // now create a new slot to replace it
+    CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
+    const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
+    console.log("done!")
+
+    // if there was a claim on the slot replaced, add it back
+    if (claimedSlot && claimedSlot !== combatantId) {
+      CONFIG.logger.debug(`Since this slot was originally claimed by ${claimedSlot}, we are re-claiming it for them`);
+      await this.claimSlot(round, replacementTurnId, claimedSlot);
+    }
+    // re-render the tracker / re-order the turns
+    CONFIG.logger.debug("Re-rendering the tracker and emitting a socket event for other clients");
+    this.setupTurns();
+    // emit a socket event
+    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
+  }
+
+  async removeLastSlot(combatantId) {
+    CONFIG.logger.debug("Removing last slot of combat...");
+    const round = this.round;
+
+    /*
+      Steps
+        1 - Gather information about the actor being removed
+        2 - Gather information about the last slot (of the same disposition)
+        3 - Check if the results of steps 1 and 2 are the same or not. if they are different, proceed to step 4a. otherwise, go to 4b
+        4a - Locate, record, and remove any claims on the slot of the actor being removed
+        5 - Locate, record, and remove any claims on the last slot
+        6 - Delete the actor being removed from the combat
+        7 - Add a new slot with the last slot data (except Initiative, which is copied from the slot being removed)
+        8 - Delete the last slot
+        9 - Re-claim slots as needed
+        4b - Delete the actor being removed; no further steps are needed
+    */
+
+    // Step 1 - Gather information about the actor being removed
+    const removedCombatant = this.combatants.get(combatantId);
+    let removedCombatantId = removedCombatant.id;
+    const removedDisposition = removedCombatant.disposition;
+    const removedInitiative = removedCombatant.initiative;
+
+    // Step 2 - Gather information about the last slot (of the same disposition)
+    let lowestInitiativeValue;
+    let lastSlotId;
+    for (const combatant of this.combatants) {
+      if (combatant.disposition === removedDisposition) {
+        if (!lowestInitiativeValue || combatant.initiative < lowestInitiativeValue) {
+          lowestInitiativeValue = combatant.initiative;
+          lastSlotId = combatant.id;
+        }
+      }
+    }
+    const lastSlotCombatant = this.combatants.get(lastSlotId);
+    const lastSlotCombatantId = lastSlotId;
+    const lastSlotActorId = lastSlotCombatant.actorId;
+    const lastSlotSceneId = lastSlotCombatant.sceneId;
+    const lastSlotTokenId = lastSlotCombatant.tokenId;
+    const lastSlotName = lastSlotCombatant.name;
+    let lastSlotActorClaimedRemovedCombatant;
+
+    // prevent constant re-rendering of the tracker
+    this.debounceRender();
+    // prevent an infinite loop as we delete actors
+    Hooks.off("preDeleteCombatant", CONFIG.FFG.preCombatDelete);
+
+    // Step 3 - Check if the results of steps 1 and 2 are the same or not. if they are different, proceed to step 4a. otherwise, go to 4b
+    if (removedCombatantId !== lastSlotCombatantId) {
+      // Step 4a - Locate, record, and remove any claims on the slot of the actor being removed
+      let removedClaimantId = this.getSlotClaims(round, removedCombatantId);
+      // we should only reclaim the slot if the claimant is not the one being removed
+      const removedClaimantIsRemovedCombatant = removedClaimantId === removedCombatantId;
+      if (removedClaimantId) {
+        lastSlotActorClaimedRemovedCombatant = lastSlotCombatantId === removedClaimantId;
+        // revoke the claim on the removedCombatant slot
+        await this.unclaimSlot(round, removedCombatantId);
+      }
+
+      // Step 5 - Locate, record, and remove any claims on the last slot
+      const lastClaimantId = this.getSlotClaims(round, lastSlotCombatantId);
+      const lastClaimantIsRemovedCombatant = lastClaimantId === removedCombatantId;
+      if (lastClaimantId) {
+        // revoke the claim on the removedCombatant slot
+        await this.unclaimSlot(round, lastSlotCombatantId);
+      }
+
+      // Step 6 - Delete the actor being removed from the combat
+      await this.combatants.get(removedCombatantId).delete();
+
+      // Step 7 - Add a new slot with the last slot data (except Initiative, which is copied from the slot being removed)
+      const removedCombatantReplacementId = await this.addIDedExtraSlot(
+          removedDisposition,
+          removedInitiative,
+          lastSlotActorId,
+          lastSlotTokenId,
+          lastSlotSceneId,
+          lastSlotName,
+      );
+
+      // Step 8 - Delete the last slot
+      await this.combatants.get(lastSlotCombatantId).delete();
+
+      // Step 9 - Re-claim slots as needed
+      if (removedClaimantId && !removedClaimantIsRemovedCombatant) {
+        if (lastSlotActorClaimedRemovedCombatant) {
+          // the last actor had the removed slot claimed
+          await this.claimSlot(round, removedCombatantReplacementId, removedCombatantReplacementId);
+        } else {
+          // a different actor had the removed slot claimed
+          await this.claimSlot(round, removedCombatantReplacementId, removedClaimantId);
+        }
+      } else if (lastClaimantId && !lastClaimantIsRemovedCombatant) {
+        await this.claimSlot(round, removedCombatantReplacementId, removedCombatantReplacementId);
+      }
+    } else {
+      // Step 4b - Delete the actor being removed; no further steps are needed
+      await this.combatants.get(removedCombatantId).delete();
+    }
+    // re-enable the hooks we disabled
+    CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    this.setupTurns();
   }
 
   /**
@@ -692,9 +919,6 @@ export class CombatTrackerFFG extends CombatTracker {
       const aliveCount = this._getCombatantStateCount(combat, disposition);
       let unused = false;
       turnTracker[disposition]++;
-      if (turnTracker[disposition] > aliveCount) {
-        unused = true;
-      }
 
       // we do not care about the defeated status since defeated units get their slot marked unused
       turn.css = turn.css.replace('defeated', '');
