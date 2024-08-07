@@ -694,6 +694,7 @@
   "SWFFG.Actors.Sheets.Purchase.SkillRank.ConfirmTitle": "Purchase Skill Rank",
   "SWFFG.Actors.Sheets.Purchase.SkillRank.Text": "Spend {cost} XP to purchase a rank in {skill}?",
   "SWFFG.Actors.Sheets.Purchase.Talent.ContextMenuText": "Purchase Talent",
+  "SWFFG.Actors.Sheets.Purchase.Talent.WorldItemsGroup": "World",
   "SWFFG.Actors.Sheets.Purchase.Talent.ConfirmTitle": "Purchase Talent",
   "SWFFG.Actors.Sheets.Purchase.Talent.ConfirmText": "Spend {cost} XP to purchase {talent}?",
   "SWFFG.Actors.Sheets.Purchase.FP.ContextMenuText": "Purchase Upgrade",
