@@ -192,6 +192,23 @@ Hooks.once("init", async function () {
   }
 
   /**
+   * Register action to take when a user removes a combatant from combat
+   */
+  game.settings.register("starwarsffg", "removeCombatantAction", {
+    name: game.i18n.localize("SWFFG.Settings.RemoveCombatantAction.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.RemoveCombatantAction.Hint"),
+    scope: "world",
+    config: true,
+    default: "combatant_only",
+    type: String,
+    choices: {
+      combatant_only: "Combatant Only",
+      last_slot: "Last Slot",
+      prompt: "Prompt",
+    },
+  });
+
+  /**
    * Register the max value for characteristics and skills
    */
   game.settings.register("starwarsffg", "maxAttribute", {
