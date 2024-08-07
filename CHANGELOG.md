@@ -2,8 +2,9 @@
 * Features:
   * Updated "item cards" to match the Mandar theme
     * This change includes many minor improvements to the cards, such as showing damage on weapons and purchased talents on specializations
+  * The action to take when removing a combatant from combat is now configurable. This is in place of the previously-confusing (and quite annoying) behavior where you had to claim a slot in order to remove a combatant
 * Fixes:
-  * TBD, but sure to come :)
+  * Removed "unused" slot checking (on combatant defeat) as they would sometimes lead to actors being unable to act
 
 `1.902`
 * Features:
