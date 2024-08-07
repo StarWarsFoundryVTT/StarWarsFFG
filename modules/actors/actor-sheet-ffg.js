@@ -2063,8 +2063,11 @@ export class ActorSheetFFG extends ActorSheet {
 
   _buyCharacteristicRank(characteristic) {
     const characteristicValue = this.actor.system.characteristics[characteristic].value;
+    // this is the currently bought ranks in the characteristic
+    const characteristicCurrentRank = this.actor.system.attributes[characteristic].value;
     // this is the value without items that modify it
-    const characteristicCostValue = this.actor.system.attributes[characteristic].value;
+    const characteristicCostValue = ModifierHelpers.getBaseValue(this.actor.items, characteristic, "Characteristic") + characteristicCurrentRank;
+        
     if (characteristicValue >= game.settings.get("starwarsffg", "maxAttribute")) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Characteristic.Max"));
       return;
@@ -2092,7 +2095,7 @@ export class ActorSheetFFG extends ActorSheet {
                   },
                   attributes: {
                     [characteristic]: {
-                      value: characteristicCostValue + 1,
+                      value: characteristicCurrentRank + 1,
                     },
                   },
                 }

@@ -4,6 +4,7 @@
     * This change includes many minor improvements to the cards, such as showing damage on weapons and purchased talents on specializations
   * The action to take when removing a combatant from combat is now configurable. This is in place of the previously-confusing (and quite annoying) behavior where you had to claim a slot in order to remove a combatant
 * Fixes:
+  * Includes species characteristics bonus when calculating upgrade cost ([#1638](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1638))
   * Specializations: Talents are now correctly looked up in compendium
   * Removed "unused" slot checking (on combatant defeat) as they would sometimes lead to actors being unable to act
 
