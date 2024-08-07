@@ -4,6 +4,23 @@ import PopoutEditor from "./popout-editor.js";
 /**
  * Extend the base Combat entity.
  * @extends {Combat}
+ * Note: slot claiming is in the following format:
+ * {
+ *   <round>: {
+ *     <turnCombatantId>:<claimantCombatantId>,
+ *   }
+ * }
+ *
+ * for example, if we had two combatants:
+ * combatant "hello" - ID 111
+ * combatant "world" - ID 222
+ * and "hello" claimed "world's" slot for round one, the structure would look like this:
+ * {
+ *   1: {
+ *     222: 111,
+ *   }
+ * }
+ * and the UI would show "hello" as the sole claimant for this round (the other slot would say "claim this slot")
  */
 export class CombatFFG extends Combat {
   /**
@@ -35,19 +52,17 @@ export class CombatFFG extends Combat {
    * Adds a slot to the combat with a specific combatant ID
    * @param disposition - disposition to create the combatant with
    * @param initiative - initiative to create the combatant with
-   * @param combatantId - the ID to assign to the combatant
    * @param actorId - the ID of the existing actor to assign to the combatant
    * @param tokenId - the ID of the existing token to assign to the combatant
    * @param sceneId - the ID of the existing scene to assign to the combatant
+   * @param claimantName - the name of the claimant to assign to the combatant
    * @returns {Promise<void>}
    */
-  async addIDedExtraSlot(disposition, initiative, combatantId, actorId, tokenId, sceneId) {
+  async addIDedExtraSlot(disposition, initiative, actorId, tokenId, sceneId, claimantName) {
     const extraSlot = await new CombatantFFG(
 {
-        name: "__GENERIC_SLOT__",
+        name: claimantName,
         disposition: disposition,
-        _id: combatantId,
-        id: combatantId,
         actorId: actorId,
         tokenId: tokenId,
         sceneId: sceneId,
@@ -475,76 +490,108 @@ export class CombatFFG extends Combat {
   }
 
   async removeLastSlot(combatantId) {
-    console.log("remove last slot")
+    CONFIG.logger.debug("Removing last slot of combat...");
     const round = this.round;
-    // locate the initiative slot that the combatant actually holds
-    const removeCombatant = this.combatants.get(combatantId);
-    let removeId = removeCombatant.id;
-    const removeDisposition = removeCombatant.disposition;
-    const removeInitiative = removeCombatant.initiative;
-    const removeActorId = removeCombatant.actorId;
-    const removeSceneId = removeCombatant.sceneId;
-    const removeTokenId = removeCombatant.tokenId;
-    console.log("to remove stuff:")
-    console.log(removeCombatant)
-    console.log(removeDisposition)
-    console.log(removeInitiative)
-    console.log(removeActorId)
-    console.log(removeSceneId)
-    console.log(removeTokenId)
 
-    // locate the last slot for this disposition
+    /*
+      Steps
+        1 - Gather information about the actor being removed
+        2 - Gather information about the last slot (of the same disposition)
+        3 - Check if the results of steps 1 and 2 are the same or not. if they are different, proceed to step 4a. otherwise, go to 4b
+        4a - Locate, record, and remove any claims on the slot of the actor being removed
+        5 - Locate, record, and remove any claims on the last slot
+        6 - Delete the actor being removed from the combat
+        7 - Add a new slot with the last slot data (except Initiative, which is copied from the slot being removed)
+        8 - Delete the last slot
+        9 - Re-claim slots as needed
+        4b - Delete the actor being removed; no further steps are needed
+    */
+
+    // Step 1 - Gather information about the actor being removed
+    const removedCombatant = this.combatants.get(combatantId);
+    let removedCombatantId = removedCombatant.id;
+    const removedDisposition = removedCombatant.disposition;
+    const removedInitiative = removedCombatant.initiative;
+
+    // Step 2 - Gather information about the last slot (of the same disposition)
     let lowestInitiativeValue;
     let lastSlotId;
     for (const combatant of this.combatants) {
-      if (combatant.disposition === removeDisposition) {
+      if (combatant.disposition === removedDisposition) {
         if (!lowestInitiativeValue || combatant.initiative < lowestInitiativeValue) {
           lowestInitiativeValue = combatant.initiative;
           lastSlotId = combatant.id;
         }
       }
     }
-    const lastCombatant = this.combatants.get(lastSlotId);
-    const lastDisposition = lastCombatant.disposition;
-    const lastInitiative = lastCombatant.initiative;
-    const lastActorId = lastCombatant.actorId;
-    const lastSceneId = lastCombatant.sceneId;
-    const lastTokenId = lastCombatant.tokenId;
-    console.log("last stuff:")
-    console.log(lastCombatant)
-    console.log(lastDisposition)
-    console.log(lastInitiative)
-    console.log(lastActorId)
-    console.log(lastSceneId)
-    console.log(lastTokenId)
+    const lastSlotCombatant = this.combatants.get(lastSlotId);
+    const lastSlotCombatantId = lastSlotId;
+    const lastSlotActorId = lastSlotCombatant.actorId;
+    const lastSlotSceneId = lastSlotCombatant.sceneId;
+    const lastSlotTokenId = lastSlotCombatant.tokenId;
+    const lastSlotName = lastSlotCombatant.name;
+    let lastSlotActorClaimedRemovedCombatant;
 
     // prevent constant re-rendering of the tracker
     this.debounceRender();
+    // prevent an infinite loop as we delete actors
     Hooks.off("preDeleteCombatant", CONFIG.FFG.preCombatDelete);
 
-    // check if they are different
-    if (removeId !== lastCombatant.id) {
-      console.log("IDs are different, cleaning up")
-      // TODO: check flags
+    // Step 3 - Check if the results of steps 1 and 2 are the same or not. if they are different, proceed to step 4a. otherwise, go to 4b
+    if (removedCombatantId !== lastSlotCombatantId) {
+      // Step 4a - Locate, record, and remove any claims on the slot of the actor being removed
+      let removedClaimantId = this.getSlotClaims(round, removedCombatantId);
+      // we should only reclaim the slot if the claimant is not the one being removed
+      const removedClaimantIsRemovedCombatant = removedClaimantId === removedCombatantId;
+      if (removedClaimantId) {
+        lastSlotActorClaimedRemovedCombatant = lastSlotCombatantId === removedClaimantId;
+        // revoke the claim on the removedCombatant slot
+        await this.unclaimSlot(round, removedCombatantId);
+      }
 
-      // copy last slot combatant data to our slot
-      console.log(`deleting ${removeId}`)
-      await this.combatants.get(removeId).delete();
-      console.log(`creating new slot with ${removeDisposition}, ${removeInitiative}, ${lastCombatant.id}, ${lastActorId}, ${lastTokenId}, ${lastSceneId}`)
-      await this.addIDedExtraSlot(removeDisposition, removeInitiative, lastCombatant.id, lastActorId, lastTokenId, lastSceneId);
+      // Step 5 - Locate, record, and remove any claims on the last slot
+      const lastClaimantId = this.getSlotClaims(round, lastSlotCombatantId);
+      const lastClaimantIsRemovedCombatant = lastClaimantId === removedCombatantId;
+      if (lastClaimantId) {
+        // revoke the claim on the removedCombatant slot
+        await this.unclaimSlot(round, lastSlotCombatantId);
+      }
 
-      // copy our combatant data to last slot
-      console.log(`deleting ${lastCombatant.id}`)
-      await this.combatants.get(lastCombatant.id).delete();
-      console.log(`creating new slot with ${removeDisposition}, ${lastInitiative}, ${removeId}, ${removeActorId}, ${removeTokenId}, ${removeSceneId}`)
-      removeId = await this.addIDedExtraSlot(removeDisposition, lastInitiative, removeId, removeActorId, removeTokenId, removeSceneId);
+      // Step 6 - Delete the actor being removed from the combat
+      await this.combatants.get(removedCombatantId).delete();
+
+      // Step 7 - Add a new slot with the last slot data (except Initiative, which is copied from the slot being removed)
+      const removedCombatantReplacementId = await this.addIDedExtraSlot(
+          removedDisposition,
+          removedInitiative,
+          lastSlotActorId,
+          lastSlotTokenId,
+          lastSlotSceneId,
+          lastSlotName,
+      );
+
+      // Step 8 - Delete the last slot
+      await this.combatants.get(lastSlotCombatantId).delete();
+
+      // Step 9 - Re-claim slots as needed
+      if (removedClaimantId && !removedClaimantIsRemovedCombatant) {
+        if (lastSlotActorClaimedRemovedCombatant) {
+          // the last actor had the removed slot claimed
+          await this.claimSlot(round, removedCombatantReplacementId, removedCombatantReplacementId);
+        } else {
+          // a different actor had the removed slot claimed
+          await this.claimSlot(round, removedCombatantReplacementId, removedClaimantId);
+        }
+      } else if (lastClaimantId && !lastClaimantIsRemovedCombatant) {
+        await this.claimSlot(round, removedCombatantReplacementId, removedCombatantReplacementId);
+      }
+    } else {
+      // Step 4b - Delete the actor being removed; no further steps are needed
+      await this.combatants.get(removedCombatantId).delete();
     }
-
-    // delete the last slot
-    console.log(`once again deleting the last slot (${removeId})`)
-    await this.combatants.get(removeId).delete();
-    console.log("re-enabling hook")
+    // re-enable the hooks we disabled
     CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    this.setupTurns();
   }
 
   /**
