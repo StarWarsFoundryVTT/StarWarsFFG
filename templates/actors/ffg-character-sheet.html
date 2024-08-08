@@ -29,7 +29,8 @@
                     <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
                 </td>
-                <td style="{{#if limited}}display:none;{{/if}}" class="ffg-purchase" data-buy-action="signatureability">
+                <td style="{{#if limited}}display:none;{{/if}}">
+                  <i class="fas fa-dollar ffg-purchase" data-buy-action="signatureability" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SignatureAbility"}}"></i>
                   {{localize "SWFFG.SignatureAbilities"}}:
                 </td>
                 <td style="{{#if limited}}display:none;{{/if}}">
@@ -53,8 +54,9 @@
                   <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
                 </td>
-                <td class="ffg-purchase" data-buy-action="forcepower">
+                <td>
                   {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
+                  <i class="fas fa-dollar ffg-purchase" data-buy-action="forcepower" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.ForcePower"}}"></i>
                   {{localize "SWFFG.ForcePowers"}}:
                   {{/if}}
                 </td>
@@ -71,7 +73,8 @@
                 </td>
               </tr>
               <tr style="{{#if limited}}display:none;{{/if}}">
-                <td class="ffg-purchase" data-buy-action="specialization">
+                <td>
+                  <i class="fas fa-dollar ffg-purchase" data-buy-action="specialization" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.Specialization" }}"></i>
                   {{localize "SWFFG.Specializations"}}:
                 </td>
                 <td>
