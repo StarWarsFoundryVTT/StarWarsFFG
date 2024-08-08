@@ -6,6 +6,43 @@ import ModifierHelpers from "../helpers/modifiers.js";
  * @extends {Actor}
  */
 export class ActorFFG extends Actor {
+  
+  static async create(data, options) {
+    const createData = data;
+    if (!typeof data.system === "undefined") {
+      return super.create(createData, options);
+    }
+    switch (createData.type) {
+      case "minion":
+        createData.prototypeToken = {
+          actorLink: false,
+          disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+          appendNumber: true,
+        };
+        break;
+      case "character":
+        createData.prototypeToken = {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+        };
+        break;
+      case "rival":
+        createData.prototypeToken = {
+          actorLink: false,
+          disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+          prependAdjective: true,
+        };
+        break;
+      case "nemesis":
+        createData.prototypeToken = {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.NEUTRAL,
+        };
+        break;
+    }
+    return super.create(createData, options);
+  }
+
   /**
    * Augment the basic actor data with additional dynamic data.
    */
