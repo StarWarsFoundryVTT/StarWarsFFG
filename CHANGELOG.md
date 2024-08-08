@@ -7,6 +7,7 @@
   * XP spending now consistently uses a dollar sign to trigger spending instead of the various methods it previously used ([#1629](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1629)) 
   * Settings have been refactored to be more organized and easier to navigate ([#1639](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1639))
   * Destiny point flipping is now themed ([#1658](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1658)
+  * Set default token settings when creating new actor ([#1652](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1652)))
 * Fixes:
   * Includes species characteristics bonus when calculating characteristic upgrade cost ([#1638](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1638))
   * Specializations: Talents are now correctly looked up in compendium ([#1642](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1642)))

@@ -761,5 +761,7 @@
   "SWFFG.DragDrop.Title": "Purchase item, or grant for 0 xp?",
   "SWFFG.DragDrop.PurchaseItem": "Purchase",
   "SWFFG.DragDrop.GrantItem": "Grant",
-  "SWFFG.DragDrop.XPLog": "drag-and-drop"
+  "SWFFG.DragDrop.XPLog": "drag-and-drop",
+  "SWFFG.Settings.actor.RivalTokenPrepend.Name": "Prepend Adjective to rival tokens",
+  "SWFFG.Settings.actor.RivalTokenPrepend.Hint": "Unlinked rival's token name will be prepended with an Adjective by default. Example: \"Angry\""
 }

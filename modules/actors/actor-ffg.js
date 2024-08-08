@@ -6,6 +6,45 @@ import ModifierHelpers from "../helpers/modifiers.js";
  * @extends {Actor}
  */
 export class ActorFFG extends Actor {
+  
+  static async create(data, options) {
+    const createData = data;
+
+    // Only apply defaults for newly created actors
+    if (!typeof data.system === "undefined") {
+      return super.create(createData, options);
+    }
+    
+    switch (createData.type) {
+      case "minion":
+        createData.prototypeToken = {
+          actorLink: false,
+          disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+        };
+        break;
+      case "character":
+        createData.prototypeToken = {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+        };
+        break;
+      case "rival":
+        createData.prototypeToken = {
+          actorLink: false,
+          disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+          prependAdjective: game.settings.get("starwarsffg", "RivalTokenPrepend"),
+        };
+        break;
+      case "nemesis":
+        createData.prototypeToken = {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+        };
+        break;
+    }
+    return super.create(createData, options);
+  }
+
   /**
    * Augment the basic actor data with additional dynamic data.
    */
