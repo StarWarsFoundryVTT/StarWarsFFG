@@ -83,11 +83,86 @@ export class ActorSheetFFG extends ActorSheet {
         await xpLogEarn(this.actor, startingXP, curAvailable + startingXP, curTotal + startingXP, game.i18n.format("SWFFG.GrantXPSpecies", {species: itemData.name}) );
       }
 
+      if (this.actor.type === "character" && ["talent", "specialization", "signatureability", "forcepower"].includes(itemData.type)) {
+        const cost = await this.calcPurchasePrice(itemData);
+        const availableXP = this.actor.system.experience.available;
+        if (cost > 0 && cost < availableXP) {
+          new Dialog(
+          {
+            title: game.i18n.localize("SWFFG.DragDrop.Title"),
+            buttons: {
+              purchase: {
+                icon: '<i class="fas fa-hourglass"></i>',
+                label: game.i18n.localize("SWFFG.DragDrop.PurchaseItem"),
+                callback: async (that) => {
+                  if (cost > 0) {
+                    await this.object.update({
+                      system: {
+                        experience: {
+                          available: availableXP - cost,
+                        }
+                      }
+                    });
+                    await xpLogSpend(
+                        this.actor, `${game.i18n.localize("SWFFG.DragDrop.XPLog")} ${itemData.type} ${itemData.name}`,
+                        cost,
+                        this.actor.system.experience.available,
+                        this.actor.system.experience.total
+                    );
+                  }
+                },
+              },
+              grant: {
+                icon: '<i class="fas fa-recycle"></i>',
+                label: game.i18n.localize("SWFFG.DragDrop.GrantItem"),
+              },
+            },
+          },
+          {
+            classes: ["dialog", "starwarsffg"],
+          }
+        ).render(true);
+        }
+      }
+
       // Create the owned item
       return this._onDropItemCreate(itemData);
     } else {
       return super._onDropItem(event, data);
     }
+  }
+
+  async calcPurchasePrice(itemData) {
+    let cost = 0;
+    if (itemData.type === "specialization") {
+      // check if the specialization is in career
+      const career = this.actor.items.find(i => i.type === "career");
+      if (career) {
+        const inCareerSpecializations = Object.values(career?.system?.specializations) || [];
+        let inCareer = false;
+        for (const careerSpecialization of inCareerSpecializations) {
+          if (careerSpecialization.name === itemData.name) {
+            inCareer = true;
+            break;
+          }
+        }
+        const specializationCount = (this.actor.items.filter(i => i.type === "specialization") || []).length;
+        cost = (specializationCount + 1) * 10;
+        if (!inCareer) {
+          cost += 10;
+        }
+        return cost;
+      } else {
+        return -1;
+      }
+    } else if (itemData.type === "talent") {
+      return -1;
+    } else if (itemData.type === "signatureability") {
+      return itemData.system.base_cost;
+    } else if (itemData.type === "forcepower") {
+      return itemData.system.base_cost;
+    }
+    return -1;
   }
 
   /* -------------------------------------------- */
@@ -1990,7 +2065,7 @@ export class ActorSheetFFG extends ActorSheet {
       }
       worldItemsPack = sortDataBy(worldItemsPack, "name");
       selectableItems.push({pack: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.WorldItemsGroup"), items: worldItemsPack});
-      
+
       for (const source of sources) {
         const pack = game.packs.get(source);
         if (!pack) {
@@ -2080,7 +2155,7 @@ export class ActorSheetFFG extends ActorSheet {
     const characteristicCurrentRank = this.actor.system.attributes[characteristic].value;
     // this is the value without items that modify it
     const characteristicCostValue = ModifierHelpers.getBaseValue(this.actor.items, characteristic, "Characteristic") + characteristicCurrentRank;
-        
+
     if (characteristicValue >= game.settings.get("starwarsffg", "maxAttribute")) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Characteristic.Max"));
       return;
