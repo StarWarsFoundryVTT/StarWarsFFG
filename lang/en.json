@@ -723,5 +723,9 @@
   "SWFFG.Settings.Purchase.SignatureAbility.Name": "Signature Abilities Compendiums",
   "SWFFG.Settings.Purchase.SignatureAbility.Hint": "Comma seperated compendiums to search for buying Signature Abilities (no spaces)",
   "SWFFG.Settings.Purchase.Talent.Name": "Talent Compendiums",
-  "SWFFG.Settings.Purchase.Talent.Hint": "Comma seperated compendiums to search for buying Talents (no spaces)"
+  "SWFFG.Settings.Purchase.Talent.Hint": "Comma seperated compendiums to search for buying Talents (no spaces)",
+  "SWFFG.DragDrop.Title": "Purchase item, or grant for 0 xp?",
+  "SWFFG.DragDrop.PurchaseItem": "Purchase",
+  "SWFFG.DragDrop.GrantItem": "Grant",
+  "SWFFG.DragDrop.XPLog": "drag-and-drop"
 }
