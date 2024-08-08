@@ -103,6 +103,7 @@ export class ItemSheetFFG extends ItemSheet {
       case "shipweapon":
         this.position.width = 550;
         this.position.height = 750;
+        data.data.enrichedSpecial = await PopoutEditor.renderDiceImages(data?.data?.special?.value, this.actor ? this.actor : {});
         break;
       case "itemattachment":
         this.position.width = 500;
