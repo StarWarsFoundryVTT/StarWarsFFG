@@ -85,7 +85,7 @@
             {{#if (or (eq item.flags.starwarsffg.config.enablePrice undefined) (eq item.flags.starwarsffg.config.enablePrice true) )}}
               {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
             {{/if}}
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.special.value )}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.enrichedSpecial )}}
           </div>
           <div class="flex-group-center weapon-values hidden-content">
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
