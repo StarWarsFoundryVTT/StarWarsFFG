@@ -73,9 +73,10 @@ export default class Specializations {
                   }
 
                   if (talentItem.compendium) {
-                    rowTalent.pack = `${talentItem.compendium.metadata.package}.${talentItem.compendium.metadata.name}`;
+                    rowTalent.pack = `${talentItem.compendium.metadata.packageName}.${talentItem.compendium.metadata.name}`;
+                  } else {
+                    CONFIG.logger.warn(`Unable to assign pack to ${rowTalent.name} Talent in ${data.name} specialization.`); 
                   }
-
                   const talentKey = `talent${i * 4 + index}`;
                   data.system.talents[talentKey] = rowTalent;
                 } else {
