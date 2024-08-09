@@ -706,6 +706,8 @@
   "SWFFG.Actors.Sheets.Purchase.SA.ConfirmText": "Spend {cost} XP to purchase {upgrade}?",
   "SWFFG.Actors.Sheets.Purchase.SA.NotSet": "Please set career signature abilities in the career data tab on your career",
   "SWFFG.Actors.Sheets.Purchase.SA.NoMatch": "You must purchase the required specialization upgrades to acquire a signature ability",
+  "SWFFG.Actors.Sheets.Purchase.Specialization.ConfirmTitle": "Purchase Upgrade",
+  "SWFFG.Actors.Sheets.Purchase.Specialization.ConfirmText": "Spend {cost} XP to purchase {upgrade}?",
   "SWFFG.Actors.Sheets.Purchase.Talent.New.ContextMenuText": "Purchase Specialization",
   "SWFFG.Actors.Sheets.Purchase.Career.Specialization.DropHint": "(drop specializations here to allow players to purchase them)",
   "SWFFG.Actors.Sheets.Purchase.Career.Specializations.Header": "Specializations in this Career",
