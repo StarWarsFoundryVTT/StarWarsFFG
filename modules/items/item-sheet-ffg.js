@@ -97,6 +97,7 @@ export class ItemSheetFFG extends ItemSheet {
     if (this.object.flags?.starwarsffg?.ffgIsOwned || this.object.flags?.starwarsffg?.ffgIsTemp) {
       data.isTemp = true;
     }
+    data.isOwned = this.object.flags?.starwarsffg?.ffgIsOwned;
 
     switch (this.object.type) {
       case "weapon":
@@ -281,38 +282,9 @@ export class ItemSheetFFG extends ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
-
-    // Prevent "purchase" context menu options when editing a sheet not attached to a character.
-    const isOwned = this.object?.flags?.starwarsffg?.ffgIsOwned;
-    if (isOwned) {
-      new ContextMenu(html, ".talent-upgrade.specialization-talent", [
-        {
-          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.ContextMenuText"),
-          icon: '<i class="fas fa-dollar"></i>',
-          callback: (li) => {
-            this._buyTalent(li);
-          },
-        },
-      ]);
-      new ContextMenu(this.element, ".talent-upgrade.force-power", [
-        {
-          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.FP.ContextMenuText"),
-          icon: '<i class="fas fa-dollar"></i>',
-          callback: (li) => {
-            this._buyForcePower(li);
-          },
-        },
-      ]);
-      new ContextMenu(this.element, ".talent-upgrade.signature-ability", [
-        {
-          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.ContextMenuText"),
-          icon: '<i class="fas fa-dollar"></i>',
-          callback: (li) => {
-            this._buySignatureAbility(li);
-          },
-        },
-      ]);
-    }
+    html.find(".ffg-purchase").click(async (ev) => {
+      await this._handleItemBuy(ev)
+    });
 
     // register sheet options
     if (["gear", "weapon", "armour"].includes(this.object.type)) {
@@ -820,7 +792,7 @@ export class ItemSheetFFG extends ItemSheet {
     });
   }
 
-  async _buyHandleClick(li, desired_item_type) {
+  async _buyHandleClick(cost, desired_item_type) {
     const owned = this.object.flags?.starwarsffg?.ffgIsOwned;
     const type = this.object.type;
     if (type !== desired_item_type || !owned) {
@@ -847,7 +819,6 @@ export class ItemSheetFFG extends ItemSheet {
     }
     const availableXP = owner.system.experience.available;
     const totalXP = owner.system.experience.total;
-    const cost = $(li).data("cost");
     if (cost > availableXP) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       throw new Error("Not enough XP");
@@ -906,38 +877,51 @@ export class ItemSheetFFG extends ItemSheet {
     ).render(true);
   }
 
-  async _buyForcePower(li) {
+  async _handleItemBuy(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = $(event.target).data("buy-action");
+    if (action === "forcepower-upgrade") {
+      await this._buyForcePowerUpgrade(event);
+    } else if (action === "signatureability-upgrade") {
+      await this._buySignatureAbilityUpgrade(event);
+    } else if (action === "specialization-upgrade") {
+      await this._buySpecializationUpgrade(event);
+    }
+  }
+
+  async _buyForcePowerUpgrade(event) {
+    const element = $(event.target);
+    const cost = element.data("cost");
+    const baseName = element.data("base-item-name");
+    const upgradeName = element.data("upgrade-name");
+    const upgradeId = element.data("upgrade-id");
     let owner;
-    let cost;
     let availableXP;
     let totalXP;
     try {
-      const basic_data = await this._buyHandleClick(li, "forcepower");
+      const basic_data = await this._buyHandleClick(cost, "forcepower");
       owner = basic_data.owner;
-      cost = basic_data.cost;
       availableXP = basic_data.availableXP;
       totalXP = basic_data.totalXP;
     } catch (e) {
       return;
     }
-    const baseName = $(li).data("base-item-name");
-    const upgrade = $(".talent-name", li).data("name");
     const dialog = new Dialog(
       {
         title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.FP.ConfirmTitle"),
-        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.FP.ConfirmText", {cost: cost, upgrade: upgrade}),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.FP.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
             icon: '<i class="fas fa-dollar"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
-              const talentId = $(li).attr("id");
-              const input = $(`[name="data.upgrades.${talentId}.islearned"]`, this.element)[0];
+              const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
               input.checked = true;
               await this.object.sheet.submit({preventClose: true});
               owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `force power ${baseName} upgrade ${upgrade}`, cost, availableXP - cost, totalXP);
+              await xpLogSpend(owner, `force power ${baseName} upgrade ${upgradeName}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {
@@ -952,38 +936,84 @@ export class ItemSheetFFG extends ItemSheet {
     ).render(true);
   }
 
-  async _buySignatureAbility(li) {
+  async _buySignatureAbilityUpgrade(event) {
+    const element = $(event.target);
+    const cost = element.data("cost");
+    const baseName = element.data("base-item-name");
+    const upgradeName = element.data("upgrade-name");
+    const upgradeId = element.data("upgrade-id");
     let owner;
-    let cost;
     let availableXP;
     let totalXP;
     try {
-      const basic_data = await this._buyHandleClick(li, "signatureability");
+      const basic_data = await this._buyHandleClick(cost, "signatureability");
       owner = basic_data.owner;
-      cost = basic_data.cost;
       availableXP = basic_data.availableXP;
       totalXP = basic_data.totalXP;
     } catch (e) {
       return;
     }
-    const baseName = $(li).data("base-item-name");
-    const upgrade = $(".talent-name", li).data("name");
     const dialog = new Dialog(
       {
         title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SA.ConfirmTitle"),
-        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SA.ConfirmText", {cost: cost, upgrade: upgrade}),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SA.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
             icon: '<i class="fas fa-dollar"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
-              const talentId = $(li).attr("id");
-              const input = $(`[name="data.upgrades.${talentId}.islearned"]`, this.element)[0];
+              const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
               input.checked = true;
               await this.object.sheet.submit({preventClose: true});
               owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgrade}`, cost, availableXP - cost, totalXP);
+              await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgradeName}`, cost, availableXP - cost, totalXP);
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-cancel"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+          },
+        },
+      },
+      {
+        classes: ["dialog", "starwarsffg"],
+      }
+    ).render(true);
+  }
+
+  async _buySpecializationUpgrade(event) {
+    const element = $(event.target);
+    const cost = element.data("cost");
+    const baseName = element.data("base-item-name");
+    const upgradeName = element.data("upgrade-name");
+    const upgradeId = element.data("upgrade-id");
+    let owner;
+    let availableXP;
+    let totalXP;
+    try {
+      const basic_data = await this._buyHandleClick(cost, "specialization");
+      owner = basic_data.owner;
+      availableXP = basic_data.availableXP;
+      totalXP = basic_data.totalXP;
+    } catch (e) {
+      return;
+    }
+    const dialog = new Dialog(
+      {
+        title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Specialization.ConfirmTitle"),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Specialization.ConfirmText", {cost: cost, upgrade: upgradeName}),
+        buttons: {
+          done: {
+            icon: '<i class="fas fa-dollar"></i>',
+            label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
+            callback: async (that) => {
+              // update the form because the fields are read when an update is performed
+              const input = $(`[name="data.talents.${upgradeId}.islearned"]`, this.element)[0];
+              input.checked = true;
+              await this.object.sheet.submit({preventClose: true});
+              owner.update({system: {experience: {available: availableXP - cost}}});
+              await xpLogSpend(owner, `specialization ${baseName} upgrade ${upgradeName}`, cost, availableXP - cost, totalXP);
             },
           },
           cancel: {

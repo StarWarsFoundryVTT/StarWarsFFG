@@ -51,6 +51,11 @@
                 </div>
                 <div class="talent-name {{#if (ne talent.name '')}}talent-modifiers{{/if}}" data-name="{{talent.name}}">
                   {{{talent.name}}}
+                  <a class="talent-action" data-itemid="{{key}}">
+                    {{#if ../item.isOwned }}
+                    <i class="fas fa-dollar ffg-purchase" data-buy-action="specialization-upgrade" data-cost="{{talent.cost}}" data-base-item-name="{{../item.name}}" data-upgrade-name="{{ talent.name }}" data-upgrade-id="{{ key }}"></i>
+                    {{/if}}
+                  </a>
                 </div>
               </div>
               <div class="talent-body">

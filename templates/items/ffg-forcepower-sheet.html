@@ -51,6 +51,11 @@
         <div class="talent-cost">{{ localize "SWFFG.Cost"}}<input name="data.upgrades.{{key}}.cost" type="text" value="{{upgrade.cost}}" data-dtype="String" /></div>
         <div class="talent-modifiers">
           <a class="talent-action" data-itemid="{{key}}">
+            {{#if ../item.isOwned }}
+            <i class="fas fa-dollar ffg-purchase" data-buy-action="forcepower-upgrade" data-cost="{{upgrade.cost}}" data-base-item-name="{{../item.name}}" data-upgrade-name="{{ upgrade.name }}" data-upgrade-id="{{ key }}"></i>
+            {{/if}}
+          </a>
+          <a class="talent-action" data-itemid="{{key}}">
             <i class="fas fa-cog"></i>
           </a>
         </div>
