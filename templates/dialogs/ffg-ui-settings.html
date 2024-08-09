@@ -6,10 +6,13 @@
     <input type="checkbox" name="{{this.namespace}}.{{this.key}}" data-dtype="Boolean" {{checked this.value}} />
 
     {{else if this.isSelect}}
-    <select name="{{this.namespace}}.{{this.key}}">
-      {{#select this.value}} {{#each this.choices as |name k|}}
-      <option value="{{k}}">{{localize name}}</option>
-      {{/each}} {{/select}}
+    <select name="{{ this.namespace }}.{{ this.key }}">
+      {{ selectOptions this.choices selected=this.value }}
+    </select>
+
+    {{else if this.choices}}
+    <select name="{{ this.namespace }}.{{ this.key }}">
+      {{ selectOptions this.choices selected=this.value }}
     </select>
 
     {{else if this.isRange}}

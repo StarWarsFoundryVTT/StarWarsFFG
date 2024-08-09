@@ -5,12 +5,14 @@
   * Generic slot combat tracker: The action to take when removing a combatant is now configurable. This is in place of the previously-confusing (and quite annoying) behavior where you had to claim a slot in order to remove a combatant
   * Dragging-and-dropping items on actors now prompts for spending XP to purchase that item ([#1588](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1588))
   * XP spending now consistently uses a dollar sign to trigger spending instead of the various methods it previously used ([#1629](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1629)) 
+  * Settings have been refactored to be more organized and easier to navigate ([#1639](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1639))
 * Fixes:
   * Includes species characteristics bonus when calculating characteristic upgrade cost ([#1638](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1638))
-  * Specializations: Talents are now correctly looked up in compendium
+  * Specializations: Talents are now correctly looked up in compendium ([#1642](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1642)))
   * Generic slot combat tracker: Removed "unused" slot checking (on combatant defeat) as they would sometimes lead to actors being unable to act
   * Weapon `special` text now properly renders dice icons ([#1625](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1625))
   * Species without ability don't cause an error preventing their talents from being loaded anymor ([1641](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1641)))
+  * Specializations: Embedded talents are now correctly linked to their compendium ([#1650](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1650)))
 
 `1.902`
 * Features:

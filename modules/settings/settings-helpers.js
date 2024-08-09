@@ -1,6 +1,12 @@
-import DataImporter from "../importer/data-importer.js";
-import SWAImporter from "../importer/swa-importer.js";
-import UISettings from "./ui-settings.js";
+import {
+  rulesetSettings,
+  uiSettings,
+  combatSettings,
+  actorSettings,
+  xpSpendingSettings,
+  localizationSettings,
+  groupManagerSettings,
+} from "./ui-settings.js";
 
 export default class SettingsHelpers {
   // Initialize System Settings after the Init Hook
@@ -14,12 +20,75 @@ export default class SettingsHelpers {
       type: String,
     });
 
+    game.settings.registerMenu("starwarsffg", "rulesetSettings", {
+      name: game.i18n.localize("SWFFG.Settings.ruleset.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.ruleset.Hint"),
+      label: game.i18n.localize("SWFFG.Settings.ruleset.Label"),
+      icon: "fa-solid fa-scroll",
+      type: rulesetSettings,
+      restricted: true,
+    });
+
+    game.settings.registerMenu("starwarsffg", "uiSettings", {
+      name: game.i18n.localize("SWFFG.Settings.ui.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.ui.Hint"),
+      label: game.i18n.localize("SWFFG.Settings.ui.Label"),
+      icon: "fas fa-palette",
+      type: uiSettings,
+      restricted: true,
+    });
+
+    game.settings.registerMenu("starwarsffg", "combatSettings", {
+      name: game.i18n.localize("SWFFG.Settings.combat.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.combat.Hint"),
+      label: game.i18n.localize("SWFFG.Settings.combat.Label"),
+      icon: "fa-solid fa-swords",
+      type: combatSettings,
+      restricted: true,
+    });
+
+    game.settings.registerMenu("starwarsffg", "actorSettings", {
+      name: game.i18n.localize("SWFFG.Settings.actor.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.actor.Hint"),
+      label: game.i18n.localize("SWFFG.Settings.actor.Label"),
+      icon: "fas fa-user-alt",
+      type: actorSettings,
+      restricted: true,
+    });
+
+    game.settings.registerMenu("starwarsffg", "xpSpendingSettings", {
+      name: game.i18n.localize("SWFFG.Settings.xpSpending.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.xpSpending.Hint"),
+      label: game.i18n.localize("SWFFG.Settings.xpSpending.Label"),
+      icon: "fa-solid fa-treasure-chest",
+      type: xpSpendingSettings,
+      restricted: true,
+    });
+
+    game.settings.registerMenu("starwarsffg", "localizationSettings", {
+      name: game.i18n.localize("SWFFG.Settings.localization.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.localization.Hint"),
+      label: game.i18n.localize("SWFFG.Settings.localization.Label"),
+      icon: "fa-solid fa-font",
+      type: localizationSettings,
+      restricted: true,
+    });
+
+    game.settings.registerMenu("starwarsffg", "groupManagerSettings", {
+      name: game.i18n.localize("SWFFG.Settings.groupManager.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.groupManager.Hint"),
+      label: game.i18n.localize("SWFFG.Settings.groupManager.Label"),
+      icon: "fa-solid fa-user-group",
+      type: groupManagerSettings,
+      restricted: true,
+    });
+
     // Register dice theme setting
     game.settings.register("starwarsffg", "dicetheme", {
       name: game.i18n.localize("SWFFG.SettingsDiceTheme"),
       hint: game.i18n.localize("SWFFG.SettingsDiceThemeHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: "starwars",
       type: String,
       onChange: (rule) => {
@@ -39,7 +108,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.SettingsVehicleRange"),
       hint: game.i18n.localize("SWFFG.SettingsVehicleRangeHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: "starwars",
       type: String,
       onChange: () => {
@@ -56,7 +125,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.EnableSoakCalc"),
       hint: game.i18n.localize("SWFFG.EnableSoakCalcHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: true,
       type: Boolean,
       onChange: this.debouncedReload,
@@ -67,7 +136,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.EnablePrivateTriggers"),
       hint: game.i18n.localize("SWFFG.EnablePrivateTriggersHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: true,
       type: Boolean,
       onChange: this.debouncedReload,
@@ -78,7 +147,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.EnableSortTalentsByActivationGlobal"),
       hint: game.i18n.localize("SWFFG.EnableSortTalentsByActivationHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: false,
       type: Boolean,
       onChange: this.debouncedReload,
@@ -89,7 +158,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.SettingsSkillSorting"),
       hint: game.i18n.localize("SWFFG.SettingsSkillSortingHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: false,
       type: Boolean,
       onChange: this.debouncedReload,
@@ -100,7 +169,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.SettingsPCListMode"),
       hint: game.i18n.localize("SWFFG.SettingsPCListModeHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: "active",
       type: String,
       choices: {
@@ -149,40 +218,6 @@ export default class SettingsHelpers {
       },
     });
 
-    // OggDude Importer Control Menu
-    game.settings.registerMenu("starwarsffg", "odImporter", {
-      name: game.i18n.localize("SWFFG.SettingsOggDudeImporter"),
-      hint: game.i18n.localize("SWFFG.SettingsOggDudeImporterHint"),
-      label: game.i18n.localize("SWFFG.SettingsOggDudeImporterLabel"),
-      icon: "fas fa-file-import",
-      type: DataImporter,
-      restricted: true,
-    });
-    game.settings.register("starwarsffg", "odImporter", {
-      name: "Item Importer",
-      scope: "world",
-      default: {},
-      config: false,
-      type: Object,
-    });
-
-    // SWA Importer Control Menu
-    game.settings.registerMenu("starwarsffg", "swaImporter", {
-      name: game.i18n.localize("SWFFG.SettingsSWAdversariesImporter"),
-      hint: game.i18n.localize("SWFFG.SettingsSWAdversariesImporterHint"),
-      label: game.i18n.localize("SWFFG.SettingsSWAdversariesImporterLabel"),
-      icon: "fas fa-file-import",
-      type: SWAImporter,
-      restricted: true,
-    });
-    game.settings.register("starwarsffg", "swaImporter", {
-      name: "Adversaries Importer",
-      scope: "world",
-      default: {},
-      config: false,
-      type: Object,
-    });
-
     // Enable debug messages in console
     game.settings.register("starwarsffg", "enableDebug", {
       name: game.i18n.localize("SWFFG.EnableDebug"),
@@ -192,23 +227,6 @@ export default class SettingsHelpers {
       default: false,
       type: Boolean,
       onChange: this.debouncedReload,
-    });
-
-    game.settings.registerMenu("starwarsffg", "uiSettings", {
-      name: game.i18n.localize("SWFFG.UISettings"),
-      hint: game.i18n.localize("SWFFG.UISettingsHint"),
-      label: game.i18n.localize("SWFFG.UISettingsLabel"),
-      icon: "fas fa-file-import",
-      type: UISettings,
-      restricted: true,
-    });
-
-    game.settings.register("starwarsffg", "uiSettings", {
-      name: "UI Settings",
-      scope: "world",
-      default: {},
-      config: false,
-      type: Object,
     });
 
     // Register settings for UI Themes
@@ -243,7 +261,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.SettingsDestinyLight"),
       hint: game.i18n.localize("SWFFG.SettingsDestinyLightHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: "SWFFG.Lightside",
       type: String,
       onChange: (rule) => {
@@ -258,7 +276,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.SettingsDestinyDark"),
       hint: game.i18n.localize("SWFFG.SettingsDestinyDarkHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: "SWFFG.Darkside",
       type: String,
       onChange: (rule) => {
@@ -273,7 +291,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.SettingsEnableForceDie"),
       hint: game.i18n.localize("SWFFG.SettingsEnableForceDieHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: true,
       type: Boolean,
       onChange: (rule) => {
@@ -291,7 +309,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.OldWorld.CompatLabel"),
       hint: game.i18n.localize("SWFFG.OldWorld.CompatHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: false,
       type: Boolean,
       onChange: this.debouncedReload,
@@ -341,7 +359,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.MedicalItemName"),
       hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
       scope: "world",
-      config: true,
+      config: false,
       default: game.i18n.localize("SWFFG.DefaultMedicalItemName"),
       type: String,
       onChange: this.debouncedReload,
@@ -356,7 +374,7 @@ export default class SettingsHelpers {
       name: game.i18n.localize("SWFFG.MedicalItemSetting"),
       scope: "world",
       default: '0',
-      config: true,
+      config: false,
       type: String,
       choices: stimpackChoices,
     });
