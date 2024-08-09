@@ -770,6 +770,7 @@
     "species": {
       "templates": ["core"],
       "talents": {},
+      "abilities": {},
       "species": {},
       "startingXP": 0
     },

@@ -10,6 +10,7 @@
   * Specializations: Talents are now correctly looked up in compendium
   * Generic slot combat tracker: Removed "unused" slot checking (on combatant defeat) as they would sometimes lead to actors being unable to act
   * Weapon `special` text now properly renders dice icons ([#1625](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1625))
+  * Species without ability don't cause an error preventing their talents from being loaded anymor ([1641](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1641)))
 
 `1.902`
 * Features:
