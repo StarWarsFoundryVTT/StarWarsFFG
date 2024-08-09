@@ -13,6 +13,7 @@
   * Weapon `special` text now properly renders dice icons ([#1625](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1625))
   * Species without ability don't cause an error preventing their talents from being loaded anymor ([1641](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1641)))
   * Specializations: Embedded talents are now correctly linked to their compendium ([#1650](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1650)))
+  * Vehicle `Pilot` role now works for Genesys ([#1597](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1597))
 
 `1.902`
 * Features:
