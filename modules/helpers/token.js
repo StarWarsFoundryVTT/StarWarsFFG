@@ -3,7 +3,7 @@ export function registerTokenControls() {
     name: game.i18n.localize("SWFFG.Settings.showMinionCount.Name"),
     hint: game.i18n.localize("SWFFG.Settings.showMinionCount.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: true,
     type: Boolean,
     onChange: (rule) => window.location.reload()
@@ -12,7 +12,7 @@ export function registerTokenControls() {
     name: game.i18n.localize("SWFFG.Settings.showAdversaryCount.Name"),
     hint: game.i18n.localize("SWFFG.Settings.showAdversaryCount.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: true,
     type: Boolean,
     onChange: (rule) => window.location.reload()
@@ -21,7 +21,7 @@ export function registerTokenControls() {
     name: game.i18n.localize("SWFFG.Settings.AdversaryItemName.Name"),
     hint: game.i18n.localize("SWFFG.Settings.AdversaryItemName.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: "Adversary",
     type: String,
     onChange: (rule) => window.location.reload()
