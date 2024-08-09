@@ -203,6 +203,7 @@ export function build_crew_roll(vehicle, crew_id, crew_role) {
 export async function buildPilotRoll(vehicle_id, pilot_id, difficulty = 2) {
   const starting_pool = {'difficulty': difficulty};
   const vehicle = game.actors.get(vehicle_id);
+  const skillTheme = game.settings.get("starwarsffg", "skilltheme");
 
   // add modifiers from the vehicle handling
   const handling = vehicle?.system?.stats?.handling?.value;
@@ -218,9 +219,17 @@ export async function buildPilotRoll(vehicle_id, pilot_id, difficulty = 2) {
   // determine if the vehicle is land or space
   let skill;
   if (vehicle?.system?.spaceShip) {
-    skill = "Piloting: Space";
+    if (skillTheme === "starwars") {
+      skill = "Piloting: Space";
+    } else {
+      skill = "Piloting";
+    }
   } else {
-    skill = "Piloting: Planetary";
+    if (skillTheme === "starwars") {
+      skill = "Piloting: Planetary";
+    } else {
+      skill = "Driving";
+    }
   }
 
   // update the pool with actor information
