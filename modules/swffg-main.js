@@ -47,6 +47,7 @@ import CrewSettings from "./settings/crew-settings.js";
 import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag_enricher} from "./helpers/journal.js";
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
 import {handleUpdate} from "./swffg-migration.js";
+import SWAImporter from "./importer/swa-importer.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -169,7 +170,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.Purchase.Notify.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Notify.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: true,
     type: Boolean,
   });
@@ -181,7 +182,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.UseGenericSlots.Name"),
     hint: game.i18n.localize("SWFFG.Settings.UseGenericSlots.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: true,
     type: Boolean,
     onChange: (rule) => window.location.reload()
@@ -198,7 +199,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.RemoveCombatantAction.Name"),
     hint: game.i18n.localize("SWFFG.Settings.RemoveCombatantAction.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: "combatant_only",
     type: String,
     choices: {
@@ -215,7 +216,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.maxAttribute.Name"),
     hint: game.i18n.localize("SWFFG.Settings.maxAttribute.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: 7,
     type: Number,
   });
@@ -223,7 +224,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.maxSkill.Name"),
     hint: game.i18n.localize("SWFFG.Settings.maxSkill.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: 6,
     type: Number,
   });
@@ -235,7 +236,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: "starwarsffg.oggdudespecializations",
     type: String,
   });
@@ -243,7 +244,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: "starwarsffg.oggdudesignatureabilities",
     type: String,
   });
@@ -251,7 +252,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: "starwarsffg.oggdudeforcepowers",
     type: String,
   });
@@ -259,7 +260,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Name"),
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Talent.Hint"),
     scope: "world",
-    config: true,
+    config: false,
     default: "",
     type: String,
   });
@@ -267,7 +268,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.Settings.UseDefense.Name"),
     hint: game.i18n.localize("SWFFG.Settings.UseDefense.Hint"),
     scope: "client",
-    config: true,
+    config: false,
     default: true,
     type: Boolean,
   });
@@ -281,7 +282,7 @@ Hooks.once("init", async function () {
     name: game.i18n.localize("SWFFG.InitiativeMode"),
     hint: game.i18n.localize("SWFFG.InitiativeModeHint"),
     scope: "world",
-    config: true,
+    config: false,
     default: "v",
     type: String,
     choices: {
@@ -356,7 +357,7 @@ Hooks.once("init", async function () {
         name: game.i18n.localize("SWFFG.SettingsSkillTheme"),
         hint: game.i18n.localize("SWFFG.SettingsSkillThemeHint"),
         scope: "world",
-        config: true,
+        config: false,
         default: "starwars",
         type: String,
         onChange: SettingsHelpers.debouncedReload,
@@ -605,15 +606,21 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   if (game.user.isGM) {
     const div = $(`<div class="og-character-import"></div>`);
-    const divider = $("<hr><h4>OggDude Import</h4>");
-    const datasetImportButton = $('<button class="og-character">Dataset Importer</button>');
-    div.append(divider, datasetImportButton);
+    const divider = $("<hr><h4>Importers</h4>");
+    const datasetImportButton = $('<button class="og-character">OggDude Dataset Importer</button>');
+    const datasetImportButton2 = $('<button class="swa-character">Adversaries Dataset Importer</button>');
 
+    div.append(divider, datasetImportButton, datasetImportButton2);
     html.find(".directory-footer").append(div);
 
     html.find(".og-character").click(async (event) => {
       event.preventDefault();
       new DataImporter().render(true);
+    });
+
+    html.find(".swa-character").click(async (event) => {
+      event.preventDefault();
+      new SWAImporter().render(true);
     });
   }
 });
