@@ -144,6 +144,7 @@ export class actorSettings extends ffgSettings {
       "starwarsffg.maxSkill",
       "starwarsffg.medItemName",
       "starwarsffg.HealingItemAction",
+      "starwarsffg.RivalTokenPrepend",
     ];
     return super.getData(includeSettingsNames);
   }
