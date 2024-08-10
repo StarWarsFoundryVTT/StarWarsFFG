@@ -315,7 +315,16 @@ export default class SettingsHelpers {
       onChange: this.debouncedReload,
     });
 
-    // Auto-configure some tokens settings on creation
+    // auto-configure the default values of tokens - once
+    game.settings.register("starwarsffg", "token_configured", {
+      name: game.i18n.localize("SWFFG.Settings.actor.RivalTokenPrepend.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.actor.RivalTokenPrepend.Hint"),
+      scope: "world",
+      config: false,
+      default: false,
+      type: Boolean,
+    });
+
     game.settings.register("starwarsffg", "RivalTokenPrepend", {
       name: game.i18n.localize("SWFFG.Settings.actor.RivalTokenPrepend.Name"),
       hint: game.i18n.localize("SWFFG.Settings.actor.RivalTokenPrepend.Hint"),
