@@ -4321,3 +4321,34 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
 }
+
+.message-content .destiny-flip {
+  padding: 0.5rem;
+  border: 1px solid #9f9275;
+  border-radius: 3px;
+  background: #d8cbc0;
+  overflow: hidden;
+}
+
+.message-content .destiny-flip .destiny-title {
+  background-color: #415064;
+  color: white;
+  text-transform: uppercase;
+  display: block;
+  padding: 2px 2px 2px 2px;
+  --notchSize: 0.25rem;
+  -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+
+.message-content .destiny-flip .destiny-title span {
+  color: rgba(214, 222, 234);
+}
+
+.message-content .destiny-flip .destiny-left.true.light {
+  color: rgba(84, 106, 83, 0.85);
+}
+
+.message-content .destiny-flip .destiny-left.true.dark {
+  color: #781428;
+}

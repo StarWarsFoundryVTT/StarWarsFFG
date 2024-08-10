@@ -141,9 +141,9 @@ export default class DestinyTracker extends FormApplication {
           }
 
           messageText = `<div class="destiny-flip ${flipType}">
-          <div class="destiny-title">${game.i18n.localize("SWFFG.DestinyFlipMessage")}: <span>${typeName}</span></div>
-          <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.dark}</div>
-          <div class="destiny-left">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.light}</div>
+          <div class="destiny-title">${game.i18n.localize("SWFFG.DestinyFlipMessage")}: <span class="${typeName}">${typeName}</span></div>
+          <div class="destiny-left ${flipType !== "dPoolDark"} dark">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.dark}</div>
+          <div class="destiny-left ${flipType !== "dPoolLight"} light">${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.light}</div>
           </div>`;
         }
       } else if (add) {
