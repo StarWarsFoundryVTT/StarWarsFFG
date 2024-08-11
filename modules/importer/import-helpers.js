@@ -2488,7 +2488,7 @@ export default class ImportHelpers {
       } else if (dieMod.SkillKey) {
         // this is a skill modifier
         const skillModifier = ImportHelpers.processSkillMod({ Key: dieMod.SkillKey, ...dieMod });
-        output.attributes[skillModifier.type] = skillModifier.value;
+        output.attributes[skillModifier.type.replace(" ", "_")] = skillModifier.value;
       } else if (dieMod.SkillChar) {
         // this is a skill modifier based on characteristic (ex all Brawn skills);
         const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
