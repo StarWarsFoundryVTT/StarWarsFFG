@@ -53,7 +53,7 @@ export default class ItemHelpers {
           if (spec) {
             let updateData = {};
             foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.name`, formData.name);
-            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.description`, formData.data.description);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.description`, this.object.system.description);
             foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.activation`, formData.data.activation.value);
             foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.isRanked`, formData.data.ranks.ranked);
             foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.isForceTalent`, formData.data.isForceTalent);
