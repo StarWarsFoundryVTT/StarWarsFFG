@@ -103,7 +103,7 @@ export default class ModifierHelpers {
                   return {
                     type: "talent",
                     name: `${item.name}: ${item.system.upgrades[k].name}`,
-                    data: {
+                    system: {
                       attributes: item.system.upgrades[k]?.attributes ? item.system.upgrades[k]?.attributes : {},
                       ranks: {
                         ranked: false,

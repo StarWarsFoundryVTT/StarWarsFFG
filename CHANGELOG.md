@@ -1,3 +1,7 @@
+`1.904`
+* Fixes:
+  * Apply Force Powers upgrades to character
+
 `1.903`
 * Features:
   * Updated "item cards" to match the Mandar theme
