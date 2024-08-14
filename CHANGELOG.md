@@ -1,3 +1,9 @@
+`1.904`
+* Features:
+  * TBD :)
+* Fixes:
+  * Updated Spanish localizations
+
 `1.903`
 * Features:
   * Updated "item cards" to match the Mandar theme
