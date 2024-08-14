@@ -5,6 +5,10 @@
   * Updated Spanish localizations
 
 `1.903`
+* Fix:
+  * Force Power: Empty mod list doesn't reset basic force power anymore
+
+`1.903`
 * Features:
   * Updated "item cards" to match the Mandar theme
     * This change includes many minor improvements to the cards, such as showing damage on weapons and purchased talents on specializations

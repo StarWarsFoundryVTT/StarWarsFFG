@@ -104,6 +104,11 @@ export default class ItemHelpers {
       );
       delete updatedData.data;
     }
+    // Initialize updatedData.system if the key is present with no value
+    if (Object.keys(updatedData).includes('system') && typeof updatedData.system === "undefined") 
+      {
+        updatedData.system = {};
+      }
     return updatedData;
   }
 }
