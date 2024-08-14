@@ -1,3 +1,9 @@
+`1.904`
+* Fixes:
+  * Apply Force Powers upgrades to character
+  * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
+  * Updated Spanish localizations
+
 `1.903`
 * Fix:
   * Force Power: Empty mod list doesn't reset basic force power anymore
