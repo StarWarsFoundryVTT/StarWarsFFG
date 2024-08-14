@@ -1,7 +1,6 @@
 `1.904`
-* Features:
-  * TBD :)
 * Fixes:
+  * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
   * Updated Spanish localizations
 
 `1.903`
