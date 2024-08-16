@@ -7,6 +7,7 @@
   * Updated Spanish localizations
   * Retain token settings when copying actors
   * Non FFG Dice rolls with multiple terms are accepted again ([#1664](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1664))
+  * Escape menu toggles in the normal way again ([#1670](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1670))
 
 `1.903`
 * Fix:
