@@ -333,6 +333,16 @@ export default class SettingsHelpers {
       default: false,
       type: Boolean,
     });
+
+    // Allow GM characters in Group manager
+    game.settings.register("starwarsffg", "GMCharactersInGroupManager", {
+      name: game.i18n.localize("SWFFG.Settings.groupManager.GMCharactersInGroupManager.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.groupManager.GMCharactersInGroupManager.Hint"),
+      scope: "world",
+      config: false,
+      default: false,
+      type: Boolean,
+    });
   }
 
   // Initialize System Settings after the Ready Hook

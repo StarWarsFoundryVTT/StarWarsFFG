@@ -731,5 +731,7 @@
   "SWFFG.DragDrop.Title": "Acheter l'objet, ou l'attribuer pour 0 XP ?",
   "SWFFG.DragDrop.PurchaseItem": "Acheter",
   "SWFFG.DragDrop.GrantItem": "Attribuer",
-  "SWFFG.DragDrop.XPLog": "glisser-déposer"
+  "SWFFG.DragDrop.XPLog": "glisser-déposer",
+  "SWFFG.Settings.groupManager.GMCharactersInGroupManager.Name": "Afficher les personnages de MJ",
+  "SWFFG.Settings.groupManager.GMCharactersInGroupManager.Hint": "Les personnes appartenant à des MJs seront inclus dans le gestionnaire de groupe"
 }

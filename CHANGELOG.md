@@ -1,4 +1,6 @@
 `1.904`
+* Features:
+  * Optionally include GM Characters in the Group Manager
 * Fixes:
   * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/1672))
   * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
