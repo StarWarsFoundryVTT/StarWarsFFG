@@ -409,9 +409,12 @@ export class RollFFG extends Roll {
           return acc;
         }, [])
       })
-      .flatMap((value, index, array) => //Put addition operators between each die.
-        array.length - 1 !== index
-          ? [value, new foundry.dice.terms.OperatorTerm({operator: '+'})]
-          : value)
+      .flatMap((value, index, array) => {   //Put addition operators between each die, but not before or after another Operator
+        if (array.length - 1 !== index && !(array[index] instanceof foundry.dice.terms.OperatorTerm) && !(array[index + 1] instanceof foundry.dice.terms.OperatorTerm)) {
+          return [value, new foundry.dice.terms.OperatorTerm({operator: '+'})] 
+        } else {
+          return value
+        }
+      })          
   }
 }
