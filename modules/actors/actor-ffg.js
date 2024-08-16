@@ -11,7 +11,7 @@ export class ActorFFG extends Actor {
     const createData = data;
 
     // Only apply defaults for newly created actors
-    if (!typeof data.system === "undefined") {
+    if (!(typeof data.system === "undefined")) {
       return super.create(createData, options);
     }
     
