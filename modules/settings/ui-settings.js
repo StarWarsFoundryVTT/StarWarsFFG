@@ -206,6 +206,7 @@ export class groupManagerSettings extends ffgSettings {
     const includeSettingsNames = [
       "starwarsffg.pcListMode",
       "starwarsffg.privateTriggers",
+      "starwarsffg.GMCharactersInGroupManager"
     ];
     return super.getData(includeSettingsNames);
   }
