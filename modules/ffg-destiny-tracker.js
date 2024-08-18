@@ -62,13 +62,7 @@ export default class DestinyTracker extends FormApplication {
   _updateObject(event, formData) {};
 
   /** @override */
-  async close(options = {}) {
-    let menu = $("#menu");
-    if (menu.length === 0) {
-      menu = new MainMenu();
-    }
-      menu.toggle();
-  };
+  async close(options = {}) {};
 
   /** @override */
   activateListeners(html) {
