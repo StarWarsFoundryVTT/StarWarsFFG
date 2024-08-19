@@ -1,18 +1,15 @@
 `1.904`
 * Features:
-  * Optionally include GM Characters in the Group Manager
+  * Optionally include GM Characters in the Group Manager ([#1680](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1680))
 * Fixes:
-  * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/1672))
+  * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1542))
   * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
   * Updated Spanish localizations
   * Updated French localizations
-  * Retain token settings when copying actors
+  * Retain token settings when copying actors ([#1673](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1673))
   * Non FFG Dice rolls with multiple terms are accepted again ([#1664](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1664))
   * Escape menu toggles in the normal way again ([#1670](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1670))
-
-`1.903`
-* Fix:
-  * Force Power: Empty mod list doesn't reset basic force power anymore
+  * Force Power: Empty mod list doesn't reset basic force power anymore ([#1669](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1669))
 
 `1.903`
 * Features:
