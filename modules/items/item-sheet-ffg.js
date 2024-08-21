@@ -58,7 +58,7 @@ export class ItemSheetFFG extends ItemSheet {
       );
     });
     // this is the end of the de-duplicating -=key stuff
-
+    
     data.data = data.item.system;
 
 
@@ -383,7 +383,7 @@ export class ItemSheetFFG extends ItemSheet {
     });
 
     if (this.object.type === "talent") {
-      if (!Hooks?.events[`closeAssociatedTalent_${this.object._id}`]?.length && typeof this._submitting === "undefined") {
+      if (!Hooks?.events[`closeAssociatedTalent_${this.object._id}`]?.length && (typeof this._submitting === "undefined" || this._priorState <= 0)) {
         Hooks.once(`closeAssociatedTalent_${this.object._id}`, (item) => {
           item.object.flags.clickfromparent = [];
           Hooks.off(`closeAssociatedTalent_${item.object._id}`);
