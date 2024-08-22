@@ -333,6 +333,10 @@ export default class ImportHelpers {
           modtype = "Skill Remove Setback";
           value = parseInt(mod.SetbackCount, 10);
         }
+        if (mod.ForceCount) {
+          modtype = "Force Boost"
+          value = true;
+        }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
         }
@@ -2431,6 +2435,10 @@ export default class ImportHelpers {
         if (mod.SetbackCount) {
           modtype = "Skill Remove Setback";
           value = parseInt(mod.SetbackCount, 10);
+        }
+        if (mod.ForceCount) {
+          modtype = "Force Boost"
+          value = true;
         }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
