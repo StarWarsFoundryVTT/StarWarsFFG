@@ -28,7 +28,7 @@ export default class ItemBaseFFG extends Item {
         const appId = this?.flags?.starwarsffg?.ffgParentApp;
         if (appId) {
           const newData = ui.windows[appId].object;
-          newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex], this);
+          newData.system[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex] = mergeObject(newData.system[this.flags.starwarsffg.ffgTempItemType][this.flags.starwarsffg.ffgTempItemIndex], this);
           await ui.windows[appId].render(true, { action: "ffgUpdate", data: newData });
         }
         return;
