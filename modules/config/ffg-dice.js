@@ -130,4 +130,27 @@ export function configureDice() {
     5: { label: "SWFFG.DiceResult.OneThreat", image: `systems/genesysk2/images/dice/${dicetheme}/blackt.png`, success: 0, failure: 0, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
     6: { label: "SWFFG.DiceResult.OneThreat", image: `systems/genesysk2/images/dice/${dicetheme}/blackt.png`, success: 0, failure: 0, advantage: 0, threat: 1, triumph: 0, despair: 0, light: 0, dark: 0 },
   };
+
+  // CONFIG.FFG.PEPS_RESULTS= {
+  //   1: { label: "SWFFG.DiceResult.OneAdvantage", image: `systems/genesysk2/images/dice/peps/peps-moins.png`, success: 0, failure: 0, advantage: 1, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  //   2: { label: "SWFFG.DiceResult.OneAdvantage", image: `systems/genesysk2/images/dice/peps/peps-moins.png`, success: 0, failure: 0, advantage: 1, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  //   3: { label: "SWFFG.DiceResult.Blank", image: `systems/genesysk2/images/dice/peps/peps-vide.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  //   4: { label: "SWFFG.DiceResult.Blank", image: `systems/genesysk2/images/dice/peps/peps-vide.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  //   5: { label: "SWFFG.DiceResult.OneSuccess", image: `systems/genesysk2/images/dice/peps/peps-plus.png`, success: 1, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  //   6: { label: "SWFFG.DiceResult.OneSuccess", image: `systems/genesysk2/images/dice/peps/peps-plus.png`, success: 1, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  // };
+  CONFIG.FFG.PEPS_RESULTS= { // attention décalage suite à des soucis avec le -1
+    1: { label: "SWFFG.DiceResult.OneAdvantage", image: `systems/genesysk2/images/dice/peps/peps-moins.png`, success: 0, failure: 0, advantage: 1, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+    2: { label: "SWFFG.DiceResult.Blank", image: `systems/genesysk2/images/dice/peps/peps-vide.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+    3: { label: "SWFFG.DiceResult.OneSuccess", image: `systems/genesysk2/images/dice/peps/peps-plus.png`, success: 1, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  };
+
+  CONFIG.FFG.RISK_RESULTS= {
+    1: { label: "SWFFG.DiceResult.OneAdvantage", image: `systems/genesysk2/images/dice/peps/rouge-moins.png`, success: 0, failure: 0, advantage: 1, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+    2: { label: "SWFFG.DiceResult.OneAdvantage", image: `systems/genesysk2/images/dice/peps/rouge-moins.png`, success: 0, failure: 0, advantage: 1, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+    3: { label: "SWFFG.DiceResult.OneDespair", image: `systems/genesysk2/images/dice/peps/rouge-tdm.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 1, light: 0, dark: 0 },
+    4: { label: "SWFFG.DiceResult.OneDespair", image: `systems/genesysk2/images/dice/peps/rouge-tdm.png`, success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 1, light: 0, dark: 0 },
+    5: { label: "SWFFG.DiceResult.OneSuccess", image: `systems/genesysk2/images/dice/peps/rouge-plus.png`, success: 1, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+    6: { label: "SWFFG.DiceResult.OneSuccess", image: `systems/genesysk2/images/dice/peps/rouge-plus.png`, success: 1, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 },
+  };
 }

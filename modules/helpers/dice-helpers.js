@@ -3,6 +3,8 @@ import RollBuilderFFG from "../dice/roll-builder.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ImportHelpers from "../importer/import-helpers.js";
 
+import {lancerDesPep} from "../k2gdices/pepK2DicePromps.js";
+
 export default class DiceHelpers {
   static async rollSkill(obj, event, type, flavorText, sound) {
     const data = obj.getData();
@@ -64,7 +66,7 @@ export default class DiceHelpers {
       //Check if token is linked to actor
       if (obj.actor.token === null) {
         let itemID = row.parentElement.dataset["itemId"];
-        item = actor.items.get(itemID);
+        item = obj.actor.items.get(itemID);
       } else {
         //Rolls this if unlinked
         let itemID = row.parentElement.dataset["itemId"];
@@ -106,7 +108,11 @@ export default class DiceHelpers {
   }
 
   static async displayRollDialog(data, dicePool, description, skillName, item, flavorText, sound) {
-    return new RollBuilderFFG(data, dicePool, description, skillName, item, flavorText, sound).render(true);
+    if(game.settings.get('genesysk2','enablePEP')) {
+      lancerDesPep("lance un compétence", dicePool.proficiency *2+dicePool.ability,skillName);
+    } else {
+      return new RollBuilderFFG(data, dicePool, description, skillName, item, flavorText, sound).render(true);
+    }
   }
 
   static async addSkillDicePool(obj, elem) {

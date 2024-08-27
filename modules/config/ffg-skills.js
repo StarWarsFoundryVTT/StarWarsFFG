@@ -1,4 +1,4 @@
-export const skills = {
+export const skills = {  // Ce qui est à la création d'un personnage, modèle starwars
   "Astrogation": { value: "Astrogation", label: "SWFFG.SkillsNameAstrogation", abrev: "SWFFG.SkillsNameAstrogation" },
   "Athletics": { value: "Athletics", label: "SWFFG.SkillsNameAthletics", abrev: "SWFFG.SkillsNameAthletics" },
   "Brawl": { value: "Brawl", label: "SWFFG.SkillsNameBrawl", abrev: "SWFFG.SkillsNameBrawlAbbreviation" },
@@ -21,9 +21,10 @@ export const skills = {
   "Lightsaber": { value: "Lightsaber", label: "SWFFG.SkillsNameLightsaber", abrev: "SWFFG.SkillsNameLightsaberAbbreviation" },
   "Mechanics": { value: "Mechanics", label: "SWFFG.SkillsNameMechanics", abrev: "SWFFG.SkillsNameMechanics" },
   "Medicine": { value: "Medicine", label: "SWFFG.SkillsNameMedicine", abrev: "SWFFG.SkillsNameMedicine" },
-  "Melee : short": { value: "Melee : short", label: "K2G.SkillsNameMeleeShort", abrev: "K2G.SkillsNameMeleeShoprtAbbreviation" },
-  "Melee : light": { value: "Melee : light", label: "K2G.SkillsNameMeleeLight", abrev: "K2G.SkillsNameMeleeLightAbbreviation" },
-  "Melee : heavy": { value: "Melee : heavy", label: "K2G.SkillsNameMeleeHeavy", abrev: "K2G.SkillsNameMeleeHeavyAbbreviation" },
+  "Melee": { value: "Melee", label: "SWFFG.SkillsNameMelee", abrev: "SWFFG.SkillsNameMeleeAbbreviation" },
+//  "Melee-short": { value: "Melee: short", label: "K2G.SkillsNameMeleeShort", abrev: "K2G.SkillsNameMeleeShoprtAbbreviation" },
+//  "Melee-light": { value: "Melee: light", label: "K2G.SkillsNameMeleeLight", abrev: "K2G.SkillsNameMeleeLightAbbreviation" },
+//  "Melee-heavy": { value: "Melee: heavy", label: "K2G.SkillsNameMeleeHeavy", abrev: "K2G.SkillsNameMeleeHeavyAbbreviation" },
   "Negotiation": { value: "Negotiation", label: "SWFFG.SkillsNameNegotiation", abrev: "SWFFG.SkillsNameNegotiation" },
   "Perception": { value: "Perception", label: "SWFFG.SkillsNamePerception", abrev: "SWFFG.SkillsNamePerception" },
   "Piloting: Planetary": { value: "Piloting: Planetary", label: "SWFFG.SkillsNamePilotingPlanetary", abrev: "SWFFG.SkillsNamePilotingPlanetary" },
@@ -64,6 +65,18 @@ export const skills_combat = {
   "Melee": {
     value: "Melee",
     label: "SWFFG.SkillsNameMelee",
+  },
+  "Melee-short": {
+    value: "Melee-short",
+    label: "K2G.SkillsNameMeleeShort",
+  },
+  "Melee-light": {
+    value: "Melee-light",
+    label: "K2G.SkillsNameMeleeLight",
+  },
+  "Melee-heavy": {
+    value: "Melee-heavy",
+    label: "K2G.SkillsNameMeleeHeavy",
   },
   "Ranged: Light": {
     value: "Ranged: Light",

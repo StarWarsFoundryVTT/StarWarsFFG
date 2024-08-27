@@ -13,7 +13,8 @@ import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
 import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
 import { ActorSheetFFGV2 } from "./actors/actor-sheet-ffg-v2.js";
-import { ActorSheetK2G } from "./actors/actor-sheet-k2g-v2.js";
+import { ActorSheetK2G } from "./actors/actor-sheet-k2g.js";
+import { ActorSheetK2GV2 } from "./actors/actor-sheet-k2g-v2.js";
 import { AdversarySheetFFG } from "./actors/adversary-sheet-ffg.js";
 import { AdversarySheetFFGV2 } from "./actors/adversary-sheet-ffg-v2.js";
 import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
@@ -32,7 +33,7 @@ import SettingsHelpers from "./settings/settings-helpers.js";
 import {register_crew} from "./helpers/crew.js";
 
 // Import Dice Types
-import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
+import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie, RiskDie, PepsDie } from "./dice-pool-ffg.js";
 import { createFFGMacro, updateMacro } from "./helpers/macros.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
@@ -43,6 +44,8 @@ import CrewSettings from "./settings/crew-settings.js";
 import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag_enricher} from "./helpers/journal.js";
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
 import {handleUpdate} from "./swffg-migration.js";
+
+import {lancerDesPep} from "./k2gdices/pepK2DicePromps.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -65,8 +68,7 @@ Hooks.on("setup", function (){
 });
 
 Hooks.once("init", async function () {
-  console.log(`Initializing K2Genesys
-   System`);
+  console.log(`Initializing K2 - Genesys System`);
   // Place our classes in their own namespace for later reference.
   game.ffg = {
     ActorFFG,
@@ -80,7 +82,7 @@ Hooks.once("init", async function () {
     addons: {
       PopoutEditor,
     },
-    diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
+    diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie, RiskDie, PepsDie],
   };
 
   // Define custom log prefix and logger
@@ -103,10 +105,14 @@ Hooks.once("init", async function () {
   CONFIG.Dice.terms["a"] = AbilityDie;
   CONFIG.Dice.terms["b"] = BoostDie;
   CONFIG.Dice.terms["c"] = ChallengeDie;
+  //CONFIG.Dice.terms["e"] = PepsDieExpert; // TODO  : a faire le dés expert (++)
+  CONFIG.Dice.terms["f"] = ForceDie; // Modifié plus tard dans les dice3D
   CONFIG.Dice.terms["i"] = DifficultyDie;
-  CONFIG.Dice.terms["m"] = ForceDie;
+  CONFIG.Dice.terms["m"] = ForceDie; // Modifier plus tard dans les dice3d, //TODO : a faire le dés Magie
   CONFIG.Dice.terms["p"] = ProficiencyDie;
+  CONFIG.Dice.terms["r"] = RiskDie;
   CONFIG.Dice.terms["s"] = SetbackDie;
+  
   
 
   // Give global access to FFG config.
@@ -314,7 +320,8 @@ Hooks.once("init", async function () {
         choices: skillChoices,
       });
 
-      if (game.settings.get("genesysk2", "skilltheme") !== "starwars") { // XXXX
+      // normalement, il n'y pas de modif si c'est starwars, mais là, le soucis, c'est qu'il ya pas toutes les compétences
+      if (game.settings.get("genesysk2", "skilltheme") !== "starwars") { // pour trier les compétences
         const altSkills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === game.settings.get("genesysk2", "skilltheme")).skills));
 
         let skills = {};
@@ -392,6 +399,7 @@ Hooks.once("init", async function () {
   Actors.registerSheet("ffg", ActorSheetFFG, { /*makeDefault: true,*/ label: "Actor Sheet v1" });
   Actors.registerSheet("ffg", ActorSheetFFGV2, { label: "Actor Sheet v2" });
   Actors.registerSheet("ffg", ActorSheetK2G, { makeDefault: true, label: "Actor Sheet K² Genesys" });
+  Actors.registerSheet("ffg", ActorSheetK2GV2, { makeDefault: true, label: "Actor Sheet K² Genesys v2" });
   Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
   Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
   Items.unregisterSheet("core", ItemSheet);
@@ -525,13 +533,17 @@ Hooks.once("init", async function () {
 
 Hooks.on("renderSidebarTab", (app, html, data) => {
   html.find(".chat-control-icon").click(async (event) => { // modification du bouton de lancer de dés
-    const dicePool = new DicePoolFFG();
+    if(game.settings.get('genesysk2','enablePEP')) {
+      lancerDesPep();
+    } else {
+      const dicePool = new DicePoolFFG();
 
-    let user = {
-      data: game.user.system,
-    };
+      let user = {
+        data: game.user.system,
+      };
 
-    await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+      await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+    }
   });
 });
 
@@ -1056,7 +1068,7 @@ Hooks.once("ready", async () => {
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
   let dicetheme = game.settings.get("genesysk2", "dicetheme");
-  if (!dicetheme || dicetheme == "starwars") {
+  if (!dicetheme || dicetheme == "starwars") { // Generation du système de dés :  SWFFG
     dice3d.addSystem({ id: "swffg", name: "Star Wars FFG" }, true);
 
     //swffg dice
@@ -1103,17 +1115,33 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
       },
       "d12"
     );
+    if(game.settings.get('genesysk2','enablePEP')) { // C'est pas bo mais avant enablePEP n'est pas définie !
 
-    dice3d.addDicePreset(
+      CONFIG.Dice.terms["f"] = PepsDie;
+      CONFIG.Dice.terms["m"] = PepsDie; //TODO: A mettre le PepsDieMagie
+      dice3d.addDicePreset( // dé de peps
       {
-        type: "df",
-        labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
-        font: "SWRPG-Symbol-Regular",
-        colorset: "white-sw",
+        type: "dm", 
+//         labels: ["6+","B--", "C--", "D", "P", "F+", "5+"],
+        labels: [ "systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-videv.png","systems/genesysk2/images/dice/peps/peps-videv.png", "systems/genesysk2/images/dice/peps/peps-plusv.png","systems/genesysk2/images/dice/peps/peps-plusv.png"],
+//        font: "Genesys",
+//        colorset: "red",
         system: "swffg",
       },
-      "d12"
-    );
+      "d6"
+      );
+   } else {
+      dice3d.addDicePreset(
+        {
+          type: "dm",
+          labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
+          font: "SWRPG-Symbol-Regular",
+          colorset: "white-sw",
+          system: "swffg",
+        },
+        "d12"
+      );  
+    }
 
     dice3d.addDicePreset(
       {
@@ -1136,8 +1164,33 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
       },
       "d6"
     );
+
+    dice3d.addDicePreset( // dé de peps
+      {
+        type: "df", 
+        term: "PepDie",
+        values: { min:-1, max: 1},
+        labels: ["−", " ", "+"],
+        //labels: [ "systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-videv.png","systems/genesysk2/images/dice/peps/peps-videv.png", "systems/genesysk2/images/dice/peps/peps-plusv.png","systems/genesysk2/images/dice/peps/peps-plusv.png"],
+        system: "swffg",
+      },
+      "d6"
+    );
+
+    dice3d.addDicePreset( // dé de risque
+    {
+      type: "dr",
+      labels: [ "systems/genesysk2/images/dice/peps/rouge-moins.png","systems/genesysk2/images/dice/peps/rouge-moins.png","systems/genesysk2/images/dice/peps/rouge-tdm.png","systems/genesysk2/images/dice/peps/rouge-tdm.png", "systems/genesysk2/images/dice/peps/rouge-plus.png","systems/genesysk2/images/dice/peps/rouge-plus.png"],
+      font: "Genesys",
+      colorset: "red",
+      system: "swffg",
+    },
+    "d6"
+  );
+
+    
   } else {
-    //genesys
+     // Generation du système de dés :  GENESYS voir GENOPEPS - si peps activé-
     dice3d.addSystem({ id: "genesys", name: "Genesys" }, true);
 
     dice3d.addDicePreset(
@@ -1183,19 +1236,47 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
       },
       "d12"
     );
+// Gestion de la magie dépendant du modèle 
+     if(game.settings.get('genesysk2','enablePEP')) {
 
-    dice3d.addDicePreset( // modif pour le dé de Magie (df)
+      CONFIG.Dice.terms["f"] = PepsDie;
+      CONFIG.Dice.terms["m"] = PepsDie; //TODO: A mettre le PepsDieMagie
+       dice3d.addDicePreset( // dé de peps
+       {
+         type: "dm", 
+//         labels: ["6+","B--", "C--", "D", "P", "F+", "5+"],
+        labels: [ "systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-videv.png","systems/genesysk2/images/dice/peps/peps-videv.png", "systems/genesysk2/images/dice/peps/peps-plusv.png","systems/genesysk2/images/dice/peps/peps-plusv.png"],
+// //        font: "Genesys",
+// //        colorset: "red",
+         system: "genesys",
+       },
+       "d6"
+       );
+//     } else {
+        dice3d.addDicePreset( // modif pour le dé de Magie (df->dm)
+          {
+            type: "dm",
+            //labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
+            labels: ["z\nz", "z\nz", "z\nz", "\nz", "\nz", "\nz", "\n", "\nZ", "\nZ", "\nZ", "Z\nZ", "Z\nZ"],
+            font: "SWRPG-Symbol-Regular",
+            colorset: "white-sw",
+            system: "genesys",
+          },
+          "d12"
+        );
+    }
+
+    dice3d.addDicePreset( // dé de risque
       {
-        type: "df",
-        //labels: ["\nz", "\nz", "\nz", "\nz", "\nz", "\nz", "z\nz", "\nZ", "\nZ", "Z\nZ", "Z\nZ", "Z\nZ"],
-        labels: ["z\nz", "z\nz", "z\nz", "\nz", "\nz", "\nz", "\n", "\nZ", "\nZ", "\nZ", "Z\nZ", "Z\nZ"],
-        font: "SWRPG-Symbol-Regular",
-        colorset: "white-sw",
+        type: "dr",
+        labels: [ "systems/genesysk2/images/dice/peps/rouge-moins.png","systems/genesysk2/images/dice/peps/rouge-moins.png","systems/genesysk2/images/dice/peps/rouge-tdm.png","systems/genesysk2/images/dice/peps/rouge-tdm.png", "systems/genesysk2/images/dice/peps/rouge-plus.png","systems/genesysk2/images/dice/peps/rouge-plus.png"],
+        font: "Genesys",
+        colorset: "red",
         system: "genesys",
       },
-      "d12"
+      "d6"
     );
-
+  
     dice3d.addDicePreset(
       {
         type: "db",
@@ -1217,7 +1298,21 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
       },
       "d6"
     );
+
+//     dice3d.addDicePreset( // dé de peps
+//       {
+//         type: "df", 
+// //        labels: ["1--", "2-+", "3 -", "4 .", "5+.", "6+"],
+//           labels: ["-/+", "+", "--", " ", " ", "6"],
+// //        labels: [ "systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-moinsv.png","systems/genesysk2/images/dice/peps/peps-videv.png","systems/genesysk2/images/dice/peps/peps-videv.png", "systems/genesysk2/images/dice/peps/peps-plusv.png","systems/genesysk2/images/dice/peps/peps-plusv.png"],
+// //        font: "Genesys",
+// //        colorset: "red",
+//         system: "genesys",
+//       },
+//       "d6"
+//     );
   }
+
 
   //sw dice colors
   dice3d.addColorset({

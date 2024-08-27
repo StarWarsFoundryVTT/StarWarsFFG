@@ -1,14 +1,14 @@
 import { ActorSheetFFG } from "./actor-sheet-ffg.js";
 
-export class ActorSheetK2GV2 extends ActorSheetFFG { // difference avec actor-sheet-k2g : c'est la classe v2 dans les options par défaut
+export class ActorSheetK2G extends ActorSheetFFG {
   constructor(...args) {
     super(...args);
   }
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, { 
-      classes: ["genesysk2", "starwarsffg", "sheet", "actor", "K2G","v2"], // ici si K² pas la bonne présentation ', "v2"' pour la forme différente (v2)
+    return mergeObject(super.defaultOptions, {
+      classes: ["genesysk2", "starwarsffg", "sheet", "actor", "K2G"], // ici si K² pas la bonne présentation ', "v2"' pour la forme différente (v2)
       template: "systems/genesysk2/templates/actors/k2g-character-sheet.html",
       width: 750,
       height: 650,

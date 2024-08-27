@@ -139,6 +139,14 @@ export class RollFFG extends Roll {
         } else return term;
       } else {
         if (term.evaluate) term.evaluate({ minimize, maximize });
+        if(term.constructor.name==='FateDie') { // pas bo, mais traite les DF comme des des Genesys
+          term.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
+          term.results.map(r => { switch(r.result){
+              case 1: term.ffg.success++; break;
+              case -1: term.ffg.advantage++;break;
+            }
+          });
+        }
         this.hasFFG = true;
         return 0;
       }

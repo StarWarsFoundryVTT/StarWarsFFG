@@ -78,8 +78,6 @@
                   {{#each_when actor.items "type" "specialization"}}
                   <div class="specialization-pill item" data-item-id="{{item._id}}">
                     {{item.name}} <i class="fas fa-times item-delete"></i>
-														  
-								  
                   </div>
                   {{else}}
                   <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
@@ -131,11 +129,11 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}} 
-    {{#if (or (eq actor.flags.genesysk2.config.enableForcePool undefined) (eq actor.flags.genesysk2.config.enableForcePool true) )}}
-      {{> "systems/genesysk2/templates/parts/shared/k2g-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="spells" label="SWFFG.TabSpell" icon="fas fa-wand-magic" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) (object tab="obligation" label="SWFFG.TabObligationDutyMorality" icon="fas fa-balance-scale" cls=classType isHidden=true isHiddenV2=hideObligationDutyMoralityConflictTab) )}} 
-    {{else}}
+  {{#if (or (eq actor.flags.genesysk2.config.enableForcePool undefined) (eq actor.flags.genesysk2.config.enableForcePool true) )}}
+    {{> "systems/genesysk2/templates/parts/shared/k2g-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="spells" label="SWFFG.TabSpell" icon="fas fa-wand-magic" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) (object tab="obligation" label="SWFFG.TabObligationDutyMorality" icon="fas fa-balance-scale" cls=classType isHidden=true isHiddenV2=hideObligationDutyMoralityConflictTab) )}} 
+  {{else}}
     {{> "systems/genesysk2/templates/parts/shared/k2g-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType)  (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) (object tab="obligation" label="SWFFG.TabObligationDutyMorality" icon="fas fa-balance-scale" cls=classType isHidden=true isHiddenV2=hideObligationDutyMoralityConflictTab) )}} 
-    {{/if}}
+  {{/if}}
   {{!-- Sheet Body --}}
   <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}

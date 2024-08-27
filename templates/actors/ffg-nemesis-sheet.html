@@ -58,18 +58,18 @@
       {{!-- Primary Stats Container --}}
       <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
         <div class="container flex-group-center">
-          {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}}
+          {{!-- Wounds Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}}
           {{#if (or (eq actor.flags.starwarsffg.config.enableStrainThreshold undefined) (eq actor.flags.starwarsffg.config.enableStrainThreshold true) )}}
-          {{!-- Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}}
+          {{!-- Strain Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}}
           {{/if}}
-          {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
-          {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
+          {{!-- Soak Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
+          {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
         </div>
       </div>
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}
     <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
@@ -90,18 +90,18 @@
         {{/each}}
       </div>
 
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-skills.html"}}
+      {{> "systems/genesysk2/templates/parts/actor/ffg-skills.html"}}
     </div>
 
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
       <div class="container flex-group-center item-values">
-        {{!-- Medical Box --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html" (object title=actor.flags.starwarsffg.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
-        {{!-- Encumbrance Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Encumbrance" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold") (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}}
-        {{!-- Credits Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.DescriptionCredits" type="String" name="data.stats.credits.value" value=data.stats.credits.value)}}
+        {{!-- Medical Box --}} {{> "systems/genesysk2/templates/parts/actor/ffg-healingitem.html" (object title=actor.flags.starwarsffg.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
+        {{!-- Encumbrance Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Encumbrance" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold") (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}}
+        {{!-- Credits Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.DescriptionCredits" type="String" name="data.stats.credits.value" value=data.stats.credits.value)}}
       </div>
 
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-weapon-armor-gear.html"}}
+      {{> "systems/genesysk2/templates/parts/actor/ffg-weapon-armor-gear.html"}}
     </div>
 
     {{!-- Talents Tab --}}
@@ -109,12 +109,12 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
-        {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
+        {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
       </div>
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}}
-      {{!-- Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-abilities.html"}}
-      {{!-- Force Powers List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}}
-      {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+      {{> "systems/genesysk2/templates/parts/actor/ffg-talents.html"}}
+      {{!-- Abilities List --}} {{> "systems/genesysk2/templates/parts/actor/ffg-abilities.html"}}
+      {{!-- Force Powers List --}} {{> "systems/genesysk2/templates/parts/actor/ffg-forcepowers.html"}}
+      {{> "systems/genesysk2/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
     {{!-- Biography Tab --}}
@@ -124,24 +124,24 @@
       </div>
 
       <div class="container flex-group-center biography-values">
-        {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
+        {{> "systems/genesysk2/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
       </div>
     </div>
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
+      {{> "systems/genesysk2/templates/parts/shared/ffg-modifiers.html"}}
     </div>
 
     <div class="tab general" data-group="primary" data-tab="general">
       <div class="grid grid-2col">
         <div>
           <div class="grid grid-2col">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Gender" type="String" name="data.general.gender" value=data.general.gender)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Age" type="String" name="data.general.age" value=data.general.age)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Height" type="String" name="data.general.height" value=data.general.height)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Build" type="String" name="data.general.build" value=data.general.build)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Hair" type="String" name="data.general.hair" value=data.general.hair)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Eyes" type="String" name="data.general.eyes" value=data.general.eyes)}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Gender" type="String" name="data.general.gender" value=data.general.gender)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Age" type="String" name="data.general.age" value=data.general.age)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Height" type="String" name="data.general.height" value=data.general.height)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Build" type="String" name="data.general.build" value=data.general.build)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Hair" type="String" name="data.general.hair" value=data.general.hair)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Eyes" type="String" name="data.general.eyes" value=data.general.eyes)}}
           </div>
         </div>
         <div class="block-editor">
-          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.NotableFeature" type="PopoutEditor" name="data.general.features" value=data.general.features)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.Notes" type="PopoutEditor" name="data.general.notes" value=data.general.notes)}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.NotableFeature" type="PopoutEditor" name="data.general.features" value=data.general.features)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.Notes" type="PopoutEditor" name="data.general.notes" value=data.general.notes)}}
         </div>
       </div>
       <div>
@@ -179,7 +179,7 @@
         {{else}}
 
         <div class="grid grid-2col genesys">
-          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Strength" type="PopoutEditor" name="data.motivation.strength" value=data.motivation.strength)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Flaw" type="PopoutEditor" name="data.motivation.flaw" value=data.motivation.flaw)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Desire" type="PopoutEditor" name="data.motivation.desire" value=data.motivation.desire)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Fear" type="PopoutEditor" name="data.motivation.fear" value=data.motivation.fear)}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Strength" type="PopoutEditor" name="data.motivation.strength" value=data.motivation.strength)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Flaw" type="PopoutEditor" name="data.motivation.flaw" value=data.motivation.flaw)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Desire" type="PopoutEditor" name="data.motivation.desire" value=data.motivation.desire)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Fear" type="PopoutEditor" name="data.motivation.fear" value=data.motivation.fear)}}
         </div>
 
         {{/if}}
@@ -187,7 +187,7 @@
     </div>
 
     <div class="tab xp" data-group="primary" data-tab="xp">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog)}}
+      {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog)}}
     </div>
   </section>
 </form>

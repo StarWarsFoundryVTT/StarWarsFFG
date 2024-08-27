@@ -368,6 +368,16 @@ export default class SettingsHelpers {
       type: String,
       choices: stimpackChoices,
     });
+     // Enable PEP style dice compatible system
+     game.settings.register("genesysk2", "enablePEP", {
+      name: game.i18n.localize("K2G.PEPSystem"),
+      hint: game.i18n.localize("K2G.PEPSystemHint"),
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean,
+      onChange: this.debouncedReload,
+    });
   }
 
   static debouncedReload = debounce(() => window.location.reload(), 100);
