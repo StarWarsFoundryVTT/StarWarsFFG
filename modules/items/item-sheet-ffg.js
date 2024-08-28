@@ -754,6 +754,7 @@ export class ItemSheetFFG extends ItemSheet {
       event.stopPropagation();
       const li = event.currentTarget;
       let itemType = li.dataset.acceptableType;
+      let parentModType = (["weapon", "armour", "vehicle", "all"]).includes(this.object?.system?.type) ? this.object.system?.type : "all"
 
       let temp = {
         img: "icons/svg/mystery-man.svg",
@@ -774,6 +775,7 @@ export class ItemSheetFFG extends ItemSheet {
         system: {
           attributes: {},
           description: "",
+          type: parentModType
         },
       };
 
