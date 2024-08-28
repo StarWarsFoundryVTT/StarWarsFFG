@@ -11,6 +11,7 @@
   * Escape menu toggles in the normal way again ([#1670](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1670))
   * Force Power: Empty mod list doesn't reset basic force power anymore ([#1669](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1669))
   * Updating a talent from a specialization tree updates the tree ([#1643](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1643))
+  * Force Power: Import basic force power mods ([#1686](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1686))
   * Get embedded item data from `system` variable instead of root
   * Use correct type when importing a Force Boost mods ([#1687](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1687))
   * Item attachments' mods use parent item mod type when present ([#1624](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1624))

@@ -51,8 +51,8 @@ export default class ForcePowers {
               }
 
               data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
-              if (item?.DieModifiers) {
-                const dieModifiers = await ImportHelpers.processDieMod(item.DieModifiers);
+              if (basepower?.DieModifiers) {
+                const dieModifiers = await ImportHelpers.processDieMod(basepower.DieModifiers);
                 data.data.attributes = mergeObject(data.data.attributes, dieModifiers.attributes);
               }
 
