@@ -1,4 +1,6 @@
 import Helpers from "../helpers/common.js";
+import {migrateDataToSystem} from "../helpers/migration.js";
+import {ItemFFG} from "../items/item-ffg.js";
 
 export default class ImportHelpers {
   /**
@@ -69,16 +71,56 @@ export default class ImportHelpers {
   }
 
   /**
+   * Imports binary file, by extracting from zip file and uploading to path.
+   * Uploads to a different directory than the standard importer
+   *
+   * @param  {string} path - Path to image within zip file
+   * @param  {object} zip - Zip file
+   * @param  {object} pack - Compendium Pack
+   * @returns {string} - Path to file within VTT
+   */
+  static async importSilhouetteImage(path, zip, pack) {
+    if (path) {
+      const serverPath = `worlds/${game.world.id}/images/packs/${pack.metadata.name}Silhouettes`;
+      const filename = path.replace(/^.*[\\\/]/, "");
+      if (!CONFIG.temporary.images) {
+        CONFIG.temporary.images = [];
+      }
+      try {
+        if (!CONFIG.temporary.images.includes(`${serverPath}/${filename}`)) {
+          CONFIG.temporary.images.push(`${serverPath}/${filename}`);
+          await ImportHelpers.verifyPath("data", serverPath);
+          const img = await zip.file(path).async("uint8array");
+          var arr = img.subarray(0, 4);
+          var header = "";
+          for (var a = 0; a < arr.length; a++) {
+            header += arr[a].toString(16);
+          }
+          const type = Helpers.getMimeType(header);
+
+          const i = new File([img], filename, { type });
+          await Helpers.UploadFile("data", `${serverPath}`, i, { bucket: null });
+        }
+
+        return `${serverPath}/${filename}`;
+      } catch (err) {
+        CONFIG.logger.error(`Error Uploading File: ${path} to ${serverPath}`);
+      }
+    }
+  }
+
+  /**
    * Returns the name of a file within the zip file based on a built string.
    *
    * @param  {object} zip - Zip file
    * @param  {string} type - Object Type
    * @param  {string} itemtype - Item Type
    * @param  {string} key - Item Key
+   * @param {string} secondStageFilename - optional string to append to the object type; defaults to 'Images'
    * @returns {string} - Path to file within Zip File
    */
-  static async getImageFilename(zip, type, itemtype, key) {
-    const imgFileName = `${type}Images/${itemtype}${key}`;
+  static async getImageFilename(zip, type, itemtype, key, secondStageFilename='Images') {
+    const imgFileName = `${type}${secondStageFilename}/${itemtype}${key}`;
 
     return Object.values(zip.files).find((file) => {
       if (file.name.includes(imgFileName)) {
@@ -157,6 +199,27 @@ export default class ImportHelpers {
     }
   }
 
+  /**
+   * Find a compendium entity by type and name
+   * we can encounter the ID changing seemingly during Foundry version transitions, even within minor version changes
+   * @param  {string} type - Entity type to search for
+   * @param {string} name - Name of the item (optional)
+   * @returns {object} - Entity Object Data
+   */
+  static async findCompendiumEntityByName(type, name) {
+    let packs = Array.from(await game.packs.keys());
+    for (let i = 0; i < packs.length; i += 1) {
+      let packId = packs[i];
+      const pack = await game.packs.get(packId);
+      if (pack.documentName === type) {
+        const entity = pack.index.find(t => t.name === name);
+        if (entity) {
+          return await pack.getDocument(entity._id);
+        }
+      }
+    }
+  }
+
   static clearCache() {
     CONFIG.temporary = {};
   }
@@ -184,7 +247,7 @@ export default class ImportHelpers {
 
           const content = await pack.getDocuments();
           for (var i = 0; i < content.length; i++) {
-            CONFIG.temporary[packid][content[i].flags?.genesysk2?.ffgimportid] = deepClone(content[i]);
+            CONFIG.temporary[packid][content[i].flags?.genesysk2?.ffgimportid] = foundry.utils.deepClone(content[i]);
           }
         }
       } else {
@@ -269,6 +332,10 @@ export default class ImportHelpers {
         if (mod.SetbackCount) {
           modtype = "Skill Remove Setback";
           value = parseInt(mod.SetbackCount, 10);
+        }
+        if (mod.ForceCount) {
+          modtype = "Force Boost"
+          value = true;
         }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
@@ -1633,6 +1700,7 @@ export default class ImportHelpers {
               key: nk,
               type: CharObligation.Name,
               magnitude: CharObligation.Size,
+              description: CharObligation.Notes,
             };
             character.data.obligationlist[charobligation.key] = charobligation;
             if (parseInt(CharObligation.Size, 10)) {
@@ -1645,6 +1713,7 @@ export default class ImportHelpers {
             key: nk,
             type: characterData.Character.Obligations.CharObligation.Name,
             magnitude: characterData.Character.Obligations.CharObligation.Size,
+            description: characterData.Character.Obligations.CharObligation.Notes,
           };
           character.data.obligationlist[charobligation.key] = charobligation;
           if (parseInt(characterData.Character.Obligations.CharObligation.Size, 10)) {
@@ -1930,8 +1999,8 @@ export default class ImportHelpers {
 
             if (weaponItems.length > 0) {
               for (let i = 0; i < character.items.length; i += 1) {
-                if (character.items[i].type === "weapon" && character.items[i].flags.genesysk2.ffgimportid === weapon.flags.genesysk2.ffgimportid) {
-                  character.items[i] = mergeObject(weapon, character.items[i]);
+                if (character.items[i].type === "weapon" && character.items[i].flags.genesysk2.ffgimportid === weapon.flags.starwarsffg.ffgimportid) {
+                  character.items[i] = foundry.utils.mergeObject(weapon, character.items[i]);
                 }
               }
             } else {
@@ -2158,13 +2227,13 @@ export default class ImportHelpers {
 
     const text = sourceArray.map((s) => {
       if (s?.$Page) {
-        return `[H4]Page ${s.$Page} - ${s._}[h4]`;
+        return `Page ${s.$Page} - ${s._}<br>`;
       } else {
-        return `[H4]${s}[h4]`;
+        return `${s}<br>`;
       }
     });
 
-    const sourceText = `[P][H3]Sources:[h3]${text.join("")}`;
+    const sourceText = `<p><h3>Sources:</h3>${text.join("")}</p>`;
 
     return sourceText;
   }
@@ -2210,8 +2279,9 @@ export default class ImportHelpers {
     if (!entry) {
       let compendiumItem;
       CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
-      data._id = randomID();
-      data.id = randomID();
+      data._id = foundry.utils.randomID();
+      data.id = foundry.utils.randomID();
+      data = migrateDataToSystem(data);
       switch (type) {
         case "Item":
           compendiumItem = await new CONFIG.Item.documentClass(data, { temporary: true });
@@ -2227,13 +2297,13 @@ export default class ImportHelpers {
       }
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
       const crt = await pack.importDocument(compendiumItem);
-      CONFIG.temporary[pack.collection][data.flags.genesysk2.ffgimportid] = deepClone(crt);
+      CONFIG.temporary[pack.collection][data.flags.genesysk2.ffgimportid] = foundry.utils.deepClone(crt);
       return crt;
     } else {
       CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name} : ${JSON.stringify(entry)}`);
       let upd;
       if (removeFirst) {
-        await pack.delete(entry.id);
+        await pack.delete(entry._id);
         let compendiumItem;
         CONFIG.logger.debug(`Importing ${type} ${dataType} ${data.name}`);
         switch (type) {
@@ -2249,13 +2319,15 @@ export default class ImportHelpers {
           default:
             CONFIG.logger.error(`Unable to import item type ${type}, unhandled type.`);
         }
+
+        compendiumItem = migrateDataToSystem(compendiumItem);
         CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
         upd = await pack.importDocument(compendiumItem);
       } else {
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name}`);
 
         let updateData = data;
-        updateData["_id"] = entry.id;
+        updateData["_id"] = entry._id;
 
         if (updateData?.data?.attributes) {
           // Remove and repopulate all modifiers
@@ -2282,17 +2354,26 @@ export default class ImportHelpers {
           }
         }
 
+        upd = foundry.utils.duplicate(entry);
+        updateData = migrateDataToSystem(updateData);
         CONFIG.logger.debug(`Updating ${type} ${dataType} ${data.name} : ${JSON.stringify(updateData)}`);
         try {
+          if (dataType === "vehicle") {
+            // don't re-import items for existing vehicles, in order to avoid duplicating them
+            updateData.items = [];
+          }
           await pack.get(updateData._id).update(updateData);
+          // update here does not return the UUID, so retrieve the item from the pack to get it
+          const updatedItem = await pack.get(updateData._id);
+          upd.uuid = updatedItem.uuid;
         } catch (e) {
           CONFIG.logger.error(`Failed to update ${type} ${dataType} ${data.name} : ${e.toString()}`);
         }
-        upd = duplicate(entry);
         if (upd.data) {
-          upd.data = mergeObject(upd.data, data.data);
+          upd.data = foundry.utils.mergeObject(upd.data, data.data);
         }
       }
+      upd = migrateDataToSystem(upd);
       CONFIG.temporary[pack.collection][data.flags.genesysk2.ffgimportid] = upd;
       return upd;
     }
@@ -2300,13 +2381,12 @@ export default class ImportHelpers {
 
   static async getCompendiumPack(type, name) {
     CONFIG.logger.debug(`Checking for existing compendium pack ${name}`);
-    const searchName = "world." + name.toString().replaceAll(".", "").toLowerCase();
-    let pack = game.packs.get(searchName);
+    const searchName = "starwarsffg." + name.toString().replaceAll(".", "").toLowerCase();
+    const pack = game.packs.get(searchName);
     if (!pack) {
-      CONFIG.logger.debug(`Compendium pack ${name} not found, creating new`);
-      pack = await CompendiumCollection.createCompendium({ type: type, label: name });
+      return ui.notifications.error(`Could not find compendium pack ${name}! (try restarting Foundry)`);
     } else {
-      CONFIG.logger.debug(`Existing compendium pack ${name} found`);
+      await pack.configure({locked: false});
     }
 
     return pack;
@@ -2355,6 +2435,10 @@ export default class ImportHelpers {
         if (mod.SetbackCount) {
           modtype = "Skill Remove Setback";
           value = parseInt(mod.SetbackCount, 10);
+        }
+        if (mod.ForceCount) {
+          modtype = "Force Boost"
+          value = true;
         }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
@@ -2412,7 +2496,7 @@ export default class ImportHelpers {
       } else if (dieMod.SkillKey) {
         // this is a skill modifier
         const skillModifier = ImportHelpers.processSkillMod({ Key: dieMod.SkillKey, ...dieMod });
-        output.attributes[skillModifier.type] = skillModifier.value;
+        output.attributes[skillModifier.type.replace(" ", "_")] = skillModifier.value;
       } else if (dieMod.SkillChar) {
         // this is a skill modifier based on characteristic (ex all Brawn skills);
         const skillTheme = await game.settings.get("genesysk2", "skilltheme");
@@ -2489,8 +2573,8 @@ export default class ImportHelpers {
             const compendiumEntry = await ImportHelpers.findCompendiumEntityByImportId("Item", modifier.Key);
             if (compendiumEntry) {
               if (compendiumEntry?.type === "itemmodifier") {
-                const descriptor = duplicate(compendiumEntry);
-                descriptor.id = randomID();
+                const descriptor = foundry.utils.duplicate(compendiumEntry);
+                descriptor.id = foundry.utils.randomID();
                 descriptor.system.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
                 output.itemmodifier.push(descriptor);
                 let rank = "";
@@ -2512,28 +2596,31 @@ export default class ImportHelpers {
         } else if (modifier.DieModifiers) {
           // this is a die modifier
           const dieModifiers = await ImportHelpers.processDieMod(modifier.DieModifiers);
-          output.attributes = mergeObject(output.attributes, dieModifiers.attributes);
+          output.attributes = foundry.utils.mergeObject(output.attributes, dieModifiers.attributes);
         } else {
           unique_mods++;
           // this is just a text modifier
           const unique = {
             name: `Unique Mod ${unique_mods}`,
             type: "itemmodifier",
-            data: {
+            system: {
               description: modifier.MiscDesc,
               attributes: {},
               type: "all",
               rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
             },
           };
-          const descriptor = await Item.create(unique, { temporary: true });
+          const descriptor = await Item.create(
+              unique,
+              { temporary: true }
+          );
           let rank = "";
-          if (unique.data.rank > 1) {
-            rank = `${game.i18n.localize("SWFFG.Count")} ${unique.data.rank}`;
+          if (unique.system.rank > 1) {
+            rank = `${game.i18n.localize("SWFFG.Count")} ${unique.system.rank}`;
           }
 
-          output.description += `<div>${unique.data.description} ${rank}</div>`;
-          output.itemmodifier.push(descriptor.data);
+          output.description += `<div>${unique.system.description} ${rank}</div>`;
+          output.itemmodifier.push(descriptor);
         }
       });
     }
@@ -2593,7 +2680,7 @@ export default class ImportHelpers {
         }
 
         if (type) {
-          attributes[randomID()] = { mod: type, modtype, value };
+          attributes[foundry.utils.randomID()] = { mod: type, modtype, value };
         }
       });
     }
@@ -2618,10 +2705,10 @@ export default class ImportHelpers {
           if (Object.keys(CONFIG.FFG.skills).includes(mod)) {
             if (mod) {
               const modtype = "Career Skill";
-              attributes[randomID()] = { mod, modtype, value: true };
+              attributes[foundry.utils.randomID()] = { mod, modtype, value: true };
 
               if (includeRank) {
-                attributes[randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+                attributes[foundry.utils.randomID()] = { mod, modtype: "Skill Rank", value: 0 };
               }
             } else {
               CONFIG.logger.warn(`Skill ${skill} was not found in the current skills list.`);
@@ -2646,7 +2733,7 @@ export default class ImportHelpers {
 
     if (item.templates) {
       item.templates.forEach((i) => {
-        item = mergeObject(item, obj.templates[i]);
+        item = foundry.utils.mergeObject(item, obj.templates[i]);
       });
       delete item.templates;
     }

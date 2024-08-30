@@ -21,7 +21,7 @@ export default class DestinyTracker extends FormApplication {
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "destiny-tracker",
       classes: ["genesysk2"],
       title: "Destiny Tracker",
@@ -62,13 +62,7 @@ export default class DestinyTracker extends FormApplication {
   _updateObject(event, formData) {};
 
   /** @override */
-  async close(options = {}) {
-    let menu = $("#menu");
-    if (menu.length === 0) {
-      menu = new MainMenu();
-    }
-      menu.toggle();
-  };
+  async close(options = {}) {};
 
   /** @override */
   activateListeners(html) {
@@ -141,9 +135,9 @@ export default class DestinyTracker extends FormApplication {
           }
 
           messageText = `<div class="destiny-flip ${flipType}">
-          <div class="destiny-title">${game.i18n.localize("SWFFG.DestinyFlipMessage")}: <span>${typeName}</span></div>
-          <div class="destiny-left">${game.i18n.localize(game.settings.get("genesysk2", "destiny-pool-dark"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.dark}</div>
-          <div class="destiny-left">${game.i18n.localize(game.settings.get("genesysk2", "destiny-pool-light"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.light}</div>
+          <div class="destiny-title">${game.i18n.localize("SWFFG.DestinyFlipMessage")}: <span class="${typeName}">${typeName}</span></div>
+          <div class="destiny-left ${flipType !== "dPoolDark"} dark">${game.i18n.localize(game.settings.get("genesysk2", "destiny-pool-dark"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.dark}</div>
+          <div class="destiny-left ${flipType !== "dPoolLight"} light">${game.i18n.localize(game.settings.get("genesysk2", "destiny-pool-light"))} ${game.i18n.localize("SWFFG.DestinyFlipRemaining")}: ${pool.light}</div>
           </div>`;
         }
       } else if (add) {
@@ -182,7 +176,7 @@ export default class DestinyTracker extends FormApplication {
     game.socket.on("system.genesysk2", async (...args) => {
       if (args[0]?.canIRollDestinyResponse === game.user.id && !game.user.isGM) {
         if (!args[0]?.rolled) {
-          const roll = this._rollDestiny();
+          const roll = await this._rollDestiny();
           await game.socket.emit("system.genesysk2", { destiny: game.user.id, light: roll.ffg.light, dark: roll.ffg.dark });
         } else {
           ui.notifications.error(`${game.i18n.localize("SWFFG.DestinyAlreadyRolled")}`);
@@ -305,13 +299,13 @@ export default class DestinyTracker extends FormApplication {
     this.isRunningQueue = false;
   }
 
-  _rollDestiny() {
+  async _rollDestiny() {
     const pool = new DicePoolFFG({
       force: 1,
     });
 
     const roll = new game.ffg.RollFFG(pool.renderDiceExpression());
-    roll.toMessage({
+    await roll.toMessage({
       user: game.user.id,
       flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.DestinyPool")}...`,
     });

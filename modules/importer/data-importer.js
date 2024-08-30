@@ -8,7 +8,7 @@ import OggDude from "./oggdude/oggdude.js";
 export default class DataImporter extends FormApplication {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "data-importer",
       classes: ["genesysk2", "data-import"],
       title: "Data Importer",

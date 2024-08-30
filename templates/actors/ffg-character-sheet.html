@@ -29,7 +29,8 @@
                     <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
                 </td>
-                <td style="{{#if limited}}display:none;{{/if}}" class="ffg-purchase" data-buy-action="signatureability">
+                <td style="{{#if limited}}display:none;{{/if}}">
+                  <i class="fas fa-dollar ffg-purchase" data-buy-action="signatureability" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SignatureAbility"}}"></i>
                   {{localize "SWFFG.SignatureAbilities"}}:
                 </td>
                 <td style="{{#if limited}}display:none;{{/if}}">
@@ -53,8 +54,9 @@
                   <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
                 </td>
-                <td class="ffg-purchase" data-buy-action="forcepower">
+                <td>
                   {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
+                  <i class="fas fa-dollar ffg-purchase" data-buy-action="forcepower" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.ForcePower"}}"></i>
                   {{localize "SWFFG.ForcePowers"}}:
                   {{/if}}
                 </td>
@@ -71,7 +73,8 @@
                 </td>
               </tr>
               <tr style="{{#if limited}}display:none;{{/if}}">
-                <td class="ffg-purchase" data-buy-action="specialization">
+                <td>
+                  <i class="fas fa-dollar ffg-purchase" data-buy-action="specialization" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.Specialization" }}"></i>
                   {{localize "SWFFG.Specializations"}}:
                 </td>
                 <td>
@@ -109,17 +112,17 @@
       <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
         <div class="container flex-group-center">
           {{!-- Wounds Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}}
-          {{#if (or (eq actor.flags.genesysk2.config.enableStrainThreshold undefined) (eq actor.flags.starwarsffg.config.enableStrainThreshold true) )}}
+          {{#if (or (eq actor.flags.genesysk2.config.enableStrainThreshold undefined) (eq actor.flags.genesysk2.config.enableStrainThreshold true) )}}
           {{!-- Strain Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}}
           {{/if}}
           {{!-- Soak Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
-          {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
+          {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") ))}}
         </div>
       </div>
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) (object tab="obligation" label="SWFFG.TabObligationDutyMorality" icon="fas fa-balance-scale" cls=classType isHidden=true isHiddenV2=hideObligationDutyMoralityConflictTab) (object tab="xp" label="SWFFG.TabXpLog" icon="far fa-note" cls=classType isHidden=true) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="crits" label="SWFFG.TabCrits" icon="fa-solid fa-notes-medical" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) (object tab="obligation" label="SWFFG.TabObligationDutyMorality" icon="fas fa-balance-scale" cls=classType isHidden=true isHiddenV2=hideObligationDutyMoralityConflictTab) (object tab="xp" label="SWFFG.TabXpLog" icon="far fa-note" cls=classType isHidden=true) )}} {{!-- Sheet Body --}}
   <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}
     <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
@@ -130,10 +133,10 @@
         <div class="characteristic-item flex-group-center" data-ability="{{id}}">
           <div class="characteristic">
             <div class="characteristic-value">
-              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-7]" />
+              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" pattern="[0-{{ ../maxAttribute }}]" />
             </div>
           </div>
-          <div class="characteristic-label">
+          <div class="characteristic-label ffg-purchase" data-buy-action="characteristic" data-buy-characteristic="{{ id }}">
             {{characteristic.label}}
           </div>
         </div>
@@ -170,16 +173,22 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor data.biography target="system.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.enrichedBio target="system.biography" button=true editable=editable }}
       </div>
 
       <div class="container flex-group-center biography-values">
-        {{> "systems/genesysk2/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}} {{!-- Experience Box --}}
+        {{> "systems/genesysk2/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
 
         <div class="grid bio-grid">
-          {{!-- Experience Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}} {{!-- Obligation Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableObligation undefined) (eq actor.flags.genesysk2.config.enableObligation true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" type="Number" name="data.obligation.value" value=data.obligation.value )}} {{/if}} {{!-- Duty Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableDuty undefined) (eq actor.flags.genesysk2.config.enableDuty true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'")}} {{/if}} {{!-- Morality Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableMorality undefined) (eq actor.flags.genesysk2.config.enableMorality true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}} {{!-- Conflict Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableConflict undefined) (eq actor.flags.genesysk2.config.enableConflict true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}}
+          {{!-- Experience Box MODIF ZOL A TESTER--}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}} {{!-- Obligation Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableObligation undefined) (eq actor.flags.genesysk2.config.enableObligation true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" type="Number" name="data.obligation.value" value=data.obligation.value )}} {{/if}} {{!-- Duty Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableDuty undefined) (eq actor.flags.genesysk2.config.enableDuty true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'")}} {{/if}} {{!-- Morality Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableMorality undefined) (eq actor.flags.genesysk2.config.enableMorality true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}} {{!-- Conflict Box --}} {{#if (or (eq actor.flags.genesysk2.config.enableConflict undefined) (eq actor.flags.genesysk2.config.enableConflict true) )}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}} {{/if}}
         </div>
       </div>
+    </div>
+
+    {{!-- Critical injuries Tab --}}
+    <div class="tab crits items" data-group="primary" data-tab="crits">
+      {{!-- Talents List --}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}} {{!-- Experience Box --}}
     </div>
 
     {{!-- Modifiers Tab --}}
@@ -195,7 +204,7 @@
           </div>
         </div>
         <div class="block-editor">
-          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.NotableFeature" type="PopoutEditor" name="data.general.features" value=data.general.features)}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.Notes" type="PopoutEditor" name="data.general.notes" value=data.general.notes)}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.NotableFeature" type="PopoutEditor" name="data.general.features" value=data.general.enrichedFeatures)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.Notes" type="PopoutEditor" name="data.general.notes" value=data.general.enrichedNotes)}}
         </div>
       </div>
       <div>
@@ -241,10 +250,29 @@
     </div>
 
     <div class="tab xp" data-group="primary" data-tab="xp">
-      {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog)}}
+      {{!-- Experience Box --}}
+        {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}}
+      {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog readonly=true)}}
     </div>
 
     <div class="tab obligation" data-group="primary" data-tab="obligation">
+      {{!-- Obligation Tab --}}
+      {{!-- Obligation Box --}}
+        {{#if (or (eq actor.flags.genesysk2.config.enableObligation undefined) (eq actor.flags.genesysk2.config.enableObligation true) )}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionObligation" headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" type="Number" name="data.obligation.value" value=data.obligation.value )}}
+        {{/if}}
+      {{!-- Duty Box --}}
+        {{#if (or (eq actor.flags.genesysk2.config.enableDuty undefined) (eq actor.flags.genesysk2.config.enableDuty true) )}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionDuty" type="Number" name="data.duty.value" value=data.duty.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'")}}
+        {{/if}}
+      {{!-- Morality Box --}}
+        {{#if (or (eq actor.flags.genesysk2.config.enableMorality undefined) (eq actor.flags.genesysk2.config.enableMorality true) )}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionMorality" type="Number" name="data.morality.value" value=data.morality.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}}
+        {{/if}}
+      {{!-- Conflict Box --}}
+        {{#if (or (eq actor.flags.genesysk2.config.enableConflict undefined) (eq actor.flags.genesysk2.config.enableConflict true) )}}
+          {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.DescriptionConflict" type="Number" name="data.conflict.value" value=data.conflict.value headerlink=true headerclass="alt-tab" headerattributes="data-tab='obligation'" )}}
+        {{/if}}
       {{#if (or (eq actor.flags.genesysk2.config.enableObligation undefined) (eq actor.flags.genesysk2.config.enableObligation true) )}}
       <div class="resource full">
         <div class="attribute flex-group-center">
@@ -255,27 +283,33 @@
             <div class="block-attribute">
               <table>
                 <thead>
+                <tr>
                   <th>{{localize "SWFFG.Type"}}</th>
                   <th>{{localize "SWFFG.Magnitude"}}</th>
+                  <th>{{localize "SWFFG.MotivationDescription"}}</th>
                   <th>
                     <a class="add-obligation"><i class="far fa-plus-square"></i></a>
                   </th>
-                </thead>
-                {{#each data.obligationlist as |obligation id|}}
-                <tr>
-                  <td><input type="text" name="data.obligationlist.{{id}}.type" value="{{obligation.type}}" data-dtype="String" /></td>
-                  <td><input type="text" name="data.obligationlist.{{id}}.magnitude" value="{{obligation.magnitude}}" data-dtype="String" /></td>
-                  <td>
-                    <a class="remove-obligation" data-id="{{id}}"><i class="fas fa-trash"></i></a>
-                  </td>
+                  <th></th>
                 </tr>
+                </thead>
+                <tbody>
+                {{#each data.obligationlist as |obligation id|}}
+                  <tr>
+                    <td><input type="text" name="data.obligationlist.{{id}}.type" value="{{obligation.type}}" data-dtype="String" /></td>
+                    <td><input type="text" name="data.obligationlist.{{id}}.magnitude" value="{{obligation.magnitude}}" data-dtype="String" /></td>
+                    <td><textarea name="data.obligationlist.{{id}}.description">{{obligation.description}}</textarea></td>
+                    <td><a class="remove-obligation" data-id="{{id}}"><i class="fas fa-trash"></i></a></td>
+                  </tr>
                 {{/each}}
+                </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
-      {{/if}} {{#if (or (eq actor.flags.genesysk2.config.enableDuty undefined) (eq actor.flags.genesysk2.config.enableDuty true) )}}
+      {{/if}}
+      {{#if (or (eq actor.flags.genesysk2.config.enableDuty undefined) (eq actor.flags.genesysk2.config.enableDuty true) )}}
       <div class="resource full">
         <div class="attribute flex-group-center">
           <div class="block-background">
@@ -285,21 +319,26 @@
             <div class="block-attribute">
               <table>
                 <thead>
+                <tr>
                   <th>{{localize "SWFFG.Type"}}</th>
                   <th>{{localize "SWFFG.Magnitude"}}</th>
+                  <th>{{localize "SWFFG.MotivationDescription"}}</th>
                   <th>
                     <a class="add-duty"><i class="far fa-plus-square"></i></a>
                   </th>
-                </thead>
-                {{#each data.dutylist as |duty id|}}
-                <tr>
-                  <td><input type="text" name="data.dutylist.{{id}}.type" value="{{duty.type}}" data-dtype="String" /></td>
-                  <td><input type="text" name="data.dutylist.{{id}}.magnitude" value="{{duty.magnitude}}" data-dtype="String" /></td>
-                  <td>
-                    <a class="remove-duty" data-id="{{id}}"><i class="fas fa-trash"></i></a>
-                  </td>
+                  <th></th>
                 </tr>
+                </thead>
+                <tbody>
+                {{#each data.dutylist as |duty id|}}
+                  <tr>
+                    <td><input type="text" name="data.dutylist.{{id}}.type" value="{{duty.type}}" data-dtype="String" /></td>
+                    <td><input type="text" name="data.dutylist.{{id}}.magnitude" value="{{duty.magnitude}}" data-dtype="String" /></td>
+                    <td><textarea name="data.dutylist.{{id}}.description">{{duty.description}}</textarea></td>
+                    <td><a class="remove-duty" data-id="{{id}}"><i class="fas fa-trash"></i></a></td>
+                  </tr>
                 {{/each}}
+                </tbody>
               </table>
             </div>
           </div>

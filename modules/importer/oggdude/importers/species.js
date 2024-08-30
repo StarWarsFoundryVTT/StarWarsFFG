@@ -27,6 +27,13 @@ export default class Species {
               attributes: {},
               description: item.Description,
               talents: {},
+              abilities: {},
+              startingXP: item.StartingAttrs.Experience ? parseInt(item.StartingAttrs.Experience, 10) : 0,
+              metadata: {
+                tags: [
+                  "species",
+                ],
+              },
             };
 
             // populate starting characteristics
@@ -84,7 +91,7 @@ export default class Species {
             if (item?.TalentModifiers?.TalentModifier) {
               for (const talentData of Object.values(item.TalentModifiers)) {
                 const talentKey = talentData.Key;
-                let talent = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, "world.oggdudetalents", "talent", true);
+                let talent = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, "starwarsffg.oggdudetalents", "talent", true);
                 if (!talent) {
                   continue;
                 }
@@ -103,19 +110,47 @@ export default class Species {
 
               data.data.description += "<h4>Abilities</h4>";
 
+              // populate abilities
               await ImportHelpers.asyncForEach(item.OptionChoices.OptionChoice, async (o) => {
                 let option = o.Options.Option;
                 if (!Array.isArray(o.Options.Option)) {
                   option = [o.Options.Option];
                 }
 
+                for (const curOption of option) {
+                  data.data.abilities[foundry.utils.randomID()] = {
+                    name: curOption.Name,
+                    type: "ability",
+                    system: {
+                      description: curOption.Description,
+                    },
+                  };
+                }
+
                 if (option[0].DieModifiers) {
                   const dieModifiers = await ImportHelpers.processDieMod(option[0].DieModifiers);
-                  data.data.attributes = mergeObject(data.data.attributes, dieModifiers.attributes);
+                  data.data.attributes = foundry.utils.mergeObject(data.data.attributes, dieModifiers.attributes);
                 }
 
                 data.data.description += `<p>${option[0].Name} : ${option[0].Description}</p>`;
               });
+            }
+
+            // populate tags
+            try {
+              if (Array.isArray(item.Categories.Category)) {
+                for (const tag of item.Categories.Category) {
+                  data.data.metadata.tags.push(tag.toLowerCase());
+                }
+              } else {
+                data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+              }
+            } catch (err) {
+              CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+            }
+            if (item?.Type) {
+              // the "type" can be useful as a tag as well
+              data.data.metadata.tags.push(item.Type.toLowerCase());
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Species", "", data.flags.genesysk2.ffgimportid);

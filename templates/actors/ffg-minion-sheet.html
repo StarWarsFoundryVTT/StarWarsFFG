@@ -12,7 +12,7 @@
               {{!-- Quantity Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.MinionQuantity" fields=(array (object name="data.quantity.max" value=data.quantity.max type="Number" label="SWFFG.MinionQuantityMax") (object name="data.quantity.value" value=data.quantity.value type="Number" label="SWFFG.MinionQuantityAlive" disabled=true) ))}}
               {{#if limited}}{{else}}
               {{!-- Soak Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value )}}
-              {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
+              {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") ))}}
               {{/if}}
             </div>
           </div>

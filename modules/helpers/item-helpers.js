@@ -2,7 +2,7 @@ import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
   static async itemUpdate(event, formData) {
-    formData = expandObject(formData);
+    formData = foundry.utils.expandObject(formData);
 
     if (this.object.isEmbedded && this.object.actor?.compendium?.metadata) {
       return;
@@ -16,7 +16,7 @@ export default class ItemHelpers {
     }
 
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData)?.data?.attributes || {};
+    const formAttrs = foundry.utils.expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
       delete v["key"];
@@ -33,14 +33,14 @@ export default class ItemHelpers {
 
     // recombine attributes to formData
     if (Object.keys(attributes).length > 0) {
-      setProperty(formData, `data.attributes`, attributes);
+      foundry.utils.setProperty(formData, `data.attributes`, attributes);
     }
 
     // migrate data to v10 structure
     let updated_id = formData._id;
     delete formData._id;
 
-    setProperty(formData, `flags.genesysk2.loaded`, false);
+    foundry.utils.setProperty(formData, `flags.genesysk2.loaded`, false);
     await this.object.update(formData);
     await this.render(true);
 
@@ -52,12 +52,12 @@ export default class ItemHelpers {
           const spec = await fromUuid(parent.id);
           if (spec) {
             let updateData = {};
-            setProperty(updateData, `data.talents.${parent.talent}.name`, formData.name);
-            setProperty(updateData, `data.talents.${parent.talent}.description`, formData.data.description);
-            setProperty(updateData, `data.talents.${parent.talent}.activation`, formData.data.activation.value);
-            setProperty(updateData, `data.talents.${parent.talent}.isRanked`, formData.data.ranks.ranked);
-            setProperty(updateData, `data.talents.${parent.talent}.isForceTalent`, formData.data.isForceTalent);
-            setProperty(updateData, `data.talents.${parent.talent}.isConflictTalent`, formData.data.isConflictTalent);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.name`, formData.name);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.description`, this.object.system.description);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.activation`, formData.data.activation.value);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.isRanked`, formData.data.ranks.ranked);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.isForceTalent`, formData.data.isForceTalent);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.isConflictTalent`, formData.data.isConflictTalent);
 
             // Remove attributes which are no longer used
             if (spec?.system?.talents?.[parent.talent]?.attributes) {
@@ -66,17 +66,17 @@ export default class ItemHelpers {
               }
             }
 
-            setProperty(updateData, `data.talents.${parent.talent}.attributes`, formData.data.attributes);
+            foundry.utils.setProperty(updateData, `data.talents.${parent.talent}.attributes`, formData.data.attributes);
 
             if (parent.id.includes(".OwnedItem.")) {
               const ids = parent.id.split(".OwnedItem.");
               const actor = await fromUuid(ids[0]);
               const item = await actor.items.get(ids[1]);
-              setProperty(updateData, `flags.genesysk2.loaded`, false);
+              foundry.utils.setProperty(updateData, `flags.genesysk2.loaded`, false);
               await item.update(updateData);
               await item.sheet.render(true);
             } else {
-              setProperty(updateData, `flags.genesysk2.loaded`, false);
+              foundry.utils.setProperty(updateData, `flags.genesysk2.loaded`, false);
               await spec.update(updateData);
               await spec.sheet.render(true);
             }
@@ -104,6 +104,11 @@ export default class ItemHelpers {
       );
       delete updatedData.data;
     }
+    // Initialize updatedData.system if the key is present with no value
+    if (Object.keys(updatedData).includes('system') && typeof updatedData.system === "undefined") 
+      {
+        updatedData.system = {};
+      }
     return updatedData;
   }
 }

@@ -60,7 +60,7 @@ export class GroupManager extends FormApplication {
    * @return {Object}   The data provided to the template when rendering the form
    */
   getData() {
-    const players = game.users.contents.filter((u) => !u.isGM && u.active);
+    const players = game.users.contents.filter((u) => (!u.isGM || game.settings.get("starwarsffg", "GMCharactersInGroupManager")) && u.active);
     if (players.length > 0) {
       players.connected = true;
     }
@@ -227,7 +227,7 @@ export class GroupManager extends FormApplication {
    * @private
    */
   _updateObject(event, formData) {
-    const formDPool = expandObject(formData).dPool || {};
+    const formDPool = foundry.utils.expandObject(formData).dPool || {};
     game.settings.set("genesysk2", "dPoolLight", formDPool.light);
     game.settings.set("genesysk2", "dPoolDark", formDPool.dark);
     return formData;
@@ -323,15 +323,12 @@ export class GroupManager extends FormApplication {
   async _setupCombat(cbt) {
     // If no combat encounter is active, create one.
     if (!cbt) {
-      let scene = game.scenes.viewed;
-      if (!scene) return;
-      let cbt = await game.combats.object.create({ scene: scene.id, active: true });
-      await cbt.activate();
+      cbt = await Combat.create({scene: canvas.scene.id, active: true});
     }
   }
 
   async _grantXP(character) {
-    const id = randomID();
+    const id = foundry.utils.randomID();
     const description = game.i18n.localize("SWFFG.GrantXPTo") + ` ${character.name}...`;
     const content = await renderTemplate("systems/genesysk2/templates/grant-xp.html", {
       id,
@@ -350,8 +347,8 @@ export class GroupManager extends FormApplication {
             const note = container.querySelector('input[name="note"]').value;
             const available = +character.system.experience.available + +amount.value;
             const total = +character.system.experience.total + +amount.value;
-            character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
-            character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
+            character.update({ ["system.experience.total"]: +character.system.experience.total + +amount.value });
+            character.update({ ["system.experience.available"]: +character.system.experience.available + +amount.value });
             await xpLogEarn(character, amount.value, available, total, note);
             ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
           },
@@ -365,7 +362,7 @@ export class GroupManager extends FormApplication {
   }
 
   async _bulkXP(characters) {
-    const id = randomID();
+    const id = foundry.utils.randomID();
     const description = game.i18n.localize("SWFFG.GrantXPToAllCharacters");
     const content = await renderTemplate("systems/genesysk2/templates/grant-xp.html", {
       id,
@@ -378,15 +375,19 @@ export class GroupManager extends FormApplication {
         one: {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize("SWFFG.GrantXP"),
-          callback: () => {
+          callback: async () => {
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
-            characters.forEach((c) => {
+            const note = container.querySelector('input[name="note"]').value;
+            for (const c of characters) {
               const character = game.actors.get(c);
-              character.update({ ["data.experience.total"]: +character.system.experience.total + +amount.value });
-              character.update({ ["data.experience.available"]: +character.system.experience.available + +amount.value });
+              const available = +character.system.experience.available + +amount.value;
+              const total = +character.system.experience.total + +amount.value;
+              character.update({ ["system.experience.total"]: +character.system.experience.total + +amount.value });
+              character.update({ ["system.experience.available"]: +character.system.experience.available + +amount.value });
+              await xpLogEarn(character, amount.value, available, total, note);
               ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
-            });
+            }
           },
         },
         two: {

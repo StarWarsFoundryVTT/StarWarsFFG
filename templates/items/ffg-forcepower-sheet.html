@@ -13,7 +13,7 @@
         <div class="talent-body">
           <div class="popout-editor" data-target="data.description" data-label="{{item.name}} {{localize 'SWFFG.ForceBasicPower'}}">
             <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-            {{{ffgDiceSymbols data.description}}}
+            {{{ffgDiceSymbols data.enrichedDescription}}}
           </div>
         </div>
         <div class="talent-actions">
@@ -40,9 +40,9 @@
             <div class="talent-name" data-name="{{upgrade.name}}"><input name="data.upgrades.{{key}}.name" type="text" value="{{upgrade.name}}" placeholder="{{localize 'SWFFG.ForceUpgradeName'}}" /></div>
           </div>
           <div class="talent-body">
-            <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-label="{{upgrade.name}}">
+            <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-value="data.upgrades.{{key}}.enrichedDescription" data-label="{{upgrade.name}}">
               <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-              {{{ffgDiceSymbols upgrade.description}}}
+              {{{upgrade.enrichedDescription}}}
             </div>
             <input class="talent-hidden" name="data.upgrades.{{key}}.size" type="text" value="{{upgrade.size}}" data-dtype="String" />
             <input class="talent-hidden" name="data.upgrades.{{key}}.visible" type="text" value="{{upgrade.visible}}" data-dtype="Boolean" />
@@ -50,6 +50,11 @@
         </div>
         <div class="talent-cost">{{ localize "SWFFG.Cost"}}<input name="data.upgrades.{{key}}.cost" type="text" value="{{upgrade.cost}}" data-dtype="String" /></div>
         <div class="talent-modifiers">
+          <a class="talent-action" data-itemid="{{key}}">
+            {{#if ../item.isOwned }}
+            <i class="fas fa-dollar ffg-purchase" data-buy-action="forcepower-upgrade" data-cost="{{upgrade.cost}}" data-base-item-name="{{../item.name}}" data-upgrade-name="{{ upgrade.name }}" data-upgrade-id="{{ key }}"></i>
+            {{/if}}
+          </a>
           <a class="talent-action" data-itemid="{{key}}">
             <i class="fas fa-cog"></i>
           </a>

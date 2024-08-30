@@ -85,7 +85,7 @@
             {{#if (or (eq item.flags.genesysk2.config.enablePrice undefined) (eq item.flags.genesysk2.config.enablePrice true) )}}
               {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
             {{/if}}
-            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.special.value )}}
+            {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.enrichedSpecial )}}
           </div>
           <div class="flex-group-center weapon-values hidden-content">
             {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
@@ -107,7 +107,7 @@
   <section class="sheet-body small weapon">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
-      {{editor data.renderedDesc target="system.description" button=true owner=owner editable=editable}}
+      {{editor data.enrichedDescription target="system.description" button=true owner=owner editable=editable}}
     </div>
 
     {{!-- Modifiers Tab --}}

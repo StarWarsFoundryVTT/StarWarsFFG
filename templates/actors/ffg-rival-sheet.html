@@ -58,15 +58,15 @@
       {{!-- Primary Stats Container --}}
       <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
         <div class="container flex-group-center">
-          {{!-- Wounds Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}}
-          {{!-- Soak Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
-          {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") ))}}
+          {{!-- Wounds Box  --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}}
+          {{!-- Soak Box    --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
+          {{!-- Defence Box --}} {{> "systems/genesysk2/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") ))}}
         </div>
       </div>
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/genesysk2/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="crits" label="SWFFG.TabCrits" icon="fa-solid fa-notes-medical" cls=classType) (object tab="general" label="SWFFG.TabGeneral" icon="fas fa-address-card" cls=classType isHidden=true) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}
     <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
@@ -77,7 +77,7 @@
         <div class="characteristic-item flex-group-center" data-ability="{{id}}">
           <div class="characteristic">
             <div class="characteristic-value">
-              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-7]" />
+              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-{{ ../maxAttribute }}]" />
             </div>
           </div>
           <div class="characteristic-label">
@@ -121,8 +121,16 @@
       </div>
 
       <div class="container flex-group-center biography-values">
-        {{> "systems/genesysk2/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
+        {{#if (contains classType "V2")}}{{else}}
+          {{> "systems/genesysk2/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
+        {{/if}}
       </div>
+    </div>
+
+    {{!-- Critical injuries Tab --}}
+    <div class="tab crits items" data-group="primary" data-tab="crits">
+      {{!-- Talents List --}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}} {{!-- Experience Box --}}
     </div>
 
     {{!-- Modifiers Tab --}}

@@ -2,10 +2,10 @@
   "id": "genesysk2",
   "title": "K² Genesys avancé",
   "description": "Un système pour pouvoir jouer à K² avec Genesys.",
-  "version": "1.809",
+  "version": "1.903",
   "compatibility": {
-    "minimum": 10,
-    "verified": 11
+    "minimum": 12,
+    "verified": 12
   },
   "media": [
     {
@@ -20,7 +20,374 @@
   "styles": ["styles/starwarsffg.css", "lib/select2/select2.min.css", "lib/pure/grids-min.css"],
   "scripts": ["lib/select2/select2.min.js", "lib/jszip/jszip.min.js", "lib/jxon/jxon.min.js"],
   "socket": true,
-  "packs": [],
+  "packs": [
+    {
+      "name": "oggdudearmor",
+      "label": "Armor",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudecareers",
+      "label": "Careers",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudeforcepowers",
+      "label": "Force Powers",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudegear",
+      "label": "Gear",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudesignatureabilities",
+      "label": "Signature Abilities",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudeskilldescriptions",
+      "label": "Skill Descriptions",
+      "banner": "ui/banners/journalentry-banner.webp",
+      "type": "JournalEntry",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudespecializations",
+      "label": "Specializations",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudespecies",
+      "label": "Species",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudetalents",
+      "label": "Talents",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudevehiclesplanetary",
+      "label": "Vehicles - Planetary",
+      "banner": "ui/banners/actor-banner.webp",
+      "type": "Actor",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudevehiclesspace",
+      "label": "Vehicles - Space",
+      "banner": "ui/banners/actor-banner.webp",
+      "type": "Actor",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudevehicleweapons",
+      "label": "Vehicles - Weapons",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudeweapons",
+      "label": "Weapons",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudearmorattachments",
+      "label": "Armor Attachments",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudeweaponattachments",
+      "label": "Weapon Attachments",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudevehicleattachments",
+      "label": "Vehicle Attachments",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudegenericattachments",
+      "label": "Generic Attachments",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudevehiclemods",
+      "label": "Vehicle Mods",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudearmormods",
+      "label": "Armor Mods",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudeweaponmods",
+      "label": "Weapon Mods",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "oggdudegenericmods",
+      "label": "Generic Mods",
+      "banner": "ui/banners/item-banner.webp",
+      "type": "Item",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    },
+    {
+      "name": "swaadversaries",
+      "label": "Star Wars Adversaries",
+      "banner": "ui/banners/actor-banner.webp",
+      "type": "Actor",
+      "system": "starwarsffg",
+      "ownership": {
+        "GAMEMASTER": "OWNER",
+        "TRUSTED": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "flags": {}
+    }
+  ],
+  "packFolders": [
+    {
+      "name": "Vehicles",
+      "sorting": "a",
+      "color": "",
+      "packs": [
+        "oggdudevehiclesplanetary",
+        "oggdudevehiclesspace",
+        "oggdudevehicleweapons"
+      ],
+      "folders": [
+        {
+          "name": "Attachments",
+          "sorting": "a",
+          "color": "",
+          "packs": [
+            "oggdudevehicleattachments"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Mods",
+          "sorting": "a",
+          "color": "",
+          "packs": [
+            "oggdudevehiclemods"
+          ],
+          "folders": []
+        }
+      ]
+    },
+    {
+      "name": "Equipment",
+      "sorting": "a",
+      "color": "",
+      "packs": [
+        "oggdudearmor",
+        "oggdudegear",
+        "oggdudeweapons"
+      ],
+      "folders": [
+        {
+          "name": "Attachments",
+          "sorting": "a",
+          "color": "",
+          "packs": [
+            "oggdudearmorattachments",
+            "oggdudeweaponattachments",
+            "oggdudegenericattachments"
+          ],
+          "folders": []
+        },
+        {
+          "name": "Mods",
+          "sorting": "a",
+          "color": "",
+          "packs": [
+            "oggdudearmormods",
+            "oggdudeweaponmods",
+            "oggdudegenericmods"
+          ],
+          "folders": []
+        }
+      ]
+    },
+    {
+      "name": "Actor Items",
+      "sorting": "a",
+      "color": "",
+      "packs": [
+        "oggdudecareers",
+        "oggdudeforcepowers",
+        "oggdudesignatureabilities",
+        "oggdudespecializations",
+        "oggdudespecies",
+        "oggdudetalents"
+      ],
+      "folders": []
+    }
+  ],
   "languages": [
     {
       "lang": "en",
@@ -48,8 +415,10 @@
       "path": "lang/pt-BR.json"
     }
   ],
-  "gridDistance": 1.5,
-  "gridUnits": "m",
+  "grid": {
+    "distance": 1.5,
+    "units": "m"
+  },
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/ZolOnTheNet/genesysK2",

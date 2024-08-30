@@ -28,6 +28,11 @@ export default class Career {
               description: item.Description,
               specializations: {},
               signatureabilities: {},
+              metadata: {
+                tags: [
+                    "career",
+                ],
+              },
             };
 
             data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
@@ -36,12 +41,12 @@ export default class Career {
             item.CareerSkills.Key.forEach((skillKey) => {
               let skill = CONFIG.temporary.skills[skillKey];
               if (skill) {
-                data.data.attributes[`attr${randomID()}`] = {
+                data.data.attributes[`attr${foundry.utils.randomID()}`] = {
                   mod: skill,
                   modtype: "Career Skill",
                   value: true,
                 };
-                data.data.attributes[`attr${randomID()}`] = {
+                data.data.attributes[`attr${foundry.utils.randomID()}`] = {
                   mod: skill,
                   modtype: "Skill Rank",
                   value: 0,
@@ -54,7 +59,7 @@ export default class Career {
               Object.keys(item.Attributes).forEach((attr) => {
                 switch (attr) {
                   case "ForceRating": {
-                    data.data.attributes[`attr${randomID()}`] = {
+                    data.data.attributes[`attr${foundry.utils.randomID()}`] = {
                       mod: "ForcePool",
                       modtype: "Stat",
                       value: item.Attributes[attr],
@@ -68,7 +73,7 @@ export default class Career {
             // process specializations
             if (item?.Specializations) {
               for (const specializationKey of Object.values(item.Specializations.Key)) {
-                let specializationItem = await ImportHelpers.findCompendiumEntityByImportId("Item", specializationKey, "world.oggdudespecializations", "specialization");
+                let specializationItem = await ImportHelpers.findCompendiumEntityByImportId("Item", specializationKey, "starwarsffg.oggdudespecializations", "specialization");
                 if (!specializationItem) {
                   continue;
                 }
@@ -78,6 +83,23 @@ export default class Career {
                   id: specializationItem._id,
                 }
               }
+            }
+
+            // populate tags
+            try {
+              if (Array.isArray(item.Categories.Category)) {
+                for (const tag of item.Categories.Category) {
+                  data.data.metadata.tags.push(tag.toLowerCase());
+                }
+              } else {
+                data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+              }
+            } catch (err) {
+              CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+            }
+            if (item?.Type) {
+              // the "type" can be useful as a tag as well
+              data.data.metadata.tags.push(item.Type.toLowerCase());
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Career", "", data.flags.starwarsffg.ffgimportid);

@@ -6,6 +6,45 @@ import ModifierHelpers from "../helpers/modifiers.js";
  * @extends {Actor}
  */
 export class ActorFFG extends Actor {
+  
+  static async create(data, options) {
+    const createData = data;
+
+    // Only apply defaults for newly created actors
+    if (!(typeof data.system === "undefined")) {
+      return super.create(createData, options);
+    }
+    
+    switch (createData.type) {
+      case "minion":
+        createData.prototypeToken = {
+          actorLink: false,
+          disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+        };
+        break;
+      case "character":
+        createData.prototypeToken = {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+        };
+        break;
+      case "rival":
+        createData.prototypeToken = {
+          actorLink: false,
+          disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+          prependAdjective: game.settings.get("starwarsffg", "RivalTokenPrepend"),
+        };
+        break;
+      case "nemesis":
+        createData.prototypeToken = {
+          actorLink: true,
+          disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+        };
+        break;
+    }
+    return super.create(createData, options);
+  }
+
   /**
    * Augment the basic actor data with additional dynamic data.
    */
@@ -22,7 +61,8 @@ export class ActorFFG extends Actor {
     if (data.skills) {
       let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
 
-      data.skills = mergeObject(skills, data.skills);
+      data.skills = foundry.utils.mergeObject(skills, data.skills);
+
       // Filter out skills that are not custom (manually added) or part of the current system skill list
       Object.keys(data.skills)
       .filter(s => !data.skills[s].custom && !CONFIG.FFG.skills[s])
@@ -47,7 +87,6 @@ export class ActorFFG extends Actor {
   _prepareSharedData(actorData) {
     const data = actorData.system;
     //data.biography = PopoutEditor.replaceRollTags(data.biography, actorData);
-    data.biography = PopoutEditor.renderDiceImages(data.biography, actorData);
 
     // localize characteristic names
     if (actorData.type !== "vehicle" && actorData.type !== "homestead") {
@@ -232,7 +271,12 @@ export class ActorFFG extends Actor {
         activation: element.system?.activation?.value,
         activationLabel: element.system?.activation?.label,
         isRanked: element.system?.ranks?.ranked,
-        source: [{ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id }],
+        source: [{
+          type: element?.flags?.starwarsffg?.fromSpecies ? "species" : "talent",
+          typeLabel: element?.flags?.starwarsffg?.fromSpecies ? "SWFFG.Species" : "SWFFG.Talent",
+          name: element.name,
+          id: element.id,
+        }],
       };
 
       if (item.isRanked) {
@@ -252,7 +296,12 @@ export class ActorFFG extends Actor {
       if (index < 0 || !item.isRanked) {
         globalTalentList.push(item);
       } else {
-        globalTalentList[index].source.push({ type: "talent", typeLabel: "SWFFG.Talent", name: element.name, id: element.id });
+        globalTalentList[index].source.push({
+          type: element?.flags?.starwarsffg?.fromSpecies ? "species" : "talent",
+          typeLabel: element?.flags?.starwarsffg?.fromSpecies ? "SWFFG.Species" : "SWFFG.Talent",
+          name: element.name,
+          id: element.id,
+        });
         globalTalentList[index].rank += element.system.ranks.current;
         if (CONFIG.FFG.theme !== "starwars") {
           globalTalentList[index].tier = Math.abs(parseInt(globalTalentList[index].rank) + (parseInt(element.system?.tier, 10) - 1));
@@ -520,7 +569,7 @@ export class ActorFFG extends Actor {
       let total = 0;
       total += data.attributes[key].value;
       total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Characteristic");
-      data.characteristics[key].value = total > 7 ? 7 : total;
+      data.characteristics[key].value = total > game.settings.get("starwarsffg", "maxAttribute") ? game.settings.get("starwarsffg", "maxAttribute") : total;
     });
 
     /* Stats */
@@ -559,7 +608,10 @@ export class ActorFFG extends Actor {
       total += ModifierHelpers.getCalculatedValueFromItems(items, key, "Stat");
 
       if (key === "Soak") {
-        data.stats[k].value = total;
+        const enableAutoSoakCalc = (typeof this.flags?.starwarsffg?.config?.enableAutoSoakCalculation === "undefined" && game.settings.get("starwarsffg", "enableSoakCalc")) || this.flags.starwarsffg?.config.enableAutoSoakCalculation;
+        if (enableAutoSoakCalc) {
+          data.stats[k].value = total;
+        }
       } else if (key === "Defence-Melee") {
         data.stats.defence.melee = total;
       } else if (key === "Defence-Ranged") {
@@ -636,7 +688,7 @@ export class ActorFFG extends Actor {
       data.skills[key].remsetbacksource = remsetback.sources;
 
       if (isPC) {
-        data.skills[key].rank = total > 6 ? 6 : total;
+        data.skills[key].rank = total > game.settings.get("starwarsffg", "maxSkill") ? game.settings.get("starwarsffg", "maxSkill") : total;
       } else {
         data.skills[key].rank = total;
       }

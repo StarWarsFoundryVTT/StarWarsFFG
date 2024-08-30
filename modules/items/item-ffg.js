@@ -448,15 +448,18 @@ export class ItemFFG extends ItemBaseFFG {
   /**
    * Prepare and return details of the item for display in inventory or chat.
    */
-  getItemDetails() {
-    const data = duplicate(this.system);
+  async getItemDetails() {
+    const data = foundry.utils.duplicate(this.system);
 
     // Item type specific properties
     const props = [];
+    const purchasedUpgrades = [];
+    const specializations = [];
+    const signatureAbilities = [];
 
-    data.prettyDesc = PopoutEditor.renderDiceImages(data.description, this.actor);
+    data.prettyDesc = await PopoutEditor.renderDiceImages(data.description, this.actor);
 
-    if (this.type === "forcepower") {
+    if (this.type === "forcepower" || this.type === "signatureability") {
       //Display upgrades
 
       // Get learned upgrades
@@ -464,7 +467,7 @@ export class ItemFFG extends ItemBaseFFG {
 
       const upgradeDescriptions = [];
 
-      upgrades.forEach((up) => {
+      for (const up of upgrades) {
         let index = upgradeDescriptions.findIndex((obj) => {
           return obj.name === up.name;
         });
@@ -474,25 +477,30 @@ export class ItemFFG extends ItemBaseFFG {
         } else {
           upgradeDescriptions.push({
             name: up.name,
-            description: up.description,
+            description: await TextEditor.enrichHTML(up.description),
             rank: 1,
           });
         }
-      });
+      }
 
-      upgradeDescriptions.forEach((upd) => {
+      for (const upd of upgradeDescriptions) {
         props.push(`<div class="ffg-sendtochat hover" onclick="">${upd.name} ${upd.rank}
           <div class="tooltip2">
-            ${PopoutEditor.renderDiceImages(upd.description, this?.actor?.system)}
+            ${upd.description}
           </div>
         </div>`);
-      });
+        purchasedUpgrades.push({
+          name: upd.name,
+          rank: upd.rank,
+          description: upd.description,
+        })
+      }
     }
     // General equipment properties
     else if (this.type !== "talent") {
       if (data.hasOwnProperty("adjusteditemmodifier")) {
         const modifiers = data.adjusteditemmodifier?.filter(i => Object.keys(i).length > 0);
-        const qualities = modifiers?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${escape(m.system.description)}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+        const qualities = modifiers?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${escape(m.system.enrichedDescription? m.system.enrichedDescription : m.system.description)}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
@@ -505,6 +513,36 @@ export class ItemFFG extends ItemBaseFFG {
       }
       if (data.hasOwnProperty("rarity")) {
         props.push(`${game.i18n.localize("SWFFG.ItemsRarity")}: ${data.rarity?.adjusted ? data.rarity.adjusted : data.rarity.value} ${data.rarity.isrestricted ? "<span class='restricted'>" + game.i18n.localize("SWFFG.IsRestricted") + "</span>" : ""}`);
+      }
+      if (data.hasOwnProperty("talents")) {
+        for (const talentKey of Object.keys(data.talents)) {
+          const talent = data.talents[talentKey];
+          if (talent?.islearned) {
+            purchasedUpgrades.push({
+              name: talent.name,
+              rank: 0,
+              description: talent.enrichedDescription,
+            });
+          }
+        }
+      }
+      if (data.hasOwnProperty("specializations")) {
+        for (const specializationKey of Object.keys(data.specializations)) {
+          const specialization = data.specializations[specializationKey];
+          specializations.push({
+            name: specialization.name,
+            uuid: specialization.uuid,
+          });
+        }
+      }
+      if (data.hasOwnProperty("signatureabilities")) {
+        for (const SAKey of Object.keys(data.signatureabilities)) {
+          const signatureAbility = data.signatureabilities[SAKey];
+          signatureAbilities.push({
+            name: signatureAbility.name,
+            uuid: signatureAbility.uuid,
+          });
+        }
       }
     }
 
@@ -527,6 +565,9 @@ export class ItemFFG extends ItemBaseFFG {
 
     // Filter properties and return
     data.properties = props.filter((p) => !!p);
+    data.textProperties = purchasedUpgrades;
+    data.specializations = specializations;
+    data.signatureAbilities = signatureAbilities;
     return data;
   }
 }

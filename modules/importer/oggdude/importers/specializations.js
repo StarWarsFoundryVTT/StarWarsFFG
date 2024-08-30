@@ -28,11 +28,16 @@ export default class Specializations {
               talents: {},
               careerskills: {},
               isReadOnly: true,
+              metadata: {
+                tags: [
+                  "specialization",
+                ],
+              },
             };
 
             data.system.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
-            data.system.attributes = mergeObject(data.system.attributes, ImportHelpers.processStatMod(item?.Attributes));
-            data.system.attributes = mergeObject(data.system.attributes, ImportHelpers.processCareerSkills(item?.CareerSkills, true));
+            data.system.attributes = foundry.utils.mergeObject(data.system.attributes, ImportHelpers.processStatMod(item?.Attributes));
+            data.system.attributes = foundry.utils.mergeObject(data.system.attributes, ImportHelpers.processCareerSkills(item?.CareerSkills, true));
 
             for (let i = 0; i < item.TalentRows.TalentRow.length; i += 1) {
               const row = item.TalentRows.TalentRow[i];
@@ -68,15 +73,33 @@ export default class Specializations {
                   }
 
                   if (talentItem.compendium) {
-                    rowTalent.pack = `${talentItem.compendium.metadata.package}.${talentItem.compendium.metadata.name}`;
+                    rowTalent.pack = `${talentItem.compendium.metadata.packageName}.${talentItem.compendium.metadata.name}`;
+                  } else {
+                    CONFIG.logger.warn(`Unable to assign pack to ${rowTalent.name} Talent in ${data.name} specialization.`); 
                   }
-
                   const talentKey = `talent${i * 4 + index}`;
                   data.system.talents[talentKey] = rowTalent;
                 } else {
                   CONFIG.logger.warn(`Unable to find ${keyName}`);
                 }
               });
+            }
+
+            // populate tags
+            try {
+              if (Array.isArray(item.Categories.Category)) {
+                for (const tag of item.Categories.Category) {
+                  data.data.metadata.tags.push(tag.toLowerCase());
+                }
+              } else {
+                data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+              }
+            } catch (err) {
+              CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+            }
+            if (item?.Type) {
+              // the "type" can be useful as a tag as well
+              data.data.metadata.tags.push(item.Type.toLowerCase());
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Specialization", "", data.flags.genesysk2.ffgimportid);

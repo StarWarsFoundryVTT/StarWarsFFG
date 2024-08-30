@@ -1,5 +1,6 @@
 import {get_dice_pool} from "./dice-helpers.js";
 import {DicePoolFFG} from "../dice/pool.js";
+import DiceHelpers from "../helpers/dice-helpers.js";
 
 /**
  * Capture a drag-and-drop event (used to capture adding crew members via a flag)
@@ -34,32 +35,9 @@ export async function register_crew(...args) {
       CONFIG.logger.debug("Not registering crew as item is a vehicle");
       return args;
     }
-    // set up the flag data
-    let flag_data = [];
-    flag_data.push({
-        'actor_id': drag_actor.id,
-        'actor_name': drag_actor.name,
-        'role': '(none)',
-        'link':  await TextEditor.enrichHTML(drag_actor?.link) || null,
-    });
 
-    CONFIG.logger.debug("Looking up existing crew information");
-    const existing_data = vehicle_actor.getFlag('genesysk2', 'crew');
-    if (existing_data !== undefined && existing_data !== null) {
-        // we already have crew data defined, check if this actor is already in the data
-
-        let overlapping_data = existing_data.filter(existing => existing.actor_id === drag_actor.id && existing.role === '(none)');
-        if (overlapping_data.length !== 0) {
-            // this actor is already in the crew; bail
-            CONFIG.logger.debug("Actor is already in crew - not making any changes");
-            return args;
-        }
-        CONFIG.logger.debug("Adding actor to vehicle crew without a role");
-        flag_data = flag_data.concat(existing_data);
-    }
-    CONFIG.logger.debug(`Registering crew on vehicle ${vehicle_actor._id} - data: ${JSON.stringify(flag_data)}`)
-    // set the flag data
-    await vehicle_actor.setFlag('genesysk2', 'crew', flag_data);
+    // prompt the user to select roles
+    await selectRoles(vehicle_actor, drag_actor.id);
     return args;
 }
 
@@ -128,6 +106,44 @@ export async function change_role(vehicle_actor, crew_member, old_crew_role, new
 }
 
 /**
+ * Set the roles of a crew member on a vehicle to a new array of roles (deleting any not in the new array)
+ * @param vehicle_actor - actor object of the vehicle receiving the crew change
+ * @param crew_member_id - actor ID of the crew member being changed
+ * @param new_crew_roles - array of new roles for the crew member
+ * @returns {Promise<void>}
+ */
+export async function updateRoles(vehicle_actor, crew_member_id, new_crew_roles) {
+  const flag_data = vehicle_actor.getFlag('starwarsffg', 'crew') || [];
+  let new_flag_data = [];
+  const crew_member = game.actors.get(crew_member_id);
+
+  for (let i = 0; i < flag_data.length; i++) {
+      if (flag_data[i].actor_id === crew_member_id) {
+        const crewIndex = new_crew_roles.indexOf(flag_data[i].role);
+        if (crewIndex >= 0) {
+          new_flag_data.push(flag_data[i]);
+          new_crew_roles.splice(crewIndex, 1);
+        }
+      } else {
+          new_flag_data.push(flag_data[i]);
+      }
+  }
+
+  for (const newRole of new_crew_roles) {
+    new_flag_data.push({
+      'actor_id': crew_member.id,
+      'actor_name': crew_member.name,
+      'role': newRole,
+      'link':  await TextEditor.enrichHTML(crew_member?.link) || null,
+    });
+  }
+
+  CONFIG.logger.debug("Final updated flag data: ", new_flag_data);
+  // set the updated flag data
+  vehicle_actor.setFlag('starwarsffg', 'crew', new_flag_data);
+}
+
+/**
  * Create a string representation of a skill check for a crew member in a particular role on a vehicle
  * @param vehicle actor object for the vehicle the crew is on
  * @param crew_id actor ID of the crew member
@@ -175,4 +191,119 @@ export function build_crew_roll(vehicle, crew_id, crew_role) {
   let pool = new DicePoolFFG(starting_pool);
   pool = get_dice_pool(crew_id, role_info[0].role_skill, pool);
   return pool.renderPreview().innerHTML;
+}
+
+/**
+ * Build the dice pool for the built-in piloting check, which automatically resolves the correct piloting skill
+ * @param vehicle_id - the vehicle actor object
+ * @param pilot_id - the actor ID of the pilot
+ * @param difficulty - the difficulty of the check (omit to default to "average")
+ * @returns {Promise<Window.DicePoolFFG>}
+ */
+export async function buildPilotRoll(vehicle_id, pilot_id, difficulty = 2) {
+  const starting_pool = {'difficulty': difficulty};
+  const vehicle = game.actors.get(vehicle_id);
+  const skillTheme = game.settings.get("starwarsffg", "skilltheme");
+
+  // add modifiers from the vehicle handling
+  const handling = vehicle?.system?.stats?.handling?.value;
+  if (handling > 0) {
+    starting_pool['boost'] = handling;
+  } else if (handling < 0) {
+    starting_pool['setback'] = handling * -1;
+  }
+
+  // create the dice pool
+  let pool = new DicePoolFFG(starting_pool);
+
+  // determine if the vehicle is land or space
+  let skill;
+  if (vehicle?.system?.spaceShip) {
+    if (skillTheme === "starwars") {
+      skill = "Piloting: Space";
+    } else {
+      skill = "Piloting";
+    }
+  } else {
+    if (skillTheme === "starwars") {
+      skill = "Piloting: Planetary";
+    } else {
+      skill = "Driving";
+    }
+  }
+
+  // update the pool with actor information
+  return get_dice_pool(pilot_id, skill, pool);
+}
+
+/**
+ * Create the dice pool and dialog window for the built-in piloting check
+ * @param vehicle - the vehicle actor object
+ * @param pilot_id - the actor ID of the pilot
+ * @returns {Promise<void>}
+ */
+export async function handlePilotCheck(vehicle, pilot_id) {
+  const crewSheet = game.actors.get(pilot_id)?.sheet;
+  const pool = await buildPilotRoll(vehicle.id, pilot_id);
+
+  // create chat card data
+  const card_data = {
+    "crew": {
+      "name": vehicle.name,
+      "img": vehicle.img,
+      "crew_card": true,
+      "role": "Pilot",
+    }
+  };
+
+  // determine if the vehicle is land or space
+  let skill;
+  if (vehicle?.system?.spaceShip) {
+    skill = "Piloting: Space";
+  } else {
+    skill = "Piloting: Planetary";
+  }
+
+  // open the roll dialog (skill name is already localized)
+  await DiceHelpers.displayRollDialog(
+    crewSheet,
+    pool,
+    `${game.i18n.localize("SWFFG.Rolling")} ${skill}`,
+    skill,
+    card_data
+  );
+}
+
+export async function selectRoles(vehicle, crew_member_id) {
+  const crew_member = game.actors.get(crew_member_id);
+  const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
+  const vehicleRoles = vehicle.getFlag('starwarsffg', 'crew') || [];
+
+  const crewMemberRoles = vehicleRoles.filter(role => role.actor_id === crew_member_id);
+  const rolesInUse = crewMemberRoles.map(role => role.role);
+
+  const content = await renderTemplate(
+    "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
+    {
+      actor: crew_member,
+      roles: registeredRoles,
+      rolesInUse: rolesInUse,
+    }
+  );
+
+  new Dialog(
+    {
+      title: game.i18n.localize("SWFFG.Crew.Title"),
+      content: content,
+      buttons: {
+        confirm: {
+          label: 'Update Roles',
+          callback: async (html) => {
+            const newRoles = html.find('[name="select-many-things"]').val();
+            await updateRoles(vehicle, crew_member_id, newRoles);
+          }
+        }
+      }
+    },
+  ).render(true);
 }

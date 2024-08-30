@@ -31,6 +31,17 @@ export default class SignatureAbilities {
             attributes: {},
             upgrades: {},
             base_cost: 0,
+            uplink_nodes: {
+              uplink0: false,
+              uplink1: false,
+              uplink2: false,
+              uplink3: false,
+            },
+            metadata: {
+              tags: [
+                "signatureability",
+              ],
+            },
           };
 
           data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
@@ -109,6 +120,24 @@ export default class SignatureAbilities {
               CONFIG.logger.error(`Error importing record : `, data.name);
             }
           });
+
+          // populate tags
+          try {
+            if (Array.isArray(item.Categories.Category)) {
+              for (const tag of item.Categories.Category) {
+                data.data.metadata.tags.push(tag.toLowerCase());
+              }
+            } else {
+              data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+            }
+          } catch (err) {
+            CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+          }
+          if (item?.Type) {
+            // the "type" can be useful as a tag as well
+            data.data.metadata.tags.push(item.Type.toLowerCase());
+          }
+
           let imgPath = await ImportHelpers.getImageFilename(zip, "SigAbilities", "", data.flags.genesysk2.ffgimportid);
           if (imgPath) {
             data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
@@ -116,13 +145,18 @@ export default class SignatureAbilities {
             data.img = `icons/svg/aura.svg`;
           }
 
+          item.MatchingNodes.Node.forEach((row, i) => {
+            data.data.uplink_nodes[`uplink${i}`] = row !== "false";
+          });
+
           const sigAbility = await ImportHelpers.addImportItemToCompendium("Item", data, pack);
           currentCount += 1;
           // process careers
           if (item?.Careers) {
             for (const careerKey of Object.values(item.Careers)) {
-              let careerItem = await ImportHelpers.findCompendiumEntityByImportId("Item", careerKey, "world.oggdudecareers", "career");
+              let careerItem = await ImportHelpers.findCompendiumEntityByImportId("Item", careerKey, "starwarsffg.oggdudecareers", "career");
               if (!careerItem) {
+                CONFIG.logger.debug(`Could not find career item for signature ability ${sigAbility.name} in career ${careerKey}`);
                 continue;
               }
               const updateData = {
@@ -130,12 +164,13 @@ export default class SignatureAbilities {
                   signatureabilities: {
                     [sigAbility._id]: {
                       name: sigAbility.name,
-                      source: sigAbility.uuid,
+                      source: sigAbility.uuid, // not returned
                       id: sigAbility._id,
                     },
                   },
                 },
               }
+              CONFIG.logger.debug("Updating career item with signature ability", updateData, "(returned item: ", sigAbility, ")");
               await careerItem.update(updateData);
             }
           }

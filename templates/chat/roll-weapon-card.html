@@ -1,19 +1,19 @@
-<div class="item-display" data-item-id="{{data._id}}">
-  {{#iff (defaultImage data.img) '!=' true}}
-    <img class="item-image" src="{{data.img}}" />
+<div class="item-display" data-item-id="{{system._id}}">
+  {{#iff (defaultImage system.img) '!=' true}}
+    <img class="item-image" src="{{system.img}}" />
   {{/iff}}
-  <h2 class="item-name">{{data.name}}</h2>
+  <h2 class="item-name">{{system.name}}</h2>
   {{#if ffg.success}}
-  {{#iff data.system.damage.adjusted '!=' 0 }}<h4 class="item-damage">{{localize "SWFFG.ItemsDamage"}}: <input class="damage-value" type="text" value="{{data.system.damage.adjusted}} + {{ffg.success}} = {{math data.system.damage.adjusted '+' ffg.success}}" disabled /></h4>
-  <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{data.system.crit.adjusted}}" disabled /></h4>{{/iff}}
-  {{#iff data.system.damage.adjusted '==' 0 }}<h4 class="item-damage">{{localize "SWFFG.ItemsDamage"}}: <input class="damage-value" type="text" value="{{data.system.damage.value}} + {{ffg.success}} = {{math data.system.damage.value '+' ffg.success}}" disabled /></h4>
-  <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{data.system.crit.value}}" disabled /></h4>{{/iff}}
+  {{#iff system.system.damage.adjusted '!=' 0 }}<h4 class="item-damage">{{localize "SWFFG.ItemsDamage"}}: <input class="damage-value" type="text" value="{{system.system.damage.adjusted}} + {{ffg.success}} = {{math system.system.damage.adjusted '+' ffg.success}}" disabled /></h4>
+  <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{system.system.crit.adjusted}}" disabled /></h4>{{/iff}}
+  {{#iff system.system.damage.adjusted '==' 0 }}<h4 class="item-damage">{{localize "SWFFG.ItemsDamage"}}: <input class="damage-value" type="text" value="{{system.system.damage.value}} + {{ffg.success}} = {{math system.system.damage.value '+' ffg.success}}" disabled /></h4>
+  <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{system.system.crit.value}}" disabled /></h4>{{/iff}}
   {{else}}
   <h4 class="item-miss">Miss!</h4>
-  {{/if}} {{#if data.system.adjusteditemmodifier}}
+  {{/if}} {{#if system.system.adjusteditemmodifier}}
   <div class="specials">
     <h5>
-      {{#each data.system.adjusteditemmodifier as |item id|}}
+      {{#each system.system.adjusteditemmodifier as |item id|}}
       <li class="item-pill" data-item-embed-type="{{item.type}}" data-item-embed-name="{{item.name}}" data-item-embed-img="{{item.img}}" data-item-embed-description="{{item.system.description}}" data-item-embed-modifiers="{{json item.system.attributes}}" data-item-embed-rank="{{item.system.rank_current}}" data-item-embed="true">
         {{item.name}} {{#if (gt item.system.rank_current 0)}}{{item.system.rank_current}}{{else}}{{/if}}
       </li>
@@ -21,15 +21,15 @@
     </h5>
   </div>
   {{/if}}
-  {{#if data.system.itemmodifier}}
-  {{#iff data.system.adjusteditemmodifier '==' undefined }}
+  {{#if system.system.itemmodifier}}
+  {{#iff system.system.adjusteditemmodifier '==' undefined }}
   <div class="specials">
     <h5>
-      {{#each data.system.itemmodifier as |item id|}}
-      <li class="item-pill" data-item-id="{{../data._id}}" data-modifier-id="{{#if item.id }}{{item.id}}{{else}}{{item._id}}{{/if}}" data-uuid="{{ ../data.flags.starwarsffg.uuid }}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.system.rank 0)}}{{item.system.rank}}{{else}}{{/if}}</li>
+      {{#each system.system.itemmodifier as |item id|}}
+      <li class="item-pill" data-item-id="{{../system._id}}" data-modifier-id="{{#if item.id }}{{item.id}}{{else}}{{item._id}}{{/if}}" data-uuid="{{ ../system.flags.starwarsffg.uuid }}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.system.rank 0)}}{{item.system.rank}}{{else}}{{/if}}</li>
       {{/each}}
     </h5>
   </div>
   {{/iff}}{{/if}}
-  {{#if data.system.special.value}}{{{ffgDiceSymbols data.system.special.value}}}{{/if}}
+  {{#if system.system.special.value}}{{{ffgDiceSymbols system.system.special.value}}}{{/if}}
 </div>

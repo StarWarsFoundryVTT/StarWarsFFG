@@ -17,11 +17,6 @@ export class ActorSheetFFGV2 extends ActorSheetFFG {
     });
   }
 
-  getData() {
-    const data = super.getData();
-    return data;
-  }
-
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);

@@ -425,10 +425,15 @@
       },
       "attributes": {
         "attributes": {}
+      },
+      "general": {
+        "general": {
+          "features": "<p></p>"
+        }
       }
     },
     "character": {
-      "templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes"],
+      "templates": ["biography", "species", "career", "specialisation", "stats", "characteristics", "skills", "attributes", "general"],
       "encumbrance": {
         "value": 0,
         "type": "Number",
@@ -571,7 +576,9 @@
           "type": "Boolean",
           "label": "SWFFG.VehicleNavicomputer"
         }
-      }
+      },
+      "spaceShip": false,
+      "silhouetteImage": "systems/starwarsffg/images/shipdefence.png"
     },
     "homestead": {
       "templates": ["biography", "attributes"],
@@ -589,7 +596,7 @@
       }
     },
     "rival": {
-      "templates": ["biography", "species", "characteristics", "skills", "attributes"],
+      "templates": ["biography", "species", "characteristics", "skills", "attributes", "general"],
       "stats": {
           "wounds": {
             "value": 0,
@@ -625,7 +632,7 @@
         }
     },
     "nemesis": {
-      "templates": ["biography", "species", "stats", "characteristics", "skills", "attributes"]
+      "templates": ["biography", "species", "stats", "characteristics", "skills", "attributes", "general"]
     }
   },
   "Item": {
@@ -634,7 +641,10 @@
     "templates": {
       "core": {
         "description": "",
-        "attributes": {}
+        "attributes": {},
+        "metadata": {
+          "tags": []
+        }
       },
       "basic": {
         "quantity": {
@@ -799,7 +809,10 @@
     },
     "species": {
       "templates": ["core"],
-      "talents": {}
+      "talents": {},
+      "abilities": {},
+      "species": {},
+      "startingXP": 0
     },
     "criticalinjury": {
       "templates": ["core"],
@@ -891,7 +904,13 @@
         "upgrade6": {},
         "upgrade7": {}
       },
-      "base_cost": 0
+      "base_cost": 0,
+      "uplink_nodes": {
+        "uplink0": false,
+        "uplink1": false,
+        "uplink2": false,
+        "uplink3": false
+      }
     },
     "itemattachment": {
       "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],

@@ -30,6 +30,11 @@ export default class Gear {
               },
               itemmodifier: [],
               itemattachment: [],
+              metadata: {
+                tags: [
+                  "gear",
+                ],
+              },
             };
 
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
@@ -41,6 +46,23 @@ export default class Gear {
                 data.data.itemattachment = mods.baseMods.itemattachment;
                 data.data.description += mods.baseMods.description;
               }
+            }
+
+            // populate tags
+            try {
+              if (Array.isArray(item.Categories.Category)) {
+                for (const tag of item.Categories.Category) {
+                  data.data.metadata.tags.push(tag.toLowerCase());
+                }
+              } else {
+                data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+              }
+            } catch (err) {
+              CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+            }
+            if (item?.Type) {
+              // the "type" can be useful as a tag as well
+              data.data.metadata.tags.push(item.Type.toLowerCase());
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", data.flags.genesysk2.ffgimportid);

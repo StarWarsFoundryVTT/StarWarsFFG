@@ -7,8 +7,15 @@
         <div class="pure-g skillsHeader">
           <div class="pure-u-12-24">{{skill.label}}</div>
           <div class="pure-u-3-24 hover">
-            {{localize "SWFFG.SkillsCS"}}
-            <div class="tooltip">{{localize "SWFFG.SkillsCareerSkill"}}</div>
+            {{#if (eq ../../this.document.type "minion")}}
+              <span data-tooltip="{{localize 'SWFFG.SkillsGroupSkill'}}" data-tooltip-direction="DOWN">
+                {{localize "SWFFG.SkillsGS"}}
+              </span>
+            {{else}}
+              <span data-tooltip="{{localize 'SWFFG.SkillsCareerSkill'}}" data-tooltip-direction="DOWN">
+                {{localize "SWFFG.SkillsCS"}}
+              </span>
+            {{/if}}
           </div>
           <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
           <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
@@ -19,6 +26,7 @@
         <div data-ability="{{skill.name}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill" draggable="true">
           <div class="pure-u-12-24">
             <div class="skill-name">
+              {{#if (eq ../../this.actor.type "character")}}<i class="fas fa-dollar ffg-purchase" data-buy-action="skill" title="{{localize "SWFFG.Purchase.SkillRank"}}"></i>{{/if}}
               {{#if skill.useForInitiative}}*{{/if}}{{skill.label}} {{#with (lookup ../../this.FFG.characteristics [characteristic])~}}
               <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">({{localize abrev}})</div>
               {{/with}}

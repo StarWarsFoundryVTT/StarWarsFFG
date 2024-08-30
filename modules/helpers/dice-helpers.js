@@ -7,7 +7,7 @@ import {lancerDesPep} from "../k2gdices/pepK2DicePromps.js";
 
 export default class DiceHelpers {
   static async rollSkill(obj, event, type, flavorText, sound) {
-    const data = obj.getData();
+    const data = await obj.getData();
     const row = event.target.parentElement.parentElement;
     let skillName = row.parentElement.dataset["ability"];
     if (skillName === undefined) {
@@ -75,13 +75,29 @@ export default class DiceHelpers {
     }
     const itemData = item || {};
     const status = this.getWeaponStatus(itemData);
+    let defenseDice = 0;
+    if (game.settings.get("starwarsffg", "useDefense")) {
+      let isRanged = ["Ranged: Light", "Ranged: Heavy", "Gunnery"].includes(skill.value);
+      let isMelee = ["Melee", "Brawl", "Lightsaber"].includes(skill.value);
+      if (itemData?.type === "weapon") {
+        if (game.user.targets.size > 0) {
+          for (const target of game.user.targets) {
+            if (isRanged) {
+              defenseDice = Math.max(defenseDice, target.actor.system.stats.defence.ranged);
+            } else if (isMelee) {
+              defenseDice = Math.max(defenseDice, target.actor.system.stats.defence.melee);
+            }
+          }
+        }
+      }
+    }
 
     // TODO: Get weapon specific modifiers from itemmodifiers and itemattachments
 
     let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
       boost: skill.boost,
-      setback: skill.setback + status.setback,
+      setback: skill.setback + status.setback + defenseDice,
       force: skill.force,
       advantage: skill.advantage,
       dark: skill.dark,
@@ -104,7 +120,7 @@ export default class DiceHelpers {
     }
 
     dicePool = new DicePoolFFG(await this.getModifiers(dicePool, itemData));
-    this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(skill.label)}`, skill.label, itemData, flavorText, sound);
+    await this.displayRollDialog(data, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(skill.label)}`, skill.label, itemData, flavorText, sound);
   }
 
   static async displayRollDialog(data, dicePool, description, skillName, item, flavorText, sound) {
@@ -116,7 +132,7 @@ export default class DiceHelpers {
   }
 
   static async addSkillDicePool(obj, elem) {
-    const data = obj.getData();
+    const data = await obj.getData();
     const skillName = elem.dataset["ability"];
     if (data.data.skills[skillName]) {
       const skill = data.data.skills[skillName];
@@ -161,7 +177,7 @@ export default class DiceHelpers {
 
   static async rollItem(itemId, actorId, flavorText, sound) {
     const actor = game.actors.get(actorId);
-    const actorSheet = actor.sheet.getData();
+    const actorSheet = await actor.sheet.getData();
 
     const item = actor.items.get(itemId);
     const itemData = item.system;

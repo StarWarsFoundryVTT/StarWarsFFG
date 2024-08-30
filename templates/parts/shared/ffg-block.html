@@ -4,7 +4,7 @@
       <div class="block-title">
         {{#if headerlink}}
         <a class="{{headerclass}}" {{{headerattributes}}}>{{localize title}}</a>
-        {{else}} {{localize title}} {{/if}}
+        {{else}} {{localize title}}{{/if}}
       </div>
       <div class="block-attribute">
         {{#if (eq blocktype "pills")}}
@@ -43,9 +43,9 @@
         </div>
         {{/if}} {{#if (eq type "PopoutEditor")}}
         <div class="block-value block-single">
-          <div class="popout-editor" data-target="{{name}}" data-label="{{localize title}}">
-            <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
-            {{{ffgDiceSymbols value}}}
+          <div class="popout-editor" data-target="{{name}}" data-value="{{value}}" data-label="{{localize title}}">
+            <div class="popout-editor-button">{{#if readonly}}{{ else }}<i class="fas fa-edit"></i>{{/if}}</div>
+            {{{value}}}
           </div>
         </div>
         {{/if}} {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor"))}}

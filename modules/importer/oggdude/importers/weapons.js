@@ -23,7 +23,7 @@ export default class Weapons {
             let data = ImportHelpers.prepareBaseObject(item, itemType);
             data.data = {
               attributes: {},
-              description: item.Description,
+              description: item.Description.replace('[H3]', '<h3>').replace('[h3]', '</h3>'),
               encumbrance: {
                 value: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
               },
@@ -51,6 +51,11 @@ export default class Weapons {
               },
               itemmodifier: [],
               itemattachment: [],
+              metadata: {
+                tags: [
+                  itemType,
+                ],
+              },
             };
             data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
 
@@ -58,9 +63,9 @@ export default class Weapons {
 
             //New setting to be able to use a characteristic as base damage for any weapon.
             if (data.data.skill.useBrawn) {
-              data.data.characteristic = mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: "Brawn"});
+              data.data.characteristic = foundry.utils.mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: "Brawn"});
             } else {
-              data.data.characteristic = mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: ""});
+              data.data.characteristic = foundry.utils.mergeObject(data.data.characteristic ? data.data.characteristic : {}, { value: ""});
             }
 
             const mods = await ImportHelpers.processMods(item);
@@ -77,12 +82,29 @@ export default class Weapons {
             }
 
             if (item?.DamageAdd && parseInt(item.DamageAdd, 10) > 0 && data.type === "weapon") {
-              data.data.attributes[randomID()] = {
+              data.data.attributes[foundry.utils.randomID()] = {
                 isCheckbox: false,
                 mod: "damage",
                 modtype: "Weapon Stat",
                 value: parseInt(item.DamageAdd, 10),
               };
+            }
+
+            // populate tags
+            try {
+              if (Array.isArray(item.Categories.Category)) {
+                for (const tag of item.Categories.Category) {
+                  data.data.metadata.tags.push(tag.toLowerCase());
+                }
+              } else {
+                data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
+              }
+            } catch (err) {
+              CONFIG.logger.debug(`No categories found for item ${item.Key}`);
+            }
+            if (item?.Type) {
+              // the "type" can be useful as a tag as well
+              data.data.metadata.tags.push(item.Type.toLowerCase());
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", data.flags.genesysk2.ffgimportid);

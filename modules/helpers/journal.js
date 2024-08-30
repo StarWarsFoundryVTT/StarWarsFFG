@@ -319,17 +319,18 @@ export function register_dice_enricher() {
 
 export function register_oggdude_tag_enricher() {
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[B\])(.[^\[]*)\[b\]/gm,
+    pattern: /(\[B\])(((?!\[b\]).)*)(\[b\])/gm,
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("bold");
+        element.textContent = match[2];
         return element;
       }
   });
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[P\])(.[^\[]*)/gm,
+    pattern: /(\[P\](?![p]))/gm,
     enricher: async (match, options) => {
-        let element = document.createElement("p");
+        let element = document.createElement("br");
         return element;
       }
   });
@@ -341,40 +342,52 @@ export function register_oggdude_tag_enricher() {
       }
   });
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[I\])(.[^\[]*)\[i\]/gm,
+    pattern: /(\[I\])(((?!\[i\]).)*)\[i\]/gm,
     enricher: async (match, options) => {
         let element = document.createElement("span");
         element.classList.add("italic");
+        element.textContent = match[2];
         return element;
       }
   });
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[H1\])(.[^\[]*)\[h1\]/gm,
+    pattern: /(\[H1\])(((?!\[h1\]).)*)\[h1\]/gm,
     enricher: async (match, options) => {
         let element = document.createElement("h1");
+        element.textContent = match[2];
         return element;
       }
   });
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[H2\])(.[^\[]*)\[h2\]/gm,
+    pattern: /(\[H2\])(((?!\[h2\]).)*)\[h2\]/gm,
     enricher: async (match, options) => {
         let element = document.createElement("h2");
+        element.textContent = match[2];
         return element;
       }
   });
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[H3\])(.[^\[]*)\[h3\]/gm,
+    pattern: /(\[H3\])(((?!\[h3\]).)*)\[h3\]/gm,
     enricher: async (match, options) => {
-        let element = document.createElement("h3");
+      let element = document.createElement("h3");
+      element.textContent = match[2];
+      return element;
+    }
+  });
+  CONFIG.TextEditor.enrichers.push({
+    pattern: /(\[H4\])(((?!\[h4\]).)*)\[h4\]/gim,
+    enricher: async (match, options) => {
+        let element = document.createElement("h3"); // h4 doesn't exist
+        element.textContent = match[2];
         return element;
       }
   });
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[H4\])(.[^\[]*)\[h4\]/gim,
+    pattern: /\[h3\]/gm,
     enricher: async (match, options) => {
-        let element = document.createElement("h4");
-        return element;
-      }
+      let element = document.createElement("hr");
+      return element;
+    }
   });
 }
 

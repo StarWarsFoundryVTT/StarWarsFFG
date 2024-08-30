@@ -1,4 +1,4 @@
-export class AbilityDie extends DiceTerm {
+export class AbilityDie extends foundry.dice.terms.DiceTerm {
   constructor(termData) {
     super(termData);
     this.faces = 8;
@@ -15,18 +15,18 @@ export class AbilityDie extends DiceTerm {
 
   /* -------------------------------------------- */
   /** @override */
-  evaluate({ minimize = false, maximize = false } = {}) {
+  async evaluate({ minimize = false, maximize = false } = {}) {
     if (this._evaluated) {
       throw new Error(`This ${this.constructor.name} has already been evaluated and is immutable`);
     }
 
     // Roll the initial number of dice
     for (let n = 1; n <= this.number; n++) {
-      this.roll({ minimize, maximize });
+      await this.roll({ minimize, maximize });
     }
 
     // Apply modifiers
-    this._evaluateModifiers();
+    await this._evaluateModifiers();
 
     // Combine all FFG results.
     this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
@@ -49,8 +49,8 @@ export class AbilityDie extends DiceTerm {
 
   /* -------------------------------------------- */
   /** @override */
-  roll(options) {
-    const roll = super.roll(options);
+  async roll(options) {
+    const roll = await super.roll(options);
     roll.ffg = CONFIG.FFG.ABILITY_RESULTS[roll.result];
     return roll;
   }

@@ -4,6 +4,9 @@ export default class TemplateHelpers {
       "systems/genesysk2/templates/parts/shared/ffg-modifiers.html",
       "systems/genesysk2/templates/parts/actor/ffg-skills.html",
       "systems/genesysk2/templates/parts/actor/ffg-weapon-armor-gear.html",
+      "systems/genesysk2/templates/parts/actor/ffg-vehicle-weapon-attachments.html",
+      "systems/genesysk2/templates/parts/actor/ffg-vehicle-cargo.html",
+      "systems/genesysk2/templates/parts/actor/ffg-vehicle-crew.html",
       "systems/genesysk2/templates/parts/actor/ffg-homestead-upgrades.html",
       "systems/genesysk2/templates/parts/actor/ffg-homestead-storage.html",
       "systems/genesysk2/templates/parts/actor/ffg-talents.html",
@@ -16,10 +19,10 @@ export default class TemplateHelpers {
       "systems/genesysk2/templates/chat/roll-weapon-card.html",
       "systems/genesysk2/templates/chat/roll-vehicle-card.html",
       "systems/genesysk2/templates/parts/shared/ffg-tabs.html",
-      "systems/genesysk2/templates/parts/shared/k2g-tabs.html",
-//      "systems/genesysk2/templates/parts/shared/k2g-block.html",
-      "systems/genesysk2/templates/parts/actor/k2g-spells.html",
-      "systems/genesysk2/templates/parts/actor/ffg-healingitem.html"
+      "systems/genesysk2/templates/parts/actor/ffg-healingitem.html",
+      "systems/genesysk2/templates/dialogs/combat-tracker.html",
+      "systems/genesysk2/templates/chat/parts/item/ffg-header.html",
+      "systems/genesysk2/templates/chat/parts/item/ffg-footer.html",
     ];
 
     return loadTemplates(templatePaths);
