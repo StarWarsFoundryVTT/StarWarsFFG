@@ -17,6 +17,7 @@
   * Item attachments' mods use parent item mod type when present ([#1624](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1624))
   * Talent cost set when preparing tree instead of template ([#1704](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1704))
   * Qualities are linked to parent item ([#1612](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1612))
+  * Assign correct modifiers type to armor: "armour" instead of "armor" ([#1697](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1697))
 
 `1.903`
 * Features:
