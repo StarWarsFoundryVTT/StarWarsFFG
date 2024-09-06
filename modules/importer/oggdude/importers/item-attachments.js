@@ -46,21 +46,21 @@ export default class ItemAttachments {
             metadata: {
               tags: [],
             },
-          };          
+          };
 
           if (item?.Type?.toLowerCase() === "vehicle") {
             data.data.metadata.tags.push("shipattachment");
           } else {
             data.data.metadata.tags.push("itemattachment");
           }
-          
+
           // attempt to select the specific compendium for this type of attachment
           if (Object.keys(packMap).includes(data.data.type)) {
             pack = packMap[data.data.type];
           } else {
             // but fail back to the generic compendium
             pack = packMap["all"];
-          }
+          }          
           
           // oggdude use "armor", but the internal mod type is "armour"
           if (data?.data?.type === "armor") data.data.type = "armour"
