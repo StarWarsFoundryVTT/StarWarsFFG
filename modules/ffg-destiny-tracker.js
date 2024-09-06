@@ -40,8 +40,8 @@ export default class DestinyTracker extends FormApplication {
 
     this.position.left = x - 505;
     this.position.top = y;
-    this.position.width = 150;
-    this.position.height = 105;
+    //this.position.width = 150;
+    //this.position.height = 105;
 
     // filter menu based on role.
 
