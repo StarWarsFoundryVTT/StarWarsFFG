@@ -1,6 +1,7 @@
 `1.904`
 * Features:
   * Optionally include GM Characters in the Group Manager ([#1680](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1680))
+  * Add EditorConfig settings
 * Fixes:
   * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1542))
   * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
@@ -27,7 +28,7 @@
     * This change includes many minor improvements to the cards, such as showing damage on weapons and purchased talents on specializations
   * Generic slot combat tracker: The action to take when removing a combatant is now configurable. This is in place of the previously-confusing (and quite annoying) behavior where you had to claim a slot in order to remove a combatant
   * Dragging-and-dropping items on actors now prompts for spending XP to purchase that item ([#1588](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1588))
-  * XP spending now consistently uses a dollar sign to trigger spending instead of the various methods it previously used ([#1629](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1629)) 
+  * XP spending now consistently uses a dollar sign to trigger spending instead of the various methods it previously used ([#1629](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1629))
   * Settings have been refactored to be more organized and easier to navigate ([#1639](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1639))
   * Destiny point flipping is now themed ([#1658](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1658)
   * Set default token settings when creating new actor ([#1652](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1652)))
@@ -145,7 +146,7 @@
   * **Combat**
     * Fixed double-slot-claim bug in the combat tracker
     * Fixed a bug preventing removing combatants from combat
-    * Fixed a bug  where removing a combatant would un-claim another slot 
+    * Fixed a bug  where removing a combatant would un-claim another slot
     * Fixed a bug where removing a combatant from the canvas would not properly update the tracker
   * **Importer**:
     * Career data (signature abilities, specializations) is now properly set when the OggDude importer is run with existing compendiums
@@ -155,7 +156,7 @@
     * Granting XP to the entire group now updates the XP logs for those players (previously, only single-actor grants updated the log)
 
 `1.809`
-* Features: 
+* Features:
   * You can now (optionally) spend XP! See [the wiki](https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki/new%E2%80%90features%E2%80%90v1.809#xp-spending) for more info
   * Added actor types for Nemesis and Rival
   * Weapons can now have stat mods (permitting setting e.g. the `defensive` quality)
