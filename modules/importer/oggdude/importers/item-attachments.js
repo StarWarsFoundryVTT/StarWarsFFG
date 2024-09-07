@@ -54,13 +54,16 @@ export default class ItemAttachments {
             data.data.metadata.tags.push("itemattachment");
           }
 
-          try {
-            // attempt to select the specific compendium for this type of attachment
+          // attempt to select the specific compendium for this type of attachment
+          if (Object.keys(packMap).includes(data.data.type)) {
             pack = packMap[data.data.type];
-          } catch (err) {
+          } else {
             // but fail back to the generic compendium
             pack = packMap["all"];
-          }
+          }          
+          
+          // oggdude use "armor", but the internal mod type is "armour"
+          if (data?.data?.type === "armor") data.data.type = "armour"
 
           data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
           const mods = await ImportHelpers.processMods(item);
