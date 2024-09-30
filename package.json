@@ -5,16 +5,19 @@
   "main": "index.js",
   "scripts": {
     "compile": "gulp css",
+    "lint": "npx eslint modules",
     "watch": "gulp"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "cypress": "^13.5.1",
+    "eslint": "^9.10.0",
+    "eslint-plugin-import-x": "^4.2.1",
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^8.0.0",
-    "gulp-sourcemaps": "^3.0.0",
     "gulp-sass": "^5.1.0",
-    "sass": "^1.49.0",
-    "cypress": "^13.5.1"
+    "gulp-sourcemaps": "^3.0.0",
+    "sass": "^1.49.0"
   }
 }
