@@ -2093,6 +2093,9 @@ export class ActorSheetFFG extends ActorSheet {
       const characteristic = $(event.target).data("buy-characteristic");
       await this._buyCharacteristicRank(characteristic);
       return;
+    } else if (action === "skill") {
+      await this._buySkillRank(event.target.parentElement.parentElement.parentElement);
+      return;
     } else {
       CONFIG.logger.debug(`Refusing purchase action ${action} since it is not registered`);
       return;
