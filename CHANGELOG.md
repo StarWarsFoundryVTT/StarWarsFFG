@@ -22,6 +22,7 @@
   * Assign correct modifiers type to armor: "armour" instead of "armor" ([#1697](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1697))
   * Remove Destiny Tracker hardcoded size, allowing it to grow and shrink when font size is changed ([#1688](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1688))
   * Assign correct modifiers type to armor: "armour" instead of "armor" ([#1697](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1697))
+  * Skill purchases on actors now work via the dollar sign again ([#1713](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1713))
 
 `1.903`
 * Features:
