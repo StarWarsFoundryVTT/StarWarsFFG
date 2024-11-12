@@ -3,6 +3,7 @@
   * Optionally include GM Characters in the Group Manager ([#1680](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1680))
   * Add EditorConfig settings
   * Add basic Eslint config
+  * Show removed setback dice icons on all rolls
 * Fixes:
   * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1542))
   * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
@@ -24,6 +25,7 @@
   * Assign correct modifiers type to armor: "armour" instead of "armor" ([#1697](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1697))
   * Skill purchases on actors now work via the dollar sign again ([#1713](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1713))
   * Allows zero as a valid value when updating vehicle stats ([#1717](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1717))
+  * Remove setback dice from roll when a "Remove setback dice" modifier is used ([#1720](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1720))
 
 `1.903`
 * Features:

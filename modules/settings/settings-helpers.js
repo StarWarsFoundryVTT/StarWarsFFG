@@ -197,8 +197,14 @@ export default class SettingsHelpers {
           groupmanager.render();
         }
         let destinyLight = game.settings.get("starwarsffg", "dPoolLight");
-        document.getElementById("destinyLight").setAttribute("data-value", destinyLight);
-        document.getElementById("destinyLight").innerHTML = destinyLight + `<span>${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"))}</span>`;
+        document
+          .getElementById("destinyLight")
+          .setAttribute("data-value", destinyLight);
+        document.getElementById("destinyLight").innerHTML =
+          destinyLight +
+          `<span>${game.i18n.localize(
+            game.settings.get("starwarsffg", "destiny-pool-light")
+          )}</span>`;
       },
     });
     game.settings.register("starwarsffg", "dPoolDark", {
@@ -213,8 +219,14 @@ export default class SettingsHelpers {
           groupmanager.render();
         }
         let destinyDark = game.settings.get("starwarsffg", "dPoolDark");
-        document.getElementById("destinyDark").setAttribute("data-value", destinyDark);
-        document.getElementById("destinyDark").innerHTML = destinyDark + `<span>${game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-dark"))}</span>`;
+        document
+          .getElementById("destinyDark")
+          .setAttribute("data-value", destinyDark);
+        document.getElementById("destinyDark").innerHTML =
+          destinyDark +
+          `<span>${game.i18n.localize(
+            game.settings.get("starwarsffg", "destiny-pool-dark")
+          )}</span>`;
       },
     });
 
@@ -266,7 +278,11 @@ export default class SettingsHelpers {
       type: String,
       onChange: (rule) => {
         if (rule === "") {
-          game.settings.set("starwarsffg", "destiny-pool-light", "SWFFG.Lightside");
+          game.settings.set(
+            "starwarsffg",
+            "destiny-pool-light",
+            "SWFFG.Lightside"
+          );
         }
         return this.debouncedReload();
       },
@@ -281,7 +297,11 @@ export default class SettingsHelpers {
       type: String,
       onChange: (rule) => {
         if (rule === "") {
-          game.settings.set("starwarsffg", "destiny-pool-dark", "SWFFG.Darkside");
+          game.settings.set(
+            "starwarsffg",
+            "destiny-pool-dark",
+            "SWFFG.Darkside"
+          );
         }
         return this.debouncedReload();
       },
@@ -336,13 +356,18 @@ export default class SettingsHelpers {
 
     // Allow GM characters in Group manager
     game.settings.register("starwarsffg", "GMCharactersInGroupManager", {
-      name: game.i18n.localize("SWFFG.Settings.groupManager.GMCharactersInGroupManager.Name"),
-      hint: game.i18n.localize("SWFFG.Settings.groupManager.GMCharactersInGroupManager.Hint"),
+      name: game.i18n.localize(
+        "SWFFG.Settings.groupManager.GMCharactersInGroupManager.Name"
+      ),
+      hint: game.i18n.localize(
+        "SWFFG.Settings.groupManager.GMCharactersInGroupManager.Hint"
+      ),
       scope: "world",
       config: false,
       default: false,
       type: Boolean,
     });
+
   }
 
   // Initialize System Settings after the Ready Hook
@@ -375,6 +400,20 @@ export default class SettingsHelpers {
       choices: playlists,
     });
 
+    // Automatically apply "remove setback" modifiers when rolling
+    game.settings.register("starwarsffg", "ApplyRemoveSetbackMods", {
+      name: game.i18n.localize(
+        "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Name"
+      ),
+      hint: game.i18n.localize(
+        "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Hint"
+      ),
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean,
+    });
+
     // Name default healing item
     game.settings.register("starwarsffg", "medItemName", {
       name: game.i18n.localize("SWFFG.MedicalItemName"),
@@ -387,14 +426,14 @@ export default class SettingsHelpers {
     });
 
     let stimpackChoices = [
-        game.i18n.localize("SWFFG.MedicalItemNameUsePrompt"),
-        game.i18n.localize("SWFFG.MedicalItemNameUseRest"),
-        game.i18n.localize("SWFFG.MedicalItemNameUseReset"),
+      game.i18n.localize("SWFFG.MedicalItemNameUsePrompt"),
+      game.i18n.localize("SWFFG.MedicalItemNameUseRest"),
+      game.i18n.localize("SWFFG.MedicalItemNameUseReset"),
     ];
     game.settings.register("starwarsffg", "HealingItemAction", {
       name: game.i18n.localize("SWFFG.MedicalItemSetting"),
       scope: "world",
-      default: '0',
+      default: "0",
       config: false,
       type: String,
       choices: stimpackChoices,
