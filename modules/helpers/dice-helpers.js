@@ -42,8 +42,12 @@ export default class DiceHelpers {
       success: 0,
       triumph: 0,
       despair: 0,
+      remsetback: 0,
       upgrades: 0,
-      label: skillData?.label ? game.i18n.localize(skillData.label) : game.i18n.localize(skillName),
+      label: skillData?.label
+        ? game.i18n.localize(skillData.label)
+        : game.i18n.localize(skillName),
+      source: {},
     };
     let characteristic = {
       value: 0,
@@ -106,6 +110,7 @@ export default class DiceHelpers {
       triumph: skill.triumph,
       despair: skill.despair,
       upgrades: skill.upgrades,
+      remsetback: skill?.remsetback ? skill.remsetback : 0,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
@@ -133,7 +138,10 @@ export default class DiceHelpers {
       const characteristic = data.data.characteristics[skill.characteristic];
 
       const dicePool = new DicePoolFFG({
-        ability: Math.max(characteristic?.value ? characteristic.value : 0, skill?.rank ? skill.rank : 0),
+        ability: Math.max(
+          characteristic?.value ? characteristic.value : 0,
+          skill?.rank ? skill.rank : 0
+        ),
         boost: skill.boost,
         setback: skill.setback,
         remsetback: skill.remsetback,
@@ -147,18 +155,26 @@ export default class DiceHelpers {
         triumph: skill?.triumph ? skill.triumph : 0,
         despair: skill?.despair ? skill.despair : 0,
         upgrades: skill?.upgrades ? skill.upgrades : 0,
+        remsetback: skill?.remsetback ? skill.remsetback : 0,
         source: {
           skill: skill?.ranksource?.length ? skill.ranksource : [],
           boost: skill?.boostsource?.length ? skill.boostsource : [],
-          remsetback: skill?.remsetbacksource?.length ? skill.remsetbacksource : [],
+          remsetback: skill?.remsetbacksource?.length
+            ? skill.remsetbacksource
+            : [],
           setback: skill?.setbacksource?.length ? skill.setbacksource : [],
-          advantage: skill?.advantagesource?.length ? skill.advantagesource : [],
+          advantage: skill?.advantagesource?.length
+            ? skill.advantagesource
+            : [],
           dark: skill?.darksource?.length ? skill.darksource : [],
           light: skill?.lightsource?.length ? skill.lightsource : [],
           failure: skill?.failuresource?.length ? skill.failuresource : [],
           threat: skill?.threatsource?.length ? skill.threatsource : [],
           success: skill?.successsource?.length ? skill.successsource : [],
-          upgrades: skill?.upgradessource?.length ? skill.upgradessource: [],
+          remsetback: skill?.remsetbacksource.length
+            ? skill.remsetbacksource
+            : [],
+          upgrades: skill?.upgradessource?.length ? skill.upgradessource : [],
         },
       });
       dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
@@ -195,6 +211,7 @@ export default class DiceHelpers {
       triumph: skill?.triumph ? skill.triumph : 0,
       despair: skill?.despair ? skill.despair : 0,
       upgrades: skill?.upgrades ? skill.upgrades : 0,
+      remsetback: skill?.remsetback ? skill.remsetback : 0,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
@@ -221,6 +238,7 @@ export default class DiceHelpers {
       success: skill.success,
       triumph: skill?.triumph ? skill.triumph : 0,
       despair: skill?.despair ? skill.despair : 0,
+      remsetback: skill?.remsetback ? skill.remsetback : 0,
       upgrades: skill?.upgrades ? skill.upgrades : 0,
     });
 
@@ -288,8 +306,12 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
   const characteristic = actor.system.characteristics[skill.characteristic];
 
   const dicePool = new DicePoolFFG({
-    ability: (Math.max(characteristic.value, skill.rank) + incoming_roll.ability) - (Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency),
-    proficiency: Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency,
+    ability:
+      Math.max(characteristic.value, skill.rank) +
+      incoming_roll.ability -
+      (Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency),
+    proficiency:
+      Math.min(characteristic.value, skill.rank) + incoming_roll.proficiency,
     boost: skill.boost + incoming_roll.boost,
     setback: skill.setback + incoming_roll.setback,
     force: skill.force + incoming_roll.force,
@@ -302,7 +324,9 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
     triumph: skill.triumph + incoming_roll.triumph,
     despair: skill.despair + incoming_roll.despair,
     upgrades: skill.upgrades + incoming_roll.upgrades,
-    remsetback: skill.remsetback + incoming_roll.remsetback,
+    remsetback: skill?.remsetback
+      ? skill.remsetback
+      : 0 + incoming_roll.remsetback,
     difficulty: +incoming_roll.difficulty,
   });
   return dicePool;
