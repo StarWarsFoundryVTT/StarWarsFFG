@@ -437,7 +437,7 @@
   "SWFFG.AdversariesImportInstructions2": "Télécharger la source complète sous forme de fichier zip à utiliser pour l'importation.",
   "SWFFG.Skills": "Compétences",
   "SWFFG.GroupManager": "Gestionnaire de groupe",
-  "SWFFG.EnableRollAudio": "Jet - Permettre aux utilisateurs d'ajouter des sons sur les jets",
+  "SWFFG.EnableRollAudio": "Dés - Permettre aux utilisateurs d'ajouter des sons sur les jets",
   "SWFFG.EnableRollAudioHint": "Permettre aux utilisateurs d'ajouter des pistes audio à partir du dialogue de lancement",
   "SWFFG.EnableRollAudioPlaylist": "Roll - Playlist users use for roll audio",
   "SWFFG.EnableRollAudioPlaylistHint": "Il s'agit de la liste de lecture à laquelle les utilisateurs ont accès et à partir de laquelle ils peuvent ajouter de l'audio aux Jets.",
@@ -763,5 +763,7 @@
   "SWFFG.Settings.groupManager.Hint": "Configuration du gestionnaire de groupe",
   "SWFFG.Settings.groupManager.Label": "Configurer le gestionnaire de groupe",
   "SWFFG.Settings.actor.RivalTokenPrepend.Name": "Préfixer le nom des jetons de Rivaux",
-  "SWFFG.Settings.actor.RivalTokenPrepend.Hint": "Le nom des jetons de Rivaux non liés à un Acteur seront préfixé d'un adjectif. Exemple: \"Coléreux\""
+  "SWFFG.Settings.actor.RivalTokenPrepend.Hint": "Le nom des jetons de Rivaux non liés à un Acteur seront préfixé d'un adjectif. Exemple: \"Coléreux\"",
+  "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Name": "Dés - Ajuster les dés d'Infortune",
+  "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Hint": "Appliquer les modificateurs \"Retirer un dé d'Infortune\" automatiquement lorsque les dés sont jetés."
 }
