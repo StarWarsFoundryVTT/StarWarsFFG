@@ -199,7 +199,9 @@ export default class EmbeddedItemHelpers {
         },
       };
 
-      let readonlyItemJournalEntry = await JournalEntry.create(readonlyItem, {temporary: true});
+      let readonlyItemJournalEntry = await new JournalEntry(readonlyItem, {
+        temporary: true,
+      });
       readonlyItemJournalEntry.sheet.render(true)
     } catch (err) {
       ui.notifications.warn(`The item or quality has been removed or can not be found!`);
@@ -271,7 +273,7 @@ export default class EmbeddedItemHelpers {
 
     delete temp._id;
     delete temp.id;
-    let tempItem = await Item.create(temp, {temporary: true});
+    let tempItem = await new Item(temp, { temporary: true });
     tempItem.sheet.render(true);
   }
 
@@ -290,7 +292,7 @@ export default class EmbeddedItemHelpers {
       data,
     };
 
-    let tempItem = await Item.create(temp, {temporary: true});
+    let tempItem = await new Item(temp, { temporary: true });
 
     tempItem.data._id = temp.id;
     if (!temp.id) {
