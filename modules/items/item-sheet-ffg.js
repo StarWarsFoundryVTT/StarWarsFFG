@@ -58,7 +58,7 @@ export class ItemSheetFFG extends ItemSheet {
       );
     });
     // this is the end of the de-duplicating -=key stuff
-    
+
     data.data = data.item.system;
 
 
@@ -708,7 +708,7 @@ export class ItemSheetFFG extends ItemSheet {
       temp.ownership = {
         default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
       }
-      let tempItem = await Item.create(temp, { temporary: true });
+      let tempItem = await new Item(temp, { temporary: true });
 
       tempItem.sheet.render(true);
     });
@@ -779,7 +779,7 @@ export class ItemSheetFFG extends ItemSheet {
         },
       };
 
-      let tempItem = await Item.create(temp, { temporary: true });
+      let tempItem = await new Item(temp, { temporary: true });
       CONFIG.logger.debug("Adding mod with the following data", tempItem);
 
       this.object.system[itemType].push(tempItem.toJSON());

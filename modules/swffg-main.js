@@ -680,7 +680,7 @@ Hooks.on("renderChatMessage", async (app, html, messageData) => {
           default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
         }
       };
-      const tempItem = await Item.create(itemData, {temporary: true});
+      const tempItem = await new Item(itemData, {temporary: true});
       tempItem.sheet.render(true);
     } else {
       CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
@@ -1015,7 +1015,7 @@ Hooks.once("ready", async () => {
         // abilities
         for(const abilityId of Object.keys(item.system.abilities)) {
           const abilityData = item.system.abilities[abilityId];
-          const abilityItem = await Item.create(
+          const abilityItem = await new Item(
             {
               name: abilityData.name,
               type: "ability",
