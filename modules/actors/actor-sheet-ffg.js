@@ -733,7 +733,7 @@ export class ActorSheetFFG extends ActorSheet {
                 default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
               }
             };
-            const tempItem = await Item.create(itemData, {temporary: true});
+            const tempItem = await new Item(itemData, { temporary: true });
             tempItem.sheet.render(true);
           } else {
             CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
