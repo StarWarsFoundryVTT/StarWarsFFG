@@ -2610,10 +2610,7 @@ export default class ImportHelpers {
               rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
             },
           };
-          const descriptor = await Item.create(
-              unique,
-              { temporary: true }
-          );
+          const descriptor = await new Item(unique, { temporary: true });
           let rank = "";
           if (unique.system.rank > 1) {
             rank = `${game.i18n.localize("SWFFG.Count")} ${unique.system.rank}`;

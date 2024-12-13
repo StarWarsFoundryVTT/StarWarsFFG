@@ -125,7 +125,7 @@ export default class ActorHelpers {
             } else if (formData.data?.stats[k]?.max) {
               statValue = parseInt(formData.data.stats[k].max, 10);
             } else {
-              if (formData.data.stats[k]?.value) {
+              if (Number.isInteger(formData.data.stats[k]?.value)) {
                 statValue = parseInt(formData.data.stats[k].value, 10);
               } else {
                 statValue = 0;
