@@ -26,6 +26,7 @@
   * Allow zero as a valid value when updating vehicle stats ([#1717](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1717))
   * Replace deprecated Document.createDocuments calls with Document() constructor ([#1683](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1683))
   * Show removed setback dice icons and optionnally remove them from all rolls ([#1720](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1720))
+  * Problem with rolling of standard dice ([#1731](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1731))
 
 `1.903`
 * Features:
