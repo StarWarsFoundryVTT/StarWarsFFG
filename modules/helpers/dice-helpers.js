@@ -316,6 +316,7 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
     upgrades: skill.upgrades + incoming_roll.upgrades,
     remsetback: skill?.remsetback ? skill.remsetback : 0 + incoming_roll.remsetback,
     difficulty: +incoming_roll.difficulty,
+    challenge: +incoming_roll.challenge,
   });
   return dicePool;
 }

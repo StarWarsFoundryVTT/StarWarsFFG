@@ -24,6 +24,7 @@
   * Assign correct modifiers type to armor: "armour" instead of "armor" ([#1697](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1697))
   * Skill purchases on actors now work via the dollar sign again ([#1713](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1713))
   * Use defense when building pool bug ([#1603](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1603))
+  * Allow to set challenge dices when create a dice pool.
   * Allow zero as a valid value when updating vehicle stats ([#1717](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1717))
   * Replace deprecated Document.createDocuments calls with Document() constructor ([#1683](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1683))
   * Show removed setback dice icons and optionnally remove them from all rolls ([#1720](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1720))
