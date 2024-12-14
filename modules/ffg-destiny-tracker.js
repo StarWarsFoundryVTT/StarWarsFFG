@@ -260,7 +260,7 @@ export default class DestinyTracker extends FormApplication {
     }
 
     if (game.user.isGM) {
-      const roll = this._rollDestiny();
+      const roll = await this._rollDestiny();
 
       const light = await game.settings.get("starwarsffg", "dPoolLight");
       const dark = await game.settings.get("starwarsffg", "dPoolDark");

@@ -142,7 +142,7 @@ export class RollFFG extends Roll {
       if (!game.ffg.diceterms.includes(term.constructor)) {
         if (term.evaluate) {
           if (!(term instanceof foundry.dice.terms.OperatorTerm)) this.hasStandard = true;
-          return await term.evaluate({ minimize, maximize }).total;
+          return await term.evaluate({ minimize, maximize }).then( result => result.total);
         } else return term;
       } else {
         if (term.evaluate) await term.evaluate({ minimize, maximize });
@@ -411,10 +411,10 @@ export class RollFFG extends Roll {
       })
       .flatMap((value, index, array) => {   //Put addition operators between each die, but not before or after another Operator
         if (array.length - 1 !== index && !(array[index] instanceof foundry.dice.terms.OperatorTerm) && !(array[index + 1] instanceof foundry.dice.terms.OperatorTerm)) {
-          return [value, new foundry.dice.terms.OperatorTerm({operator: '+'})] 
+          return [value, new foundry.dice.terms.OperatorTerm({operator: '+'})]
         } else {
           return value
         }
-      })          
+      })
   }
 }
