@@ -30,6 +30,7 @@
   * Problem with Destiny Roll ([#1730](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1730))
   * Show removed setback dice icons and optionnally remove them from all rolls ([#1720](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1720))
   * Problem with rolling of standard dice ([#1731](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1731))
+  * Allow weapon status check for dice roll also for shipweapon
 
 `1.903`
 * Features:
