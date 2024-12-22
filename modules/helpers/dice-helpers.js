@@ -245,7 +245,7 @@ export default class DiceHelpers {
     let setback = 0;
     let difficulty = 0;
 
-    if (item.type === "weapon" && item?.system?.status && item.system.status !== "None") {
+    if ((item.type === "weapon" || item.type === "shipweapon" ) && item?.system?.status && item.system.status !== "None") {
       const status = CONFIG.FFG.itemstatus[item.system.status].attributes.find((i) => i.mod === "Setback");
 
       if (status.value < 99) {
