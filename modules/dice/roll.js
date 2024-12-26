@@ -141,8 +141,12 @@ export class RollFFG extends Roll {
     this.results = await Promise.all(this.terms.map(async (term) => {
       if (!game.ffg.diceterms.includes(term.constructor)) {
         if (term.evaluate) {
-          if (!(term instanceof foundry.dice.terms.OperatorTerm)) this.hasStandard = true;
-          return await term.evaluate({ minimize, maximize }).then( result => result.total);
+          if (!(term instanceof foundry.dice.terms.OperatorTerm)) {
+            this.hasStandard = true;
+            return await term.evaluate({ minimize, maximize }).then( result => result.total);
+          } else {
+            return await term.evaluate({ minimize, maximize }).total;
+          }
         } else return term;
       } else {
         if (term.evaluate) await term.evaluate({ minimize, maximize });
@@ -361,7 +365,7 @@ export class RollFFG extends Roll {
     // Either create the message or just return the chat data
     const cls = getDocumentClass("ChatMessage");
     const msg = new cls(messageData);
-    if (rMode) msg.applyRollMode(rollMode);
+    if (rMode) msg.applyRollMode(rMode);
 
     // Either create or return the data
     return create ? await cls.create(msg) : msg;
