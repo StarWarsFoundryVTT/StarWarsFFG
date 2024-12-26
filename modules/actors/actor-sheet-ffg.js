@@ -283,7 +283,20 @@ export class ActorSheetFFG extends ActorSheet {
       data.xpLog = this.actor.flags.starwarsffg.xpLog.join("<br>");
     }
 
+    data.actor.items = ActorSheetFFG.sortForActorSheet(data.actor.items);
+
     return data;
+  }
+
+  /**
+   * Sorts actor items by name so that they are presented in a constant order
+   * @param items
+   * @returns {*}
+   */
+  static sortForActorSheet(items) {
+    return items.sort(function(a, b) {
+       return a.name.localeCompare(b.name);
+    });
   }
 
   /* -------------------------------------------- */

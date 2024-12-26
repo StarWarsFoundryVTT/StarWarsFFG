@@ -3,6 +3,7 @@
   * Optionally include GM Characters in the Group Manager ([#1680](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1680))
   * Add EditorConfig settings
   * Add basic Eslint config
+  * Alphabetize species, careers, specializations, signature abilities, and force powers on actor sheets ([#1723](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1723))
 * Fixes:
   * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1542))
   * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
