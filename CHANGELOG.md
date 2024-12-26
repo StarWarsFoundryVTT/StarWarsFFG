@@ -32,6 +32,7 @@
   * Show removed setback dice icons and optionnally remove them from all rolls ([#1720](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1720))
   * Problem with rolling of standard dice ([#1731](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1731))
   * Allow weapon status check for dice roll also for shipweapon
+  * Blind GM rolls are now properly hidden from players ([#1712](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1712))
 
 `1.903`
 * Features:
