@@ -53,6 +53,7 @@ export default class DestinyTracker extends FormApplication {
       destinyPoolLabel,
       isGM: game.user.isGM,
       menu,
+      theme: game.settings.get("starwarsffg", "dicetheme"),
     };
   }
 

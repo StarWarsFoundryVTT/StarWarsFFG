@@ -4089,13 +4089,23 @@ img {
   pointer-events: auto;
 }
 
-.swffg-destiny #destinyLight {
+.swffg-destiny #destinyLight.theme-starwars {
   background: rgba(0, 0, 0, 0.5) url("../images/dice/starwars/lightside.png") no-repeat center;
   background-size: contain;
 }
 
-.swffg-destiny #destinyDark {
+.swffg-destiny #destinyDark.theme-starwars {
   background: rgba(0, 0, 0, 0.5) url("../images/dice/starwars/darkside.png") no-repeat center;
+  background-size: contain;
+}
+
+.swffg-destiny #destinyLight.theme-genesys {
+  background: rgba(0, 0, 0, 0.5) url("../images/dice/genesys/lightside.png") no-repeat center;
+  background-size: contain;
+}
+
+.swffg-destiny #destinyDark.theme-genesys {
+  background: rgba(0, 0, 0, 0.5) url("../images/dice/genesys/darkside.png") no-repeat center;
   background-size: contain;
 }
 
