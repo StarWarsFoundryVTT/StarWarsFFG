@@ -28,9 +28,9 @@
         {{/if}} {{#if (eq type "Dropdown")}}
         <select style="text-align: center;" name="{{name}}">
           {{#if (eq name "data.characteristic.value")}}<option value="">None</option>{{/if}}
-          {{#select value}} {{#each options as |t|}}
+          {{#selectFfg value}} {{#each options as |t|}}
           <option value="{{#if (eq t.value undefined) }}{{t._id}}{{else}}{{t.value}}{{/if}}">{{localize t.label}}{{t.name}}</option>
-          {{/each}} {{/select}}
+          {{/each}} {{/selectFfg}}
         </select>
         {{/if}} {{#if (eq type "Multicheckbox")}}
         <div class="grid grid-2col firing-arcs">
