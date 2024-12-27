@@ -64,6 +64,11 @@ section {
   border-radius: 10px;
 }
 
+.chat-message.message .message-content .emptyCompendiumNotification {
+  background: #d8cbc0;
+  border-radius: 10px;
+}
+
 .window-app .window-content::after {
   content: "";
   display: block;

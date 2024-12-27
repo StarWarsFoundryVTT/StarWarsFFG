@@ -274,6 +274,16 @@ Hooks.once("init", async function () {
   });
 
   /**
+   * Register a setting to avoid spamming compendium warnings for Genesys players or whomever
+   */
+  game.settings.register("starwarsffg", "compendiumsPreviouslyEmpty", {
+    scope: "world",
+    config: false,
+    default: false,
+    type: Boolean,
+  });
+
+  /**
    * Set an initiative formula for the system
    * @type {String}
    */
@@ -565,10 +575,10 @@ Hooks.once("init", async function () {
             result += options.fn({item: list[i]});
 
     return result.length > 0 ? result : options.inverse();
-});
+  });
 
 
-  TemplateHelpers.preload();
+  await TemplateHelpers.preload();
 });
 
 Hooks.on("renderSidebarTab", (app, html, data) => {
@@ -1136,6 +1146,19 @@ Hooks.once("ready", async () => {
     }
     return token;
   });
+
+  const empty = await compendiumsEmpty();
+  if (empty && !game.settings.get("starwarsffg", "compendiumsPreviouslyEmpty")) {
+    const template = "systems/starwarsffg/templates/notifications/empty_compendiums.html";
+    const html = await renderTemplate(template);
+    const messageData = {
+      user: game.user.id,
+      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      content: html,
+    };
+    ChatMessage.create(messageData);
+    await game.settings.set("starwarsffg", "compendiumsPreviouslyEmpty", true);
+  }
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
@@ -1409,4 +1432,19 @@ async function registerCrewRoles() {
     config: false,
     type: Object,
   });
+}
+
+/**
+ * Check if all built-in compendiums are empty or not
+ * @returns {Promise<boolean>}
+ */
+async function compendiumsEmpty() {
+  const compendiums = game.packs.contents.filter(i => i.collection.includes("starwars"));
+  for (const compendium of compendiums) {
+    if ((await compendium.getDocuments()).length !== 0) {
+      return false;
+    }
+  }
+
+  return compendiums.length > 0;
 }

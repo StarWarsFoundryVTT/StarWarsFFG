@@ -22,6 +22,7 @@ async function handleMigration(oldVersion, newVersion) {
   // migration handlers should be added here going forward
   await migrateTo1_901();
   await warnTheme();
+  await resetCompendiumCheck();
 }
 
 /**
@@ -67,4 +68,12 @@ async function migrateTo1_901() {
       }
     }
   }
+}
+
+/**
+ * Reset the check for empty compendiums
+ * @returns {Promise<void>}
+ */
+async function resetCompendiumCheck() {
+  await game.settings.set("starwarsffg", "compendiumsPreviouslyEmpty", false);
 }
