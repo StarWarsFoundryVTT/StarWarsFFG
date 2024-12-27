@@ -457,6 +457,16 @@ Hooks.once("init", async function () {
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
 
+  // add back in the select helper (under a new name, so we don't get warnings)
+  Handlebars.registerHelper({
+    selectFfg: function (selected, options) {
+      const escapedValue = RegExp.escape(Handlebars.escapeExpression(selected));
+      const rgx = new RegExp(' value=[\"\']' + escapedValue + '[\"\']');
+      const html = options.fn(this);
+      return html.replace(rgx, "$& selected");
+    }
+  });
+
   // Register Handlebars utilities
   Handlebars.registerHelper("json", JSON.stringify);
 

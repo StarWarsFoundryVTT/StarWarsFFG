@@ -9,7 +9,7 @@
   <li class="attribute flexrow" data-attribute="{{key}}">
     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
     <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-      {{#select attr.modtype}}
+      {{#selectFfg attr.modtype}}
         {{#if (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon") )}}
           {{#each ../this.FFG.vehicle_mod_types as |t|}}
             <option value="{{t.value}}">{{localize t.label}}</option>
@@ -47,10 +47,10 @@
             {{/if}}
           {{/each}}
         {{/if}}
-      {{/select}}
+      {{/selectFfg}}
     </select>
     <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-      {{#select attr.mod}}
+      {{#selectFfg attr.mod}}
         {{#if (and (eq attr.modtype "Stat") (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon"))) }}
           {{#each ../this.FFG.vehicle_stats as |t|}}
             <option value="{{t.value}}">{{localize t.label}}</option>
@@ -102,7 +102,7 @@
             <option value="{{t.value}}">{{localize t.label}}</option>
           {{/each}}
         {{/if}}
-      {{/select}}
+      {{/selectFfg}}
     </select>
     {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}}
       <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} />
