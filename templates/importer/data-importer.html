@@ -12,13 +12,21 @@
       <input type="file" name="data" accept=".zip" />
     </div>
     <div>
-      <button class="dialog-button" data-button="load">
+      <button class="dialog-button" id="load" data-button="load">
         <i class="fas fa-check"></i>
         {{localize "SWFFG.LoadFile"}}
       </button>
     </div>
   </div>
   <div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
+        <button id="importAll">
+          <i class="fa-solid fa-lasso"></i>
+          {{ localize "SWFFG.CheckAll" }}
+        </button>
+      </div>
+    </div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
         <input type="checkbox" id="importArmor" name="imports" value="/Armor.xml" data-name="Armor" data-type="Item" data-itemtype="armor" disabled />
