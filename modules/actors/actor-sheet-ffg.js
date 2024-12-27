@@ -1743,7 +1743,9 @@ export class ActorSheetFFG extends ActorSheet {
             if (!entry) {
               entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
             }
-            gameItem = await pack.getDocument(entry._id);
+            if (entry) {
+              gameItem = await pack.getDocument(entry._id);
+            }
           }
         } else {
           gameItem = await game.items.get(specializationTalents[talent].itemId);
