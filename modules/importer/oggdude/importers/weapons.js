@@ -55,9 +55,10 @@ export default class Weapons {
                 tags: [
                   itemType,
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
             };
-            data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            //data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
 
             data.data.skill.useBrawn = ["Melee", "Brawl", "Lightsaber"].some((element) => data.data.skill.value.includes(element)) && (!item.Damage || item.Damage === "0");
 

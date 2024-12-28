@@ -2207,6 +2207,44 @@ export default class ImportHelpers {
   }
 
   /**
+   * Converts sources to an array (instead of HTML) for rendering in a dedicated location
+   * @param sources
+   * @returns {*[]}
+   */
+  static getSourcesAsArray(sources) {
+    let parsedSources = [];
+
+    // if there are no sources, don't bother trying to parse
+    if (!sources) {
+      return parsedSources;
+    }
+
+    // sometimes there's a single source not inside a `source` block
+    if (sources?._) {
+      sources.Source = [sources];
+    }
+
+    try {
+      // convert the sources to an array if they aren't already one (silly XML)
+      if (!Array.isArray(sources.Source)) {
+        sources.Source = [sources.Source];
+      }
+
+      for (const source of sources.Source) {
+        if (source?.$Page) {
+          parsedSources.push(`${source._} pg.${source.$Page}`);
+        } else {
+          parsedSources.push(source._);
+        }
+      }
+    } catch {
+      // in all the cases I looked at, this is due to bad data. just return what we've got so far
+      return parsedSources;
+    }
+    return parsedSources;
+  }
+
+  /**
    * Converts sources to text
    * @param  {} sources
    */

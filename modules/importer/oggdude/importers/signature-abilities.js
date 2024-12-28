@@ -41,10 +41,11 @@ export default class SignatureAbilities {
               tags: [
                 "signatureability",
               ],
+              sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
             },
           };
 
-          data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
+          //data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
           item.AbilityRows.AbilityRow.forEach((row, i) => {
             try {
               if (i === 0) {

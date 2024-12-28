@@ -93,6 +93,13 @@ export class ItemSheetFFG extends ItemSheet {
       data.data.enrichedDescription = await TextEditor.enrichHTML(data.data.description);
     }
 
+    if (data?.data?.longDesc !== undefined) {
+      data.data.enrichedLongDesc = await TextEditor.enrichHTML(data.data.longDesc);
+      data.data.hasLongDesc = true;
+    } else {
+      data.data.hasLongDesc = false;
+    }
+
     data.isTemp = false;
     if (this.object.flags?.starwarsffg?.ffgIsOwned || this.object.flags?.starwarsffg?.ffgIsTemp) {
       data.isTemp = true;

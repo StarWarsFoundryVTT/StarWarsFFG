@@ -6,6 +6,7 @@
   * Alphabetize species, careers, specializations, signature abilities, and force powers on actor sheets ([#1723](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1723))
   * A notification will be generated if all system compendiums are empty ([#1693](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1693))
   * The importer now has a "select all" so you don't have to click each item individually ([#1724](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1724))
+  * Add long description for talents and move sources out of description for all items ([#1640](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1640))
 * Fixes:
   * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1542))
   * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))

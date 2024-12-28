@@ -90,12 +90,13 @@ export default class Vehicles {
                 tags: [
                   "vehicle",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
               spaceShip: isSpaceVehicle,
               silhouetteImage: "systems/starwarsffg/images/shipdefence.png",
             };
 
-            data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            //data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
 
             if (item.VehicleWeapons?.VehicleWeapon) {
               if (!Array.isArray(item.VehicleWeapons.VehicleWeapon)) {
