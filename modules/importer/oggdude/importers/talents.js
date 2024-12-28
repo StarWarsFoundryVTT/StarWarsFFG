@@ -44,6 +44,7 @@ export default class Talents {
             data.data = {
               attributes: {},
               description: item.Description,
+              longDesc: "",
               ranks: {
                 ranked: item.Ranked === "true" ? true : false,
               },
@@ -57,10 +58,11 @@ export default class Talents {
                 tags: [
                   "talent",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
             };
 
-            data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            //data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
             data.data.attributes = foundry.utils.mergeObject(data.data.attributes, ImportHelpers.processStatMod(item?.Attributes));
             data.data.attributes = foundry.utils.mergeObject(data.data.attributes, ImportHelpers.processCareerSkills(item?.ChooseCareerSkills?.NewSkills));
             if (item?.DieModifiers) {

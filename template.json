@@ -603,7 +603,8 @@
         "description": "",
         "attributes": {},
         "metadata": {
-          "tags": []
+          "tags": [],
+          "sources": []
         }
       },
       "basic": {
@@ -724,7 +725,8 @@
       "isForceTalent": false,
       "isConflictTalent": false,
       "tier": 1,
-      "trees": []
+      "trees": [],
+      "longDesc": ""
     },
     "shipweapon": {
       "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],

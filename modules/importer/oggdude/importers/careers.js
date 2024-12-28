@@ -32,10 +32,11 @@ export default class Career {
                 tags: [
                     "career",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
             };
 
-            data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
+            //data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
 
             // process career skills
             item.CareerSkills.Key.forEach((skillKey) => {
