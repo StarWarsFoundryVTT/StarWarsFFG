@@ -82,7 +82,6 @@
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.vehicle_ranges adjusted=data.range.label)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.special.value )}}
           </div>
 
           <div class="flex-group-center weapon-values hidden-content">
@@ -115,6 +114,7 @@
       <div class="container flex-group-center weapon-values">
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
       </div>
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.special.value )}}
     </div>
 
     {{!-- Long Description and Sources Tab --}}
