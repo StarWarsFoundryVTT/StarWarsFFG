@@ -40,6 +40,7 @@
   * Properly use Genesys story points when the theme is set to Genesys ([#1711](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1711))
   * Stop using deprecated `select` Handlebars helper ([#1632](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1632))
     * Note that the same _code_ is in use, it is just no longer using the built-in (and deprecated) version
+  * Correctly show claimed slot combatants in combat tracker ([#1703](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1703))
 
 `1.903`
 * Features:
