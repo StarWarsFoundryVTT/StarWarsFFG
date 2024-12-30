@@ -474,8 +474,11 @@ export class CombatFFG extends Combat {
     console.log("deleting the combatant")
     // now delete the toRemoveCombatantId slot
     Hooks.off("preDeleteCombatant", CONFIG.FFG.preCombatDelete);
+    CONFIG.FFG.preCombatDelete = undefined;
     await this.combatants.get(combatantId).delete();
-    CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    if (CONFIG.FFG.preCombatDelete === undefined) {
+      CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    }
     // now create a new slot to replace it
     CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
     const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
