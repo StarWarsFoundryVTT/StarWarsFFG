@@ -41,6 +41,7 @@
   * Stop using deprecated `select` Handlebars helper ([#1632](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1632))
     * Note that the same _code_ is in use, it is just no longer using the built-in (and deprecated) version
   * Correctly show claimed slot combatants in combat tracker ([#1703](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1703))
+  * Combat tracker no longer spawns infinite combatants under certain conditions ([#1733](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1733))
 
 `1.903`
 * Features:
