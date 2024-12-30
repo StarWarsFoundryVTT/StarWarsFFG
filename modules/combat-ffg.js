@@ -451,19 +451,23 @@ export class CombatFFG extends Combat {
   }
 
   async removeCombatantOnly(combatantId) {
+    CONFIG.logger.debug("Removing combatant from combat");
     const round = this.round;
     const combatant = this.combatants.get(combatantId);
     const disposition = combatant.disposition;
     const initiative = combatant.initiative;
+    CONFIG.logger.debug(`Initial information: combatantId - ${combatantId}, combatantName - ${combatant.name}`);
+
+    const originalCombatantId = $('.combatant.actor[data-combatant-id="' + combatant.id + '"]').data('alt-id');
 
     // find if the combatant has any slots claimed
-    const claimedSlot = this.getSlotClaims(round, combatantId);
+    const claimedSlot = this.getSlotClaims(round, originalCombatantId);
     // prevent constant re-rendering of the tracker
     this.debounceRender();
     if (claimedSlot) {
       // un-claim the slot
-      console.log("Someone claimed the actors slot, un-claiming it")
-      await this.unclaimSlot(round, claimedSlot);
+      CONFIG.logger.debug("Someone claimed the actors slot, un-claiming it");
+      await this.unclaimSlot(round, originalCombatantId);
     }
     console.log("un-claiming any slots claimed by the actor")
     await this.unclaimSlot(round, combatantId);
@@ -639,7 +643,7 @@ export class CombatFFG extends Combat {
   async removeCombatant(li) {
     const round = this.round;
     // find the combatant being right-clicked
-    const clickedCombatantId = li.data("combatant-id");
+    const clickedCombatantId = li.data("alt-id");
     const clickedCombatantName = this.combatants.get(clickedCombatantId)?.name;
     CONFIG.logger.debug("Detected combatant removal on custom combat tracker, working...");
     CONFIG.logger.debug(`Right clicked original actor was ${clickedCombatantName} (${clickedCombatantId})`);
