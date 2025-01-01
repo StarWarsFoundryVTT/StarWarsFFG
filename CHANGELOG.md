@@ -1,3 +1,7 @@
+`1.905`
+* Fixes
+  * Hotfix for inability to roll dice with modifiers (e.g. critical injuries)
+
 `1.904`
 * Features:
   * Optionally include GM Characters in the Group Manager ([#1680](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1680))

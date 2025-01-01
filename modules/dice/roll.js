@@ -143,7 +143,8 @@ export class RollFFG extends Roll {
         if (term.evaluate) {
           if (!(term instanceof foundry.dice.terms.OperatorTerm)) {
             this.hasStandard = true;
-            return await term.evaluate({ minimize, maximize }).then( result => result.total);
+            let result = await term.evaluate({ minimize, maximize });
+            return result.total;
           } else {
             return await term.evaluate({ minimize, maximize }).total;
           }
