@@ -31,36 +31,4 @@
   </ul>
 </ul>
 {{!-- qualities List --}}
-<ul class="talent-list">
-  <li class="talents-header flexrow">
-    <div class="header-name">{{ localize "SWFFG.ItemQualities" }}</div>
-    <div></div>
-  </li>
-  <ul class="items-list">
-    {{#each data.itemmodifier as |item id|}}
-      <li class="item flexrow force-power" data-item-id="{{item._id}}" data-desc="{{item.system.description}}" data-upgrade-name="{{item.name}}" data-item-type="itemmodifier" data-item-index="{{ @index }}">
-        <div class="item-name">
-          {{item.name}} {{ item.system.rank }}
-        </div>
-        <div class="item-controls">
-          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
-          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
-        </div>
-      </li>
-    {{/each }}
-
-    {{!-- qualities added by attachments --}}
-    {{#each data.itemattachment as |item id|}}
-      {{#each item.system.itemmodifier as |mod mod_id| }}
-        {{#if mod.system.active }}
-          <li class="item flexrow force-power" data-item-id="{{mod._id}}" data-desc="{{mod.system.description}}" data-upgrade-name="{{mod.name}}" data-item-type="itemmodifier" data-item-index="{{ @index }}">
-            <div class="item-name">
-              {{!-- render without controls because these are from the attachment --}}
-              {{mod.name}} {{ mod.system.rank }} ({{ localize "SWFFG.Items.Sheets.Qualities.From" }} {{item.name}})
-            </div>
-          </li>
-        {{/if }}
-      {{/each }}
-    {{/each}}
-  </ul>
-</ul>
+{{> "systems/starwarsffg/templates/parts/ffg-mods.html"}}
