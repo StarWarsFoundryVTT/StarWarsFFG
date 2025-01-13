@@ -107,7 +107,7 @@ export class itemEditor extends FormApplication  {
   }
 
   async onDropMod(event) {
-    console.log("caught mod drag-and-drop")
+    CONFIG.logger.debug("caught mod drag-and-drop");
     if (this.data.clickedObject.type !== "itemattachment") {
       ui.notifications.info("You can only drag-and-drop mods onto attachments.");
       return;
@@ -127,8 +127,6 @@ export class itemEditor extends FormApplication  {
 
     const droppedObject = await fromUuid(data.uuid);
 
-    console.log(droppedObject)
-
     // if it's an attachment, locate the attachment to update
     let updateData;
     if (this.data.clickedObject.type === "itemattachment") {
@@ -142,12 +140,6 @@ export class itemEditor extends FormApplication  {
       await this.data.sourceObject.update({system: {itemattachment: updateData}});
       this.render(true);
     }
-
-    /*
-    await this._onSubmit(event);
-    await this.object.update({system: {talents: {[talentId]: {description: itemObject.system.description}}}});
-    this.render(true);
-    */
   }
 
   /**
@@ -350,5 +342,138 @@ export class itemEditor extends FormApplication  {
       }
       await this.data.sourceObject.update({system: {itemmodifier: updateData}});
     }
+  }
+}
+
+export class talentEditor extends itemEditor {
+  /*
+    Known issues:
+    - The description rich text editor doesn't appear to work
+  */
+  /** @override */
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(
+      super.defaultOptions,
+      {
+        title: `Embedded Talent Editor`, // should not be seen by anyone, as it is dynamically set on getData()
+        //height: 720,
+        width: 520,
+        closeOnSubmit: false,
+        submitOnClose: true,
+        submitOnChange: true,
+        resizable: true,
+        classes: ["starwarsffg", "flat_editor"],
+        tabs: [{ navSelector: ".tabs", contentSelector: ".content", initial: "tab1"}],
+        scrollY: [".modification_container"],
+      }
+    );
+  }
+
+  /** @override */
+  get template() {
+    const path = "systems/starwarsffg/templates/items/dialogs";
+    return `${path}/ffg-embedded-talent.html`;
+  }
+
+    /** @override */
+  async getData(options) {
+    // update the title since it isn't available when creating the application
+    this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
+
+    // build out the mod type and mod choices
+    let modTypeChoices = this._getModTypeChoices();
+    let modChoices = CONFIG.FFG.modTypeToModMap;
+    let activations = CONFIG.FFG.activations;
+    let data = await this._enrichData();
+
+    return {
+      modTypeChoices: modTypeChoices,
+      modChoices: modChoices,
+      activations: activations,
+      data: data,
+    };
+  }
+
+  /**
+   * Controls creating, deleting, or modifying mods (which contain modifiers)
+   * @param event
+   */
+  async _modControl(event) {
+    let action = event.currentTarget.getAttribute('data-action');
+    if (action === 'create') {
+      const nk = new Date().getTime();
+      const modTypeChoices = this._getModTypeChoices();
+      const modChoices = CONFIG.FFG.modTypeToModMap;
+      const modificationId = $(event.currentTarget).data("modification-id");
+      const direct = this.data.clickedObject.type !== "itemattachment";
+
+      CONFIG.logger.debug(`caught creating a new mod on a talent. data: ${modificationId}, ${direct}`);
+      CONFIG.logger.debug(modTypeChoices);
+      CONFIG.logger.debug(modChoices);
+      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modTypeChoices)[0]}`);
+      CONFIG.logger.debug(`expected new mod mod is ${modChoices[Object.keys(modTypeChoices)[0]]}`);
+
+      let rendered = await renderTemplate(
+        'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
+        { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
+          modTypeChoices: modTypeChoices,
+          modChoices: modChoices,
+          direct: direct,
+          number: modificationId,
+          attachmentType: 'all',
+          id: `attr${nk}`,
+          attr: {
+            modtype: Object.keys(modTypeChoices['all'])[0],
+            mod: Object.keys(modChoices[Object.keys(modTypeChoices['all'])[0]])[0],
+            value: 1,
+          },
+        }
+      );
+
+      $(event.currentTarget).parent().parent().children(".attributes-list").append(rendered);
+      // update the listeners, so we catch events on these new entries
+      this.activateListeners($(event.currentTarget).parent().parent().children(".attributes-list"));
+      // submit the changes so it gets saved even if the user reloads without closing the editor
+      await this._updateObject(undefined, this._getSubmitData());
+    } else if (action === 'delete') {
+      $(event.currentTarget).parent().remove();
+      // submit the changes so it gets saved even if the user reloads without closing the editor
+      await this._updateObject(undefined, this._getSubmitData());
+    }
+  }
+
+  /**
+   * retrieves data and converts rich text editor fields into the enriched version. this results in things like dice displaying
+   * @returns {Promise<*>}
+   * @private
+   */
+  async _enrichData() {
+    let enriched = this.data;
+    enriched.clickedObject.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.description);
+    return enriched;
+  }
+
+  /** @override */
+  async _updateObject(event, formData) {
+    formData = ItemHelpers.explodeFormData(formData)
+    // correct the data structure into the weird talents-on-specialization format
+    foundry.utils.mergeObject(
+      formData,
+      formData.system,
+    );
+    delete formData.system;
+    // merge it into the existing talent data
+    formData = foundry.utils.mergeObject(
+      this.data.sourceObject.system.talents[this.data.talentId],
+      formData,
+    );
+
+    await this.data.sourceObject.update({
+      system: {
+        talents: {
+          [this.data.talentId]: formData,
+        },
+      },
+    });
   }
 }

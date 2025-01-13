@@ -8,7 +8,7 @@ import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemOptions from "./item-ffg-options.js";
-import {itemEditor} from "./item-editor.js";
+import {itemEditor, talentEditor} from "./item-editor.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -432,34 +432,21 @@ export class ItemSheetFFG extends ItemSheet {
     });
 
     html.find(".specialization-talent .talent-body").on("click", async (event) => {
-      const li = event.currentTarget;
-      const parent = $(li).parents(".specialization-talent")[0];
-      const itemId = parent.dataset.itemid;
-      const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
+      // pull the item which the edit is on
+      const li = $(event.currentTarget);
+      const clickedId = li.closest('.talent-block').attr('id');
+      const clickedType = 'talents';
+      const parentObject = await fromUuid(this.object.uuid);
+      // locate the clicked object on the parent
+      let clickedObject = parentObject.system[clickedType][clickedId];
+      CONFIG.logger.debug(clickedObject);
 
-      if (!itemId) {
-        ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.DragAndDropFirst"));
-        return;
+      const data = {
+        sourceObject: this.object,
+        clickedObject: clickedObject,
+        talentId: clickedId,
       }
-
-      let item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
-      if (!item) {
-        // if we can't find the item by itemid, try by name
-        item = await ImportHelpers.findCompendiumEntityByName("Item", talentName);
-        if (item) {
-          let updateData = {};
-          // build dataset if needed
-          if (!item.locked) {
-            foundry.utils.setProperty(updateData, `data.talents.${parent.id}.itemId`, item.id);
-            this.object.update(updateData);
-          }
-        }
-      }
-      if (!item.flags["clickfromparent"]) {
-        item.flags["clickfromparent"] = [];
-      }
-      item.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
-      item.sheet.render(true);
+      new talentEditor(data).render(true);
     });
 
     if (this.object.type === "talent") {
