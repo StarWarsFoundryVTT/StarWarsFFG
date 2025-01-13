@@ -90,10 +90,6 @@
             <input type="text" name="data.encumbrance.adjusted" value="{{data.encumbrance.adjusted}}" data-dtype="Number" />
             <input type="text" name="data.range.adjusted" value="{{data.range.adjusted}}" data-dtype="String" />
           </div>
-
-          <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.adjusteditemmodifier)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemAttachments" name="itemattachment" fields=data.itemattachment)}}
-          </div>
         </div>
       </div>
     </div>
@@ -108,6 +104,9 @@
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <div class="attachments items">
+        {{> "systems/starwarsffg/templates/parts/ffg-qualities-attachments-mods.html"}}
+      </div>
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
     <div class="tab configuration" data-group="primary" data-tab="configuration">
