@@ -679,10 +679,10 @@ img {
 .starwarsffg.sheet .sheet-body.weapon, .starwarsffg.sheet .sheet-body.armour {
   height: calc(100% - 32rem);
 }
-.starwarsffg.sheet.v2 .sheet-body.armour {
-  height: calc(100% - 29rem);
-}
 
+.starwarsffg.sheet.v2 .sheet-body.armour {
+  height: calc(100% - 21rem);
+}
 .starwarsffg.sheet.v2 .sheet-body.weapon {
   height: calc(100% - 21rem);
 }
