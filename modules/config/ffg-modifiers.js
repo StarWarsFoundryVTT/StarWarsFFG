@@ -1,3 +1,9 @@
+import {weapon_stats} from "./ffg-weapons.js";
+import {armor_stats} from "./ffg-armor.js";
+import {vehicle_stats} from "./ffg-vehicles.js";
+import {character_characteristics, character_stats} from "./ffg-characters.js";
+import {skills} from "./ffg-skills.js";
+
 export const general_modifiers = {
   "Characteristic": {
     "value": "Characteristic",
@@ -217,3 +223,38 @@ export const itemmodifier_resultmodifiers = {
     "label": "SWFFG.ModTypeAddDespair",
   },
 };
+
+export const modTypeToModMap = {
+  "Weapon Stat": weapon_stats,
+  "Armor Stat": armor_stats,
+  "Vehicle Stat": vehicle_stats,
+  "Stat": character_stats,
+  "Result Modifiers": itemmodifier_resultmodifiers,
+  "Dice Modifiers": itemmodifier_dicemodifiers,
+  "Roll Modifiers": itemmodifier_rollmodifiers,
+  // TODO: decide if these should be kept in the map or redone
+  "Characteristic": character_characteristics,
+  "Career Skill": skills,
+  "Force Boost": skills,
+  "Skill Add Advantage": skills,
+  "Skill Add Dark": skills,
+  "Skill Add Despair": skills,
+  "Skill Add Failure": skills,
+  "Skill Add Light": skills,
+  "Skill Add Success": skills,
+  "Skill Add Threat": skills,
+  "Skill Add Triumph": skills,
+  "Skill Add Upgrade": skills,
+  "Skill Boost": skills,
+  "Skill Rank": skills,
+  "Skill Remove Setback": skills,
+  "Skill Setback": skills,
+};
+
+export const itemTypeToModTypeMap = {
+  "weapon": weapon_modifiers,
+  "armor": armor_stats,
+  "armour": armor_stats,
+  "vehicle": vehicle_stats,
+  "all": general_modifiers,
+}
