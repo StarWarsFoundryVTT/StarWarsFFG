@@ -145,7 +145,11 @@ export class itemEditor extends FormApplication  {
       const modTypeChoices = this._getModTypeChoices();
       const modChoices = CONFIG.FFG.modTypeToModMap;
       const modificationId = $(event.currentTarget).data("modification-id");
-      const direct = this.data.clickedObject.type !== "itemattachment";
+      let direct = this.data.clickedObject.type !== "itemattachment";
+      if (modificationId === undefined) {
+        // we aren't adding it to a modification, so this is true
+        direct = true;
+      }
 
       CONFIG.logger.debug(`caught creating a new mod on an attachment. data: ${modificationId}, ${direct}`);
       CONFIG.logger.debug(modTypeChoices);

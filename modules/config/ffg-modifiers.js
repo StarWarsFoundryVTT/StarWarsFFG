@@ -69,6 +69,18 @@ export const general_modifiers = {
     "value": "Skill Setback",
     "label": "SWFFG.ModTypeSkillSetback",
   },
+  "Weapon Stat": {
+    "value": "Weapon Stat",
+    "label": "SWFFG.ModTypeStatWeapon",
+  },
+  "Armor Stat": {
+    "value": "Armor Stat",
+    "label": "SWFFG.ModTypeStatArmor",
+  },
+  "Vehicle Stat": {
+    "value": "Vehicle Stat",
+    "label": "SWFFG.ModTypeStatVehicle",
+  },
   "Stat": {
     "value": "Stat",
     "label": "SWFFG.ModTypeStat",
@@ -94,10 +106,33 @@ export const weapon_modifiers = {
   },
 };
 
-export const vehicle_modifiers = {
+export const armor_modifiers = {
+  "Result Modifiers": {
+    "value": "Result Modifiers",
+    "label": "SWFFG.ModTypeResultModifiers",
+  },
+  "Dice Modifiers": {
+    "value": "Dice Modifiers",
+    "label": "SWFFG.ModTypeDiceModifiers",
+  },
+  "Roll Modifiers": {
+    "value": "Roll Modifiers",
+    "label": "SWFFG.ModTypeRollModifiers",
+  },
+  "Armor Stat": {
+    "value": "Armor Stat",
+    "label": "SWFFG.ModTypeStatArmor",
+  },
   "Stat": {
     "value": "Stat",
     "label": "SWFFG.ModTypeStat",
+  },
+};
+
+export const vehicle_modifiers = {
+  "Vehicle Stat": {
+    "value": "Vehicle Stat",
+    "label": "SWFFG.ModTypeStatVehicle",
   },
 };
 
@@ -232,7 +267,6 @@ export const modTypeToModMap = {
   "Result Modifiers": itemmodifier_resultmodifiers,
   "Dice Modifiers": itemmodifier_dicemodifiers,
   "Roll Modifiers": itemmodifier_rollmodifiers,
-  // TODO: decide if these should be kept in the map or redone
   "Characteristic": character_characteristics,
   "Career Skill": skills,
   "Force Boost": skills,
@@ -253,8 +287,8 @@ export const modTypeToModMap = {
 
 export const itemTypeToModTypeMap = {
   "weapon": weapon_modifiers,
-  "armor": armor_stats,
-  "armour": armor_stats,
-  "vehicle": vehicle_stats,
+  "armor": armor_modifiers,
+  "armour": armor_modifiers,
+  "vehicle": vehicle_modifiers,
   "all": general_modifiers,
 }
