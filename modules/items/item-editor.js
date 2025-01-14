@@ -2,14 +2,6 @@ import ItemHelpers from "../helpers/item-helpers.js";
 
 export class itemEditor extends FormApplication  {
   /*
-  TODO: this can have the following types:
-    attachment (on armor, weapon)
-    "quality" (on armor, weapon, attachment)
-    force powers, specializations, signature abilities
-    vehicle stuff
-    mods on attachments
-   */
-  /*
   Known issues:
     - The title of the editor doesn't get updated when you update the name
     - Modification descriptions are rendered in an input field, not a rich text editor. I can't figure out how to get them to work in RTEs

@@ -4380,3 +4380,12 @@ img {
 .starwarsffg.flat_editor {
   min-height: 300px;
 }
+
+.starwarsffg.flat_editor .modification_header {
+  border-left: 2px solid var(--color-underline-header);
+  padding-left: 5px;
+}
+
+.starwarsffg .flat_editor.modifications.active {
+  overflow-x: hidden;
+}
