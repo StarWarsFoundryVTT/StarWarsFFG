@@ -6,7 +6,7 @@
   </li>
   <ul class="items-list">
     {{#each data.itemmodifier as |item id|}}
-      <li class="item flexrow force-power" data-item-id="{{item._id}}" data-desc="{{item.system.description}}" data-upgrade-name="{{item.name}}" data-item-type="itemmodifier" data-item-index="{{ @index }}">
+      <li class="item flexrow force-power expand-desc" data-item-id="{{item._id}}" data-desc="{{item.system.description}}" data-upgrade-name="{{item.name}}" data-item-type="itemmodifier" data-item-index="{{ @index }}">
         <div class="item-name">
           {{item.name}} {{ item.system.rank }}
         </div>

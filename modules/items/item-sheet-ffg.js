@@ -347,7 +347,7 @@ export class ItemSheetFFG extends ItemSheet {
     });
 
     // Toggle attachment and mod details (not actually force powers, but we are reusing it!)
-      html.find(".force-power").click(async (ev) => {
+      html.find(".expand-desc").click(async (ev) => {
         ev.stopPropagation();
         if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
           CONFIG.logger.debug("Caught attachment or mod description click");

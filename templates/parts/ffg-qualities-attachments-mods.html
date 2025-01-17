@@ -8,7 +8,7 @@
   {{!-- attachments List --}}
   <ul class="items-list">
     {{#each data.itemattachment as |item id|}}
-      <li class="item flexrow force-power" data-item-id="{{item._id}}" data-desc="{{ item.system.description }}" data-rarity="{{ item.system.rarity.value }}" data-price="{{ item.system.price.value }}" data-mod-names="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.name}}~{{/each}}" data-mod-descs="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.description}}~{{/each}}" data-mod-actives="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.active}}~{{/each}}" data-item-type="itemattachment" data-item-name="{{ item.name }}" data-item-index="{{ @index }}">
+      <li class="item flexrow force-power expand-desc" data-item-id="{{item._id}}" data-desc="{{ item.system.description }}" data-rarity="{{ item.system.rarity.value }}" data-price="{{ item.system.price.value }}" data-mod-names="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.name}}~{{/each}}" data-mod-descs="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.description}}~{{/each}}" data-mod-actives="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.active}}~{{/each}}" data-item-type="itemattachment" data-item-name="{{ item.name }}" data-item-index="{{ @index }}">
         <div class="item-name">
           {{#if item.system.rarity.isrestricted}}
             <div class="hover restricted">
