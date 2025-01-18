@@ -763,6 +763,7 @@
   "SWFFG.Items.Popout.Label.Installed": "Installed?",
   "SWFFG.Items.Popout.Label.Ranks": "Ranks",
   "SWFFG.Items.Popout.Buttons.Modification.Add": "Add Modification",
+  "SWFFG.Items.Popout.Type.Warning": "Changing this will immediately CHANGE all base and modification mods",
   "SWFFG.Items.Sheets.Qualities.From": "from",
   "SWFFG.Items.Attachments.Label.Hardpoints": "Using {hardpoints} hardpoints",
   "SWFFG.Settings.Purchase.Specialization.Name": "Specialization Compendiums",

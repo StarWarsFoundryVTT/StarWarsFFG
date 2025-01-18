@@ -16,7 +16,7 @@
         {{editor data.clickedObject.system.enrichedDescription target="system.description"  button=true owner=owner editable=editable}}
       </div>
       <div class="form-group">
-        <label for="system.type">{{ localize "SWFFG.Type" }}</label>
+        <label for="system.type">{{ localize "SWFFG.Type" }}&nbsp;<span data-tooltip="{{ localize "SWFFG.Items.Popout.Type.Warning" }}" data-tooltip-direction="DOWN"><i class="fa-duotone fa-solid fa-triangle-exclamation"></i></span></label>
         <select name="system.type">
           {{ selectOptions data.typeChoices selected=data.clickedObject.system.type }}
         </select>
