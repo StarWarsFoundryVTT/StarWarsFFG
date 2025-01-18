@@ -21,7 +21,7 @@
     {{#each data.itemattachment as |item id|}}
       {{#each item.system.itemmodifier as |mod mod_id| }}
         {{#if mod.system.active }}
-          <li class="item flexrow force-power" data-item-id="{{mod._id}}" data-desc="{{mod.system.description}}" data-upgrade-name="{{mod.name}}" data-item-type="itemmodifier" data-item-index="{{ @index }}">
+          <li class="item flexrow force-power expand-desc" data-item-id="{{mod._id}}" data-desc="{{mod.system.description}}" data-upgrade-name="{{mod.name}}" data-item-type="itemmodifier" data-item-index="{{ @index }}">
             <div class="item-name">
               {{!-- render without controls because these are from the attachment --}}
               {{mod.name}} {{ mod.system.rank }} ({{ localize "SWFFG.Items.Sheets.Qualities.From" }} {{item.name}})
