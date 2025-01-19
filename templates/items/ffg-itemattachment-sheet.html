@@ -47,7 +47,7 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabBaseModifiers" icon="fas fa-cog" cls=classType) (object tab="additional" label="SWFFG.TabAdditionalModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fa-solid fa-wrench" isHidden=isTemp cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabBaseModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fa-solid fa-wrench" isHidden=isTemp cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body small itemattachment">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -56,13 +56,10 @@
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
-    </div>
-
-    <div class="tab additional" data-group="primary" data-tab="additional">
       <div class="attachments items">
         {{> "systems/starwarsffg/templates/parts/ffg-mods.html"}}
       </div>
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
 
     <div class="tab configuration" data-group="primary" data-tab="configuration">

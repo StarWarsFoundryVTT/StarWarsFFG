@@ -30,5 +30,8 @@
         {{/if }}
       {{/each }}
     {{/each}}
+    {{#if (eq data.itemmodifier.length 0)}}
+      {{ localize "SWFFG.Items.Popout.Info.DragDrop" }}
+    {{/if}}
   </ul>
 </ul>
