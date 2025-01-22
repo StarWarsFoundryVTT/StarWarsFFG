@@ -1732,29 +1732,6 @@ export class ActorSheetFFG extends ActorSheet {
 
     for await (const spec of specializations) {
       CONFIG.logger.debug(`_updateSpecialization(): starting work on ${spec.name}`);
-      const specializationTalents = spec.system.talents;
-      for (const talent in specializationTalents) {
-        let gameItem;
-        if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
-          const pack = await game.packs.get(specializationTalents[talent]?.pack);
-          if (pack) {
-            await pack.getIndex();
-            let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
-            if (!entry) {
-              entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
-            }
-            if (entry) {
-              gameItem = await pack.getDocument(entry._id);
-            }
-          }
-        } else {
-          gameItem = await game.items.get(specializationTalents[talent].itemId);
-        }
-
-        if (gameItem) {
-          this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
-        }
-      }
 
       if (spec?.talentList && spec.talentList.length > 0) {
         spec.talentList.forEach((talent) => {
@@ -1786,23 +1763,6 @@ export class ActorSheetFFG extends ActorSheet {
 
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList after update:`);
     CONFIG.logger.debug(data.talentList.slice());
-  }
-
-  /**
-   * Update a specialization talent based on talent reference
-   * @param  {Object} specializationTalentItem
-   * @param  {Object} talentItem
-   */
-  _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
-    CONFIG.logger.debug(`Starwars FFG - Updating Specializations Talent`);
-    specializationTalentItem.name = talentItem.name;
-    specializationTalentItem.description = talentItem.system.description;
-    specializationTalentItem.activation = talentItem.system.activation.value;
-    specializationTalentItem.activationLabel = talentItem.system.activation.label;
-    specializationTalentItem.isRanked = talentItem.system.ranks.ranked;
-    specializationTalentItem.isForceTalent = talentItem.system.isForceTalent;
-    specializationTalentItem.isConflictTalent = talentItem.system.isConflictTalent;
-    specializationTalentItem.attributes = talentItem.system.attributes;
   }
 
   /**

@@ -452,12 +452,37 @@ export class talentEditor extends itemEditor {
 
   /** @override */
   async _updateObject(event, formData) {
+    CONFIG.logger.debug("Updating talent");
     formData = foundry.utils.expandObject(formData);
+
+    // update the activation label to match the activation
+    formData.activationLabel = CONFIG.FFG.activations[formData.activation].label;
+
+    // move attributes out of "system" since they aren't here for talents
+    formData.attributes = formData.system?.attributes;
+    delete formData.system?.attributes;
+    // make sure attributes is a dictionary instead of whatever they end up being
+    if (!Object.keys(formData).includes("attributes") || formData.attributes === undefined) {
+      formData.attributes = {};
+    }
+
+    // iterate over attributes on the specialization and remove any that aren't present in the form
+    if (Object.keys(this.data.sourceObject.system.talents[this.data.talentId]).includes("attributes") && this.data.sourceObject.system.talents[this.data.talentId].attributes !== undefined) {
+      for (const attrKey of Object.keys(this.data.sourceObject.system.talents[this.data.talentId].attributes)) {
+        if (!Object.keys(formData.attributes).includes(attrKey)) {
+          console.log("missing")
+          formData.attributes[`-=${attrKey}`] = null;
+        }
+      }
+    }
+
     // merge it into the existing talent data
     formData = foundry.utils.mergeObject(
       this.data.sourceObject.system.talents[this.data.talentId],
       formData,
     );
+
+    CONFIG.logger.debug(formData);
 
     await this.data.sourceObject.update({
       system: {

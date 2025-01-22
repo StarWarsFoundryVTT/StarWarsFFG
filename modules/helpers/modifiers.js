@@ -311,30 +311,6 @@ export default class ModifierHelpers {
     }).render(true);
   }
 
-  static async popoutModiferWindowSpecTalents(event) {
-    event.preventDefault();
-    const a = $(event.currentTarget).parents(".talent-block")?.[0];
-    const keyname = $(a).attr("id");
-
-    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.system.talents[keyname].name}`;
-
-    const data = {
-      parent: this.object,
-      keyname,
-      data: {
-        data: {
-          ...this.object.system.talents[keyname],
-        },
-      },
-      isUpgrade: false,
-      isTalent: true,
-    };
-
-    new PopoutModifiers(data, {
-      title,
-    }).render(true);
-  }
-
   static async getDicePoolModifiers(pool, item, items) {
     let dicePool = new DicePoolFFG(pool);
 
