@@ -312,6 +312,8 @@ export class itemEditor extends FormApplication  {
             attachment,
             formData,
           );
+          // pull the updated data back into our local record of what it should look like
+          this.data.clickedObject = attachment;
         }
       }
       await this.data.sourceObject.update({system: {itemattachment: updateData}});
@@ -335,6 +337,8 @@ export class itemEditor extends FormApplication  {
             modifier,
             formData,
           );
+          // pull the updated data back into our local record of what it should look like
+          this.data.clickedObject = modifier;
         }
       }
       await this.data.sourceObject.update({system: {itemmodifier: updateData}});
