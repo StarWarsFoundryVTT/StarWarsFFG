@@ -321,7 +321,8 @@ export class itemEditor extends FormApplication  {
     if (this.data.clickedObject.type === "itemmodifier") {
       updateData = this.data.sourceObject.system.itemmodifier;
       for (let modifier of updateData) {
-        if (modifier._id === this.data.clickedObject._id) {
+        // select based on names instead of IDs, as IDs are not present here
+        if (modifier.name === this.data.clickedObject.name) {
           // iterate over the mods on the existing item and remove them if they are not present in the new data
           for (let modKey of Object.keys(modifier.system.attributes)) {
             if (!Object.keys(formData.system.attributes).includes(modKey)) {
@@ -451,13 +452,7 @@ export class talentEditor extends itemEditor {
 
   /** @override */
   async _updateObject(event, formData) {
-    formData = ItemHelpers.explodeFormData(formData)
-    // correct the data structure into the weird talents-on-specialization format
-    foundry.utils.mergeObject(
-      formData,
-      formData.system,
-    );
-    delete formData.system;
+    formData = foundry.utils.expandObject(formData);
     // merge it into the existing talent data
     formData = foundry.utils.mergeObject(
       this.data.sourceObject.system.talents[this.data.talentId],

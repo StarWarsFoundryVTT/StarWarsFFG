@@ -282,6 +282,93 @@ export class ItemSheetFFG extends ItemSheet {
       data.data.renderedDesc = PopoutEditor.renderDiceImages(data?.item?.system?.description, this.actor ? this.actor : {});
     }
 
+    // get summarized data for qualities (e.g. weapons)
+    data = this._getSummarizedQualities(data);
+
+    return data;
+  }
+
+  /**
+   * Summarizes the qualities of an item (drawing from both the direct qualities and those added by attachments)
+   * The goal is to provide a unified view (e.g. "Accurate 3" instead of "Accurate 1" and "Accurate 2 - from attachment")
+   * This data is intended for user viewing only; it should not be submitted back or otherwise used to update anything
+   * @param data (from getData)
+   * @returns {*}
+   * @private
+   */
+  _getSummarizedQualities(data) {
+    CONFIG.logger.debug("Summarizing qualities");
+    // enrich attachment data
+    data.data.doNotSubmit = {
+      qualities: [],
+    };
+
+    if (Object.keys(data.data).includes("itemmodifier")) {
+      for (const mod of data.data.itemmodifier) {
+        const modName = mod.name;
+        const rank = mod.system.rank;
+        const description = mod.system.description;
+        const modId = mod._id;
+        let modIndex = data.data.doNotSubmit.qualities.findIndex(i => i.name === modName);
+        if (modIndex < 0) {
+          modIndex = data.data.doNotSubmit.qualities.length;
+          data.data.doNotSubmit.qualities.push({
+            name: modName,
+            description: description,
+            itemIndex: modIndex,
+            totalRanks: 0,
+            modId: modId,
+            includeControls: true,
+            summarizedRanks: {
+              mods: 0,
+            }
+          });
+        }
+        data.data.doNotSubmit.qualities[modIndex].totalRanks += rank;
+        data.data.doNotSubmit.qualities[modIndex].summarizedRanks.mods += rank;
+      }
+    }
+    CONFIG.logger.debug(data.data.doNotSubmit.qualities);
+
+    CONFIG.logger.debug("Pulling qualities from attachments");
+    if (Object.keys(data.data).includes("itemattachment")) {
+      for (const attachment of data.data.itemattachment) {
+        const source = attachment.name;
+        if (Object.keys(attachment.system).includes("itemmodifier")) {
+          for (const mod of attachment.system.itemmodifier) {
+            if (!mod.system.active) {
+              // this modifier isn't active, skip processing
+              continue;
+            }
+            const modName = mod.name;
+            const rank = mod.system.rank;
+            const description = mod.system.description;
+            let modIndex = data.data.doNotSubmit.qualities.findIndex(i => i.name === modName);
+            if (modIndex < 0) {
+              modIndex = data.data.doNotSubmit.qualities.length;
+              data.data.doNotSubmit.qualities.push({
+                name: modName,
+                description: description,
+                itemIndex: modIndex,
+                totalRanks: 0,
+                includeControls: false,
+                summarizedRanks: {
+                  [source]: 0,
+                }
+              });
+            }
+            // validate this source is present in the data
+            if (!Object.keys(data.data.doNotSubmit.qualities[modIndex].summarizedRanks).includes(source)) {
+              data.data.doNotSubmit.qualities[modIndex].summarizedRanks[source] = 0;
+            }
+            // update the ranks
+            data.data.doNotSubmit.qualities[modIndex].totalRanks += rank;
+            data.data.doNotSubmit.qualities[modIndex].summarizedRanks[source] += rank;
+          }
+        }
+      }
+    }
+    CONFIG.logger.debug(data.data.doNotSubmit.qualities);
     return data;
   }
 

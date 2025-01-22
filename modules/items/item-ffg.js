@@ -372,7 +372,7 @@ export class ItemFFG extends ItemBaseFFG {
         }
 
         if (itemType === "talent") {
-          const id = parseInt(upgrade.replace("talent", ""), 10);          
+          const id = parseInt(upgrade.replace("talent", ""), 10);
           talents[upgrade].cost = (Math.trunc(id / 4) + 1) * 5;
         }
 

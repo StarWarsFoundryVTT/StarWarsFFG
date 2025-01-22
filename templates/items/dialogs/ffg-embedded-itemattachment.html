@@ -33,7 +33,12 @@
         <input name="system.rarity.isrestricted" type="checkbox" {{ checked data.clickedObject.system.rarity.isrestricted }}>
       </div>
       <div class="form-group">
-        <label for="system.type">{{ localize "SWFFG.Type" }}&nbsp;<span data-tooltip="{{ localize "SWFFG.Items.Popout.Type.Warning" }}" data-tooltip-direction="DOWN"><i class="fa-duotone fa-solid fa-triangle-exclamation"></i></span></label>
+        <label for="system.type">
+          {{ localize "SWFFG.Type" }}&nbsp;
+          <span data-tooltip="{{ localize "SWFFG.Items.Popout.Type.Warning" }}" data-tooltip-direction="DOWN">
+            <i class="fa-regular fa-triangle-exclamation"></i>
+          </span>
+        </label>
         <select name="system.type">
           {{ selectOptions data.typeChoices selected=data.clickedObject.system.type }}
         </select>
