@@ -9,7 +9,7 @@
           <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
         </div>
         <div class="container flex-group-center">
-          <div class="grid grid-5col">
+          <div class="grid grid-6col">
             <div class="characteristic-item flex-group-center">
               <div class="characteristic">
                 <div class="characteristic-value">
@@ -76,15 +76,17 @@
               </div>
             </div>
             {{/if}}
+            <div class="characteristic-item flex-group-center">
+            {{#if (or (eq item.flags.starwarsffg.config.enablePrice undefined) (eq item.flags.starwarsffg.config.enablePrice true) )}}
+              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
+            {{/if}}
+            </div>
           </div>
 
           <div class="container flex-group-center weapon-values">
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.ranges adjusted=data.range.label) }}
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponStatus" type="Dropdown" name="data.status" value=data.status options=this.FFG.itemstatus)}}
-            {{#if (or (eq item.flags.starwarsffg.config.enablePrice undefined) (eq item.flags.starwarsffg.config.enablePrice true) )}}
-              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
-            {{/if}}
           </div>
           <div class="flex-group-center weapon-values hidden-content">
             {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
@@ -93,16 +95,12 @@
             <input type="text" name="data.encumbrance.adjusted" value="{{data.encumbrance.adjusted}}" data-dtype="Number" />
             <input type="text" name="data.range.adjusted" value="{{data.range.adjusted}}" data-dtype="String" />
           </div>
-
-          <div class="container flex-group-center weapon-values">
-            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemQualities" name="itemmodifier" fields=data.adjusteditemmodifier)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="pills" title="SWFFG.ItemAttachments" name="itemattachment" fields=data.itemattachment)}}
-          </div>
         </div>
       </div>
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fas fa-cog" cls=classType) (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fa-solid fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fa-solid fa-wrench" cls=classType) (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body small weapon">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -111,6 +109,10 @@
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <div class="attachments items">
+        {{> "systems/starwarsffg/templates/parts/ffg-qualities-attachments-mods.html"}}
+      </div>
+      <div class="talent-list"><div class="talents-header"><div class="header-name">{{ localize "SWFFG.TabModifiers" }}</div></div></div>
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
 

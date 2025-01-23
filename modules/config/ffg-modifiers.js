@@ -1,3 +1,9 @@
+import {weapon_stats} from "./ffg-weapons.js";
+import {armor_stats} from "./ffg-armor.js";
+import {vehicle_stats} from "./ffg-vehicles.js";
+import {character_characteristics, character_stats} from "./ffg-characters.js";
+import {skills} from "./ffg-skills.js";
+
 export const general_modifiers = {
   "Characteristic": {
     "value": "Characteristic",
@@ -63,6 +69,18 @@ export const general_modifiers = {
     "value": "Skill Setback",
     "label": "SWFFG.ModTypeSkillSetback",
   },
+  "Weapon Stat": {
+    "value": "Weapon Stat",
+    "label": "SWFFG.ModTypeStatWeapon",
+  },
+  "Armor Stat": {
+    "value": "Armor Stat",
+    "label": "SWFFG.ModTypeStatArmor",
+  },
+  "Vehicle Stat": {
+    "value": "Vehicle Stat",
+    "label": "SWFFG.ModTypeStatVehicle",
+  },
   "Stat": {
     "value": "Stat",
     "label": "SWFFG.ModTypeStat",
@@ -88,10 +106,33 @@ export const weapon_modifiers = {
   },
 };
 
-export const vehicle_modifiers = {
+export const armor_modifiers = {
+  "Result Modifiers": {
+    "value": "Result Modifiers",
+    "label": "SWFFG.ModTypeResultModifiers",
+  },
+  "Dice Modifiers": {
+    "value": "Dice Modifiers",
+    "label": "SWFFG.ModTypeDiceModifiers",
+  },
+  "Roll Modifiers": {
+    "value": "Roll Modifiers",
+    "label": "SWFFG.ModTypeRollModifiers",
+  },
+  "Armor Stat": {
+    "value": "Armor Stat",
+    "label": "SWFFG.ModTypeStatArmor",
+  },
   "Stat": {
     "value": "Stat",
     "label": "SWFFG.ModTypeStat",
+  },
+};
+
+export const vehicle_modifiers = {
+  "Vehicle Stat": {
+    "value": "Vehicle Stat",
+    "label": "SWFFG.ModTypeStatVehicle",
   },
 };
 
@@ -217,3 +258,37 @@ export const itemmodifier_resultmodifiers = {
     "label": "SWFFG.ModTypeAddDespair",
   },
 };
+
+export const modTypeToModMap = {
+  "Weapon Stat": weapon_stats,
+  "Armor Stat": armor_stats,
+  "Vehicle Stat": vehicle_stats,
+  "Stat": character_stats,
+  "Result Modifiers": itemmodifier_resultmodifiers,
+  "Dice Modifiers": itemmodifier_dicemodifiers,
+  "Roll Modifiers": itemmodifier_rollmodifiers,
+  "Characteristic": character_characteristics,
+  "Career Skill": skills,
+  "Force Boost": skills,
+  "Skill Add Advantage": skills,
+  "Skill Add Dark": skills,
+  "Skill Add Despair": skills,
+  "Skill Add Failure": skills,
+  "Skill Add Light": skills,
+  "Skill Add Success": skills,
+  "Skill Add Threat": skills,
+  "Skill Add Triumph": skills,
+  "Skill Add Upgrade": skills,
+  "Skill Boost": skills,
+  "Skill Rank": skills,
+  "Skill Remove Setback": skills,
+  "Skill Setback": skills,
+};
+
+export const itemTypeToModTypeMap = {
+  "weapon": weapon_modifiers,
+  "armor": armor_modifiers,
+  "armour": armor_modifiers,
+  "vehicle": vehicle_modifiers,
+  "all": general_modifiers,
+}

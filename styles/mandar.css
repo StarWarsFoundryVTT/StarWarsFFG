@@ -679,15 +679,19 @@ img {
 .starwarsffg.sheet .sheet-body.weapon, .starwarsffg.sheet .sheet-body.armour {
   height: calc(100% - 32rem);
 }
-.starwarsffg.sheet.v2 .sheet-body.weapon, .starwarsffg.sheet.v2 .sheet-body.armour {
-  height: calc(100% - 29rem);
+
+.starwarsffg.sheet.v2 .sheet-body.armour {
+  height: calc(100% - 21rem);
+}
+.starwarsffg.sheet.v2 .sheet-body.weapon {
+  height: calc(100% - 21rem);
 }
 
 .starwarsffg.sheet .sheet-body.shipweapon {
   height: calc(100% - 40rem);
 }
 .starwarsffg.sheet.v2 .sheet-body.shipweapon {
-  height: calc(100% - 35rem);
+  height: calc(100% - 27rem);
 }
 
 .starwarsffg.sheet .sheet-body.itemattachment {
@@ -1145,7 +1149,7 @@ img {
   text-align: right;
 }
 
-.starwarsffg .talent-background .talent-header div.talent-name.talent-modifiers {
+.starwarsffg .talent-background .talent-body div.popout-editor {
   cursor: pointer;
 }
 
@@ -4278,7 +4282,7 @@ img {
   padding: 0 2px 0 2px;
 }
 
-.starwarsffg.item-card .stat.stat-right {
+.starwarsffg.item-card .stat.stat-right, .starwarsffg .item-details .stat-right {
   border-right: 2px groove #8060554C;
 }
 
@@ -4361,4 +4365,27 @@ img {
 
 .message-content .destiny-flip .destiny-left.true.dark {
   color: #781428;
+}
+
+/* TODO: this is a fixed height scroll, which it should not be. but I couldn't get "calc" to work */
+.starwarsffg .tab.flat_editor.modifications {
+  overflow-y: auto;
+  max-height: 340px;
+}
+
+.starwarsffg.flat_editor .form-group .tox-editor-container {
+  min-height: 150px;
+}
+
+.starwarsffg.flat_editor {
+  min-height: 300px;
+}
+
+.starwarsffg.flat_editor .modification_header {
+  border-left: 2px solid var(--color-underline-header);
+  padding-left: 5px;
+}
+
+.starwarsffg .flat_editor.modifications.active {
+  overflow-x: hidden;
 }

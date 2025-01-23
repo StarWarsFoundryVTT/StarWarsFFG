@@ -13,6 +13,7 @@ export default class ItemBaseFFG extends Item {
       return;
     } else {
       CONFIG.logger.debug("Updating fake item item", this, data);
+      ui.notifications.warn("editing fake item!")
       const preState = Object.values(this.apps)[0]?._state;
       await EmbeddedItemHelpers.updateRealObject(this, data);
 

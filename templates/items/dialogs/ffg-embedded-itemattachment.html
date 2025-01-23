@@ -1,0 +1,75 @@
+<form>
+  <nav class="tabs" data-group="myGroup">
+    <a class="item" data-tab="basics">{{ localize "SWFFG.Items.Popout.Tabs.Basics" }}</a>
+    <a class="item" data-tab="base-mods">{{ localize "SWFFG.Items.Popout.Tabs.BaseMods"}}</a>
+    <a class="item" data-tab="modifications">{{ localize "SWFFG.Items.Popout.Tabs.Modifications" }}</a>
+  </nav>
+
+  <section class="content">
+    {{!-- Basics Tab --}}
+    <div class="tab" data-tab="basics" data-group="myGroup">
+      <div class="form-group">
+        <label for="name">{{ localize "SWFFG.Name" }}</label>
+        <input name="name" type="text" value="{{ data.clickedObject.name }}" placeholder="{{ localize "SWFFG.Name" }}">
+      </div>
+      <div class="form-group">
+        <label for="description">{{ localize "SWFFG.TabDescription" }}</label>
+        {{editor data.clickedObject.system.enrichedDescription target="system.description"  button=true owner=true editable=true}}
+      </div>
+      <div class="form-group">
+        <label for="system.hardpoints.value">{{ localize "SWFFG.Labels.HardPoints" }}</label>
+        <input name="system.hardpoints.value" type="number" value="{{ data.clickedObject.system.hardpoints.value }}" placeholder="{{ localize "SWFFG.VehicleTabHardPoints" }}">
+      </div>
+      <div class="form-group">
+        <label for="system.rarity.value">{{ localize "SWFFG.ItemsRarity" }}</label>
+        <input name="system.rarity.value" type="number" value="{{ data.clickedObject.system.rarity.value }}" placeholder="{{ localize "SWFFG.ItemsRarity" }}">
+      </div>
+      <div class="form-group">
+        <label for="system.price.value">{{ localize "SWFFG.ItemsPrice" }}</label>
+        <input name="system.price.value" type="number" value="{{ data.clickedObject.system.price.value }}" placeholder="{{ localize "SWFFG.ItemsPricePlaceholder" }}">
+      </div>
+      <div class="form-group">
+        <label for="system.rarity.isrestricted">{{ localize "SWFFG.IsRestricted" }}</label>
+        <input name="system.rarity.isrestricted" type="checkbox" {{ checked data.clickedObject.system.rarity.isrestricted }}>
+      </div>
+      <div class="form-group">
+        <label for="system.type">
+          {{ localize "SWFFG.Type" }}&nbsp;
+          <span data-tooltip="{{ localize "SWFFG.Items.Popout.Type.Warning" }}" data-tooltip-direction="DOWN">
+            <i class="fa-regular fa-triangle-exclamation"></i>
+          </span>
+        </label>
+        <select name="system.type">
+          {{ selectOptions data.typeChoices selected=data.clickedObject.system.type }}
+        </select>
+      </div>
+    </div>
+    {{!-- Base Mods Tab --}}
+    <div class="tab" data-tab="base-mods" data-group="myGroup">
+      <div>
+        <div class="mod_container attributes">
+          <header class="attributes-header flexrow">
+            <span class="attribute-modtype">{{localize "SWFFG.ModifierType"}}</span>
+            <span class="attribute-mod">{{localize "SWFFG.Modifier"}}</span>
+            <span class="attribute-value">{{localize "SWFFG.ModifierValue"}}</span>
+            <a class="attribute-control flat_editor add-mod" data-action="create"><i class="fas fa-plus"></i></a>
+          </header>
+          <ol class="attributes-list">
+            {{#each data.clickedObject.system.attributes as |attr id|}}
+              {{> "systems/starwarsffg/templates/items/dialogs/ffg-mod.html" (object attr=attr id=id modTypeChoices=../modTypeChoices modChoices=../modChoices direct=true number2=@index attachmentType=../data.clickedObject.system.type) }}
+            {{/each }}
+          </ol>
+        </div>
+      </div>
+    </div>
+    {{!-- Modifications Tab --}}
+    <div class="tab flat_editor modifications" data-tab="modifications" data-group="myGroup">
+      <div class="modification_container">
+      {{#each data.clickedObject.system.itemmodifier as |mod id|}}
+        {{> "systems/starwarsffg/templates/items/dialogs/ffg-modification.html" (object mod=mod id=id number=@index modTypeChoices=../modTypeChoices modChoices=../modChoices direct=false attachmentType=../data.clickedObject.system.type) }}
+      {{/each }}
+      </div>
+      <button type="button" class="flat_editor add-modification" data-action="create">{{ localize "SWFFG.Items.Popout.Buttons.Modification.Add" }}</button>
+    </div>
+  </section>
+</form>

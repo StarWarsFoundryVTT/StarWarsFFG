@@ -1,3 +1,7 @@
+`?`
+* Features:
+  * Attachments now actually work! ([#1215](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1215))
+
 `1.905`
 * Fixes
   * Hotfix for inability to roll dice with modifiers (e.g. critical injuries)

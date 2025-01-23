@@ -105,10 +105,32 @@ export default class ItemHelpers {
       delete updatedData.data;
     }
     // Initialize updatedData.system if the key is present with no value
-    if (Object.keys(updatedData).includes('system') && typeof updatedData.system === "undefined") 
+    if (Object.keys(updatedData).includes('system') && typeof updatedData.system === "undefined")
       {
         updatedData.system = {};
       }
     return updatedData;
+  }
+
+  /**
+   * Takes formData and converts certain fields into an array, rather than the odd name they have by default
+   * For example, submitting a form with a modifier on it results in a field value of "itemmodifier[0]", rather than
+   *  a field named "itemmodifier" with a single entry in an array
+   * @param formData
+   */
+  static explodeFormData(formData) {
+    // convert the formdata into a dict
+    formData = foundry.utils.expandObject(formData);
+    // collapse the resulting entries with an index into an array
+    const relevantEntries = Object.keys(formData?.system).filter(i => i.includes("[") && i.includes("]"));
+    for (const cur_entry in relevantEntries) {
+      const updatedKeyName =  relevantEntries[cur_entry].replace(/\[.*\]/, "");
+      if (!Object.keys(formData.system).includes(updatedKeyName)) {
+        formData.system[updatedKeyName] = [];
+      }
+      formData.system[updatedKeyName].push(formData.system[relevantEntries[cur_entry]]);
+      delete formData.system[relevantEntries[cur_entry]];
+    }
+    return formData;
   }
 }
