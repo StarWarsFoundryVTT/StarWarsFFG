@@ -2463,6 +2463,36 @@ img {
   border-radius: 1rem;
 }
 
+.chat-msg-tooltip {
+  color: rgb(25, 24, 19);
+  background: #d8cbc0 url(../images/bgWindow.jpg) no-repeat;
+
+  border-radius: 5px;
+  padding: 6px 8px;
+  border: 1px solid #9f9275;
+}
+
+.chat-msg-tooltip .tooltip-img {
+  max-width: 32px;
+  max-height: 32px;
+}
+
+.chat-msg-tooltip .header {
+  color: #781428;
+  font-size: 1.5rem;
+}
+
+.chat-msg-tooltip .ranks {
+  color: #5a4f52;
+  font-size: 0.75rem;
+}
+
+#tooltip:has(.chat-msg-tooltip) {
+  border: 0;
+  padding: 0 0;
+  background: none;
+}
+
 .starwarsffg.item-card .item-details .item-properties .item-pill.adjusted {
   color: #8b0000;
 }
@@ -4325,7 +4355,7 @@ img {
   color: rgba(0, 0, 0, 0.75);
 }
 
-.starwarsffg.item-card .properties .tag .item-pill {
+.starwarsffg.item-card .properties .tag .item-pill2 {
   list-style-type: none;
   display: inline-block;
   cursor: pointer;
@@ -4334,6 +4364,13 @@ img {
   background-color: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
+}
+
+.starwarsffg.item-card .properties .tag .hover-tooltip, .starwarsffg .item-display .item-properties .tag .hover-tooltip {
+  display: inline-block;
+  margin: 0.1rem;
+  border-bottom: 2px dotted black;
+  cursor: help;
 }
 
 .message-content .destiny-flip {

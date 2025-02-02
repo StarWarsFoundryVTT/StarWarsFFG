@@ -534,18 +534,24 @@ export class ItemFFG extends ItemBaseFFG {
       if (data.hasOwnProperty("specializations")) {
         for (const specializationKey of Object.keys(data.specializations)) {
           const specialization = data.specializations[specializationKey];
+          const fullSpecialization = fromUuidSync(specialization.source);
           specializations.push({
             name: specialization.name,
             uuid: specialization.uuid,
+            description: fullSpecialization?.system?.description,
+            img: fullSpecialization?.img,
           });
         }
       }
       if (data.hasOwnProperty("signatureabilities")) {
         for (const SAKey of Object.keys(data.signatureabilities)) {
           const signatureAbility = data.signatureabilities[SAKey];
+          const fullSignatureAbility = fromUuidSync(signatureAbility.source);
           signatureAbilities.push({
             name: signatureAbility.name,
             uuid: signatureAbility.uuid,
+            description: fullSignatureAbility?.system?.description,
+            img: fullSignatureAbility?.img,
           });
         }
       }
@@ -558,6 +564,9 @@ export class ItemFFG extends ItemBaseFFG {
         const skillLabel = "SWFFG.SkillsName" + cleanedSkillName;
         props.push(`Skill: ${game.i18n.localize(skillLabel)}`);
       }
+    }
+    if (["weapon", "armor", "armour", "shipweapon"].includes(this.type)) {
+      data.doNotSubmit = (await this.sheet.getData()).data.doNotSubmit;
     }
 
     // Talent properties
