@@ -314,6 +314,7 @@ export class ItemSheetFFG extends ItemSheet {
           modIndex = data.data.doNotSubmit.qualities.length;
           data.data.doNotSubmit.qualities.push({
             name: modName,
+            img: mod.img,
             description: description,
             itemIndex: modIndex,
             totalRanks: 0,

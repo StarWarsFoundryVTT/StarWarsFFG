@@ -1,6 +1,7 @@
 `?`
 * Features:
   * Attachments now actually work! ([#1215](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1215))
+  * Item qualities, upgrades, etc now use tooltips instead of a fake item window when sent to chat
 
 `1.905`
 * Fixes
