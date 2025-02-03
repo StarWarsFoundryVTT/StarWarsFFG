@@ -2,6 +2,9 @@
 * Features:
   * Attachments now actually work! ([#1215](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1215))
   * Item qualities, upgrades, etc now use tooltips instead of a fake item window when sent to chat
+  * You can now adjust token wounds above the threshold ([#1769](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1769))
+* Fixes:
+  * Remove usage of deprecated `math.clamped` in favor of `math.clamp`
 
 `1.905`
 * Fixes
