@@ -123,23 +123,59 @@ Hooks.once("init", async function () {
   Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
     // FFG style behaviour for wounds and strain.
+    let aboveThreshold = 0;
     if (data.attribute === "stats.wounds" || data.attribute === "stats.strain" || data.attribute === "stats.hullTrauma" || data.attribute === "stats.systemStrain") {
       val = Number(data.max - data.value);
+      aboveThreshold = Math.max(data.value - data.max, 0);
     }
 
-    const pct = Math.clamped(val, 0, data.max) / data.max;
+    // draw the empty bar
     let h = Math.max(canvas.dimensions.size / 12, 8);
-    if (this.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
-    // Draw the bar
-    let color = number === 0 ? [1 - pct / 2, pct, 0] : [0.5 * pct, 0.7 * pct, 0.5 + pct / 2];
-    bar
-      .clear()
+    bar.clear()
       .beginFill(0x000000, 0.5)
       .lineStyle(2, 0x000000, 0.9)
-      .drawRoundedRect(0, 0, this.w, h, 3)
+      .drawRoundedRect(0, 0, this.w, h, 3);
+    let startX = 1;
+    let startY = 1;
+
+    if (aboveThreshold > 0) {
+      // render the above-threshold portion of the bar
+      let abovePct = Math.min(aboveThreshold / data.max, 1);
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-overwounded"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, abovePct * (this.w - 2), h - 2, 2);
+      // render the rest as wounds
+      startX = abovePct * (this.w - 2) + 1;
+      let remainingLength = this.w  - abovePct * (this.w - 2) - 2;
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+    } else if (["stats.wounds", "stats.hullTrauma"].includes(data.attribute)) {
+      // render healthy and then unhealthy portions of the bar
+      let woundedPct = Math.min((data.max - data.value) / data.max, 1);
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-healthy"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, woundedPct * (this.w - 2), h - 2, 2);
+      // remaining health
+      startX = woundedPct * (this.w - 2) + 1;
+      let remainingLength = this.w - woundedPct * (this.w - 2) - 2;
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+    } else {
+      // render normally
+      const pct = Math.clamp(val, 0, data.max) / data.max;
+      let color = number === 0 ? [1 - pct / 2, pct, 0] : [0.5 * pct, 0.7 * pct, 0.5 + pct / 2];
+      bar
       .beginFill(PIXI.utils.rgb2hex(color), 0.8)
       .lineStyle(1, 0x000000, 0.8)
       .drawRoundedRect(1, 1, pct * (this.w - 2), h - 2, 2);
+    }
+
     // Set position
     let posY = number === 0 ? this.h - h : 0;
     bar.position.set(0, posY);

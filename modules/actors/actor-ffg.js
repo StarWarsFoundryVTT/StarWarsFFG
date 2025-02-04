@@ -6,7 +6,7 @@ import ModifierHelpers from "../helpers/modifiers.js";
  * @extends {Actor}
  */
 export class ActorFFG extends Actor {
-  
+
   static async create(data, options) {
     const createData = data;
 
@@ -14,7 +14,7 @@ export class ActorFFG extends Actor {
     if (!(typeof data.system === "undefined")) {
       return super.create(createData, options);
     }
-    
+
     switch (createData.type) {
       case "minion":
         createData.prototypeToken = {
@@ -138,7 +138,7 @@ export class ActorFFG extends Actor {
     }
 
     //Calculate the number of alive minions
-    data.quantity.value = Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.value - 1) / data.unit_wounds.value));
+    data.quantity.value = Math.max(Math.min(data.quantity.max, data.quantity.max - Math.floor((data.stats.wounds.value - 1) / data.unit_wounds.value)), 0);
 
     // Loop through Skills, and where groupskill = true, set the rank to 1*(quantity-1).
     for (let [key, skill] of Object.entries(data.skills)) {
@@ -729,5 +729,30 @@ export class ActorFFG extends Actor {
         }
       }
     });
+  }
+
+  /** @override **/
+  /*
+    This function is identical to the overridden function except that it does not enforce a maximum value for the update
+  */
+  async modifyTokenAttribute(attribute, value, isDelta, isBar) {
+    const attr = foundry.utils.getProperty(this.system, attribute);
+    const current = isBar ? attr.value : attr;
+    const update = isDelta ? current + value : value;
+    if ( update === current ) return this;
+
+    // Determine the updates to make to the actor data
+    let updates;
+    if (isBar && attribute === "stats.wounds") {
+      updates = {[`system.${attribute}.value`]: Math.max(update, 0)};
+    } else if (isBar) {
+      updates = {[`system.${attribute}.value`]: Math.clamp(update, 0, attr.max)};
+    } else {
+      updates = {[`system.${attribute}`]: update};
+    }
+
+    // Allow a hook to override these changes
+    const allowed = Hooks.call("modifyTokenAttribute", {attribute, value, isDelta, isBar}, updates);
+    return allowed !== false ? this.update(updates) : this;
   }
 }

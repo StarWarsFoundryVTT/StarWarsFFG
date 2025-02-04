@@ -97,6 +97,9 @@ export class uiSettings extends ffgSettings {
     const includeSettingsNames = [
       "starwarsffg.ui-uitheme",
       "starwarsffg.ui-pausedImage",
+      "starwarsffg.ui-token-healthy",
+      "starwarsffg.ui-token-wounded",
+      "starwarsffg.ui-token-overwounded",
     ];
     return super.getData(includeSettingsNames);
   }
