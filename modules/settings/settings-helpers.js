@@ -245,6 +245,34 @@ export default class SettingsHelpers {
       },
     });
 
+    // Register setting for token healthy
+    game.settings.register("starwarsffg", "ui-token-healthy", {
+      name: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Healthy.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Healthy.Hint"),
+      scope: "world",
+      config: false,
+      default: "#63b712",
+      type: String,
+    });
+    // Register setting for token wounded
+    game.settings.register("starwarsffg", "ui-token-wounded", {
+      name: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Wounded.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Wounded.Hint"),
+      scope: "world",
+      config: false,
+      default: "#c70039",
+      type: String,
+    });
+    // Register setting for token over-wounds
+    game.settings.register("starwarsffg", "ui-token-overwounded", {
+      name: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Overwounded.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Overwounded.Hint"),
+      scope: "world",
+      config: false,
+      default: "#e3963e",
+      type: String,
+    });
+
     game.settings.register("starwarsffg", "ui-pausedImage", {
       module: "starwarsffg",
       name: game.i18n.localize("SWFFG.SettingsPausedImage"),
