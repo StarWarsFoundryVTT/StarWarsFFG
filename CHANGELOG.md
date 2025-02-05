@@ -6,6 +6,7 @@
   * Token bars now display wounds above threshold and most colors are configurable ([#1769](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1769))
 * Fixes:
   * Remove usage of deprecated `math.clamped` in favor of `math.clamp`
+  * Fix skill roll sometimes showing a pool of only 2 difficulty when clicked ([#1763](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1763))
 
 `1.905`
 * Fixes

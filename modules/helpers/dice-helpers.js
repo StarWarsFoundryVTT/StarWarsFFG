@@ -10,6 +10,9 @@ export default class DiceHelpers {
     let skillName = row.parentElement.dataset["ability"];
     if (skillName === undefined) {
       skillName = row.dataset["ability"];
+      if (skillName === undefined) {
+        skillName = row.parentElement.parentElement.parentElement.dataset["ability"];
+      }
     }
 
     let skills;
