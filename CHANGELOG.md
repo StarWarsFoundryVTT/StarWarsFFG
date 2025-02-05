@@ -7,6 +7,7 @@
 * Fixes:
   * Remove usage of deprecated `math.clamped` in favor of `math.clamp`
   * Fix skill roll sometimes showing a pool of only 2 difficulty when clicked ([#1763](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1763))
+  * XP Spending now uses a generic symbol instead of a dollar sign ([#1732](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1732))
 
 `1.905`
 * Fixes

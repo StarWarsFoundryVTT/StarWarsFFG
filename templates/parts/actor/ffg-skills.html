@@ -26,7 +26,7 @@
         <div data-ability="{{skill.name}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill" draggable="true">
           <div class="pure-u-12-24">
             <div class="skill-name">
-              {{#if (eq ../../this.actor.type "character")}}<i class="fas fa-dollar ffg-purchase" data-buy-action="skill" title="{{localize "SWFFG.Purchase.SkillRank"}}"></i>{{/if}}
+              {{#if (eq ../../this.actor.type "character")}}<i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="skill" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SkilLRank"}}"></i>{{/if}}
               {{#if skill.useForInitiative}}*{{/if}}{{skill.label}} {{#with (lookup ../../this.FFG.characteristics [characteristic])~}}
               <div class="skill-characteristic" data-characteristic="{{skill.characteristic}}">({{localize abrev}})</div>
               {{/with}}

@@ -418,7 +418,7 @@ export class ActorSheetFFG extends ActorSheet {
       contextMenuOptions.push(
         {
           name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
-          icon: '<i class="fas fa-dollar"></i>',
+          icon: '<i class="fa-regular fa-circle-up"></i>',
           callback: (li) => {
             this._buySkillRank(li);
           },
@@ -1539,7 +1539,7 @@ export class ActorSheetFFG extends ActorSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SkillRank.Text", {cost: cost, skill: skill, old: curRank, new: curRank + 1}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -2082,7 +2082,7 @@ export class ActorSheetFFG extends ActorSheet {
         content: content,
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               const cost = $("#ffgPurchase option:selected", that).data("cost");
@@ -2151,7 +2151,7 @@ export class ActorSheetFFG extends ActorSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Characteristic.ConfirmText", {cost: cost, level: characteristicCostValue + 1, characteristic: characteristic}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               await this.object.update({
