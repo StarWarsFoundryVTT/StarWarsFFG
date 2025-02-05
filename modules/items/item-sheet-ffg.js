@@ -1028,7 +1028,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmText", {cost: cost, talent: talent}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -1088,7 +1088,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.FP.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -1134,7 +1134,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SA.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -1180,7 +1180,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Specialization.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
