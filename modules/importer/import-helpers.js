@@ -2391,6 +2391,14 @@ export default class ImportHelpers {
             }
           }
         }
+        if (updateData?.data?.abilities) {
+          // Remove and repopulate all abilities
+          if (entry.system?.abilities) {
+            for (let k of Object.keys(entry.system.abilities)) {
+              if (!updateData.data.abilities.hasOwnProperty(k)) updateData.data.abilities[`-=${k}`] = null;
+            }
+          }
+        }
 
         upd = foundry.utils.duplicate(entry);
         updateData = migrateDataToSystem(updateData);
