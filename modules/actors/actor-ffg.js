@@ -78,6 +78,18 @@ export class ActorFFG extends Actor {
         return { type: item, label: game.i18n.localize(`SWFFG.Skills${item}`) === `SWFFG.Skills${item}` ? item : game.i18n.localize(`SWFFG.Skills${item}`) };
       });
     }
+
+    // add values for above threshold
+    if (["character", "nemesis"].includes(actor.type)) {
+      data.stats.woundsOverThreshold = data.stats.wounds.value - data.stats.wounds.max;
+      data.stats.strainOverThreshold = data.stats.strain.value - data.stats.strain.max;
+    } else if (["rival", "minion"].includes(actor.type)) {
+      data.stats.woundsOverThreshold = data.stats.wounds.value - data.stats.wounds.max;
+    } else if (["vehicle"].includes(actor.type)) {
+      data.stats.hullOverThreshold = data.stats.hullTrauma.value - data.stats.hullTrauma.max;
+      data.stats.systemStrainOverThreshold = data.stats.systemStrain.value - data.stats.systemStrain.max;
+    }
+
     this._prepareSharedData.bind(this);
     this._prepareSharedData(actor);
     if (actor.type === "minion") this._prepareMinionData(actor);
