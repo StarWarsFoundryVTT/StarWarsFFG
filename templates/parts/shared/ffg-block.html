@@ -41,7 +41,7 @@
           </div>
           {{/each}}
         </div>
-        {{/if}} {{#if (eq type "PopoutEditor")}}
+        {{/if}}  {{#if (eq type "PopoutEditor")}}
         <div class="block-value block-single">
           <div class="popout-editor" data-target="{{name}}" data-value="{{value}}" data-label="{{localize title}}">
             <div class="popout-editor-button">{{#if readonly}}{{ else }}<i class="fas fa-edit"></i>{{/if}}</div>
@@ -51,7 +51,15 @@
         {{/if}} {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor"))}}
         <div class="block-value block-single">{{#if prefix}}{{{prefix}}}{{/if}}<input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
         {{/if}} {{/if}} {{#if (eq blocktype "split")}} {{#each fields as |t|}}
-        <div class="block-value"><input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
+        <div class="block-value">
+        {{#if (eq type "Button") }}
+          <div class="btn {{ t.name }}">
+            {{{ t.icon }}}
+          </div>
+        {{ else }}
+          <input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} />
+        {{/if}}
+        </div>
         {{/each}} {{/if}} {{#with (lookup options [value])~}} {{#if (ne label ../adjusted)}}
         <div class="adjustedvalue">{{localize ../adjusted}}</div>
         {{/if}} {{/with}}

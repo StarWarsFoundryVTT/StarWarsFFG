@@ -437,6 +437,10 @@ export class ActorSheetFFG extends ActorSheet {
       await this._buySkillRank(target);
     });
 
+    html.find(".minion-control").click(async (ev) => {
+      await this._handleKillMinion(ev);
+    });
+
     new ContextMenu(html, "div.skillsHeader", [
       {
         name: game.i18n.localize("SWFFG.SkillAddContextItem"),
@@ -2180,6 +2184,25 @@ export class ActorSheetFFG extends ActorSheet {
         classes: ["dialog", "starwarsffg"],
       }
     ).render(true);
+  }
+
+  /**
+   * Handle clicking the kill minion button
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _handleKillMinion(event) {
+    event.stopPropagation();
+    const target = $(event.currentTarget);
+    const minionHealth = this.actor.system.unit_wounds.value;
+    const currentHealth = this.actor.system.stats.wounds.value;
+    if (target.hasClass("kill-minion")) {
+      let damageAmount = minionHealth - (currentHealth % minionHealth) + 1;
+      await this.actor.update({'system.stats.wounds.value': currentHealth + damageAmount});
+    } else if (target.hasClass("kill-group")) {
+      await this.actor.update({'system.stats.wounds.value': this.actor.system.stats.wounds.max + 1});
+    }
   }
 }
 
