@@ -795,5 +795,11 @@
   "SWFFG.Settings.groupManager.GMCharactersInGroupManager.Name": "Show GM Characters in Group Manager",
   "SWFFG.Settings.groupManager.GMCharactersInGroupManager.Hint": "Characters owned by a GM will be included in the Group Manager",
   "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Name": "Roll - Apply \"Remove setback\" mods",
-  "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Hint": "Automatically apply \"Remove setback\" modifiers when rolling dice."
+  "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Hint": "Automatically apply \"Remove setback\" modifiers when rolling dice.",
+  "SWFFG.XP.Adjust.Title": "Adjust XP",
+  "SWFFG.XP.Adjust.Confirm": "Adjust",
+  "SWFFG.XP.Adjust.Window.Title": "Adjust Available XP",
+  "SWFFG.XP.Adjust.Window.Reason": "Adjustment Reason",
+  "SWFFG.XP.Adjust.Window.Amount": "Adjustment Amount",
+  "SWFFG.XP.Adjust.Window.Default": "Manual Grant"
 }

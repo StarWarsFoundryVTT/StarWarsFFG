@@ -437,6 +437,10 @@ export class ActorSheetFFG extends ActorSheet {
       await this._buySkillRank(target);
     });
 
+    html.find(".xp-adjustment").click(async (ev) => {
+      await this._xpAdjustment(ev);
+    });
+
     html.find(".minion-control").click(async (ev) => {
       await this._handleKillMinion(ev);
     });
@@ -2203,6 +2207,56 @@ export class ActorSheetFFG extends ActorSheet {
     } else if (target.hasClass("kill-group")) {
       await this.actor.update({'system.stats.wounds.value': this.actor.system.stats.wounds.max + 1});
     }
+  }
+
+  async _xpAdjustment(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = `
+    <label for="adjustAmount">${game.i18n.localize("SWFFG.XP.Adjust.Window.Amount")}</label>
+    <input type="number" id="adjustAmount" name="adjustAmount" value="0" />
+    <label for="adjustReason">${game.i18n.localize("SWFFG.XP.Adjust.Window.Reason")}</label>
+    <input type="text" id="adjustReason" name="adjustReason" value="${game.i18n.localize("SWFFG.XP.Adjust.Window.Default")}" />
+    `;
+
+    let d = new Dialog({
+      title: game.i18n.localize("SWFFG.XP.Adjust.Window.Title"),
+      content: content,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: game.i18n.localize("SWFFG.XP.Adjust.Confirm"),
+          callback: async () => {
+            const startingAvailableXP =  parseInt(this.actor.system.experience.available);
+            const totalXP =  parseInt(this.actor.system.experience.total);
+            const adjustAmount = parseInt($("#adjustAmount").val());
+            const adjustReason = $("#adjustReason").val();
+            const updatedAvailableXP = startingAvailableXP + adjustAmount;
+            const updatedTotalXP = totalXP + adjustAmount;
+            await this.object.update({
+              system: {
+                experience: {
+                  available: updatedAvailableXP,
+                  total: updatedTotalXP,
+                },
+              }
+            });
+            if (adjustAmount > 0) {
+              await xpLogEarn(this.object, adjustAmount, updatedAvailableXP, updatedTotalXP, adjustReason, "Self");
+            } else {
+              await xpLogSpend(this.object, adjustReason, adjustAmount, updatedAvailableXP, updatedTotalXP);
+            }
+           await this.render(true);
+         }
+      },
+      two: {
+       icon: '<i class="fas fa-times"></i>',
+       label: "Cancel",
+      }
+     },
+    });
+    d.render(true);
   }
 }
 

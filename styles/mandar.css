@@ -2463,6 +2463,12 @@ img {
   border-radius: 1rem;
 }
 
+.starwarsffg .xp-adjustment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .chat-msg-tooltip {
   color: rgb(25, 24, 19);
   background: #d8cbc0 url(../images/bgWindow.jpg) no-repeat;
