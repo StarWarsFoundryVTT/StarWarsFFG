@@ -10,7 +10,6 @@ const createMacroItem = async (macro) => {
 // Simple function for handling the creation of rollable weapon macros on hotbarDrop event.
 export async function createFFGMacro(bar, data, slot) {
   let macro;
-  console.log(data)
   if (["Item", "Actor"].includes(data.type)) {
     const entity = await fromUuid(data.uuid);
     if (!entity) {
