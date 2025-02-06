@@ -4,6 +4,7 @@
   * Item qualities, upgrades, etc now use tooltips instead of a fake item window when sent to chat
   * You can now adjust token wounds above the threshold ([#1769](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1769))
   * Token bars now display wounds above threshold and most colors are configurable ([#1769](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1769))
+  * You can now kill a minion or minion group directly from their sheet with a single click! ([#1744](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1744))
 * Fixes:
   * Remove usage of deprecated `math.clamped` in favor of `math.clamp`
   * Fix skill roll sometimes showing a pool of only 2 difficulty when clicked ([#1763](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1763))
