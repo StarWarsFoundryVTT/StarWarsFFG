@@ -10,6 +10,7 @@ const createMacroItem = async (macro) => {
 // Simple function for handling the creation of rollable weapon macros on hotbarDrop event.
 export async function createFFGMacro(bar, data, slot) {
   let macro;
+  console.log(data)
   if (["Item", "Actor"].includes(data.type)) {
     const entity = await fromUuid(data.uuid);
     if (!entity) {
@@ -63,13 +64,14 @@ export async function createFFGMacro(bar, data, slot) {
         img: item.img,
         command: command,
       });
-    } else if (data.data.type === "skill") {
+    }
+  } else if (data.data.type === "skill") {
       const actor = game.actors.get(data.actorId);
       const command = `
     // game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, actorSheet, flavortext, sound);
     const ffgactor = game.actors.get("${data.actorId}");
-    const skill = ffgactor.data.data.skills["${data.data.skill}"];
-    const characteristic = ffgactor.data.data.characteristics["${data.data.characteristic}"];
+    const skill = ffgactor.system.skills["${data.data.skill}"];
+    const characteristic = ffgactor.system.characteristics["${data.data.characteristic}"];
     const actorSheet = ffgactor.sheet.getData();
     game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, 2, actorSheet);`;
       macro = await createMacroItem({
@@ -78,7 +80,6 @@ export async function createFFGMacro(bar, data, slot) {
         command: command,
       });
     }
-  }
   if (macro) {
     game.user.assignHotbarMacro(macro, slot);
   }
