@@ -7,6 +7,7 @@
   * You can now kill a minion or minion group directly from their sheet with a single click! ([#1744](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1744))
   * Add derived stats of strainOverThreshold, woundsOverThreshold, hullOverThreshold, and systemStrainOverThreshold to actors (for things like Bar Brawl) ([#1781](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1781))
   * You can now provide a reason for manual XP adjustments ([#1630](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1630))
+  * Users with limited view access on Nemesis actors can now view the bio. (GMs can hide content by using the `secret` block in the Bio) ([#1774](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1774))
 * Fixes:
   * Remove usage of deprecated `math.clamped` in favor of `math.clamp`
   * Fix skill roll sometimes showing a pool of only 2 difficulty when clicked ([#1763](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1763))
