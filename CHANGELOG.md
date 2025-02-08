@@ -15,6 +15,7 @@
   * Fix for skill-roll macros not being created on drag-and-drop into macro hotbar ([#1786](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1786))
   * Prevent abilities on species from duplicating when the importer is run more than once ([#1721](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1721))
   * Correct talent ownership bug ([#1773](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1773))
+  * Show error if a non-custom skill is removed from actor ([#1571](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1571))
 
 `1.905`
 * Fixes

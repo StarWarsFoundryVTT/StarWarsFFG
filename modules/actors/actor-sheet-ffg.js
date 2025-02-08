@@ -408,8 +408,8 @@ export class ActorSheetFFG extends ActorSheet {
       {
         name: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
         icon: '<i class="fas fa-times"></i>',
-        callback: (li) => {
-          this._onRemoveSkill(li);
+        callback: async (li) => {
+          await this._onRemoveSkill(li);
         },
       },
     ];
@@ -1504,7 +1504,7 @@ export class ActorSheetFFG extends ActorSheet {
               if (name.trim().length > 0) {
                 CONFIG.logger.debug(`Creating new skill ${name} (${characteristic})`);
                 let updateData = {};
-                setProperty(updateData, `system.skills.${name}`, newSkill);
+                foundry.utils.setProperty(updateData, `system.skills.${name}`, newSkill);
 
                 this.object.update(updateData);
               }
@@ -1579,9 +1579,14 @@ export class ActorSheetFFG extends ActorSheet {
    * Remove skill from skill list
    * @param  {object} a - Event object
    */
-  _onRemoveSkill(a) {
+  async _onRemoveSkill(a) {
     const ability = $(a).data("ability");
-    this.object.update({ "system.skills": { ["-=" + ability]: null } });
+    const isCustom = $(a).data("custom");
+    if (!isCustom) {
+      ui.notifications.info("You can only remove custom skills");
+      return;
+    }
+    await this.object.update({ [`system.skills.-=${ability}`]: null });
   }
 
   /**
