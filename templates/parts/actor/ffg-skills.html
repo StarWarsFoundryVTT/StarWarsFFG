@@ -23,7 +23,7 @@
       </div>
       {{else}}
       <div class="skillTable" data-type="{{skill.type}}">
-        <div data-ability="{{skill.name}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill" draggable="true">
+        <div data-ability="{{skill.name}}" data-skilltype="{{skill.type}}" data-characteristic="{{skill.characteristic}}" class="pure-g skill" data-custom="{{ skill.custom }}" draggable="true">
           <div class="pure-u-12-24">
             <div class="skill-name">
               {{#if (eq ../../this.actor.type "character")}}<i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="skill" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SkilLRank"}}"></i>{{/if}}
