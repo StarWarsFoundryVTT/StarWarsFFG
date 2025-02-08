@@ -49,6 +49,8 @@ import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./help
 import {handleUpdate} from "./swffg-migration.js";
 import SWAImporter from "./importer/swa-importer.js";
 
+import {ignoreMe} from "./importer/hyperdrive/hyperdrive.js";
+
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
 /* -------------------------------------------- */
@@ -730,6 +732,8 @@ function isCurrentVersionNullOrBlank(currentVersion) {
 // Handle migration duties
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
+
+  CONFIG.FFG.import = ignoreMe
 
   if (!game.settings.get("starwarsffg", "token_configured")) {
     const tokenData = {
