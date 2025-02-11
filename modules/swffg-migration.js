@@ -21,8 +21,10 @@ export async function handleUpdate() {
 async function handleMigration(oldVersion, newVersion) {
   // migration handlers should be added here going forward
   await migrateTo1_901();
+  if (parseFloat(oldVersion) < 1.906) {
+    await migrateTo1_906();
+  }
   await warnTheme();
-  await resetCompendiumCheck();
 }
 
 /**
@@ -71,9 +73,48 @@ async function migrateTo1_901() {
 }
 
 /**
- * Reset the check for empty compendiums
+ * Updates settings pointing to system compendiums to instead point to world-level compendiums
  * @returns {Promise<void>}
  */
-async function resetCompendiumCheck() {
-  await game.settings.set("starwarsffg", "compendiumsPreviouslyEmpty", false);
+async function migrateTo1_906() {
+  // specializations
+  let compendiums = [];
+  for (const compendium of game.settings.get("starwarsffg", "specializationCompendiums").split(",")) {
+    if (compendium.includes("starwarsffg.")) {
+      compendiums.push(compendium.replace("starwarsffg.", "world."));
+    } else {
+      compendiums.push(compendium);
+    }
+  }
+  game.settings.set("starwarsffg", "specializationCompendiums", compendiums.join(","));
+  // signature abilities
+  compendiums = [];
+  for (const compendium of game.settings.get("starwarsffg", "signatureAbilityCompendiums").split(",")) {
+    if (compendium.includes("starwarsffg.")) {
+      compendiums.push(compendium.replace("starwarsffg.", "world."));
+    } else {
+      compendiums.push(compendium);
+    }
+  }
+  game.settings.set("starwarsffg", "signatureAbilityCompendiums", compendiums.join(","));
+  // force powers
+  compendiums = [];
+  for (const compendium of game.settings.get("starwarsffg", "forcePowerCompendiums").split(",")) {
+    if (compendium.includes("starwarsffg.")) {
+      compendiums.push(compendium.replace("starwarsffg.", "world."));
+    } else {
+      compendiums.push(compendium);
+    }
+  }
+  game.settings.set("starwarsffg", "forcePowerCompendiums", compendiums.join(","));
+  // talents
+  compendiums = [];
+  for (const compendium of game.settings.get("starwarsffg", "talentCompendiums").split(",")) {
+    if (compendium.includes("starwarsffg.")) {
+      compendiums.push(compendium.replace("starwarsffg.", "world."));
+    } else {
+      compendiums.push(compendium);
+    }
+  }
+  game.settings.set("starwarsffg", "talentCompendiums", compendiums.join(","));
 }
