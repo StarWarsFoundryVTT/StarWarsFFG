@@ -273,7 +273,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Hint"),
     scope: "world",
     config: false,
-    default: "starwarsffg.oggdudespecializations",
+    default: "world.oggdudespecializations",
     type: String,
   });
   game.settings.register("starwarsffg", "signatureAbilityCompendiums", {
@@ -281,7 +281,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Hint"),
     scope: "world",
     config: false,
-    default: "starwarsffg.oggdudesignatureabilities",
+    default: "world.oggdudesignatureabilities",
     type: String,
   });
   game.settings.register("starwarsffg", "forcePowerCompendiums", {
@@ -289,7 +289,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Hint"),
     scope: "world",
     config: false,
-    default: "starwarsffg.oggdudeforcepowers",
+    default: "world.oggdudeforcepowers",
     type: String,
   });
   game.settings.register("starwarsffg", "talentCompendiums", {
@@ -306,16 +306,6 @@ Hooks.once("init", async function () {
     scope: "client",
     config: false,
     default: true,
-    type: Boolean,
-  });
-
-  /**
-   * Register a setting to avoid spamming compendium warnings for Genesys players or whomever
-   */
-  game.settings.register("starwarsffg", "compendiumsPreviouslyEmpty", {
-    scope: "world",
-    config: false,
-    default: false,
     type: Boolean,
   });
 
@@ -1153,19 +1143,6 @@ Hooks.once("ready", async () => {
     }
     return token;
   });
-
-  const empty = await compendiumsEmpty();
-  if (empty && !game.settings.get("starwarsffg", "compendiumsPreviouslyEmpty")) {
-    const template = "systems/starwarsffg/templates/notifications/empty_compendiums.html";
-    const html = await renderTemplate(template);
-    const messageData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
-      content: html,
-    };
-    ChatMessage.create(messageData);
-    await game.settings.set("starwarsffg", "compendiumsPreviouslyEmpty", true);
-  }
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {

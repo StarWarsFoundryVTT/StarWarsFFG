@@ -8,12 +8,12 @@ export default class ItemAttachments {
       let totalCount = items.length;
       let currentCount = 0;
       const packMap = {
-        "armor": await ImportHelpers.getCompendiumPack("Item", "oggdudearmorattachments"),
-        "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdudeweaponattachments"),
-        "all": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericattachments"),
-        "gear": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericattachments"),
-        "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdudevehicleattachments"),
-        "mount": await ImportHelpers.getCompendiumPack("Item", "oggdudevehicleattachments"),
+        "armor": await ImportHelpers.getCompendiumPack("Item", "oggdude.ArmorAttachments"),
+        "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdude.WeaponAttachments"),
+        "all": await ImportHelpers.getCompendiumPack("Item", "oggdude.GenericAttachments"),
+        "gear": await ImportHelpers.getCompendiumPack("Item", "oggdude.GenericAttachments"),
+        "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdude.VehicleAttachments"),
+        "mount": await ImportHelpers.getCompendiumPack("Item", "oggdude.VehicleAttachments"),
       };
       let pack;
       CONFIG.logger.debug(`Starting Oggdude Item Attachments Import`);
@@ -60,8 +60,8 @@ export default class ItemAttachments {
           } else {
             // but fail back to the generic compendium
             pack = packMap["all"];
-          }          
-          
+          }
+
           // oggdude use "armor", but the internal mod type is "armour"
           if (data?.data?.type === "armor") data.data.type = "armour"
 
