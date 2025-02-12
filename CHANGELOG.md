@@ -19,6 +19,7 @@
   * Prevent abilities on species from duplicating when the importer is run more than once ([#1721](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1721))
   * Correct talent ownership bug ([#1773](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1773))
   * Show error if a non-custom skill is removed from actor ([#1571](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1571))
+  * Update wording of `Dice Theme` setting to more accurately reflect what it changes ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))
 
 `1.905`
 * Fixes
