@@ -30,13 +30,11 @@
         <div class="properties">
           <span class="tag">
             <b>{{ localize "SWFFG.Labels.ItemAttachments" }}:</b>
-            <ul>
             {{#each item.system.itemattachment as |item id| }}
-              <li class="item-pill hover-tooltip" data-item-embed-name="{{ name }}" data-item-embed-img="{{ img }}" data-item-id="{{item._id}}" data-desc="{{ item.system.description }}" data-rarity="{{ item.system.rarity.value }}" data-price="{{ item.system.price.value }}" data-mod-names="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.name}}~{{/each}}" data-mod-descs="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.description}}~{{/each}}" data-mod-actives="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.active}}~{{/each}}" data-item-type="itemattachment" data-item-name="{{ item.name }}" data-item-index="{{ @index }}" data-tooltip="Loading...">
+              <div class="item-pill hover-tooltip" data-item-embed-name="{{ name }}" data-item-embed-img="{{ img }}" data-item-id="{{item._id}}" data-desc="{{ item.system.description }}" data-rarity="{{ item.system.rarity.value }}" data-price="{{ item.system.price.value }}" data-mod-names="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.name}}~{{/each}}" data-mod-descs="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.description}}~{{/each}}" data-mod-actives="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.active}}~{{/each}}" data-item-type="itemattachment" data-item-name="{{ item.name }}" data-item-index="{{ @index }}" data-tooltip="Loading...">
                 {{{name}}}
-              </li>
+              </div>
             {{/each}}
-            </ul>
           </span>
         </div>
         {{/if}}

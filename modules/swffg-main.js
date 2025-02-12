@@ -703,7 +703,7 @@ Hooks.on("renderChatMessage", async (app, html, messageData) => {
   });
 
   // item card tooltips
-  html.find(".starwarsffg.item-card .item-pill").on("mouseover", (event) => {
+  html.find(".starwarsffg.item-card .item-pill, .starwarsffg .specials .hover-tooltip").on("mouseover", (event) => {
     itemPillHover(event);
   });
 });
