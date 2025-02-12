@@ -17,6 +17,8 @@
   * XP Spending now uses a generic symbol instead of a dollar sign ([#1732](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1732))
   * Fix for skill-roll macros not being created on drag-and-drop into macro hotbar ([#1786](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1786))
   * Prevent abilities on species from duplicating when the importer is run more than once ([#1721](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1721))
+  * Do not import item name in the description of the item ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))
+  * Do not include base mods in weapon description when running the importer ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))
   * Correct talent ownership bug ([#1773](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1773))
   * Show error if a non-custom skill is removed from actor ([#1571](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1571))
   * Update wording of `Dice Theme` setting to more accurately reflect what it changes ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))

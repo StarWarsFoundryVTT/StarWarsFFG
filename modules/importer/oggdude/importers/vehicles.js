@@ -24,6 +24,10 @@ export default class Vehicles {
 
             const pack = isSpaceVehicle ? await ImportHelpers.getCompendiumPack("Actor", `oggdude.Vehicles.Space`) : await ImportHelpers.getCompendiumPack("Actor", `oggdude.Vehicles.Planetary`);
 
+            if (item.Description.split('\n').length > 0) {
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
+
             let data = ImportHelpers.prepareBaseObject(item, "vehicle");
             data.items = [];
             data.system = {
@@ -126,7 +130,7 @@ export default class Vehicles {
 
                   data.items.push(weaponData);
                 } else {
-                  CONFIG.logger.warn(`Unable to find weapon : ${weapon.Key}`);
+                  CONFIG.logger.warn(`Unable to find weapon : ${weapon.Key} for ${item.Name}`);
                 }
               });
             }

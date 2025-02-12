@@ -28,6 +28,11 @@ export default class ItemAttachments {
           } else {
             data = ImportHelpers.prepareBaseObject(item, "itemattachment");
           }
+
+          if (item.Description.split('\n').length > 0) {
+            item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+          }
+
           data.img = `/systems/starwarsffg/images/mod-${item?.Type ? item.Type.toLowerCase() : "all"}.png`;
           data.data = {
             description: item.Description,

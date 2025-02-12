@@ -23,6 +23,10 @@ export default class Career {
 
             let data = ImportHelpers.prepareBaseObject(item, "career");
 
+            if (item.Description.split('\n').length > 0) {
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
+
             data.data = {
               attributes: {},
               description: item.Description,
