@@ -1437,7 +1437,7 @@ async function compendiumsEmpty() {
  * Give a custom, Star Wars FFG tooltip when qualities, attachments, upgrades, etc are hovered (after sending to chat)
  * @param event
  */
-function itemPillHover(event) {
+export function itemPillHover(event) {
   event.preventDefault();
   const li = $(event.currentTarget);
   const itemName = li.data("item-embed-name");
