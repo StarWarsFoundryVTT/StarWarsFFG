@@ -20,6 +20,7 @@ import {
 } from "../helpers/crew.js";
 import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
+import {itemPillHover} from "../swffg-main.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -1313,23 +1314,11 @@ export class ActorSheetFFG extends ActorSheet {
       itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
       li.append(div.hide());
-      $(div)
-        .find(".rollSkillDirect")
-        .on("click", async (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-
-          let data = event.currentTarget.dataset;
-          if (data) {
-            let sheet = await this.getData();
-            let skill = sheet.data.skills[data["skill"]];
-            let characteristic = sheet.data.characteristics[skill.characteristic];
-            let difficulty = data["difficulty"];
-            await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
-          }
-        });
-
       div.slideDown(200);
+      // item card tooltips
+      li.find(".hover-tooltip").on("mouseover", (event) => {
+        itemPillHover(event);
+      });
     }
     li.toggleClass("expanded");
   }

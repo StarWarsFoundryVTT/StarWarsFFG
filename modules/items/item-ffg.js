@@ -464,6 +464,10 @@ export class ItemFFG extends ItemBaseFFG {
 
     data.prettyDesc = await PopoutEditor.renderDiceImages(data.description, this.actor);
 
+    if (["weapon", "armor", "armour", "shipweapon"].includes(this.type)) {
+      data.doNotSubmit = (await this.sheet.getData()).data.doNotSubmit;
+    }
+
     if (this.type === "forcepower" || this.type === "signatureability") {
       //Display upgrades
 
@@ -503,9 +507,16 @@ export class ItemFFG extends ItemBaseFFG {
     }
     // General equipment properties
     else if (this.type !== "talent") {
-      if (data.hasOwnProperty("adjusteditemmodifier")) {
-        const modifiers = data.adjusteditemmodifier?.filter(i => Object.keys(i).length > 0);
-        const qualities = modifiers?.map((m) => `<li class='item-pill ${m.adjusted ? "adjusted hover" : ""}' data-item-embed-type='itemmodifier' data-item-embed-name='${m.name}' data-item-embed-img='${m.img}' data-item-embed-description='${escape(m.system.enrichedDescription? m.system.enrichedDescription : m.system.description)}' data-item-embed-modifiers='${JSON.stringify(m.system.attributes)}' data-item-embed-rank='${m.system.rank_current}' data-item-embed='true'>${m.name} ${m.system?.rank_current > 0 ? m.system.rank_current : ""} ${m.adjusted ? "<div class='tooltip2'>" + game.i18n.localize("SWFFG.FromAttachment") + "</div>" : ""}</li>`);
+      if (data.hasOwnProperty("doNotSubmit")) {
+        const modifiers = data.doNotSubmit.qualities;
+        const qualities = [];
+        for (const modifier of modifiers) {
+          qualities.push(`
+          <div class='item-pill-hover hover-tooltip' data-item-type="itemmodifier" data-item-embed-name="${ modifier.name }" data-item-embed-img="${ modifier.img }" data-desc="${ (await TextEditor.enrichHTML(modifier.description)).replaceAll('"', "'") }" data-item-ranks="${ modifier.totalRanks }" data-tooltip="Loading...">
+            ${modifier.name} ${modifier.totalRanks === null || modifier.totalRanks === 0 ? "" : modifier.totalRanks}
+          </div>
+          `);
+        }
 
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
@@ -564,9 +575,6 @@ export class ItemFFG extends ItemBaseFFG {
         const skillLabel = "SWFFG.SkillsName" + cleanedSkillName;
         props.push(`Skill: ${game.i18n.localize(skillLabel)}`);
       }
-    }
-    if (["weapon", "armor", "armour", "shipweapon"].includes(this.type)) {
-      data.doNotSubmit = (await this.sheet.getData()).data.doNotSubmit;
     }
 
     // Talent properties

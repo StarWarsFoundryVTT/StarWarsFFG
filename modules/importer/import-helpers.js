@@ -2765,7 +2765,7 @@ export default class ImportHelpers {
               description: modifier.MiscDesc,
               attributes: {},
               type: "all",
-              rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
+              rank: modifier?.Count ? parseInt(modifier.Count, 10) : null,
             },
           };
           const descriptor = await new Item(unique, { temporary: true });

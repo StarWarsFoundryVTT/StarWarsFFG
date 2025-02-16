@@ -20,10 +20,14 @@ export default class Weapons {
             const itemType = item.Type === "Vehicle" ? "shipweapon" : "weapon";
             let pack = packs[itemType];
 
+            if (item.Description.split('\n').length > 0) {
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
+
             let data = ImportHelpers.prepareBaseObject(item, itemType);
             data.data = {
               attributes: {},
-              description: item.Description.replace('[H3]', '<h3>').replace('[h3]', '</h3>'),
+              description: item.Description.replace('[H3]', '<h3>').replace('[h3]', '</h3>').replace('[BR]', '<br>'),
               encumbrance: {
                 value: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
               },
@@ -75,7 +79,6 @@ export default class Weapons {
                 data.data.attributes = mods.baseMods.attributes;
                 data.data.itemmodifier = data.data.itemmodifier.concat(mods.baseMods.itemmodifier);
                 data.data.itemattachment = mods.baseMods.itemattachment;
-                data.data.description += mods.baseMods.description;
               }
               if (mods.qualities) {
                 data.data.itemmodifier = data.data.itemmodifier.concat(mods.qualities.itemmodifier);

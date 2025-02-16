@@ -10,26 +10,17 @@
   <h4 class="item-critical">{{localize "SWFFG.WeaponCardCritical"}}: <input class="damage-value" type="text" value="{{system.system.crit.value}}" disabled /></h4>{{/iff}}
   {{else}}
   <h4 class="item-miss">Miss!</h4>
-  {{/if}} {{#if system.system.adjusteditemmodifier}}
+  {{/if}}
+  {{#if system.system.doNotSubmit.qualities}}
   <div class="specials">
     <h5>
-      {{#each system.system.adjusteditemmodifier as |item id|}}
-      <li class="item-pill" data-item-embed-type="{{item.type}}" data-item-embed-name="{{item.name}}" data-item-embed-img="{{item.img}}" data-item-embed-description="{{item.system.description}}" data-item-embed-modifiers="{{json item.system.attributes}}" data-item-embed-rank="{{item.system.rank_current}}" data-item-embed="true">
-        {{item.name}} {{#if (gt item.system.rank_current 0)}}{{item.system.rank_current}}{{else}}{{/if}}
-      </li>
+      {{#each system.system.doNotSubmit.qualities as |item id|}}
+        <div class="item-pill-hover hover-tooltip" data-item-type="itemmodifier" data-item-embed-name="{{ name }}" data-item-embed-img="{{ item.img }}" data-desc="{{ item.description }}" data-item-ranks="{{ item.totalRanks }}" data-tooltip="Loading...">
+          {{{name}}} {{ item.totalRanks }}
+        </div>
       {{/each}}
     </h5>
   </div>
   {{/if}}
-  {{#if system.system.itemmodifier}}
-  {{#iff system.system.adjusteditemmodifier '==' undefined }}
-  <div class="specials">
-    <h5>
-      {{#each system.system.itemmodifier as |item id|}}
-      <li class="item-pill" data-item-id="{{../system._id}}" data-modifier-id="{{#if item.id }}{{item.id}}{{else}}{{item._id}}{{/if}}" data-uuid="{{ ../system.flags.starwarsffg.uuid }}" data-modifier-type="{{item.type}}">{{item.name}} {{#if (gt item.system.rank 0)}}{{item.system.rank}}{{else}}{{/if}}</li>
-      {{/each}}
-    </h5>
-  </div>
-  {{/iff}}{{/if}}
   {{#if system.system.special.value}}{{{ffgDiceSymbols system.system.special.value}}}{{/if}}
 </div>

@@ -1,6 +1,7 @@
 import PopoutEditor from "../popout-editor.js";
 import { ForceDie } from "./dietype/ForceDie.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
+import {ItemFFG} from "../items/item-ffg.js";
 
 /**
  * New extension of the core DicePool class for evaluating rolls with the FFG DiceTerms
@@ -262,12 +263,14 @@ export class RollFFG extends Roll {
         const item = await fromUuid(this.data.flags.starwarsffg.uuid);
         if (item) {
           this.data = item;
+          this.data.system = await (new ItemFFG(this.data, {validate: false}).getItemDetails());
         }
       }
       else if (this.data.flags?.starwarsffg?.ffgUuid) {
         const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
         if (item) {
           this.data = item;
+          this.data.system = await (new ItemFFG(this.data, {validate: false}).getItemDetails());
         }
       }
       this.data.additionalFlavorText = this.flavorText;
