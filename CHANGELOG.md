@@ -1,4 +1,4 @@
-`?`
+`1.906`
 * Features:
   * Compendiums have been migrated back to world compendiums (from system compendiums) ([#1794](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1794))
     * This means they will not be deleted every update _after this one_
