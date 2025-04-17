@@ -10,11 +10,11 @@ export default class ItemDescriptors {
     CONFIG.logger.debug(`Starting Oggdude Item Descriptor Import`);
     $(".import-progress.itemdescriptors").toggleClass("import-hidden");
     const packMap = {
-      "armor": await ImportHelpers.getCompendiumPack("Item", "oggdudearmormods"),
-      "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdudeweaponmods"),
-      "all": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericmods"),
-      "gear": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericmods"),
-      "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdudevehiclemods"),
+      "armor": await ImportHelpers.getCompendiumPack("Item", "oggdude.ArmorMods"),
+      "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdude.WeaponMods"),
+      "all": await ImportHelpers.getCompendiumPack("Item", "oggdude.GenericMods"),
+      "gear": await ImportHelpers.getCompendiumPack("Item", "oggdude.GenericMods"),
+      "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdude.VehicleMods"),
     };
 
     await ImportHelpers.asyncForEach(items, async (item) => {

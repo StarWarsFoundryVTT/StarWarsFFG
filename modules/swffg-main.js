@@ -123,23 +123,59 @@ Hooks.once("init", async function () {
   Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
     // FFG style behaviour for wounds and strain.
+    let aboveThreshold = 0;
     if (data.attribute === "stats.wounds" || data.attribute === "stats.strain" || data.attribute === "stats.hullTrauma" || data.attribute === "stats.systemStrain") {
       val = Number(data.max - data.value);
+      aboveThreshold = Math.max(data.value - data.max, 0);
     }
 
-    const pct = Math.clamped(val, 0, data.max) / data.max;
+    // draw the empty bar
     let h = Math.max(canvas.dimensions.size / 12, 8);
-    if (this.height >= 2) h *= 1.6; // Enlarge the bar for large tokens
-    // Draw the bar
-    let color = number === 0 ? [1 - pct / 2, pct, 0] : [0.5 * pct, 0.7 * pct, 0.5 + pct / 2];
-    bar
-      .clear()
+    bar.clear()
       .beginFill(0x000000, 0.5)
       .lineStyle(2, 0x000000, 0.9)
-      .drawRoundedRect(0, 0, this.w, h, 3)
+      .drawRoundedRect(0, 0, this.w, h, 3);
+    let startX = 1;
+    let startY = 1;
+
+    if (aboveThreshold > 0) {
+      // render the above-threshold portion of the bar
+      let abovePct = Math.min(aboveThreshold / data.max, 1);
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-overwounded"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, abovePct * (this.w - 2), h - 2, 2);
+      // render the rest as wounds
+      startX = abovePct * (this.w - 2) + 1;
+      let remainingLength = this.w  - abovePct * (this.w - 2) - 2;
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+    } else if (["stats.wounds", "stats.hullTrauma"].includes(data.attribute)) {
+      // render healthy and then unhealthy portions of the bar
+      let woundedPct = Math.min((data.max - data.value) / data.max, 1);
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-healthy"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, woundedPct * (this.w - 2), h - 2, 2);
+      // remaining health
+      startX = woundedPct * (this.w - 2) + 1;
+      let remainingLength = this.w - woundedPct * (this.w - 2) - 2;
+      bar
+      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
+      .lineStyle(1, 0x000000, 0.8)
+      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+    } else {
+      // render normally
+      const pct = Math.clamp(val, 0, data.max) / data.max;
+      let color = number === 0 ? [1 - pct / 2, pct, 0] : [0.5 * pct, 0.7 * pct, 0.5 + pct / 2];
+      bar
       .beginFill(PIXI.utils.rgb2hex(color), 0.8)
       .lineStyle(1, 0x000000, 0.8)
       .drawRoundedRect(1, 1, pct * (this.w - 2), h - 2, 2);
+    }
+
     // Set position
     let posY = number === 0 ? this.h - h : 0;
     bar.position.set(0, posY);
@@ -237,7 +273,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Hint"),
     scope: "world",
     config: false,
-    default: "starwarsffg.oggdudespecializations",
+    default: "world.oggdudespecializations",
     type: String,
   });
   game.settings.register("starwarsffg", "signatureAbilityCompendiums", {
@@ -245,7 +281,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.SignatureAbility.Hint"),
     scope: "world",
     config: false,
-    default: "starwarsffg.oggdudesignatureabilities",
+    default: "world.oggdudesignatureabilities",
     type: String,
   });
   game.settings.register("starwarsffg", "forcePowerCompendiums", {
@@ -253,7 +289,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Purchase.ForcePower.Hint"),
     scope: "world",
     config: false,
-    default: "starwarsffg.oggdudeforcepowers",
+    default: "world.oggdudeforcepowers",
     type: String,
   });
   game.settings.register("starwarsffg", "talentCompendiums", {
@@ -447,6 +483,16 @@ Hooks.once("init", async function () {
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
 
+  // add back in the select helper (under a new name, so we don't get warnings)
+  Handlebars.registerHelper({
+    selectFfg: function (selected, options) {
+      const escapedValue = RegExp.escape(Handlebars.escapeExpression(selected));
+      const rgx = new RegExp(' value=[\"\']' + escapedValue + '[\"\']');
+      const html = options.fn(this);
+      return html.replace(rgx, "$& selected");
+    }
+  });
+
   // Register Handlebars utilities
   Handlebars.registerHelper("json", JSON.stringify);
 
@@ -565,10 +611,10 @@ Hooks.once("init", async function () {
             result += options.fn({item: list[i]});
 
     return result.length > 0 ? result : options.inverse();
-});
+  });
 
 
-  TemplateHelpers.preload();
+  await TemplateHelpers.preload();
 });
 
 Hooks.on("renderSidebarTab", (app, html, data) => {
@@ -656,48 +702,9 @@ Hooks.on("renderChatMessage", async (app, html, messageData) => {
     collapseButton.toggleClass("fa-chevron-left");
   });
 
-  html.find(".item-display .item-pill, .item-properties .item-pill, .tag .item-pill").on("click", async (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    const li = $(event.currentTarget);
-    const itemType = li.attr("data-item-embed-type");
-    let itemData = {};
-    const newEmbed = li.attr("data-item-embed");
-    console.log(newEmbed)
-
-    if (newEmbed === "true" && itemType === "itemmodifier") {
-      itemData = {
-        img: li.attr('data-item-embed-img'),
-        name: li.attr('data-item-embed-name'),
-        type: li.attr('data-item-embed-type'),
-        system: {
-          description: unescape(li.attr('data-item-embed-description')),
-          attributes: JSON.parse(li.attr('data-item-embed-modifiers')),
-          rank: li.attr('data-item-embed-rank'),
-          rank_current: li.attr('data-item-embed-rank'),
-        },
-        ownership: {
-          default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
-        }
-      };
-      const tempItem = await Item.create(itemData, {temporary: true});
-      tempItem.sheet.render(true);
-    } else {
-      CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
-      const li2 = event.currentTarget;
-      let uuid = li2.dataset.itemId;
-      let modifierId = li2.dataset.modifierId;
-      let modifierType = li2.dataset.modifierType;
-      if (li2.dataset.uuid) {
-        uuid = li2.dataset.uuid;
-      }
-
-      const parts = uuid.split(".");
-
-      const [entityName, entityId, embeddedName, embeddedId] = parts;
-
-      await EmbeddedItemHelpers.displayOwnedItemItemModifiersAsJournal(embeddedId, modifierType, modifierId, entityId);
-    }
+  // item card tooltips
+  html.find(".starwarsffg.item-card .item-pill, .starwarsffg .specials .hover-tooltip").on("mouseover", (event) => {
+    itemPillHover(event);
   });
 });
 
@@ -1015,7 +1022,7 @@ Hooks.once("ready", async () => {
         // abilities
         for(const abilityId of Object.keys(item.system.abilities)) {
           const abilityData = item.system.abilities[abilityId];
-          const abilityItem = await Item.create(
+          const abilityItem = await new Item(
             {
               name: abilityData.name,
               type: "ability",
@@ -1409,4 +1416,95 @@ async function registerCrewRoles() {
     config: false,
     type: Object,
   });
+}
+
+/**
+ * Check if all built-in compendiums are empty or not
+ * @returns {Promise<boolean>}
+ */
+async function compendiumsEmpty() {
+  const compendiums = game.packs.contents.filter(i => i.collection.includes("starwars"));
+  for (const compendium of compendiums) {
+    if ((await compendium.getDocuments()).length !== 0) {
+      return false;
+    }
+  }
+
+  return compendiums.length > 0;
+}
+
+/**
+ * Give a custom, Star Wars FFG tooltip when qualities, attachments, upgrades, etc are hovered (after sending to chat)
+ * @param event
+ */
+export function itemPillHover(event) {
+  event.preventDefault();
+  const li = $(event.currentTarget);
+  const itemName = li.data("item-embed-name");
+  const itemImage = li.data("item-embed-img");
+  const itemType = li.data("item-type");
+  const itemRanks = li.data("item-ranks");
+  let desc = li.data("desc");
+  let descRanks = "";
+  if (itemType === "itemattachment") {
+    const rarity = li.data("rarity");
+    const price = li.data("price");
+    if (price) {
+      desc = `<span class="statt" title="Price"><i class="fa-solid fa-dollar-sign"></i>${price}</span>${desc}`
+    }
+    if (rarity) {
+      desc = `<span class="stat stat-right" title="Rarity"><i class="fa-solid fa-magnifying-glass"></i>${rarity}</span>${desc}`
+    }
+
+    // if the item has embedded mods, pull the data and add it to the description
+    let modNames = li.data("mod-names");
+    let modDescs = li.data("mod-descs");
+    let modActives = li.data("mod-actives");
+    if (modNames) {
+      modNames = modNames.split("~");
+      modDescs = modDescs.split("~");
+      modActives = modActives.split("~");
+      CONFIG.logger.debug(modNames);
+      CONFIG.logger.debug(modDescs);
+      CONFIG.logger.debug(modActives);
+      let newDesc = `<hr><b>Mods</b>:<br>`;
+      for (let i = 0; i < modNames.length - 1; i++) {
+        if (modActives[i] === "true") {
+          modNames[i] = `<i class="fa-solid fa-user-check" title="Installed"></i>&nbsp;${modNames[i]}`;
+        } else {
+          modNames[i] = `<i class="fa-duotone fa-solid fa-user-xmark" title="Not Installed"></i>&nbsp;${modNames[i]}`;
+        }
+        newDesc += `<u>${modNames[i]}</u>:&nbsp;${modDescs[i]}<br>`;
+      }
+      desc += newDesc;
+    }
+  }
+  if (itemRanks > 0) {
+    descRanks = `${itemRanks} ranks`;
+  } else {
+    if (!["specialization", "signatureAbility", "itemattachment"].includes(itemType)) {
+      descRanks = "Not ranked";
+    }
+  }
+  let embeddedContent = `
+    <section class="chat-msg-tooltip content">
+      <section class="header">
+        <div class="top">
+          <img class="tooltip-img" src="${itemImage}"/>
+          <div class="name name-stacked">
+            <span class="title">${itemName}</span>
+          </div>
+        </div>
+      </section>
+      <section class="description">
+        ${desc}
+      </section>
+      <section class="ranks">
+        ${descRanks}
+      </section>
+    </section>
+  `;
+  if (itemType !== undefined) {
+    li.attr("data-tooltip", embeddedContent);
+  }
 }

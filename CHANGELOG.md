@@ -1,6 +1,43 @@
+`1.906`
+* Features:
+  * Compendiums have been migrated back to world compendiums (from system compendiums) ([#1794](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1794))
+    * This means they will not be deleted every update _after this one_
+    * Once again: **THIS UPDATE WILL DELETE ALL SYSTEM COMPENDIUMS**
+  * Attachments now actually work! ([#1215](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1215), [#1768](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1768))
+  * Item qualities, upgrades, etc now use tooltips instead of a fake item window when sent to chat
+  * You can now adjust token wounds above the threshold ([#1769](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1769))
+  * Token bars now display wounds above threshold and most colors are configurable ([#1769](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1769))
+  * You can now kill a minion or minion group directly from their sheet with a single click! ([#1744](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1744))
+  * Add derived stats of strainOverThreshold, woundsOverThreshold, hullOverThreshold, and systemStrainOverThreshold to actors (for things like Bar Brawl) ([#1781](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1781))
+  * You can now provide a reason for manual XP adjustments ([#1630](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1630))
+  * Users with limited view access on Nemesis actors can now view the bio. (GMs can hide content by using the `secret` block in the Bio) ([#1774](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1774))
+* Fixes:
+  * Remove usage of deprecated `math.clamped` in favor of `math.clamp`
+  * Fix skill roll sometimes showing a pool of only 2 difficulty when clicked ([#1763](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1763))
+  * XP Spending now uses a generic symbol instead of a dollar sign ([#1732](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1732))
+  * Fix for skill-roll macros not being created on drag-and-drop into macro hotbar ([#1786](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1786))
+  * Prevent abilities on species from duplicating when the importer is run more than once ([#1721](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1721))
+  * Do not import item name in the description of the item ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))
+  * Do not include base mods in weapon description when running the importer ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))
+  * Unranked unique mods are now properly imported without ranks ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))
+  * Correct talent ownership bug ([#1773](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1773))
+  * Show error if a non-custom skill is removed from actor ([#1571](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1571))
+  * Update wording of `Dice Theme` setting to more accurately reflect what it changes ([#1795](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1795))
+
+`1.905`
+* Fixes
+  * Hotfix for inability to roll dice with modifiers (e.g. critical injuries)
+
 `1.904`
 * Features:
   * Optionally include GM Characters in the Group Manager ([#1680](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1680))
+  * Add EditorConfig settings
+  * Add basic Eslint config
+  * Alphabetize species, careers, specializations, signature abilities, and force powers on actor sheets ([#1723](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1723))
+  * A notification will be generated if all system compendiums are empty ([#1693](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1693))
+  * The importer now has a "select all" so you don't have to click each item individually ([#1724](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1724))
+  * Add long description for talents and move sources out of description for all items ([#1640](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1640))
+  * Weapon "special" field moved to the configuration tab ([#1715](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1715))
 * Fixes:
   * Apply Force Powers upgrades to character ([#1542](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1542))
   * Imported skill modifiers have better formatted attributes key names ([#1663](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1663))
@@ -11,6 +48,30 @@
   * Escape menu toggles in the normal way again ([#1670](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1670))
   * Force Power: Empty mod list doesn't reset basic force power anymore ([#1669](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1669))
   * Updating a talent from a specialization tree updates the tree ([#1643](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1643))
+  * Force Power: Import basic force power mods ([#1686](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1686))
+  * Get embedded item data from `system` variable instead of root
+  * Use correct type when importing a Force Boost mods ([#1687](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1687))
+  * Item attachments' mods use parent item mod type when present ([#1624](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1624))
+  * Talent cost set when preparing tree instead of template ([#1704](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1704))
+  * Qualities are linked to parent item ([#1612](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1612))
+  * Assign correct modifiers type to armor: "armour" instead of "armor" ([#1697](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1697))
+  * Remove Destiny Tracker hardcoded size, allowing it to grow and shrink when font size is changed ([#1688](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1688))
+  * Assign correct modifiers type to armor: "armour" instead of "armor" ([#1697](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1697))
+  * Skill purchases on actors now work via the dollar sign again ([#1713](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1713))
+  * Use defense when building pool bug ([#1603](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1603))
+  * Allow to set challenge dices when create a dice pool.
+  * Allow zero as a valid value when updating vehicle stats ([#1717](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1717))
+  * Replace deprecated Document.createDocuments calls with Document() constructor ([#1683](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1683))
+  * Problem with Destiny Roll ([#1730](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1730))
+  * Show removed setback dice icons and optionnally remove them from all rolls ([#1720](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1720))
+  * Problem with rolling of standard dice ([#1731](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1731))
+  * Allow weapon status check for dice roll also for shipweapon
+  * Blind GM rolls are now properly hidden from players ([#1712](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1712))
+  * Properly use Genesys story points when the theme is set to Genesys ([#1711](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1711))
+  * Stop using deprecated `select` Handlebars helper ([#1632](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1632))
+    * Note that the same _code_ is in use, it is just no longer using the built-in (and deprecated) version
+  * Correctly show claimed slot combatants in combat tracker ([#1703](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1703))
+  * Combat tracker no longer spawns infinite combatants under certain conditions ([#1733](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1733))
 
 `1.903`
 * Features:
@@ -18,7 +79,7 @@
     * This change includes many minor improvements to the cards, such as showing damage on weapons and purchased talents on specializations
   * Generic slot combat tracker: The action to take when removing a combatant is now configurable. This is in place of the previously-confusing (and quite annoying) behavior where you had to claim a slot in order to remove a combatant
   * Dragging-and-dropping items on actors now prompts for spending XP to purchase that item ([#1588](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1588))
-  * XP spending now consistently uses a dollar sign to trigger spending instead of the various methods it previously used ([#1629](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1629)) 
+  * XP spending now consistently uses a dollar sign to trigger spending instead of the various methods it previously used ([#1629](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1629))
   * Settings have been refactored to be more organized and easier to navigate ([#1639](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1639))
   * Destiny point flipping is now themed ([#1658](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1658)
   * Set default token settings when creating new actor ([#1652](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1652)))
@@ -136,7 +197,7 @@
   * **Combat**
     * Fixed double-slot-claim bug in the combat tracker
     * Fixed a bug preventing removing combatants from combat
-    * Fixed a bug  where removing a combatant would un-claim another slot 
+    * Fixed a bug  where removing a combatant would un-claim another slot
     * Fixed a bug where removing a combatant from the canvas would not properly update the tracker
   * **Importer**:
     * Career data (signature abilities, specializations) is now properly set when the OggDude importer is run with existing compendiums
@@ -146,7 +207,7 @@
     * Granting XP to the entire group now updates the XP logs for those players (previously, only single-actor grants updated the log)
 
 `1.809`
-* Features: 
+* Features:
   * You can now (optionally) spend XP! See [the wiki](https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki/new%E2%80%90features%E2%80%90v1.809#xp-spending) for more info
   * Added actor types for Nemesis and Rival
   * Weapons can now have stat mods (permitting setting e.g. the `defensive` quality)

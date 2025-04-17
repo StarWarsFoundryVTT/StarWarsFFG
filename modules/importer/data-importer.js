@@ -51,6 +51,7 @@ export default class DataImporter extends FormApplication {
     $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#data-importer header a");
 
     html.find(".dialog-button").on("click", this._dialogButton.bind(this));
+    html.find("#importAll").on("click", this._enableImportAll.bind(this));
   }
 
   _importLog = [];
@@ -58,6 +59,14 @@ export default class DataImporter extends FormApplication {
     if ($(".debug input:checked").length > 0) {
       this._importLog.push(`[${new Date().getTime()}] ${message}`);
     }
+  }
+
+  /**
+   * Enable all checkboxes for import rather than forcing the user to click them all one at a time
+   * @private
+   */
+  _enableImportAll() {
+    $("input[type='checkbox'][name='imports']").attr("checked", true);
   }
 
   async _dialogButton(event) {
@@ -94,6 +103,7 @@ export default class DataImporter extends FormApplication {
           }
         }
 
+        $("input[id='importAll']").attr("disabled", false);
         this._enableImportSelection(zip.files, "Talents");
         this._enableImportSelection(zip.files, "Force Abilities");
         this._enableImportSelection(zip.files, "Gear");

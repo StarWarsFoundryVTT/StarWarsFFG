@@ -20,6 +20,7 @@ import {
 } from "../helpers/crew.js";
 import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
+import {itemPillHover} from "../swffg-main.js";
 
 export class ActorSheetFFG extends ActorSheet {
   constructor(...args) {
@@ -225,7 +226,7 @@ export class ActorSheetFFG extends ActorSheet {
         if (data.data.stats.credits.value > 999) {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
-        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
+        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography, {secrets: !data.limited});
         data.data.general.enrichedNotes = await TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
         data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         data.maxAttribute = game.settings.get("starwarsffg", "maxAttribute");
@@ -283,7 +284,20 @@ export class ActorSheetFFG extends ActorSheet {
       data.xpLog = this.actor.flags.starwarsffg.xpLog.join("<br>");
     }
 
+    data.actor.items = ActorSheetFFG.sortForActorSheet(data.actor.items);
+
     return data;
+  }
+
+  /**
+   * Sorts actor items by name so that they are presented in a constant order
+   * @param items
+   * @returns {*}
+   */
+  static sortForActorSheet(items) {
+    return items.sort(function(a, b) {
+       return a.name.localeCompare(b.name);
+    });
   }
 
   /* -------------------------------------------- */
@@ -395,8 +409,8 @@ export class ActorSheetFFG extends ActorSheet {
       {
         name: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
         icon: '<i class="fas fa-times"></i>',
-        callback: (li) => {
-          this._onRemoveSkill(li);
+        callback: async (li) => {
+          await this._onRemoveSkill(li);
         },
       },
     ];
@@ -405,7 +419,7 @@ export class ActorSheetFFG extends ActorSheet {
       contextMenuOptions.push(
         {
           name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
-          icon: '<i class="fas fa-dollar"></i>',
+          icon: '<i class="fa-regular fa-circle-up"></i>',
           callback: (li) => {
             this._buySkillRank(li);
           },
@@ -422,6 +436,14 @@ export class ActorSheetFFG extends ActorSheet {
     html.find(".skill-purchase").click(async (ev) => {
       const target = $(ev.currentTarget).parents().filter("[data-ability]");
       await this._buySkillRank(target);
+    });
+
+    html.find(".xp-adjustment").click(async (ev) => {
+      await this._xpAdjustment(ev);
+    });
+
+    html.find(".minion-control").click(async (ev) => {
+      await this._handleKillMinion(ev);
     });
 
     new ContextMenu(html, "div.skillsHeader", [
@@ -733,7 +755,7 @@ export class ActorSheetFFG extends ActorSheet {
                 default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
               }
             };
-            const tempItem = await Item.create(itemData, {temporary: true});
+            const tempItem = await new Item(itemData, { temporary: true });
             tempItem.sheet.render(true);
           } else {
             CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
@@ -1292,23 +1314,11 @@ export class ActorSheetFFG extends ActorSheet {
       itemDetails.properties.forEach((p) => props.append(`<span class="tag">${p}</span>`));
       div.append(props);
       li.append(div.hide());
-      $(div)
-        .find(".rollSkillDirect")
-        .on("click", async (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-
-          let data = event.currentTarget.dataset;
-          if (data) {
-            let sheet = await this.getData();
-            let skill = sheet.data.skills[data["skill"]];
-            let characteristic = sheet.data.characteristics[skill.characteristic];
-            let difficulty = data["difficulty"];
-            await DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, sheet);
-          }
-        });
-
       div.slideDown(200);
+      // item card tooltips
+      li.find(".hover-tooltip").on("mouseover", (event) => {
+        itemPillHover(event);
+      });
     }
     li.toggleClass("expanded");
   }
@@ -1483,7 +1493,7 @@ export class ActorSheetFFG extends ActorSheet {
               if (name.trim().length > 0) {
                 CONFIG.logger.debug(`Creating new skill ${name} (${characteristic})`);
                 let updateData = {};
-                setProperty(updateData, `system.skills.${name}`, newSkill);
+                foundry.utils.setProperty(updateData, `system.skills.${name}`, newSkill);
 
                 this.object.update(updateData);
               }
@@ -1526,7 +1536,7 @@ export class ActorSheetFFG extends ActorSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SkillRank.Text", {cost: cost, skill: skill, old: curRank, new: curRank + 1}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -1558,9 +1568,14 @@ export class ActorSheetFFG extends ActorSheet {
    * Remove skill from skill list
    * @param  {object} a - Event object
    */
-  _onRemoveSkill(a) {
+  async _onRemoveSkill(a) {
     const ability = $(a).data("ability");
-    this.object.update({ "system.skills": { ["-=" + ability]: null } });
+    const isCustom = $(a).data("custom");
+    if (!isCustom) {
+      ui.notifications.info("You can only remove custom skills");
+      return;
+    }
+    await this.object.update({ [`system.skills.-=${ability}`]: null });
   }
 
   /**
@@ -1719,27 +1734,6 @@ export class ActorSheetFFG extends ActorSheet {
 
     for await (const spec of specializations) {
       CONFIG.logger.debug(`_updateSpecialization(): starting work on ${spec.name}`);
-      const specializationTalents = spec.system.talents;
-      for (const talent in specializationTalents) {
-        let gameItem;
-        if (specializationTalents[talent].pack && specializationTalents[talent].pack.length > 0) {
-          const pack = await game.packs.get(specializationTalents[talent]?.pack);
-          if (pack) {
-            await pack.getIndex();
-            let entry = await pack.index.find((e) => e._id === specializationTalents[talent].itemId);
-            if (!entry) {
-              entry = await pack.index.find((e) => e.name === specializationTalents[talent].name);
-            }
-            gameItem = await pack.getDocument(entry._id);
-          }
-        } else {
-          gameItem = await game.items.get(specializationTalents[talent].itemId);
-        }
-
-        if (gameItem) {
-          this._updateSpecializationTalentReference(specializationTalents[talent], gameItem);
-        }
-      }
 
       if (spec?.talentList && spec.talentList.length > 0) {
         spec.talentList.forEach((talent) => {
@@ -1771,23 +1765,6 @@ export class ActorSheetFFG extends ActorSheet {
 
     CONFIG.logger.debug(`_updateSpecialization(): data.talentList after update:`);
     CONFIG.logger.debug(data.talentList.slice());
-  }
-
-  /**
-   * Update a specialization talent based on talent reference
-   * @param  {Object} specializationTalentItem
-   * @param  {Object} talentItem
-   */
-  _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
-    CONFIG.logger.debug(`Starwars FFG - Updating Specializations Talent`);
-    specializationTalentItem.name = talentItem.name;
-    specializationTalentItem.description = talentItem.system.description;
-    specializationTalentItem.activation = talentItem.system.activation.value;
-    specializationTalentItem.activationLabel = talentItem.system.activation.label;
-    specializationTalentItem.isRanked = talentItem.system.ranks.ranked;
-    specializationTalentItem.isForceTalent = talentItem.system.isForceTalent;
-    specializationTalentItem.isConflictTalent = talentItem.system.isConflictTalent;
-    specializationTalentItem.attributes = talentItem.system.attributes;
   }
 
   /**
@@ -2093,6 +2070,9 @@ export class ActorSheetFFG extends ActorSheet {
       const characteristic = $(event.target).data("buy-characteristic");
       await this._buyCharacteristicRank(characteristic);
       return;
+    } else if (action === "skill") {
+      await this._buySkillRank(event.target.parentElement.parentElement.parentElement);
+      return;
     } else {
       CONFIG.logger.debug(`Refusing purchase action ${action} since it is not registered`);
       return;
@@ -2104,7 +2084,7 @@ export class ActorSheetFFG extends ActorSheet {
         content: content,
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               const cost = $("#ffgPurchase option:selected", that).data("cost");
@@ -2173,7 +2153,7 @@ export class ActorSheetFFG extends ActorSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Characteristic.ConfirmText", {cost: cost, level: characteristicCostValue + 1, characteristic: characteristic}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               await this.object.update({
@@ -2202,6 +2182,75 @@ export class ActorSheetFFG extends ActorSheet {
         classes: ["dialog", "starwarsffg"],
       }
     ).render(true);
+  }
+
+  /**
+   * Handle clicking the kill minion button
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _handleKillMinion(event) {
+    event.stopPropagation();
+    const target = $(event.currentTarget);
+    const minionHealth = this.actor.system.unit_wounds.value;
+    const currentHealth = this.actor.system.stats.wounds.value;
+    if (target.hasClass("kill-minion")) {
+      let damageAmount = minionHealth - (currentHealth % minionHealth) + 1;
+      await this.actor.update({'system.stats.wounds.value': currentHealth + damageAmount});
+    } else if (target.hasClass("kill-group")) {
+      await this.actor.update({'system.stats.wounds.value': this.actor.system.stats.wounds.max + 1});
+    }
+  }
+
+  async _xpAdjustment(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = `
+    <label for="adjustAmount">${game.i18n.localize("SWFFG.XP.Adjust.Window.Amount")}</label>
+    <input type="number" id="adjustAmount" name="adjustAmount" value="0" />
+    <label for="adjustReason">${game.i18n.localize("SWFFG.XP.Adjust.Window.Reason")}</label>
+    <input type="text" id="adjustReason" name="adjustReason" value="${game.i18n.localize("SWFFG.XP.Adjust.Window.Default")}" />
+    `;
+
+    let d = new Dialog({
+      title: game.i18n.localize("SWFFG.XP.Adjust.Window.Title"),
+      content: content,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: game.i18n.localize("SWFFG.XP.Adjust.Confirm"),
+          callback: async () => {
+            const startingAvailableXP =  parseInt(this.actor.system.experience.available);
+            const totalXP =  parseInt(this.actor.system.experience.total);
+            const adjustAmount = parseInt($("#adjustAmount").val());
+            const adjustReason = $("#adjustReason").val();
+            const updatedAvailableXP = startingAvailableXP + adjustAmount;
+            const updatedTotalXP = totalXP + adjustAmount;
+            await this.object.update({
+              system: {
+                experience: {
+                  available: updatedAvailableXP,
+                  total: updatedTotalXP,
+                },
+              }
+            });
+            if (adjustAmount > 0) {
+              await xpLogEarn(this.object, adjustAmount, updatedAvailableXP, updatedTotalXP, adjustReason, "Self");
+            } else {
+              await xpLogSpend(this.object, adjustReason, adjustAmount, updatedAvailableXP, updatedTotalXP);
+            }
+           await this.render(true);
+         }
+      },
+      two: {
+       icon: '<i class="fas fa-times"></i>',
+       label: "Cancel",
+      }
+     },
+    });
+    d.render(true);
   }
 }
 

@@ -63,6 +63,7 @@ export default class Specializations {
                   rowTalent.canLinkRight = true;
                   rowTalent.itemId = talentItem._id;
                   rowTalent.attributes = talentItem.system.attributes;
+                  rowTalent.longDesc = "";
 
                   if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
                     rowTalent["links-top-1"] = true;
@@ -75,7 +76,7 @@ export default class Specializations {
                   if (talentItem.compendium) {
                     rowTalent.pack = `${talentItem.compendium.metadata.packageName}.${talentItem.compendium.metadata.name}`;
                   } else {
-                    CONFIG.logger.warn(`Unable to assign pack to ${rowTalent.name} Talent in ${data.name} specialization.`); 
+                    CONFIG.logger.warn(`Unable to assign pack to ${rowTalent.name} Talent in ${data.name} specialization.`);
                   }
                   const talentKey = `talent${i * 4 + index}`;
                   data.system.talents[talentKey] = rowTalent;

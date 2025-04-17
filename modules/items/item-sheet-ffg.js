@@ -8,6 +8,7 @@ import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemOptions from "./item-ffg-options.js";
+import {itemEditor, talentEditor} from "./item-editor.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -58,7 +59,7 @@ export class ItemSheetFFG extends ItemSheet {
       );
     });
     // this is the end of the de-duplicating -=key stuff
-    
+
     data.data = data.item.system;
 
 
@@ -91,6 +92,13 @@ export class ItemSheetFFG extends ItemSheet {
 
     if (data?.data?.description) {
       data.data.enrichedDescription = await TextEditor.enrichHTML(data.data.description);
+    }
+
+    if (data?.data?.longDesc !== undefined) {
+      data.data.enrichedLongDesc = await TextEditor.enrichHTML(data.data.longDesc);
+      data.data.hasLongDesc = true;
+    } else {
+      data.data.hasLongDesc = false;
     }
 
     data.isTemp = false;
@@ -274,6 +282,94 @@ export class ItemSheetFFG extends ItemSheet {
       data.data.renderedDesc = PopoutEditor.renderDiceImages(data?.item?.system?.description, this.actor ? this.actor : {});
     }
 
+    // get summarized data for qualities (e.g. weapons)
+    data = this._getSummarizedQualities(data);
+
+    return data;
+  }
+
+  /**
+   * Summarizes the qualities of an item (drawing from both the direct qualities and those added by attachments)
+   * The goal is to provide a unified view (e.g. "Accurate 3" instead of "Accurate 1" and "Accurate 2 - from attachment")
+   * This data is intended for user viewing only; it should not be submitted back or otherwise used to update anything
+   * @param data (from getData)
+   * @returns {*}
+   * @private
+   */
+  _getSummarizedQualities(data) {
+    CONFIG.logger.debug("Summarizing qualities");
+    // enrich attachment data
+    data.data.doNotSubmit = {
+      qualities: [],
+    };
+
+    if (Object.keys(data.data).includes("itemmodifier")) {
+      for (const mod of data.data.itemmodifier) {
+        const modName = mod.name;
+        const rank = mod.system.rank;
+        const description = mod.system.description;
+        const modId = mod._id;
+        let modIndex = data.data.doNotSubmit.qualities.findIndex(i => i.name === modName);
+        if (modIndex < 0) {
+          modIndex = data.data.doNotSubmit.qualities.length;
+          data.data.doNotSubmit.qualities.push({
+            name: modName,
+            img: mod.img,
+            description: description,
+            itemIndex: modIndex,
+            totalRanks: 0,
+            modId: modId,
+            includeControls: true,
+            summarizedRanks: {
+              mods: 0,
+            }
+          });
+        }
+        data.data.doNotSubmit.qualities[modIndex].totalRanks += rank;
+        data.data.doNotSubmit.qualities[modIndex].summarizedRanks.mods += rank;
+      }
+    }
+    CONFIG.logger.debug(data.data.doNotSubmit.qualities);
+
+    CONFIG.logger.debug("Pulling qualities from attachments");
+    if (Object.keys(data.data).includes("itemattachment")) {
+      for (const attachment of data.data.itemattachment) {
+        const source = attachment.name;
+        if (Object.keys(attachment.system).includes("itemmodifier")) {
+          for (const mod of attachment.system.itemmodifier) {
+            if (!mod.system.active) {
+              // this modifier isn't active, skip processing
+              continue;
+            }
+            const modName = mod.name;
+            const rank = mod.system.rank;
+            const description = mod.system.description;
+            let modIndex = data.data.doNotSubmit.qualities.findIndex(i => i.name === modName);
+            if (modIndex < 0) {
+              modIndex = data.data.doNotSubmit.qualities.length;
+              data.data.doNotSubmit.qualities.push({
+                name: modName,
+                description: description,
+                itemIndex: modIndex,
+                totalRanks: 0,
+                includeControls: false,
+                summarizedRanks: {
+                  [source]: 0,
+                }
+              });
+            }
+            // validate this source is present in the data
+            if (!Object.keys(data.data.doNotSubmit.qualities[modIndex].summarizedRanks).includes(source)) {
+              data.data.doNotSubmit.qualities[modIndex].summarizedRanks[source] = 0;
+            }
+            // update the ranks
+            data.data.doNotSubmit.qualities[modIndex].totalRanks += rank;
+            data.data.doNotSubmit.qualities[modIndex].summarizedRanks[source] += rank;
+          }
+        }
+      }
+    }
+    CONFIG.logger.debug(data.data.doNotSubmit.qualities);
     return data;
   }
 
@@ -338,6 +434,78 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
+    // Toggle attachment and mod details (not actually force powers, but we are reusing it!)
+      html.find(".expand-desc").click(async (ev) => {
+        ev.stopPropagation();
+        if (!$(ev.target).hasClass("fa-trash") && !$(ev.target).hasClass("fas") && !$(ev.target).hasClass("rollable")) {
+          CONFIG.logger.debug("Caught attachment or mod description click");
+          // expand or shrink the description
+          const li = $(ev.currentTarget);
+          let desc = li.data("desc");
+          const rarity = li.data("rarity");
+          const price = li.data("price");
+          if (price) {
+            desc = `<span class="statt" title="Price"><i class="fa-solid fa-dollar-sign"></i>${price}</span>${desc}`
+          }
+          if (rarity) {
+            desc = `<span class="stat stat-right" title="Rarity"><i class="fa-solid fa-magnifying-glass"></i>${rarity}</span>${desc}`
+          }
+
+          // if the item has embedded mods, pull the data and add it to the description
+          let modNames = li.data("mod-names");
+          let modDescs = li.data("mod-descs");
+          let modActives = li.data("mod-actives");
+          if (modNames) {
+            modNames = modNames.split("~");
+            modDescs = modDescs.split("~");
+            modActives = modActives.split("~");
+            CONFIG.logger.debug(modNames);
+            CONFIG.logger.debug(modDescs);
+            CONFIG.logger.debug(modActives);
+            let newDesc = `<hr><b>Mods</b>:<br>`;
+            for (let i = 0; i < modNames.length - 1; i++) {
+              if (modActives[i] === "true") {
+                modNames[i] = `<i class="fa-solid fa-user-check" title="Installed"></i>&nbsp;${modNames[i]}`;
+              } else {
+                modNames[i] = `<i class="fa-duotone fa-solid fa-user-xmark" title="Not Installed"></i>&nbsp;${modNames[i]}`;
+              }
+              newDesc += `<u>${modNames[i]}</u>:&nbsp;${modDescs[i]}<br>`;
+            }
+            desc+= newDesc;
+          }
+
+          await this._itemDisplayDesc(desc, ev);
+        } else {
+          if (!$(ev.target).hasClass("fa-trash")) {
+            // edit the item
+            CONFIG.logger.debug("Caught mod or attachment edit request");
+            // pull the item which the edit is on
+            const li = $(ev.currentTarget);
+            const clickedId = li.data('item-id');
+            const clickedType = li.data('item-type');
+            const parentObject = await fromUuid(this.object.uuid);
+            // locate the clicked object on the parent
+            let clickedObject = parentObject.system[clickedType].find(i => i._id === clickedId);
+            if (!clickedObject) {
+              // this is most likely a unique mod - we have to look it up by name :|
+              clickedObject = parentObject.system[clickedType].find(i => i.name === li.data('upgrade-name'));
+            }
+            CONFIG.logger.debug(clickedObject);
+            const typeChoices = {};
+            for (const key of Object.keys(CONFIG.FFG.itemmodifier_types)) {
+              const entry = CONFIG.FFG.itemmodifier_types[key];
+              typeChoices[entry.value] = game.i18n.localize(entry.label);
+            }
+            const data = {
+              sourceObject: this.object,
+              clickedObject: clickedObject,
+              typeChoices: typeChoices,
+            }
+            new itemEditor(data).render(true);
+          }
+        }
+      });
+
     html.find(".item-delete").click(async (ev) => {
       const li = $(ev.currentTarget);
       let itemId = li.data("itemId");
@@ -352,34 +520,21 @@ export class ItemSheetFFG extends ItemSheet {
     });
 
     html.find(".specialization-talent .talent-body").on("click", async (event) => {
-      const li = event.currentTarget;
-      const parent = $(li).parents(".specialization-talent")[0];
-      const itemId = parent.dataset.itemid;
-      const talentName = $(parent).find(`input[name='data.talents.${parent.id}.name']`).val();
+      // pull the item which the edit is on
+      const li = $(event.currentTarget);
+      const clickedId = li.closest('.talent-block').attr('id');
+      const clickedType = 'talents';
+      const parentObject = await fromUuid(this.object.uuid);
+      // locate the clicked object on the parent
+      let clickedObject = parentObject.system[clickedType][clickedId];
+      CONFIG.logger.debug(clickedObject);
 
-      if (!itemId) {
-        ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.DragAndDropFirst"));
-        return;
+      const data = {
+        sourceObject: this.object,
+        clickedObject: clickedObject,
+        talentId: clickedId,
       }
-
-      let item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
-      if (!item) {
-        // if we can't find the item by itemid, try by name
-        item = await ImportHelpers.findCompendiumEntityByName("Item", talentName);
-        if (item) {
-          let updateData = {};
-          // build dataset if needed
-          if (!item.locked) {
-            foundry.utils.setProperty(updateData, `data.talents.${parent.id}.itemId`, item.id);
-            this.object.update(updateData);
-          }
-        }
-      }
-      if (!item.flags["clickfromparent"]) {
-        item.flags["clickfromparent"] = [];
-      }
-      item.flags["clickfromparent"].push({ id: this.object.uuid, talent: parent.id });
-      item.sheet.render(true);
+      new talentEditor(data).render(true);
     });
 
     if (this.object.type === "talent") {
@@ -402,7 +557,6 @@ export class ItemSheetFFG extends ItemSheet {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
-      html.find(".talent-name.talent-modifiers").on("click", ModifierHelpers.popoutModiferWindowSpecTalents.bind(this));
     }
 
     if (this.object.type === "specialization") {
@@ -580,6 +734,25 @@ export class ItemSheetFFG extends ItemSheet {
       this.object.update(formData);
     });
 
+    html.find(".item-delete").on("click", (event) => {
+      CONFIG.logger.debug("Caught mod or attachment delete request");
+      event.preventDefault();
+      event.stopPropagation();
+
+      const li = event.currentTarget;
+      const parent = $(li).parent().parent()[0];
+      const itemType = parent.dataset.itemType;
+      const itemIndex = parent.dataset.itemIndex;
+
+      const items = this.object.system[itemType];
+      items.splice(itemIndex, 1);
+
+      let formData = {};
+      foundry.utils.setProperty(formData, `data.${itemType}`, items);
+
+      this.object.update(formData);
+    });
+
     html.find(".item-pill .rank").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -708,7 +881,7 @@ export class ItemSheetFFG extends ItemSheet {
       temp.ownership = {
         default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
       }
-      let tempItem = await Item.create(temp, { temporary: true });
+      let tempItem = await new Item(temp, { temporary: true });
 
       tempItem.sheet.render(true);
     });
@@ -754,6 +927,7 @@ export class ItemSheetFFG extends ItemSheet {
       event.stopPropagation();
       const li = event.currentTarget;
       let itemType = li.dataset.acceptableType;
+      let parentModType = (["weapon", "armour", "vehicle", "all"]).includes(this.object?.system?.type) ? this.object.system?.type : "all"
 
       let temp = {
         img: "icons/svg/mystery-man.svg",
@@ -774,10 +948,11 @@ export class ItemSheetFFG extends ItemSheet {
         system: {
           attributes: {},
           description: "",
+          type: parentModType
         },
       };
 
-      let tempItem = await Item.create(temp, { temporary: true });
+      let tempItem = await new Item(temp, { temporary: true });
       CONFIG.logger.debug("Adding mod with the following data", tempItem);
 
       this.object.system[itemType].push(tempItem.toJSON());
@@ -853,7 +1028,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmText", {cost: cost, talent: talent}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -913,7 +1088,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.FP.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -959,7 +1134,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.SA.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -1005,7 +1180,7 @@ export class ItemSheetFFG extends ItemSheet {
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Specialization.ConfirmText", {cost: cost, upgrade: upgradeName}),
         buttons: {
           done: {
-            icon: '<i class="fas fa-dollar"></i>',
+            icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
               // update the form because the fields are read when an update is performed
@@ -1498,6 +1673,29 @@ export class ItemSheetFFG extends ItemSheet {
           }
         });
 
+      div.slideDown(200);
+    }
+    li.toggleClass("expanded");
+  }
+
+  /**
+   * Currently copy-pasted from _forcePowerDisplayDetails; used to render an inline description of a clicked item
+   * @param desc
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _itemDisplayDesc(desc, event) {
+    event.preventDefault();
+    let li = $(event.currentTarget);
+
+    // Toggle summary
+    if (li.hasClass("expanded")) {
+      let details = li.children(".item-details");
+      details.slideUp(200, () => details.remove());
+    } else {
+      let div = $(`<div class="item-details">${await TextEditor.enrichHTML(desc)}</div>`);
+      li.append(div.hide());
       div.slideDown(200);
     }
     li.toggleClass("expanded");

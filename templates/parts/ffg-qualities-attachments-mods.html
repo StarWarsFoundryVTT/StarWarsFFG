@@ -1,0 +1,34 @@
+<ul class="talent-list">
+  <!-- TODO: expand/collapse all -->
+  <li class="talents-header flexrow">
+    <div class="header-name">{{ localize "SWFFG.ItemAttachments" }}</div>
+    <div></div>
+    <div></div>
+  </li>
+  {{!-- attachments List --}}
+  <ul class="items-list">
+    {{#each data.itemattachment as |item id|}}
+      <li class="item flexrow force-power expand-desc" data-item-id="{{item._id}}" data-desc="{{ item.system.description }}" data-rarity="{{ item.system.rarity.value }}" data-price="{{ item.system.price.value }}" data-mod-names="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.name}}~{{/each}}" data-mod-descs="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.description}}~{{/each}}" data-mod-actives="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.active}}~{{/each}}" data-item-type="itemattachment" data-item-name="{{ item.name }}" data-item-index="{{ @index }}">
+        <div class="item-name">
+          {{#if item.system.rarity.isrestricted}}
+            <div class="hover restricted">
+              {{item.name}}
+              <div class="tooltip2">This is a Restricted item</div>
+            </div>
+          {{else}}
+              {{item.name}}
+          {{/if}}
+        </div>
+        <div>
+          {{ localize "SWFFG.Items.Attachments.Label.Hardpoints" hardpoints=item.system.hardpoints.value }}
+        </div>
+        <div class="item-controls">
+          <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+          <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
+        </div>
+      </li>
+    {{/each}}
+  </ul>
+</ul>
+{{!-- qualities List --}}
+{{> "systems/starwarsffg/templates/parts/ffg-mods.html"}}

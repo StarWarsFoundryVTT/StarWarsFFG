@@ -33,6 +33,7 @@ export default class Species {
                 tags: [
                   "species",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
             };
 
@@ -91,7 +92,7 @@ export default class Species {
             if (item?.TalentModifiers?.TalentModifier) {
               for (const talentData of Object.values(item.TalentModifiers)) {
                 const talentKey = talentData.Key;
-                let talent = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, "starwarsffg.oggdudetalents", "talent", true);
+                let talent = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, "world.oggdudetalents", "talent", true);
                 if (!talent) {
                   continue;
                 }
@@ -108,7 +109,7 @@ export default class Species {
                 item.OptionChoices.OptionChoice = [item.OptionChoices.OptionChoice];
               }
 
-              data.data.description += "<h4>Abilities</h4>";
+             // data.data.description += "<h4>Abilities</h4>";
 
               // populate abilities
               await ImportHelpers.asyncForEach(item.OptionChoices.OptionChoice, async (o) => {
@@ -132,7 +133,7 @@ export default class Species {
                   data.data.attributes = foundry.utils.mergeObject(data.data.attributes, dieModifiers.attributes);
                 }
 
-                data.data.description += `<p>${option[0].Name} : ${option[0].Description}</p>`;
+                //data.data.description += `<p>${option[0].Name} : ${option[0].Description}</p>`;
               });
             }
 
@@ -158,7 +159,7 @@ export default class Species {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
             }
 
-            data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
+            //data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
 
             await ImportHelpers.addImportItemToCompendium("Item", data, pack);
             currentCount += 1;

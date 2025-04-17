@@ -64,6 +64,11 @@ section {
   border-radius: 10px;
 }
 
+.chat-message.message .message-content .emptyCompendiumNotification {
+  background: #d8cbc0;
+  border-radius: 10px;
+}
+
 .window-app .window-content::after {
   content: "";
   display: block;
@@ -674,15 +679,19 @@ img {
 .starwarsffg.sheet .sheet-body.weapon, .starwarsffg.sheet .sheet-body.armour {
   height: calc(100% - 32rem);
 }
-.starwarsffg.sheet.v2 .sheet-body.weapon, .starwarsffg.sheet.v2 .sheet-body.armour {
-  height: calc(100% - 29rem);
+
+.starwarsffg.sheet.v2 .sheet-body.armour {
+  height: calc(100% - 21rem);
+}
+.starwarsffg.sheet.v2 .sheet-body.weapon {
+  height: calc(100% - 21rem);
 }
 
 .starwarsffg.sheet .sheet-body.shipweapon {
   height: calc(100% - 40rem);
 }
 .starwarsffg.sheet.v2 .sheet-body.shipweapon {
-  height: calc(100% - 35rem);
+  height: calc(100% - 27rem);
 }
 
 .starwarsffg.sheet .sheet-body.itemattachment {
@@ -1140,7 +1149,7 @@ img {
   text-align: right;
 }
 
-.starwarsffg .talent-background .talent-header div.talent-name.talent-modifiers {
+.starwarsffg .talent-background .talent-body div.popout-editor {
   cursor: pointer;
 }
 
@@ -1689,11 +1698,6 @@ img {
   padding: 0.25rem;
   background: rgba(0, 0, 0, 0.05);
   border-radius: 0.25rem;
-}
-
-.starwarsffg [data-target="data.special.value"] {
-  height: 50px;
-  width: 215px;
 }
 
 .starwarsffg .popout-editor p {
@@ -2457,6 +2461,42 @@ img {
   background-color: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
+}
+
+.starwarsffg .xp-adjustment {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chat-msg-tooltip {
+  color: rgb(25, 24, 19);
+  background: #d8cbc0 url(../images/bgWindow.jpg) no-repeat;
+
+  border-radius: 5px;
+  padding: 6px 8px;
+  border: 1px solid #9f9275;
+}
+
+.chat-msg-tooltip .tooltip-img {
+  max-width: 32px;
+  max-height: 32px;
+}
+
+.chat-msg-tooltip .header {
+  color: #781428;
+  font-size: 1.5rem;
+}
+
+.chat-msg-tooltip .ranks {
+  color: #5a4f52;
+  font-size: 0.75rem;
+}
+
+#tooltip:has(.chat-msg-tooltip) {
+  border: 0;
+  padding: 0 0;
+  background: none;
 }
 
 .starwarsffg.item-card .item-details .item-properties .item-pill.adjusted {
@@ -4089,13 +4129,23 @@ img {
   pointer-events: auto;
 }
 
-.swffg-destiny #destinyLight {
+.swffg-destiny #destinyLight.theme-starwars {
   background: rgba(0, 0, 0, 0.5) url("../images/dice/starwars/lightside.png") no-repeat center;
   background-size: contain;
 }
 
-.swffg-destiny #destinyDark {
+.swffg-destiny #destinyDark.theme-starwars {
   background: rgba(0, 0, 0, 0.5) url("../images/dice/starwars/darkside.png") no-repeat center;
+  background-size: contain;
+}
+
+.swffg-destiny #destinyLight.theme-genesys {
+  background: rgba(0, 0, 0, 0.5) url("../images/dice/genesys/lightside.png") no-repeat center;
+  background-size: contain;
+}
+
+.swffg-destiny #destinyDark.theme-genesys {
+  background: rgba(0, 0, 0, 0.5) url("../images/dice/genesys/darkside.png") no-repeat center;
   background-size: contain;
 }
 
@@ -4268,7 +4318,7 @@ img {
   padding: 0 2px 0 2px;
 }
 
-.starwarsffg.item-card .stat.stat-right {
+.starwarsffg.item-card .stat.stat-right, .starwarsffg .item-details .stat-right {
   border-right: 2px groove #8060554C;
 }
 
@@ -4311,7 +4361,7 @@ img {
   color: rgba(0, 0, 0, 0.75);
 }
 
-.starwarsffg.item-card .properties .tag .item-pill {
+.starwarsffg.item-card .properties .tag .item-pill2 {
   list-style-type: none;
   display: inline-block;
   cursor: pointer;
@@ -4320,6 +4370,13 @@ img {
   background-color: rgba(255, 255, 255, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: 1rem;
+}
+
+.starwarsffg.item-card .properties .tag .hover-tooltip, .starwarsffg .item-display .item-properties .tag .hover-tooltip, .starwarsffg .specials .hover-tooltip, .starwarsffg .item-pill-hover {
+  display: inline-block;
+  margin: 0.1rem;
+  border-bottom: 2px dotted black;
+  cursor: help;
 }
 
 .message-content .destiny-flip {
@@ -4351,4 +4408,27 @@ img {
 
 .message-content .destiny-flip .destiny-left.true.dark {
   color: #781428;
+}
+
+/* TODO: this is a fixed height scroll, which it should not be. but I couldn't get "calc" to work */
+.starwarsffg .tab.flat_editor.modifications {
+  overflow-y: auto;
+  max-height: 340px;
+}
+
+.starwarsffg.flat_editor .form-group .tox-editor-container {
+  min-height: 150px;
+}
+
+.starwarsffg.flat_editor {
+  min-height: 300px;
+}
+
+.starwarsffg.flat_editor .modification_header {
+  border-left: 2px solid var(--color-underline-header);
+  padding-left: 5px;
+}
+
+.starwarsffg .flat_editor.modifications.active {
+  overflow-x: hidden;
 }

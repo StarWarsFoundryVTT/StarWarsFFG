@@ -333,6 +333,10 @@ export default class ImportHelpers {
           modtype = "Skill Remove Setback";
           value = parseInt(mod.SetbackCount, 10);
         }
+        if (mod.ForceCount) {
+          modtype = "Force Boost"
+          value = true;
+        }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
         }
@@ -2203,6 +2207,44 @@ export default class ImportHelpers {
   }
 
   /**
+   * Converts sources to an array (instead of HTML) for rendering in a dedicated location
+   * @param sources
+   * @returns {*[]}
+   */
+  static getSourcesAsArray(sources) {
+    let parsedSources = [];
+
+    // if there are no sources, don't bother trying to parse
+    if (!sources) {
+      return parsedSources;
+    }
+
+    // sometimes there's a single source not inside a `source` block
+    if (sources?._) {
+      sources.Source = [sources];
+    }
+
+    try {
+      // convert the sources to an array if they aren't already one (silly XML)
+      if (!Array.isArray(sources.Source)) {
+        sources.Source = [sources.Source];
+      }
+
+      for (const source of sources.Source) {
+        if (source?.$Page) {
+          parsedSources.push(`${source._} pg.${source.$Page}`);
+        } else {
+          parsedSources.push(source._);
+        }
+      }
+    } catch {
+      // in all the cases I looked at, this is due to bad data. just return what we've got so far
+      return parsedSources;
+    }
+    return parsedSources;
+  }
+
+  /**
    * Converts sources to text
    * @param  {} sources
    */
@@ -2349,6 +2391,14 @@ export default class ImportHelpers {
             }
           }
         }
+        if (updateData?.data?.abilities) {
+          // Remove and repopulate all abilities
+          if (entry.system?.abilities) {
+            for (let k of Object.keys(entry.system.abilities)) {
+              if (!updateData.data.abilities.hasOwnProperty(k)) updateData.data.abilities[`-=${k}`] = null;
+            }
+          }
+        }
 
         upd = foundry.utils.duplicate(entry);
         updateData = migrateDataToSystem(updateData);
@@ -2377,15 +2427,127 @@ export default class ImportHelpers {
 
   static async getCompendiumPack(type, name) {
     CONFIG.logger.debug(`Checking for existing compendium pack ${name}`);
-    const searchName = "starwarsffg." + name.toString().replaceAll(".", "").toLowerCase();
+    const searchName = "world." + name.toString().replaceAll(".", "").toLowerCase();
     const pack = game.packs.get(searchName);
     if (!pack) {
-      return ui.notifications.error(`Could not find compendium pack ${name}! (try restarting Foundry)`);
+      const compendiumLabel = name.split(".")[name.split(".").length - 1];
+      const createdCompendium = await CompendiumCollection.createCompendium({
+        label: compendiumLabel,
+        name: name.replaceAll(".", "").toLowerCase(),
+        type: type,
+      });
+      // get the folder for the compendium, creating it if needed
+      const compendiumFolder = await this.lookupOrCreateFolder(compendiumLabel);
+      // move the compendium into the proper folder
+      await createdCompendium.configure({
+        folder: compendiumFolder.id,
+      });
+      return game.packs.get(searchName);
     } else {
       await pack.configure({locked: false});
     }
 
     return pack;
+  }
+
+  /**
+   * Creates the folder structure for an oggdude import (based on what's being imported).
+   * Yes, it's ugly. It can probably be refactored to be more simple. But it works, and I want to get the other
+   * changes out.
+   * @param packName
+   * @returns {Promise<*>}
+   */
+  static async lookupOrCreateFolder(packName) {
+    const parentFolderName = "OggDude Import";
+    let parentFolder = game.folders.find((f) => f.name === parentFolderName);
+    if (!parentFolder) {
+      await Folder.create({
+        name: parentFolderName,
+        type: "Compendium",
+      });
+      parentFolder = game.folders.find((f) => f.name === parentFolderName);
+    }
+
+    const actorItemFolder = "Actor Items";
+    const equipmentItemFolder = "Equipment";
+    const vehicleItemFolder = "Vehicles";
+
+    if (["Careers", "ForcePowers", "SignatureAbilities", "Specializations", "Species", "Talents"].includes(packName)) {
+      // create the actor item folder
+      let actorFolder = game.folders.find((f) => f.name === actorItemFolder);
+      if (!actorFolder) {
+        await Folder.create({
+          name: actorItemFolder,
+          type: "Compendium",
+        });
+        actorFolder = game.folders.find((f) => f.name === actorItemFolder);
+        await actorFolder.update({
+          folder: parentFolder.id,
+        });
+      }
+      return actorFolder;
+    } else if (["ArmorAttachments", "GenericAttachments", "WeaponAttachments", "ArmorMods", "GenericMods", "WeaponMods", "Armor", "Gear", "Weapons"].includes(packName)) {
+      // create or locate the top-level equipment folder
+      let equipmentFolder = game.folders.find((f) => f.name === equipmentItemFolder);
+      if (!equipmentFolder) {
+        await Folder.create({
+          name: equipmentItemFolder,
+          type: "Compendium",
+        });
+        equipmentFolder = game.folders.find((f) => f.name === equipmentItemFolder);
+        await equipmentFolder.update({
+          folder: parentFolder.id,
+        });
+      }
+      if (["ArmorAttachments", "GenericAttachments", "WeaponAttachments"].includes(packName)) {
+        // create and move sub-folder
+        let attachmentFolder = game.folders.find((f) => f.name === "Attachments");
+        if (!attachmentFolder) {
+          await Folder.create({
+            name: "Attachments",
+            type: "Compendium",
+          });
+          attachmentFolder = game.folders.find((f) => f.name === "Attachments");
+          await attachmentFolder.update({
+            folder: equipmentFolder.id,
+          });
+        }
+        // we want to return the attachment folder
+        equipmentFolder = attachmentFolder;
+      } else if (["ArmorMods", "GenericMods", "WeaponMods"].includes(packName)) {
+        // create and move sub-folder
+        // create and move sub-folder
+        let modFolder = game.folders.find((f) => f.name === "Mods");
+        if (!modFolder) {
+          await Folder.create({
+            name: "Mods",
+            type: "Compendium",
+          });
+          modFolder = game.folders.find((f) => f.name === "Mods");
+          await modFolder.update({
+            folder: equipmentFolder.id,
+          });
+        }
+        // we want to return the mod folder
+        equipmentFolder = modFolder;
+      }
+      return equipmentFolder;
+    } else if (["VehicleWeapons", "VehicleAttachments", "VehicleMods", "Planetary", "Space"].includes(packName)) {
+        // create the actor item folder
+        let actorFolder = game.folders.find((f) => f.name === vehicleItemFolder);
+        if (!actorFolder) {
+          await Folder.create({
+            name: vehicleItemFolder,
+            type: "Compendium",
+          });
+          actorFolder = game.folders.find((f) => f.name === vehicleItemFolder);
+          await actorFolder.update({
+            folder: parentFolder.id,
+          });
+        }
+        return actorFolder;
+      }
+    return parentFolder;
   }
 
   static processCharacteristicMod(mod) {
@@ -2431,6 +2593,10 @@ export default class ImportHelpers {
         if (mod.SetbackCount) {
           modtype = "Skill Remove Setback";
           value = parseInt(mod.SetbackCount, 10);
+        }
+        if (mod.ForceCount) {
+          modtype = "Force Boost"
+          value = true;
         }
         if (mod.BoostCount) {
           value = parseInt(mod.BoostCount, 10);
@@ -2599,13 +2765,10 @@ export default class ImportHelpers {
               description: modifier.MiscDesc,
               attributes: {},
               type: "all",
-              rank: modifier?.Count ? parseInt(modifier.Count, 10) : 1,
+              rank: modifier?.Count ? parseInt(modifier.Count, 10) : null,
             },
           };
-          const descriptor = await Item.create(
-              unique,
-              { temporary: true }
-          );
+          const descriptor = await new Item(unique, { temporary: true });
           let rank = "";
           if (unique.system.rank > 1) {
             rank = `${game.i18n.localize("SWFFG.Count")} ${unique.system.rank}`;

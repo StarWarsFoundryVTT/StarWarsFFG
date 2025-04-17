@@ -14,17 +14,15 @@
         <p>
           {{{itemDetails.prettyDesc}}}
         </p>
-        {{#if item.system.adjusteditemmodifier.length }}
+        {{#if itemDetails.doNotSubmit.qualities.length }}
         <div class="properties">
           <span class="tag">
             <b>{{ localize "SWFFG.ItemDescriptors" }}:</b>
-            <ul>
-            {{#each item.system.adjusteditemmodifier }}
-              <li class="item-pill" data-item-embed-type="itemmodifier" data-item-embed-name="{{ name }}" data-item-embed-img="{{ img }}" data-item-embed-description="{{ system.description }}" data-item-embed-modifiers="{{#if system.adjusteditemmodifer }}{{ system.adjusteditemmodifer }}{{ else }}{}{{/if }}" data-item-embed-rank="{{ system.rank }}" data-item-embed="true">
+            {{#each itemDetails.doNotSubmit.qualities as |item id|}}
+              <div class="item-pill hover-tooltip" data-item-type="itemmodifier" data-item-embed-name="{{ name }}" data-item-embed-img="{{ item.img }}" data-desc="{{ item.description }}" data-item-ranks="{{ item.totalRanks }}" data-tooltip="Loading...">
                 {{{name}}}
-              </li>
+              </div>
             {{/each}}
-            </ul>
           </span>
         </div>
         {{/if}}
@@ -32,13 +30,11 @@
         <div class="properties">
           <span class="tag">
             <b>{{ localize "SWFFG.Labels.ItemAttachments" }}:</b>
-            <ul>
-            {{#each item.system.itemattachment }}
-              <li class="item-pill" data-item-embed-type="itemmodifier" data-item-embed-name="{{ name }}" data-item-embed-img="{{ img }}" data-item-embed-description="{{ system.description }}" data-item-embed-modifiers="{{#if system.adjusteditemmodifer }}{{ system.adjusteditemmodifer }}{{ else }}{}{{/if }}" data-item-embed-rank="{{ system.rank }}" data-item-embed="true">
+            {{#each item.system.itemattachment as |item id| }}
+              <div class="item-pill hover-tooltip" data-item-embed-name="{{ name }}" data-item-embed-img="{{ img }}" data-item-id="{{item._id}}" data-desc="{{ item.system.description }}" data-rarity="{{ item.system.rarity.value }}" data-price="{{ item.system.price.value }}" data-mod-names="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.name}}~{{/each}}" data-mod-descs="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.description}}~{{/each}}" data-mod-actives="{{#each item.system.itemmodifier as |mod mod_id|}}{{mod.system.active}}~{{/each}}" data-item-type="itemattachment" data-item-name="{{ item.name }}" data-item-index="{{ @index }}" data-tooltip="Loading...">
                 {{{name}}}
-              </li>
+              </div>
             {{/each}}
-            </ul>
           </span>
         </div>
         {{/if}}
@@ -47,9 +43,9 @@
           <span class="tag">
             <b>{{ localize "SWFFG.HomesteadTabUpgrades" }}:</b>
             <ul>
-            {{#each itemDetails.textProperties }}
-              <li class="item-pill hover">
-                <span data-tooltip="{{ description }}">{{name}} {{ rank }}</span>
+            {{#each itemDetails.textProperties as |item id|}}
+              <li class="item-pill hover-tooltip" data-item-embed-name="{{ name }}" data-item-type="forcePower" data-item-embed-img="{{ img }}" data-desc="{{ item.description }}" data-item-ranks="{{ rank }}" data-tooltip="Loading...">
+                {{name}} {{ rank }}
               </li>
             {{/each}}
             </ul>
@@ -61,8 +57,8 @@
           <span class="tag">
             <b>{{ localize "SWFFG.Specializations" }}:</b>
             <ul>
-            {{#each itemDetails.specializations }}
-              <li class="item-pill hover">
+            {{#each itemDetails.specializations as |item id| }}
+              <li class="item-pill hover-tooltip" data-item-embed-name="{{ name }}" data-item-type="specialization" data-item-embed-img="{{ img }}" data-desc="{{ item.description }}" data-tooltip="Loading...">
                 {{name}}
               </li>
             {{/each}}
@@ -76,7 +72,7 @@
             <b>{{ localize "SWFFG.SignatureAbilities" }}:</b>
             <ul>
             {{#each itemDetails.signatureAbilities }}
-              <li class="item-pill hover">
+              <li class="item-pill hover-tooltip" data-item-embed-name="{{ name }}" data-item-type="signatureAbility" data-item-embed-img="{{ img }}" data-desc="{{ item.description }}" data-tooltip="Loading...">
                 {{name}}
               </li>
             {{/each}}

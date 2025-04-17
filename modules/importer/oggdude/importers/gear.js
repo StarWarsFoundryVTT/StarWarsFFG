@@ -15,6 +15,11 @@ export default class Gear {
         await ImportHelpers.asyncForEach(items, async (item) => {
           try {
             let data = ImportHelpers.prepareBaseObject(item, "gear");
+
+            if (item.Description.split('\n').length > 0) {
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
+
             data.data = {
               attributes: {},
               description: item.Description,
@@ -34,17 +39,18 @@ export default class Gear {
                 tags: [
                   "gear",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
             };
 
-            data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            //data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
             const mods = await ImportHelpers.processMods(item);
             if (mods) {
               if (mods.baseMods) {
                 data.data.attributes = mods.baseMods.attributes;
                 data.data.itemmodifier = data.data.itemmodifier.concat(mods.baseMods.itemmodifier);
                 data.data.itemattachment = mods.baseMods.itemattachment;
-                data.data.description += mods.baseMods.description;
+                data.data.description += `<br><br><h3>${game.i18n.localize("SWFFG.TabBaseModifiers")}</h3>` + mods.baseMods.description;
               }
             }
 

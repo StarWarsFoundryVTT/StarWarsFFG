@@ -8,12 +8,12 @@ export default class ItemAttachments {
       let totalCount = items.length;
       let currentCount = 0;
       const packMap = {
-        "armor": await ImportHelpers.getCompendiumPack("Item", "oggdudearmorattachments"),
-        "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdudeweaponattachments"),
-        "all": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericattachments"),
-        "gear": await ImportHelpers.getCompendiumPack("Item", "oggdudegenericattachments"),
-        "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdudevehicleattachments"),
-        "mount": await ImportHelpers.getCompendiumPack("Item", "oggdudevehicleattachments"),
+        "armor": await ImportHelpers.getCompendiumPack("Item", "oggdude.ArmorAttachments"),
+        "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdude.WeaponAttachments"),
+        "all": await ImportHelpers.getCompendiumPack("Item", "oggdude.GenericAttachments"),
+        "gear": await ImportHelpers.getCompendiumPack("Item", "oggdude.GenericAttachments"),
+        "vehicle": await ImportHelpers.getCompendiumPack("Item", "oggdude.VehicleAttachments"),
+        "mount": await ImportHelpers.getCompendiumPack("Item", "oggdude.VehicleAttachments"),
       };
       let pack;
       CONFIG.logger.debug(`Starting Oggdude Item Attachments Import`);
@@ -28,6 +28,11 @@ export default class ItemAttachments {
           } else {
             data = ImportHelpers.prepareBaseObject(item, "itemattachment");
           }
+
+          if (item.Description.split('\n').length > 0) {
+            item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+          }
+
           data.img = `/systems/starwarsffg/images/mod-${item?.Type ? item.Type.toLowerCase() : "all"}.png`;
           data.data = {
             description: item.Description,
@@ -54,13 +59,16 @@ export default class ItemAttachments {
             data.data.metadata.tags.push("itemattachment");
           }
 
-          try {
-            // attempt to select the specific compendium for this type of attachment
+          // attempt to select the specific compendium for this type of attachment
+          if (Object.keys(packMap).includes(data.data.type)) {
             pack = packMap[data.data.type];
-          } catch (err) {
+          } else {
             // but fail back to the generic compendium
             pack = packMap["all"];
           }
+
+          // oggdude use "armor", but the internal mod type is "armour"
+          if (data?.data?.type === "armor") data.data.type = "armour"
 
           data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
           const mods = await ImportHelpers.processMods(item);

@@ -47,7 +47,7 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabBaseModifiers" icon="fas fa-cog" cls=classType) (object tab="additional" label="SWFFG.TabAdditionalModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fas fa-cog" isHidden=isTemp cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabBaseModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fa-solid fa-wrench" isHidden=isTemp cls=classType) )}} {{!-- Sheet Body --}}
   <section class="sheet-body small itemattachment">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -56,42 +56,21 @@
 
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <div class="attachments items">
+        {{> "systems/starwarsffg/templates/parts/ffg-mods.html"}}
+      </div>
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
-    </div>
-
-    <div class="tab additional" data-group="primary" data-tab="additional">
-      <table>
-        <thead>
-          <tr>
-            <th>Modification</th>
-            <!-- <th>Count</th> -->
-            <th>Active</th>
-            <th><i class="fas fa-plus add-new-item" data-acceptable-type="itemmodifier"></i></th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each data.itemmodifier as |item id|}}
-          <tr>
-            <td>{{item.name}}</td>
-            <!-- <td data-item-name="itemmodifier" data-item-index="{{id}}">
-              <div class="quantity increase"><i class="far fa-plus-square"></i></div>
-              {{item.system.rank}}
-              <div class="quantity decrease"><i class="far fa-minus-square"></i></div>
-            </td> -->
-            <td data-item-name="itemmodifier" data-item-index="{{id}}">
-              <div class="modifier-active"><i class="far {{#if item.system.active}} fa-check-square {{else}} fa-square {{/if}}"></i></div>
-            </td>
-            <td class="add-modifier" data-item-name="itemmodifier" data-item-index="{{id}}"><i class="fas fa-edit"></i><i class="fas fa-times item-delete"></i></td>
-          </tr>
-          {{/each}}
-        </tbody>
-      </table>
     </div>
 
     <div class="tab configuration" data-group="primary" data-tab="configuration">
       <div class="container flex-group-center">
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Type" type="Dropdown" name="data.type" value=data.type options=this.FFG.itemmodifier_types)}}
       </div>
+    </div>
+
+    {{!-- Long Description and Sources Tab --}}
+    <div class="tab sources" data-group="primary" data-tab="sources">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-sources.html" data=data}}
     </div>
   </section>
 </form>

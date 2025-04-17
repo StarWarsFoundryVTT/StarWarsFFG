@@ -30,7 +30,7 @@
                   {{/each_when}}
                 </td>
                 <td style="{{#if limited}}display:none;{{/if}}">
-                  <i class="fas fa-dollar ffg-purchase" data-buy-action="signatureability" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SignatureAbility"}}"></i>
+                  <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="signatureability" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SignatureAbility"}}"></i>
                   {{localize "SWFFG.SignatureAbilities"}}:
                 </td>
                 <td style="{{#if limited}}display:none;{{/if}}">
@@ -56,7 +56,7 @@
                 </td>
                 <td>
                   {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}}
-                  <i class="fas fa-dollar ffg-purchase" data-buy-action="forcepower" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.ForcePower"}}"></i>
+                  <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="forcepower" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.ForcePower"}}"></i>
                   {{localize "SWFFG.ForcePowers"}}:
                   {{/if}}
                 </td>
@@ -74,7 +74,7 @@
               </tr>
               <tr style="{{#if limited}}display:none;{{/if}}">
                 <td>
-                  <i class="fas fa-dollar ffg-purchase" data-buy-action="specialization" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.Specialization" }}"></i>
+                  <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="specialization" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.Specialization" }}"></i>
                   {{localize "SWFFG.Specializations"}}:
                 </td>
                 <td>
@@ -255,6 +255,7 @@
     <div class="tab xp" data-group="primary" data-tab="xp">
       {{!-- Experience Box --}}
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}}
+      <div class="xp-adjustment" title="{{ localize "SWFFG.XP.Adjust.Title" }}"><a class="fa-solid fa-eraser"></a></div>
       {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog readonly=true)}}
     </div>
 

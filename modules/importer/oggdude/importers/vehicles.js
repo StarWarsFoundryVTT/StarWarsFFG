@@ -24,6 +24,10 @@ export default class Vehicles {
 
             const pack = isSpaceVehicle ? await ImportHelpers.getCompendiumPack("Actor", `oggdude.Vehicles.Space`) : await ImportHelpers.getCompendiumPack("Actor", `oggdude.Vehicles.Planetary`);
 
+            if (item.Description.split('\n').length > 0) {
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
+
             let data = ImportHelpers.prepareBaseObject(item, "vehicle");
             data.items = [];
             data.system = {
@@ -90,12 +94,13 @@ export default class Vehicles {
                 tags: [
                   "vehicle",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
               spaceShip: isSpaceVehicle,
               silhouetteImage: "systems/starwarsffg/images/shipdefence.png",
             };
 
-            data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            //data.system.biography += ImportHelpers.getSources(item?.Sources ?? item?.Source);
 
             if (item.VehicleWeapons?.VehicleWeapon) {
               if (!Array.isArray(item.VehicleWeapons.VehicleWeapon)) {
@@ -125,7 +130,7 @@ export default class Vehicles {
 
                   data.items.push(weaponData);
                 } else {
-                  CONFIG.logger.warn(`Unable to find weapon : ${weapon.Key}`);
+                  CONFIG.logger.warn(`Unable to find weapon : ${weapon.Key} for ${item.Name}`);
                 }
               });
             }

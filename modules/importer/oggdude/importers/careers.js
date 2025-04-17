@@ -23,6 +23,10 @@ export default class Career {
 
             let data = ImportHelpers.prepareBaseObject(item, "career");
 
+            if (item.Description.split('\n').length > 0) {
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
+
             data.data = {
               attributes: {},
               description: item.Description,
@@ -32,10 +36,11 @@ export default class Career {
                 tags: [
                     "career",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
             };
 
-            data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
+            //data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
 
             // process career skills
             item.CareerSkills.Key.forEach((skillKey) => {
@@ -73,7 +78,7 @@ export default class Career {
             // process specializations
             if (item?.Specializations) {
               for (const specializationKey of Object.values(item.Specializations.Key)) {
-                let specializationItem = await ImportHelpers.findCompendiumEntityByImportId("Item", specializationKey, "starwarsffg.oggdudespecializations", "specialization");
+                let specializationItem = await ImportHelpers.findCompendiumEntityByImportId("Item", specializationKey, "world.oggdudespecializations", "specialization");
                 if (!specializationItem) {
                   continue;
                 }

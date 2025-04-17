@@ -44,10 +44,11 @@ export default class Armor {
                 tags: [
                     "armor",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
             };
 
-            data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+            //data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
             const mods = await ImportHelpers.processMods(item);
             if (mods) {
               if (mods.baseMods) {

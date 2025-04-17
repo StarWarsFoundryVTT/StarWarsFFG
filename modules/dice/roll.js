@@ -1,6 +1,7 @@
 import PopoutEditor from "../popout-editor.js";
 import { ForceDie } from "./dietype/ForceDie.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
+import {ItemFFG} from "../items/item-ffg.js";
 
 /**
  * New extension of the core DicePool class for evaluating rolls with the FFG DiceTerms
@@ -141,8 +142,13 @@ export class RollFFG extends Roll {
     this.results = await Promise.all(this.terms.map(async (term) => {
       if (!game.ffg.diceterms.includes(term.constructor)) {
         if (term.evaluate) {
-          if (!(term instanceof foundry.dice.terms.OperatorTerm)) this.hasStandard = true;
-          return await term.evaluate({ minimize, maximize }).total;
+          if (!(term instanceof foundry.dice.terms.OperatorTerm)) {
+            this.hasStandard = true;
+            let result = await term.evaluate({ minimize, maximize });
+            return result.total;
+          } else {
+            return await term.evaluate({ minimize, maximize }).total;
+          }
         } else return term;
       } else {
         if (term.evaluate) await term.evaluate({ minimize, maximize });
@@ -257,12 +263,14 @@ export class RollFFG extends Roll {
         const item = await fromUuid(this.data.flags.starwarsffg.uuid);
         if (item) {
           this.data = item;
+          this.data.system = await (new ItemFFG(this.data, {validate: false}).getItemDetails());
         }
       }
       else if (this.data.flags?.starwarsffg?.ffgUuid) {
         const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
         if (item) {
           this.data = item;
+          this.data.system = await (new ItemFFG(this.data, {validate: false}).getItemDetails());
         }
       }
       this.data.additionalFlavorText = this.flavorText;
@@ -361,7 +369,7 @@ export class RollFFG extends Roll {
     // Either create the message or just return the chat data
     const cls = getDocumentClass("ChatMessage");
     const msg = new cls(messageData);
-    if (rMode) msg.applyRollMode(rollMode);
+    if (rMode) msg.applyRollMode(rMode);
 
     // Either create or return the data
     return create ? await cls.create(msg) : msg;
@@ -411,10 +419,10 @@ export class RollFFG extends Roll {
       })
       .flatMap((value, index, array) => {   //Put addition operators between each die, but not before or after another Operator
         if (array.length - 1 !== index && !(array[index] instanceof foundry.dice.terms.OperatorTerm) && !(array[index + 1] instanceof foundry.dice.terms.OperatorTerm)) {
-          return [value, new foundry.dice.terms.OperatorTerm({operator: '+'})] 
+          return [value, new foundry.dice.terms.OperatorTerm({operator: '+'})]
         } else {
           return value
         }
-      })          
+      })
   }
 }

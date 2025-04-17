@@ -8,11 +8,8 @@
     <div class="item-properties">
       {{#each system.powerUpgrades}}
       <span class="tag">
-        <div class="ffg-sendtochat hover">
+        <div class="ffg-sendtochat hover-tooltip" data-tooltip="<section class=&quot;chat-msg-tooltip content&quot;><section class=&quot;description&quot;>{{{ffgDiceSymbols this.description}}}</section></section>">
           {{{this.name}}} {{this.rank}}
-          <div class="tooltip2">
-            {{{ffgDiceSymbols this.description}}}
-          </div>
         </div>
       </span>
       {{/each}}

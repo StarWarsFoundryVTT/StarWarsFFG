@@ -42,14 +42,21 @@ export default class ModifierHelpers {
           // don't process null items
           return;
         }
+        if (Object.keys(item.system).includes("active") && item.system.active === false) {
+          // there is a mod or something, and it's not active - don't process it
+          return;
+        }
         if (item.system?.attributes) {
           const attrsToApply = Object.keys(item.system.attributes)
             .filter((id) => (item.system.attributes[id].mod === key || item.system.attributes[id].mod === "*") && item.system.attributes[id].modtype === modtype)
             .map((i) => item.system.attributes[i]);
-          if (item.type === "armour" || item.type === "weapon") {
-            if (item?.system?.equippable?.equipped) {
+          if (item.type === "armour" || item.type === "weapon" || item.type === "itemattachment") {
+            if (item?.system?.equippable?.equipped || item.type === "itemattachment") {
               if (item.system?.itemmodifier) {
-                total += this.getCalculatedValueFromItems(item.system.itemmodifier, key, "Stat");
+                total += this.getCalculatedValueFromItems(item.system.itemmodifier, key, modtype);
+              }
+              if (item.system?.itemattachment && item?.system?.equippable?.equipped) {
+                total += this.getCalculatedValueFromItems(item.system.itemattachment, key, modtype);
               }
               if (key === "Soak" && item.system?.soak) {
                 sources.push({ modtype, key, name: item.name, value: item.system.soak.adjusted, type: item.type });
@@ -304,30 +311,6 @@ export default class ModifierHelpers {
         },
       },
       isUpgrade: true,
-    };
-
-    new PopoutModifiers(data, {
-      title,
-    }).render(true);
-  }
-
-  static async popoutModiferWindowSpecTalents(event) {
-    event.preventDefault();
-    const a = $(event.currentTarget).parents(".talent-block")?.[0];
-    const keyname = $(a).attr("id");
-
-    const title = `${game.i18n.localize("SWFFG.TabModifiers")}: ${this.object.system.talents[keyname].name}`;
-
-    const data = {
-      parent: this.object,
-      keyname,
-      data: {
-        data: {
-          ...this.object.system.talents[keyname],
-        },
-      },
-      isUpgrade: false,
-      isTalent: true,
     };
 
     new PopoutModifiers(data, {

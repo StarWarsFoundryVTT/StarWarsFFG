@@ -3,10 +3,10 @@
   <div class="initiative">
     <h1>{{localize "SWFFG.InitiativeMode"}}</h1>
     <select class="initiative-mode" name="initiative-mode" id="initiative-mode">
-      {{#select initiative}}
+      {{#selectFfg initiative}}
       <option value="Vigilance">{{localize "SWFFG.SkillsNameVigilance"}}</option>
       <option value="Cool">{{localize "SWFFG.SkillsNameCool"}}</option>
-      {{/select}}
+      {{/selectFfg}}
     </select>
   </div>
   {{/if}}

@@ -10,9 +10,9 @@
         <input type="text" name="flags.starwarsffg.config.{{id}}" id="{{id}}" data-dtype="String" value="{{localize option.value}}" />
         {{/if}} {{#if (eq option.type "Array")}}
         <select name="flags.starwarsffg.config.{{id}}" id="{{id}}">
-          {{#select option.value }}{{#each option.options as |optionvalue id| }}
+          {{#selectFfg option.value }}{{#each option.options as |optionvalue id| }}
           <option value="{{id}}">{{optionvalue}}</option>
-          {{/each}}{{/select}}
+          {{/each}}{{/selectFfg}}
         </select>
         {{/if}}
       </div>

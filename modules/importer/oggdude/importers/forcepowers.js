@@ -41,6 +41,7 @@ export default class ForcePowers {
                   tags: [
                       "forcepower",
                   ],
+                  sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
                 },
               };
 
@@ -50,10 +51,10 @@ export default class ForcePowers {
                 data.data.base_cost = 0;
               }
 
-              data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
-              if (item?.DieModifiers) {
-                const dieModifiers = await ImportHelpers.processDieMod(item.DieModifiers);
-                data.data.attributes = mergeObject(data.data.attributes, dieModifiers.attributes);
+              //data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
+              if (basepower?.DieModifiers) {
+                const dieModifiers = await ImportHelpers.processDieMod(basepower.DieModifiers);
+                data.data.attributes = foundry.utils.mergeObject(data.data.attributes, dieModifiers.attributes);
               }
 
               // process all ability rows

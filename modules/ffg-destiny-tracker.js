@@ -40,8 +40,8 @@ export default class DestinyTracker extends FormApplication {
 
     this.position.left = x - 505;
     this.position.top = y;
-    this.position.width = 150;
-    this.position.height = 105;
+    //this.position.width = 150;
+    //this.position.height = 105;
 
     // filter menu based on role.
 
@@ -53,6 +53,7 @@ export default class DestinyTracker extends FormApplication {
       destinyPoolLabel,
       isGM: game.user.isGM,
       menu,
+      theme: game.settings.get("starwarsffg", "dicetheme"),
     };
   }
 
@@ -260,7 +261,7 @@ export default class DestinyTracker extends FormApplication {
     }
 
     if (game.user.isGM) {
-      const roll = this._rollDestiny();
+      const roll = await this._rollDestiny();
 
       const light = await game.settings.get("starwarsffg", "dPoolLight");
       const dark = await game.settings.get("starwarsffg", "dPoolDark");
