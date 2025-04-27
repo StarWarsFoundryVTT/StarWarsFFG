@@ -43,7 +43,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     await super._onCreate(data, options, user);
 
-    if (this.type === "species") {
+    if (this.type === "species" && !options.parent) {
       // TODO: this should handle further item types
       const effects = {
         name: `species-${this.name}`,
@@ -51,7 +51,10 @@ export class ItemFFG extends ItemBaseFFG {
         changes: [],
       };
       for (const attribute of Object.keys(this.system.attributes)) {
-        const path = ModifierHelpers.getModKeyPath("Characteristic", attribute);
+        const path = ModifierHelpers.getModKeyPath(
+          this.system.attributes[attribute].modtype,
+          attribute
+        );
         effects.changes.push({
           key: path,
           mode: CONST.ACTIVE_EFFECT_MODES.ADD,

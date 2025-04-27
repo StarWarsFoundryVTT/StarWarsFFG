@@ -438,6 +438,27 @@ export default class ModifierHelpers {
     const toUpdate = [];
     const toCreate = [];
 
+    // first update anything inherent to the item type (such as "brawn" on "species")
+    const inherentEffectName = `${item.type}-${item.name}`;
+    const inherentEffect = existing.find(e => e.name === inherentEffectName);
+    if (inherentEffect) {
+      for (let k of Object.keys(formData.data.attributes)) {
+        if (k.startsWith("attr")) {
+          // inherent effects like "brawn" on "species" only - skip user-created active effects only
+          continue;
+        }
+        const modPath = ModifierHelpers.getModKeyPath(
+          formData.data.attributes[k].modtype,
+          formData.data.attributes[k].mod
+        );
+        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.attributes[k].value;
+        }
+      }
+      await inherentEffect.update({changes: inherentEffect.changes});
+    }
+
     // Remove attributes which are no longer used
     if (item.system?.attributes) {
       // iterate over existing attributes to remove them if they were deleted
@@ -467,7 +488,8 @@ export default class ModifierHelpers {
           match.changes[0].value = parseInt(formData.data.attributes[k].value);
           match.changes[0].key = changeKey;
           await match.update({changes: match.changes});
-        } else {
+        } else if (k.startsWith("attr")) {
+          // user-created active effects only - skip inherent effects like "brawn" on "species"
           toCreate.push({
             name: k,
             icon: item.img,
