@@ -66,6 +66,11 @@ export class ActorSheetFFG extends ActorSheet {
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
 
+      if (["character", "minion", "rival"].includes(this.actor.type) && ["itemmodifier", "itemattachment"].includes(itemData.type)) {
+        ui.notifications.warn("You cannot add Item Modifiers or Attachments directly to actors.");
+        return false;
+      }
+
       if (this.actor.type === "character" && itemData.type === "species") {
         // add starting XP from species
         const curAvailable = parseInt(this.actor.system?.experience?.available);
