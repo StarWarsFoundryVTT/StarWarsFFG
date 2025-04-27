@@ -186,8 +186,15 @@ export class itemEditor extends FormApplication  {
       // submit the changes so it gets saved even if the user reloads without closing the editor
       await this._updateObject(undefined, this._getSubmitData());
     } else if (action === 'delete') {
-      // AE deletion is handled in the update code, so we don't need to handle it specially here
-      // just remove the mod
+      const modContainer = $(event.currentTarget).parents(".modification_title").find(".attributes-list");
+      for (const mod of modContainer.children()) {
+        const modId = $(mod).data("attribute");
+        const match = this.data.sourceObject.effects.find(i => i.name === modId);
+        if (match) {
+          CONFIG.logger.debug(`Detected mod present on removed modification, deleting active effect added by ${modId}`);
+          await this.data.sourceObject.deleteEmbeddedDocuments("ActiveEffect", [match.id]);
+        }
+      }
       $(event.currentTarget).parent().remove();
       // submit the changes so it gets saved even if the user reloads without closing the editor
       await this._updateObject(undefined, this._getSubmitData());
@@ -317,6 +324,7 @@ export class itemEditor extends FormApplication  {
       for (let attachment of updateData) {
         if (attachment._id === this.data.clickedObject._id) {
           CONFIG.logger.debug(`>> Found relevant attachment: ${attachment.name} / ${attachment.id}, looking for removed keys`);
+          console.log(attachment.system.attributes)
           // iterate over the mods on the existing attachment and remove them if they are not present in the new data
           for (let modKey of Object.keys(attachment.system.attributes)) {
             if (!Object.keys(formData.system.attributes).includes(modKey)) {
