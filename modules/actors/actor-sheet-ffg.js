@@ -219,6 +219,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
         // we need to update all specialization talents with the latest talent information
         if (!this.actor.flags.starwarsffg?.loaded && this.actor.type !== "rival") {
+          // TODO: is this actually needed?
           await this._updateSpecialization(data);
           await this.object._prepareCharacterData(data);
         }
@@ -285,6 +286,12 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     data.actor.items = ActorSheetFFG.sortForActorSheet(data.actor.items);
+    // TODO: actually make this a check
+    data.disabled = true;
+
+    data.modTypeSelected = "all"; // TODO: should this be something else?
+    data.modTypeChoices = CONFIG.FFG.itemTypeToModTypeMap;
+    data.modChoices = CONFIG.FFG.modTypeToModMap;
 
     return data;
   }
@@ -1707,6 +1714,31 @@ export class ActorSheetFFG extends ActorSheet {
           CONFIG.logger.error(`Error transferring item between actors.`, err);
         }
       }
+    }
+
+    await this._suspendActiveEffects(await fromUuid(data.uuid));
+  }
+
+  /**
+   * ActiveEffects are transferred to actors by default. In some cases, we don't want them transferred.
+   * Suspend anything we don't want (for example, item attachment AEs shouldn't be transferred to an actor because they're holding it)
+   * @param droppedItem - the fromUuid item dropped onto this object
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _suspendActiveEffects(droppedItem) {
+    // Note: this function is currently placeholder. I may implement it - if we get better support for holding attachments
+    return;
+    const droppedType = droppedItem.type;
+    const myType = this.object.type;
+    const toSuspend = [];
+
+    if (["itemattachment", "itemmodifier"].includes(droppedType)) {
+      CONFIG.logger.info(`Suspending AEs for drag-and-drop of ${droppedType} -> ${myType}`);
+      for (const activeEffect of droppedItem.effects) {
+        toSuspend.push(activeEffect);
+      }
+      await this.object.createEmbeddedDocuments("ActiveEffect", toSuspend);
     }
   }
 

@@ -106,29 +106,46 @@ export class ItemSheetFFG extends ItemSheet {
       data.isTemp = true;
     }
     data.isOwned = this.object.flags?.starwarsffg?.ffgIsOwned;
+    data.modTypeSelected = "all";
 
     switch (this.object.type) {
       case "weapon":
+        this.position.width = 550;
+        this.position.height = 750;
+        data.data.enrichedSpecial = await PopoutEditor.renderDiceImages(data?.data?.special?.value, this.actor ? this.actor : {});
+        data.modTypeSelected = "weapon";
+        break;
       case "shipweapon":
         this.position.width = 550;
         this.position.height = 750;
         data.data.enrichedSpecial = await PopoutEditor.renderDiceImages(data?.data?.special?.value, this.actor ? this.actor : {});
+        data.modTypeSelected = "vehicle";
         break;
       case "itemattachment":
         this.position.width = 500;
         this.position.height = 450;
+        data.modTypeSelected = this.object.system.type;
         break;
       case "itemmodifier":
         this.position.width = 450;
         this.position.height = 350;
+        data.modTypeSelected = this.object.system.type;
         break;
       case "armour":
+        this.position.width = 385;
+        this.position.height = 750;
+        data.modTypeSelected = "armour";
+        break;
       case "gear":
         this.position.width = 385;
         this.position.height = 750;
         break;
-      case "ability":
       case "shipattachment":
+        this.position.width = 385;
+        this.position.height = 615;
+        data.modTypeSelected = "vehicle";
+        break;
+      case "ability":
       case "homesteadupgrade":
         this.position.width = 385;
         this.position.height = 615;
@@ -284,6 +301,9 @@ export class ItemSheetFFG extends ItemSheet {
 
     // get summarized data for qualities (e.g. weapons)
     data = this._getSummarizedQualities(data);
+
+    data.modTypeChoices = CONFIG.FFG.itemTypeToModTypeMap;
+    data.modChoices = CONFIG.FFG.modTypeToModMap;
 
     return data;
   }
@@ -734,7 +754,7 @@ export class ItemSheetFFG extends ItemSheet {
       this.object.update(formData);
     });
 
-    html.find(".item-delete").on("click", (event) => {
+    html.find(".item-delete").on("click", async (event) => {
       CONFIG.logger.debug("Caught mod or attachment delete request");
       event.preventDefault();
       event.stopPropagation();
@@ -743,6 +763,55 @@ export class ItemSheetFFG extends ItemSheet {
       const parent = $(li).parent().parent()[0];
       const itemType = parent.dataset.itemType;
       const itemIndex = parent.dataset.itemIndex;
+
+      // locate all effects from this item
+      const existingEffects = this.object.getEmbeddedCollection("ActiveEffect");
+
+      const toDeleteEffects = [];
+      const removedItem = this.object.system[itemType][itemIndex];
+      CONFIG.logger.debug(`caught removing of ${removedItem.name}`);
+      CONFIG.logger.debug("starting effects");
+      CONFIG.logger.debug(existingEffects);
+      // check for attachment
+      if (itemType === "itemattachment") {
+        // TODO: handle shipattachments, probably
+        // TODO: handle other types of items - e.g. species, talents
+        // iterate over embedded modifiers
+        CONFIG.logger.debug(`inspecting removed attachment modifiers`);
+        if (Object.keys(removedItem.system).includes("itemmodifier")) {
+          for (const modifier of removedItem.system.itemmodifier) {
+            CONFIG.logger.debug(`now on ${modifier.name}`);
+            if (Object.keys(modifier.system).includes("attributes")) {
+              for (const modAttrName of Object.keys(modifier.system.attributes)) {
+                CONFIG.logger.debug(`located attr ${modAttrName} on ${modifier.name}`);
+                const match = existingEffects.find(i => i.name === modAttrName);
+                if (match) {
+                  CONFIG.logger.debug(`found matching active effect: ${match.id}`);
+                  // TODO: this has a bug where the active effect is being CREATED twice. it's only being DELETED once... meaning it gets left behind
+                  // it gets duplicated when selecting a new mod type from the "base mods" dropdown without AEs existing
+                  toDeleteEffects.push(match.id);
+                }
+              }
+            }
+          }
+        }
+      }
+
+      // iterate over direct modifiers
+      if (Object.keys(removedItem.system).includes("attributes")) {
+        for (const modAttrName of Object.keys(removedItem.system.attributes)) {
+          CONFIG.logger.debug(`located attr ${modAttrName} on ${removedItem.name}`);
+          const match = existingEffects.find(i => i.name === modAttrName);
+          if (match) {
+            CONFIG.logger.debug(`found matching active effect: ${match.id}`);
+            toDeleteEffects.push(match.id);
+          }
+        }
+      }
+
+      CONFIG.logger.debug("final delete list:");
+      CONFIG.logger.debug(toDeleteEffects);
+      await this.object.deleteEmbeddedDocuments("ActiveEffect", toDeleteEffects);
 
       const items = this.object.system[itemType];
       items.splice(itemIndex, 1);
@@ -1462,6 +1531,7 @@ export class ItemSheetFFG extends ItemSheet {
       await this.object.update({system: {talents: {[talentId]: {description: itemObject.system.description}}}});
       this.render(true);
     }
+    await this._transferActiveEffects(await fromUuid(data.uuid));
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
@@ -1534,7 +1604,40 @@ export class ItemSheetFFG extends ItemSheet {
       let formData = {};
       foundry.utils.setProperty(formData, `data.${itemObject.type}`, items);
 
-      obj.update(formData);
+      await obj.update(formData);
+      // TODO: this happens even if there isn't enough HP (meaning the item gets rejected)
+      await this._transferActiveEffects(await fromUuid(data.uuid));
+    }
+  }
+
+  /**
+   * Transfer active effects from one item to another when they are dragged-and-dropped
+   * For example, putting a quality onto a weapon should transfer the AEs to the weapon
+   * @param droppedItem - the fromUuid item dropped onto this object
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _transferActiveEffects(droppedItem) {
+    ui.notifications.info("processing AEs, nothing to worry about!") // TODO: remove this line
+    const droppedType = droppedItem.type;
+    const myType = this.object.type;
+    const toCreate = [];
+
+    // note that abilities currently don't have a UI to add activeeffects, but we'll try to transfer them anyway
+    if (
+      (droppedType === "itemattachment" && ["armour", "weapon", "shipweapon"].includes(myType)) ||
+      (droppedType === "itemmodifier" && ["armour", "weapon", "shipweapon", "itemattachment"].includes(myType)) ||
+      (droppedType === "ability" && myType === "species") || (droppedType === "talent" && myType === "species") ||
+      (droppedType === "talent" && myType === "specialization")
+    ) {
+      CONFIG.logger.debug(`Processing transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
+      for (const activeEffect of droppedItem.effects) {
+        toCreate.push(activeEffect);
+      }
+      CONFIG.logger.debug(toCreate);
+      await this.object.createEmbeddedDocuments("ActiveEffect", toCreate);
+    } else {
+      CONFIG.logger.debug(`Rejected transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
     }
   }
 
@@ -1592,6 +1695,7 @@ export class ItemSheetFFG extends ItemSheet {
     } else if (itemObject.type === "ability") {
       await this.object.update({system: {abilities: {[itemObject.id]: {name: itemObject.name, system: {description: itemObject.system.description}}}}});
     }
+    await this._transferActiveEffects(itemObject);
   }
 
   async _onDragItemStart(event) {}

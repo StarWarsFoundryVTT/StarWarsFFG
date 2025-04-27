@@ -1,4 +1,5 @@
 import ItemHelpers from "../helpers/item-helpers.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 export class itemEditor extends FormApplication  {
   /*
@@ -88,13 +89,14 @@ export class itemEditor extends FormApplication  {
 
     // allow drag-and-dropping mods if this is an attachment
     if (this.data.clickedObject.type === "itemattachment") {
+      // TODO: this appears to trigger twice the first time it's used on load
       const dragDrop = new DragDrop({
         dragSelector: ".item",
-        dropSelector: ".flat_editor.modifications",
+        dropSelector: ".starwarsffg.flat_editor",
         permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
         callbacks: { drop: this.onDropMod.bind(this) },
       });
-      dragDrop.bind($(".flat_editor")[0]);
+      dragDrop.bind($(`[data-appid="${this.appId}"]`)[0]);
     }
   }
 
@@ -122,13 +124,17 @@ export class itemEditor extends FormApplication  {
     // if it's an attachment, locate the attachment to update
     let updateData;
     if (this.data.clickedObject.type === "itemattachment") {
+      // TODO: this might break with multiple attachments
       updateData = this.data.sourceObject.system.itemattachment;
       for (let attachment of updateData) {
         if (attachment._id === this.data.clickedObject._id) {
           // merge our drag-and-dropped item into the existing data
-          attachment.system.itemmodifier.push(droppedObject);
+          attachment.system.itemmodifier.push(droppedObject.toObject());
+          // update the local object so we can see the update in the editor
+          this.data.clickedObject.system.itemmodifier.push(droppedObject.toObject());
         }
       }
+      // TODO: handle drag-and-drop of attachment onto item
       await this.data.sourceObject.update({system: {itemattachment: updateData}});
       this.render(true);
     }
@@ -180,6 +186,8 @@ export class itemEditor extends FormApplication  {
       // submit the changes so it gets saved even if the user reloads without closing the editor
       await this._updateObject(undefined, this._getSubmitData());
     } else if (action === 'delete') {
+      // AE deletion is handled in the update code, so we don't need to handle it specially here
+      // just remove the mod
       $(event.currentTarget).parent().remove();
       // submit the changes so it gets saved even if the user reloads without closing the editor
       await this._updateObject(undefined, this._getSubmitData());
@@ -218,6 +226,16 @@ export class itemEditor extends FormApplication  {
       // submit the changes so it gets saved even if the user reloads without closing the editor
       await this._updateObject(undefined, this._getSubmitData());
     } else if (action === 'delete') {
+      // TODO: iterate over attrs in the children, look for matching AEs, and delete them
+      const modContainer = $(event.currentTarget).parents(".modification_title").find(".attributes-list");
+      for (const mod of modContainer.children()) {
+        const modId = $(mod).data("attribute");
+        const match = this.data.sourceObject.effects.find(i => i.name === modId);
+        if (match) {
+          CONFIG.logger.debug(`Detected mod present on removed modification, deleting active effect added by ${modId}`);
+          await this.data.sourceObject.deleteEmbeddedDocuments("ActiveEffect", [match.id]);
+        }
+      }
       $(event.currentTarget).parent().parent().remove();
       // submit the changes so it gets saved even if the user reloads without closing the editor
       await this._updateObject(undefined, this._getSubmitData());
@@ -230,8 +248,6 @@ export class itemEditor extends FormApplication  {
    * @returns {Promise<void>}
    */
   async _updateType(event) {
-    // submit the dropdown change so it gets saved
-    await this._updateObject(undefined, this._getSubmitData());
     // update our local record of which "attachmentType" we're on so dropdowns render correctly
     this.data.clickedObject.system.type = event.currentTarget.value;
     // iterate over mods and update the modifier to be the first choice of the first modifierType
@@ -275,9 +291,6 @@ export class itemEditor extends FormApplication  {
       });
       $(event.currentTarget).parent().find(".flat_editor.dropdown.mod").html(new_html);
     }
-
-    // submit the changes
-    await this._updateObject(undefined, this._getSubmitData());
   }
 
   /** @override */
@@ -294,19 +307,113 @@ export class itemEditor extends FormApplication  {
       formData.system.attributes = {};
     }
 
+    const existingActiveEffects = this.data.sourceObject.getEmbeddedCollection("ActiveEffect");
+
     // if it's an attachment, locate the attachment to update
     let updateData;
     if (this.data.clickedObject.type === "itemattachment") {
+      CONFIG.logger.debug("> Detected item type of itemattachment");
       updateData = this.data.sourceObject.system.itemattachment;
       for (let attachment of updateData) {
         if (attachment._id === this.data.clickedObject._id) {
+          CONFIG.logger.debug(`>> Found relevant attachment: ${attachment.name} / ${attachment.id}, looking for removed keys`);
           // iterate over the mods on the existing attachment and remove them if they are not present in the new data
           for (let modKey of Object.keys(attachment.system.attributes)) {
             if (!Object.keys(formData.system.attributes).includes(modKey)) {
+              CONFIG.logger.debug(`>> Detected key ${modKey} was removed, attempting to locate matching active effect`);
               formData.system.attributes[`-=${modKey}`] = null;
               delete attachment.system.attributes[modKey];
+              // TODO: handle drag-and-drop of attachment onto item (and deleting from item)
+              // TODO: take a note - this breaks if the same key is in use across multiple mods, e.g. dragging "Additional Damage Mod" onto an attachment twice
+              // delete the active effect
+              const match = existingActiveEffects.find(i => i.name === modKey);
+              if (match) {
+               CONFIG.logger.debug(`>>> Active effect located (${match.id}), deleting`);
+                await this.data.sourceObject.deleteEmbeddedDocuments("ActiveEffect", [match.id]);
+              }
             }
           }
+          CONFIG.logger.debug(">> Looking for new or updated ");
+          if (Object.keys(formData.system).includes("attributes")) {
+            for (const modKey of Object.keys(formData.system.attributes)) {
+              CONFIG.logger.debug(">>> Checking modKey", modKey);
+              if (modKey.startsWith("-=")) {
+                CONFIG.logger.debug(`>>>> Skipping mod ${modKey} which will be deleted`);
+                // skip anything queued for deletion
+                continue;
+              }
+              const path = ModifierHelpers.getModKeyPath(formData.system.attributes[modKey].modtype, formData.system.attributes[modKey].mod);
+              const match = existingActiveEffects.find(i => i.name === modKey);
+              if (match) {
+                // existing entry
+                await match.update({
+                  changes: [{
+                    key: path,
+                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                    value: parseInt(formData.system.attributes[modKey].value),
+                  }]
+                });
+              } else {
+                // new entry
+                const effect = {
+                  name: modKey,
+                  changes: [{
+                    key: path,
+                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                    value: parseInt(formData.system.attributes[modKey].value),
+                  }],
+                };
+                CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
+                await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
+              }
+            }
+          }
+
+          // repeat the process, but this time for mods on modifications on the attachment
+          CONFIG.logger.debug(">> checking modifications...");
+          if (Object.keys(formData.system).includes("itemmodifier")) {
+            for (const modifier of Object.values(formData.system.itemmodifier)) {
+              if (!Object.keys(modifier.system).includes("attributes")) {
+                // skip anything that doesn't have attributes
+                CONFIG.logger.debug(`>>> modification ${modifier.name} has no mods, skipping further processing`);
+                continue;
+              }
+
+              for (const modKey of Object.keys(modifier.system.attributes)) {
+                CONFIG.logger.debug(">>> Checking modKey", modKey);
+                if (modKey.startsWith("-=")) {
+                  CONFIG.logger.debug(`>>>> Skipping mod ${modKey} which will be deleted`);
+                  // skip anything queued for deletion
+                  continue;
+                }
+                const path = ModifierHelpers.getModKeyPath(modifier.system.attributes[modKey].modtype, modifier.system.attributes[modKey].mod);
+                const match = existingActiveEffects.find(i => i.name === modKey);
+                if (match) {
+                  // existing entry
+                  await match.update({
+                    changes: [{
+                      key: path,
+                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      value: parseInt(modifier.system.attributes[modKey].value),
+                    }]
+                  });
+                } else {
+                  // new entry
+                  const effect = {
+                    name: modKey,
+                    changes: [{
+                      key: path,
+                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      value: parseInt(modifier.system.attributes[modKey].value),
+                    }],
+                  };
+                  CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
+                  await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
+                }
+              }
+            }
+          }
+
           // merge the existing data in so we end up with all fields present
           attachment = foundry.utils.mergeObject(
             attachment,
@@ -330,6 +437,12 @@ export class itemEditor extends FormApplication  {
             if (!Object.keys(formData.system.attributes).includes(modKey)) {
               formData.system.attributes[`-=${modKey}`] = null;
               delete modifier.system.attributes[modKey];
+              // delete the active effect
+              const match = existingActiveEffects.find(i => i.name === modKey);
+              if (match) {
+                CONFIG.logger.debug(`>>> Active effect located (${match.id}), deleting`);
+                await this.data.sourceObject.deleteEmbeddedDocuments("ActiveEffect", [match.id]);
+              }
             }
           }
           // merge the existing data in so we end up with all fields present
@@ -339,6 +452,36 @@ export class itemEditor extends FormApplication  {
           );
           // pull the updated data back into our local record of what it should look like
           this.data.clickedObject = modifier;
+        }
+      }
+      // iterate over the submitted data to find new/updated entries
+      for (const modKey of Object.keys(formData.system.attributes)) {
+        if (modKey.startsWith("-=")) {
+          continue;
+        }
+        const path = ModifierHelpers.getModKeyPath(formData.system.attributes[modKey].modtype, formData.system.attributes[modKey].mod);
+        const match = existingActiveEffects.find(i => i.name === modKey);
+        if (match) {
+          // existing entry
+          await match.update({
+            changes: [{
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.system.attributes[modKey].value),
+            }]
+          });
+        } else {
+          // new entry
+          const effect = {
+            name: modKey,
+            changes: [{
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.system.attributes[modKey].value),
+            }],
+          };
+          CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
+          await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
         }
       }
       await this.data.sourceObject.update({system: {itemmodifier: updateData}});
@@ -470,15 +613,61 @@ export class talentEditor extends itemEditor {
       formData.attributes = {};
     }
 
+    const existingActiveEffects = this.data.sourceObject.getEmbeddedCollection("ActiveEffect");
+
     // iterate over attributes on the specialization and remove any that aren't present in the form
     if (Object.keys(this.data.sourceObject.system.talents[this.data.talentId]).includes("attributes") && this.data.sourceObject.system.talents[this.data.talentId].attributes !== undefined) {
       for (const attrKey of Object.keys(this.data.sourceObject.system.talents[this.data.talentId].attributes)) {
         if (!Object.keys(formData.attributes).includes(attrKey)) {
-          console.log("missing")
           formData.attributes[`-=${attrKey}`] = null;
+          delete this.data.sourceObject.system.attributes[attrKey];
+          // delete the active effect
+          const match = existingActiveEffects.find(i => i.name === attrKey);
+          if (match) {
+            CONFIG.logger.debug(`>>> Active effect located (${match.id}), deleting`);
+            await this.data.sourceObject.deleteEmbeddedDocuments("ActiveEffect", [match.id]);
+          }
         }
       }
     }
+
+    CONFIG.logger.debug(">> Looking for new or updated ");
+    // iterate over newly added or updated attributes and create the active effects
+    if (Object.keys(formData).includes("attributes")) {
+      for (const modKey of Object.keys(formData.attributes)) {
+        CONFIG.logger.debug(">>> Checking modKey", modKey);
+        if (modKey.startsWith("-=")) {
+          CONFIG.logger.debug(`>>>> Skipping mod ${modKey} which will be deleted`);
+          // skip anything queued for deletion
+          continue;
+        }
+        const path = ModifierHelpers.getModKeyPath(formData.attributes[modKey].modtype, formData.attributes[modKey].mod);
+        const match = existingActiveEffects.find(i => i.name === modKey);
+        if (match) {
+          // existing entry
+          await match.update({
+            changes: [{
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.attributes[modKey].value),
+            }]
+          });
+        } else {
+          // new entry
+          const effect = {
+            name: modKey,
+            changes: [{
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.attributes[modKey].value),
+            }],
+          };
+          CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
+          await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
+        }
+      }
+    }
+
 
     // merge it into the existing talent data
     formData = foundry.utils.mergeObject(

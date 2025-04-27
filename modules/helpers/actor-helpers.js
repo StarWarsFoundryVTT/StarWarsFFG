@@ -19,6 +19,8 @@ export default class ActorHelpers {
       if (this.object.type !== "homestead") {
         if (this.object.type !== "vehicle") {
           // Handle characteristic updates
+          // TODO: figure out if this is actually needed or not. right now, it's breaking because they're modified by AEs
+          /*
           Object.keys(CONFIG.FFG.characteristics).forEach((key) => {
             let total = ModifierHelpers.getCalculateValueForAttribute(key, this.actor.system.attributes, ownedItems, "Characteristic");
             let x = parseInt(formData.data.characteristics[key].value, 10) - total;
@@ -29,6 +31,7 @@ export default class ActorHelpers {
               formData.data.attributes[key].value = 0;
             }
           });
+          */
           // Handle stat updates
           let stats;
           if (this.actor.type === "rival") {
@@ -64,9 +67,11 @@ export default class ActorHelpers {
                 isFormValueVisible = false;
               }
             } else if (key === "Defence-Melee") {
-              statValue = parseInt(formData.data.stats.defence.melee, 10);
+              // TODO: check if this is needed
+              //statValue = parseInt(formData.data.stats.defence.melee, 10);
             } else if (key === "Defence-Ranged") {
-              statValue = parseInt(formData.data.stats.defence.ranged, 10);
+              // TODO: check if this is needed
+              //statValue = parseInt(formData.data.stats.defence.ranged, 10);
             } else {
               if (formData.data?.stats[k]?.max) {
                 statValue = parseInt(formData.data.stats[k].max, 10);

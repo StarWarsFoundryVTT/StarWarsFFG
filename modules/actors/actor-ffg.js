@@ -46,6 +46,34 @@ export class ActorFFG extends Actor {
   }
 
   /**
+   * Prepare basic data, which is called before embedded documents are taken into account
+   * This should be things like the base level of soak, wounds, etc
+   *
+   * stats have some value, which can be modified, plus any system-level derived values (e.g.
+   */
+  prepareBaseData() {
+    super.prepareBaseData();
+    // apply basic levels of wounds, strain, soak, dice pools, etc
+    const actor = this;
+    const data = actor.system;
+    //console.log(data.stats.soak.value)
+    // TODO: handle actor types without these stats (and actually figure out how to remove this function)
+    // soak is always updated
+    //data.stats.soak.value += data.attributes.Brawn.value;
+    /*
+    // update wounds only if we are changing it for the first time
+    if (data.attributes?.wounds?.value === 0) {
+      data.attributes.wounds.value += data.attributes.Brawn.value
+    }
+    // update strain only if we are changing it for the first time
+    if (data.attributes?.strain?.value === 0) {
+      data.attributes.strain.value += data.attributes.Willpower.value
+    }
+    */
+    //console.log(data.stats.soak.value)
+  }
+
+  /**
    * Augment the basic actor data with additional dynamic data.
    */
   prepareDerivedData() {
@@ -125,8 +153,9 @@ export class ActorFFG extends Actor {
     }
 
     if (["character", "nemesis", "rival", "minion"].includes(actorData.type)) {
-      this._applyModifiers.bind(this);
-      this._applyModifiers(actorData);
+      // TODO: clean this up more (needs testing)
+      //this._applyModifiers.bind(this);
+      //this._applyModifiers(actorData);
       if (game.settings.get("starwarsffg", "enableSoakCalc")) {
         this._calculateDerivedValues(actorData);
       }

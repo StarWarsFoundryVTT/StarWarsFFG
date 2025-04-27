@@ -5,6 +5,10 @@ import {character_characteristics, character_stats} from "./ffg-characters.js";
 import {skills} from "./ffg-skills.js";
 
 export const general_modifiers = {
+  "Stat All": {
+    "value": "Stat All",
+    "label": "SWFFG.ModTypeStatAll",
+  },
   "Characteristic": {
     "value": "Characteristic",
     "label": "SWFFG.ModTypeCharacteristic",
@@ -264,6 +268,7 @@ export const modTypeToModMap = {
   "Armor Stat": armor_stats,
   "Vehicle Stat": vehicle_stats,
   "Stat": character_stats,
+  "Stat All": Object.assign(foundry.utils.duplicate(character_stats), vehicle_stats, armor_stats, weapon_stats),
   "Result Modifiers": itemmodifier_resultmodifiers,
   "Dice Modifiers": itemmodifier_dicemodifiers,
   "Roll Modifiers": itemmodifier_rollmodifiers,

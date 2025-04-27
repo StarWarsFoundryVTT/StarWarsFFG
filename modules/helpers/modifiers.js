@@ -197,6 +197,7 @@ export default class ModifierHelpers {
     }
   }
 
+  // TODO: this should probably be either removed or refactored
   static getCalculatedValueFromCurrentAndArray(item, items, key, modtype, includeSource) {
     let total = 0;
     let checked = false;
@@ -259,14 +260,27 @@ export default class ModifierHelpers {
 
     // Add new attribute
     if (action === "create") {
+      CONFIG.logger.debug("Creating new modifier...");
       const nk = new Date().getTime();
       let newKey = document.createElement("div");
       if (["criticaldamage", "shipattachment", "shipweapon"].includes(this.object.type)) {
+        // TODO: add the data to the object instead of HTML to the form
         newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Stat">Stat</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
       } else if (["itemmodifier", "itemattachment"].includes(this.object.type)) {
-        newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Roll Modifiers">Stat</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+        await this.object.update({
+          "system.attributes": {
+            [`attr${nk}`]: {
+              // TODO: dynamically look up these keys
+              modtype: "Stat All",
+              mod: "Wounds",
+              value: 0,
+            },
+          }
+        });
+        return;
       } else {
-        newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+        // TODO: add the data to the object instead of HTML to the form
+        newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><select class="attribute-mod" name="data.attributes.attr${nk}.mod"><option value="${Object.keys(CONFIG.FFG.characteristics)[0]}">${Object.keys(CONFIG.FFG.characteristics)[0]}</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
       }
       form.appendChild(newKey);
       await this._onSubmit(event);
@@ -348,5 +362,134 @@ export default class ModifierHelpers {
     }
 
     return false;
+  }
+
+  /**
+   * Given a modifier type and selection, determine the property path for an active effect to apply changes to
+   * @param modType
+   * @param mod
+   * @returns {string}
+   */
+  static getModKeyPath(modType, mod) {
+    if (modType === "Characteristic") {
+      return `system.characteristics.${mod}.value`;
+    } else if (modType === "Stat") {
+      return `system.stats.${mod.toLocaleLowerCase()}.value`;
+    } else if (modType === "Stat All") {
+      // TODO: check if this path is correct; I suspect it's not
+      // TODO: this is, in fact, sometimes wrong (since it sometimes is supposed to adjust max and sometimes is not)
+      // TODO: defense (both), encumbrance, force pool do not work at all
+      return `system.stats.${mod.toLocaleLowerCase()}.value`;
+    } else if (modType === "Force Boost") {
+      return `system.skills.${mod}.force`;
+    } else if (modType === "Skill Add Advantage") {
+      return `system.skills.${mod}.advantage`;
+    } else if (modType === "Skill Add Dark") {
+      return `system.skills.${mod}.dark`;
+    } else if (modType === "Skill Add Despair") {
+      return `system.skills.${mod}.despair`;
+    } else if (modType === "Skill Add Failure") {
+      return `system.skills.${mod}.failure`;
+    } else if (modType === "Skill Add Light") {
+      return `system.skills.${mod}.light`;
+    } else if (modType === "Skill Add Success") {
+      return `system.skills.${mod}.success`;
+    } else if (modType === "Skill Add Threat") {
+      return `system.skills.${mod}.threat`;
+    } else if (modType === "Skill Add Triumph") {
+      return `system.skills.${mod}.triumph`;
+    } else if (modType === "Skill Add Upgrade") {
+      return `system.skills.${mod}.upgrades`;
+    } else if (modType === "Skill Boost") {
+      return `system.skills.${mod}.boost`;
+    } else if (modType === "Skill Rank") {
+      return `system.skills.${mod}.rank`;
+    } else if (modType === "Skill Remove Setback") {
+      return `system.skills.${mod}.remsetback`;
+    } else if (modType === "Skill Setback") {
+      return `system.skills.${mod}.setback`;
+    } else if (modType === "Career Skill") {
+      // TODO: this should actually be a boolean mode, not an ADD mode (I think?)
+      return `system.skills.${mod}.careerskill`;
+    } else if (modType === "Vehicle Stat") {
+      // TODO: vehicles do not work, I think we need to disable the auto-calculation screwing things up
+      return `system.stats.${mod.toLocaleLowerCase()}.value`;
+    } else {
+      // TODO: this probably shouldn't be a UI notification in the released version
+      ui.notifications.warn(`Unknown mod type: ${modType}`);
+    }
+  }
+
+  static async applyActiveEffectOnUpdate(item, formData) {
+    /**
+     * Given an updateObject event, update active effects on the item being updated
+     * @type {*|{}}
+     */
+    // Handle the free-form attributes list
+    const formAttrs = foundry.utils.expandObject(formData)?.data?.attributes || {};
+    const attributes = Object.values(formAttrs).reduce((obj, v) => {
+      let k = v["key"].trim();
+      delete v["key"];
+      obj[k] = v;
+      return obj;
+    }, {});
+    const existing = item.getEmbeddedCollection("ActiveEffect");
+    const toDelete = [];
+    const toUpdate = [];
+    const toCreate = [];
+
+    // Remove attributes which are no longer used
+    if (item.system?.attributes) {
+      // iterate over existing attributes to remove them if they were deleted
+      for (let k of Object.keys(item.system.attributes)) {
+        const match = existing.find(i => i.name === k);
+        if (!attributes.hasOwnProperty(k)) {
+          attributes[`-=${k}`] = null;
+          // delete the matching active effect
+          if (match) {
+            toDelete.push(match.id);
+          }
+        }
+      }
+    }
+
+    // iterate over formdata attributes to add/update them if they were added
+    if (formData.data?.attributes) {
+      for (let k of Object.keys(formData.data.attributes)) {
+        const match = existing.find(i => i.name === k);
+        const changeKey = ModifierHelpers.getModKeyPath(
+          formData.data.attributes[k].modtype,
+          formData.data.attributes[k].mod
+        );
+        // check if an active effect exists - create it if not, update it if it does
+        if (match) {
+          // TODO: check if the item is equippable and sync the enabled state to the equipped state
+          match.changes[0].value = parseInt(formData.data.attributes[k].value);
+          match.changes[0].key = changeKey;
+          await match.update({changes: match.changes});
+        } else {
+          toCreate.push({
+            name: k,
+            icon: item.img,
+            changes: [{
+              key: changeKey,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.data.attributes[k].value),
+            }],
+          });
+        }
+      }
+    }
+
+    // TODO: figure out how to handle embedded items
+    if (toCreate.length) {
+      await item.createEmbeddedDocuments("ActiveEffect", toCreate);
+    }
+
+    if (toDelete.length) {
+      await item.deleteEmbeddedDocuments("ActiveEffect", toDelete);
+    }
+
+    CONFIG.logger.debug("applyActiveEffectOnUpdate", toCreate, toUpdate, toDelete);
   }
 }

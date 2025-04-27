@@ -31,6 +31,9 @@ export default class ItemHelpers {
       }
     }
 
+    // apply active effects
+    await ModifierHelpers.applyActiveEffectOnUpdate(this.object, formData);
+
     // recombine attributes to formData
     if (Object.keys(attributes).length > 0) {
       foundry.utils.setProperty(formData, `data.attributes`, attributes);

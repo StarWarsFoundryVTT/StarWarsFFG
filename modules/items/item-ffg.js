@@ -42,6 +42,70 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     await super._onCreate(data, options, user);
+
+    if (this.type === "species") {
+      // TODO: this should handle further item types
+      const effects = {
+        name: `species-${this.name}`,
+        img: this.img,
+        changes: [],
+      };
+      for (const attribute of Object.keys(this.system.attributes)) {
+        const path = ModifierHelpers.getModKeyPath("Characteristic", attribute);
+        effects.changes.push({
+          key: path,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: parseInt(this.system.attributes[attribute].value),
+        });
+      }
+      CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
+      CONFIG.logger.debug(effects);
+      await this.createEmbeddedDocuments("ActiveEffect", [effects]);
+    }
+  }
+
+  /** @override */
+  async _onUpdate(changed, options, userId) {
+    await super._onUpdate(changed, options, userId);
+    if (userId !== game.user.id) {
+      // only run onCreate for the user actually performing the update
+      return;
+    }
+
+    // TODO: refactor to use getModKeyPath function
+    // TODO: handle removing attachments, mods, etc (removing any relevant active effects)
+    const existingEffects = this.getEmbeddedCollection("ActiveEffect");
+    CONFIG.logger.debug(`On item ${this.name} update, found the following active effects:`);
+    CONFIG.logger.debug(existingEffects);
+    // update active effects from the item itself (e.g., stat boosts on species)
+    const itemEffect = existingEffects.find(i => i.name === `${this.type}-${this.name}`);
+    CONFIG.logger.debug(`And located the following effects directly from this item: ${itemEffect}`);
+    if (itemEffect && Object.keys(changed?.system).includes("attributes")) {
+      const newChanges = foundry.utils.deepClone(itemEffect.changes);
+      for (const updateKey of Object.keys(changed.system.attributes)) {
+        const existingChange = newChanges.find(c => c.key.startsWith(`system.attributes.${updateKey}`));
+        if (existingChange) {
+          existingChange.value = parseInt(changed.system.attributes[updateKey].value);
+        }
+      }
+      await itemEffect.update({changes: newChanges});
+    }
+
+    // iterate over the changed data to look for any changes to attributes
+    if (changed?.system?.attributes) {
+      for (const attrKey of Object.keys(changed.system.attributes)) {
+        const existingEffect = existingEffects.find(i => i.name === attrKey)
+        if (existingEffect) {
+          // TODO: we should have merged the changed data into the existing data so we have a single place to look things up
+          // (and that place is NOT changed)
+          existingEffect.changes[0].value = parseInt(this.system.attributes[attrKey].value);
+          existingEffect.changes[0].key = ModifierHelpers.getModKeyPath(
+            this.system.attributes[attrKey].modtype,
+            this.system.attributes[attrKey].mod
+          );
+        }
+      }
+    }
   }
 
   /**

@@ -866,11 +866,11 @@
     },
     "itemattachment": {
       "templates": ["core", "basic", "hardpoints", "qualities", "itemattachments"],
-      "type": ""
+      "type": "all"
     },
     "itemmodifier": {
       "templates": ["core", "qualities"],
-      "type": "",
+      "type": "all",
       "rank": 0
     }
   }

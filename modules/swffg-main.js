@@ -98,6 +98,10 @@ Hooks.once("init", async function () {
   CONFIG.Combat.documentClass = CombatFFG;
   CONFIG.Combatant.documentClass = CombatantFFG;
 
+  // we do not want the legacy active effect transfer mode
+  // also, reeeeeeeeeeeeeeeee
+  CONFIG.ActiveEffect.legacyTransferral = false;
+
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
   CONFIG.Dice.rolls[0] = RollFFG;
