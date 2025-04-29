@@ -43,24 +43,48 @@ export class ItemFFG extends ItemBaseFFG {
 
     await super._onCreate(data, options, user);
 
-    if (this.type === "species" && !options.parent) {
-      // TODO: this should handle further item types
+    if (["species", "gear", "weapon", "armour"].includes(this.type) && !options.parent) {
       const effects = {
-        name: `species-${this.name}`,
+        name: `${this.type}-${this.name}`,
         img: this.img,
         changes: [],
       };
-      for (const attribute of Object.keys(this.system.attributes)) {
+      if (this.type === "species") {
+        for (const attribute of Object.keys(this.system.attributes)) {
+          const path = ModifierHelpers.getModKeyPath(
+            this.system.attributes[attribute].modtype,
+            attribute
+          );
+          effects.changes.push({
+            key: path,
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: parseInt(this.system.attributes[attribute].value),
+          });
+        }
+      } else if (["gear", "weapon"].includes(this.type)) {
         const path = ModifierHelpers.getModKeyPath(
-          this.system.attributes[attribute].modtype,
-          attribute
+          "Stat",
+          "Encumbrance",
         );
         effects.changes.push({
           key: path,
           mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          value: parseInt(this.system.attributes[attribute].value),
+          value: 0,
         });
+      } else if (this.type === "armour") {
+        for (const key of ["Encumbrance", "Defence", "Soak"]) {
+          const path = ModifierHelpers.getModKeyPath(
+            "Stat",
+            key,
+          );
+          effects.changes.push({
+            key: path,
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: 0,
+          });
+        }
       }
+
       CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
       CONFIG.logger.debug(effects);
       await this.createEmbeddedDocuments("ActiveEffect", [effects]);
@@ -83,7 +107,7 @@ export class ItemFFG extends ItemBaseFFG {
     // update active effects from the item itself (e.g., stat boosts on species)
     const itemEffect = existingEffects.find(i => i.name === `${this.type}-${this.name}`);
     CONFIG.logger.debug(`And located the following effects directly from this item: ${itemEffect}`);
-    if (itemEffect && Object.keys(changed?.system).includes("attributes")) {
+    if (itemEffect && Object.keys(changed).includes("system") && Object.keys(changed.system).includes("attributes")) {
       const newChanges = foundry.utils.deepClone(itemEffect.changes);
       for (const updateKey of Object.keys(changed.system.attributes)) {
         const existingChange = newChanges.find(c => c.key.startsWith(`system.attributes.${updateKey}`));

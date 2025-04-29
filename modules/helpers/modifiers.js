@@ -441,7 +441,7 @@ export default class ModifierHelpers {
     // first update anything inherent to the item type (such as "brawn" on "species")
     const inherentEffectName = `${item.type}-${item.name}`;
     const inherentEffect = existing.find(e => e.name === inherentEffectName);
-    if (inherentEffect) {
+    if (inherentEffect && Object.keys(formData.data).includes("attributes")) {
       for (let k of Object.keys(formData.data.attributes)) {
         if (k.startsWith("attr")) {
           // inherent effects like "brawn" on "species" only - skip user-created active effects only
@@ -458,6 +458,38 @@ export default class ModifierHelpers {
       }
       await inherentEffect.update({changes: inherentEffect.changes});
     }
+    // some inherent effects are not in the `attribute` keyspace; make sure to get them as well
+    if (inherentEffect && ["gear", "weapon", "armour"].includes(item.type)) {
+      let modPath = ModifierHelpers.getModKeyPath(
+          "Stat",
+          "Encumbrance",
+        );
+      let inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+      if (inherentEffectChangeIndex >= 0) {
+        inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.encumbrance.value;
+      }
+      if (item.type === "armour") {
+        // armor has additional stats
+        modPath = ModifierHelpers.getModKeyPath(
+          "Stat",
+          "Defence",
+        );
+        inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.defence.value;
+        }
+        modPath = ModifierHelpers.getModKeyPath(
+          "Stat",
+          "Soak",
+        );
+        inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.soak.value;
+        }
+      }
+      await inherentEffect.update({changes: inherentEffect.changes});
+    }
+
 
     // Remove attributes which are no longer used
     if (item.system?.attributes) {
