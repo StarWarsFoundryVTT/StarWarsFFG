@@ -9,6 +9,8 @@ export default class ModifierHelpers {
    * @returns {number} - Total value of all attribute values
    */
   static getCalculateValueForAttribute(key, attrs, items, modtype) {
+    console.log("calculating value for *attribute*: ", key, "attrs: ", attrs, "items: ", items, "modtype: ", modtype, "")
+    return 0;
     let total = 0;
 
     if (key === "Shields") {
@@ -23,7 +25,7 @@ export default class ModifierHelpers {
       total += itemsValue;
     }
 
-    return total;
+    return 0;
   }
 
   /**
@@ -32,6 +34,7 @@ export default class ModifierHelpers {
    * @param  {string} key
    */
   static getCalculatedValueFromItems(items, key, modtype, includeSource) {
+    console.log("calculating value from *items*: ", items, "key: ", key, "modtype: ", modtype, "includeSource: ", includeSource, "")
     let total = 0;
     let checked = false;
     let sources = [];
@@ -185,15 +188,16 @@ export default class ModifierHelpers {
 
     if (modtype === "Career Skill" || modtype === "Force Boost") {
       if (includeSource) {
+        checked = true;
         return { checked, sources };
       }
-      return checked;
+      return 0;
     }
 
     if (includeSource) {
       return { total, sources };
     } else {
-      return total;
+      return 0;
     }
   }
 
@@ -264,13 +268,20 @@ export default class ModifierHelpers {
       const nk = new Date().getTime();
       let newKey = document.createElement("div");
       if (["criticaldamage", "shipattachment", "shipweapon"].includes(this.object.type)) {
-        // TODO: add the data to the object instead of HTML to the form
-        newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Stat">Stat</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+        await this.object.update({
+          "system.attributes": {
+            [`attr${nk}`]: {
+              modtype: "Stat All",
+              mod: "Armour",
+              value: 0,
+            },
+          }
+        });
+        return;
       } else if (["itemmodifier", "itemattachment"].includes(this.object.type)) {
         await this.object.update({
           "system.attributes": {
             [`attr${nk}`]: {
-              // TODO: dynamically look up these keys
               modtype: "Stat All",
               mod: "Wounds",
               value: 0,
@@ -371,6 +382,11 @@ export default class ModifierHelpers {
    * @returns {string}
    */
   static getModKeyPath(modType, mod) {
+    console.log(mod)
+    if (["Wounds", "Strain", "Encumbrance", "Speed", "Hulltrauma", "Systemstrain"].includes(mod)) {
+      // TODO: this needs to be implemented in more spots, but for now we can shim it here
+      modType = "Threshold";
+    }
     if (modType === "Characteristic") {
       return `system.characteristics.${mod}.value`;
     } else if (modType === "Stat") {
@@ -380,6 +396,14 @@ export default class ModifierHelpers {
       // TODO: this is, in fact, sometimes wrong (since it sometimes is supposed to adjust max and sometimes is not)
       // TODO: defense (both), encumbrance, force pool do not work at all
       return `system.stats.${mod.toLocaleLowerCase()}.value`;
+    } else if (modType === "Threshold") {
+      if (mod === "Hulltrauma") {
+        return `system.stats.hullTrauma.max`;
+      } else if (mod === "Systemstrain") {
+        return `system.stats.systemStrain.max`;
+      } else {
+        return `system.stats.${mod.toLocaleLowerCase()}.max`;
+      }
     } else if (modType === "Force Boost") {
       return `system.skills.${mod}.force`;
     } else if (modType === "Skill Add Advantage") {
