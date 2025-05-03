@@ -4,6 +4,7 @@ import ActorOptions from "../actors/actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import Helpers from "../helpers/common.js";
+import ItemHelpers from "../helpers/item-helpers.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -130,6 +131,19 @@ export class ItemFFG extends ItemBaseFFG {
             this.system.attributes[attrKey].modtype,
             this.system.attributes[attrKey].mod
           );
+        }
+      }
+    }
+
+    // handle equip / unequip by suspending / unsuspending AEs
+    const updatedExistingEffects = this.getEmbeddedCollection("ActiveEffect");
+    if (changed?.system?.equippable && updatedExistingEffects) {
+      const equipped = changed.system.equippable.equipped;
+      CONFIG.logger.debug("caught equip / unequip, checking if Active Effect state should be synced");
+      await ItemHelpers.syncAEStatus(this, updatedExistingEffects);
+      for (const effect of updatedExistingEffects) {
+        if (await ItemHelpers.shouldUpdateAEStatus(this, effect)) {
+          await effect.update({disabled: !equipped});
         }
       }
     }

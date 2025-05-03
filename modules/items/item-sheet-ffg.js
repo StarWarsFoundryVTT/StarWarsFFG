@@ -1636,6 +1636,7 @@ export class ItemSheetFFG extends ItemSheet {
       }
       CONFIG.logger.debug(toCreate);
       await this.object.createEmbeddedDocuments("ActiveEffect", toCreate);
+      await ItemHelpers.syncAEStatus(this.object, toCreate);
     } else {
       CONFIG.logger.debug(`Rejected transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
     }

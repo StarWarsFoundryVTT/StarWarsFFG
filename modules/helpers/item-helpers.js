@@ -45,6 +45,8 @@ export default class ItemHelpers {
 
     foundry.utils.setProperty(formData, `flags.starwarsffg.loaded`, false);
     await this.object.update(formData);
+    // sync the active effect state (if applicable). needs to be after the update so we have the updated state
+    await ItemHelpers.syncAEStatus(this.object, this.object.getEmbeddedCollection("ActiveEffect"));
     await this.render(true);
 
     if (this.object.type === "talent") {
@@ -135,5 +137,79 @@ export default class ItemHelpers {
       delete formData.system[relevantEntries[cur_entry]];
     }
     return formData;
+  }
+
+  /**
+   * Determines if a given Active Effect should have a status updated or not - based on the item it's a part of
+   * For example, if a piece of armor has an attachment with a modification with a mod that's not installed,
+   *  that mod should not apply any effect to the actor - even if the armor is equipped / unequipped
+   * Similarly, unpurchased talents on specializations should not do anything until they are purchased
+   * @param item - the item the active effect is a part of
+   * @param activeEffect - the specific active effect to check
+   * @returns {Promise<boolean>} - bool representing if the changes should be applied or not
+   *
+   */
+  static async shouldUpdateAEStatus(item, activeEffect) {
+    CONFIG.logger.debug(`Checking if ${activeEffect.name} from ${item.name} should be applied`);
+    if (["armour", "weapon", "shipweapon"].includes(item.type)) {
+      for (const attachment of item.system.itemattachment) {
+        for (const modification of attachment.system.itemmodifier) {
+          try {
+            const foundMod = modification.system.attributes[activeEffect.name];
+            CONFIG.logger.debug(`Located mod ${foundMod.name}, checking if it's active or not`);
+            if (foundMod && !modification.system.active) {
+              CONFIG.logger.debug(`Mod ${foundMod.name} is not active, not syncing AE status`);
+              return false;
+            } else {
+              CONFIG.logger.debug(`Mod ${foundMod.name} is active, syncing AE status`);
+              return true;
+            }
+          } catch {
+            CONFIG.logger.debug(`No mod located, continuing search...`);
+          }
+        }
+      }
+    }
+    CONFIG.logger.debug(`No reason to avoid updating status found, syncing AE status`);
+    return true;
+  }
+
+  /**
+   * Sync the status of an active effect to the parent object when an item is updated
+   * For example, enable an active effect on a talent as a part of a specialization when that talent is purchased
+   * @param item
+   * @param activeEffects
+   * @returns {Promise<void>}
+   */
+  static async syncAEStatus(item, activeEffects) {
+    CONFIG.logger.debug(`Syncing ${activeEffects.length} Active Effects status...`);
+    if (["specialization", "forcepower", "signatureability"].includes(item.type)) {
+      CONFIG.logger.debug("specialization, force power, or signature ability, looking through AEs to sync");
+      for (const activeEffect of activeEffects) {
+        if (["specialization"].includes(item.type)) {
+          for (const talentKey of Object.keys(item.system.talents)) {
+            const talent = item.system.talents[talentKey];
+            try {
+              const locatedMod = talent.attributes[activeEffect.name]; // this can throw an exception; best to handle it
+              if (locatedMod) {
+                if (talent.islearned) {
+                  CONFIG.logger.debug(`located attribute granting AE (${activeEffect.name}) AND the talent (${talent.name}) is learned, unsuspending`);
+                  await activeEffect.update({disabled: false});
+                } else {
+                  CONFIG.logger.debug("located attribute granting AE, but the talent is not learned, suspending");
+                  await activeEffect.update({disabled: true});
+                }
+              }
+            } catch {
+              CONFIG.logger.debug("no attribute granting AE found");
+            }
+          }
+        }
+      }
+    } else if (["armour", "weapon", "shipweapon"].includes(item.type)) {
+      CONFIG.logger.debug("armor and weapon, not doing anything yet");
+    } else {
+      CONFIG.logger.debug(`'other' item type ${item.type}, no need to sync AE status'`);
+    }
   }
 }

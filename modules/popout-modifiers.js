@@ -7,7 +7,7 @@ import ModifierHelpers from "./helpers/modifiers.js";
 export default class PopoutModifiers extends FormApplication {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "popout-modifiers",
       classes: ["starwarsffg", "sheet"],
       title: "Pop-out Modifiers",
@@ -64,10 +64,10 @@ export default class PopoutModifiers extends FormApplication {
 
   /** @override */
   async _updateObject(event, formData) {
-    formData = expandObject(formData);
+    formData = foundry.utils.expandObject(formData);
 
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData)?.data?.attributes || {};
+    const formAttrs = foundry.utils.expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
       if (/[\s\.]/.test(k)) return ui.notifications.error("Attribute keys may not contain spaces or periods");
