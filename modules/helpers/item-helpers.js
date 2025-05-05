@@ -212,4 +212,34 @@ export default class ItemHelpers {
       CONFIG.logger.debug(`'other' item type ${item.type}, no need to sync AE status'`);
     }
   }
+
+  /**
+   * Update the inherent Encumbrance Active Effect when armor is equipped/unequipped
+   * (because the encumbrance is reduced by 3 when worn)
+   * @param item - item being equipped
+   * @param activeEffect - inherent AE for that item
+   * @param equipped - if the item is now equipped or not
+   * @returns {Promise<void>} - N/A, updates the change on the AE
+   */
+  static async updateEncumbranceOnEquip(item, activeEffect, equipped) {
+    CONFIG.logger.debug("Updating encumbrance Active Effect on equip state change");
+    const realEncumbrance = item?.system?.encumbrance?.value;
+    if (item.type === "armour" && realEncumbrance) {
+      const encumbranceModPath = ModifierHelpers.getModKeyPath("Stat", "Encumbrance");
+      let updatedEncumbrance;
+      if (equipped) {
+        updatedEncumbrance = Math.max(realEncumbrance - 3, 0);
+      } else {
+        updatedEncumbrance = realEncumbrance;
+      }
+      CONFIG.logger.debug(`Original encumbrance: ${realEncumbrance}, new encumbrance: ${updatedEncumbrance}`);
+      for (const change of activeEffect.changes) {
+        if (change.key === encumbranceModPath) {
+          change.value = updatedEncumbrance;
+          break;
+        }
+      }
+      await activeEffect.update({changes: activeEffect.changes});
+    }
+  }
 }

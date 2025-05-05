@@ -143,6 +143,7 @@ export class ItemFFG extends ItemBaseFFG {
       await ItemHelpers.syncAEStatus(this, updatedExistingEffects);
       for (const effect of updatedExistingEffects) {
         if (await ItemHelpers.shouldUpdateAEStatus(this, effect)) {
+          await ItemHelpers.updateEncumbranceOnEquip(this, effect, equipped);
           await effect.update({disabled: !equipped});
         }
       }
