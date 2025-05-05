@@ -70,6 +70,77 @@ export default class ActorHelpers {
 
     return await this.object.update(formData);
   }
+
+  static async beginEditMode(actor) {
+    // Store initial state
+    CONFIG.logger.debug(`Beginning Edit mode for ${actor.name}`);
+    // Track both direct and item-based effects
+    const initialState = {
+      directEffects: [],
+      itemEffects: {},
+    };
+
+    // Record direct effects
+    for (const effect of actor.effects) {
+      initialState.directEffects.push({
+        id: effect.id,
+        disabled: effect.disabled,
+      });
+      // update source so we don't persist disabling effects
+      await effect.updateSource({disabled: true});
+    }
+
+    // Record item-based effects
+    for (const item of actor.items) {
+      CONFIG.logger.debug(`> examining ${item.name}`);
+      initialState.itemEffects[item.id] = [];
+      for (const effect of item.effects) {
+        CONFIG.logger.debug(`>> Recording state for ${effect.name}`);
+        initialState.itemEffects[item.id].push({
+          id: effect.id,
+          disabled: effect.disabled,
+        });
+        CONFIG.logger.debug(`>> Disabling AE for ${effect.name}`);
+        await effect.updateSource({disabled: true});
+      }
+    }
+
+    CONFIG.logger.debug(`Final initial state: ${JSON.stringify(initialState)}`);
+    return initialState;
+  }
+
+  static async endEditMode(actor, originalState) {
+    CONFIG.logger.debug(`Ending Edit mode for ${actor.name} - original state: ${JSON.stringify(originalState)}`);
+    // revert the state for direct effects
+    for (const effect of actor.effects) {
+      const locatedEffect = originalState.directEffects.find((s) => s.id === effect.id);
+      if (locatedEffect && effect.disabled !== locatedEffect.disabled) {
+        // update source so we don't persist disabling effects
+        await effect.updateSource({disabled: locatedEffect.disabled});
+      }
+    }
+
+    // revert the state for item-based effects
+    for (const item of actor.items) {
+      CONFIG.logger.debug(`> examining ${item.name}`);
+      if (item.id in originalState.itemEffects) {
+        const storedItemState = originalState.itemEffects[item.id];
+        CONFIG.logger.debug(`> found item AEs in stored state: ${JSON.stringify(storedItemState)}`);
+        for (const effect of item.effects) {
+          CONFIG.logger.debug(`>> examining ${effect.name}`);
+          const storedEffectState = storedItemState.find((s) => s.id === effect.id);
+          if (storedEffectState && effect.disabled !== storedEffectState.disabled) {
+            CONFIG.logger.debug(">>> found a stored state for this effect, making adjustments");
+            await effect.updateSource({disabled: storedEffectState.disabled});
+          } else {
+            CONFIG.logger.debug(">>> no stored state for this effect or the state is the same, not making adjustments");
+          }
+        }
+      } else {
+        CONFIG.logger.debug("> no item AEs in stored state, skipping further processing");
+      }
+    }
+  }
 }
 
 /**

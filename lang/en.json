@@ -368,6 +368,8 @@
   "SWFFG.EnableHyperdriveHint": "Enable the hyperdrive box for this vehicle",
   "SWFFG.EnableSensors": "Enable sensors",
   "SWFFG.EnableSensorsHint": "Enable the sensor box for this vehicle",
+  "SWFFG.EnableEditMode": "Enable Edit Mode",
+  "SWFFG.EnableEditModeHint": "Allows editing stats directly by disabling Active Effects",
   "SWFFG.Talent": "Talent",
   "SWFFG.Source": "Source",
   "SWFFG.Delete": "Delete",

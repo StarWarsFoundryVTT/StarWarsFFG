@@ -32,6 +32,7 @@ export class ActorSheetFFG extends ActorSheet {
     this._filters = {
       skills: new Set(),
     };
+    this.object.flags.starwarsffg.config.enableEditMode = false;
   }
 
   pools = new Map();
@@ -291,8 +292,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     data.actor.items = ActorSheetFFG.sortForActorSheet(data.actor.items);
-    // TODO: actually make this a check
-    data.disabled = true;
+    data.disabled = !data.actor.flags.starwarsffg.config.enableEditMode;
 
     data.modTypeSelected = "all"; // TODO: should this be something else?
     data.modTypeChoices = CONFIG.FFG.itemTypeToModTypeMap;
@@ -622,6 +622,13 @@ export class ActorSheetFFG extends ActorSheet {
         default: true,
       });
     }
+
+    this.sheetoptions.register("enableEditMode", {
+      name: game.i18n.localize("SWFFG.EnableEditMode"),
+      hint: game.i18n.localize("SWFFG.EnableEditModeHint"),
+      type: "Boolean",
+      default: false,
+    });
 
     html.find(".medical").click(async (ev) => {
       const item = await $(ev.currentTarget);
