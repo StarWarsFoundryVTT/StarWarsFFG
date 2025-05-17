@@ -1458,11 +1458,12 @@ export class ItemSheetFFG extends ItemSheet {
       return false;
     }
     // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
-    const itemObject = await fromUuid(data.uuid);
+    let itemObject = await fromUuid(data.uuid);
 
     if (!itemObject) return;
 
     if (itemObject.type === "talent") {
+      itemObject = await ItemHelpers.uniqueAttrs(itemObject, specialization);
       // we need to remove if this is the last instance of the talent in the specialization
       const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
       const isPreviousItemFromPack = $(li).find(`input[name='data.talents.${talentId}.pack']`).val() === "" ? false : true;
@@ -1527,11 +1528,39 @@ export class ItemSheetFFG extends ItemSheet {
         }
       }
 
+      const updateData = {
+        system: {
+          talents: {
+            [talentId]: {
+              // these are cloned to avoid local-only clobbers to the dropped object
+              description: foundry.utils.deepClone(itemObject.system.description),
+              attributes: foundry.utils.deepClone(itemObject.system.attributes),
+            },
+          },
+        },
+      };
+
+      // build a list of existing active effects and attributes so we can delete them
+      const existingAttrs = specialization.system.talents[talentId].attributes || {};
+      const existingEffects = specialization.getEmbeddedCollection("ActiveEffect");
+      const toDelete = [];
+      for (const attr of Object.keys(existingAttrs)) {
+        updateData.system.talents[talentId].attributes[`-=${attr}`] = null;
+        const matchingEffect = existingEffects.find(ae => ae.name === attr);
+        if (matchingEffect) {
+          toDelete.push(matchingEffect.id);
+        }
+      }
+
       await this._onSubmit(event);
-      await this.object.update({system: {talents: {[talentId]: {description: itemObject.system.description}}}});
+      await specialization.update(updateData);
+      // actually delete any already-existing AEs on the same talent slot
+      await specialization.deleteEmbeddedDocuments("ActiveEffect", toDelete);
+
+      await this._transferActiveEffects(itemObject);
+
       this.render(true);
     }
-    await this._transferActiveEffects(await fromUuid(data.uuid));
   }
 
   _updateSpecializationTalentReference(specializationTalentItem, talentItem) {
@@ -1559,11 +1588,14 @@ export class ItemSheetFFG extends ItemSheet {
     }
 
     // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
-    const itemObject = foundry.utils.duplicate(await fromUuid(data.uuid));
+    let itemObject = foundry.utils.duplicate(await fromUuid(data.uuid));
 
     if (!itemObject) return;
 
     itemObject.id = foundry.utils.randomID(); // why do we do this?!
+
+    // for a rank-only update, we simply update the rank of an existing attr, not transfer AEs
+    let rankOnlyUpdate = false;
 
     if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.type === "shipweapon" && itemObject.system.type === "weapon") || obj.type === itemObject.system.type || itemObject.system.type === "all" || obj.type === "itemattachment")) {
       let items = obj?.system[itemObject.type];
@@ -1582,6 +1614,7 @@ export class ItemSheetFFG extends ItemSheet {
           }
 
           if (foundItem && this.object.type !== "itemattachment") {
+            rankOnlyUpdate = true;
             foundItem.system.rank = (parseInt(foundItem.system.rank) + parseInt(itemObject.system.rank)).toString();
           } else {
             items.push(itemObject);
@@ -1590,6 +1623,7 @@ export class ItemSheetFFG extends ItemSheet {
         }
         case "itemattachment": {
           if (this.object.system.hardpoints.adjusted - itemObject.system.hardpoints.value >= 0) {
+            itemObject = await ItemHelpers.uniqueAttrs(itemObject, this.object);
             items.push(itemObject);
           } else {
             ui.notifications.warn(`Item does not have enough available hardpoints (${this.object.system.hardpoints.adjusted} left)`);
@@ -1606,7 +1640,11 @@ export class ItemSheetFFG extends ItemSheet {
 
       await obj.update(formData);
       // TODO: this happens even if there isn't enough HP (meaning the item gets rejected)
-      await this._transferActiveEffects(await fromUuid(data.uuid));
+      if (rankOnlyUpdate) {
+        await ItemHelpers.syncAEStatus(this.object, this.object.effects);
+      } else {
+        await this._transferActiveEffects(itemObject);
+      }
     }
   }
 
@@ -1632,6 +1670,13 @@ export class ItemSheetFFG extends ItemSheet {
     ) {
       CONFIG.logger.debug(`Processing transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
       for (const activeEffect of droppedItem.effects) {
+        // it appears that Foundry will use the source data over anything else if it's present, so update the source
+        //  data to match our updated information (if it exists)
+        try {
+          activeEffect._source.name = activeEffect.name;
+        } catch {
+          CONFIG.logger.debug("No source data found for AE (this is sometimes expected)");
+        }
         toCreate.push(activeEffect);
       }
       CONFIG.logger.debug(toCreate);

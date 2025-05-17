@@ -196,7 +196,7 @@ export default class ItemHelpers {
                   CONFIG.logger.debug(`located attribute granting AE (${activeEffect.name}) AND the talent (${talent.name}) is learned, unsuspending`);
                   await activeEffect.update({disabled: false});
                 } else {
-                  CONFIG.logger.debug("located attribute granting AE, but the talent is not learned, suspending");
+                  CONFIG.logger.debug(`located attribute granting AE (${activeEffect.name}), but the talent is not learned, suspending`);
                   await activeEffect.update({disabled: true});
                 }
               }
@@ -207,7 +207,25 @@ export default class ItemHelpers {
         }
       }
     } else if (["armour", "weapon", "shipweapon"].includes(item.type)) {
-      CONFIG.logger.debug("armor and weapon, not doing anything yet");
+      CONFIG.logger.debug("armor and weapon, checking modifiers to sync value to rank");
+      // sync AEs to the rank value - that is, if we have a mod which adds 1 to max wounds with 4 ranks, the AE should have a value of 4, not 1
+      const existingEffects = item.getEmbeddedCollection("ActiveEffect");
+      for (const modifier of item.system.itemmodifier) {
+        for (const attr of Object.keys(modifier.system.attributes)) {
+          const matchingEffect = existingEffects.find(effect => effect.name === attr);
+          if (matchingEffect) {
+            CONFIG.logger.debug(`Located ${attr}, updating with new value of ${modifier.system.rank}`);
+            await matchingEffect.update({
+              "changes": [{
+                key: matchingEffect.changes[0].key,
+                mode: matchingEffect.changes[0].mode,
+                priority: matchingEffect.changes[0].priority,
+                value: modifier.system.rank,
+              }],
+            });
+          }
+        }
+      }
     } else {
       CONFIG.logger.debug(`'other' item type ${item.type}, no need to sync AE status'`);
     }
@@ -241,5 +259,87 @@ export default class ItemHelpers {
       }
       await activeEffect.update({changes: activeEffect.changes});
     }
+  }
+
+  /**
+   * Ensures unique attribute keys for a dropped item by checking and modifying its attributes, modifiers, and attachments
+   * to avoid key collisions within the parent item. Also updates any matching active effects to align with the new attribute keys.
+   *
+   * @param {Object} droppedItem - The item being added or moved, whose attributes need to be checked and adjusted if necessary
+   * @param {Object} parentItem - The target item that will contain the dropped item, used to determine existing keys for comparison
+   * @return {Object} - Returns the modified dropped item with updated attribute keys and effects
+   */
+  static async uniqueAttrs(droppedItem, parentItem) {
+    CONFIG.logger.debug(`Unique-ing attributes for dropped item ${droppedItem.name} on parent item ${parentItem.name}`);
+    // collect the existing attrs so we can determine if there's a collision
+    let existingAttrs = Object.keys(parentItem.system.attributes) || [];
+    if (Object.keys(parentItem.system).includes("itemmodifier")) {
+      for (const modifier of parentItem.system.itemmodifier) {
+        existingAttrs = [...existingAttrs, ...Object.keys(modifier.system.attributes)];
+      }
+    }
+    if (Object.keys(parentItem.system).includes("itemattachment")) {
+      for (const attachment of parentItem.system.itemattachment) {
+        existingAttrs = [...existingAttrs, ...Object.keys(attachment.system.attributes)];
+        for (const modification of attachment.system.itemmodifier) {
+          existingAttrs = [...existingAttrs, ...Object.keys(modification.system.attributes)];
+        }
+      }
+    }
+    if (Object.keys(parentItem.system).includes("talents")) {
+      for (const talent of Object.keys(parentItem.system.talents)) {
+        if (!Object.keys(parentItem.system.talents[talent]).includes("attributes")) {
+          // some talent slots do not have the "attributes" key, so we can skip them
+          continue;
+        }
+        existingAttrs = [...existingAttrs, ...Object.keys(parentItem.system.talents[talent].attributes)];
+      }
+    }
+    CONFIG.logger.debug(`Existing attributes: ${JSON.stringify(existingAttrs)}`);
+
+    // now that we know the existing attrs, start looking for ones in the dropped item
+    if (Object.keys(droppedItem.system).includes("attributes")) {
+      for (const attr of Object.keys(droppedItem.system.attributes)) {
+        const matchingEffect = droppedItem.effects.find(effect => effect.name === attr);
+        const newKey = `attr${new Date().getTime()}`;
+        // copy the data to the new field
+        droppedItem.system.attributes[newKey] = droppedItem.system.attributes[attr];
+        // delete the old field
+        delete droppedItem.system.attributes[attr];
+        // update the active effect
+        if (matchingEffect) {
+          CONFIG.logger.debug(`located matching effect from attributes ${matchingEffect.name}, updating to ${newKey}`);
+          //await matchingEffect.update({name: newKey});
+          matchingEffect.name = newKey;
+        }
+        // ensure further keys have a new entry
+          await new Promise(r => setTimeout(r, 1));
+      }
+    }
+
+    if (Object.keys(droppedItem.system).includes("itemmodifier")) {
+      for (const droppedModifier of droppedItem.system.itemmodifier) {
+        for (const attr of Object.keys(droppedModifier.system.attributes)) {
+          CONFIG.logger.debug(`checking ${attr}`);
+          const matchingEffect = droppedItem.effects.find(effect => effect.name === attr);
+          const newKey = `attr${new Date().getTime()}`;
+          CONFIG.logger.debug(`located matching effect from itemmodifier ${droppedModifier.name} for ${attr}, updating to ${newKey}`);
+          // copy the data to the new field
+          droppedModifier.system.attributes[newKey] = droppedModifier.system.attributes[attr];
+          // delete the old field
+          delete droppedModifier.system.attributes[attr];
+          // update the active effect
+          if (matchingEffect) {
+            //await matchingEffect.update({name: newKey});
+            matchingEffect.name = newKey;
+          }
+          // ensure further keys have a new entry
+          await new Promise(r => setTimeout(r, 1));
+        }
+      }
+    }
+
+    CONFIG.logger.debug(`Done Unique-ing attributes!`);
+    return droppedItem;
   }
 }
