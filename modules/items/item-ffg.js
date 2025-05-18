@@ -45,50 +45,54 @@ export class ItemFFG extends ItemBaseFFG {
     await super._onCreate(data, options, user);
 
     if (["species", "gear", "weapon", "armour"].includes(this.type) && !options.parent) {
-      const effects = {
-        name: `${this.type}-${this.name}`,
-        img: this.img,
-        changes: [],
-      };
-      if (this.type === "species") {
-        for (const attribute of Object.keys(this.system.attributes)) {
-          const path = ModifierHelpers.getModKeyPath(
-            this.system.attributes[attribute].modtype,
-            attribute
-          );
-          effects.changes.push({
-            key: path,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: parseInt(this.system.attributes[attribute].value),
-          });
-        }
-      } else if (["gear", "weapon"].includes(this.type)) {
-        const path = ModifierHelpers.getModKeyPath(
-          "Stat",
-          "Encumbrance",
-        );
-        effects.changes.push({
-          key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          value: 0,
-        });
-      } else if (this.type === "armour") {
-        for (const key of ["Encumbrance", "Defence", "Soak"]) {
+      const existingEffects = this.getEmbeddedCollection("ActiveEffect");
+      // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
+      if (existingEffects.contents.length === 0) {
+        const effects = {
+          name: `${this.type}-${this.name}`,
+          img: this.img,
+          changes: [],
+        };
+        if (this.type === "species") {
+          for (const attribute of Object.keys(this.system.attributes)) {
+            const path = ModifierHelpers.getModKeyPath(
+              this.system.attributes[attribute].modtype,
+              attribute
+            );
+            effects.changes.push({
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(this.system.attributes[attribute].value),
+            });
+          }
+        } else if (["gear", "weapon"].includes(this.type)) {
           const path = ModifierHelpers.getModKeyPath(
             "Stat",
-            key,
+            "Encumbrance",
           );
           effects.changes.push({
             key: path,
             mode: CONST.ACTIVE_EFFECT_MODES.ADD,
             value: 0,
           });
+        } else if (this.type === "armour") {
+          for (const key of ["Encumbrance", "Defence", "Soak"]) {
+            const path = ModifierHelpers.getModKeyPath(
+              "Stat",
+              key,
+            );
+            effects.changes.push({
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: 0,
+            });
+          }
         }
-      }
 
-      CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
-      CONFIG.logger.debug(effects);
-      await this.createEmbeddedDocuments("ActiveEffect", [effects]);
+        CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
+        CONFIG.logger.debug(effects);
+        await this.createEmbeddedDocuments("ActiveEffect", [effects]);
+      }
     }
   }
 
