@@ -11,7 +11,7 @@ export default class ItemHelpers {
 
     if (this.object.type === "weapon") {
       if (ModifierHelpers.applyBrawnToDamage(formData.data)) {
-        setProperty(formData, `data.damage.value`, 0);
+        foundry.utils.setProperty(formData, `data.damage.value`, 0);
       }
     }
 
