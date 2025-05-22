@@ -382,7 +382,6 @@ export default class ModifierHelpers {
    * @returns {string}
    */
   static getModKeyPath(modType, mod) {
-    console.log(mod)
     if (["Wounds", "Strain", "Encumbrance", "Speed", "Hulltrauma", "Systemstrain"].includes(mod)) {
       // TODO: this needs to be implemented in more spots, but for now we can shim it here
       modType = "Threshold";
@@ -449,14 +448,19 @@ export default class ModifierHelpers {
      * Given an updateObject event, update active effects on the item being updated
      * @type {*|{}}
      */
+    CONFIG.logger.debug("Updating active effects on item update");
+    // remove deleted keys
+    formData = foundry.utils.deepClone(formData);
+    if (Object.keys(formData.data).includes("attributes")) {
+      for (const attr of Object.keys(formData.data.attributes)) {
+        if (attr.startsWith("-=attr")) {
+          delete formData.data.attributes[attr];
+        }
+      }
+    }
     // Handle the free-form attributes list
     const formAttrs = foundry.utils.expandObject(formData)?.data?.attributes || {};
-    const attributes = Object.values(formAttrs).reduce((obj, v) => {
-      let k = v["key"].trim();
-      delete v["key"];
-      obj[k] = v;
-      return obj;
-    }, {});
+    const attributes = formAttrs
     const existing = item.getEmbeddedCollection("ActiveEffect");
     const toDelete = [];
     const toUpdate = [];

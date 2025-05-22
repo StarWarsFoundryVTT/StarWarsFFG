@@ -1,6 +1,7 @@
 import Helpers from "../helpers/common.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
 import {ItemFFG} from "../items/item-ffg.js";
+import ModifierHelpers from "../helpers/modifiers.js";
 
 export default class ImportHelpers {
   /**
@@ -2335,6 +2336,11 @@ export default class ImportHelpers {
       }
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
       const crt = await pack.importDocument(compendiumItem);
+      if (type === "Item") {
+        // make sure Active Effects get created
+        await ImportHelpers.applyActiveEffectOnUpdate(crt, data);
+        await ImportHelpers.applyTalentActiveEffects(crt);
+      }
       CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = foundry.utils.deepClone(crt);
       return crt;
     } else {
@@ -2800,10 +2806,10 @@ export default class ImportHelpers {
     return output;
   }
 
-  static processStatMod(mod) {
+  static async processStatMod(mod) {
     let attributes = {};
     if (mod) {
-      Object.keys(mod).forEach((m) => {
+      for (const m of Object.keys(mod)) {
         const value = parseInt(mod[m], 10);
         const modtype = "Stat";
         let type;
@@ -2834,23 +2840,26 @@ export default class ImportHelpers {
           }
         }
 
+        const key = `attr${new Date().getTime()}`;
         if (type) {
-          attributes[foundry.utils.randomID()] = { mod: type, modtype, value };
+          attributes[key] = { mod: type, modtype, value };
         }
-      });
+        // ensure further keys have a new entry
+        await new Promise(r => setTimeout(r, 1));
+      }
     }
 
     return attributes;
   }
 
-  static processCareerSkills(skills, includeRank) {
+  static async processCareerSkills(skills, includeRank) {
     let attributes = {};
     if (skills?.Key) {
       if (!Array.isArray(skills.Key)) {
         skills.Key = [skills.Key];
       }
 
-      skills.Key.forEach((skill) => {
+      for (const skill of skills.Key) {
         let mod = CONFIG.temporary.skills[skill];
         if (mod) {
           if (mod.includes(":") && !mod.includes(": ")) {
@@ -2858,12 +2867,15 @@ export default class ImportHelpers {
           }
 
           if (Object.keys(CONFIG.FFG.skills).includes(mod)) {
+            const key = `attr${new Date().getTime()}`;
+            // ensure further keys have a new entry
+            await new Promise(r => setTimeout(r, 1));
             if (mod) {
               const modtype = "Career Skill";
-              attributes[foundry.utils.randomID()] = { mod, modtype, value: true };
+              attributes[key] = { mod, modtype, value: true };
 
               if (includeRank) {
-                attributes[foundry.utils.randomID()] = { mod, modtype: "Skill Rank", value: 0 };
+                attributes[key] = { mod, modtype: "Skill Rank", value: 0 };
               }
             } else {
               CONFIG.logger.warn(`Skill ${skill} was not found in the current skills list.`);
@@ -2872,7 +2884,7 @@ export default class ImportHelpers {
         } else {
           CONFIG.logger.warn(`Skill ${skill} was not found in the current skills list.`);
         }
-      });
+      }
     }
 
     return attributes;
@@ -2894,6 +2906,153 @@ export default class ImportHelpers {
     }
 
     return item;
+  }
+
+  /**
+   * Given an updateObject event, update active effects on the item being updated
+   * This is an importer helper so that it can operate on .system (used during import) instead of .data (used in forms)
+   * @type {*|{}}
+  */
+  static async applyActiveEffectOnUpdate(item, formData) {
+    CONFIG.logger.debug("Updating active effects on item import");
+    const existing = item.getEmbeddedCollection("ActiveEffect");
+    const toDelete = [];
+    const toUpdate = [];
+    const toCreate = [];
+
+    // first update anything inherent to the item type (such as "brawn" on "species")
+    const inherentEffectName = `${item.type}-${item.name}`;
+    const inherentEffect = existing.find(e => e.name === inherentEffectName);
+    if (inherentEffect && Object.keys(formData.system).includes("attributes")) {
+      for (let k of Object.keys(formData.system.attributes)) {
+        if (k.startsWith("attr")) {
+          // inherent effects like "brawn" on "species" only - skip user-created active effects only
+          continue;
+        }
+        const modPath = ModifierHelpers.getModKeyPath(
+          formData.system.attributes[k].modtype,
+          formData.system.attributes[k].mod
+        );
+        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.attributes[k].value;
+        }
+      }
+      await inherentEffect.update({changes: inherentEffect.changes});
+    }
+    // some inherent effects are not in the `attribute` keyspace; make sure to get them as well
+    if (inherentEffect && ["gear", "weapon", "armour"].includes(item.type)) {
+      let modPath = ModifierHelpers.getModKeyPath(
+          "Stat",
+          "Encumbrance",
+        );
+      let inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+      if (inherentEffectChangeIndex >= 0) {
+        inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.encumbrance.value;
+      }
+      if (item.type === "armour") {
+        // armor has additional stats
+        modPath = ModifierHelpers.getModKeyPath(
+          "Stat",
+          "Defence",
+        );
+        inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.defence.value;
+        }
+        modPath = ModifierHelpers.getModKeyPath(
+          "Stat",
+          "Soak",
+        );
+        inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.soak.value;
+        }
+      }
+      await inherentEffect.update({changes: inherentEffect.changes});
+    }
+
+    // iterate over formdata attributes to add/update them if they were added
+    if (formData.system?.attributes) {
+      for (let k of Object.keys(formData.system.attributes)) {
+        const match = existing.find(i => i.name === k);
+        const changeKey = ModifierHelpers.getModKeyPath(
+          formData.system.attributes[k].modtype,
+          formData.system.attributes[k].mod
+        );
+        // check if an active effect exists - create it if not, update it if it does
+        if (match) {
+          match.changes[0].value = parseInt(formData.system.attributes[k].value);
+          match.changes[0].key = changeKey;
+          await match.update({changes: match.changes});
+        } else if (k.startsWith("attr")) {
+          // user-created active effects only - skip inherent effects like "brawn" on "species"
+          toCreate.push({
+            name: k,
+            icon: item.img,
+            changes: [{
+              key: changeKey,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.system.attributes[k].value),
+            }],
+          });
+        }
+      }
+    }
+
+    if (toCreate.length) {
+      await item.createEmbeddedDocuments("ActiveEffect", toCreate);
+    }
+
+    if (toDelete.length) {
+      await item.deleteEmbeddedDocuments("ActiveEffect", toDelete);
+    }
+
+    CONFIG.logger.debug("applyActiveEffectOnUpdate", toCreate, toUpdate, toDelete);
+  }
+
+  /**
+   * Create active effects on specializations during import
+   * This is required because embedded items like talents normally get their AEs created from the embedded item editor,
+   * which is not in use during import.
+   * @param specialization - specialization with talents on it to create AEs for
+   * @returns {Promise<void>}
+   */
+  static async applyTalentActiveEffects(specialization) {
+    if (specialization.type !== "specialization") {
+      return;
+    }
+    CONFIG.logger.debug(`Transferring Active Effects from talents for specialization ${specialization.name}`);
+    const toCreate = [];
+    // iterate over talents, find attributes on them, and create active effects
+    for (const talentId of Object.keys(specialization.system.talents)) {
+      const talent = specialization.system.talents[talentId];
+      if (Object.keys(talent).includes("attributes")) {
+        for (const attributeName of Object.keys(talent.attributes)) {
+          const attribute = talent.attributes[attributeName];
+          const changeKey = ModifierHelpers.getModKeyPath(
+            attribute.modtype,
+            attribute.mod
+          );
+          // only create an active effect if the mod is a type requiring one (e.g., weapon stats don't)
+          if (changeKey) {
+            toCreate.push({
+              name: attributeName,
+              img: talent.img,
+              changes: [{
+                key: changeKey,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: parseInt(attribute.value),
+              }],
+            });
+          }
+        }
+      }
+    }
+    CONFIG.logger.debug(toCreate);
+    if (toCreate.length) {
+      await specialization.createEmbeddedDocuments("ActiveEffect", toCreate);
+    }
   }
 }
 
