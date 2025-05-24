@@ -158,11 +158,10 @@ export default class RollBuilderFFG extends FormApplication {
       try {
         // remove one-time status effects
         CONFIG.logger.debug("Removing one-time status effects from actor");
-        const actorData = this.roll.data.actor;
+        const actorData = this.roll.data.document;
         if (actorData) {
-          const actor = game.actors.get(actorData._id);
-          if (actor) {
-            const actorEffects = actor.getEmbeddedCollection("ActiveEffect");
+          if (actorData) {
+            const actorEffects = actorData.getEmbeddedCollection("ActiveEffect");
             if (actorEffects) {
               const toDelete = [];
               for (const activeEffect of actorEffects.contents) {
@@ -171,7 +170,7 @@ export default class RollBuilderFFG extends FormApplication {
                 }
               }
               if (toDelete.length > 0) {
-                await actor.deleteEmbeddedDocuments("ActiveEffect", toDelete);
+                await actorData.deleteEmbeddedDocuments("ActiveEffect", toDelete);
               }
             }
           }

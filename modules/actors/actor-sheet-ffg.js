@@ -1769,8 +1769,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
     this.actor.flags.starwarsffg.loaded = true;
 
-    let actor = await game.actors.get(this.actor.id);
-    const specializations = actor.items.filter((item) => {
+    const specializations = this.actor.items.filter((item) => {
       return item.type === "specialization";
     });
 
