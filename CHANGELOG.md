@@ -1,5 +1,6 @@
 `?`
 * Features:
+  * New built-in status effects for single-use boost/setback dice
 * Fixes:
   * Talent modifiers on specializations are now properly cleaned up when a new talent overrides an old one
 
