@@ -804,5 +804,7 @@
   "SWFFG.XP.Adjust.Window.Title": "Adjust Available XP",
   "SWFFG.XP.Adjust.Window.Reason": "Adjustment Reason",
   "SWFFG.XP.Adjust.Window.Amount": "Adjustment Amount",
-  "SWFFG.XP.Adjust.Window.Default": "Manual Grant"
+  "SWFFG.XP.Adjust.Window.Default": "Manual Grant",
+  "SWFFG.Status.Boost.Next": "Boost Next Skill",
+  "SWFFG.Status.Setback.Next": "Setback Next Skill"
 }

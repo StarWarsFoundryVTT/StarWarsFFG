@@ -123,6 +123,43 @@ Hooks.once("init", async function () {
 
   CONFIG.ui.pause = PauseFFG;
 
+  // define custom status effects
+  const allSkillChanges = {
+    boost: [],
+    setback: [],
+  };
+  for (const skill of Object.keys(CONFIG.FFG.skills)) {
+    allSkillChanges['boost'].push({
+      key: `system.skills.${skill}.boost`,
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      value: "1",
+    });
+    allSkillChanges['setback'].push({
+      key: `system.skills.${skill}.setback`,
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      value: "1",
+    });
+  }
+
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-boost-once",
+    img: "systems/starwarsffg/images/dice/starwars/blue.png",
+    name: "SWFFG.Status.Boost.Next",
+    changes: allSkillChanges['boost'],
+    system: {
+      duration: "once",
+    }
+  });
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-setback-once",
+    img: "systems/starwarsffg/images/dice/starwars/black.png",
+    name: "SWFFG.Status.Setback.Next",
+    changes: allSkillChanges['setback'],
+    system: {
+      duration: "once",
+    }
+  });
+
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);

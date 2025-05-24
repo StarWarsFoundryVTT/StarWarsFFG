@@ -154,6 +154,32 @@ export default class RollBuilderFFG extends FormApplication {
         await tmp_item.setFlag("starwarsffg", "uuid", this.roll.item.uuid);
       }
 
+
+      try {
+        // remove one-time status effects
+        CONFIG.logger.debug("Removing one-time status effects from actor");
+        const actorData = this.roll.data.actor;
+        if (actorData) {
+          const actor = game.actors.get(actorData._id);
+          if (actor) {
+            const actorEffects = actor.getEmbeddedCollection("ActiveEffect");
+            if (actorEffects) {
+              const toDelete = [];
+              for (const activeEffect of actorEffects.contents) {
+                if (activeEffect?.system?.duration === "once") {
+                  toDelete.push(activeEffect._id);
+                }
+              }
+              if (toDelete.length > 0) {
+                await actor.deleteEmbeddedDocuments("ActiveEffect", toDelete);
+              }
+            }
+          }
+        }
+      } catch (error) {
+        CONFIG.logger.warn(`Caught error in roller: ${error}`);
+      }
+
       const sentToPlayer = html.find(".user-selection")?.[0]?.value;
       if (sentToPlayer) {
         let container = $(`<div class='dice-pool'></div>`)[0];
