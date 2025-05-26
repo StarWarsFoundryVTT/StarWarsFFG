@@ -364,8 +364,6 @@ export default class ModifierHelpers {
     } else if (modType === "Stat") {
       return `system.stats.${mod.toLocaleLowerCase()}.value`;
     } else if (modType === "Stat All") {
-      // TODO: check if this path is correct; I suspect it's not
-      // TODO: this is, in fact, sometimes wrong (since it sometimes is supposed to adjust max and sometimes is not)
       // TODO: defense (both), encumbrance, force pool do not work at all
       return `system.stats.${mod.toLocaleLowerCase()}.value`;
     } else if (modType === "Threshold") {
@@ -536,7 +534,6 @@ export default class ModifierHelpers {
       }
     }
 
-    // TODO: figure out how to handle embedded items
     if (toCreate.length) {
       await item.createEmbeddedDocuments("ActiveEffect", toCreate);
     }

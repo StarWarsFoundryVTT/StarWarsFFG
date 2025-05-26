@@ -89,7 +89,6 @@ export class itemEditor extends FormApplication  {
 
     // allow drag-and-dropping mods if this is an attachment
     if (this.data.clickedObject.type === "itemattachment") {
-      // TODO: this appears to trigger twice the first time it's used on load
       const dragDrop = new DragDrop({
         dragSelector: ".item",
         dropSelector: ".starwarsffg.flat_editor",
@@ -124,7 +123,6 @@ export class itemEditor extends FormApplication  {
     // if it's an attachment, locate the attachment to update
     let updateData;
     if (this.data.clickedObject.type === "itemattachment") {
-      // TODO: this might break with multiple attachments
       updateData = this.data.sourceObject.system.itemattachment;
       for (let attachment of updateData) {
         if (attachment._id === this.data.clickedObject._id) {
@@ -134,7 +132,6 @@ export class itemEditor extends FormApplication  {
           this.data.clickedObject.system.itemmodifier.push(droppedObject.toObject());
         }
       }
-      // TODO: handle drag-and-drop of attachment onto item
       await this.data.sourceObject.update({system: {itemattachment: updateData}});
       this.render(true);
     }
@@ -165,7 +162,7 @@ export class itemEditor extends FormApplication  {
 
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
-        { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
+        {
           modTypeChoices: modTypeChoices,
           modChoices: modChoices,
           direct: direct,
@@ -212,7 +209,7 @@ export class itemEditor extends FormApplication  {
       const modChoices = CONFIG.FFG.modTypeToModMap;
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-modification.html',
-        { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
+        {
           modTypeChoices: modTypeChoices,
           modChoices: modChoices,
           direct: true,
@@ -233,7 +230,6 @@ export class itemEditor extends FormApplication  {
       // submit the changes so it gets saved even if the user reloads without closing the editor
       await this._updateObject(undefined, this._getSubmitData());
     } else if (action === 'delete') {
-      // TODO: iterate over attrs in the children, look for matching AEs, and delete them
       const modContainer = $(event.currentTarget).parents(".modification_title").find(".attributes-list");
       for (const mod of modContainer.children()) {
         const modId = $(mod).data("attribute");
@@ -331,8 +327,6 @@ export class itemEditor extends FormApplication  {
               CONFIG.logger.debug(`>> Detected key ${modKey} was removed, attempting to locate matching active effect`);
               formData.system.attributes[`-=${modKey}`] = null;
               delete attachment.system.attributes[modKey];
-              // TODO: handle drag-and-drop of attachment onto item (and deleting from item)
-              // TODO: take a note - this breaks if the same key is in use across multiple mods, e.g. dragging "Additional Damage Mod" onto an attachment twice
               // delete the active effect
               const match = existingActiveEffects.find(i => i.name === modKey);
               if (match) {

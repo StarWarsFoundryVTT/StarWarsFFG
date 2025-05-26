@@ -792,8 +792,6 @@ export class ItemSheetFFG extends ItemSheet {
                 const match = existingEffects.find(i => i.name === modAttrName);
                 if (match) {
                   CONFIG.logger.debug(`found matching active effect: ${match.id}`);
-                  // TODO: this has a bug where the active effect is being CREATED twice. it's only being DELETED once... meaning it gets left behind
-                  // it gets duplicated when selecting a new mod type from the "base mods" dropdown without AEs existing
                   toDeleteEffects.push(match.id);
                 }
               }
