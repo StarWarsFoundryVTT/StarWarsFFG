@@ -2,39 +2,12 @@ import PopoutModifiers from "../popout-modifiers.js";
 
 export default class ModifierHelpers {
   /**
-   * Calculate a total attribute value for a key from a list of attributes and items
-   * @param  {string} key - Attribute key
-   * @param  {object} attrs - Attributes object
-   * @param  {array} items - Items array
-   * @returns {number} - Total value of all attribute values
-   */
-  static getCalculateValueForAttribute(key, attrs, items, modtype) {
-    console.log("calculating value for *attribute*: ", key, "attrs: ", attrs, "items: ", items, "modtype: ", modtype, "")
-    return 0;
-    let total = 0;
-
-    if (key === "Shields") {
-      total += this.getCalculatedValueFromItems(items, key, modtype);
-
-      return attrs[key].value.map((v) => v + total);
-    } else {
-      const attrValue = attrs[key].value;
-      const itemsValue = this.getCalculatedValueFromItems(items, key, modtype);
-
-      total += attrValue;
-      total += itemsValue;
-    }
-
-    return 0;
-  }
-
-  /**
    * Calculate total value from embedded items
    * @param  {array} items
    * @param  {string} key
    */
   static getCalculatedValueFromItems(items, key, modtype, includeSource) {
-    console.log("calculating value from *items*: ", items, "key: ", key, "modtype: ", modtype, "includeSource: ", includeSource, "")
+    // TODO: we are returning 0 from this; it can probably be removed. but we need to validate that it isn't making other changes
     let total = 0;
     let checked = false;
     let sources = [];

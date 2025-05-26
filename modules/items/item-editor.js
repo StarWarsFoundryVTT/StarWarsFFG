@@ -694,3 +694,198 @@ export class talentEditor extends itemEditor {
     });
   }
 }
+
+export class forcePowerEditor extends itemEditor {
+  /*
+    Known issues:
+    - The description rich text editor doesn't appear to work
+  */
+  /** @override */
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(
+      super.defaultOptions,
+      {
+        title: `Embedded Force Power Editor`, // should not be seen by anyone, as it is dynamically set on getData()
+        //height: 720,
+        width: 520,
+        closeOnSubmit: false,
+        submitOnClose: true,
+        submitOnChange: true,
+        resizable: true,
+        classes: ["starwarsffg", "flat_editor"],
+        tabs: [{ navSelector: ".tabs", contentSelector: ".content", initial: "tab1"}],
+        scrollY: [".modification_container"],
+      }
+    );
+  }
+
+  /** @override */
+  get template() {
+    const path = "systems/starwarsffg/templates/items/dialogs";
+    return `${path}/ffg-embedded-upgrade.html`;
+  }
+
+    /** @override */
+  async getData(options) {
+    // update the title since it isn't available when creating the application
+    this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
+
+    // build out the mod type and mod choices
+    let modTypeChoices = this._getModTypeChoices();
+    let modChoices = CONFIG.FFG.modTypeToModMap;
+    let activations = CONFIG.FFG.activations;
+    let data = await this._enrichData();
+
+    return {
+      modTypeChoices: modTypeChoices,
+      modChoices: modChoices,
+      activations: activations,
+      data: data,
+    };
+  }
+
+  /**
+   * Controls creating, deleting, or modifying mods (which contain modifiers)
+   * @param event
+   */
+  async _modControl(event) {
+    let action = event.currentTarget.getAttribute('data-action');
+    if (action === 'create') {
+      const nk = new Date().getTime();
+      const modTypeChoices = this._getModTypeChoices();
+      const modChoices = CONFIG.FFG.modTypeToModMap;
+      const modificationId = $(event.currentTarget).data("modification-id");
+      const direct = this.data.clickedObject.type !== "itemattachment";
+
+      CONFIG.logger.debug(`caught creating a new mod on an upgrade. data: ${modificationId}, ${direct}`);
+      CONFIG.logger.debug(modTypeChoices);
+      CONFIG.logger.debug(modChoices);
+      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modTypeChoices)[0]}`);
+      CONFIG.logger.debug(`expected new mod mod is ${modChoices[Object.keys(modTypeChoices)[0]]}`);
+
+      let rendered = await renderTemplate(
+        'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
+        {
+          modTypeChoices: modTypeChoices,
+          modChoices: modChoices,
+          direct: direct,
+          number: modificationId,
+          attachmentType: 'all',
+          id: `attr${nk}`,
+          attr: {
+            modtype: Object.keys(modTypeChoices['all'])[0],
+            mod: Object.keys(modChoices[Object.keys(modTypeChoices['all'])[0]])[0],
+            value: 1,
+          },
+        }
+      );
+
+      $(event.currentTarget).parent().parent().children(".attributes-list").append(rendered);
+      // update the listeners, so we catch events on these new entries
+      this.activateListeners($(event.currentTarget).parent().parent().children(".attributes-list"));
+      // submit the changes so it gets saved even if the user reloads without closing the editor
+      await this._updateObject(undefined, this._getSubmitData());
+    } else if (action === 'delete') {
+      $(event.currentTarget).parent().remove();
+      // submit the changes so it gets saved even if the user reloads without closing the editor
+      await this._updateObject(undefined, this._getSubmitData());
+    }
+  }
+
+  /**
+   * retrieves data and converts rich text editor fields into the enriched version. this results in things like dice displaying
+   * @returns {Promise<*>}
+   * @private
+   */
+  async _enrichData() {
+    let enriched = this.data;
+    enriched.clickedObject.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.description);
+    return enriched;
+  }
+
+  /** @override */
+  async _updateObject(event, formData) {
+    CONFIG.logger.debug("Updating upgrade");
+    formData = foundry.utils.expandObject(formData);
+
+    // move attributes out of "system" since they aren't here for upgrades
+    formData.attributes = formData.system?.attributes;
+    delete formData.system?.attributes;
+    // make sure attributes is a dictionary instead of whatever they end up being
+    if (!Object.keys(formData).includes("attributes") || formData.attributes === undefined) {
+      formData.attributes = {};
+    }
+
+    const existingActiveEffects = this.data.sourceObject.getEmbeddedCollection("ActiveEffect");
+
+    // iterate over attributes on the specialization and remove any that aren't present in the form
+    if (Object.keys(this.data.sourceObject.system.upgrades[this.data.upgradeId]).includes("attributes") && this.data.sourceObject.system.upgrades[this.data.upgradeId].attributes !== undefined) {
+      for (const attrKey of Object.keys(this.data.sourceObject.system.upgrades[this.data.upgradeId].attributes)) {
+        if (!Object.keys(formData.attributes).includes(attrKey)) {
+          formData.attributes[`-=${attrKey}`] = null;
+          delete this.data.sourceObject.system.attributes[attrKey];
+          // delete the active effect
+          const match = existingActiveEffects.find(i => i.name === attrKey);
+          if (match) {
+            CONFIG.logger.debug(`>>> Active effect located (${match.id}), deleting`);
+            await this.data.sourceObject.deleteEmbeddedDocuments("ActiveEffect", [match.id]);
+          }
+        }
+      }
+    }
+
+    CONFIG.logger.debug(">> Looking for new or updated ");
+    // iterate over newly added or updated attributes and create the active effects
+    if (Object.keys(formData).includes("attributes")) {
+      for (const modKey of Object.keys(formData.attributes)) {
+        CONFIG.logger.debug(">>> Checking modKey", modKey);
+        if (modKey.startsWith("-=")) {
+          CONFIG.logger.debug(`>>>> Skipping mod ${modKey} which will be deleted`);
+          // skip anything queued for deletion
+          continue;
+        }
+        const path = ModifierHelpers.getModKeyPath(formData.attributes[modKey].modtype, formData.attributes[modKey].mod);
+        const match = existingActiveEffects.find(i => i.name === modKey);
+        if (match) {
+          // existing entry
+          await match.update({
+            changes: [{
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.attributes[modKey].value),
+            }]
+          });
+        } else {
+          // new entry
+          const effect = {
+            name: modKey,
+            changes: [{
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: parseInt(formData.attributes[modKey].value),
+            }],
+          };
+          CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
+          await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
+        }
+      }
+    }
+
+
+    // merge it into the existing upgrade data
+    formData = foundry.utils.mergeObject(
+      this.data.sourceObject.system.upgrades[this.data.upgradeId],
+      formData,
+    );
+
+    CONFIG.logger.debug(formData);
+
+    await this.data.sourceObject.update({
+      system: {
+        upgrades: {
+          [this.data.upgradeId]: formData,
+        },
+      },
+    });
+  }
+}

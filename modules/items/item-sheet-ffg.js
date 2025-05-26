@@ -8,7 +8,7 @@ import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemOptions from "./item-ffg-options.js";
-import {itemEditor, talentEditor} from "./item-editor.js";
+import {forcePowerEditor, itemEditor, talentEditor} from "./item-editor.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -573,10 +573,15 @@ export class ItemSheetFFG extends ItemSheet {
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
-    if (["forcepower", "specialization", "signatureability"].includes(this.object.type)) {
+    if (["signatureability"].includes(this.object.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
+    }
+
+    if (["forcepower"].includes(this.object.type)) {
+      html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
+      html.find(".talent-modifiers .fa-cog").on("click", this._onClickUpgradeEdit.bind(this));
     }
 
     if (this.object.type === "specialization") {
@@ -1278,6 +1283,24 @@ export class ItemSheetFFG extends ItemSheet {
   _updateObject(event, formData) {
     const itemUpdate = ItemHelpers.itemUpdate.bind(this);
     itemUpdate(event, formData);
+  }
+
+  async _onClickUpgradeEdit(event) {
+    // pull the item which the edit is on
+    const li = $(event.currentTarget);
+    const clickedId = li.closest('.talent-block').attr('id');
+    const clickedType = 'upgrades';
+    const parentObject = await fromUuid(this.object.uuid);
+    // locate the clicked object on the parent
+    let clickedObject = parentObject.system[clickedType][clickedId];
+    CONFIG.logger.debug(clickedObject);
+
+    const data = {
+      sourceObject: this.object,
+      clickedObject: clickedObject,
+      upgradeId: clickedId,
+    }
+    new forcePowerEditor(data).render(true);
   }
 
   async _onClickTalentControl(event) {

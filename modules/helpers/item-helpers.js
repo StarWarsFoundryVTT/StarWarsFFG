@@ -183,8 +183,8 @@ export default class ItemHelpers {
    */
   static async syncAEStatus(item, activeEffects) {
     CONFIG.logger.debug(`Syncing ${activeEffects.length} Active Effects status...`);
-    if (["specialization", "forcepower", "signatureability"].includes(item.type)) {
-      CONFIG.logger.debug("specialization, force power, or signature ability, looking through AEs to sync");
+    if (["specialization", "signatureability"].includes(item.type)) {
+      CONFIG.logger.debug("specialization, or signature ability, looking through AEs to sync");
       for (const activeEffect of activeEffects) {
         if (["specialization"].includes(item.type)) {
           for (const talentKey of Object.keys(item.system.talents)) {
@@ -197,6 +197,29 @@ export default class ItemHelpers {
                   await activeEffect.update({disabled: false});
                 } else {
                   CONFIG.logger.debug(`located attribute granting AE (${activeEffect.name}), but the talent is not learned, suspending`);
+                  await activeEffect.update({disabled: true});
+                }
+              }
+            } catch {
+              CONFIG.logger.debug("no attribute granting AE found");
+            }
+          }
+        }
+      }
+    } else if (["forcepower"].includes(item.type)) {
+      CONFIG.logger.debug("force power, looking through AEs to sync");
+      for (const activeEffect of activeEffects) {
+        if (["forcepower"].includes(item.type)) {
+          for (const upgradeKey of Object.keys(item.system.upgrades)) {
+            const upgrade = item.system.upgrades[upgradeKey];
+            try {
+              const locatedMod = upgrade.attributes[activeEffect.name]; // this can throw an exception; best to handle it
+              if (locatedMod) {
+                if (upgrade.islearned) {
+                  CONFIG.logger.debug(`located attribute granting AE (${activeEffect.name}) AND the upgrade (${upgrade.name}) is learned, unsuspending`);
+                  await activeEffect.update({disabled: false});
+                } else {
+                  CONFIG.logger.debug(`located attribute granting AE (${activeEffect.name}), but the upgrade is not learned, suspending`);
                   await activeEffect.update({disabled: true});
                 }
               }
