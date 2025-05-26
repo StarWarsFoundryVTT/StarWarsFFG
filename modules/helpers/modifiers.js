@@ -361,11 +361,13 @@ export default class ModifierHelpers {
     }
     if (modType === "Characteristic") {
       return `system.characteristics.${mod}.value`;
-    } else if (modType === "Stat") {
-      return `system.stats.${mod.toLocaleLowerCase()}.value`;
-    } else if (modType === "Stat All") {
-      // TODO: defense (both), encumbrance, force pool do not work at all
-      return `system.stats.${mod.toLocaleLowerCase()}.value`;
+    } else if (modType === "Stat All" || modType === "Stat") {
+      if (mod === "ForcePool") {
+        // force pool uses max, not value, but still fits in max. it's also a different casing scheme...
+        return `system.stats.forcePool.max`;
+      } else {
+        return `system.stats.${mod.toLocaleLowerCase()}.value`;
+      }
     } else if (modType === "Threshold") {
       if (mod === "Hulltrauma") {
         return `system.stats.hullTrauma.max`;

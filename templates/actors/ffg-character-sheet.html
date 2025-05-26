@@ -172,7 +172,7 @@
     <div class="tab talents items" data-group="primary" data-tab="talents">
       {{!-- Talents List --}}
       <div class="container flex-group-center item-values">
-        {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable") ))}} {{/if}}
+        {{!-- Force Box --}} {{#if (or (eq actor.flags.starwarsffg.config.enableForcePool undefined) (eq actor.flags.starwarsffg.config.enableForcePool true) )}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.ForcePool" fields=(array (object name="data.stats.forcePool.value" value=data.stats.forcePool.value type="Number" label="SWFFG.ForcePoolCommitted") (object name="data.stats.forcePool.max" value=data.stats.forcePool.max type="Number" label="SWFFG.ForcePoolAvailable" disabled=disabled) ))}} {{/if}}
       </div>
       {{> "systems/starwarsffg/templates/parts/actor/ffg-talents.html"}}
       {{!-- Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-abilities.html"}}

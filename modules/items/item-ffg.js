@@ -104,8 +104,6 @@ export class ItemFFG extends ItemBaseFFG {
       return;
     }
 
-    // TODO: refactor to use getModKeyPath function
-    // TODO: handle removing attachments, mods, etc (removing any relevant active effects)
     const existingEffects = this.getEmbeddedCollection("ActiveEffect");
     CONFIG.logger.debug(`On item ${this.name} update, found the following active effects:`);
     CONFIG.logger.debug(existingEffects);
@@ -128,8 +126,6 @@ export class ItemFFG extends ItemBaseFFG {
       for (const attrKey of Object.keys(changed.system.attributes)) {
         const existingEffect = existingEffects.find(i => i.name === attrKey)
         if (existingEffect) {
-          // TODO: we should have merged the changed data into the existing data so we have a single place to look things up
-          // (and that place is NOT changed)
           existingEffect.changes[0].value = parseInt(this.system.attributes[attrKey].value);
           existingEffect.changes[0].key = ModifierHelpers.getModKeyPath(
             this.system.attributes[attrKey].modtype,
