@@ -134,7 +134,7 @@ export class ItemSheetFFG extends ItemSheet {
       case "armour":
         this.position.width = 385;
         this.position.height = 750;
-        data.modTypeSelected = "armour";
+        data.modTypeSelected = "armor";
         break;
       case "gear":
         this.position.width = 385;

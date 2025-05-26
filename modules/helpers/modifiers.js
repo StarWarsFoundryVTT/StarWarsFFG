@@ -233,13 +233,11 @@ export default class ModifierHelpers {
     event.preventDefault();
     const a = event.currentTarget;
     const action = a.dataset.action;
-    const form = this.form;
 
     // Add new attribute
     if (action === "create") {
       CONFIG.logger.debug("Creating new modifier...");
       const nk = new Date().getTime();
-      let newKey = document.createElement("div");
       if (["criticaldamage", "shipattachment", "shipweapon"].includes(this.object.type)) {
         await this.object.update({
           "system.attributes": {
@@ -250,7 +248,6 @@ export default class ModifierHelpers {
             },
           }
         });
-        return;
       } else if (["itemmodifier", "itemattachment"].includes(this.object.type)) {
         await this.object.update({
           "system.attributes": {
@@ -261,13 +258,17 @@ export default class ModifierHelpers {
             },
           }
         });
-        return;
       } else {
-        // TODO: add the data to the object instead of HTML to the form
-        newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><select class="attribute-mod" name="data.attributes.attr${nk}.mod"><option value="${Object.keys(CONFIG.FFG.characteristics)[0]}">${Object.keys(CONFIG.FFG.characteristics)[0]}</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+        await this.object.update({
+          "system.attributes": {
+            [`attr${nk}`]: {
+              modtype: "Stat",
+              mod: "Wounds",
+              value: 0,
+            },
+          }
+        });
       }
-      form.appendChild(newKey);
-      await this._onSubmit(event);
     }
 
     // Remove existing attribute
