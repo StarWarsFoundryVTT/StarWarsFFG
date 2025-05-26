@@ -779,8 +779,6 @@ export class ItemSheetFFG extends ItemSheet {
       CONFIG.logger.debug(existingEffects);
       // check for attachment
       if (itemType === "itemattachment") {
-        // TODO: handle shipattachments, probably
-        // TODO: handle other types of items - e.g. species, talents
         // iterate over embedded modifiers
         CONFIG.logger.debug(`inspecting removed attachment modifiers`);
         if (Object.keys(removedItem.system).includes("itemmodifier")) {
