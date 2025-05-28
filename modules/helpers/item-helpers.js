@@ -237,13 +237,15 @@ export default class ItemHelpers {
         for (const attr of Object.keys(modifier.system.attributes)) {
           const matchingEffect = existingEffects.find(effect => effect.name === attr);
           if (matchingEffect) {
-            CONFIG.logger.debug(`Located ${attr}, updating with new value of ${modifier.system.rank}`);
+            // the mod should be applied once per rank
+            const newValue = modifier.system.rank * modifier.system.attributes[attr].value;
+            CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
             await matchingEffect.update({
               "changes": [{
                 key: matchingEffect.changes[0].key,
                 mode: matchingEffect.changes[0].mode,
                 priority: matchingEffect.changes[0].priority,
-                value: modifier.system.rank,
+                value: newValue,
               }],
             });
           }

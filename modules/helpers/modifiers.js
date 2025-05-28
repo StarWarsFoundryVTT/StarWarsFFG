@@ -350,6 +350,45 @@ export default class ModifierHelpers {
   }
 
   /**
+   * Given a skill path, determine the modifier type for that skill (the revers eof getModKeyPath)
+   * @param skillPath
+   * @returns {string}
+   */
+  static getModTypeByModPath(skillPath) {
+    if (skillPath.endsWith("force")) {
+      return "Force Boost";
+    } else if (skillPath.endsWith("advantage")) {
+      return "Skill Add Advantage";
+    } else if (skillPath.endsWith("dark")) {
+      return "Skill Add Dark";
+    } else if (skillPath.endsWith("despair")) {
+      return "Skill Add Despair";
+    } else if (skillPath.endsWith("failure")) {
+      return "Skill Add Failure";
+    } else if (skillPath.endsWith("light")) {
+      return "Skill Add Light";
+    } else if (skillPath.endsWith("success")) {
+      return "Skill Add Success";
+    } else if (skillPath.endsWith("threat")) {
+      return "Skill Add Threat";
+    } else if (skillPath.endsWith("triumph")) {
+      return "Skill Add Triumph";
+    } else if (skillPath.endsWith("upgrades")) {
+      return "Skill Add Upgrade";
+    } else if (skillPath.endsWith("boost")) {
+      return "Skill Boost";
+    } else if (skillPath.endsWith("rank")) {
+      return "Skill Rank";
+    } else if (skillPath.endsWith("remsetback")) {
+      return "Skill Remove Setback";
+    } else if (skillPath.endsWith("setback")) {
+      return "Skill Setback";
+    } else if (skillPath.endsWith("careerskill")) {
+      return "Career Skill";
+    }
+  }
+
+  /**
    * Given a modifier type and selection, determine the property path for an active effect to apply changes to
    * @param modType
    * @param mod

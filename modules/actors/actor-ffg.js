@@ -121,7 +121,10 @@ export class ActorFFG extends Actor {
     this._prepareSharedData.bind(this);
     this._prepareSharedData(actor);
     if (actor.type === "minion") this._prepareMinionData(actor);
-    if (["character", "nemesis", "rival"].includes(actor.type)) this._prepareCharacterData(actor);
+    if (["character", "nemesis", "rival"].includes(actor.type)) {
+      this._prepareCharacterData(actor);
+      this._prepareSources(actor);
+    }
   }
 
   _prepareSharedData(actorData) {
@@ -396,6 +399,65 @@ export class ActorFFG extends Actor {
         }
       });
       data.duty.value = duty;
+    }
+  }
+
+  /**
+   * Generate source data for dice pools - show where the dice come from
+   * @param actorData - an instance of an actor
+   * @private
+   */
+  _prepareSources(actorData) {
+    // handle direct active effects - which only come from statuses
+    const actorActiveEffects = actorData.getEmbeddedCollection("ActiveEffect");
+    for (const effect of actorActiveEffects) {
+      for (const change of effect.changes) {
+        if (change.key.includes("system.skills")) {
+          // system.skills.Astrogation.value
+          const skillName = change.key.split('.')[2].capitalize();
+          const skillMod = change.key.split('.')[3];
+          const modType = ModifierHelpers.getModTypeByModPath(change.key);
+          if (!Object.keys(actorData.system.skills[skillName]).includes(`${skillMod}source`)) {
+            actorData.system.skills[skillName][`${skillMod}source`] = [];
+          }
+
+          // this is an active effect modifying a skill, add the source
+          actorData.system.skills[skillName][`${skillMod}source`].push({
+            modtype: modType,
+            key: "purchased",
+            name: "Status Effect",
+            value: change.value,
+            type: effect.name,
+          });
+        }
+      }
+    }
+
+    // handle indirect active effects - which come from items
+    for (const item of actorData.items) {
+      const itemActiveEffects = item.getEmbeddedCollection("ActiveEffect");
+      for (const effect of itemActiveEffects) {
+        for (const change of effect.changes) {
+          if (change.key.includes("system.skills")) {
+            // system.skills.Astrogation.value
+            const skillName = change.key.split('.')[2].capitalize();
+            const skillMod = change.key.split('.')[3];
+            const modType = ModifierHelpers.getModTypeByModPath(change.key);
+            if (!Object.keys(actorData.system.skills[skillName]).includes(`${skillMod}source`)) {
+              actorData.system.skills[skillName][`${skillMod}source`] = [];
+            }
+
+            // this is an active effect modifying a skill, add the source
+            actorData.system.skills[skillName][`${skillMod}source`].push({
+              modtype: modType,
+              key: "purchased",
+              name: effect.parent.type,
+              value: change.value,
+              type: effect.parent.name,
+            });
+          }
+        }
+      }
     }
   }
 
