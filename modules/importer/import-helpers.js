@@ -2921,7 +2921,7 @@ export default class ImportHelpers {
     const toCreate = [];
 
     // first update anything inherent to the item type (such as "brawn" on "species")
-    const inherentEffectName = `${item.type}-${item.name}`;
+    const inherentEffectName = `(inherent)`;
     const inherentEffect = existing.find(e => e.name === inherentEffectName);
     if (inherentEffect && Object.keys(formData.system).includes("attributes")) {
       for (let k of Object.keys(formData.system.attributes)) {

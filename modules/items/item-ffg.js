@@ -49,7 +49,7 @@ export class ItemFFG extends ItemBaseFFG {
       // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
       if (existingEffects.contents.length === 0) {
         const effects = {
-          name: `${this.type}-${this.name}`,
+          name: `(inherent)`,
           img: this.img,
           changes: [],
         };
@@ -108,7 +108,7 @@ export class ItemFFG extends ItemBaseFFG {
     CONFIG.logger.debug(`On item ${this.name} update, found the following active effects:`);
     CONFIG.logger.debug(existingEffects);
     // update active effects from the item itself (e.g., stat boosts on species)
-    const itemEffect = existingEffects.find(i => i.name === `${this.type}-${this.name}`);
+    const itemEffect = existingEffects.find(i => i.name === `(inherent)`);
     CONFIG.logger.debug(`And located the following effects directly from this item: ${itemEffect}`);
     if (itemEffect && Object.keys(changed).includes("system") && Object.keys(changed.system).includes("attributes")) {
       const newChanges = foundry.utils.deepClone(itemEffect.changes);
