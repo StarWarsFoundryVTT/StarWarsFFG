@@ -56,6 +56,10 @@ export const character_stats = {
     value: "Encumbrance",
     label: "SWFFG.Encumbrance",
   },
+  "encumbrance-max": {
+    value: "EncumbranceMax",
+    label: "SWFFG.EncumbranceMax",
+  },
   "forcePool": {
     value: "ForcePool",
     label: "SWFFG.ForcePool",

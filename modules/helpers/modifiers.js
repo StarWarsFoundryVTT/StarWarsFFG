@@ -395,7 +395,7 @@ export default class ModifierHelpers {
    * @returns {string}
    */
   static getModKeyPath(modType, mod) {
-    if (["Wounds", "Strain", "Encumbrance", "Speed", "Hulltrauma", "Systemstrain"].includes(mod)) {
+    if (["Wounds", "Strain", "EncumbranceMax", "Speed", "Hulltrauma", "Systemstrain"].includes(mod)) {
       // TODO: this needs to be implemented in more spots, but for now we can shim it here
       modType = "Threshold";
     }
@@ -413,6 +413,9 @@ export default class ModifierHelpers {
         return `system.stats.hullTrauma.max`;
       } else if (mod === "Systemstrain") {
         return `system.stats.systemStrain.max`;
+      } else if (mod === "EncumbranceMax") {
+        // the mod for this is different, so don't simply return the mod value
+        return `system.stats.encumbrance.max`;
       } else {
         return `system.stats.${mod.toLocaleLowerCase()}.max`;
       }
