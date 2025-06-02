@@ -55,37 +55,55 @@ export class ItemFFG extends ItemBaseFFG {
         };
         if (this.type === "species") {
           for (const attribute of Object.keys(this.system.attributes)) {
-            const path = ModifierHelpers.getModKeyPath(
+            const explodedMods = ModifierHelpers.explodeMod(
               this.system.attributes[attribute].modtype,
               attribute
             );
-            effects.changes.push({
-              key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(this.system.attributes[attribute].value),
-            });
+            for (const cur_mod of explodedMods) {
+              const path = ModifierHelpers.getModKeyPath(
+                cur_mod['modType'],
+                cur_mod['mod']
+              );
+              effects.changes.push({
+                key: path,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: parseInt(this.system.attributes[attribute].value),
+              });
+            }
           }
         } else if (["gear", "weapon"].includes(this.type)) {
-          const path = ModifierHelpers.getModKeyPath(
+          const explodedMods = ModifierHelpers.explodeMod(
             "Stat",
-            "Encumbrance",
+            "Encumbrance"
           );
-          effects.changes.push({
-            key: path,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: 0,
-          });
-        } else if (this.type === "armour") {
-          for (const key of ["Encumbrance", "Defence", "Soak"]) {
+          for (const cur_mod of explodedMods) {
             const path = ModifierHelpers.getModKeyPath(
-              "Stat",
-              key,
+              cur_mod['modType'],
+              cur_mod['mod']
             );
             effects.changes.push({
               key: path,
               mode: CONST.ACTIVE_EFFECT_MODES.ADD,
               value: 0,
             });
+          }
+        } else if (this.type === "armour") {
+          for (const key of ["Encumbrance", "Defence", "Soak"]) {
+            const explodedMods = ModifierHelpers.explodeMod(
+              "Stat",
+              key
+            );
+            for (const cur_mod of explodedMods) {
+              const path = ModifierHelpers.getModKeyPath(
+                cur_mod['modType'],
+                cur_mod['mod']
+              );
+              effects.changes.push({
+                key: path,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: 0,
+              });
+            }
           }
         }
 
@@ -125,12 +143,26 @@ export class ItemFFG extends ItemBaseFFG {
     if (changed?.system?.attributes) {
       for (const attrKey of Object.keys(changed.system.attributes)) {
         const existingEffect = existingEffects.find(i => i.name === attrKey)
+        const explodedMods = ModifierHelpers.explodeMod(
+          this.system.attributes[attrKey].modtype,
+          this.system.attributes[attrKey].mod
+        );
+
+        const changes = [];
+        for (const curMod of explodedMods) {
+          changes.push({
+            key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: parseInt(this.system.attributes[attrKey].value),
+          });
+        }
+
         if (existingEffect) {
-          existingEffect.changes[0].value = parseInt(this.system.attributes[attrKey].value);
-          existingEffect.changes[0].key = ModifierHelpers.getModKeyPath(
-            this.system.attributes[attrKey].modtype,
-            this.system.attributes[attrKey].mod
-          );
+          // existing entry
+          CONFIG.logger.debug(`> Staged AE changes for update: ${JSON.stringify(changes)}`);
+          await existingEffect.update({
+            changes: changes,
+          });
         }
       }
     }

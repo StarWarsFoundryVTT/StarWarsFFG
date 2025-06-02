@@ -344,26 +344,32 @@ export class itemEditor extends FormApplication  {
                 // skip anything queued for deletion
                 continue;
               }
-              const path = ModifierHelpers.getModKeyPath(formData.system.attributes[modKey].modtype, formData.system.attributes[modKey].mod);
               const match = existingActiveEffects.find(i => i.name === modKey);
+              const explodedMods = ModifierHelpers.explodeMod(
+                formData.system.attributes[modKey].modtype,
+                formData.system.attributes[modKey].mod
+              );
+
+              const changes = [];
+              for (const curMod of explodedMods) {
+                changes.push({
+                  key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+                  mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                  value: parseInt(formData.system.attributes[modKey].value),
+                });
+              }
+
               if (match) {
                 // existing entry
+                CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
                 await match.update({
-                  changes: [{
-                    key: path,
-                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                    value: parseInt(formData.system.attributes[modKey].value),
-                  }]
+                  changes: changes,
                 });
               } else {
                 // new entry
                 const effect = {
                   name: modKey,
-                  changes: [{
-                    key: path,
-                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                    value: parseInt(formData.system.attributes[modKey].value),
-                  }],
+                  changes: changes,
                 };
                 CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
                 await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
@@ -388,26 +394,34 @@ export class itemEditor extends FormApplication  {
                   // skip anything queued for deletion
                   continue;
                 }
-                const path = ModifierHelpers.getModKeyPath(modifier.system.attributes[modKey].modtype, modifier.system.attributes[modKey].mod);
+
+
                 const match = existingActiveEffects.find(i => i.name === modKey);
+                const explodedMods = ModifierHelpers.explodeMod(
+                  modifier.system.attributes[modKey].modtype,
+                  modifier.system.attributes[modKey].mod
+                );
+
+                const changes = [];
+                for (const curMod of explodedMods) {
+                  changes.push({
+                    key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                    value: parseInt(modifier.system.attributes[modKey].value),
+                  });
+                }
+
                 if (match) {
                   // existing entry
+                  CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
                   await match.update({
-                    changes: [{
-                      key: path,
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                      value: parseInt(modifier.system.attributes[modKey].value),
-                    }]
+                    changes: changes,
                   });
                 } else {
                   // new entry
                   const effect = {
                     name: modKey,
-                    changes: [{
-                      key: path,
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                      value: parseInt(modifier.system.attributes[modKey].value),
-                    }],
+                    changes: changes,
                   };
                   CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
                   await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
@@ -456,31 +470,39 @@ export class itemEditor extends FormApplication  {
           this.data.clickedObject = modifier;
         }
       }
+
       // iterate over the submitted data to find new/updated entries
       for (const modKey of Object.keys(formData.system.attributes)) {
         if (modKey.startsWith("-=")) {
           continue;
         }
-        const path = ModifierHelpers.getModKeyPath(formData.system.attributes[modKey].modtype, formData.system.attributes[modKey].mod);
+
         const match = existingActiveEffects.find(i => i.name === modKey);
+        const explodedMods = ModifierHelpers.explodeMod(
+          formData.system.attributes[modKey].modtype,
+          formData.system.attributes[modKey].mod
+        );
+
+        const changes = [];
+        for (const curMod of explodedMods) {
+          changes.push({
+            key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: parseInt(formData.system.attributes[modKey].value),
+          });
+        }
+
         if (match) {
           // existing entry
+          CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
           await match.update({
-            changes: [{
-              key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(formData.system.attributes[modKey].value),
-            }]
+            changes: changes,
           });
         } else {
           // new entry
           const effect = {
             name: modKey,
-            changes: [{
-              key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(formData.system.attributes[modKey].value),
-            }],
+            changes: changes,
           };
           CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
           await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
@@ -643,33 +665,39 @@ export class talentEditor extends itemEditor {
           // skip anything queued for deletion
           continue;
         }
-        const path = ModifierHelpers.getModKeyPath(formData.attributes[modKey].modtype, formData.attributes[modKey].mod);
+
         const match = existingActiveEffects.find(i => i.name === modKey);
+        const explodedMods = ModifierHelpers.explodeMod(
+          formData.attributes[modKey].modtype,
+          formData.attributes[modKey].mod
+        );
+
+        const changes = [];
+        for (const curMod of explodedMods) {
+          changes.push({
+            key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: parseInt(formData.attributes[modKey].value),
+          });
+        }
+
         if (match) {
           // existing entry
+          CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
           await match.update({
-            changes: [{
-              key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(formData.attributes[modKey].value),
-            }]
+            changes: changes,
           });
         } else {
           // new entry
           const effect = {
             name: modKey,
-            changes: [{
-              key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(formData.attributes[modKey].value),
-            }],
+            changes: changes,
           };
           CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
           await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
         }
       }
     }
-
 
     // merge it into the existing talent data
     formData = foundry.utils.mergeObject(
@@ -838,26 +866,33 @@ export class forcePowerEditor extends itemEditor {
           // skip anything queued for deletion
           continue;
         }
-        const path = ModifierHelpers.getModKeyPath(formData.attributes[modKey].modtype, formData.attributes[modKey].mod);
+
         const match = existingActiveEffects.find(i => i.name === modKey);
+        const explodedMods = ModifierHelpers.explodeMod(
+          formData.attributes[modKey].modtype,
+          formData.attributes[modKey].mod
+        );
+
+        const changes = [];
+        for (const curMod of explodedMods) {
+          changes.push({
+            key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: parseInt(formData.attributes[modKey].value),
+          });
+        }
+
         if (match) {
           // existing entry
+          CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
           await match.update({
-            changes: [{
-              key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(formData.attributes[modKey].value),
-            }]
+            changes: changes,
           });
         } else {
           // new entry
           const effect = {
             name: modKey,
-            changes: [{
-              key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(formData.attributes[modKey].value),
-            }],
+            changes: changes,
           };
           CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
           await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);

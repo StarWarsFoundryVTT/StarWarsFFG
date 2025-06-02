@@ -17,19 +17,19 @@
               <div class="defense-block">
                 <div class="defense-block-title">{{localize "SWFFG.Defense"}}</div>
                 <div class="defense-value fore">
-                  <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" disabled="{{ disabled }}" />
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseFore"}}</div>
                 </div>
                 <div class="defense-value aft">
-                  <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" disabled="{{ disabled }}"/>
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseAft"}}</div>
                 </div>
                 <div class="defense-value port">
-                  <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" disabled="{{ disabled }}"/>
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefensePort"}}</div>
                 </div>
                 <div class="defense-value starboard">
-                  <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" disabled="{{ disabled }}"/>
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseStarboard"}}</div>
                 </div>
                 <img class="defense-img" src="{{ data.silhouetteImage }}" data-edit="system.silhouetteImage"/>
