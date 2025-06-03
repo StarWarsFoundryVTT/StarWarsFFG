@@ -532,6 +532,8 @@ export default class ModifierHelpers {
         return `system.stats.shields.port`;
       } else if (mod === "Shields.Starboard") {
         return `system.stats.shields.starboard`;
+      } else if (mod === "Vehicle.Hardpoints") {
+        return `system.stats.customizationHardPoints.value`;
       } else {
         return `system.stats.${mod.toLocaleLowerCase()}.value`;
       }
@@ -641,6 +643,24 @@ export default class ModifierHelpers {
           if (inherentEffectChangeIndex >= 0) {
             inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.soak.value;
           }
+        }
+      }
+      await inherentEffect.update({changes: inherentEffect.changes});
+    } else if (inherentEffect && ["shipattachment"].includes(item.type)) {
+      const explodedMods = ModifierHelpers.explodeMod(
+        "Vehicle Stat",
+        "Vehicle.Hardpoints"
+      );
+
+      for (const curMod of explodedMods) {
+        const modPath = ModifierHelpers.getModKeyPath(
+          curMod['modType'],
+          curMod['mod']
+        );
+        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          // hardpoints are _spent_, not _gained_
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.hardpoints.value * -1;
         }
       }
       await inherentEffect.update({changes: inherentEffect.changes});

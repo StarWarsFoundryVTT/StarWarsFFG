@@ -44,7 +44,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     await super._onCreate(data, options, user);
 
-    if (["species", "gear", "weapon", "armour"].includes(this.type) && !options.parent) {
+    if (["species", "gear", "weapon", "armour", "shipattachment"].includes(this.type) && !options.parent) {
       const existingEffects = this.getEmbeddedCollection("ActiveEffect");
       // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
       if (existingEffects.contents.length === 0) {
@@ -104,6 +104,22 @@ export class ItemFFG extends ItemBaseFFG {
                 value: 0,
               });
             }
+          }
+        } else if (this.type === "shipattachment") {
+          const explodedMods = ModifierHelpers.explodeMod(
+            "Vehicle Stat",
+            "Vehicle.Hardpoints"
+          );
+          for (const cur_mod of explodedMods) {
+            const path = ModifierHelpers.getModKeyPath(
+              cur_mod['modType'],
+              cur_mod['mod']
+            );
+            effects.changes.push({
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: 0,
+            });
           }
         }
 
