@@ -47,7 +47,9 @@ export class ItemFFG extends ItemBaseFFG {
     if (["species", "gear", "weapon", "armour", "shipattachment"].includes(this.type) && !options.parent) {
       const existingEffects = this.getEmbeddedCollection("ActiveEffect");
       // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
-      if (existingEffects.contents.length === 0) {
+      const inherentEffect = existingEffects.find(i => i.name === `(inherent)`);
+      if (!inherentEffect) {
+        CONFIG.logger.debug(`Creating inherent Active Effect for item ${this.name}`);
         const effects = {
           name: `(inherent)`,
           img: this.img,

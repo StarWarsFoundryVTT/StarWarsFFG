@@ -251,8 +251,6 @@ export default class ImportHelpers {
             CONFIG.temporary[packid][content[i].flags?.starwarsffg?.ffgimportid] = foundry.utils.deepClone(content[i]);
           }
         }
-      } else {
-        CONFIG.logger.debug(`Using cached content for ${packid}`);
       }
 
       if (CONFIG.temporary?.[packid]?.[id]) {
@@ -2338,6 +2336,7 @@ export default class ImportHelpers {
       const crt = await pack.importDocument(compendiumItem);
       if (type === "Item") {
         // make sure Active Effects get created
+        await new Promise(r => setTimeout(r, 50));
         await ImportHelpers.applyActiveEffectOnUpdate(crt, data);
         await ImportHelpers.applyTalentActiveEffects(crt);
       }
@@ -2921,7 +2920,7 @@ export default class ImportHelpers {
     const toCreate = [];
 
     // first update anything inherent to the item type (such as "brawn" on "species")
-    const inherentEffectName = `(inherent)`;
+    const inherentEffectName = "(inherent)";
     const inherentEffect = existing.find(e => e.name === inherentEffectName);
     if (inherentEffect && Object.keys(formData.system).includes("attributes")) {
       for (let k of Object.keys(formData.system.attributes)) {
@@ -2929,44 +2928,70 @@ export default class ImportHelpers {
           // inherent effects like "brawn" on "species" only - skip user-created active effects only
           continue;
         }
-        const modPath = ModifierHelpers.getModKeyPath(
+
+        const explodedMods = ModifierHelpers.explodeMod(
           formData.system.attributes[k].modtype,
           formData.system.attributes[k].mod
         );
-        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
-        if (inherentEffectChangeIndex >= 0) {
-          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.attributes[k].value;
+
+        for (const curMod of explodedMods) {
+          let modPath = ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']);
+          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          if (inherentEffectChangeIndex >= 0) {
+            inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.attributes[k].value;
+          }
         }
       }
       await inherentEffect.update({changes: inherentEffect.changes});
     }
     // some inherent effects are not in the `attribute` keyspace; make sure to get them as well
     if (inherentEffect && ["gear", "weapon", "armour"].includes(item.type)) {
-      let modPath = ModifierHelpers.getModKeyPath(
-          "Stat",
-          "Encumbrance",
+      const explodedMods = ModifierHelpers.explodeMod(
+        "Stat",
+        "Encumbrance",
+      );
+
+      for (const curMod of explodedMods) {
+        let modPath = ModifierHelpers.getModKeyPath(
+          curMod['modType'],
+          curMod['mod'],
         );
-      let inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
-      if (inherentEffectChangeIndex >= 0) {
-        inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.encumbrance.value;
+        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.encumbrance.value;
+        }
       }
+
       if (item.type === "armour") {
         // armor has additional stats
-        modPath = ModifierHelpers.getModKeyPath(
+        let explodedMods = ModifierHelpers.explodeMod(
           "Stat",
           "Defence",
         );
-        inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
-        if (inherentEffectChangeIndex >= 0) {
-          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.defence.value;
+        for (const curMod of explodedMods) {
+          let modPath = ModifierHelpers.getModKeyPath(
+            curMod['modType'],
+            curMod['mod'],
+          );
+          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          if (inherentEffectChangeIndex >= 0) {
+            inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.defence.value;
+          }
         }
-        modPath = ModifierHelpers.getModKeyPath(
+
+        explodedMods = ModifierHelpers.explodeMod(
           "Stat",
           "Soak",
         );
-        inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
-        if (inherentEffectChangeIndex >= 0) {
-          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.soak.value;
+        for (const curMod of explodedMods) {
+          let modPath = ModifierHelpers.getModKeyPath(
+            curMod['modType'],
+            curMod['mod'],
+          );
+          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          if (inherentEffectChangeIndex >= 0) {
+            inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.soak.value;
+          }
         }
       }
       await inherentEffect.update({changes: inherentEffect.changes});
@@ -2976,26 +3001,35 @@ export default class ImportHelpers {
     if (formData.system?.attributes) {
       for (let k of Object.keys(formData.system.attributes)) {
         const match = existing.find(i => i.name === k);
-        const changeKey = ModifierHelpers.getModKeyPath(
+        const explodedMods = ModifierHelpers.explodeMod(
           formData.system.attributes[k].modtype,
           formData.system.attributes[k].mod
         );
-        // check if an active effect exists - create it if not, update it if it does
+
+        const changes = [];
+        for (const curMod of explodedMods) {
+          changes.push({
+            key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: parseInt(formData.system.attributes[k].value),
+          });
+        }
+
         if (match) {
-          match.changes[0].value = parseInt(formData.system.attributes[k].value);
-          match.changes[0].key = changeKey;
-          await match.update({changes: match.changes});
+          // existing entry
+          CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
+          await match.update({
+            changes: changes,
+          });
         } else if (k.startsWith("attr")) {
-          // user-created active effects only - skip inherent effects like "brawn" on "species"
-          toCreate.push({
+          // new entry
+          const effect = {
             name: k,
             icon: item.img,
-            changes: [{
-              key: changeKey,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: parseInt(formData.system.attributes[k].value),
-            }],
-          });
+            changes: changes,
+          };
+          CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
+          toCreate.push(effect);
         }
       }
     }
@@ -3030,20 +3064,29 @@ export default class ImportHelpers {
       if (Object.keys(talent).includes("attributes")) {
         for (const attributeName of Object.keys(talent.attributes)) {
           const attribute = talent.attributes[attributeName];
-          const changeKey = ModifierHelpers.getModKeyPath(
+          const explodedMods = ModifierHelpers.explodeMod(
             attribute.modtype,
             attribute.mod
           );
-          // only create an active effect if the mod is a type requiring one (e.g., weapon stats don't)
-          if (changeKey) {
-            toCreate.push({
-              name: attributeName,
-              img: talent.img,
-              changes: [{
+
+          const changes = [];
+          for (const curMod of explodedMods) {
+            const changeKey = ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']);
+            // only create an active effect if the mod is a type requiring one (e.g., weapon stats don't)
+            if (changeKey) {
+              changes.push({
                 key: changeKey,
                 mode: CONST.ACTIVE_EFFECT_MODES.ADD,
                 value: parseInt(attribute.value),
-              }],
+              });
+            }
+          }
+
+          if (changes.length) {
+            toCreate.push({
+              name: attributeName,
+              img: talent.img,
+              changes: changes,
             });
           }
         }
