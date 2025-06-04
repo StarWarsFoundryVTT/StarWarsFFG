@@ -69,7 +69,7 @@ export class ItemFFG extends ItemBaseFFG {
               effects.changes.push({
                 key: path,
                 mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                value: parseInt(this.system.attributes[attribute].value),
+                value: this.system.attributes[attribute].value,
               });
             }
           }
@@ -171,7 +171,7 @@ export class ItemFFG extends ItemBaseFFG {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
             mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: parseInt(this.system.attributes[attrKey].value),
+            value: this.system.attributes[attrKey].value,
           });
         }
 

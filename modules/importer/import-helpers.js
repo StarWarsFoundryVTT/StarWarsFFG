@@ -3011,7 +3011,7 @@ export default class ImportHelpers {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
             mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: parseInt(formData.system.attributes[k].value),
+            value: formData.system.attributes[k].value,
           });
         }
 
@@ -3077,7 +3077,7 @@ export default class ImportHelpers {
               changes.push({
                 key: changeKey,
                 mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-                value: parseInt(attribute.value),
+                value: attribute.value,
               });
             }
           }

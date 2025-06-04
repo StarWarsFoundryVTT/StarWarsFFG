@@ -696,7 +696,7 @@ export default class ModifierHelpers {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
             mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: parseInt(formData.data.attributes[k].value),
+            value: formData.data.attributes[k].value,
           });
         }
 
