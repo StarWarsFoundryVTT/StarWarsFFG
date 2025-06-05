@@ -806,6 +806,8 @@
   "SWFFG.XP.Adjust.Window.Reason": "Adjustment Reason",
   "SWFFG.XP.Adjust.Window.Amount": "Adjustment Amount",
   "SWFFG.XP.Adjust.Window.Default": "Manual Grant",
-  "SWFFG.Status.Boost.Next": "Boost Next Skill",
-  "SWFFG.Status.Setback.Next": "Setback Next Skill"
+  "SWFFG.Status.Boost.Next": "Boost Next Check",
+  "SWFFG.Status.Setback.Next": "Setback Next Check",
+  "SWFFG.Status.Upgrade.Next": "Upgrade Next Check",
+  "SWFFG.Status.Cover.Heavy": "Heavy Cover"
 }

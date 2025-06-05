@@ -127,6 +127,7 @@ Hooks.once("init", async function () {
   const allSkillChanges = {
     boost: [],
     setback: [],
+    upgrade: [],
   };
   for (const skill of Object.keys(CONFIG.FFG.skills)) {
     allSkillChanges['boost'].push({
@@ -136,6 +137,11 @@ Hooks.once("init", async function () {
     });
     allSkillChanges['setback'].push({
       key: `system.skills.${skill}.setback`,
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      value: "1",
+    });
+    allSkillChanges['upgrade'].push({
+      key: `system.skills.${skill}.upgrades`,
       mode: CONST.ACTIVE_EFFECT_MODES.ADD,
       value: "1",
     });
@@ -158,6 +164,32 @@ Hooks.once("init", async function () {
     system: {
       duration: "once",
     }
+  });
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-upgrade-once",
+    img: "systems/starwarsffg/images/dice/starwars/yellow.png",
+    name: "SWFFG.Status.Upgrade.Next",
+    changes: allSkillChanges['upgrade'],
+    system: {
+      duration: "once",
+    }
+  });
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-heavy-cover",
+    img: "icons/equipment/shield/buckler-wooden-boss-lightning.webp",
+    name: "SWFFG.Status.Cover.Heavy",
+    changes: [
+      {
+        key: "system.stats.defence.melee",
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "2",
+      },
+      {
+        key: "system.stats.defence.ranged",
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "2",
+      },
+    ],
   });
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
