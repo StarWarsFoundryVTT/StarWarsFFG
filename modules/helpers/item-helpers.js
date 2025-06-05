@@ -156,12 +156,12 @@ export default class ItemHelpers {
         for (const modification of attachment.system.itemmodifier) {
           try {
             const foundMod = modification.system.attributes[activeEffect.name];
-            CONFIG.logger.debug(`Located mod ${foundMod.name}, checking if it's active or not`);
+            CONFIG.logger.debug(`Located mod ${activeEffect.name}, checking if it's active or not`);
             if (foundMod && !modification.system.active) {
-              CONFIG.logger.debug(`Mod ${foundMod.name} is not active, not syncing AE status`);
+              CONFIG.logger.debug(`Mod ${activeEffect.name} is not active, not syncing AE status`);
               return false;
             } else {
-              CONFIG.logger.debug(`Mod ${foundMod.name} is active, syncing AE status`);
+              CONFIG.logger.debug(`Mod ${activeEffect.name} is active, syncing AE status`);
               return true;
             }
           } catch {

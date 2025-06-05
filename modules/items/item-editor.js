@@ -251,6 +251,7 @@ export class itemEditor extends FormApplication  {
    * @returns {Promise<void>}
    */
   async _updateType(event) {
+    console.log("update type!")
     // update our local record of which "attachmentType" we're on so dropdowns render correctly
     this.data.clickedObject.system.type = event.currentTarget.value;
     // iterate over mods and update the modifier to be the first choice of the first modifierType
@@ -298,7 +299,8 @@ export class itemEditor extends FormApplication  {
 
   /** @override */
   async _updateObject(event, formData) {
-    formData = ItemHelpers.explodeFormData(formData)
+    formData = ItemHelpers.explodeFormData(formData);
+    const equipped = this.data.sourceObject.system?.equippable?.equipped;
 
     // removing all itemmodifiers removes them from the form entirely; add them back in as an empty array
     if (!Object.keys(formData.system).includes("itemmodifier")) {
@@ -364,12 +366,14 @@ export class itemEditor extends FormApplication  {
                 CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
                 await match.update({
                   changes: changes,
+                  disabled: !equipped,
                 });
               } else {
                 // new entry
                 const effect = {
                   name: modKey,
                   changes: changes,
+                  disabled: !equipped,
                 };
                 CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
                 await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
@@ -411,16 +415,27 @@ export class itemEditor extends FormApplication  {
                   });
                 }
 
+                let disabled;
+                if (modifier.system.active === equipped) {
+                  // if they're both enabled or disabled, use the opposite value
+                  disabled = !modifier.system.active;
+                } else {
+                  // if either is not enabled, disable the active effect
+                  disabled = true;
+                }
+
                 if (match) {
                   // existing entry
                   CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
                   await match.update({
                     changes: changes,
+                    disabled: disabled,
                   });
                 } else {
                   // new entry
                   const effect = {
                     name: modKey,
+                    disabled: disabled,
                     changes: changes,
                   };
                   CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
@@ -497,12 +512,14 @@ export class itemEditor extends FormApplication  {
           CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
           await match.update({
             changes: changes,
+            disabled: !equipped,
           });
         } else {
           // new entry
           const effect = {
             name: modKey,
             changes: changes,
+            disabled: !equipped,
           };
           CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
           await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
@@ -510,6 +527,8 @@ export class itemEditor extends FormApplication  {
       }
       await this.data.sourceObject.update({system: {itemmodifier: updateData}});
     }
+    // needed to re-render the mod form (as the input can change types based on the selected modType)
+    this.render(true)
   }
 }
 
@@ -686,12 +705,14 @@ export class talentEditor extends itemEditor {
           CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
           await match.update({
             changes: changes,
+            disabled: !this.data.clickedObject.islearned,
           });
         } else {
           // new entry
           const effect = {
             name: modKey,
             changes: changes,
+            disabled: !this.data.clickedObject.islearned,
           };
           CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
           await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);
@@ -887,12 +908,14 @@ export class forcePowerEditor extends itemEditor {
           CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
           await match.update({
             changes: changes,
+            disabled: !this.data.clickedObject.islearned,
           });
         } else {
           // new entry
           const effect = {
             name: modKey,
             changes: changes,
+            disabled: !this.data.clickedObject.islearned,
           };
           CONFIG.logger.debug(`>>>> Staged AE for creation: ${JSON.stringify(effect)}`);
           await this.data.sourceObject.createEmbeddedDocuments("ActiveEffect", [effect]);

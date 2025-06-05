@@ -242,7 +242,7 @@ export default class ModifierHelpers {
         await this.object.update({
           "system.attributes": {
             [`attr${nk}`]: {
-              modtype: "Stat All",
+              modtype: "Vehicle Stat",
               mod: "Armour",
               value: 0,
             },
