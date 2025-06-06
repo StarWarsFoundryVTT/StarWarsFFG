@@ -2907,6 +2907,95 @@ export default class ImportHelpers {
     return item;
   }
 
+  static async createActiveEffects(item) {
+    if (["species", "gear", "weapon", "armour", "shipattachment"].includes(item.type)) {
+      const existingEffects = item.getEmbeddedCollection("ActiveEffect");
+      // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
+      const inherentEffect = existingEffects.find(i => i.name === `(inherent)`);
+      if (!inherentEffect) {
+        CONFIG.logger.debug(`Creating inherent Active Effect for item ${item.name}`);
+        const effects = {
+          name: `(inherent)`,
+          img: item.img,
+          changes: [],
+        };
+        if (item.type === "species") {
+          for (const attribute of Object.keys(item.system.attributes)) {
+            const explodedMods = ModifierHelpers.explodeMod(
+              item.system.attributes[attribute].modtype,
+              attribute
+            );
+            for (const cur_mod of explodedMods) {
+              const path = ModifierHelpers.getModKeyPath(
+                cur_mod['modType'],
+                cur_mod['mod']
+              );
+              effects.changes.push({
+                key: path,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: item.system.attributes[attribute].value,
+              });
+            }
+          }
+        } else if (["gear", "weapon"].includes(item.type)) {
+          const explodedMods = ModifierHelpers.explodeMod(
+            "Stat",
+            "Encumbrance"
+          );
+          for (const cur_mod of explodedMods) {
+            const path = ModifierHelpers.getModKeyPath(
+              cur_mod['modType'],
+              cur_mod['mod']
+            );
+            effects.changes.push({
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: 0,
+            });
+          }
+        } else if (item.type === "armour") {
+          for (const key of ["Encumbrance", "Defence", "Soak"]) {
+            const explodedMods = ModifierHelpers.explodeMod(
+              "Stat",
+              key
+            );
+            for (const cur_mod of explodedMods) {
+              const path = ModifierHelpers.getModKeyPath(
+                cur_mod['modType'],
+                cur_mod['mod']
+              );
+              effects.changes.push({
+                key: path,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: 0,
+              });
+            }
+          }
+        } else if (item.type === "shipattachment") {
+          const explodedMods = ModifierHelpers.explodeMod(
+            "Vehicle Stat",
+            "Vehicle.Hardpoints"
+          );
+          for (const cur_mod of explodedMods) {
+            const path = ModifierHelpers.getModKeyPath(
+              cur_mod['modType'],
+              cur_mod['mod']
+            );
+            effects.changes.push({
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: 0,
+            });
+          }
+        }
+
+        CONFIG.logger.debug(`Creating Active Effect for ${item.name}/${item.type} on item creation`);
+        CONFIG.logger.debug(effects);
+        await item.createEmbeddedDocuments("ActiveEffect", [effects]);
+      }
+    }
+  }
+
   /**
    * Given an updateObject event, update active effects on the item being updated
    * This is an importer helper so that it can operate on .system (used during import) instead of .data (used in forms)
