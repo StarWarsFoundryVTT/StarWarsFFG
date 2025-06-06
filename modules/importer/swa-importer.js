@@ -394,7 +394,9 @@ export default class SWAImporter extends FormApplication {
                     attributes: {},
                     characteristics: {},
                     skills,
-                    stats: {},
+                    stats: {
+                      defence: {},
+                    },
                   },
                   items: [],
                 };
@@ -438,6 +440,10 @@ export default class SWAImporter extends FormApplication {
                       }
                     }
                   });
+                  if (Object.keys(item.derived).includes("defence")) {
+                    adversary.system.stats.defence.melee = item.derived.defence[0];
+                    adversary.system.stats.defence.ranged = item.derived.defence[1];
+                  }
                 }
 
                 if (item.skills) {
