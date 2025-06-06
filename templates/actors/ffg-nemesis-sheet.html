@@ -58,12 +58,33 @@
       {{!-- Primary Stats Container --}}
       <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
         <div class="container flex-group-center">
-          {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}}
+          {{!-- Wounds Box --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="split" title="SWFFG.Wounds" fields=(array
+                (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold" disabled=disabled)
+                (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current")
+              )
+            )}}
           {{#if (or (eq actor.flags.starwarsffg.config.enableStrainThreshold undefined) (eq actor.flags.starwarsffg.config.enableStrainThreshold true) )}}
-          {{!-- Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Strain" fields=(array (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current") ))}}
+          {{!-- Strain Box --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="split" title="SWFFG.Strain" fields=(array
+                (object name="data.stats.strain.max" value=data.stats.strain.max type="Number" label="SWFFG.Threshold" disabled=disabled)
+                (object name="data.stats.strain.value" value=data.stats.strain.value type="Number" label="SWFFG.Current")
+              )
+            )}}
           {{/if}}
-          {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
-          {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") ))}}
+          {{!-- Soak Box --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=disabled)
+            }}
+          {{!-- Defence Box --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="split" title="SWFFG.Defense" fields=(array
+                (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee" disabled=disabled)
+                (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged" disabled=disabled)
+              )
+            )}}
         </div>
       </div>
     </div>
@@ -84,7 +105,7 @@
         <div class="characteristic-item flex-group-center" data-ability="{{id}}">
           <div class="characteristic">
             <div class="characteristic-value">
-              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-{{ ../maxAttribute }}]" />
+              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-{{ ../maxAttribute }}]" {{#if ../disabled }}disabled{{/if}} />
             </div>
           </div>
           <div class="characteristic-label">
@@ -100,9 +121,21 @@
     {{!-- Owned Items Tab --}}
     <div class="tab items" data-group="primary" data-tab="items">
       <div class="container flex-group-center item-values">
-        {{!-- Medical Box --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html" (object title=actor.flags.starwarsffg.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)}}
-        {{!-- Encumbrance Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Encumbrance" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold") (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}}
-        {{!-- Credits Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.DescriptionCredits" type="String" name="data.stats.credits.value" value=data.stats.credits.value)}}
+        {{!-- Medical Box --}}
+          {{> "systems/starwarsffg/templates/parts/actor/ffg-healingitem.html"
+            (object title=actor.flags.starwarsffg.config.medicalItemName name="data.stats.medical.uses" value=data.stats.medical.uses)
+          }}
+        {{!-- Encumbrance Box --}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+            (object blocktype="split" title="SWFFG.Encumbrance" fields=(array
+              (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold" disabled=disabled)
+              (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current")
+            ))
+          }}
+        {{!-- Credits Box --}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+            (object blocktype="double" title="SWFFG.DescriptionCredits" type="String" name="data.stats.credits.value" value=data.stats.credits.value)
+          }}
       </div>
 
       {{> "systems/starwarsffg/templates/parts/actor/ffg-weapon-armor-gear.html"}}

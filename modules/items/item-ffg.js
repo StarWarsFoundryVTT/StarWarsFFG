@@ -134,6 +134,7 @@ export class ItemFFG extends ItemBaseFFG {
 
   /** @override */
   async _onUpdate(changed, options, userId) {
+    CONFIG.logger.debug("Performing _onUpdate of item");
     await super._onUpdate(changed, options, userId);
     if (userId !== game.user.id) {
       // only run onCreate for the user actually performing the update
@@ -145,7 +146,11 @@ export class ItemFFG extends ItemBaseFFG {
     CONFIG.logger.debug(existingEffects);
     // update active effects from the item itself (e.g., stat boosts on species)
     const itemEffect = existingEffects.find(i => i.name === `(inherent)`);
-    CONFIG.logger.debug(`And located the following effects directly from this item: ${itemEffect}`);
+    if (itemEffect) {
+      CONFIG.logger.debug(`And located the following effects directly from this item: ${JSON.stringify(itemEffect)}`);
+    } else {
+      CONFIG.logger.debug("Unable to locate any inherent effect. This may be expected.");
+    }
     if (itemEffect && Object.keys(changed).includes("system") && Object.keys(changed.system).includes("attributes")) {
       const newChanges = foundry.utils.deepClone(itemEffect.changes);
       for (const updateKey of Object.keys(changed.system.attributes)) {
