@@ -68,7 +68,7 @@ export class rulesetSettings extends ffgSettings {
       id: "ruleset-settings",
       classes: ["starwarsffg", "ruleset-settings"],
       title: `${game.i18n.localize("SWFFG.Settings.ruleset.Title")}`,
-      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.html",
+      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.hbs",
     });
   }
 
@@ -89,7 +89,7 @@ export class uiSettings extends ffgSettings {
       id: "ui-settings",
       classes: ["starwarsffg", "ui-settings"],
       title: `${game.i18n.localize("SWFFG.Settings.ui.Title")}`,
-      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.html",
+      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.hbs",
     });
   }
 
@@ -111,7 +111,7 @@ export class combatSettings extends ffgSettings {
       id: "combat-settings",
       classes: ["starwarsffg", "combat-settings"],
       title: `${game.i18n.localize("SWFFG.Settings.combat.Title")}`,
-      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.html",
+      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.hbs",
     });
   }
 
@@ -132,7 +132,7 @@ export class actorSettings extends ffgSettings {
       id: "actor-settings",
       classes: ["starwarsffg", "actor-settings"],
       title: `${game.i18n.localize("SWFFG.Settings.actor.Title")}`,
-      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.html",
+      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.hbs",
     });
   }
 
@@ -159,7 +159,7 @@ export class xpSpendingSettings extends ffgSettings {
       id: "xpSpending",
       classes: ["starwarsffg", "xpSpending"],
       title: `${game.i18n.localize("SWFFG.Settings.xpSpending.Title")}`,
-      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.html",
+      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.hbs",
     });
   }
 
@@ -181,7 +181,7 @@ export class localizationSettings extends ffgSettings {
       id: "localization",
       classes: ["starwarsffg", "localization"],
       title: `${game.i18n.localize("SWFFG.Settings.localization.Title")}`,
-      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.html",
+      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.hbs",
     });
   }
 
@@ -201,7 +201,7 @@ export class groupManagerSettings extends ffgSettings {
       id: "group-manager",
       classes: ["starwarsffg", "group-manager"],
       title: `${game.i18n.localize("SWFFG.Settings.groupManager.Title")}`,
-      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.html",
+      template: "systems/starwarsffg/templates/dialogs/ffg-ui-settings.hbs",
     });
   }
 

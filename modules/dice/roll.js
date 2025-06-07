@@ -96,9 +96,9 @@ export class RollFFG extends Roll {
     }
   }
 
-  static CHAT_TEMPLATE = "systems/starwarsffg/templates/dice/roll-ffg.html";
+  static CHAT_TEMPLATE = "systems/starwarsffg/templates/dice/roll-ffg.hbs";
 
-  static TOOLTIP_TEMPLATE = "systems/starwarsffg/templates/dice/tooltip-ffg.html";
+  static TOOLTIP_TEMPLATE = "systems/starwarsffg/templates/dice/tooltip-ffg.hbs";
 
   async updateSymbols() {
     for (const addedResult of this.addedResults) {

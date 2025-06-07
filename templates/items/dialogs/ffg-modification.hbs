@@ -1,0 +1,34 @@
+<div>
+  <h2>{{ localize "SWFFG.Items.Popout.Label.Modification" }} #{{ number }}&nbsp;<a class="flat_editor add-modification" title="Delete Modification" data-action="delete" data-id="{{ id }}"><i class="fas fa-trash"></i></a></h2>
+  <div class="modification_header">
+    <div class="form-group">
+      <label for="system.itemmodifier[{{number}}].name">{{ localize "SWFFG.Name" }}</label>
+      <input name="system.itemmodifier[{{number}}].name" type="text" value="{{ mod.name }}">
+    </div>
+    <div class="form-group">
+      <label for="system.itemmodifier[{{number}}].system.description">{{ localize "SWFFG.TabDescription" }}</label>
+      <input name="system.itemmodifier[{{number}}].system.description" type="text" value="{{ mod.system.description }}">
+    </div>
+    <div class="form-group">
+      <label for="system.itemmodifier[{{number}}].system.active">{{ localize "SWFFG.Items.Popout.Label.Installed" }}</label>
+      <input name="system.itemmodifier[{{number}}].system.active" type="checkbox" {{ checked mod.system.active }}>
+    </div>
+    <div class="form-group">
+      <label for="system.itemmodifier[{{number}}].system.rank">{{ localize "SWFFG.Items.Popout.Label.Ranks" }}</label>
+      <input name="system.itemmodifier[{{number}}].system.rank" type="number" value="{{ mod.system.rank }}">
+    </div>
+    <div class="mod_container attributes">
+      <header class="attributes-header flexrow">
+        <span class="attribute-modtype">{{localize "SWFFG.ModifierType"}}</span>
+        <span class="attribute-mod">{{localize "SWFFG.Modifier"}}</span>
+        <span class="attribute-value">{{localize "SWFFG.ModifierValue"}}</span>
+        <a class="attribute-control flat_editor add-mod" data-action="create" data-modification-id="{{ number }}"><i class="fas fa-plus"></i></a>
+      </header>
+      <ol class="attributes-list">
+      {{#each mod.system.attributes as |attr id|}}
+        {{> "systems/starwarsffg/templates/items/dialogs/ffg-mod.hbs" (object attr=attr id=id number=../number number2=@index modTypeChoices=../modTypeChoices modChoices=../modChoices direct=false attachmentType=../attachmentType) }}
+      {{/each }}
+      </ol>
+    </div>
+  </div>
+</div>

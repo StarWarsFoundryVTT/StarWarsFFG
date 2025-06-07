@@ -11,7 +11,7 @@ export default class PopoutModifiers extends FormApplication {
       id: "popout-modifiers",
       classes: ["starwarsffg", "sheet"],
       title: "Pop-out Modifiers",
-      template: "systems/starwarsffg/templates/items/dialogs/ffg-popout-modifiers.html",
+      template: "systems/starwarsffg/templates/items/dialogs/ffg-popout-modifiers.hbs",
       closeOnSubmit: false,
       submitOnClose: true,
       submitOnChange: true,

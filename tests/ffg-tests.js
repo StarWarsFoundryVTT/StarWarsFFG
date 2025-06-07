@@ -11,7 +11,7 @@ export default class FFGFunctionalTests extends FormApplication {
       id: "functional-test",
       classes: ["starwarsffg"],
       title: "Functional Tests",
-      template: "systems/starwarsffg/templates/ffg-tester.html",
+      template: "systems/starwarsffg/templates/ffg-tester.hbs",
     });
   }
 

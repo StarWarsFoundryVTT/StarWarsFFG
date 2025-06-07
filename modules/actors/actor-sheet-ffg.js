@@ -40,7 +40,7 @@ export class ActorSheetFFG extends ActorSheet {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor"],
-      template: "systems/starwarsffg/templates/actors/ffg-character-sheet.html",
+      template: "systems/starwarsffg/templates/actors/ffg-character-sheet.hbs",
       width: 710,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],
@@ -51,7 +51,7 @@ export class ActorSheetFFG extends ActorSheet {
   /** @override */
   get template() {
     const path = "systems/starwarsffg/templates/actors";
-    return `${path}/ffg-${this.actor.type}-sheet.html`;
+    return `${path}/ffg-${this.actor.type}-sheet.hbs`;
   }
 
   /** @override */
@@ -879,7 +879,7 @@ export class ActorSheetFFG extends ActorSheet {
       const rolesInUse = crewMemberRoles.map(role => role.role);
 
       const content = await renderTemplate(
-        "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
+        "systems/starwarsffg/templates/dialogs/ffg-crew-change.hbs",
         {
           actor: crew_member,
           roles: registeredRoles,
@@ -943,7 +943,7 @@ export class ActorSheetFFG extends ActorSheet {
         },
         {
           classes: ["dialog", "starwarsffg"],
-          template: "systems/starwarsffg/templates/actors/dialogs/ffg-talent-selector.html",
+          template: "systems/starwarsffg/templates/actors/dialogs/ffg-talent-selector.hbs",
         }
       ).render(true);
     });
@@ -1363,7 +1363,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     const itemDetails = await item?.getItemDetails();
-    const template = "systems/starwarsffg/templates/chat/item-card.html";
+    const template = "systems/starwarsffg/templates/chat/item-card.hbs";
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
@@ -1393,7 +1393,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     const itemDetails = { "desc": desc, "name": name };
-    const template = "systems/starwarsffg/templates/chat/force-power-card.html";
+    const template = "systems/starwarsffg/templates/chat/force-power-card.hbs";
     const html = await renderTemplate(template, { itemDetails, item });
 
     const messageData = {
@@ -1452,7 +1452,7 @@ export class ActorSheetFFG extends ActorSheet {
       },
       {
         classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.html",
+        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-characteristic-selector.hbs",
       }
     ).render(true);
   }
@@ -1507,7 +1507,7 @@ export class ActorSheetFFG extends ActorSheet {
       },
       {
         classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-new.html",
+        template: "systems/starwarsffg/templates/actors/dialogs/ffg-skill-new.hbs",
       }
     ).render(true);
   }
@@ -1862,7 +1862,7 @@ export class ActorSheetFFG extends ActorSheet {
 
   async _buyCore(event) {
     const action = $(event.target).data("buy-action");
-    const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
+    const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.hbs";
     let content;
     const availableXP = this.object.system.experience.available;
     const totalXP = this.object.system.experience.total;

@@ -225,7 +225,7 @@ export class CombatFFG extends Combat {
       };
 
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
-      const content = await renderTemplate("systems/starwarsffg/templates/dialogs/ffg-initiative.html", {
+      const content = await renderTemplate("systems/starwarsffg/templates/dialogs/ffg-initiative.hbs", {
         id,
         dicePools,
         addDicePool,
@@ -744,7 +744,7 @@ function _buildInitiativePool(data, skill) {
 export class CombatTrackerFFG extends CombatTracker {
   /** @override */
   get template() {
-    return "systems/starwarsffg/templates/dialogs/combat-tracker.html";
+    return "systems/starwarsffg/templates/dialogs/combat-tracker.hbs";
   }
 
   /** @override */

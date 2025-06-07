@@ -8,7 +8,7 @@ export default class SWAImporter extends FormApplication {
       id: "swa-importer",
       classes: ["starwarsffg", "data-import"],
       title: "Adversaries Importer",
-      template: "systems/starwarsffg/templates/importer/swa-importer.html",
+      template: "systems/starwarsffg/templates/importer/swa-importer.hbs",
     });
   }
 
@@ -68,13 +68,13 @@ export default class SWAImporter extends FormApplication {
         // load ancillary files
         let filesToCache = [];
 
-        filesToCache.push({ name: "skills", file: await this._getFilePath(zip.files, "skills", false) });
-        filesToCache.push({ name: "weapons", file: await this._getFilePath(zip.files, "weapons", false) });
-        filesToCache.push({ name: "abilities", file: await this._getFilePath(zip.files, "abilities", false) });
-        filesToCache.push({ name: "force-powers", file: await this._getFilePath(zip.files, "force-powers", false) });
-        filesToCache.push({ name: "talents", file: await this._getFilePath(zip.files, "talents", false) });
-        filesToCache.push({ name: "mods", file: await this._getFilePath(zip.files, "mods", false) });
-        filesToCache.push({ name: "qualities", file: await this._getFilePath(zip.files, "qualities", false) });
+        filesToCache.push({name: "skills", file: await this._getFilePath(zip.files, "skills", false)});
+        filesToCache.push({name: "weapons", file: await this._getFilePath(zip.files, "weapons", false)});
+        filesToCache.push({name: "abilities", file: await this._getFilePath(zip.files, "abilities", false)});
+        filesToCache.push({name: "force-powers", file: await this._getFilePath(zip.files, "force-powers", false)});
+        filesToCache.push({name: "talents", file: await this._getFilePath(zip.files, "talents", false)});
+        filesToCache.push({name: "mods", file: await this._getFilePath(zip.files, "mods", false)});
+        filesToCache.push({name: "qualities", file: await this._getFilePath(zip.files, "qualities", false)});
 
         await ImportHelpers.asyncForEach(filesToCache, async (f) => {
           CONFIG.logger.debug(`Caching file: ${f.name}`);
@@ -83,7 +83,7 @@ export default class SWAImporter extends FormApplication {
           let file;
           try {
             file = await zip.file(f.file).async("text");
-          } catch(e) {
+          } catch (e) {
             ui.notifications.error(`Failed to process data file ${f.name}! Import failed.`);
             console.error(e);
             return;
@@ -641,12 +641,12 @@ export default class SWAImporter extends FormApplication {
                               rank: wRank ? parseInt(wRank[0].replace(" ", ""), 10) : 1,
                             },
                           };
-                          const descriptor = new CONFIG.Item.documentClass(unique, { temporary: true });
+                          const descriptor = new CONFIG.Item.documentClass(unique, {temporary: true});
                           templatedData.system.itemmodifier.push(descriptor);
                         });
                       }
 
-                      let w = new CONFIG.Item.documentClass(templatedData, { temporary: true });
+                      let w = new CONFIG.Item.documentClass(templatedData, {temporary: true});
                       adversary.items.push(foundry.utils.duplicate(w));
                     }
                   });
@@ -806,7 +806,7 @@ export default class SWAImporter extends FormApplication {
 
                 if (!entry) {
                   CONFIG.logger.debug(`Importing Adversary - Actor`);
-                  compendiumItem = new CONFIG.Actor.documentClass(adversary, { temporary: true });
+                  compendiumItem = new CONFIG.Actor.documentClass(adversary, {temporary: true});
                   this._importLogger(`New Adversary ${name} : ${JSON.stringify(compendiumItem)}`);
                   await pack.importDocument(compendiumItem);
                 } else {
@@ -842,6 +842,7 @@ export default class SWAImporter extends FormApplication {
   }
 
   _importLog = [];
+
   _importLogger(message) {
     if ($(".debug input:checked").length > 0) {
       this._importLog.push(`[${new Date().getTime()}] ${message}`);
@@ -855,20 +856,17 @@ export default class SWAImporter extends FormApplication {
       let file;
       if (filteredFiles.length === 1) {
         file = filteredFiles[0]
-      }
-      else if (filteredFiles.length > 1) {
+      } else if (filteredFiles.length > 1) {
         const srcFiles = filteredFiles.filter(f => f.name.includes('/src/'))
         if (srcFiles.length === 1)
           file = srcFiles[0]
         else
           throw new Error(`Found multiple files named ${name}.json with /src/ in the path.`)
-      }
-      else
+      } else
         throw new Error(`Found no file named ${name}.json`)
 
       return file.name;
-    }
-    catch (e) {
+    } catch (e) {
       ui.notifications.error(`Failed to process data file ${name}.json! Import failed.`);
       console.error(e);
     }
@@ -881,7 +879,7 @@ export default class SWAImporter extends FormApplication {
     });
     if (!pack) {
       this._importLogger(`Compendium pack ${name} not found, creating new`);
-      pack = await CompendiumCollection.createCompendium({ type: type, label: name });
+      pack = await CompendiumCollection.createCompendium({type: type, label: name});
     } else {
       this._importLogger(`Existing compendium pack ${name} found`);
     }

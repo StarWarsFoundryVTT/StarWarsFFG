@@ -8,14 +8,14 @@ export class AdversarySheetFFGV2 extends AdversarySheetFFG {
   /** @override */
   get template() {
     const path = "systems/starwarsffg/templates/actors";
-    return `${path}/ffg-adversary-sheet.html`;
+    return `${path}/ffg-adversary-sheet.hbs`;
   }
 
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor", "adversary", "v2"],
-      template: "systems/starwarsffg/templates/actors/ffg-adversary-sheet.html",
+      template: "systems/starwarsffg/templates/actors/ffg-adversary-sheet.hbs",
       width: 710,
       height: 650,
       tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],

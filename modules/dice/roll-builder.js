@@ -17,7 +17,7 @@ export default class RollBuilderFFG extends FormApplication {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "roll-builder",
       classes: ["starwarsffg", "roll-builder-dialog"],
-      template: "systems/starwarsffg/templates/dice/roll-options-ffg.html",
+      template: "systems/starwarsffg/templates/dice/roll-options-ffg.hbs",
       width: 350
     });
   }

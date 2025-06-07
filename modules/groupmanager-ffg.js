@@ -47,7 +47,7 @@ export class GroupManager extends FormApplication {
       resizable: true,
       width: 330,
       height: 900,
-      template: "systems/starwarsffg/templates/group-manager.html",
+      template: "systems/starwarsffg/templates/group-manager.hbs",
       id: "group-manager",
       title: "Group Manager",
     });
@@ -330,7 +330,7 @@ export class GroupManager extends FormApplication {
   async _grantXP(character) {
     const id = foundry.utils.randomID();
     const description = game.i18n.localize("SWFFG.GrantXPTo") + ` ${character.name}...`;
-    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
+    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.hbs", {
       id,
     });
 
@@ -364,7 +364,7 @@ export class GroupManager extends FormApplication {
   async _bulkXP(characters) {
     const id = foundry.utils.randomID();
     const description = game.i18n.localize("SWFFG.GrantXPToAllCharacters");
-    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
+    const content = await renderTemplate("systems/starwarsffg/templates/grant-xp.hbs", {
       id,
     });
 

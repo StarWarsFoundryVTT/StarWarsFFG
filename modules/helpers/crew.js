@@ -283,7 +283,7 @@ export async function selectRoles(vehicle, crew_member_id) {
   const rolesInUse = crewMemberRoles.map(role => role.role);
 
   const content = await renderTemplate(
-    "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
+    "systems/starwarsffg/templates/dialogs/ffg-crew-change.hbs",
     {
       actor: crew_member,
       roles: registeredRoles,

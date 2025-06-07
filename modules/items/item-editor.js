@@ -20,7 +20,7 @@ export class itemEditor extends FormApplication  {
         title: `Embedded Item Editor`, // should not be seen by anyone, as it is dynamically set on getData()
         //height: 720,
         width: 520,
-        template: "systems/starwarsffg/templates/items/dialogs/ffg-embedded-itemattachment.html",
+        template: "systems/starwarsffg/templates/items/dialogs/ffg-embedded-itemattachment.hbs",
         closeOnSubmit: false,
         submitOnClose: true,
         submitOnChange: true,
@@ -35,7 +35,7 @@ export class itemEditor extends FormApplication  {
   /** @override */
   get template() {
     const path = "systems/starwarsffg/templates/items/dialogs";
-    return `${path}/ffg-embedded-${this.data.clickedObject.type}.html`;
+    return `${path}/ffg-embedded-${this.data.clickedObject.type}.hbs`;
   }
 
   /** @override */
@@ -158,7 +158,7 @@ export class itemEditor extends FormApplication  {
       CONFIG.logger.debug(`expected new mod mod is ${modChoices[Object.keys(modTypeChoices)[0]]}`);
 
       let rendered = await renderTemplate(
-        'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
+        'systems/starwarsffg/templates/items/dialogs/ffg-mod.hbs',
         { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
           modTypeChoices: modTypeChoices,
           modChoices: modChoices,
@@ -196,7 +196,7 @@ export class itemEditor extends FormApplication  {
       const modTypeChoices = this._getModTypeChoices();
       const modChoices = CONFIG.FFG.modTypeToModMap;
       let rendered = await renderTemplate(
-        'systems/starwarsffg/templates/items/dialogs/ffg-modification.html',
+        'systems/starwarsffg/templates/items/dialogs/ffg-modification.hbs',
         { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
           modTypeChoices: modTypeChoices,
           modChoices: modChoices,
@@ -373,7 +373,7 @@ export class talentEditor extends itemEditor {
   /** @override */
   get template() {
     const path = "systems/starwarsffg/templates/items/dialogs";
-    return `${path}/ffg-embedded-talent.html`;
+    return `${path}/ffg-embedded-talent.hbs`;
   }
 
     /** @override */
@@ -415,7 +415,7 @@ export class talentEditor extends itemEditor {
       CONFIG.logger.debug(`expected new mod mod is ${modChoices[Object.keys(modTypeChoices)[0]]}`);
 
       let rendered = await renderTemplate(
-        'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
+        'systems/starwarsffg/templates/items/dialogs/ffg-mod.hbs',
         { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
           modTypeChoices: modTypeChoices,
           modChoices: modChoices,

@@ -182,7 +182,7 @@ Hooks.once("init", async function () {
   };
 
   // Load character templates so that dynamic skills lists work correctly
-  loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
+  loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.hbs", "systems/starwarsffg/templates/actors/ffg-minion-sheet.hbs"]);
 
   SettingsHelpers.initLevelSettings();
 

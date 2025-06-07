@@ -1,0 +1,66 @@
+<form class="{{cssClass}} item-sheet-gear" autocomplete="off">
+  <header class="sheet-header">
+    <div class="header-fields">
+      <div class="container flex-group-center">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+      </div>
+      <div class="container flex-group-center">
+        <div class="container flex-group-center item-name">
+          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+        </div>
+        <div class="container flex-group-center">
+          <div class="grid grid-2col">
+            <div class="characteristic-item flex-group-center">
+              <div class="characteristic">
+                <div class="characteristic-value">
+                  <input type="text" name="data.encumbrance.value" value="{{data.encumbrance.value}}" data-dtype="Number" />
+                </div>
+              </div>
+              <div class="characteristic-label">
+                {{localize "SWFFG.ItemWeaponEncumbrance"}}
+              </div>
+            </div>
+            {{#if (or (eq item.flags.starwarsffg.config.enableRarity undefined) (eq item.flags.starwarsffg.config.enableRarity true) )}}
+            <div class="characteristic-item flex-group-center">
+              <div class="characteristic">
+                <div class="characteristic-value {{#if data.rarity.isrestricted}}restricted{{/if}}">
+                  <input type="text" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number" />
+                </div>
+              </div>
+              <div class="characteristic-label">
+                {{localize "SWFFG.ItemWeaponRarity"}}
+              </div>
+            </div>
+            {{/if}}
+          </div>
+
+          <div class="container flex-group-center weapon-values">
+            {{#if (or (eq item.flags.starwarsffg.config.enablePrice undefined) (eq item.flags.starwarsffg.config.enablePrice true) )}}
+              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value)}}
+            {{/if}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.ItemWeaponQuantity" type="Number" name="data.quantity.value" value=data.quantity.value)}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.hbs" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType) )}} {{!-- Sheet Body --}}
+  <section class="sheet-body small gear">
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor data.enrichedDescription target="system.description" button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.hbs"}}
+    </div>
+
+    {{!-- Long Description and Sources Tab --}}
+    <div class="tab sources" data-group="primary" data-tab="sources">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-sources.hbs" data=data}}
+    </div>
+  </section>
+</form>

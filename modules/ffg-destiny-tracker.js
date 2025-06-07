@@ -25,7 +25,7 @@ export default class DestinyTracker extends FormApplication {
       id: "destiny-tracker",
       classes: ["starwarsffg"],
       title: "Destiny Tracker",
-      template: "systems/starwarsffg/templates/ffg-destiny-tracker.html",
+      template: "systems/starwarsffg/templates/ffg-destiny-tracker.hbs",
     });
   }
 

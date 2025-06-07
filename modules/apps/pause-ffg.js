@@ -2,7 +2,7 @@ export default class PauseFFG extends Pause {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.id = "pause";
-    options.template = "systems/starwarsffg/templates/parts/ffg-paused.html";
+    options.template = "systems/starwarsffg/templates/parts/ffg-paused.hbs";
     options.popOut = false;
     return options;
   }

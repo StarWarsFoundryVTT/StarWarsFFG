@@ -9,7 +9,7 @@ export default class SkillListImporter extends FormApplication {
       classes: ["starwarsffg", "data-import"],
       title: "Skill List Importer",
       width: 385,
-      template: "systems/starwarsffg/templates/importer/skill-list-importer.html",
+      template: "systems/starwarsffg/templates/importer/skill-list-importer.hbs",
     });
   }
 

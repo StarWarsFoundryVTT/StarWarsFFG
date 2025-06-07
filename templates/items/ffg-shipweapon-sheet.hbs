@@ -1,0 +1,126 @@
+<form class="{{cssClass}} item-sheet-vehicle-weapon" autocomplete="off">
+  <header class="sheet-header">
+    <div class="header-fields">
+      <div class="container flex-group-center">
+        <img class="profile-img" src="{{item.img}}" data-edit="img" title="{{item.name}}" />
+      </div>
+      <div class="container flex-group-center">
+        <div class="container flex-group-center item-name">
+          <h1 class="charname"><input name="name" type="text" value="{{item.name}}" placeholder="Name" /></h1>
+        </div>
+        <div class="container flex-group-center">
+          <div class="grid grid-6col">
+            <div class="characteristic-item flex-group-center">
+              <div class="characteristic">
+                <div class="characteristic-value">
+                  <input type="text" name="data.damage.value" value="{{data.damage.value}}" data-dtype="Number" />
+                  {{#if (ne data.damage.adjusted data.damage.value)}}
+                  <div class="adjustedvalues-left {{#if (gt data.damage.adjusted data.damage.value)}}positive{{/if}}">{{data.damage.adjusted}}</div>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="characteristic-label">
+                {{localize "SWFFG.ItemWeaponDamage"}}
+              </div>
+            </div>
+            <div class="characteristic-item flex-group-center">
+              <div class="characteristic">
+                <div class="characteristic-value">
+                  <input type="text" name="data.crit.value" value="{{data.crit.value}}" data-dtype="Number" />
+                  {{#if (ne data.crit.adjusted data.crit.value)}}
+                  <div class="adjustedvalues-left {{#if (lt data.crit.adjusted data.crit.value)}}positive{{/if}}">{{data.crit.adjusted}}</div>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="characteristic-label">
+                {{localize "SWFFG.ItemWeaponCritical"}}
+              </div>
+            </div>
+            <div class="characteristic-item flex-group-center">
+              <div class="characteristic">
+                <div class="characteristic-value">
+                  <input type="text" name="data.encumbrance.value" value="{{data.encumbrance.value}}" data-dtype="Number" />
+                  {{#if (ne data.encumbrance.adjusted data.encumbrance.value)}}
+                  <div class="adjustedvalues-left {{#if (lt data.encumbrance.adjusted data.encumbrance.value)}}positive{{/if}}">{{data.encumbrance.adjusted}}</div>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="characteristic-label">
+                {{localize "SWFFG.ItemWeaponEncumbrance"}}
+              </div>
+            </div>
+            <div class="characteristic-item flex-group-center">
+              <div class="characteristic">
+                <div class="characteristic-value">
+                  <input type="text" name="data.hardpoints.value" value="{{data.hardpoints.value}}" data-dtype="Number" />
+                  {{#if (ne data.hardpoints.current data.hardpoints.value)}}
+                  <div class="adjustedvalues-left {{#if (gt data.hardpoints.current data.hardpoints.value)}}positive{{/if}}">{{data.hardpoints.current}}</div>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="characteristic-label">
+                {{localize "SWFFG.ItemWeaponHardPoints"}}
+              </div>
+            </div>
+            <div class="characteristic-item flex-group-center">
+              <div class="characteristic">
+                <div class="characteristic-value {{#if data.rarity.isrestricted}}restricted{{/if}}">
+                  <input type="text" name="data.rarity.value" value="{{data.rarity.value}}" data-dtype="Number" />
+                  {{#if (ne data.rarity.adjusted data.rarity.value)}}
+                  <div class="adjustedvalues-left {{#if (gt data.rarity.adjusted data.rarity.value)}}positive{{/if}}">{{data.rarity.adjusted}}</div>
+                  {{/if}}
+                </div>
+              </div>
+              <div class="characteristic-label">
+                {{localize "SWFFG.ItemWeaponRarity"}}
+              </div>
+            </div>
+            <div class="characteristic-item flex-group-center">
+              {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.ItemWeaponPrice" type="Number" name="data.price.value" value=data.price.value adjusted=data.price.adjusted)}}
+            </div>
+          </div>
+
+          <div class="container flex-group-center weapon-values">
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="double" title="SWFFG.VehicleTabFiringArc" type="Multicheckbox" fields=(array (object name="data.firingarc.fore" value=data.firingarc.fore label="SWFFG.VehicleFiringArcForward") (object name="data.firingarc.aft" value=data.firingarc.aft label="SWFFG.VehicleFiringArcAft") (object name="data.firingarc.port" value=data.firingarc.port label="SWFFG.VehicleFiringArcPort") (object name="data.firingarc.starboard" value=data.firingarc.starboard label="SWFFG.VehicleFiringArcStarboard") (object name="data.firingarc.dorsal" value=data.firingarc.dorsal label="SWFFG.VehicleFiringArcDorsal") (object name="data.firingarc.ventral" value=data.firingarc.ventral label="SWFFG.VehicleFiringArcVentral") )) }}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.ItemWeaponSkill" type="Dropdown" name="data.skill.value" value=data.skill.value options=this.FFG.skills)}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.ItemWeaponRange" type="Dropdown" name="data.range.value" value=data.range.value options=this.FFG.vehicle_ranges adjusted=data.range.label)}}
+          </div>
+
+          <div class="flex-group-center weapon-values hidden-content">
+            <input type="text" name="data.damage.adjusted" value="{{data.damage.adjusted}}" data-dtype="Number" />
+            <input type="text" name="data.crit.adjusted" value="{{data.crit.adjusted}}" data-dtype="Number" />
+            <input type="text" name="data.encumbrance.adjusted" value="{{data.encumbrance.adjusted}}" data-dtype="Number" />
+            <input type="text" name="data.range.adjusted" value="{{data.range.adjusted}}" data-dtype="String" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.hbs" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="configuration" label="SWFFG.TabConfiguration" icon="fa-solid fa-wrench" cls=classType) (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType) )}} {{!-- Sheet Body --}}
+  <section class="sheet-body small shipweapon">
+    {{!-- Description Tab --}}
+    <div class="tab" data-group="primary" data-tab="description">
+      {{editor data.enrichedDescription target="system.description" button=true owner=owner editable=editable}}
+    </div>
+
+    {{!-- Modifiers Tab --}}
+    <div class="tab attributes" data-group="primary" data-tab="attributes">
+      <div class="attachments items">
+        {{> "systems/starwarsffg/templates/parts/ffg-qualities-attachments-mods.hbs"}}
+      </div>
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.hbs"}}
+    </div>
+    <div class="tab configuration" data-group="primary" data-tab="configuration">
+      <div class="container flex-group-center weapon-values">
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.rarity.isrestricted" value=data.rarity.isrestricted)}}
+      </div>
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-block.hbs" (object blocktype="single" title="SWFFG.ItemWeaponSpecial" type="PopoutEditor" name="data.special.value" value=data.special.value )}}
+    </div>
+
+    {{!-- Long Description and Sources Tab --}}
+    <div class="tab sources" data-group="primary" data-tab="sources">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-sources.hbs" data=data}}
+    </div>
+  </section>
+</form>

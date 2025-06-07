@@ -1,0 +1,38 @@
+<div class="starwarsffg dice-roll">
+  {{#if system.additionalFlavorText}}
+  <div class="dice-additional-flavor">
+    {{system.additionalFlavorText}}
+  </div>
+  {{/if}} {{#if publicRoll }}
+  <div class="dice-result">
+    {{#if hasStandard}}
+    <div class="dice-formula">{{formula}}</div>
+    {{/if}} {{#if hasFFG}} {{#if system.crew.crew_card}} {{> "systems/starwarsffg/templates/chat/roll-vehicle-card.hbs"}} {{/if}} {{#if system._id}} {{#if (eq system.type "forcepower")}} {{> "systems/starwarsffg/templates/chat/roll-forcepower-card.hbs"}} {{/if}} {{#if (or (eq system.type "weapon") (eq system.type "shipweapon"))}} {{> "systems/starwarsffg/templates/chat/roll-weapon-card.hbs"}} {{/if}} {{/if}}
+    <div class="ffgDiceArray">
+      <ol class="dice-rolls">
+        {{#each ffgDice}} {{#if this.isFFG}}{{#each this.rolls}}
+        <li class="roll">{{{this.result}}}</li>
+        {{/each}} {{/if}} {{/each}}
+      </ol>
+    </div>
+    <div>
+      {{#each addedResults}} {{#if (ne this.value 0)}}
+      <div>{{#if this.negative}}-{{else}}+{{/if}}{{this.value}}{{{this.symbol}}}</div>
+      {{/if}} {{/each}}
+    </div>
+    {{/if}} {{{tooltip}}} {{#if hasStandard}}
+    <h4 class="dice-total">{{total}}</h4>
+    {{/if}} {{#if publicRoll }} {{#if hasFFG}}
+    <ul>
+      {{#if hasSuccess}} {{#if ffg.success}}
+      <li class="roll-success">{{localize "SWFFG.RollSucceeded"}}</li>
+      {{else}}
+      <li class="roll-failure">{{localize "SWFFG.RollFailure"}}</li>
+      {{/if}} {{/if}} {{#each ffg as | result key|}} {{#if this}}
+      <li>{{localize (lookup ../this.diceresults [key])}}: {{this}}</li>
+      {{/if}} {{/each}}
+    </ul>
+    {{/if}} {{/if}}
+  </div>
+  {{/if}}
+</div>

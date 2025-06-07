@@ -33,7 +33,7 @@ async function handleMigration(oldVersion, newVersion) {
  * @returns {Promise<void>}
  */
 async function sendChanges(newVersion) {
-  const template = "systems/starwarsffg/templates/notifications/new_version.html";
+  const template = "systems/starwarsffg/templates/notifications/new_version.hbs";
   const html = await renderTemplate(template, { version: newVersion });
   const messageData = {
     user: game.user.id,
