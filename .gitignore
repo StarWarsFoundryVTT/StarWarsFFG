@@ -3,3 +3,4 @@ node_modules
 cypress/audio/
 cypress/videos/
 cypress/screenshots/
+/styles/starwarsffg.css.map

@@ -109,11 +109,16 @@
   }
 
   .dice-pool {
+    display: flex;             // Ensures dice are laid out horizontally
+    flex-wrap: wrap;           // Allows wrapping to next line if space runs out
+    gap: 0.25em;               // Adds spacing between dice
+    align-items: center;       // Vertically center-aligns dice
     margin: 0.5em 0;
+
     img {
-      width: 1em;
-      height: 1em;
-      border: 0;
+      width: 1em;              // Same as before
+      height: 1em;             // Same as before
+      border: 0;               // Same as before
     }
   }
 }

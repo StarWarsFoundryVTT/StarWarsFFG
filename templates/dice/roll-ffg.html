@@ -1,38 +1,88 @@
-<div class="starwarsffg dice-roll">
+<div class="starwarsffg dice-roll" data-action="expandRoll">
+  <!-- If Flavour Text -->
   {{#if system.additionalFlavorText}}
-  <div class="dice-additional-flavor">
-    {{system.additionalFlavorText}}
-  </div>
-  {{/if}} {{#if publicRoll }}
+    <div class="dice-additional-flavor">
+      {{system.additionalFlavorText}}
+    </div>
+  {{/if}}  <!-- system.additionalFlavorText -->
+
+  <!-- If Flavour Text -->
+  {{#if publicRoll }}
   <div class="dice-result">
+
     {{#if hasStandard}}
     <div class="dice-formula">{{formula}}</div>
-    {{/if}} {{#if hasFFG}} {{#if system.crew.crew_card}} {{> "systems/starwarsffg/templates/chat/roll-vehicle-card.html"}} {{/if}} {{#if system._id}} {{#if (eq system.type "forcepower")}} {{> "systems/starwarsffg/templates/chat/roll-forcepower-card.html"}} {{/if}} {{#if (or (eq system.type "weapon") (eq system.type "shipweapon"))}} {{> "systems/starwarsffg/templates/chat/roll-weapon-card.html"}} {{/if}} {{/if}}
-    <div class="ffgDiceArray">
-      <ol class="dice-rolls">
-        {{#each ffgDice}} {{#if this.isFFG}}{{#each this.rolls}}
-        <li class="roll">{{{this.result}}}</li>
-        {{/each}} {{/if}} {{/each}}
-      </ol>
+    {{/if}} <!-- hasStandard -->
+
+    {{#if hasFFG}}
+
+      {{#if system.crew.crew_card}}
+      {{> "systems/starwarsffg/templates/chat/roll-vehicle-card.html"}}
+      {{/if}} <!-- system.crew.crew_card -->
+
+      {{#if system._id}}
+
+        {{#if (eq system.type "forcepower")}}
+          {{> "systems/starwarsffg/templates/chat/roll-forcepower-card.html"}}
+        {{/if}} <!-- (eq system.type "forcepower") -->
+
+        {{#if (or (eq system.type "weapon") (eq system.type "shipweapon"))}}
+          {{> "systems/starwarsffg/templates/chat/roll-weapon-card.html"}}
+        {{/if}} <!-- (or (eq system.type "weapon") (eq system.type "shipweapon")) -->
+
+      {{/if}} <!-- system._id -->
+
+      <div class="ffgDiceArray">
+        <ol class="dice-rolls">
+          {{#each ffgDice}}
+            {{#if this.isFFG}}
+              {{#each this.rolls}}
+                <li class="roll">{{{this.result}}}</li>
+              {{/each}}
+            {{/if}} <!-- this.isFFG -->
+          {{/each}}
+        </ol>
+      </div>
+
+      <div>
+      {{#each addedResults}}
+        {{#if (ne this.value 0)}}
+            <div>
+              {{#if this.negative}}-{{else}}+{{/if}}{{this.value}}{{{this.symbol}}}</div>
+        {{/if}} <!-- if (ne this.value 0) -->
+      {{/each}}
     </div>
-    <div>
-      {{#each addedResults}} {{#if (ne this.value 0)}}
-      <div>{{#if this.negative}}-{{else}}+{{/if}}{{this.value}}{{{this.symbol}}}</div>
-      {{/if}} {{/each}}
-    </div>
-    {{/if}} {{{tooltip}}} {{#if hasStandard}}
-    <h4 class="dice-total">{{total}}</h4>
-    {{/if}} {{#if publicRoll }} {{#if hasFFG}}
+    {{/if}} <!-- if publicRoll -->
+
+    {{{tooltip}}}
+
+    {{#if hasStandard}}
+      <h4 class="dice-total">{{total}}</h4>
+    {{/if}} <!-- if hasStandard -->
+
+    {{#if publicRoll }}
+
+    {{#if hasFFG}}
     <ul>
-      {{#if hasSuccess}} {{#if ffg.success}}
-      <li class="roll-success">{{localize "SWFFG.RollSucceeded"}}</li>
-      {{else}}
-      <li class="roll-failure">{{localize "SWFFG.RollFailure"}}</li>
-      {{/if}} {{/if}} {{#each ffg as | result key|}} {{#if this}}
-      <li>{{localize (lookup ../this.diceresults [key])}}: {{this}}</li>
-      {{/if}} {{/each}}
+      {{#if hasSuccess}}
+        {{#if ffg.success}}
+          <li class="roll-success">{{localize "SWFFG.RollSucceeded"}}</li>
+        {{else}}
+          <li class="roll-failure">{{loc`alize "SWFFG.RollFailure"}}</li>
+        {{/if}}  <!-- if ffg.success -->
+      {{/if}} <!-- if hasSuccess -->
+
+      {{#each ffg as | result key|}}
+        {{#if this}}
+          <li>{{localize (lookup ../this.diceresults [key])}}: {{this}}</li>
+        {{/if}} <!-- if this -->
+      {{/each}}
+
     </ul>
-    {{/if}} {{/if}}
+    {{/if}} <!-- if hasFFG -->
+
+    {{/if}}
+
   </div>
-  {{/if}}
+  {{/if}} <!-- If publicRoll -->
 </div>

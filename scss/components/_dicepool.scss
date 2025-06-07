@@ -1,5 +1,8 @@
 .dice-pool-dialog {
   .dice-pool {
+    display: flex;             // Ensures dice are laid out horizontally
+    flex-wrap: wrap;           // Allows wrapping to next line if space runs out
+    gap: 0.25em;               // Adds spacing between dice
     margin-top: 10px;
     min-height: 54px;
     text-align: center;
@@ -89,14 +92,18 @@
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: flex-start;
+
   .dice-rolls {
+    display: flex; // use flex here too
+    flex-wrap: wrap;
+    gap: 0.25em; // optional: space between dice
     list-style: none;
     margin: 0;
     padding: 0;
-    overflow: hidden;
+
     .roll {
       width: 40px;
-      float: left;
+      height: 40px;
     }
   }
 }

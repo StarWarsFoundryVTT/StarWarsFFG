@@ -140,22 +140,35 @@ export class RollFFG extends Roll {
 
     // Step 3 - evaluate any remaining terms and return any non-FFG dice to the total.
     this.results = await Promise.all(this.terms.map(async (term) => {
-      if (!game.ffg.diceterms.includes(term.constructor)) {
+      const isFFGDice = game.ffg.diceterms.includes(term.constructor);
+
+      if (!isFFGDice) {
         if (term.evaluate) {
-          if (!(term instanceof foundry.dice.terms.OperatorTerm)) {
-            this.hasStandard = true;
-            let result = await term.evaluate({ minimize, maximize });
-            return result.total;
+          if (!term._evaluated ) {
+            const result = await term.evaluate({ minimize, maximize });
+
+            if (!(term instanceof foundry.dice.terms.OperatorTerm)) {
+              this.hasStandard = true;
+            }
+
+            return typeof result.total === "number" ? result.total : 0;
           } else {
-            return await term.evaluate({ minimize, maximize }).total;
+            return typeof term.total === "number" ? term.total : 0;
           }
-        } else return term;
+        } else {
+          return typeof term.total === "number" ? term.total : 0;
+        }
       } else {
-        if (term.evaluate) await term.evaluate({ minimize, maximize });
+        if (term.evaluate && !term._evaluated ) {
+          await term.evaluate({ minimize, maximize });
+        }
+
         this.hasFFG = true;
         return 0;
       }
     }));
+
+
 
     // Step 3.5 - if non-FFG dice are roll, skip our custom logic
     if (!this?.hasFFG) {
@@ -163,7 +176,7 @@ export class RollFFG extends Roll {
     }
 
     // Step 4 - safely evaluate the final total
-    const total = Roll.safeEval(this.results.join(" "));
+    const total = Roll.safeEval(this.results.join(" + "));
     if (!Number.isNumeric(total)) {
       throw new Error(game.i18n.format("DICE.ErrorNonNumeric", { formula: this.formula }));
     }
@@ -254,7 +267,7 @@ export class RollFFG extends Roll {
     const isPrivate = chatOptions.isPrivate;
 
     // Execute the roll, if needed
-    if (!this._evaluated) await this.roll();
+    if (!this._evaluated ) await this.roll();
     await this.updateSymbols();
 
     // Define chat data
@@ -273,7 +286,8 @@ export class RollFFG extends Roll {
           this.data.system = await (new ItemFFG(this.data, {validate: false}).getItemDetails());
         }
       }
-      this.data.additionalFlavorText = this.flavorText;
+      this.data.
+        additionalFlavorText = this.flavorText;
     } else {
       this.data = {
         additionalFlavorText: this.flavorText,
@@ -343,7 +357,7 @@ export class RollFFG extends Roll {
   /** @override */
   async toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
     // Perform the roll, if it has not yet been rolled
-    if (!this._evaluated) await this.evaluate();
+    if (!this._evaluated ) await this.evaluate();
 
     const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
 
