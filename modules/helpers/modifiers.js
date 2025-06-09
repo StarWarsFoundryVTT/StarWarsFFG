@@ -444,10 +444,6 @@ export default class ModifierHelpers {
           modType: modType,
           mod: "Willpower",
         },
-        {
-          modType: modType,
-          mod: "Strain",
-        },
       ];
     } else {
       return [{
@@ -563,7 +559,6 @@ export default class ModifierHelpers {
     const attributes = formAttrs
     const existing = item.getEmbeddedCollection("ActiveEffect");
     const toDelete = [];
-    const toUpdate = [];
     const toCreate = [];
 
     // first update anything inherent to the item type (such as "brawn" on "species")
@@ -716,6 +711,27 @@ export default class ModifierHelpers {
       }
     }
 
+    const existingEffects = item.getEmbeddedCollection("ActiveEffect");
+    const itemEffect = existingEffects.find(i => i.name === `(inherent)`);
+    if (itemEffect && item.type === "species") {
+      // update the wound and strain changes to match
+      const newChanges = foundry.utils.deepClone(itemEffect.changes);
+      const newBrawn = newChanges.find(ae => ae.key === "system.characteristics.Brawn.value").value;
+      const newWillpower = newChanges.find(ae => ae.key === "system.characteristics.Willpower.value").value;
+      // read the values from the form, if available, otherwise from the object
+      const wounds = formData?.data?.attributes?.Wounds?.value || item.system.attributes.Wounds.value;
+      const strain = formData?.data?.attributes?.Strain?.value || item.system.attributes.Strain.value;
+
+      for (const change of newChanges) {
+        if (change.key === "system.stats.wounds.max") {
+          change.value = parseInt(wounds) + parseInt(newBrawn);
+        } else if (change.key === "system.stats.strain.max") {
+          change.value = parseInt(strain) + parseInt(newWillpower);
+        }
+      }
+      await itemEffect.update({changes: newChanges});
+    }
+
     if (toCreate.length) {
       await item.createEmbeddedDocuments("ActiveEffect", toCreate);
     }
@@ -724,6 +740,6 @@ export default class ModifierHelpers {
       await item.deleteEmbeddedDocuments("ActiveEffect", toDelete);
     }
 
-    CONFIG.logger.debug("applyActiveEffectOnUpdate", toCreate, toUpdate, toDelete);
+    CONFIG.logger.debug("applyActiveEffectOnUpdate", toCreate, toDelete);
   }
 }

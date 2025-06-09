@@ -45,32 +45,76 @@ export class ActorFFG extends Actor {
     return super.create(createData, options);
   }
 
-  /**
-   * Prepare basic data, which is called before embedded documents are taken into account
-   * This should be things like the base level of soak, wounds, etc
-   *
-   * stats have some value, which can be modified, plus any system-level derived values (e.g.
+
+  /** @override
+   * We use this to update wounds, strain, and soak when characteristics are changed
+   * It's implemented here since Edit Mode must be enabled to make a change here, which means
+   *  any modifications from Active Effects are suspended and we can do simple math
+   * It's somewhat assumed that direct characteristic modifications are being done during character creation
+   * Anything else should be coming from Active Effects (e.g., on a talent giving +1 Brawn)
    */
-  prepareBaseData() {
-    super.prepareBaseData();
-    // apply basic levels of wounds, strain, soak, dice pools, etc
-    const actor = this;
-    const data = actor.system;
-    //console.log(data.stats.soak.value)
-    // TODO: handle actor types without these stats (and actually figure out how to remove this function)
-    // soak is always updated
-    //data.stats.soak.value += data.attributes.Brawn.value;
-    /*
-    // update wounds only if we are changing it for the first time
-    if (data.attributes?.wounds?.value === 0) {
-      data.attributes.wounds.value += data.attributes.Brawn.value
+  async _preUpdate(changes, options, user) {
+    /**
+     * Derived attributes:
+     *  Wound Threshold - Species WT + Brawn. Further increases to Brawn DO NOT increase the WT.
+     *  Strain Threshold - Species ST + Willpower. Further increases to Willpower DO NOT increase the ST.
+     *  Soak - Brawn. Further increases to Brawn DO increase Soak.
+     *  // this might be able to be done when you submit an update to the species item - we update the values of the existing AEs
+     */
+
+    CONFIG.logger.debug(`Performing pre-update on ${this.name}`);
+    if (["character", "rival", "nemesis"].includes(this.type)) {
+      const originalBrawn = this.system.characteristics.Brawn.value;
+      const updatedBrawn = changes?.system?.characteristics?.Brawn?.value;
+      if (originalBrawn !== undefined && updatedBrawn !== undefined && originalBrawn !== updatedBrawn) {
+        CONFIG.logger.debug(`Detected modified Brawn (${originalBrawn} -> ${updatedBrawn}, updating derived values`);
+        // get the wounds without brawn modifying it, then add the new brawn value in
+        const originalWounds = this.system.stats?.wounds.max;
+        const originalWoundsWithoutBrawn = originalWounds - originalBrawn;
+        const updatedWounds = originalWoundsWithoutBrawn + updatedBrawn;
+        CONFIG.logger.debug(`The character sheet showed ${originalWounds} wounds, while that value without Brawn was ${originalWoundsWithoutBrawn}. Updating to be ${updatedWounds}`);
+        changes.system.stats = foundry.utils.mergeObject(
+          changes.system.stats,
+          {
+            wounds: {
+              max: updatedWounds,
+            }
+          }
+        );
+        // repeat the above process, but for soak
+        const originalSoak = this.system.stats?.soak.value;
+        const originalSoakWithoutBrawn = originalSoak - originalBrawn;
+        const updatedSoak = originalSoakWithoutBrawn + updatedBrawn;
+        CONFIG.logger.debug(`The character sheet showed ${originalSoak} soak, while that value without Brawn was ${originalSoakWithoutBrawn}. Updating to be ${updatedSoak}`);
+        changes.system.stats = foundry.utils.mergeObject(
+          changes.system.stats,
+          {
+            soak: {
+              value: updatedSoak,
+            }
+          }
+        );
+      }
+      const originalWillpower = this.system.characteristics.Willpower.value;
+      const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
+      if (originalWillpower !== undefined && updatedWillpower !== undefined && originalWillpower !== updatedWillpower) {
+        CONFIG.logger.debug(`Detected modified Willpower (${originalWillpower} -> ${updatedWillpower}, updating derived values`);
+        // get the soak without willpower modifying it, then add the new willpower value in
+        const originalStrain = this.system.stats?.strain.max;
+        const originalStrainWithoutWillpower = originalStrain - originalWillpower;
+        const updatedStrain = originalStrainWithoutWillpower + updatedWillpower;
+        CONFIG.logger.debug(`The character sheet showed ${originalStrain} strain, while that value without Willpower was ${originalStrainWithoutWillpower}. Updating to be ${updatedStrain}`);
+        changes.system.stats = foundry.utils.mergeObject(
+          changes.system.stats,
+          {
+            strain: {
+              max: updatedStrain,
+            }
+          }
+        );
+      }
     }
-    // update strain only if we are changing it for the first time
-    if (data.attributes?.strain?.value === 0) {
-      data.attributes.strain.value += data.attributes.Willpower.value
-    }
-    */
-    //console.log(data.stats.soak.value)
+    await super._preUpdate(changes, options, user);
   }
 
   /**
@@ -82,7 +126,7 @@ export class ActorFFG extends Actor {
     const data = actor.system;
     const flags = actor.flags;
 
-    // Make separate methods for each Actor type (character, minion, etc.) to keep
+    // Make separate methods for each Actor type (character, minion, etqc.) to keep
     // things organized.
 
     // if the actor has skills, add custom skills
