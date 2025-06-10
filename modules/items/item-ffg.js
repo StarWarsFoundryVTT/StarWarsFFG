@@ -90,6 +90,7 @@ export class ItemFFG extends ItemBaseFFG {
             });
           }
         } else if (this.type === "armour") {
+          console.log(this)
           for (const key of ["Encumbrance", "Defence", "Soak"]) {
             const explodedMods = ModifierHelpers.explodeMod(
               "Stat",
@@ -123,6 +124,11 @@ export class ItemFFG extends ItemBaseFFG {
               value: 0,
             });
           }
+        }
+
+        if (["armour", "weapon", "gear"].includes(this.type)) {
+          CONFIG.logger.debug("Detected equippible item creation, suspending Active Effects");
+          effects.disabled = true;
         }
 
         CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
