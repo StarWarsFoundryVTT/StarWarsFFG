@@ -126,9 +126,6 @@ export class ActorFFG extends Actor {
     const data = actor.system;
     const flags = actor.flags;
 
-    // Make separate methods for each Actor type (character, minion, etqc.) to keep
-    // things organized.
-
     // if the actor has skills, add custom skills
     if (data.skills) {
       let skills = JSON.parse(JSON.stringify(CONFIG.FFG.skills));
@@ -457,7 +454,6 @@ export class ActorFFG extends Actor {
     for (const effect of actorActiveEffects) {
       for (const change of effect.changes) {
         if (change.key.includes("system.skills")) {
-          // system.skills.Astrogation.value
           const skillName = change.key.split('.')[2].capitalize();
           const skillMod = change.key.split('.')[3];
           const modType = ModifierHelpers.getModTypeByModPath(change.key);

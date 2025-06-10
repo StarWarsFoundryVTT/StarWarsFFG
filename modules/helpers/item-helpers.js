@@ -334,7 +334,6 @@ export default class ItemHelpers {
         // update the active effect
         if (matchingEffect) {
           CONFIG.logger.debug(`located matching effect from attributes ${matchingEffect.name}, updating to ${newKey}`);
-          //await matchingEffect.update({name: newKey});
           matchingEffect.name = newKey;
         }
         // ensure further keys have a new entry
@@ -355,7 +354,6 @@ export default class ItemHelpers {
           delete droppedModifier.system.attributes[attr];
           // update the active effect
           if (matchingEffect) {
-            //await matchingEffect.update({name: newKey});
             matchingEffect.name = newKey;
           }
           // ensure further keys have a new entry

@@ -461,14 +461,12 @@ export default class ModifierHelpers {
    */
   static getModKeyPath(modType, mod) {
     if (["Wounds", "Strain", "EncumbranceMax", "Speed", "Hulltrauma", "Systemstrain"].includes(mod)) {
-      // TODO: this needs to be implemented in more spots, but for now we can shim it here
       modType = "Threshold";
     }
     if (modType === "Characteristic") {
       return `system.characteristics.${mod}.value`;
     } else if (modType === "Stat All" || modType === "Stat") {
       if (mod === "ForcePool") {
-        // force pool uses max, not value, but still fits in max. it's also a different casing scheme...
         return `system.stats.forcePool.max`;
       } else if (mod === "Defence.Melee") {
         return `system.stats.defence.melee`;
@@ -517,7 +515,6 @@ export default class ModifierHelpers {
     } else if (modType === "Skill Setback") {
       return `system.skills.${mod}.setback`;
     } else if (modType === "Career Skill") {
-      // TODO: this should actually be a boolean mode, not an ADD mode (I think?)
       return `system.skills.${mod}.careerskill`;
     } else if (modType === "Vehicle Stat") {
       if (mod === "Shields.Fore") {

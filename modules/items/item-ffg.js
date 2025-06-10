@@ -90,7 +90,6 @@ export class ItemFFG extends ItemBaseFFG {
             });
           }
         } else if (this.type === "armour") {
-          console.log(this)
           for (const key of ["Encumbrance", "Defence", "Soak"]) {
             const explodedMods = ModifierHelpers.explodeMod(
               "Stat",

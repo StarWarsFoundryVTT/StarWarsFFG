@@ -251,7 +251,6 @@ export class itemEditor extends FormApplication  {
    * @returns {Promise<void>}
    */
   async _updateType(event) {
-    console.log("update type!")
     // update our local record of which "attachmentType" we're on so dropdowns render correctly
     this.data.clickedObject.system.type = event.currentTarget.value;
     // iterate over mods and update the modifier to be the first choice of the first modifierType
