@@ -532,7 +532,8 @@ export default class ModifierHelpers {
       }
     } else {
       // TODO: this probably shouldn't be a UI notification in the released version
-      ui.notifications.warn(`Unknown mod type: ${modType}`);
+      CONFIG.logger.debug(`Unknown mod type: ${modType}`);
+      //ui.notifications.warn(`Unknown mod type: ${modType}`);
     }
   }
 
