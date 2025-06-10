@@ -46,6 +46,7 @@
   "SWFFG.XPCost": "XP Cost",
   "SWFFG.ForcePoolAvailable": "Maximum",
   "SWFFG.Encumbrance": "Encumbrance",
+  "SWFFG.EncumbranceMax": "Encumbrance (Max)",
   "SWFFG.TabCharacteristics": "Characteristics",
   "SWFFG.TabGear": "Gear & Equipment",
   "SWFFG.TabTalents": "Talents",
@@ -261,6 +262,7 @@
   "SWFFG.TalentActivationsActiveIncidentalOutofTurn": "Active (Incidental, OOT)",
   "SWFFG.TalentActivationsActiveAction": "Active (Action)",
   "SWFFG.TalentActivationsActiveManeuver": "Active (Maneuver)",
+  "SWFFG.ModTypeStatAll": "Stat All",
   "SWFFG.ModTypeCharacteristic": "Characteristic",
   "SWFFG.ModTypeSkillRank": "Skill Rank",
   "SWFFG.ModTypeSkillBoost": "Skill Boost",
@@ -367,6 +369,8 @@
   "SWFFG.EnableHyperdriveHint": "Enable the hyperdrive box for this vehicle",
   "SWFFG.EnableSensors": "Enable sensors",
   "SWFFG.EnableSensorsHint": "Enable the sensor box for this vehicle",
+  "SWFFG.EnableEditMode": "Enable Edit Mode",
+  "SWFFG.EnableEditModeHint": "Allows editing stats directly by disabling Active Effects",
   "SWFFG.Talent": "Talent",
   "SWFFG.Source": "Source",
   "SWFFG.Delete": "Delete",
@@ -801,5 +805,9 @@
   "SWFFG.XP.Adjust.Window.Title": "Adjust Available XP",
   "SWFFG.XP.Adjust.Window.Reason": "Adjustment Reason",
   "SWFFG.XP.Adjust.Window.Amount": "Adjustment Amount",
-  "SWFFG.XP.Adjust.Window.Default": "Manual Grant"
+  "SWFFG.XP.Adjust.Window.Default": "Manual Grant",
+  "SWFFG.Status.Boost.Next": "Boost Next Check",
+  "SWFFG.Status.Setback.Next": "Setback Next Check",
+  "SWFFG.Status.Upgrade.Next": "Upgrade Next Check",
+  "SWFFG.Status.Cover.Heavy": "Heavy Cover"
 }

@@ -17,19 +17,19 @@
               <div class="defense-block">
                 <div class="defense-block-title">{{localize "SWFFG.Defense"}}</div>
                 <div class="defense-value fore">
-                  <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.fore" value="{{data.stats.shields.fore}}" data-dtype="Number" disabled="{{ disabled }}" />
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseFore"}}</div>
                 </div>
                 <div class="defense-value aft">
-                  <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.aft" value="{{data.stats.shields.aft}}" data-dtype="Number" disabled="{{ disabled }}"/>
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseAft"}}</div>
                 </div>
                 <div class="defense-value port">
-                  <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.port" value="{{data.stats.shields.port}}" data-dtype="Number" disabled="{{ disabled }}"/>
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefensePort"}}</div>
                 </div>
                 <div class="defense-value starboard">
-                  <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" />
+                  <input type="text" name="data.stats.shields.starboard" value="{{data.stats.shields.starboard}}" data-dtype="Number" disabled="{{ disabled }}"/>
                   <div class="defense-value-label">{{localize "SWFFG.VehicleDefenseStarboard"}}</div>
                 </div>
                 <img class="defense-img" src="{{ data.silhouetteImage }}" data-edit="system.silhouetteImage"/>
@@ -50,7 +50,7 @@
           <div class="characteristic-item flex-group-center">
             <div class="characteristic">
               <div class="characteristic-value">
-                <input type="text" name="data.stats.armour.value" value="{{data.stats.armour.value}}" data-dtype="Number" />
+                <input type="text" name="data.stats.armour.value" value="{{data.stats.armour.value}}" data-dtype="Number" disabled/>
               </div>
             </div>
             <div class="characteristic-label">
@@ -70,7 +70,7 @@
           <div class="characteristic-item flex-group-center">
             <div class="characteristic">
               <div class="characteristic-value">
-                <input type="text" name="data.stats.handling.value" value="{{data.stats.handling.value}}" data-dtype="Number" />
+                <input type="text" name="data.stats.handling.value" value="{{data.stats.handling.value}}" data-dtype="Number" disabled />
               </div>
             </div>
             <div class="characteristic-label">
@@ -82,10 +82,17 @@
 
       <div class="container flex-group-center">
         <div class="grid grid-4col">
-          {{!-- Speed Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleSpeed" fields=(array (object name="data.stats.speed.max" value=data.stats.speed.max type="Number" label="SWFFG.Threshold") (object name="data.stats.speed.value" value=data.stats.speed.value type="Number" label="SWFFG.Current") ))}}
-          {{!-- Hull Trauma Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleHullTrauma" fields=(array (object name="data.stats.hullTrauma.max" value=data.stats.hullTrauma.max type="Number" label="SWFFG.Threshold") (object name="data.stats.hullTrauma.value" value=data.stats.hullTrauma.value type="Number" label="SWFFG.Current") ))}}
-          {{!-- System Strain Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleHullStrain" fields=(array (object name="data.stats.systemStrain.max" value=data.stats.systemStrain.max type="Number" label="SWFFG.Threshold") (object name="data.stats.systemStrain.value" value=data.stats.systemStrain.value type="Number" label="SWFFG.Current") ))}}
-          {{!-- Encumbrance Capacity Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleEncumbranceCapacity" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold") (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}}
+          {{!-- Speed Box --}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleSpeed" fields=(array (object name="data.stats.speed.max" value=data.stats.speed.max type="Number" label="SWFFG.Threshold" disabled=disabled) (object name="data.stats.speed.value" value=data.stats.speed.value type="Number" label="SWFFG.Current") ))}}
+
+          {{!-- Hull Trauma Box --}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleHullTrauma" fields=(array (object name="data.stats.hullTrauma.max" value=data.stats.hullTrauma.max type="Number" label="SWFFG.Threshold" disabled=disabled) (object name="data.stats.hullTrauma.value" value=data.stats.hullTrauma.value type="Number" label="SWFFG.Current") ))}}
+
+          {{!-- System Strain Box --}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleHullStrain" fields=(array (object name="data.stats.systemStrain.max" value=data.stats.systemStrain.max type="Number" label="SWFFG.Threshold" disabled=disabled) (object name="data.stats.systemStrain.value" value=data.stats.systemStrain.value type="Number" label="SWFFG.Current") ))}}
+
+          {{!-- Encumbrance Capacity Box --}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.VehicleEncumbranceCapacity" fields=(array (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold" disabled=disabled) (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current") ))}}
         </div>
       </div>
      {{/if}}
@@ -117,7 +124,7 @@
           {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Hyperdrive" fields=(array (object name="data.stats.hyperdrive.value" value=data.stats.hyperdrive.value type="Number" label="SWFFG.HyperdrivePrimary") (object name="data.stats.hyperdrive.backup" value=data.stats.hyperdrive.backup type="Number" label="SWFFG.HyperdriveBackup") ))}}
         {{/if}}
         {{!-- Hard Points Box --}}
-        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleHardPoints" type="Number" name="data.stats.customizationHardPoints.value" value=data.stats.customizationHardPoints.value )}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleHardPoints" type="Number" name="data.stats.customizationHardPoints.value" value=data.stats.customizationHardPoints.value disabled=disabled)}}
         {{!-- Passenger Capacity Box --}}
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehiclePassengerCapacity" type="Number" name="data.stats.passengerCapacity.value" value=data.stats.passengerCapacity.value )}}
         {{!-- Consumables Box --}}
@@ -156,11 +163,6 @@
     {{!-- Critical Damage Tab --}}
     <div class="tab damage" data-group="primary" data-tab="damage">
       {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticaldamage"}}
-    </div>
-
-    {{!-- Modifiers Tab --}}
-    <div class="tab attributes" data-group="primary" data-tab="attributes">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
 
     {{!-- Long Description and Sources Tab --}}

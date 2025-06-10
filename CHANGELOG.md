@@ -1,3 +1,9 @@
+`?`
+* Features:
+  * New built-in status effects for single-use boost/setback dice
+* Fixes:
+  * Talent modifiers on specializations are now properly cleaned up when a new talent overrides an old one
+
 `1.906`
 * Features:
   * Compendiums have been migrated back to world compendiums (from system compendiums) ([#1794](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1794))

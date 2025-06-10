@@ -170,7 +170,7 @@ export default class DiceHelpers {
           failure: skill?.failuresource?.length ? skill.failuresource : [],
           threat: skill?.threatsource?.length ? skill.threatsource : [],
           success: skill?.successsource?.length ? skill.successsource : [],
-          remsetback: skill?.remsetbacksource.length ? skill.remsetbacksource : [],
+          remsetback: skill?.remsetbacksource?.length ? skill.remsetbacksource : [],
           upgrades: skill?.upgradessource?.length ? skill.upgradessource : [],
         },
       });

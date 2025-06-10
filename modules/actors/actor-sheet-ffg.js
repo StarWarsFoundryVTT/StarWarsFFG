@@ -32,6 +32,7 @@ export class ActorSheetFFG extends ActorSheet {
     this._filters = {
       skills: new Set(),
     };
+    this.object.setFlag("starwarsffg", "config.enableEditMode", false);
   }
 
   pools = new Map();
@@ -65,6 +66,11 @@ export class ActorSheetFFG extends ActorSheet {
 
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
+
+      if (["character", "minion", "rival"].includes(this.actor.type) && ["itemmodifier", "itemattachment"].includes(itemData.type)) {
+        ui.notifications.warn("You cannot add Item Modifiers or Attachments directly to actors.");
+        return false;
+      }
 
       if (this.actor.type === "character" && itemData.type === "species") {
         // add starting XP from species
@@ -219,6 +225,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
         // we need to update all specialization talents with the latest talent information
         if (!this.actor.flags.starwarsffg?.loaded && this.actor.type !== "rival") {
+          // TODO: is this actually needed?
           await this._updateSpecialization(data);
           await this.object._prepareCharacterData(data);
         }
@@ -285,6 +292,11 @@ export class ActorSheetFFG extends ActorSheet {
     }
 
     data.actor.items = ActorSheetFFG.sortForActorSheet(data.actor.items);
+    data.disabled = !this.object.getFlag("starwarsffg", "config.enableEditMode");
+
+    data.modTypeSelected = "all"; // TODO: should this be something else?
+    data.modTypeChoices = CONFIG.FFG.itemTypeToModTypeMap;
+    data.modChoices = CONFIG.FFG.modTypeToModMap;
 
     return data;
   }
@@ -610,6 +622,13 @@ export class ActorSheetFFG extends ActorSheet {
         default: true,
       });
     }
+
+    this.sheetoptions.register("enableEditMode", {
+      name: game.i18n.localize("SWFFG.EnableEditMode"),
+      hint: game.i18n.localize("SWFFG.EnableEditModeHint"),
+      type: "Boolean",
+      default: false,
+    });
 
     html.find(".medical").click(async (ev) => {
       const item = await $(ev.currentTarget);
@@ -1539,13 +1558,16 @@ export class ActorSheetFFG extends ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
-              // update the form because the fields are read when an update is performed
-              this.object.sheet.element.find(`[name="data.skills.${skill}.rank"]`).val(curRank + 1);
-              await this.object.sheet.submit({preventClose: true});
+              const skillRankWithoutAEs =  this.object.toObject().system.skills[skill].rank;
               await this.object.update({
                 system: {
                   experience: {
                     available: availableXP - cost,
+                  },
+                  skills: {
+                    [skill]: {
+                      rank: skillRankWithoutAEs + 1,
+                    }
                   }
                 }
               });
@@ -1708,6 +1730,31 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
     }
+
+    await this._suspendActiveEffects(await fromUuid(data.uuid));
+  }
+
+  /**
+   * ActiveEffects are transferred to actors by default. In some cases, we don't want them transferred.
+   * Suspend anything we don't want (for example, item attachment AEs shouldn't be transferred to an actor because they're holding it)
+   * @param droppedItem - the fromUuid item dropped onto this object
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _suspendActiveEffects(droppedItem) {
+    // Note: this function is currently placeholder. I may implement it - if we get better support for holding attachments
+    return;
+    const droppedType = droppedItem.type;
+    const myType = this.object.type;
+    const toSuspend = [];
+
+    if (["itemattachment", "itemmodifier"].includes(droppedType)) {
+      CONFIG.logger.info(`Suspending AEs for drag-and-drop of ${droppedType} -> ${myType}`);
+      for (const activeEffect of droppedItem.effects) {
+        toSuspend.push(activeEffect);
+      }
+      await this.object.createEmbeddedDocuments("ActiveEffect", toSuspend);
+    }
   }
 
   /**
@@ -1721,8 +1768,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
     this.actor.flags.starwarsffg.loaded = true;
 
-    let actor = await game.actors.get(this.actor.id);
-    const specializations = actor.items.filter((item) => {
+    const specializations = this.actor.items.filter((item) => {
       return item.type === "specialization";
     });
 
@@ -2129,12 +2175,11 @@ export class ActorSheetFFG extends ActorSheet {
     ).render(true);
   }
 
-  _buyCharacteristicRank(characteristic) {
+  async _buyCharacteristicRank(characteristic) {
+    // this is the current value of the characteristic (including Active Effects)
     const characteristicValue = this.actor.system.characteristics[characteristic].value;
-    // this is the currently bought ranks in the characteristic
-    const characteristicCurrentRank = this.actor.system.attributes[characteristic].value;
     // this is the value without items that modify it
-    const characteristicCostValue = ModifierHelpers.getBaseValue(this.actor.items, characteristic, "Characteristic") + characteristicCurrentRank;
+    const characteristicWithoutAEs =  this.object.toObject().system.characteristics[characteristic].value;
 
     if (characteristicValue >= game.settings.get("starwarsffg", "maxAttribute")) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Characteristic.Max"));
@@ -2142,7 +2187,7 @@ export class ActorSheetFFG extends ActorSheet {
     }
     const availableXP = this.actor.system.experience.available;
     const totalXP = this.actor.system.experience.total;
-    const cost = (characteristicCostValue + 1) * 10;
+    const cost = (characteristicValue + 1) * 10;
     if (cost > availableXP) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       return;
@@ -2150,7 +2195,7 @@ export class ActorSheetFFG extends ActorSheet {
     const dialog = new Dialog(
       {
         title: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Characteristic.ConfirmTitle", {characteristic: characteristic}),
-        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Characteristic.ConfirmText", {cost: cost, level: characteristicCostValue + 1, characteristic: characteristic}),
+        content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Characteristic.ConfirmText", {cost: cost, level: characteristicValue + 1, characteristic: characteristic}),
         buttons: {
           done: {
             icon: '<i class="fa-regular fa-circle-up"></i>',
@@ -2161,14 +2206,14 @@ export class ActorSheetFFG extends ActorSheet {
                   experience: {
                     available: availableXP - cost,
                   },
-                  attributes: {
+                  characteristics: {
                     [characteristic]: {
-                      value: characteristicCurrentRank + 1,
+                      value: characteristicWithoutAEs + 1,
                     },
                   },
                 }
               });
-              await xpLogSpend(game.actors.get(this.object.id), `characteristic ${characteristic} level ${characteristicCostValue} --> ${characteristicCostValue + 1}`, cost, availableXP - cost, totalXP);
+              await xpLogSpend(game.actors.get(this.object.id), `characteristic ${characteristic} level ${characteristicValue} --> ${characteristicValue + 1}`, cost, availableXP - cost, totalXP);
               await this.render(true);
             },
           },

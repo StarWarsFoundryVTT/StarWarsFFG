@@ -98,6 +98,10 @@ Hooks.once("init", async function () {
   CONFIG.Combat.documentClass = CombatFFG;
   CONFIG.Combatant.documentClass = CombatantFFG;
 
+  // we do not want the legacy active effect transfer mode
+  // also, reeeeeeeeeeeeeeeee
+  CONFIG.ActiveEffect.legacyTransferral = false;
+
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
   CONFIG.Dice.rolls[0] = RollFFG;
@@ -118,6 +122,75 @@ Hooks.once("init", async function () {
   CONFIG.debug.hooks = false;
 
   CONFIG.ui.pause = PauseFFG;
+
+  // define custom status effects
+  const allSkillChanges = {
+    boost: [],
+    setback: [],
+    upgrade: [],
+  };
+  for (const skill of Object.keys(CONFIG.FFG.skills)) {
+    allSkillChanges['boost'].push({
+      key: `system.skills.${skill}.boost`,
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      value: "1",
+    });
+    allSkillChanges['setback'].push({
+      key: `system.skills.${skill}.setback`,
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      value: "1",
+    });
+    allSkillChanges['upgrade'].push({
+      key: `system.skills.${skill}.upgrades`,
+      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+      value: "1",
+    });
+  }
+
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-boost-once",
+    img: "systems/starwarsffg/images/dice/starwars/blue.png",
+    name: "SWFFG.Status.Boost.Next",
+    changes: allSkillChanges['boost'],
+    system: {
+      duration: "once",
+    }
+  });
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-setback-once",
+    img: "systems/starwarsffg/images/dice/starwars/black.png",
+    name: "SWFFG.Status.Setback.Next",
+    changes: allSkillChanges['setback'],
+    system: {
+      duration: "once",
+    }
+  });
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-upgrade-once",
+    img: "systems/starwarsffg/images/dice/starwars/yellow.png",
+    name: "SWFFG.Status.Upgrade.Next",
+    changes: allSkillChanges['upgrade'],
+    system: {
+      duration: "once",
+    }
+  });
+  CONFIG.statusEffects.push({
+    id: "starwarsffg-heavy-cover",
+    img: "icons/equipment/shield/buckler-wooden-boss-lightning.webp",
+    name: "SWFFG.Status.Cover.Heavy",
+    changes: [
+      {
+        key: "system.stats.defence.melee",
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "2",
+      },
+      {
+        key: "system.stats.defence.ranged",
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "2",
+      },
+    ],
+  });
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   Token.prototype._drawBar = function (number, bar, data) {

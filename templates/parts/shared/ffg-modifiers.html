@@ -6,114 +6,17 @@
 </header>
 <ol class="attributes-list">
   {{#each data.attributes as |attr key|}} {{#if attr.exclude}} {{else}}
+  {{{ json attr }}}
   <li class="attribute flexrow" data-attribute="{{key}}">
     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
-    <select class="attribute-modtype" name="data.attributes.{{key}}.modtype">
-      {{#selectFfg attr.modtype}}
-        {{#if (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon") )}}
-          {{#each ../this.FFG.vehicle_mod_types as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (and (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon") (ne ../item.type "itemmodifier") (ne ../item.type "itemattachment") )}}
-          {{#each ../this.FFG.mod_types as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq ../item.type "weapon")}}
-          {{#each ../this.FFG.weapon_mod_types as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (or (eq ../item.type "itemmodifier") (eq ../item.type "itemattachment"))}}
-          {{#each ../this.FFG.itemmodifier_mod_types as |t|}}
-            {{#if (eq ../../item.system.type "all")}}
-              <option value="{{t.value}}">{{localize t.label}}</option>
-            {{else}}
-              {{#if (eq ../../item.system.type "weapon") }}
-                {{#if (eq t.value "Weapon Stat") }}
-                  <option value="{{t.value}}">{{localize t.label}}</option>
-                {{/if}}
-              {{/if}}
-              {{#if (and (eq ../../item.system.type "armour") (eq t.value "Armor Stat"))}}
-                <option value="{{t.value}}">{{localize t.label}}</option>
-              {{/if}}
-              {{#if (and (eq ../../item.system.type "vehicle") (eq t.value "Vehicle Stat"))}}
-                <option value="{{t.value}}">{{localize t.label}}</option>
-              {{/if}}
-              {{#if (and (ne t.value "Armor Stat") (ne t.value "Weapon Stat")(ne t.value "Vehicle Stat"))}}
-                <option value="{{t.value}}">{{localize t.label}}</option>
-              {{/if}}
-            {{/if}}
-          {{/each}}
-        {{/if}}
-      {{/selectFfg}}
+    <select name="data.attributes.{{ key }}.modtype" class="flat_editor dropdown modtype" data-type="modtype" data-attr-key="{{ key }}">
+      {{ selectOptions (lookup ../modTypeChoices ../modTypeSelected) selected=attr.modtype valueAttr="value" labelAttr="label" localize=true }}
     </select>
-    <select class="attribute-mod" name="data.attributes.{{key}}.mod">
-      {{#selectFfg attr.mod}}
-        {{#if (and (eq attr.modtype "Stat") (or (eq ../item.type "criticaldamage") (eq ../item.type "shipattachment") (eq ../item.type "shipweapon"))) }}
-          {{#each ../this.FFG.vehicle_stats as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (and (eq attr.modtype "Stat") (ne ../item.type "criticaldamage") (ne ../item.type "shipattachment") (ne ../item.type "shipweapon")) }}
-          {{#each ../this.FFG.character_stats as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq attr.modtype "Characteristic")}}
-          {{#each ../this.FFG.characteristics as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (or (eq attr.modtype "Skill Rank") (eq attr.modtype "Skill Boost") (eq attr.modtype "Skill Setback") (eq attr.modtype "Career Skill") (eq attr.modtype "Skill Remove Setback") (eq attr.modtype "Force Boost") (eq attr.modtype "Skill Add Advantage") (eq attr.modtype "Skill Add Dark") (eq attr.modtype "Skill Add Failure") (eq attr.modtype "Skill Add Light") (eq attr.modtype "Skill Add Success") (eq attr.modtype "Skill Add Threat") (eq attr.modtype "Skill Add Triumph") (eq attr.modtype "Skill Add Despair") (eq attr.modtype "Skill Add Upgrade") )}}
-          <option value="*">{{localize "SWFFG.ModifierAllSkills"}}</option>
-          {{#each ../this.FFG.skills as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq attr.modtype "Result Modifiers") }}
-          {{#each ../this.FFG.itemmodifier_resultmodifiers as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq attr.modtype "Dice Modifiers") }}
-          {{#each ../this.FFG.itemmodifier_dicemodifiers as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq attr.modtype "Roll Modifiers") }}
-          {{#each ../this.FFG.itemmodifier_rollmodifiers as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq attr.modtype "Weapon Stat") }}
-          {{#each ../this.FFG.weapon_stats as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq attr.modtype "Armor Stat") }}
-          {{#each ../this.FFG.armor_stats as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-        {{#if (eq attr.modtype "Vehicle Stat") }}
-          {{#each ../this.FFG.vehicle_stats as |t|}}
-            <option value="{{t.value}}">{{localize t.label}}</option>
-          {{/each}}
-        {{/if}}
-      {{/selectFfg}}
+    <select name="data.attributes.{{ key }}.mod" class="flat_editor dropdown mod" data-type="mod" data-attr-key="{{ key }}">
+      {{ selectOptions (lookup ../modChoices attr.modtype) selected=attr.mod  valueAttr="value" labelAttr="label"localize=true }}
     </select>
-    {{#if (or (eq attr.modtype "Career Skill") (eq attr.modtype "Force Boost") )}}
-      <input class="attribute-value" type="checkbox" name="data.attributes.{{key}}.value" data-dtype="Boolean" {{#if (or (eq attr.value "0") (eq attr.value false)) }}{{else}}checked{{/if}} />
-    {{/if}}
-    {{#if (and (eq attr.modtype "Stat") (eq key "Shields") )}}
-      <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" />
-    {{/if}}
-    {{#if (and (ne attr.modtype "Career Skill") (ne attr.modtype "Force Boost") (ne key "Shields") )}}
-      <input class="attribute-value" type="text" name="data.attributes.{{key}}.value" value="{{attr.value}}" data-dtype="Number" placeholder="0" />
-    {{/if}}
-    <a class="attribute-control" data-action="delete"><i class="fas fa-trash"></i></a>
+    <input name="data.attributes.{{ key }}.value" type="number" value="{{ attr.value }}" data-attr-key="{{ key }}">
+    <a class="attribute-control flat_editor add-mod" data-action="delete"><i class="fas fa-trash"></i></a>
   </li>
   {{/if}} {{/each}}
 </ol>

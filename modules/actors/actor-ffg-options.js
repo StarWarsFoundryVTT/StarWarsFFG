@@ -1,8 +1,11 @@
+import ActorHelpers from "../helpers/actor-helpers.js";
+
 export default class ActorOptions {
   constructor(data, html) {
     this.data = data;
     this.options = {};
     this.init(html);
+    this.suspended = {};
   }
 
   init(html) {
@@ -27,7 +30,7 @@ export default class ActorOptions {
           one: {
             icon: '<i class="fas fa-check"></i>',
             label: game.i18n.localize("SWFFG.ButtonAccept"),
-            callback: (html) => {
+            callback: async (html) => {
               const controls = html.find("input, select");
 
               let updateObject = {};
@@ -43,6 +46,18 @@ export default class ActorOptions {
 
                 updateObject[control.name] = value;
                 this.options[control.id].value = value;
+              }
+
+              const editMode = updateObject['flags.starwarsffg.config.enableEditMode'];
+              if (editMode) {
+                // suspend AEs
+                this.suspended = await ActorHelpers.beginEditMode(this.data.object);
+              } else {
+                // unsuspend AEs
+                if (Object.keys(this.suspended).length > 0) {
+                  await ActorHelpers.endEditMode(this.data.object, this.suspended);
+                  this.suspended = {};
+                }
               }
 
               this.data.object.update(updateObject);

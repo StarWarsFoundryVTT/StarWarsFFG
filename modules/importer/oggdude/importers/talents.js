@@ -63,8 +63,8 @@ export default class Talents {
             };
 
             //data.data.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
-            data.data.attributes = foundry.utils.mergeObject(data.data.attributes, ImportHelpers.processStatMod(item?.Attributes));
-            data.data.attributes = foundry.utils.mergeObject(data.data.attributes, ImportHelpers.processCareerSkills(item?.ChooseCareerSkills?.NewSkills));
+            data.data.attributes = foundry.utils.mergeObject(data.data.attributes, await ImportHelpers.processStatMod(item?.Attributes));
+            data.data.attributes = foundry.utils.mergeObject(data.data.attributes, await ImportHelpers.processCareerSkills(item?.ChooseCareerSkills?.NewSkills));
             if (item?.DieModifiers) {
               const dieModifiers = await ImportHelpers.processDieMod(item.DieModifiers);
               data.data.attributes = foundry.utils.mergeObject(data.data.attributes, dieModifiers.attributes);

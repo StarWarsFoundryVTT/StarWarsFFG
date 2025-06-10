@@ -58,9 +58,24 @@
       {{!-- Primary Stats Container --}}
       <div class="container" style="flex-wrap: nowrap;{{#if limited}}display:none;{{/if}}">
         <div class="container flex-group-center">
-          {{!-- Wounds Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Wounds" fields=(array (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold") (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current") ))}}
-          {{!-- Soak Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=this.settings.enableSoakCalculation)}}
-          {{!-- Defence Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.Defense" fields=(array (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee") (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged") ))}}
+          {{!-- Wounds Box --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="split" title="SWFFG.Wounds" fields=(array
+                (object name="data.stats.wounds.max" value=data.stats.wounds.max type="Number" label="SWFFG.Threshold" disabled=disabled)
+                (object name="data.stats.wounds.value" value=data.stats.wounds.value type="Number" label="SWFFG.Current")
+              ))
+            }}
+          {{!-- Soak Box --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="single" title="SWFFG.Soak" type="Number" name="data.stats.soak.value" value=data.stats.soak.value disabled=disabled)
+            }}
+          {{!-- Defence Box --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="split" title="SWFFG.Defense" fields=(array
+                (object name="data.stats.defence.melee" value=data.stats.defence.melee type="Number" label="SWFFG.DefenseMelee" disabled=disabled)
+                (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged" disabled=disabled)
+              ))
+            }}
         </div>
       </div>
     </div>
@@ -77,7 +92,7 @@
         <div class="characteristic-item flex-group-center" data-ability="{{id}}">
           <div class="characteristic">
             <div class="characteristic-value">
-              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-{{ ../maxAttribute }}]" />
+              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" maxlength="1" type="text" pattern="[0-{{ ../maxAttribute }}]" {{#if ../disabled }}disabled{{/if}} />
             </div>
           </div>
           <div class="characteristic-label">
@@ -131,11 +146,6 @@
     <div class="tab crits items" data-group="primary" data-tab="crits">
       {{!-- Talents List --}}
       {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}} {{!-- Experience Box --}}
-    </div>
-
-    {{!-- Modifiers Tab --}}
-    <div class="tab attributes" data-group="primary" data-tab="attributes">
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
 
     <div class="tab general" data-group="primary" data-tab="general">

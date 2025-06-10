@@ -7,7 +7,7 @@ import ModifierHelpers from "./helpers/modifiers.js";
 export default class PopoutModifiers extends FormApplication {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "popout-modifiers",
       classes: ["starwarsffg", "sheet"],
       title: "Pop-out Modifiers",
@@ -33,6 +33,9 @@ export default class PopoutModifiers extends FormApplication {
   getData() {
     const data = {
       data: this.object.system,
+      modTypeSelected: "all",
+      modTypeChoices: CONFIG.FFG.itemTypeToModTypeMap,
+      modChoices: CONFIG.FFG.modTypeToModMap,
     };
 
     if (this.object.isUpgrade) {
@@ -64,10 +67,10 @@ export default class PopoutModifiers extends FormApplication {
 
   /** @override */
   async _updateObject(event, formData) {
-    formData = expandObject(formData);
+    formData = foundry.utils.expandObject(formData);
 
     // Handle the free-form attributes list
-    const formAttrs = expandObject(formData)?.data?.attributes || {};
+    const formAttrs = foundry.utils.expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {
       let k = v["key"].trim();
       if (/[\s\.]/.test(k)) return ui.notifications.error("Attribute keys may not contain spaces or periods");
@@ -85,7 +88,7 @@ export default class PopoutModifiers extends FormApplication {
 
     // recombine attributes to formData
     if (Object.keys(attributes).length > 0) {
-      setProperty(formData, `data.attributes`, attributes);
+      foundry.utils.setProperty(formData, `data.attributes`, attributes);
     }
 
     if (this.object.isUpgrade) {
@@ -99,13 +102,13 @@ export default class PopoutModifiers extends FormApplication {
 
       // recombine attributes to formData
       if (Object.keys(attributes).length > 0) {
-        setProperty(formData, `data.attributes`, attributes);
+        foundry.utils.setProperty(formData, `data.attributes`, attributes);
       }
 
       let data = attributes;
 
       let upgradeFormData = {};
-      setProperty(upgradeFormData, `data.upgrades.${this.object.keyname}.attributes`, data);
+      foundry.utils.setProperty(upgradeFormData, `data.upgrades.${this.object.keyname}.attributes`, data);
 
       upgradeFormData.system = upgradeFormData.data;
       delete upgradeFormData.data;
@@ -130,13 +133,13 @@ export default class PopoutModifiers extends FormApplication {
 
       // recombine attributes to formData
       if (Object.keys(attributes).length > 0) {
-        setProperty(formData, `data.attributes`, attributes);
+        foundry.utils.setProperty(formData, `data.attributes`, attributes);
       }
 
       let data = attributes;
 
       let upgradeFormData = {};
-      setProperty(upgradeFormData, `data.talents.${this.object.keyname}.attributes`, data);
+      foundry.utils.setProperty(upgradeFormData, `data.talents.${this.object.keyname}.attributes`, data);
 
       upgradeFormData.system = upgradeFormData.data;
       delete upgradeFormData.data;
@@ -144,6 +147,15 @@ export default class PopoutModifiers extends FormApplication {
       await this.object.parent.update(upgradeFormData);
     } else {
       // Update the Item
+      const syncFormData = foundry.utils.deepClone(formData);
+      if (syncFormData?.data?.attributes) {
+        for (const attr of Object.keys(syncFormData.data.attributes)) {
+          if (attr.startsWith("-=")) {
+            delete syncFormData.data.attributes[attr];
+          }
+        }
+      }
+      await ModifierHelpers.applyActiveEffectOnUpdate(this.object, syncFormData);
       // sets _id, which is not settable
       formData.system = formData.data;
       delete formData.data;

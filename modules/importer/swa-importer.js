@@ -394,7 +394,9 @@ export default class SWAImporter extends FormApplication {
                     attributes: {},
                     characteristics: {},
                     skills,
-                    stats: {},
+                    stats: {
+                      defence: {},
+                    },
                   },
                   items: [],
                 };
@@ -438,6 +440,10 @@ export default class SWAImporter extends FormApplication {
                       }
                     }
                   });
+                  if (Object.keys(item.derived).includes("defence")) {
+                    adversary.system.stats.defence.melee = item.derived.defence[0];
+                    adversary.system.stats.defence.ranged = item.derived.defence[1];
+                  }
                 }
 
                 if (item.skills) {
@@ -808,7 +814,16 @@ export default class SWAImporter extends FormApplication {
                   CONFIG.logger.debug(`Importing Adversary - Actor`);
                   compendiumItem = new CONFIG.Actor.documentClass(adversary, { temporary: true });
                   this._importLogger(`New Adversary ${name} : ${JSON.stringify(compendiumItem)}`);
-                  await pack.importDocument(compendiumItem);
+                  const created = await pack.importDocument(compendiumItem);
+                  // trigger active effect creation
+                  for (const item of created.items) {
+                    await ImportHelpers.createActiveEffects(item);
+                    // this line can be uncommented to cause the active effects to have the correct values.
+                    // on the other hand, this will mess up stats for the actors
+                    // (whose values have it taken into account already)
+                    // and those values can be updated by modifying the data at all. so, I think leave it off for now
+                    //await ImportHelpers.applyActiveEffectOnUpdate(item, item.toJSON());
+                  }
                 } else {
                   CONFIG.logger.debug(`Update Adversary - Actor`);
                   //let updateData = ImportHelpers.buildUpdateData(item);
@@ -816,7 +831,12 @@ export default class SWAImporter extends FormApplication {
                   updateData["_id"] = entry._id;
                   this._importLogger(`Updating talent ${name} : ${JSON.stringify(updateData)}`);
                   let to_update = await pack.getDocument(updateData._id)
-                  to_update.update(updateData);
+                  await to_update.update(updateData);
+                  for (const item of to_update.items) {
+                    await ImportHelpers.createActiveEffects(item);
+                    // see above
+                    //await ImportHelpers.applyActiveEffectOnUpdate(item, item.toJSON());
+                  }
                 }
               } catch (err) {
                 CONFIG.logger.error(`Error importing ${item.name} from ${f.name}`, err);

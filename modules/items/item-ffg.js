@@ -4,6 +4,7 @@ import ActorOptions from "../actors/actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import Helpers from "../helpers/common.js";
+import ItemHelpers from "../helpers/item-helpers.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -42,6 +43,171 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     await super._onCreate(data, options, user);
+
+    if (["species", "gear", "weapon", "armour", "shipattachment"].includes(this.type) && !options.parent) {
+      const existingEffects = this.getEmbeddedCollection("ActiveEffect");
+      // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
+      const inherentEffect = existingEffects.find(i => i.name === `(inherent)`);
+      if (!inherentEffect) {
+        CONFIG.logger.debug(`Creating inherent Active Effect for item ${this.name}`);
+        const effects = {
+          name: `(inherent)`,
+          img: this.img,
+          changes: [],
+        };
+        if (this.type === "species") {
+          for (const attribute of Object.keys(this.system.attributes)) {
+            const explodedMods = ModifierHelpers.explodeMod(
+              this.system.attributes[attribute].modtype,
+              attribute
+            );
+            for (const cur_mod of explodedMods) {
+              const path = ModifierHelpers.getModKeyPath(
+                cur_mod['modType'],
+                cur_mod['mod']
+              );
+              effects.changes.push({
+                key: path,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: this.system.attributes[attribute].value,
+              });
+            }
+          }
+        } else if (["gear", "weapon"].includes(this.type)) {
+          const explodedMods = ModifierHelpers.explodeMod(
+            "Stat",
+            "Encumbrance"
+          );
+          for (const cur_mod of explodedMods) {
+            const path = ModifierHelpers.getModKeyPath(
+              cur_mod['modType'],
+              cur_mod['mod']
+            );
+            effects.changes.push({
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: 0,
+            });
+          }
+        } else if (this.type === "armour") {
+          for (const key of ["Encumbrance", "Defence", "Soak"]) {
+            const explodedMods = ModifierHelpers.explodeMod(
+              "Stat",
+              key
+            );
+            for (const cur_mod of explodedMods) {
+              const path = ModifierHelpers.getModKeyPath(
+                cur_mod['modType'],
+                cur_mod['mod']
+              );
+              effects.changes.push({
+                key: path,
+                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                value: 0,
+              });
+            }
+          }
+        } else if (this.type === "shipattachment") {
+          const explodedMods = ModifierHelpers.explodeMod(
+            "Vehicle Stat",
+            "Vehicle.Hardpoints"
+          );
+          for (const cur_mod of explodedMods) {
+            const path = ModifierHelpers.getModKeyPath(
+              cur_mod['modType'],
+              cur_mod['mod']
+            );
+            effects.changes.push({
+              key: path,
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: 0,
+            });
+          }
+        }
+
+        if (["armour", "weapon", "gear"].includes(this.type)) {
+          CONFIG.logger.debug("Detected equippible item creation, suspending Active Effects");
+          effects.disabled = true;
+        }
+
+        CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
+        CONFIG.logger.debug(effects);
+        await this.createEmbeddedDocuments("ActiveEffect", [effects]);
+      }
+    }
+  }
+
+  /** @override */
+  async _onUpdate(changed, options, userId) {
+    CONFIG.logger.debug("Performing _onUpdate of item");
+    await super._onUpdate(changed, options, userId);
+    if (userId !== game.user.id) {
+      // only run onCreate for the user actually performing the update
+      return;
+    }
+
+    const existingEffects = this.getEmbeddedCollection("ActiveEffect");
+    CONFIG.logger.debug(`On item ${this.name} update, found the following active effects:`);
+    CONFIG.logger.debug(existingEffects);
+    // update active effects from the item itself (e.g., stat boosts on species)
+    const itemEffect = existingEffects.find(i => i.name === `(inherent)`);
+    if (itemEffect) {
+      CONFIG.logger.debug(`And located the following effects directly from this item: ${JSON.stringify(itemEffect)}`);
+    } else {
+      CONFIG.logger.debug("Unable to locate any inherent effect. This may be expected.");
+    }
+    if (itemEffect && Object.keys(changed).includes("system") && Object.keys(changed.system).includes("attributes")) {
+      const newChanges = foundry.utils.deepClone(itemEffect.changes);
+      for (const updateKey of Object.keys(changed.system.attributes)) {
+        const existingChange = newChanges.find(c => c.key.startsWith(`system.attributes.${updateKey}`));
+        if (existingChange) {
+          existingChange.value = parseInt(changed.system.attributes[updateKey].value);
+        }
+      }
+      await itemEffect.update({changes: newChanges});
+    }
+
+    // iterate over the changed data to look for any changes to attributes
+    if (changed?.system?.attributes) {
+      for (const attrKey of Object.keys(changed.system.attributes)) {
+        const existingEffect = existingEffects.find(i => i.name === attrKey)
+        const explodedMods = ModifierHelpers.explodeMod(
+          this.system.attributes[attrKey].modtype,
+          this.system.attributes[attrKey].mod
+        );
+
+        const changes = [];
+        for (const curMod of explodedMods) {
+          changes.push({
+            key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: this.system.attributes[attrKey].value,
+          });
+        }
+
+        if (existingEffect) {
+          // existing entry
+          CONFIG.logger.debug(`> Staged AE changes for update: ${JSON.stringify(changes)}`);
+          await existingEffect.update({
+            changes: changes,
+          });
+        }
+      }
+    }
+
+    // handle equip / unequip by suspending / unsuspending AEs
+    const updatedExistingEffects = this.getEmbeddedCollection("ActiveEffect");
+    if (changed?.system?.equippable && updatedExistingEffects) {
+      const equipped = changed.system.equippable.equipped;
+      CONFIG.logger.debug("caught equip / unequip, checking if Active Effect state should be synced");
+      await ItemHelpers.syncAEStatus(this, updatedExistingEffects);
+      for (const effect of updatedExistingEffects) {
+        if (await ItemHelpers.shouldUpdateAEStatus(this, effect)) {
+          await ItemHelpers.updateEncumbranceOnEquip(this, effect, equipped);
+          await effect.update({disabled: !equipped});
+        }
+      }
+    }
   }
 
   /**
