@@ -6,9 +6,9 @@
     {{ selectOptions (lookup modChoices attr.modtype) selected=attr.mod  valueAttr="value" labelAttr="label"localize=true }}
   </select>
   {{#if (eq attr.modtype "Career Skill")}}
-  <input name="{{#if direct }}system.attributes.{{ id }}.value{{ else }}system.itemmodifier[{{ number }}].system.attributes.{{ id }}.value{{/if}}" type="checkbox" {{#if attr.value }}checked{{/if}} data-attr-id="{{ id }}">
+  <input name="{{#if direct }}system.attributes.{{ id }}.value{{ else }}system.itemmodifier[{{ number }}].system.attributes.{{ id }}.value{{/if}}" type="checkbox" class="modvalue" {{#if attr.value }}checked{{/if}} data-attr-id="{{ id }}">
   {{else}}
-  <input name="{{#if direct }}system.attributes.{{ id }}.value{{ else }}system.itemmodifier[{{ number }}].system.attributes.{{ id }}.value{{/if}}" type="number" value="{{ attr.value }}" data-attr-id="{{ id }}">
+  <input name="{{#if direct }}system.attributes.{{ id }}.value{{ else }}system.itemmodifier[{{ number }}].system.attributes.{{ id }}.value{{/if}}" type="number" class="modvalue" value="{{ attr.value }}" data-attr-id="{{ id }}">
   {{/if}}
   <a class="attribute-control flat_editor add-mod" data-action="delete"><i class="fas fa-trash"></i></a>
 </li>

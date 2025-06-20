@@ -11,6 +11,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@playwright/test": "^1.53.0",
+    "@types/node": "^24.0.0",
     "cypress": "^13.5.1",
     "eslint": "^9.10.0",
     "eslint-plugin-import-x": "^4.2.1",

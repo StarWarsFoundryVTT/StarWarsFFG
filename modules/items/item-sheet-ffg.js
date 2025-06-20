@@ -1675,7 +1675,6 @@ export class ItemSheetFFG extends ItemSheet {
    * @private
    */
   async _transferActiveEffects(droppedItem) {
-    ui.notifications.info("processing AEs, nothing to worry about!") // TODO: remove this line
     const droppedType = droppedItem.type;
     const myType = this.object.type;
     const toCreate = [];

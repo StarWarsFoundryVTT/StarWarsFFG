@@ -26,7 +26,7 @@ export class itemEditor extends FormApplication  {
         submitOnClose: true,
         submitOnChange: true,
         resizable: true,
-        classes: ["starwarsffg", "flat_editor"],
+        classes: ["starwarsffg", "flat_editor", "sheet"],
         tabs: [{ navSelector: ".tabs", contentSelector: ".content", initial: "tab1"}],
         scrollY: [".modification_container"],
       }
@@ -321,7 +321,6 @@ export class itemEditor extends FormApplication  {
       for (let attachment of updateData) {
         if (attachment._id === this.data.clickedObject._id) {
           CONFIG.logger.debug(`>> Found relevant attachment: ${attachment.name} / ${attachment.id}, looking for removed keys`);
-          console.log(attachment.system.attributes)
           // iterate over the mods on the existing attachment and remove them if they are not present in the new data
           for (let modKey of Object.keys(attachment.system.attributes)) {
             if (!Object.keys(formData.system.attributes).includes(modKey)) {

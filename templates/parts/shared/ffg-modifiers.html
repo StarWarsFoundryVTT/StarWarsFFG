@@ -15,7 +15,7 @@
     <select name="data.attributes.{{ key }}.mod" class="flat_editor dropdown mod" data-type="mod" data-attr-key="{{ key }}">
       {{ selectOptions (lookup ../modChoices attr.modtype) selected=attr.mod  valueAttr="value" labelAttr="label"localize=true }}
     </select>
-    <input name="data.attributes.{{ key }}.value" type="number" value="{{ attr.value }}" data-attr-key="{{ key }}">
+    <input name="data.attributes.{{ key }}.value" type="number" class="modvalue" value="{{ attr.value }}" data-attr-key="{{ key }}">
     <a class="attribute-control flat_editor add-mod" data-action="delete"><i class="fas fa-trash"></i></a>
   </li>
   {{/if}} {{/each}}
