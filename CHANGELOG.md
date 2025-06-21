@@ -3,6 +3,7 @@
   * New built-in status effects for single-use boost/setback dice
 * Fixes:
   * Talent modifiers on specializations are now properly cleaned up when a new talent overrides an old one
+  * Force powers, signature abilities, and specializations now use a unified UI to editing upgrades/talents on their sheets ([#1828](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1828))
 
 `1.906`
 * Features:

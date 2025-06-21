@@ -191,7 +191,7 @@ export class Items {
     this.tabModifications =  this.sheetLocator.getByText('Modifications', {exact: true});
     this.tabConfiguration = this.sheetLocator.getByTitle('Configuration');
     this.tabLongDesc =  this.sheetLocator.getByTitle('Long Description and Sources', {exact: true});
-    if (this.itemType === 'forcepower') {
+    if (this.itemType === 'forcepower' || this.itemType === 'signatureability') {
       this.upgradeName = 'upgrade';
     } else {
       this.upgradeName = 'talent';
@@ -303,19 +303,18 @@ export class Items {
 
   async addTalentModifier(talentNumber: string, modifierType: string, modifier: string, modifierValue: string) {
     await this.sheetLocator.locator(`#${this.upgradeName}${talentNumber}`).locator('.fas.fa-cog').click();
-    const modEditor = this.page.locator('.flat_editor');
-    await expect(modEditor.locator('.item[data-tab="base-mods"]')).toBeEnabled();
-    await modEditor.locator('.item[data-tab="base-mods"]').click();
-    await expect(modEditor.locator('.fas.fa-plus')).toBeEnabled();
-    await modEditor.locator('.fas.fa-plus').click();
-    await modEditor.locator('.modtype').selectOption(modifierType);
-    await modEditor.locator('.mod').selectOption(modifier);
-    await modEditor.locator('.modvalue').fill(modifierValue);
-    await expect(modEditor.locator('.close')).toBeEnabled();
+    const popoutPage = this.page.locator('.flat_editor');
+    await expect(popoutPage.getByText('Base Mods')).toBeVisible();
+    await popoutPage.getByText('Base Mods').click();
+    await expect(popoutPage.locator('.fas.fa-plus')).toBeEnabled();
+    await popoutPage.locator('.fas.fa-plus').click();
+    await popoutPage.locator('.modtype').selectOption(modifierType);
+    await popoutPage.locator('.mod').selectOption(modifier);
+    await popoutPage.locator('.modvalue').fill(modifierValue);
 
     await new Promise(resolve => setTimeout(resolve, 505));
-    await modEditor.locator('.close').dispatchEvent('click');
-    await expect(modEditor.locator('.close')).not.toBeVisible();
+    await popoutPage.locator('.close').click();
+    await expect(popoutPage.locator('.close')).not.toBeVisible();
   }
 
   async learnTalent(talentNumber: string) {

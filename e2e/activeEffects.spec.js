@@ -8,9 +8,11 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByText('Loading')).not.toBeVisible();
 });
 
+// weapon fails
+// embedded armor fails
+// embedded weapon fails
+
 // TODO: most of these tests should be extended to confirm that they still work if they're done while the item is on an actor
-// TODO: editing an upgrade on a signature ability uses a different UI than FPs, and it should not be
-// TODO: specializations do not have a gear icon for editing stuff, and should
 // TODO: weapon stat -> encumbrance does not generate an activeEffect like it should
 // TODO: other weapon mods appear to not create activeEffects like they should
 // TODO: creating an AE on a mod does not sync properly to "disabled", meaning it's applied right away
@@ -192,13 +194,13 @@ const actorName = "qa specActor";
   //await sp.addDirectModifier('')
   await sp.addTalentModifier('0', 'Skill Add Despair', 'Cool', '3');
   await sp.learnTalent('1');
-  await sp.addTalentModifier('1', 'Skill Add Boost', 'Perception', '3');
+  await sp.addTalentModifier('1', 'Skill Boost', 'Perception', '3');
   await sp.closeSheet();
 
   // drag and drop onto the character
   await page.getByRole('listitem').filter({ hasText: itemName }).dragTo(page.locator('.character-details-table'));
   await spActor.switchTab('characteristics');
-  await spActor.checkSkillModifiers('Perception', 'Boost', '3');
+  await spActor.checkSkillModifiers('Perception', 'boost', '3');
 
   // clean up
   await spActor.remove();
@@ -487,7 +489,7 @@ test('ship weapon applies correctly', async ({ page }) => {
   await shipWeapon.create();
 
   // add a mod
-  await shipWeapon.addDirectModifier('Vehicle Stat', 'armor', '3');
+  await shipWeapon.addDirectModifier('Vehicle Stat', 'Armour', '3');
   await shipWeapon.closeSheet();
 
   // drag and drop the shipWeapon onto the character

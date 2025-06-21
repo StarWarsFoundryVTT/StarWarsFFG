@@ -1149,10 +1149,6 @@ img {
   text-align: right;
 }
 
-.starwarsffg .talent-background .talent-body div.popout-editor {
-  cursor: pointer;
-}
-
 .starwarsffg .talent-background .talent-header div.talent-name span {
   font-size: 0.55rem;
   position: absolute;
@@ -3595,6 +3591,13 @@ img {
 
 .starwarsffg .item-sheet-specialization .talent-upgrade {
   margin: 5px 10px 10px 10px;
+}
+
+.starwarsffg .item-sheet-specialization .talent-modifiers {
+  position: absolute;
+  right: 5px;
+  bottom: 2px;
+  z-index: 10;
 }
 
 .starwarsffg .item-sheet-specialization .sheet-body {

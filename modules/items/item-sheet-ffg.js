@@ -539,24 +539,6 @@ export class ItemSheetFFG extends ItemSheet {
       }
     });
 
-    html.find(".specialization-talent .talent-body").on("click", async (event) => {
-      // pull the item which the edit is on
-      const li = $(event.currentTarget);
-      const clickedId = li.closest('.talent-block').attr('id');
-      const clickedType = 'talents';
-      const parentObject = await fromUuid(this.object.uuid);
-      // locate the clicked object on the parent
-      let clickedObject = parentObject.system[clickedType][clickedId];
-      CONFIG.logger.debug(clickedObject);
-
-      const data = {
-        sourceObject: this.object,
-        clickedObject: clickedObject,
-        talentId: clickedId,
-      }
-      new talentEditor(data).render(true);
-    });
-
     if (this.object.type === "talent") {
       if (!Hooks?.events[`closeAssociatedTalent_${this.object._id}`]?.length && (typeof this._submitting === "undefined" || this._priorState <= 0)) {
         Hooks.once(`closeAssociatedTalent_${this.object._id}`, (item) => {
@@ -576,15 +558,17 @@ export class ItemSheetFFG extends ItemSheet {
     if (["signatureability"].includes(this.object.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
-      html.find(".talent-modifiers .fa-cog").on("click", ModifierHelpers.popoutModiferWindowUpgrade.bind(this));
+      html.find(".talent-modifiers .fa-cog").on("click", this._onClickUpgradeEdit.bind(this));
     }
 
     if (["forcepower"].includes(this.object.type)) {
-      html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
+      html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", this._onClickUpgradeEdit.bind(this));
     }
 
     if (this.object.type === "specialization") {
+      html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
+      html.find(".talent-modifiers .fa-cog").on("click", this._onClickUpgradeEdit.bind(this));
       try {
         const dragDrop = new DragDrop({
           dragSelector: ".item",
@@ -1281,24 +1265,59 @@ export class ItemSheetFFG extends ItemSheet {
     itemUpdate(event, formData);
   }
 
+  /**
+   * Shows the popout editor for editing an upgrade on a force power, specialization, or signature ability
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
   async _onClickUpgradeEdit(event) {
     // pull the item which the edit is on
     const li = $(event.currentTarget);
     const clickedId = li.closest('.talent-block').attr('id');
-    const clickedType = 'upgrades';
-    const parentObject = await fromUuid(this.object.uuid);
-    // locate the clicked object on the parent
-    let clickedObject = parentObject.system[clickedType][clickedId];
-    CONFIG.logger.debug(clickedObject);
 
-    const data = {
-      sourceObject: this.object,
-      clickedObject: clickedObject,
-      upgradeId: clickedId,
+    if (this.object.type === "forcepower") {
+      const clickedType = 'upgrades';
+      const parentObject = await fromUuid(this.object.uuid);
+      // locate the clicked object on the parent
+      let clickedObject = parentObject.system[clickedType][clickedId];
+      const data = {
+        sourceObject: this.object,
+        clickedObject: clickedObject,
+        upgradeId: clickedId,
+      }
+      new forcePowerEditor(data).render(true);
+    } else if (this.object.type === "specialization") {
+      const clickedType = 'talents';
+      const parentObject = await fromUuid(this.object.uuid);
+      // locate the clicked object on the parent
+      let clickedObject = parentObject.system[clickedType][clickedId];
+      const data = {
+        sourceObject: this.object,
+        clickedObject: clickedObject,
+        talentId: clickedId,
+      }
+      new talentEditor(data).render(true);
+    } else if (this.object.type === "signatureability") {
+      const clickedType = 'upgrades';
+      const parentObject = await fromUuid(this.object.uuid);
+      // locate the clicked object on the parent
+      let clickedObject = parentObject.system[clickedType][clickedId];
+      const data = {
+        sourceObject: this.object,
+        clickedObject: clickedObject,
+        upgradeId: clickedId,
+      }
+      new forcePowerEditor(data).render(true);
     }
-    new forcePowerEditor(data).render(true);
   }
 
+  /**
+   * Used to allow connecting, combining, or split upgrades within a force power, specialization, and signature ability
+   * @param event
+   * @returns {Promise<*>}
+   * @private
+   */
   async _onClickTalentControl(event) {
     event.preventDefault();
     const a = event.currentTarget;
