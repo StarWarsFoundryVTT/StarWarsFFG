@@ -234,48 +234,63 @@ export default class ModifierHelpers {
     const a = event.currentTarget;
     const action = a.dataset.action;
 
-    // Add new attribute
-    if (action === "create") {
-      CONFIG.logger.debug("Creating new modifier...");
-      const nk = new Date().getTime();
-      if (["criticaldamage", "shipattachment", "shipweapon"].includes(this.object.type)) {
-        await this.object.update({
-          "system.attributes": {
-            [`attr${nk}`]: {
-              modtype: "Vehicle Stat",
-              mod: "Armour",
-              value: 0,
-            },
-          }
-        });
-      } else if (["itemmodifier", "itemattachment"].includes(this.object.type)) {
-        await this.object.update({
-          "system.attributes": {
-            [`attr${nk}`]: {
-              modtype: "Stat All",
-              mod: "Wounds",
-              value: 0,
-            },
-          }
-        });
-      } else {
-        await this.object.update({
-          "system.attributes": {
-            [`attr${nk}`]: {
-              modtype: "Stat",
-              mod: "Wounds",
-              value: 0,
-            },
-          }
-        });
+    if (["forcepower", "signatureability", "specialization"].includes(this.object.type)) {
+      // used in the direct modifiers at the top of certain item types
+      const form = this.form;
+      if (action === "create") {
+        const nk = new Date().getTime();
+        let newKey = document.createElement("div");
+          newKey.innerHTML = `<input type="text" name="data.attributes.attr${nk}.key" value="attr${nk}" style="display:none;"/><select class="attribute-modtype" name="data.attributes.attr${nk}.modtype"><option value="Characteristic">Characteristic</option></select><select class="attribute-mod" name="data.attributes.attr${nk}.mod"><option value="${Object.keys(CONFIG.FFG.characteristics)[0]}">${Object.keys(CONFIG.FFG.characteristics)[0]}</option></select><input class="attribute-value" type="text" name="data.attributes.attr${nk}.value" value="0" data-dtype="Number" placeholder="0"/>`;
+        form.appendChild(newKey);
+        await this._onSubmit(event);
+      } else if (action === "delete") {
+        const li = a.closest(".attribute");
+        li.parentElement.removeChild(li);
+        await this._onSubmit(event);
       }
-    }
-
-    // Remove existing attribute
-    else if (action === "delete") {
-      const li = a.closest(".attribute");
-      li.parentElement.removeChild(li);
-      await this._onSubmit(event);
+    } else {
+      // Add new attribute
+      if (action === "create") {
+        CONFIG.logger.debug("Creating new modifier...");
+        const nk = new Date().getTime();
+        if (["criticaldamage", "shipattachment", "shipweapon"].includes(this.object.type)) {
+          await this.object.update({
+            "system.attributes": {
+              [`attr${nk}`]: {
+                modtype: "Vehicle Stat",
+                mod: "Armour",
+                value: 0,
+              },
+            }
+          });
+        } else if (["itemmodifier", "itemattachment"].includes(this.object.type)) {
+          await this.object.update({
+            "system.attributes": {
+              [`attr${nk}`]: {
+                modtype: "Stat All",
+                mod: "Wounds",
+                value: 0,
+              },
+            }
+          });
+        } else {
+          await this.object.update({
+            "system.attributes": {
+              [`attr${nk}`]: {
+                modtype: "Stat",
+                mod: "Wounds",
+                value: 0,
+              },
+            }
+          });
+        }
+      }
+      // Remove existing attribute
+      else if (action === "delete") {
+        const li = a.closest(".attribute");
+        li.parentElement.removeChild(li);
+        await this._onSubmit(event);
+      }
     }
   }
 
@@ -543,6 +558,11 @@ export default class ModifierHelpers {
      * @type {*|{}}
      */
     CONFIG.logger.debug("Updating active effects on item update");
+    if (!Object.keys(formData).includes("data")) {
+      CONFIG.logger.debug("Bailing on update as there was no form data");
+      // no changes were made, bail
+      return;
+    }
     // remove deleted keys
     formData = foundry.utils.deepClone(formData);
     if (Object.keys(formData.data).includes("attributes")) {

@@ -563,11 +563,13 @@ export class ItemSheetFFG extends ItemSheet {
 
     if (["forcepower"].includes(this.object.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
+      html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", this._onClickUpgradeEdit.bind(this));
     }
 
     if (this.object.type === "specialization") {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
+      html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", this._onClickUpgradeEdit.bind(this));
       try {
         const dragDrop = new DragDrop({

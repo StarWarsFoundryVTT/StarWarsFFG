@@ -17,7 +17,6 @@ test.beforeEach(async ({ page }) => {
 // TODO: other weapon mods appear to not create activeEffects like they should
 // TODO: creating an AE on a mod does not sync properly to "disabled", meaning it's applied right away
 // TODO: these tests do not really test equipping and installing stuff
-// TODO: the modifier button directly on the force power currently doesn't work
 /**
  * Character tests
  */
