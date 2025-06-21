@@ -147,7 +147,6 @@ export default class DiceHelpers {
         ability: Math.max(characteristic?.value ? characteristic.value : 0, skill?.rank ? skill.rank : 0),
         boost: skill.boost,
         setback: skill.setback,
-        remsetback: skill.remsetback,
         force: skill.force,
         advantage: skill.advantage,
         dark: skill.dark,
@@ -170,7 +169,8 @@ export default class DiceHelpers {
           failure: skill?.failuresource?.length ? skill.failuresource : [],
           threat: skill?.threatsource?.length ? skill.threatsource : [],
           success: skill?.successsource?.length ? skill.successsource : [],
-          remsetback: skill?.remsetbacksource?.length ? skill.remsetbacksource : [],
+          triumph: skill?.triumphsource?.length ? skill.triumphsource : [],
+          despair: skill?.despairsource?.length ? skill.despairsource : [],
           upgrades: skill?.upgradessource?.length ? skill.upgradessource : [],
         },
       });
