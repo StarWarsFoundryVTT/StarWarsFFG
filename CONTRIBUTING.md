@@ -40,3 +40,9 @@ Steps to Run:
 Examples of how to add tests:
 see /tests/ffg-tests.js ==> this is the test runner.
 see /tests/common.test.js ==> this is a unit/functional test
+
+# E2E Tests
+
+Uses Playwright. Steps to run:
+1. `npm install playwright`
+2. `npx playwright test --trace on`
