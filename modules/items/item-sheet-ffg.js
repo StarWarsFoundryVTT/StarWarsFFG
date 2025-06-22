@@ -1536,6 +1536,8 @@ export class ItemSheetFFG extends ItemSheet {
         }
       }
 
+      console.log(itemObject)
+
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.name);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.system.activation.value);
       $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.system.activation.label);
@@ -1563,7 +1565,7 @@ export class ItemSheetFFG extends ItemSheet {
         if (!data.pack) {
           let formData = {};
           foundry.utils.setProperty(formData, `data.trees`, tree);
-          itemObject.update(formData);
+          //itemObject.update(formData);
           //itemObject.update({ [`data.trees`]: tree });
         }
       }
@@ -1575,6 +1577,9 @@ export class ItemSheetFFG extends ItemSheet {
               // these are cloned to avoid local-only clobbers to the dropped object
               description: foundry.utils.deepClone(itemObject.system.description),
               attributes: foundry.utils.deepClone(itemObject.system.attributes),
+              isRanked: itemObject.system.ranked,
+              isForceTalent: itemObject.system.isForceTalent,
+              isConflictTalent: itemObject.system.isConflictTalent,
             },
           },
         },
