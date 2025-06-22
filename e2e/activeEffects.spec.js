@@ -9,12 +9,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 // weapon fails
-// embedded armor fails
-// embedded weapon fails
 
 // TODO: most of these tests should be extended to confirm that they still work if they're done while the item is on an actor
 // TODO: weapon stat -> encumbrance does not generate an activeEffect like it should
-// TODO: other weapon mods appear to not create activeEffects like they should
 // TODO: creating an AE on a mod does not sync properly to "disabled", meaning it's applied right away
 // TODO: these tests do not really test equipping and installing stuff
 /**
@@ -373,26 +370,32 @@ test('embedded weapons applies correctly', async ({ page }) => {
   await weapon.create();
   const weaponAttachment = new Items(page, attachmentName, "itemattachment");
   await weaponAttachment.create();
-  //const weaponMod = new Items(page, modName, "itemmod");
-  //await weaponMod.create();
+
+  // add an attachment-specific modifier
   await weaponAttachment.addDirectModifier('Stat', 'Soak', '1');
   await weaponAttachment.closeSheet();
+
   // drag the attachment to the weapon
   await page.getByRole('listitem').filter({ hasText: attachmentName }).dragTo(page.locator('.attachments.items'));
   await weapon.closeSheet();
+
+  // drag the weapon to the actor
   await embeddedActor.switchTab('gear');
   await embeddedActor.checkStat('soak', '0');
   await page.getByRole('listitem').filter({ hasText: baseItemName }).dragTo(page.locator('.tab.items.active'));
   // TODO: this should probably be 0, because the AE should not apply until equipped
   await embeddedActor.checkStat('soak', '1');
 
-  // okay, add the mod
+  // create the mod
   const weaponMod = new Items(page, modName, "itemmodifier");
   await weaponMod.create();
   await weaponMod.addDirectModifier('Stat', 'Defence-Melee', '1');
   await weaponMod.setRank('1');
   await weaponMod.closeSheet();
+
+  // open the editor for the weapon
   await embeddedActor.editItem(baseItemName);
+  // add the mod to the weapon
   await page.getByRole('listitem').filter({ hasText: modName }).dragTo(page.locator('.attachments.items'));
   await weapon.closeSheet();
   await embeddedActor.checkStat('defense.melee', '1');
@@ -403,21 +406,23 @@ test('embedded weapons applies correctly', async ({ page }) => {
   await embeddedActor.editItem(baseItemName);
   // let the animation play out
   await new Promise(resolve => setTimeout(resolve, 200));
-  //await weapon.removeItem(attachmentName);
   await weapon.editItem(attachmentName);
   // let the animation play out
   await new Promise(resolve => setTimeout(resolve, 200));
   const embeddedAttachment = new Items(page, attachmentName, "itemattachment");
-  // this is a bit confusing, but 'weaponAttachment' now refers to the embedded instance
+  // this is a bit confusing, but 'embeddedAttachment' now refers to the embedded instance
   await page.getByText('Modifications', {exact: true}).click();
   // let the animation play out
   await new Promise(resolve => setTimeout(resolve, 200));
+  // actually drag the mod to the attachment
   await page.locator('.directory-item').filter({ hasText: modName }).dragTo(page.locator('.content'));
+  // enable the mod, as they default to being disabled
   await embeddedAttachment.enableMod('0');
   await page.getByText('Basics', {exact: true}).click();
   await embeddedAttachment.closeSheet();
   await weapon.closeSheet();
   await embeddedActor.equipItem(baseItemName);
+  // validate tha the second mod instance is adding to the AE properly
   await embeddedActor.checkStat('defense.melee', '2');
   await embeddedActor.checkStat('defence.ranged', '0');
 
