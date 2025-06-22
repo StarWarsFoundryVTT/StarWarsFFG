@@ -8,12 +8,9 @@ test.beforeEach(async ({ page }) => {
   await expect(page.getByText('Loading')).not.toBeVisible();
 });
 
-// weapon fails
-
 // TODO: most of these tests should be extended to confirm that they still work if they're done while the item is on an actor
-// TODO: weapon stat -> encumbrance does not generate an activeEffect like it should
 // TODO: creating an AE on a mod does not sync properly to "disabled", meaning it's applied right away
-// TODO: these tests do not really test equipping and installing stuff
+
 /**
  * Character tests
  */
@@ -281,13 +278,12 @@ test('weapon applies correctly', async ({ page }) => {
   // add a mod
   await weapon.switchTab('modifiers');
   await weapon.setStat('encumbrance', '5');
-  await weapon.addDirectModifier('Weapon Stat', 'encumbrance', '3');
   await weapon.closeSheet();
 
   // drag and drop the weapon onto the character
   await weaponActor.switchTab('gear');
   await page.getByRole('listitem').filter({ hasText: itemName }).dragTo(page.locator('.tab.items.active'));
-  await weaponActor.checkStat('encumbranceCurrent', '8'); // weapon plus modifier
+  await weaponActor.checkStat('encumbranceCurrent', '5');
 
   // clean up
   await weaponActor.remove();

@@ -545,6 +545,8 @@ export default class ModifierHelpers {
       } else {
         return `system.stats.${mod.toLocaleLowerCase()}.value`;
       }
+    } else if (["Weapon Stat", "Armor Stat"].includes(modType) && mod === "encumbrance") {
+        return `system.stats.encumbrance.value`;
     } else {
       // TODO: this probably shouldn't be a UI notification in the released version
       CONFIG.logger.debug(`Unknown mod type: ${modType}`);
