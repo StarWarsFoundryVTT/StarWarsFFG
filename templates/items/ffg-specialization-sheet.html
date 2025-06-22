@@ -90,6 +90,11 @@
                 <input class="talent-hidden" name="data.talents.{{key}}.links-right" type="text" value="{{talent.links-right}}" data-dtype="Boolean" />
               </div>
             </div>
+            <div class="talent-modifiers">
+              <a class="talent-action" data-itemid="{{key}}">
+                <i class="fas fa-cog"></i>
+              </a>
+            </div>
           </div>
 
         {{#if (eq (math (math @index '+' 1) '%' 4) 0)}}

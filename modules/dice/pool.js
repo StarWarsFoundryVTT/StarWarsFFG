@@ -144,6 +144,28 @@ export class DicePoolFFG {
           return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
+
+    if (obj?.source?.despair?.length) {
+      this.source.despair = obj.source.despair
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Despair") {
+            return `${rank.name} (${rank.type}): ${rank.value} Despair`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
+
+    if (obj?.source?.triumph?.length) {
+      this.source.triumph = obj.source.triumph
+        .filter((item) => parseInt(item.value, 10) > 0)
+        .map((rank) => {
+          if (rank.modtype === "Skill Add Triumph") {
+            return `${rank.name} (${rank.type}): ${rank.value} Triumph`;
+          }
+          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+        });
+    }
   }
 
   /**
@@ -386,6 +408,12 @@ export class DicePoolFFG {
       }
       if (this.source?.dark?.length) {
         mapDataToString(this.source.dark);
+      }
+      if (this.source?.despair?.length) {
+        mapDataToString(this.source.despair);
+      }
+      if (this.source?.triumph?.length) {
+        mapDataToString(this.source.triumph);
       }
 
       container.classList.add("hover");
