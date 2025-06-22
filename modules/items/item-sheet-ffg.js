@@ -1536,8 +1536,6 @@ export class ItemSheetFFG extends ItemSheet {
         }
       }
 
-      console.log(itemObject)
-
       $(li).find(`input[name='data.talents.${talentId}.name']`).val(itemObject.name);
       $(li).find(`input[name='data.talents.${talentId}.activation']`).val(itemObject.system.activation.value);
       $(li).find(`input[name='data.talents.${talentId}.activationLabel']`).val(itemObject.system.activation.label);
