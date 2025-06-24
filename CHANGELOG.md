@@ -6,6 +6,7 @@
   * Talent modifiers on specializations are now properly cleaned up when a new talent overrides an old one
   * Force powers, signature abilities, and specializations now use a unified UI to editing upgrades/talents on their sheets ([#1828](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1828))
   * Dragging a talent onto a specialization now properly copies the state of forceTalent, conflictTalent, and Ranks ([#1805](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1805))
+  * Modifier options are now unified: the same options are presented, regardless of actor, mod, or attachment type ([#1800](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1800))
 
 `1.906`
 * Features:

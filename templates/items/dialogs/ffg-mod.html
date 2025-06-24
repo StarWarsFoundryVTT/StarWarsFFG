@@ -1,9 +1,9 @@
 <li class="attribute flexrow" data-attribute="{{id}}">
   <select name="{{#if direct }}system.attributes.{{ id }}.modtype{{ else }}system.itemmodifier[{{ number }}].system.attributes.{{ id }}.modtype{{/if}}" class="flat_editor dropdown modtype" data-type="modtype" data-attr-id="{{ id }}">
-    {{ selectOptions (lookup modTypeChoices attachmentType) selected=attr.modtype valueAttr="value" labelAttr="label" localize=true }}
+    {{ selectOptions modifierTypes selected=attr.modtype valueAttr="value" labelAttr="label" localize=true }}
   </select>
   <select name="{{#if direct }}system.attributes.{{ id }}.mod{{ else }}system.itemmodifier[{{ number }}].system.attributes.{{ id }}.mod{{/if}}" class="flat_editor dropdown mod" data-type="mod" data-attr-id="{{ id }}">
-    {{ selectOptions (lookup modChoices attr.modtype) selected=attr.mod  valueAttr="value" labelAttr="label"localize=true }}
+    {{ selectOptions (lookup modifierChoices attr.modtype) selected=attr.mod  valueAttr="value" labelAttr="label"localize=true }}
   </select>
   {{#if (eq attr.modtype "Career Skill")}}
   <input name="{{#if direct }}system.attributes.{{ id }}.value{{ else }}system.itemmodifier[{{ number }}].system.attributes.{{ id }}.value{{/if}}" type="checkbox" class="modvalue" {{#if attr.value }}checked{{/if}} data-attr-id="{{ id }}">
