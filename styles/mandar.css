@@ -2932,6 +2932,7 @@ img {
   -o-object-fit: contain;
   object-fit: contain;
   flex: 1;
+  max-height: 200px;
 }
 
 .starwarsffg.sheet.actor .vehicle .defense-group {
