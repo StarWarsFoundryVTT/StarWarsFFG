@@ -302,8 +302,8 @@ export class ItemSheetFFG extends ItemSheet {
     // get summarized data for qualities (e.g. weapons)
     data = this._getSummarizedQualities(data);
 
-    data.modTypeChoices = CONFIG.FFG.itemTypeToModTypeMap;
-    data.modChoices = CONFIG.FFG.modTypeToModMap;
+    data.modifierTypes = CONFIG.FFG.allowableModifierTypes;
+    data.modifierChoices = CONFIG.FFG.allowableModifierChoices;
 
     return data;
   }

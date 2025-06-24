@@ -34,8 +34,8 @@ export default class PopoutModifiers extends FormApplication {
     const data = {
       data: this.object.system,
       modTypeSelected: "all",
-      modTypeChoices: CONFIG.FFG.itemTypeToModTypeMap,
-      modChoices: CONFIG.FFG.modTypeToModMap,
+      modifierTypes: CONFIG.FFG.allowableModifierTypes,
+      modifierChoices: CONFIG.FFG.allowableModifierChoices,
     };
 
     if (this.object.isUpgrade) {

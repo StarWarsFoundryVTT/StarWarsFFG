@@ -43,7 +43,7 @@
           </header>
           <ol class="attributes-list">
             {{#each data.clickedObject.system.attributes as |attr id|}}
-              {{> "systems/starwarsffg/templates/items/dialogs/ffg-mod.html" (object attr=attr id=id modTypeChoices=../modTypeChoices modChoices=../modChoices direct=true number2=@index attachmentType=../data.clickedObject.system.type) }}
+              {{> "systems/starwarsffg/templates/items/dialogs/ffg-mod.html" (object attr=attr id=id modifierChoices=../modifierChoices modifierTypes=../modifierTypes direct=true number2=@index attachmentType=../data.clickedObject.system.type) }}
             {{/each }}
           </ol>
         </div>

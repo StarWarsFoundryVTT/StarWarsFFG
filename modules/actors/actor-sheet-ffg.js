@@ -295,8 +295,8 @@ export class ActorSheetFFG extends ActorSheet {
     data.disabled = !this.object.getFlag("starwarsffg", "config.enableEditMode");
 
     data.modTypeSelected = "all"; // TODO: should this be something else?
-    data.modTypeChoices = CONFIG.FFG.itemTypeToModTypeMap;
-    data.modChoices = CONFIG.FFG.modTypeToModMap;
+    data.modifierTypes = CONFIG.FFG.allowableModifierTypes;
+    data.modifierChoices = CONFIG.FFG.allowableModifierChoices;
 
     return data;
   }

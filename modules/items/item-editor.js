@@ -43,15 +43,11 @@ export class itemEditor extends FormApplication  {
   async getData(options) {
     // update the title since it isn't available when creating the application
     this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
-
-    // build out the mod type and mod choices
-    let modTypeChoices = this._getModTypeChoices();
-    let modChoices = CONFIG.FFG.modTypeToModMap;
     let data = await this._enrichData();
 
     return {
-      modTypeChoices: modTypeChoices,
-      modChoices: modChoices,
+      modifierTypes: CONFIG.FFG.allowableModifierTypes,
+      modifierChoices: CONFIG.FFG.allowableModifierChoices,
       data: data,
     };
   }
@@ -68,15 +64,6 @@ export class itemEditor extends FormApplication  {
       modification.system.enrichedDescription = await TextEditor.enrichHTML(modification.system.description);
     }
     return enriched;
-  }
-
-  /**
-   * Get the available "mod types" for a given mod or modification (based on the "type" of the mod/modification)
-   * @param parentType
-   * @private
-   */
-  _getModTypeChoices() {
-    return CONFIG.FFG.itemTypeToModTypeMap;
   }
 
   /** @override */
@@ -145,8 +132,8 @@ export class itemEditor extends FormApplication  {
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const nk = new Date().getTime();
-      const modTypeChoices = this._getModTypeChoices();
-      const modChoices = CONFIG.FFG.modTypeToModMap;
+      const modifierTypes = CONFIG.FFG.allowableModifierTypes;
+      const modifierChoices = CONFIG.FFG.allowableModifierChoices;
       const modificationId = $(event.currentTarget).data("modification-id");
       let direct = this.data.clickedObject.type !== "itemattachment";
       if (modificationId === undefined) {
@@ -155,23 +142,23 @@ export class itemEditor extends FormApplication  {
       }
 
       CONFIG.logger.debug(`caught creating a new mod on an attachment. data: ${modificationId}, ${direct}`);
-      CONFIG.logger.debug(modTypeChoices);
-      CONFIG.logger.debug(modChoices);
-      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modTypeChoices)[0]}`);
-      CONFIG.logger.debug(`expected new mod mod is ${modChoices[Object.keys(modTypeChoices)[0]]}`);
+      CONFIG.logger.debug(modifierTypes);
+      CONFIG.logger.debug(modifierChoices);
+      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
+      CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         {
-          modTypeChoices: modTypeChoices,
-          modChoices: modChoices,
+          modifierTypes: modifierTypes,
+          modifierChoices: modifierChoices,
           direct: direct,
           number: modificationId,
           attachmentType: this.data.clickedObject.system.type,
           id: `attr${nk}`,
           attr: {
-            modtype: Object.keys(modTypeChoices[this.data.clickedObject.system.type])[0],
-            mod: Object.keys(modChoices[Object.keys(modTypeChoices[this.data.clickedObject.system.type])[0]])[0],
+            modtype: Object.keys(CONFIG.FFG.allowableModifierTypes)[0],
+            mod: Object.keys(CONFIG.FFG.allowableModifierChoices[Object.keys(CONFIG.FFG.allowableModifierTypes)[0]])[0],
             value: 1,
           },
         }
@@ -205,8 +192,8 @@ export class itemEditor extends FormApplication  {
   async _modificationControl(event) {
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
-      const modTypeChoices = this._getModTypeChoices();
-      const modChoices = CONFIG.FFG.modTypeToModMap;
+      const modTypeChoices = CONFIG.FFG.allowableModifierTypes;
+      const modChoices = CONFIG.FFG.allowableModifierChoices;
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-modification.html',
         {
@@ -256,8 +243,8 @@ export class itemEditor extends FormApplication  {
     // iterate over mods and update the modifier to be the first choice of the first modifierType
     // this is done because the selected modifier type changes when the "attachmentType" is changed
     for (let mod of Object.keys(this.data.clickedObject.system.attributes)) {
-      this.data.clickedObject.system.attributes[mod].modtype = Object.values(this._getModTypeChoices()[event.currentTarget.value])[0].value;
-      this.data.clickedObject.system.attributes[mod].mod = Object.values(CONFIG.FFG.modTypeToModMap[Object.values(this._getModTypeChoices()[event.currentTarget.value])[0].value])[0].value;
+      this.data.clickedObject.system.attributes[mod].modtype = Object.values(CONFIG.FFG.allowableModifierTypes[event.currentTarget.value])[0].value;
+      this.data.clickedObject.system.attributes[mod].mod = Object.values(CONFIG.FFG.allowableModifierTypes[Object.values(CONFIG.FFG.allowableModifierTypes[event.currentTarget.value])[0].value])[0].value;
     }
 
     // if the item is an attachment, we also need to update mods on modifications
@@ -266,8 +253,8 @@ export class itemEditor extends FormApplication  {
         // modifiers sometimes don't have the attributes in them...
         if (Object.keys(this.data.clickedObject.system.itemmodifier[modifier].system).includes("attributes")) {
           for (let mod of Object.keys(this.data.clickedObject.system.itemmodifier[modifier].system.attributes)) {
-            this.data.clickedObject.system.itemmodifier[modifier].system.attributes[mod].modtype = Object.values(this._getModTypeChoices()[event.currentTarget.value])[0].value;
-            this.data.clickedObject.system.itemmodifier[modifier].system.attributes[mod].mod = Object.values(CONFIG.FFG.modTypeToModMap[Object.values(this._getModTypeChoices()[event.currentTarget.value])[0].value])[0].value;
+            this.data.clickedObject.system.itemmodifier[modifier].system.attributes[mod].modtype = Object.values(CONFIG.FFG.allowableModifierTypes[event.currentTarget.value])[0].value;
+            this.data.clickedObject.system.itemmodifier[modifier].system.attributes[mod].mod = Object.values(CONFIG.FFG.allowableModifierTypes[Object.values(CONFIG.FFG.allowableModifierTypes[event.currentTarget.value])[0].value])[0].value;
           }
         }
       }
@@ -288,7 +275,7 @@ export class itemEditor extends FormApplication  {
 
     if (dropdown === 'modtype') {
       let new_html = '';
-      let chosen_config = CONFIG.FFG.modTypeToModMap[new_value];
+      let chosen_config = CONFIG.FFG.allowableModifierChoices[new_value];
       Object.keys(chosen_config).forEach(function (choice) {
         new_html += `<option value="${chosen_config[choice]['value']}">${game.i18n.localize(chosen_config[choice]['label'])}</option>`
       });
@@ -566,8 +553,8 @@ export class talentEditor extends itemEditor {
     this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
 
     // build out the mod type and mod choices
-    let modTypeChoices = this._getModTypeChoices();
-    let modChoices = CONFIG.FFG.modTypeToModMap;
+    let modTypeChoices = CONFIG.FFG.allowableModifierTypes;
+    let modChoices = CONFIG.FFG.allowableModifierChoices;
     let activations = CONFIG.FFG.activations;
     let data = await this._enrichData();
 
@@ -587,29 +574,29 @@ export class talentEditor extends itemEditor {
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const nk = new Date().getTime();
-      const modTypeChoices = this._getModTypeChoices();
-      const modChoices = CONFIG.FFG.modTypeToModMap;
+      const modifierTypes = CONFIG.FFG.allowableModifierTypes;
+      const modifierChoices = CONFIG.FFG.allowableModifierChoices;
       const modificationId = $(event.currentTarget).data("modification-id");
       const direct = this.data.clickedObject.type !== "itemattachment";
 
       CONFIG.logger.debug(`caught creating a new mod on a talent. data: ${modificationId}, ${direct}`);
-      CONFIG.logger.debug(modTypeChoices);
-      CONFIG.logger.debug(modChoices);
-      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modTypeChoices)[0]}`);
-      CONFIG.logger.debug(`expected new mod mod is ${modChoices[Object.keys(modTypeChoices)[0]]}`);
+      CONFIG.logger.debug(modifierTypes);
+      CONFIG.logger.debug(modifierChoices);
+      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
+      CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
-          modTypeChoices: modTypeChoices,
-          modChoices: modChoices,
+          modifierTypes: modifierTypes,
+          modifierChoices: modifierChoices,
           direct: direct,
           number: modificationId,
           attachmentType: 'all',
           id: `attr${nk}`,
           attr: {
-            modtype: Object.keys(modTypeChoices['all'])[0],
-            mod: Object.keys(modChoices[Object.keys(modTypeChoices['all'])[0]])[0],
+            modtype: Object.keys(CONFIG.FFG.allowableModifierTypes)[0],
+            mod: Object.keys(CONFIG.FFG.allowableModifierChoices[Object.keys(CONFIG.FFG.allowableModifierTypes)[0]])[0],
             value: 1,
           },
         }
@@ -772,8 +759,8 @@ export class forcePowerEditor extends itemEditor {
     this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
 
     // build out the mod type and mod choices
-    let modTypeChoices = this._getModTypeChoices();
-    let modChoices = CONFIG.FFG.modTypeToModMap;
+    let modTypeChoices = CONFIG.FFG.allowableModifierTypes;
+    let modChoices = CONFIG.FFG.allowableModifierChoices;
     let activations = CONFIG.FFG.activations;
     let data = await this._enrichData();
 
@@ -793,29 +780,29 @@ export class forcePowerEditor extends itemEditor {
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const nk = new Date().getTime();
-      const modTypeChoices = this._getModTypeChoices();
-      const modChoices = CONFIG.FFG.modTypeToModMap;
+      const modifierTypes = CONFIG.FFG.allowableModifierTypes;
+      const modifierChoices = CONFIG.FFG.allowableModifierChoices;
       const modificationId = $(event.currentTarget).data("modification-id");
       const direct = this.data.clickedObject.type !== "itemattachment";
 
       CONFIG.logger.debug(`caught creating a new mod on an upgrade. data: ${modificationId}, ${direct}`);
-      CONFIG.logger.debug(modTypeChoices);
-      CONFIG.logger.debug(modChoices);
-      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modTypeChoices)[0]}`);
-      CONFIG.logger.debug(`expected new mod mod is ${modChoices[Object.keys(modTypeChoices)[0]]}`);
+      CONFIG.logger.debug(modifierTypes);
+      CONFIG.logger.debug(modifierChoices);
+      CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
+      CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
       let rendered = await renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         {
-          modTypeChoices: modTypeChoices,
-          modChoices: modChoices,
+          modifierTypes: modifierTypes,
+          modifierChoices: modifierChoices,
           direct: direct,
           number: modificationId,
           attachmentType: 'all',
           id: `attr${nk}`,
           attr: {
-            modtype: Object.keys(modTypeChoices['all'])[0],
-            mod: Object.keys(modChoices[Object.keys(modTypeChoices['all'])[0]])[0],
+            modtype: Object.keys(CONFIG.FFG.allowableModifierTypes)[0],
+            mod: Object.keys(CONFIG.FFG.allowableModifierChoices[Object.keys(CONFIG.FFG.allowableModifierTypes)[0]])[0],
             value: 1,
           },
         }
