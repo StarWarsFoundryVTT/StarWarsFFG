@@ -8,6 +8,8 @@
   * Dragging a talent onto a specialization now properly copies the state of forceTalent, conflictTalent, and Ranks ([#1805](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1805))
   * Modifier options are now unified: the same options are presented, regardless of actor, mod, or attachment type ([#1800](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1800))
   * Vehicle images are now properly capped at 200 px high ([#1807](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1807))
+  * The custom combat tracker now supports using the `secret` token disposition ([#1813](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1813))
+  * It's now possible to remove an actor from the custom combat tracker even if no slots have been claimed this round
 
 `1.906`
 * Features:
