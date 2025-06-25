@@ -880,7 +880,7 @@ export class ActorSheetFFG extends ActorSheet {
     });
 
     // Roll Force Power
-    html.find(".item-rollable").click(async (ev) => {
+    html.find(".item-fp").click(async (ev) => {
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
       let item = this.actor.items.get(itemId);
