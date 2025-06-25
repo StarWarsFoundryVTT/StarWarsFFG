@@ -7,12 +7,12 @@
 
     {{else if this.isSelect}}
     <select name="{{ this.namespace }}.{{ this.key }}">
-      {{ selectOptions this.choices selected=this.value }}
+      {{ selectOptions this.choices selected=this.value localize=true }}
     </select>
 
     {{else if this.choices}}
     <select name="{{ this.namespace }}.{{ this.key }}">
-      {{ selectOptions this.choices selected=this.value }}
+      {{ selectOptions this.choices selected=this.value localize=true }}
     </select>
 
     {{else if this.isRange}}
