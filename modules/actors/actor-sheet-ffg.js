@@ -502,6 +502,8 @@ export class ActorSheetFFG extends ActorSheet {
             force: forcedice,
           });
           DiceHelpers.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${item.name}`, item.name, item);
+        } else {
+          ui.notifications.info(game.i18n.localize("SWFFG.Roll.ForcePowers.NoDice"));
         }
       },
     };
@@ -874,6 +876,29 @@ export class ActorSheetFFG extends ActorSheet {
       }
       if (item?.sheet) {
         item.sheet.render(true);
+      }
+    });
+
+    // Roll Force Power
+    html.find(".item-rollable").click(async (ev) => {
+      const li = $(ev.currentTarget).parents(".item");
+      let itemId = li.data("itemId");
+      let item = this.actor.items.get(itemId);
+      if (!item) {
+        item = game.items.get(itemId);
+      }
+      if (!item) {
+        item = await ImportHelpers.findCompendiumEntityById("Item", itemId);
+      }
+      const forcedice = this.actor.system.stats.forcePool.max - this.actor.system.stats.forcePool.value;
+      if (forcedice > 0) {
+        let sheet = await this.getData();
+        const dicePool = new DicePoolFFG({
+          force: forcedice,
+        });
+        DiceHelpers.displayRollDialog(sheet, dicePool, `${game.i18n.localize("SWFFG.Rolling")} ${item.name}`, item.name, item);
+      } else {
+        ui.notifications.info(game.i18n.localize("SWFFG.Roll.ForcePowers.NoDice"));
       }
     });
 
