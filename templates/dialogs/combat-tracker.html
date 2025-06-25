@@ -115,6 +115,24 @@
 			{{/each}}
 		</div>
 		{{/if}}
+    {{#if (gt turnData.Secret.length 0)}}
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			<span class="actor-header">{{localize 'SWFFG.Combats.Actors.Secret'}}</span>
+		</div>
+		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
+			{{#each turnData.Secret }}
+				{{#if ../user.isGM }}
+					<img class="combatant token-image actor-header Secret{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+				{{else}}
+					{{#if hidden}}
+						<img class="combatant token-image actor-header secret{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+					{{else}}
+						<img class="combatant token-image actor-header secret{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" alt="{{name}}" data-combatant-id="{{id}}"/>
+					{{/if}}
+				{{/if}}
+			{{/each}}
+		</div>
+		{{/if}}
 		{{#each turns}}
 			{{#if claimed}}
 				<li class="combatant actor directory-item flexrow {{css}}{{#if ../user.isGM}}{{#if hidden}} hidden{{/if}}{{/if}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-alt-id="{{ combatantId }}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}" data-disposition="{{slotType}}" data-initiative="{{initiative}}">

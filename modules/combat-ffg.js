@@ -363,7 +363,12 @@ export class CombatFFG extends Combat {
       return undefined;
     }
     const roundClaims = claims[round];
-    return Object.keys(roundClaims).find(key => roundClaims[key] === combatantId) || undefined;
+    try {
+      return Object.keys(roundClaims).find(key => roundClaims[key] === combatantId) || undefined;
+    } catch (error) {
+      // we get an exception if there have been no claims in the round yet
+      return undefined;
+    }
   }
 
   /**
@@ -803,18 +808,21 @@ export class CombatTrackerFFG extends CombatTracker {
     const newInitiatives = {
       [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY).map(i => i.initiative),
       [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL).map(i => i.initiative),
+      [CONST.TOKEN_DISPOSITIONS.SECRET]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.SECRET).map(i => i.initiative),
       [CONST.TOKEN_DISPOSITIONS.HOSTILE]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE).map(i => i.initiative),
     }
 
     // sort the initiatives
     newInitiatives[CONST.TOKEN_DISPOSITIONS.FRIENDLY].sort(sortInit);
     newInitiatives[CONST.TOKEN_DISPOSITIONS.NEUTRAL].sort(sortInit);
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.SECRET].sort(sortInit);
     newInitiatives[CONST.TOKEN_DISPOSITIONS.HOSTILE].sort(sortInit);
 
     // used to track how many slots have occurred per side - we care to mark slots as "unused" if they're past the number of alive combatants
     let turnTracker = {
       [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 0,
       [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 0,
+      [CONST.TOKEN_DISPOSITIONS.SECRET]: 0,
       [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 0,
     };
 
@@ -918,6 +926,8 @@ export class CombatTrackerFFG extends CombatTracker {
         slotType = 'Friendly';
       } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
         slotType = 'Enemy';
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+        slotType = 'Secret';
       } else {
         slotType = 'Neutral';
       }
@@ -950,6 +960,7 @@ export class CombatTrackerFFG extends CombatTracker {
       Friendly: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
       Enemy: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
       Neutral: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+      Secret: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.SECRET),
     };
 
     // update visibility state for each token
@@ -966,6 +977,12 @@ export class CombatTrackerFFG extends CombatTracker {
     }
 
     for (const turn of turnData['Neutral']) {
+      const combatant = combat.combatants.get(turn.id);
+      turn.hidden = this._getTokenHidden(combatant.tokenId);
+      turn.claimed = combat.hasClaims(combatant.id);
+    }
+
+    for (const turn of turnData['Secret']) {
       const combatant = combat.combatants.get(turn.id);
       turn.hidden = this._getTokenHidden(combatant.tokenId);
       turn.claimed = combat.hasClaims(combatant.id);

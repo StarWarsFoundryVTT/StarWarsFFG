@@ -700,6 +700,7 @@
   "SWFFG.Combats.Actors.Enemy": "Enemy Actors",
   "SWFFG.Combats.Actors.Neutral": "Neutral Actors",
   "SWFFG.Combats.Actors.Hidden": "Hidden Actor",
+  "SWFFG.Combats.Actors.Secret": "Secret Disposition",
   "SWFFG.Combats.Slots.Add": "Add Slot",
   "SWFFG.Combats.Slots.Dialog.Title": "Provide Slot Details",
   "SWFFG.Combats.Slots.Dialog.Labels.Initiative": "Initiative value for Slot",
