@@ -4436,3 +4436,8 @@ img {
 .starwarsffg .flat_editor.modifications.active {
   overflow-x: hidden;
 }
+
+.starwarsffg .popout-modifiers-window {
+  max-height: 312px;
+  overflow-y: auto;
+}
