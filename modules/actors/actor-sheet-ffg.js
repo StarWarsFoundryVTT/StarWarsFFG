@@ -828,20 +828,20 @@ export class ActorSheetFFG extends ActorSheet {
       let itemType = "";
       switch (ev.currentTarget.classList[1]) {
         case "armour":
-          itemType = game.i18n.localize("ITEM.TypeArmour");
+          itemType = game.i18n.localize("TYPES.Item.armour");
           break;
         case "weapon":
-          itemType = game.i18n.localize("ITEM.TypeWeapon");
+          itemType = game.i18n.localize("TYPES.Item.weapon");
           break;
         case "shipattachment":
-          itemType = game.i18n.localize("ITEM.TypeShipattachment");
+          itemType = game.i18n.localize("TYPES.Item.shipattachment");
           break;
         case "shipweapon":
-          itemType = game.i18n.localize("ITEM.TypeShipweapon");
+          itemType = game.i18n.localize("TYPES.Item.shipweapon");
           break;
 
         default:
-          itemType = game.i18n.localize("ITEM.TypeGear");
+          itemType = game.i18n.localize("TYPES.Item.gear");
           break;
       }
 
