@@ -912,7 +912,7 @@ export class ActorSheetFFG extends ActorSheet {
           content: content,
           buttons: {
             confirm: {
-              label: 'Update Roles',
+              label: game.i18n.localize("SWFFG.Crew.Role.Update"),
               callback: async (html) => {
                 const newRoles = html.find('[name="select-many-things"]').val();
                 await updateRoles(actor, crew_member_id, newRoles);

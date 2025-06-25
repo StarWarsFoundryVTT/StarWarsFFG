@@ -12,6 +12,7 @@
   * It's now possible to remove an actor from the custom combat tracker even if no slots have been claimed this round
   * Corrected translations not occurring for Initiative mode and group manager PC list mode ([#1814](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1814))
   * Corrected default item names when created in actors ([#1815](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1815))
+  * The crew role update button is now localized ([#1822](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1822))
 
 `1.906`
 * Features:
