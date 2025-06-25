@@ -13,6 +13,7 @@
   * Corrected translations not occurring for Initiative mode and group manager PC list mode ([#1814](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1814))
   * Corrected default item names when created in actors ([#1815](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1815))
   * The crew role update button is now localized ([#1822](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1822))
+  * The Popout modifier window now has a scrollbar! You can now see the giant modifier list directly on force powers ([#1824](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1824))
 
 `1.906`
 * Features:
