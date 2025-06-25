@@ -662,6 +662,7 @@
   "SWFFG.OldWorld.CompatLabel": "Enable Old World Compatability",
   "SWFFG.OldWorld.CompatHint": "Enables helpers designed for worlds ported from old versions of the system. May negatively impact the play experience in some cases.",
   "SWFFG.Crew.Title": "Crew",
+  "SWFFG.Crew.Role.Update": "Update Roles",
   "SWFFG.Crew.Role.Content": "Select a role",
   "SWFFG.Crew.Roles.Pilot_Space": "Pilot (Space)",
   "SWFFG.Crew.Roles.Pilot_Planetary": "Pilot (Planetary)",
