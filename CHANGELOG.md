@@ -10,6 +10,7 @@
   * Vehicle images are now properly capped at 200 px high ([#1807](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1807))
   * The custom combat tracker now supports using the `secret` token disposition ([#1813](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1813))
   * It's now possible to remove an actor from the custom combat tracker even if no slots have been claimed this round
+  * Corrected translations not occurring for Initiative mode and group manager PC list mode ([#1814](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1814))
 
 `1.906`
 * Features:
