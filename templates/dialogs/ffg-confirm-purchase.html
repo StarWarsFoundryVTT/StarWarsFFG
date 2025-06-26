@@ -17,6 +17,11 @@
       {{/if}}
     {{/each}}
     <!-- specialization -->
+    {{#if (eq group "Universal") }}
+      {{#each ../universal as |data id|}}
+        <option value="{{id}}" data-source="{{data.source}}" data-cost="{{../../baseCost}}">{{data.name}} ({{../../baseCost}} XP)</option>
+      {{/each}}
+    {{/if}}
     {{#if (eq group "In Career") }}
       {{#each ../inCareer as |data id|}}
         <option value="{{id}}" data-source="{{data.source}}" data-cost="{{../../baseCost}}">{{data.name}} ({{../../baseCost}} XP)</option>

@@ -32,11 +32,16 @@ export default class Specializations {
                 tags: [
                   "specialization",
                 ],
+                sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
+              universal: false,
             };
 
-            data.system.description += ImportHelpers.getSources(item?.Sources ?? item?.Source);
             data.system.attributes = foundry.utils.mergeObject(data.system.attributes, await ImportHelpers.processCareerSkills(item?.CareerSkills, true));
+
+            if (item?.Universal) {
+              data.system.universal = item.Universal === 'true';
+            }
 
             for (let i = 0; i < item.TalentRows.TalentRow.length; i += 1) {
               const row = item.TalentRows.TalentRow[i];
