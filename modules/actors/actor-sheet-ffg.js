@@ -1944,6 +1944,7 @@ export class ActorSheetFFG extends ActorSheet {
       const inCareerNames = Object.values(inCareer).map(i => i.name);
       const sources = game.settings.get("starwarsffg", "specializationCompendiums").split(",");
       let outCareer = [];
+      let universal = [];
       for (const source of sources) {
         const pack = game.packs.get(source);
         if (!pack) {
@@ -1951,7 +1952,13 @@ export class ActorSheetFFG extends ActorSheet {
         }
         const items = await pack.getDocuments();
         for (const item of items) {
-          if (!inCareerNames.includes(item.name)) {
+          if (!inCareerNames.includes(item.name) && item.system.universal) {
+            universal.push({
+              name: item.name,
+              id: item.id,
+              source: item.uuid,
+            });
+          } else if (!inCareerNames.includes(item.name)) {
             outCareer.push({
               name: item.name,
               id: item.id,
@@ -1961,6 +1968,7 @@ export class ActorSheetFFG extends ActorSheet {
         }
       }
       outCareer = sortDataBy(outCareer, "name");
+      universal = sortDataBy(universal, "name");
       const baseCost = (this.object.items.filter(i => i.type === "specialization").length + 1) * 10;
       const increasedCost = baseCost + 10;
       if (baseCost > availableXP) {
@@ -1970,9 +1978,10 @@ export class ActorSheetFFG extends ActorSheet {
         outCareer = [];
       }
       itemType =  game.i18n.localize("TYPES.Item.specialization");
+      groups.push("Universal");
       groups.push("In Career");
       groups.push("Out of Career");
-      content = await renderTemplate(template, { inCareer, outCareer, baseCost, increasedCost, itemType: itemType, itemCategory: "specialization", groups: groups });
+      content = await renderTemplate(template, { inCareer, outCareer, universal, baseCost, increasedCost, itemType: itemType, itemCategory: "specialization", groups: groups });
     } else if (action === "signatureability") {
       const sources = game.settings.get("starwarsffg", "signatureAbilityCompendiums").split(",");
       const rawSelectableItems =  this.object.items.find(i => i.type === "career").system.signatureabilities;

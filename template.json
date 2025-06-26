@@ -837,7 +837,8 @@
         "talent17": {},
         "talent18": {},
         "talent19": {}
-      }
+      },
+      "universal": false
     },
     "career" : {
       "templates": ["core"],
