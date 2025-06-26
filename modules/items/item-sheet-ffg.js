@@ -1277,6 +1277,8 @@ export class ItemSheetFFG extends ItemSheet {
     // pull the item which the edit is on
     const li = $(event.currentTarget);
     const clickedId = li.closest('.talent-block').attr('id');
+    const modifierTypes = CONFIG.FFG.allowableModifierTypes;
+    const modifierChoices = CONFIG.FFG.allowableModifierChoices;
 
     if (this.object.type === "forcepower") {
       const clickedType = 'upgrades';
@@ -1287,6 +1289,8 @@ export class ItemSheetFFG extends ItemSheet {
         sourceObject: this.object,
         clickedObject: clickedObject,
         upgradeId: clickedId,
+        modifierTypes: modifierTypes,
+        modifierChoices: modifierChoices,
       }
       new forcePowerEditor(data).render(true);
     } else if (this.object.type === "specialization") {
@@ -1298,6 +1302,8 @@ export class ItemSheetFFG extends ItemSheet {
         sourceObject: this.object,
         clickedObject: clickedObject,
         talentId: clickedId,
+        modifierTypes: modifierTypes,
+        modifierChoices: modifierChoices,
       }
       new talentEditor(data).render(true);
     } else if (this.object.type === "signatureability") {
@@ -1309,6 +1315,8 @@ export class ItemSheetFFG extends ItemSheet {
         sourceObject: this.object,
         clickedObject: clickedObject,
         upgradeId: clickedId,
+        modifierTypes: modifierTypes,
+        modifierChoices: modifierChoices,
       }
       new forcePowerEditor(data).render(true);
     }

@@ -66,16 +66,16 @@
   <span class="subtitle">{{ item.system.activation.value }} {{ localize "SWFFG.Talent" }}</span>
   <span class="basic-stats">
     <span class="stat stat-right{{#if item.system.ranks.ranked }}{{ else }} not-present{{/if }}" title="{{ localize "SWFFG.Ranked" }}">
-      <i class="fa-solid fa-weight-hanging"></i>
+      <i class="fa-solid fa-chevrons-up"></i>
       {{#if item.system.ranks.ranked }}
         {{ item.system.ranks.current }}
       {{/if }}
     </span>
     <span class="stat stat-right{{# if item.system.isForceTalent }}{{ else }} not-present{{/if }}" title="{{ localize "SWFFG.ForceTalent" }}">
-      <i class="fa-solid fa-magnifying-glass"></i>
+      <i class="fa-solid fa-wand-sparkles"></i>
     </span>
     <span class="stat{{# if item.system.isConflictTalent }}{{ else }} not-present{{/if }}" title="{{ localize "SWFFG.ConflictTalent" }}">
-      <i class="fa-solid fa-dollar-sign"></i>
+      <i class="fa-solid fa-bolt-lightning"></i>
     </span>
   </span>
 {{/if}}

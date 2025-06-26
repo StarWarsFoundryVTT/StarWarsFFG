@@ -1406,7 +1406,32 @@ export class ActorSheetFFG extends ActorSheet {
       }
     }
 
-    const itemDetails = await item?.getItemDetails();
+    let itemDetails = await item?.getItemDetails();
+
+    if (!itemDetails) {
+      // this is likely a talent from a specialization, which otherwise returns null
+      const talentData = this.actor.talentList.find(i => i.itemId === itemId);
+      itemDetails = {
+        prettyDesc: talentData?.enrichedDescription,
+      };
+      item = {
+        name: talentData.name,
+        img: "icons/svg/mystery-man.svg",
+        type: "talent",
+        system: {
+          activation: {
+            value: talentData.activation,
+          },
+          ranks: {
+            ranked: talentData.isRanked,
+            current: talentData.rank,
+          },
+          isForceTalent: talentData.isForceTalent,
+          isConflictTalent: talentData.isConflictTalent,
+        }
+      };
+    }
+
     const template = "systems/starwarsffg/templates/chat/item-card.html";
     const html = await renderTemplate(template, { itemDetails, item });
 

@@ -52,7 +52,7 @@
           </header>
           <ol class="attributes-list">
             {{#each data.clickedObject.attributes as |attr id|}}
-              {{> "systems/starwarsffg/templates/items/dialogs/ffg-mod.html" (object attr=attr id=id modifierChoices=../modifierChoices modifierTypes=../modifierTypes direct=true number2=@index attachmentType='all') }}
+              {{> "systems/starwarsffg/templates/items/dialogs/ffg-mod.html" (object attr=attr id=id modifierChoices=../data.modifierChoices modifierTypes=../data.modifierTypes direct=true number2=@index attachmentType='all') }}
             {{/each }}
           </ol>
         </div>
