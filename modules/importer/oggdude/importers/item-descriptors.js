@@ -51,6 +51,14 @@ export default class ItemDescriptors {
           if (mods?.baseMods?.attributes) data.data.attributes = mods.baseMods.attributes;
         }
 
+        const diceMods = await ImportHelpers.processDiceMods(item);
+        if (diceMods) {
+          data.data.attributes = foundry.utils.mergeObject(
+            data.data.attributes,
+            diceMods,
+          );
+        }
+
         try {
           // attempt to select the specific compendium for this type of mod
           pack = packMap[data.data.type];

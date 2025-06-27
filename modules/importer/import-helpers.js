@@ -2805,6 +2805,52 @@ export default class ImportHelpers {
     return output;
   }
 
+  static async processDiceMods(obj) {
+    const nk = new Date().getTime();
+    if (obj.Key === "BOOSTADD" || obj.Key === "ACCURATE") {
+      return {
+        [`attr${nk}`]: {
+          modtype: "Roll Modifiers",
+          mod: "Add Boost",
+          value: '1',
+        }
+      };
+    } else if (obj.Key === "INACCURATE" || obj.Key === "SETBACKADD") {
+      return {
+        [`attr${nk}`]: {
+          modtype: "Roll Modifiers",
+          mod: "Add Setback",
+          value: '1',
+        }
+      };
+    } else if (obj.Key === "SUCCADD") {
+      return {
+        [`attr${nk}`]: {
+          modtype: "Result Modifiers",
+          mod: "Add Success",
+          value: '1',
+        }
+      };
+    } else if (obj.Key === "THRADD") {
+      return {
+        [`attr${nk}`]: {
+          modtype: "Result Modifiers",
+          mod: "Add Threat",
+          value: '1',
+        }
+      };
+    } else if (obj.Key === "UPGRADEDIFF") {
+      return {
+        [`attr${nk}`]: {
+          modtype: "Dice Modifiers",
+          mod: "Upgrade Difficulty",
+          value: '1',
+        }
+      };
+    }
+    return false;
+  }
+
   static async processStatMod(mod) {
     let attributes = {};
     if (mod) {

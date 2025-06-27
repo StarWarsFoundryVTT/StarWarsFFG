@@ -120,6 +120,18 @@ export const allModifiersTypes = {
     "value": "Characteristic",
     "label": "SWFFG.ModTypeCharacteristic",
   },
+  "Result Modifiers": {
+    "value": "Result Modifiers",
+    "label": "SWFFG.ModTypeResultModifiers",
+  },
+  "Dice Modifiers": {
+    "value": "Dice Modifiers",
+    "label": "SWFFG.ModTypeDiceModifiers",
+  },
+  "Roll Modifiers": {
+    "value": "Roll Modifiers",
+    "label": "SWFFG.ModTypeRollModifiers",
+  },
   "Career Skill": {
     "value": "Career Skill",
     "label": "SWFFG.ModTypeCareerSkill",
