@@ -18,6 +18,7 @@
   * The Popout modifier window now has a scrollbar! You can now see the giant modifier list directly on force powers ([#1824](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1824))
   * Fix for talent send-to-chat not working if the talent came from a specialization ([#1819](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1819))
   * Update "Not enough XP" language to be more generic ([#1820](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1820))
+  * A limited subset of qualities now have dice mods created upon import ([#1836](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1836))
 
 `1.906`
 * Features:
