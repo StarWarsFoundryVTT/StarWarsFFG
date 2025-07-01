@@ -1547,6 +1547,8 @@ export default class ImportHelpers {
 
       const exists = game.data.actors.find((actor) => actor.flags?.starwarsffg?.ffgimportid === characterData.Character.Key);
 
+      console.log(`character exists: ${exists}`)
+
       // copy template character json
       let character = JSON.parse(JSON.stringify(ImportHelpers.characterTemplate));
 
@@ -1680,7 +1682,7 @@ export default class ImportHelpers {
           let speciesItem = character.items.find((s) => s.flags.starwarsffg.ffgimportid === species.flags.starwarsffg.ffgimportid);
 
           if (speciesItem) {
-            species = mergeObject(species, speciesItem);
+            species = foundry.utils.mergeObject(species, speciesItem);
           } else {
             character.items.push(species);
           }
@@ -1781,7 +1783,7 @@ export default class ImportHelpers {
           let careerItem = character.items.find((s) => s.flags.starwarsffg.ffgimportid === career.flags.starwarsffg.ffgimportid);
 
           if (careerItem) {
-            careerItem = mergeObject(career, careerItem);
+            careerItem = foundry.utils.mergeObject(career, careerItem);
           } else {
             character.items.push(career);
           }
@@ -1898,7 +1900,7 @@ export default class ImportHelpers {
                 let specializationItem = character.items.find((s) => s.flags.starwarsffg.ffgimportid === specialization.flags.starwarsffg.ffgimportid);
 
                 if (specializationItem) {
-                  specializationItem = mergeObject(specialization, specializationItem);
+                  specializationItem = foundry.utils.mergeObject(specialization, specializationItem);
                 } else {
                   character.items.push(specialization);
                 }
@@ -1943,7 +1945,7 @@ export default class ImportHelpers {
                   let specializationItem = character.items.find((s) => s.flags.starwarsffg.ffgimportid === newspec.flags.starwarsffg.ffgimportid);
 
                   if (specializationItem) {
-                    specializationItem = mergeObject(newspec, specializationItem);
+                    specializationItem = foundry.utils.mergeObject(newspec, specializationItem);
                   } else {
                     character.items.push(newspec);
                   }
@@ -1974,7 +1976,7 @@ export default class ImportHelpers {
           let forceItem = character.items.find((s) => s.flags.starwarsffg.ffgimportid === force.flags.starwarsffg.ffgimportid);
 
           if (forceItem) {
-            forceItem = mergeObject(force, forceItem);
+            forceItem = foundry.utils.mergeObject(force, forceItem);
           } else {
             character.items.push(force);
           }
@@ -2037,7 +2039,7 @@ export default class ImportHelpers {
             if (armorItems.length > 0) {
               for (let i = 0; i < character.items.length; i += 1) {
                 if (character.items[i].type === "armor" && character.items[i].flags.starwarsffg.ffgimportid === armor.flags.starwarsffg.ffgimportid) {
-                  character.items[i] = mergeObject(armor, character.items[i]);
+                  character.items[i] = foundry.utils.mergeObject(armor, character.items[i]);
                 }
               }
             } else {
@@ -2079,7 +2081,7 @@ export default class ImportHelpers {
             }
 
             if (gearItem) {
-              gearItem = mergeObject(gear, gearItem);
+              gearItem = foundry.utils.mergeObject(gear, gearItem);
               gear.system.quantity.value = gearCount;
             } else {
               character.items.push(gear);
