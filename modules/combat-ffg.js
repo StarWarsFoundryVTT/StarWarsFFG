@@ -913,7 +913,7 @@ export class CombatTrackerFFG extends CombatTracker {
           turn.tokenId = combatant.tokenId;
           // sync the turn state to the token state
           turn.hidden = combatant.hidden;
-          if (!combatant.initiative && !combat?.started) {
+          if (combatant.initiative === null && !combat?.started) {
             hasRolled = false;
           }
 
