@@ -5,6 +5,7 @@
   * Add Force Power Roll button ([#1827](http://overlord.wrycu.com:12121/game))
   * Added support for universal specializations (requires a re-import of the data) ([#1778](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1778))
   * Noted that Oggdude _character_ importer is deprecated and is likely to result in stat mismatches
+  * Career skills now have first-class support and can be set without using modifiers! ([#1861](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1861))
 * Fixes:
   * Talent modifiers on specializations are now properly cleaned up when a new talent overrides an old one
   * Force powers, signature abilities, and specializations now use a unified UI to editing upgrades/talents on their sheets ([#1828](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1828))
