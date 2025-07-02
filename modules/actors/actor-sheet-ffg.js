@@ -350,58 +350,62 @@ export class ActorSheetFFG extends ActorSheet {
     // Everything below here is only needed if the sheet is editable
     if (!this.isEditable) return;
 
-    Hooks.on("preCreateItem", (item, createData, options, userId) => {
-      // Save persistent sheet height and width for future use.
-      this.sheetWidth = this.position.width;
-      this.sheetHeight = this.position.height;
+    if (Hooks.events.preCreateItem === undefined) {
+      Hooks.on("preCreateItem", (item, createData, options, userId) => {
+        // Save persistent sheet height and width for future use.
+        this.sheetWidth = this.position.width;
+        this.sheetHeight = this.position.height;
 
-      // Check that we are dealing with an Embedded Document
-      if (item.isEmbedded && item.parent.documentName === "Actor")
-      {
-        const actor = item.actor
-        // we only allow one species and one career, find any other species and remove them.
-        if (item.type === "species" || item.type === "career") {
-          if (["character", "nemesis", "rival"].includes(actor.type)) {
-            const itemToDelete = actor.items.filter((i) => (i.type === item.type) && (i.id !== item.id));
-            itemToDelete.forEach((i) => {
+        // Check that we are dealing with an Embedded Document
+        if (item.isEmbedded && item.parent.documentName === "Actor") {
+          const actor = item.actor
+          // we only allow one species and one career, find any other species and remove them.
+          if (item.type === "species" || item.type === "career") {
+            if (["character", "nemesis", "rival"].includes(actor.type)) {
+              const itemToDelete = actor.items.filter((i) => (i.type === item.type) && (i.id !== item.id));
+              itemToDelete.forEach((i) => {
                 actor.items.get(i.id).delete();
-            });
+              });
+            } else if (actor.type === "minion") {
+              ui.notifications.warn(`Item type '${item.type}' cannot be added to 'minion' actor types.`);
+              return false;
+            }
           }
-          else if (actor.type === "minion") {
-            ui.notifications.warn(`Item type '${item.type}' cannot be added to 'minion' actor types.`);
+
+          // Critical Damage can only be added to "vehicle" actors and Critical Injury can only be added to "character" actors.
+          if (item.type === "criticaldamage" && actor.type !== "vehicle") {
+            ui.notifications.warn("Critical Damage can only be added to 'vehicle' actor types.");
+            return false;
+          }
+          if (item.type === "criticalinjury" && !["character", "nemesis", "rival"].includes(actor.type)) {
+            ui.notifications.warn("Critical Injuries can only be added to 'character' actor types.");
+            return false;
+          }
+
+          // Prevent adding of character data type items to vehicles
+          if (["career", "forcepower", "talent", "signatureability", "specialization", "species", "ability"].includes(item.type.toString()) && actor.type === "vehicle") {
+            ui.notifications.warn(`Item type '${item.type}' cannot be added to 'vehicle' actor types.`);
             return false;
           }
         }
+      });
+    }
 
-        // Critical Damage can only be added to "vehicle" actors and Critical Injury can only be added to "character" actors.
-        if (item.type === "criticaldamage" && actor.type !== "vehicle") {
-          ui.notifications.warn("Critical Damage can only be added to 'vehicle' actor types.");
-          return false;
-        }
-        if (item.type === "criticalinjury" && !["character", "nemesis", "rival"].includes(actor.type)) {
-          ui.notifications.warn("Critical Injuries can only be added to 'character' actor types.");
-          return false;
-        }
+    if (Hooks.events.preDeleteItem === undefined) {
+      Hooks.on("preDeleteItem", (item, createData, options, userId) => {
+        // Save persistent sheet height and width for future use.
+        this.sheetWidth = this.position.width;
+        this.sheetHeight = this.position.height;
+      });
+    }
 
-        // Prevent adding of character data type items to vehicles
-        if (["career", "forcepower", "talent", "signatureability", "specialization", "species", "ability"].includes(item.type.toString()) && actor.type === "vehicle") {
-          ui.notifications.warn(`Item type '${item.type}' cannot be added to 'vehicle' actor types.`);
-          return false;
-        }
-      }
-    });
-
-    Hooks.on("preDeleteItem", (item, createData, options, userId) => {
-      // Save persistent sheet height and width for future use.
-      this.sheetWidth = this.position.width;
-      this.sheetHeight = this.position.height;
-    });
-
-    Hooks.on("preUpdateItem", (item, createData, options, userId) => {
-      // Save persistent sheet height and width for future use.
-      this.sheetWidth = this.position.width;
-      this.sheetHeight = this.position.height;
-    });
+    if (Hooks.events.preUpdateItem === undefined) {
+      Hooks.on("preUpdateItem", (item, createData, options, userId) => {
+        // Save persistent sheet height and width for future use.
+        this.sheetWidth = this.position.width;
+        this.sheetHeight = this.position.height;
+      });
+    }
 
     let contextMenuOptions = [
       {
