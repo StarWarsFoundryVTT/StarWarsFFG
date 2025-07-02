@@ -697,6 +697,14 @@ export class CombatFFG extends Combat {
     // emit a socket event
     game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
   }
+
+  /** @override */
+  async delete() {
+    for (const combatant of this.combatants.contents) {
+      await combatant.removeCombatEffects();
+    }
+    await super.delete();
+  }
 }
 
 function _getInitiativeFormula(skill, ability) {
@@ -1158,6 +1166,25 @@ export default class CombatantFFG extends Combatant {
       return this.flags.disposition;
     } else {
       return this?.token ? this.token?.disposition : this?.actor?.prototypeToken?.disposition;
+    }
+  }
+
+  /** @override  */
+  async delete() {
+    await this.removeCombatEffects();
+    await super.delete();
+  }
+
+  /**
+   * Delete any status effects which have a duration of a "combat" when the actor is removed from combat
+   * @returns {Promise<void>}
+   */
+  async removeCombatEffects() {
+    CONFIG.logger.debug(`Removing combat-length status effects from ${this.actor.name} on combatant removal`);
+    const effects = this.actor.getEmbeddedCollection("ActiveEffect");
+    const toDelete = effects.filter(e => e?.system?.duration === "combat");
+    if (toDelete) {
+      await this.actor.deleteEmbeddedDocuments("ActiveEffect", toDelete.map(i => i.id));
     }
   }
 }
