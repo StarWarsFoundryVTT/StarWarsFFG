@@ -1,6 +1,6 @@
 `?`
 * Features:
-  * New built-in status effects for single-use boost/setback dice
+  * New built-in status effects for single-use boost/setback dice, staggered, disoriented, and staggered
   * End-to-end tests for new functionality are in place. Hopefully, this will reduce bugs going forward ([#1837](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1837))
   * Add Force Power Roll button ([#1827](http://overlord.wrycu.com:12121/game))
   * Added support for universal specializations (requires a re-import of the data) ([#1778](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1778))

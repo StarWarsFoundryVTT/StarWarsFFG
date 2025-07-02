@@ -811,7 +811,16 @@
   "SWFFG.Status.Boost.Next": "Boost Next Check",
   "SWFFG.Status.Setback.Next": "Setback Next Check",
   "SWFFG.Status.Upgrade.Next": "Upgrade Next Check",
+  "SWFFG.Status.Success.Next": "Success Next Check",
+  "SWFFG.Status.Boost.Combat": "Boost This Combat",
+  "SWFFG.Status.Setback.Combat": "Setback This Combat",
+  "SWFFG.Status.Upgrade.Combat": "Upgrade This Combat",
+  "SWFFG.Status.Success.Combat": "Success This Combat",
   "SWFFG.Status.Cover.Heavy": "Heavy Cover",
+  "SWFFG.Status.Disoriented": "Disoriented",
+  "SWFFG.Status.Immobilized": "Immobilized",
+  "SWFFG.Status.Staggered": "Staggered",
+  "SWFFG.Status.Defeated": "Defeated",
   "SWFFG.Roll.ForcePowers.NoDice": "Cannot roll, all Force Dice are committed!",
   "SWFFG.CareerSkills.None": "(none)"
 }
