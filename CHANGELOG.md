@@ -21,6 +21,8 @@
   * Fix for talent send-to-chat not working if the talent came from a specialization ([#1819](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1819))
   * Update "Not enough XP" language to be more generic ([#1820](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1820))
   * A limited subset of qualities now have dice mods created upon import ([#1836](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1836))
+  * Actors who roll a `0` for initiative no longer continue to show a prompt to roll initiative ([#1865](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1865))
+  * Fix for removing actor before combat starts - the slot is no longer retained as a generic slot and is deleted ([#1864](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1864))
 
 `1.906`
 * Features:

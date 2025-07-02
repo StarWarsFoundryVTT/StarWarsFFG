@@ -485,8 +485,10 @@ export class CombatFFG extends Combat {
       CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
     }
     // now create a new slot to replace it
-    CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
-    const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
+    if (combatant.combat.started) {
+      CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
+      const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
+    }
     console.log("done!")
 
     // if there was a claim on the slot replaced, add it back
@@ -913,7 +915,7 @@ export class CombatTrackerFFG extends CombatTracker {
           turn.tokenId = combatant.tokenId;
           // sync the turn state to the token state
           turn.hidden = combatant.hidden;
-          if (!combatant.initiative && !combat?.started) {
+          if (combatant.initiative === null && !combat?.started) {
             hasRolled = false;
           }
 
@@ -1180,6 +1182,10 @@ export default class CombatantFFG extends Combatant {
    * @returns {Promise<void>}
    */
   async removeCombatEffects() {
+    if (!this.actor) {
+      // no actor exists for this slot
+      return;
+    }
     CONFIG.logger.debug(`Removing combat-length status effects from ${this.actor.name} on combatant removal`);
     const effects = this.actor.getEmbeddedCollection("ActiveEffect");
     const toDelete = effects.filter(e => e?.system?.duration === "combat");
