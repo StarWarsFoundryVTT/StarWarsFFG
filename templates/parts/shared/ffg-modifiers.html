@@ -6,7 +6,6 @@
 </header>
 <ol class="attributes-list">
   {{#each data.attributes as |attr key|}} {{#if attr.exclude}} {{else}}
-  {{{ json attr }}}
   <li class="attribute flexrow" data-attribute="{{key}}">
     <input class="attribute-key" type="text" name="data.attributes.{{key}}.key" value="{{key}}" style="display: none;" />
     <select name="data.attributes.{{ key }}.modtype" class="flat_editor dropdown modtype" data-type="modtype" data-attr-key="{{ key }}">
