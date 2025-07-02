@@ -38,24 +38,27 @@ export default class Career {
                 ],
                 sources: ImportHelpers.getSourcesAsArray(item?.Sources ?? item?.Source),
               },
+              careerSkills: {
+                careerSkill0: "(none)",
+                careerSkill1: "(none)",
+                careerSkill2: "(none)",
+                careerSkill3: "(none)",
+                careerSkill4: "(none)",
+                careerSkill5: "(none)",
+                careerSkill6: "(none)",
+                careerSkill7: "(none)",
+              }
             };
 
             //data.data.description += ImportHelpers.getSources(item.Sources ?? item.Source);
 
             // process career skills
+            let currentSkill = 0;
             item.CareerSkills.Key.forEach((skillKey) => {
               let skill = CONFIG.temporary.skills[skillKey];
               if (skill) {
-                data.data.attributes[`attr${foundry.utils.randomID()}`] = {
-                  mod: skill,
-                  modtype: "Career Skill",
-                  value: true,
-                };
-                data.data.attributes[`attr${foundry.utils.randomID()}`] = {
-                  mod: skill,
-                  modtype: "Skill Rank",
-                  value: 0,
-                };
+                data.data.careerSkills[`careerSkill${currentSkill}`] = skill;
+                currentSkill++;
               }
             });
 

@@ -88,6 +88,50 @@ export default class ItemHelpers {
           }
         }
       }
+    } else if (this.object.type === "career") {
+      // apply career skills from Careers
+      const existingEffects = this.object.getEmbeddedCollection("ActiveEffect");
+      const itemEffect = existingEffects.find(i => i.name === `(inherent)`);
+      const changes = [];
+      for (let i = 0; i < 8; i++) {
+        let path;
+        const skill = formData.data.careerSkills[`careerSkill${i}`];
+        if (skill !== "(none)") {
+          path = `system.skills.${skill}.careerskill`;
+        } else {
+          path = "(none)";
+        }
+        changes.push({
+          key: path,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: true,
+        });
+      }
+      if (itemEffect) {
+        await itemEffect.update({changes: changes});
+      }
+    } else if (this.object.type === "specialization") {
+      // apply career skills from Careers
+      const existingEffects = this.object.getEmbeddedCollection("ActiveEffect");
+      const itemEffect = existingEffects.find(i => i.name === `(inherent)`);
+      const changes = [];
+      for (let i = 0; i < 5; i++) {
+        let path;
+        const skill = formData.data.careerSkills[`careerSkill${i}`];
+        if (skill !== "(none)") {
+          path = `system.skills.${skill}.careerskill`;
+        } else {
+          path = "(none)";
+        }
+        changes.push({
+          key: path,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: true,
+        });
+      }
+      if (itemEffect) {
+        await itemEffect.update({changes: changes});
+      }
     }
   }
 

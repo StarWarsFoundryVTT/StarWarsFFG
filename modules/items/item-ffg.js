@@ -44,7 +44,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     await super._onCreate(data, options, user);
 
-    if (["species", "gear", "weapon", "armour", "shipattachment"].includes(this.type) && !options.parent) {
+    if (["species", "gear", "weapon", "armour", "shipattachment", "career", "specialization"].includes(this.type) && !options.parent) {
       const existingEffects = this.getEmbeddedCollection("ActiveEffect");
       // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
       const inherentEffect = existingEffects.find(i => i.name === `(inherent)`);
@@ -121,6 +121,22 @@ export class ItemFFG extends ItemBaseFFG {
               key: path,
               mode: CONST.ACTIVE_EFFECT_MODES.ADD,
               value: 0,
+            });
+          }
+        } else if (this.type === "career") {
+          for (let i = 0; i < 8; i++) {
+            effects.changes.push({
+              key: "(none)",
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: true,
+            });
+          }
+        } else if (this.type === "specialization") {
+          for (let i = 0; i < 5; i++) {
+            effects.changes.push({
+              key: "(none)",
+              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              value: true,
             });
           }
         }

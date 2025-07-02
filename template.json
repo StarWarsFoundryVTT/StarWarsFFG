@@ -838,12 +838,29 @@
         "talent18": {},
         "talent19": {}
       },
+      "careerSkills": {
+        "careerSkill0": "(none)",
+        "careerSkill1": "(none)",
+        "careerSkill2": "(none)",
+        "careerSkill3": "(none)",
+        "careerSkill4": "(none)"
+      },
       "universal": false
     },
     "career" : {
       "templates": ["core"],
       "specializations": {},
-      "signatureabilities": {}
+      "signatureabilities": {},
+      "careerSkills": {
+        "careerSkill0": "(none)",
+        "careerSkill1": "(none)",
+        "careerSkill2": "(none)",
+        "careerSkill3": "(none)",
+        "careerSkill4": "(none)",
+        "careerSkill5": "(none)",
+        "careerSkill6": "(none)",
+        "careerSkill7": "(none)"
+      }
     },
     "signatureability": {
       "templates": ["core"],

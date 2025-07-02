@@ -812,5 +812,6 @@
   "SWFFG.Status.Setback.Next": "Setback Next Check",
   "SWFFG.Status.Upgrade.Next": "Upgrade Next Check",
   "SWFFG.Status.Cover.Heavy": "Heavy Cover",
-  "SWFFG.Roll.ForcePowers.NoDice": "Cannot roll, all Force Dice are committed!"
+  "SWFFG.Roll.ForcePowers.NoDice": "Cannot roll, all Force Dice are committed!",
+  "SWFFG.CareerSkills.None": "(none)"
 }
