@@ -44,6 +44,10 @@ export class ItemFFG extends ItemBaseFFG {
 
     await super._onCreate(data, options, user);
 
+    await this._onCreateAEs(options);
+  }
+
+  async _onCreateAEs(options) {
     if (["species", "gear", "weapon", "armour", "shipattachment", "career", "specialization"].includes(this.type) && !options.parent) {
       const existingEffects = this.getEmbeddedCollection("ActiveEffect");
       // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
@@ -57,6 +61,10 @@ export class ItemFFG extends ItemBaseFFG {
         };
         if (this.type === "species") {
           for (const attribute of Object.keys(this.system.attributes)) {
+            if (attribute.startsWith("attr")) {
+              // migrated data may contain attributes that the user has added, and we don't want this in the inherent effect
+              continue;
+            }
             const explodedMods = ModifierHelpers.explodeMod(
               this.system.attributes[attribute].modtype,
               attribute

@@ -296,14 +296,14 @@ export class ItemSheetFFG extends ItemSheet {
     data.FFG = CONFIG.FFG;
 
     // prepare skills for career skill usage
-    data.skills = foundry.utils.mergeObject(
-      CONFIG.FFG.skills,
+    data.careerSkills = foundry.utils.mergeObject(
       {
         "(none)": {
           value: "(none)",
           label: "SWFFG.CareerSkills.None",
         }
-      }
+      },
+      foundry.utils.deepClone(CONFIG.FFG.skills)
     )
 
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});

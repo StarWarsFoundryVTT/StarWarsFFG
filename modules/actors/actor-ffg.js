@@ -477,24 +477,26 @@ export class ActorFFG extends Actor {
     for (const item of actorData.items) {
       const itemActiveEffects = item.getEmbeddedCollection("ActiveEffect");
       for (const effect of itemActiveEffects) {
-        for (const change of effect.changes) {
-          if (change.key.includes("system.skills")) {
-            // system.skills.Astrogation.value
-            const skillName = change.key.split('.')[2].capitalize();
-            const skillMod = change.key.split('.')[3];
-            const modType = ModifierHelpers.getModTypeByModPath(change.key);
-            if (!Object.keys(actorData.system.skills[skillName]).includes(`${skillMod}source`)) {
-              actorData.system.skills[skillName][`${skillMod}source`] = [];
-            }
+        if (!effect.disabled) {
+          for (const change of effect.changes) {
+            if (change.key.includes("system.skills")) {
+              // system.skills.Astrogation.value
+              const skillName = change.key.split('.')[2].capitalize();
+              const skillMod = change.key.split('.')[3];
+              const modType = ModifierHelpers.getModTypeByModPath(change.key);
+              if (!Object.keys(actorData.system.skills[skillName]).includes(`${skillMod}source`)) {
+                actorData.system.skills[skillName][`${skillMod}source`] = [];
+              }
 
-            // this is an active effect modifying a skill, add the source
-            actorData.system.skills[skillName][`${skillMod}source`].push({
-              modtype: modType,
-              key: "purchased",
-              name: effect.parent.type,
-              value: change.value,
-              type: effect.parent.name,
-            });
+              // this is an active effect modifying a skill, add the source
+              actorData.system.skills[skillName][`${skillMod}source`].push({
+                modtype: modType,
+                key: "purchased",
+                name: effect.parent.type,
+                value: change.value,
+                type: effect.parent.name,
+              });
+            }
           }
         }
       }

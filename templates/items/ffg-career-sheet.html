@@ -37,7 +37,7 @@
         {{#each data.careerSkills as |skill index|}}
           <div class="career-skill">
             <select name="data.careerSkills.{{ index }}" class="dropdown">
-              {{ selectOptions ../skills selected=skill valueAttr="value" labelAttr="label" localize=true }}
+              {{ selectOptions ../careerSkills selected=skill valueAttr="value" labelAttr="label" localize=true }}
             </select>
           </div>
         {{/each }}
