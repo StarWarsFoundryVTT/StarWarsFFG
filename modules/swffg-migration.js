@@ -7,6 +7,7 @@ import ModifierHelpers from "./helpers/modifiers.js";
 export async function handleUpdate() {
   const registeredVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
   const runningVersion = game.system.version;
+  await migrateToUnknown();
   if (registeredVersion !== runningVersion) {
     await handleMigration(registeredVersion, runningVersion);
     await sendChanges(runningVersion);
@@ -135,31 +136,31 @@ async function migrateToUnknown() {
   // iterate over actors to update their stats
   for (const actor of game.actors) {
     // record the initial stats so we can subtract them out later
-    let initialStats = {
+    let inputStats = {
       system: {},
     };
 
     // collect the initial stats
     if (["character", "nemesis", "rival"].includes(actor.type)) {
       // characteristics
-      initialStats.system.characteristics = {};
+      inputStats.system.characteristics = {};
       for (const characteristic in actor.system.characteristics) {
-        initialStats.system.characteristics[characteristic] = {
+        inputStats.system.characteristics[characteristic] = {
           value: actor.system.characteristics[characteristic].value,
         }
       }
       // wounds, soak, strain, defense, encumbrance
-      initialStats.system.stats = {
+      inputStats.system.stats = {
         wounds: foundry.utils.deepClone(actor.system.stats.wounds),
         soak: foundry.utils.deepClone(actor.system.stats.soak),
         defence: foundry.utils.deepClone(actor.system.stats.defence),
         encumbrance: foundry.utils.deepClone(actor.system.stats.encumbrance),
       };
       if (actor.type !== "rival") {
-        initialStats.system.stats.strain =  foundry.utils.deepClone(actor.system.stats.strain);
+        inputStats.system.stats.strain =  foundry.utils.deepClone(actor.system.stats.strain);
       }
       // skills
-      initialStats.system.skills = foundry.utils.deepClone(actor.system.skills);
+      inputStats.system.skills = foundry.utils.deepClone(actor.system.skills);
     }
 
     for (const item of actor.items) {
@@ -168,36 +169,45 @@ async function migrateToUnknown() {
       itemData.data = itemData.system;
       delete itemData.flags;
 
+      // trigger inherent AEs to be created
+      await item._onCreateAEs({parent: true}, true);
       await ModifierHelpers.applyActiveEffectOnUpdate(item, itemData);
     }
 
     const updatedStats = game.actors.get(actor.id);
+    const finalStats = foundry.utils.deepClone(inputStats);
 
     if (["character", "nemesis", "rival"].includes(actor.type)) {
       // characteristics
       for (const characteristic in actor.system.characteristics) {
-        initialStats.system.characteristics[characteristic].value = updatedStats.system.characteristics[characteristic].value - ((updatedStats.system.characteristics[characteristic].value - foundry.utils.deepClone(initialStats.system.characteristics[characteristic].value)) * 2);
+        finalStats.system.characteristics[characteristic].value = updatedStats.system.characteristics[characteristic].value - ((updatedStats.system.characteristics[characteristic].value - foundry.utils.deepClone(inputStats.system.characteristics[characteristic].value)) * 2);
       }
       // wounds
-      initialStats.system.stats.wounds.max = updatedStats.system.stats.wounds.max - ((updatedStats.system.stats.wounds.max - initialStats.system.stats.wounds.max) * 2);
+      finalStats.system.stats.wounds.max = updatedStats.system.stats.wounds.max - ((updatedStats.system.stats.wounds.max - inputStats.system.stats.wounds.max) * 2);
       // strain
       if (actor.type !== "rival") {
-        initialStats.system.stats.strain.max = updatedStats.system.stats.strain.max - ((updatedStats.system.stats.strain.max - initialStats.system.stats.strain.max) * 2);
+        finalStats.system.stats.strain.max = updatedStats.system.stats.strain.max - ((updatedStats.system.stats.strain.max - inputStats.system.stats.strain.max) * 2);
       }
       // soak
-      initialStats.system.stats.soak.value = updatedStats.system.stats.soak.value - ((updatedStats.system.stats.soak.value - initialStats.system.stats.soak.value) * 2);
+      finalStats.system.stats.soak.value = Math.max(updatedStats.system.stats.soak.value - ((updatedStats.system.stats.soak.value - inputStats.system.stats.soak.value) * 2), 0);
       // defense
-      initialStats.system.stats.defence.melee = updatedStats.system.stats.defence.melee - ((updatedStats.system.stats.defence.melee - initialStats.system.stats.defence.melee) * 2);
-      initialStats.system.stats.defence.ranged = updatedStats.system.stats.defence.ranged - ((updatedStats.system.stats.defence.ranged - initialStats.system.stats.defence.ranged) * 2);
+      finalStats.system.stats.defence.melee = updatedStats.system.stats.defence.melee - ((updatedStats.system.stats.defence.melee - inputStats.system.stats.defence.melee) * 2);
+      finalStats.system.stats.defence.ranged = updatedStats.system.stats.defence.ranged - ((updatedStats.system.stats.defence.ranged - inputStats.system.stats.defence.ranged) * 2);
       // encumbrance
-      initialStats.system.stats.encumbrance.max = updatedStats.system.stats.encumbrance.max - ((updatedStats.system.stats.encumbrance.max - initialStats.system.stats.encumbrance.max) * 2);
+      finalStats.system.stats.encumbrance.max = updatedStats.system.stats.encumbrance.max - ((updatedStats.system.stats.encumbrance.max - inputStats.system.stats.encumbrance.max) * 2);
 
       // skills
       for (const skill in actor.system.skills) {
-        initialStats.system.skills[skill].rank = updatedStats.system.skills[skill].rank - ((updatedStats.system.skills[skill].rank - initialStats.system.skills[skill].rank) * 2);
+        finalStats.system.skills[skill].rank = updatedStats.system.skills[skill].rank - ((updatedStats.system.skills[skill].rank - foundry.utils.deepClone(inputStats.system.skills[skill].rank)) * 2);
       }
 
-      await updatedStats.update({system: initialStats.system});
+      await updatedStats.update({system: finalStats.system});
+      // certain changes get clobbered if done in this single update, so split them out
+      await updatedStats.update({"system.stats.soak.value": finalStats.system.stats.soak.value});
+      await updatedStats.update({"system.stats.wounds.max": finalStats.system.stats.wounds.max});
+      if (actor.type !== "rival") {
+        await updatedStats.update({"system.stats.strain.max": finalStats.system.stats.strain.max});
+      }
     }
   }
 
@@ -205,8 +215,6 @@ async function migrateToUnknown() {
   // I'm not sure why, but making changes in the same loop results in duplication bugs
   for (const actor of game.actors) {
     for (const item of actor.items) {
-      // trigger inherent AEs to be created
-      await item._onCreateAEs({parent: true});
       // rename any mods using the old naming scheme and create active effects for them
       if (item.type === "specialization") {
         const toCreate = [];
@@ -337,7 +345,6 @@ async function migrateToUnknown() {
       }
     }
   }
-
 
   // handle items
   for (const item of game.items) {

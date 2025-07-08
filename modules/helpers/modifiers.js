@@ -452,6 +452,10 @@ export default class ModifierHelpers {
           modType: modType,
           mod: "EncumbranceMax",
         },
+        {
+          modType: "Stat",
+          mod: "Soak",
+        },
       ];
     } else if (["Willpower"].includes(mod)) {
       return [
