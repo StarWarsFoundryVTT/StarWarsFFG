@@ -72,6 +72,9 @@ export class ActorFFG extends Actor {
         const originalWounds = this.system.stats?.wounds.max;
         const originalWoundsWithoutBrawn = originalWounds - originalBrawn;
         const updatedWounds = originalWoundsWithoutBrawn + updatedBrawn;
+        if (!Object.keys(changes.system).includes("stats")) {
+          changes.system.stats = {};
+        }
         CONFIG.logger.debug(`The character sheet showed ${originalWounds} wounds, while that value without Brawn was ${originalWoundsWithoutBrawn}. Updating to be ${updatedWounds}`);
         changes.system.stats = foundry.utils.mergeObject(
           changes.system.stats,
