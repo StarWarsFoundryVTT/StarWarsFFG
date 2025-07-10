@@ -264,9 +264,9 @@
 
     <div class="tab xp" data-group="primary" data-tab="xp">
       {{!-- Experience Box --}}
-        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable") (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal") ))}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="split" title="SWFFG.DescriptionXP" fields=(array (object name="data.experience.available" value=data.experience.available type="Number" label="SWFFG.DescriptionXPAvailable" disabled=disabled) (object name="data.experience.total" value=data.experience.total type="Number" label="SWFFG.DescriptionXPTotal" disabled=disabled) ) )}}
       <div class="xp-adjustment" title="{{ localize "SWFFG.XP.Adjust.Title" }}"><a class="fa-solid fa-eraser"></a></div>
-      {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="PopoutEditor" value=xpLog readonly=true)}}
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.Actors.Sheets.Purchase.LogTitle" type="xp" value=xpLog readonly=true)}}
     </div>
 
     <div class="tab obligation" data-group="primary" data-tab="obligation">

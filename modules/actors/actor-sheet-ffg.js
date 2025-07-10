@@ -288,7 +288,7 @@ export class ActorSheetFFG extends ActorSheet {
       data.hideObligationDutyMoralityConflictTab = true;
     }
     if (this.actor.flags?.starwarsffg?.xpLog) {
-      data.xpLog = this.actor.flags.starwarsffg.xpLog.join("<br>");
+      data.xpLog = this.object.getFlag("starwarsffg", "xpLog") || [];
     }
 
     data.actor.items = ActorSheetFFG.sortForActorSheet(data.actor.items);
@@ -474,6 +474,15 @@ export class ActorSheetFFG extends ActorSheet {
 
     html.find(".ffg-purchase").click(async (ev) => {
       await this._buyCore(ev)
+    });
+
+    html.find(".xp.purchase").click(async (ev) => {
+      const purchaseId = $(ev.currentTarget).children("a").data("id");
+      await this._refundPurchase(purchaseId, "purchase")
+    });
+    html.find(".xp.adjusted").click(async (ev) => {
+      const purchaseId = $(ev.currentTarget).children("a").data("id");
+      await this._refundPurchase(purchaseId, "adjustment")
     });
 
     // Send Item Details to chat.
@@ -1612,20 +1621,8 @@ export class ActorSheetFFG extends ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
-              const skillRankWithoutAEs =  this.object.toObject().system.skills[skill].rank;
-              await this.object.update({
-                system: {
-                  experience: {
-                    available: availableXP - cost,
-                  },
-                  skills: {
-                    [skill]: {
-                      rank: skillRankWithoutAEs + 1,
-                    }
-                  }
-                }
-              });
-              await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost, availableXP - cost, totalXP);
+              const id = await this._spendXp(`system.skills.${skill}.rank`, 1, cost);
+              await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost, availableXP - cost, totalXP, id);
             },
           },
           cancel: {
@@ -1638,6 +1635,98 @@ export class ActorSheetFFG extends ActorSheet {
         classes: ["dialog", "starwarsffg"],
       }
     ).render(true);
+  }
+
+  /**
+   * Creates an Active Effect for a purchased upgrade (e.g., a skill rank)
+   * Using this function allows the XP log to undo purchased upgrades
+   * @param boughtPath - the path to the attribute being modified by the purchase
+   * @param boughtValue - the amount to change the attribute by
+   * @param spentXP - the amount of XP this purchase costs
+   * @returns {Promise<string>} - the ID of the Active Effect created for this purchase
+   */
+  async _spendXp(boughtPath, boughtValue, spentXP) {
+    const spentId = foundry.utils.randomID();
+    const effects = {
+      name: `purchased-${spentId}`,
+      changes: [
+        {
+          key: boughtPath,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: boughtValue,
+        },
+        {
+          key: "system.experience.available",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: spentXP * -1,
+        }
+      ],
+    };
+    await this.object.createEmbeddedDocuments("ActiveEffect", [effects]);
+    return spentId;
+  }
+
+  /**
+   * Locates and deletes the Active Effect for a purchased upgrade (e.g., a skill rank)
+   * Using this function deletes the AE and generates a lot event for the refund. It does not notify the GM
+   * @param purchaseId - ID of the Active Effect created for the purchase. Tracked in the log, if you need to find it
+   * @param mode - the mode of operation: a purchase or an adjustment
+   * @returns {Promise<void>}
+   */
+  async _refundPurchase(purchaseId, mode) {
+    CONFIG.logger.debug(`refunding ${mode} for ${purchaseId}`);
+    const purchasedEffect = this.object.getEmbeddedCollection("ActiveEffect").find(ae => ae.name.includes(purchaseId));
+    if (purchasedEffect) {
+      const dialog = new Dialog(
+        {
+          title: game.i18n.localize("SWFFG.Actors.Sheets.Refund.DialogTitle"),
+          content: game.i18n.localize("SWFFG.Actors.Sheets.Refund.Text"),
+          buttons: {
+            done: {
+              icon: '<i class="fa-solid fa-check"></i>',
+              label: game.i18n.localize("SWFFG.Actors.Sheets.Refund.Confirm"),
+              callback: async (that) => {
+                await this.object.deleteEmbeddedDocuments("ActiveEffect", [purchasedEffect.id]);
+                CONFIG.logger.debug("deleted AE, updating log");
+                let logEntries = this.object.getFlag("starwarsffg", "xpLog") || [];
+                let cost = 0;
+                let description = 'unknown';
+                for (const entry of logEntries) {
+                  if (entry.id === purchaseId) {
+                    cost = entry.xp.cost;
+                    description = entry.description;
+                    entry.id = undefined;  // denotes that there is no an AE for the purchase
+                  }
+                }
+                const date = new Date().toISOString().slice(0, 10);
+                logEntries.unshift({
+                  action: 'refunded',
+                  id: undefined,
+                  xp: {
+                    cost: cost,
+                    available: this.object.system.experience.available,
+                    total: this.object.system.experience.total,
+                  },
+                  date: date,
+                  description: description,
+                });
+                await this.object.setFlag("starwarsffg", "xpLog", logEntries);
+                CONFIG.logger.debug(`completed refund for ${purchaseId}!`);
+              },
+            },
+            cancel: {
+              icon: '<i class="fas fa-cancel"></i>',
+              label: game.i18n.localize("SWFFG.Actors.Sheets.Refund.Cancel"),
+            },
+          },
+        },
+        {
+          classes: ["dialog", "starwarsffg"],
+        }
+      ).render(true);
+    } else {
+      CONFIG.logger.warn(`Could not locate purchase with ID ${purchaseId}`);
+    }
   }
 
   /**
@@ -1969,7 +2058,11 @@ export class ActorSheetFFG extends ActorSheet {
     let itemType;
     const groups = [];
     if (action === "specialization") {
-      const inCareer = this.object.items.find(i => i.type === "career").system.specializations;
+      const inCareer = this.object.items.find(i => i.type === "career")?.system?.specializations;
+      if (!inCareer) {
+        ui.notifications.warn("Could not locate any specializations in your career! Please define them first");
+        return;
+      }
       const inCareerNames = Object.values(inCareer).map(i => i.name);
       const sources = game.settings.get("starwarsffg", "specializationCompendiums").split(",");
       let outCareer = [];
@@ -2216,6 +2309,7 @@ export class ActorSheetFFG extends ActorSheet {
                 }
               }
               await this.object.createEmbeddedDocuments("Item", [purchasedItem]);
+              // this does not use _spendXp as it's granting items, which AEs cannot reasonably do
               await this.object.update({
                 system: {
                   experience: {
@@ -2223,7 +2317,7 @@ export class ActorSheetFFG extends ActorSheet {
                   },
                 },
               });
-              await xpLogSpend(game.actors.get(this.object.id), `new ${action} ${purchasedItem.name}`, cost, availableXP - cost, totalXP);
+              await xpLogSpend(game.actors.get(this.object.id), `new ${action} ${purchasedItem.name}`, cost, availableXP - cost, totalXP, undefined);
             },
           },
           cancel: {
@@ -2264,19 +2358,8 @@ export class ActorSheetFFG extends ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
-              await this.object.update({
-                system: {
-                  experience: {
-                    available: availableXP - cost,
-                  },
-                  characteristics: {
-                    [characteristic]: {
-                      value: characteristicWithoutAEs + 1,
-                    },
-                  },
-                }
-              });
-              await xpLogSpend(game.actors.get(this.object.id), `characteristic ${characteristic} level ${characteristicValue} --> ${characteristicValue + 1}`, cost, availableXP - cost, totalXP);
+              const statusId = await this._spendXp(`system.characteristics.${characteristic}.value`, 1, cost);
+              await xpLogSpend(game.actors.get(this.object.id), `characteristic ${characteristic} level ${characteristicValue} --> ${characteristicValue + 1}`, cost, availableXP - cost, totalXP, statusId);
               await this.render(true);
             },
           },
@@ -2336,20 +2419,9 @@ export class ActorSheetFFG extends ActorSheet {
             const adjustReason = $("#adjustReason").val();
             const updatedAvailableXP = startingAvailableXP + adjustAmount;
             const updatedTotalXP = totalXP + adjustAmount;
-            await this.object.update({
-              system: {
-                experience: {
-                  available: updatedAvailableXP,
-                  total: updatedTotalXP,
-                },
-              }
-            });
-            if (adjustAmount > 0) {
-              await xpLogEarn(this.object, adjustAmount, updatedAvailableXP, updatedTotalXP, adjustReason, "Self");
-            } else {
-              await xpLogSpend(this.object, adjustReason, adjustAmount, updatedAvailableXP, updatedTotalXP);
-            }
-           await this.render(true);
+            const statusId = await this._spendXp("system.experience.total", adjustAmount, adjustAmount * -1);
+            await xpLogEarn(this.object, adjustAmount, updatedAvailableXP, updatedTotalXP, adjustReason, "Self", statusId);
+            await this.render(true);
          }
       },
       two: {

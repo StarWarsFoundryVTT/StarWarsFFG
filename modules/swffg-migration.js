@@ -7,7 +7,6 @@ import ModifierHelpers from "./helpers/modifiers.js";
 export async function handleUpdate() {
   const registeredVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
   const runningVersion = game.system.version;
-  await migrateToUnknown();
   if (registeredVersion !== runningVersion) {
     await handleMigration(registeredVersion, runningVersion);
     await sendChanges(runningVersion);
@@ -133,6 +132,50 @@ async function migrateTo1_906() {
  */
 async function migrateToUnknown() {
 
+  for (const actor of game.actors) {
+    const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+    const updatedLog = [];
+    const purchaseRegex = new RegExp("<b>(.*?)</b>: (.*?) <b>(.*?)</b>.*<b>(.*?)</b> \\((.*?) available, (.*?) total");
+    const grantRegex = new RegExp("<b>(.*?)</b>: (\\w*) granted <b>(.*?)</b>.*: (.*?) \\((.*?) available, (.*?) total");
+
+    for (const entry of xpLog) {
+      if (typeof entry === 'string') {
+        const parsedEntry = entry.match(purchaseRegex);
+        if (parsedEntry && parsedEntry.length === 7) {
+          // normal spend
+          updatedLog.push({
+            action: parsedEntry[2].replace('spent', 'purchased'),
+            id: undefined,
+            xp: {
+              cost: parsedEntry[3],
+              available: parsedEntry[5],
+              total: parsedEntry[6],
+            },
+            date: parsedEntry[1],
+            description: parsedEntry[4],
+          });
+        } else {
+          // "<font color=\"green\"><b>2024-08-08</b>: Self granted <b>50</b> XP, reason: manual grant (50 available, 0 total)</font>"
+          // "<font color=\"green\"><b>2025-07-09</b>: GM granted <b>5</b> XP, reason: feel like it, bubs (175 available, 110 total)</font>"
+          const parsedEntry = entry.match(grantRegex);
+          if (parsedEntry && parsedEntry.length === 7) {
+            updatedLog.push({
+              action: parsedEntry[2].replace('GM', 'granted').replace('Self', 'adjusted'),
+              id: undefined,
+              xp: {
+                cost: parsedEntry[3],
+                available: parsedEntry[5],
+                total: parsedEntry[6],
+              },
+              date: parsedEntry[1],
+              description: parsedEntry[4],
+            });
+          }
+        }
+      }
+    }
+    actor.setFlag("starwarsffg", "xpLog", updatedLog);
+  }
   // iterate over actors to update their stats
   for (const actor of game.actors) {
     // record the initial stats so we can subtract them out later

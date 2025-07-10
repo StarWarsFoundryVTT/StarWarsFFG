@@ -23,47 +23,87 @@
           </li>
           {{/each}}
         </ul>
-        {{/if}} {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }} {{#if (eq type "Boolean")}}
-        <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="{{name}}" data-dtype="{{type}}" {{checked value}} />
-        {{/if}} {{#if (eq type "Dropdown")}}
-        <select style="text-align: center;" name="{{name}}">
-          {{#if (eq name "data.characteristic.value")}}<option value="">None</option>{{/if}}
-          {{#selectFfg value}} {{#each options as |t|}}
-          <option value="{{#if (eq t.value undefined) }}{{t._id}}{{else}}{{t.value}}{{/if}}">{{localize t.label}}{{t.name}}</option>
-          {{/each}} {{/selectFfg}}
-        </select>
-        {{/if}} {{#if (eq type "Multicheckbox")}}
-        <div class="grid grid-2col firing-arcs">
-          {{#each fields as |t|}}
-          <div>
-            <input type="checkbox" id="{{t.name}}" name="{{t.name}}" {{checked t.value}} />
-            <label for="{{t.name}}"> {{localize t.label}}</label>
-          </div>
-          {{/each}}
-        </div>
-        {{/if}}  {{#if (eq type "PopoutEditor")}}
-        <div class="block-value block-single">
-          <div class="popout-editor" data-target="{{name}}" data-value="{{value}}" data-label="{{localize title}}">
-            <div class="popout-editor-button">{{#if readonly}}{{ else }}<i class="fas fa-edit"></i>{{/if}}</div>
-            {{{value}}}
-          </div>
-        </div>
-        {{/if}} {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor"))}}
-        <div class="block-value block-single">{{#if prefix}}{{{prefix}}}{{/if}}<input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} /></div>
-        {{/if}} {{/if}} {{#if (eq blocktype "split")}} {{#each fields as |t|}}
-        <div class="block-value">
-        {{#if (eq type "Button") }}
-          <div class="btn {{ t.name }}">
-            {{{ t.icon }}}
-          </div>
-        {{ else }}
-          <input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} />
         {{/if}}
-        </div>
-        {{/each}} {{/if}} {{#with (lookup options [value])~}} {{#if (ne label ../adjusted)}}
-        <div class="adjustedvalue">{{localize ../adjusted}}</div>
-        {{/if}} {{/with}}
-        {{#if (and (ne value adjusted) (eq type "Number"))}}<div class="adjustedvalue">{{adjusted}}</div>{{/if}}
+        {{#if (or (eq blocktype "single") (eq blocktype "double") (eq blocktype "full")) }}
+          {{#if (eq type "Boolean")}}
+            <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="{{name}}" data-dtype="{{type}}" {{checked value}} />
+          {{/if}}
+          {{#if (eq type "xp")}}
+            {{#each value as |entry|}}
+              {{#if (eq entry.action "purchased")}}
+                <div class="xp purchase">
+              {{/if}}
+              {{#if (eq entry.action "granted")}}
+                  <div class="xp grant">
+              {{/if}}
+              {{#if (eq entry.action "refunded")}}
+                  <div class="xp refunded">
+              {{/if}}
+              {{#if (eq entry.action "adjusted")}}
+                  <div class="xp adjusted">
+              {{/if}}
+                {{ entry.date }}: {{ entry.action }} <b>{{ entry.description }}</b> for {{ entry.xp.cost }} xp ({{ entry.xp.available }} available, {{ entry.xp.total }} total)
+                {{#if (eq entry.id undefined) }}{{ else }}{{#if (or (eq entry.action "purchased") (eq entry.action "adjusted")) }}
+                  <a class="xp refund" title="Refund Purchase" data-id="{{ entry.id }}">
+                    <i class="fas fa-trash"></i>
+                  </a>
+                {{/if}}{{/if}}
+              </div>
+            {{/each}}
+          {{/if}}
+          {{#if (eq type "Dropdown")}}
+            <select style="text-align: center;" name="{{name}}">
+              {{#if (eq name "data.characteristic.value")}}<option value="">None</option>{{/if}}
+              {{#selectFfg value}} {{#each options as |t|}}
+              <option value="{{#if (eq t.value undefined) }}{{t._id}}{{else}}{{t.value}}{{/if}}">{{localize t.label}}{{t.name}}</option>
+              {{/each}} {{/selectFfg}}
+            </select>
+          {{/if}}
+          {{#if (eq type "Multicheckbox")}}
+            <div class="grid grid-2col firing-arcs">
+              {{#each fields as |t|}}
+              <div>
+                <input type="checkbox" id="{{t.name}}" name="{{t.name}}" {{checked t.value}} />
+                <label for="{{t.name}}"> {{localize t.label}}</label>
+              </div>
+              {{/each}}
+            </div>
+          {{/if}}
+          {{#if (eq type "PopoutEditor")}}
+            <div class="block-value block-single">
+              <div class="popout-editor" data-target="{{name}}" data-value="{{value}}" data-label="{{localize title}}">
+                <div class="popout-editor-button">{{#if readonly}}{{ else }}<i class="fas fa-edit"></i>{{/if}}</div>
+                {{{value}}}
+              </div>
+            </div>
+          {{/if}}
+          {{#if (and (ne type "Boolean") (ne type "Dropdown") (ne type "Multicheckbox") (ne type "PopoutEditor") (ne type "xp"))}}
+            <div class="block-value block-single">
+              {{#if prefix}}{{{prefix}}}{{/if}}<input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} />
+            </div>
+          {{/if}}
+        {{/if}}
+        {{#if (eq blocktype "split")}}
+          {{#each fields as |t|}}
+            <div class="block-value">
+            {{#if (eq type "Button") }}
+              <div class="btn {{ t.name }}">
+                {{{ t.icon }}}
+              </div>
+            {{ else }}
+              <input type="text" name="{{name}}" value="{{value}}" data-dtype="{{type}}" {{#if disabled}}disabled{{/if}} />
+            {{/if}}
+            </div>
+          {{/each}}
+        {{/if}}
+        {{#with (lookup options [value])~}}
+          {{#if (ne label ../adjusted)}}
+          <div class="adjustedvalue">{{localize ../adjusted}}</div>
+          {{/if}}
+        {{/with}}
+        {{#if (and (ne value adjusted) (eq type "Number"))}}
+          <div class="adjustedvalue">{{adjusted}}</div>
+        {{/if}}
       </div>
     </div>
     {{#if (or (eq hasShadow true) (eq blocktype "split"))}}

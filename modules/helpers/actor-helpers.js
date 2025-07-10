@@ -60,13 +60,7 @@ export default class ActorHelpers {
 
     const curXP = this.object?.system?.experience?.available ? this.object.system.experience.available : 0;
     const newXP = formData?.system?.experience?.available ? formData.system.experience.available : 0;
-    if (curXP > newXP) {
-      // XP has been manually edited to a lower value (spent)
-      await xpLogSpend(this.object, "manual spend", curXP - newXP, newXP, formData?.system?.experience?.total);
-    } else if (curXP < newXP) {
-      // XP has been manually edited to a higher value (granted)
-      await xpLogEarn(this.object, newXP - curXP, newXP, formData?.system?.experience?.total, "manual grant", "Self");
-    }
+    await xpLogEarn(this.object, newXP - curXP, newXP, formData?.system?.experience?.total, "manual adjustment", "Self");
 
     return await this.object.update(formData);
   }
@@ -150,14 +144,25 @@ export default class ActorHelpers {
  * @param cost - XP spent
  * @param available - XP available
  * @param total - XP total
+ * @param statusId - ID of the associated active effect (if in use)
  * @returns {Promise<void>}
  */
-export async function xpLogSpend(actor, action, cost, available, total) {
-    const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
-    const date = new Date().toISOString().slice(0, 10);
-    let newEntry = `<font color="red"><b>${date}</b>: spent <b>${cost}</b> XP for <b>${action}</b> (${available} available, ${total} total)</font>`;
-    await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
-    await notifyXpSpend(actor, action);
+export async function xpLogSpend(actor, action, cost, available, total, statusId=undefined) {
+  const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+  const date = new Date().toISOString().slice(0, 10);
+  const newEntry = {
+    action: 'purchased',
+    id: statusId,
+    xp: {
+      cost: cost,
+      available: available,
+      total: total,
+    },
+    date: date,
+    description: action,
+  };
+  await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+  await notifyXpSpend(actor, action);
 }
 
 /**
@@ -189,14 +194,25 @@ async function notifyXpSpend(actor, action) {
  * @param granter - string for who did the granting
  * @returns {Promise<void>}
  */
-export async function xpLogEarn(actor, grant, available, total, note, granter="GM") {
+export async function xpLogEarn(actor, grant, available, total, note, granter="GM", statusId=undefined) {
   const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
   const date = new Date().toISOString().slice(0, 10);
-  let newEntry;
-  if (note) {
-    newEntry = `<font color="green"><b>${date}</b>: ${granter} granted <b>${grant}</b> XP, reason: ${note} (${available} available, ${total} total)</font>`;
+  let action;
+  if (granter === "GM") {
+    action = "granted";
   } else {
-    newEntry = `<font color="green"><b>${date}</b>: ${granter} granted <b>${grant}</b> XP (${available} available, ${total} total)</font>`;
+    action = "adjusted";
   }
+  const newEntry = {
+    action: action,
+    id: statusId, // XP grants are not done by Active Effects
+    xp: {
+      cost: grant,
+      available: available,
+      total: total,
+    },
+    date: date,
+    description: note,
+  };
   await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
 }
