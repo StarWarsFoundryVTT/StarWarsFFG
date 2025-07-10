@@ -108,7 +108,11 @@ export default class Weapons {
             }
             if (item?.Type) {
               // the "type" can be useful as a tag as well
-              data.data.metadata.tags.push(item.Type.toLowerCase());
+              try {
+                data.data.metadata.tags.push(item.Type.toLowerCase());
+              } catch (err) {
+                CONFIG.logger.warn(`Failed to parse type: ${item.Type}`);
+              }
             }
 
             let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Weapon", data.flags.starwarsffg.ffgimportid);

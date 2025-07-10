@@ -46,13 +46,15 @@ export default class Specializations {
 
             // process career skills
             let currentSkill = 0;
-            item.CareerSkills.Key.forEach((skillKey) => {
-              let skill = CONFIG.temporary.skills[skillKey];
-              if (skill) {
-                data.system.careerSkills[`careerSkill${currentSkill}`] = skill;
-                currentSkill++;
-              }
-            });
+            if (item?.CareerSkills && item.CareerSkills?.Key) {
+              item.CareerSkills.Key.forEach((skillKey) => {
+                let skill = CONFIG.temporary.skills[skillKey];
+                if (skill) {
+                  data.system.careerSkills[`careerSkill${currentSkill}`] = skill;
+                  currentSkill++;
+                }
+              });
+            }
 
             if (item?.Universal) {
               data.system.universal = item.Universal === 'true';

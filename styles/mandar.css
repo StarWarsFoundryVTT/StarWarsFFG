@@ -4441,3 +4441,16 @@ img {
   max-height: 312px;
   overflow-y: auto;
 }
+
+.starwarsffg .xp.purchase {
+  color: #490c0b;
+}
+.starwarsffg .xp.refunded {
+  color: rgb(27, 106, 24);
+}
+.starwarsffg .xp.grant {
+  color: rgb(27, 106, 24);
+}
+.starwarsffg .xp.adjusted {
+  color: rgb(159, 47, 172);
+}

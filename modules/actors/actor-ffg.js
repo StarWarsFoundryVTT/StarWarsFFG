@@ -465,13 +465,23 @@ export class ActorFFG extends Actor {
           }
 
           // this is an active effect modifying a skill, add the source
-          actorData.system.skills[skillName][`${skillMod}source`].push({
-            modtype: modType,
-            key: "purchased",
-            name: "Status Effect",
-            value: change.value,
-            type: effect.name,
-          });
+          if (effect.name.startsWith("purchased-")) {
+            actorData.system.skills[skillName][`${skillMod}source`].push({
+              modtype: modType,
+              key: "purchased",
+              name: "User Action",
+              value: change.value,
+              type: "XP Purchase",
+            });
+          } else {
+            actorData.system.skills[skillName][`${skillMod}source`].push({
+              modtype: modType,
+              key: "purchased",
+              name: "Status Effect",
+              value: change.value,
+              type: effect.name,
+            });
+          }
         }
       }
     }
