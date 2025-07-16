@@ -63,48 +63,51 @@ export default class Specializations {
             for (let i = 0; i < item.TalentRows.TalentRow.length; i += 1) {
               const row = item.TalentRows.TalentRow[i];
 
-              await ImportHelpers.asyncForEach(row.Talents.Key, async (keyName, index) => {
+              let index = 0;
+              for (const talentKey of row.Talents.Key) {
                 let rowTalent = {};
 
-                let talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", keyName, undefined, "talent");
+                let talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, undefined, "talent");
                 if (!talentItem) {
-                  talentItem = ImportHelpers.findEntityByImportId("items", keyName);
+                  talentItem = ImportHelpers.findEntityByImportId("items", talentKey);
                 }
 
-                if (talentItem) {
-                  rowTalent.name = talentItem.name;
-                  rowTalent.description = talentItem.system.description;
-                  rowTalent.activation = talentItem.system.activation.value;
-                  rowTalent.activationLabel = talentItem.system.activation.label;
-                  rowTalent.isForceTalent = talentItem?.system?.isForceTalent ? true : false;
-                  rowTalent.isConflictTalent = talentItem?.system?.isConflictTalent ? true : false;
-                  rowTalent.isRanked = talentItem?.system?.ranks?.ranked ? true : false;
-                  rowTalent.size = "single";
-                  rowTalent.canLinkTop = true;
-                  rowTalent.canLinkRight = true;
-                  rowTalent.itemId = talentItem._id;
-                  rowTalent.attributes = talentItem.system.attributes;
-                  rowTalent.longDesc = "";
-
-                  if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
-                    rowTalent["links-top-1"] = true;
-                  }
-
-                  if (row.Directions.Direction[index].Right && row.Directions.Direction[index].Right === "true") {
-                    rowTalent["links-right"] = true;
-                  }
-
-                  if (talentItem.compendium) {
-                    rowTalent.pack = `${talentItem.compendium.metadata.packageName}.${talentItem.compendium.metadata.name}`;
-                  } else {
-                    CONFIG.logger.warn(`Unable to assign pack to ${rowTalent.name} Talent in ${data.name} specialization.`);
-                  }
-                  const talentKey = `talent${i * 4 + index}`;
-                  data.system.talents[talentKey] = rowTalent;
-                } else {
-                  CONFIG.logger.warn(`Unable to find ${keyName}`);
+                const originalAttributes = foundry.utils.deepClone(talentItem.system.attributes);
+                for (const attribute of Object.keys(originalAttributes)) {
+                  const nk = new Date().getTime();
+                  talentItem.system.attributes[`attr${nk}`] = foundry.utils.deepClone(originalAttributes[attribute]);
+                  delete talentItem.system.attributes[attribute];
+                  // ensure further keys have a new entry
+                  await new Promise(r => setTimeout(r, 1));
                 }
-              });
+
+                rowTalent.name = talentItem.name;
+                rowTalent.description = talentItem.system.description;
+                rowTalent.activation = talentItem.system.activation.value;
+                rowTalent.activationLabel = talentItem.system.activation.label;
+                rowTalent.isForceTalent = talentItem?.system?.isForceTalent ? true : false;
+                rowTalent.isConflictTalent = talentItem?.system?.isConflictTalent ? true : false;
+                rowTalent.isRanked = talentItem?.system?.ranks?.ranked ? true : false;
+                rowTalent.size = "single";
+                rowTalent.canLinkTop = true;
+                rowTalent.canLinkRight = true;
+                rowTalent.itemId = talentItem._id;
+                rowTalent.attributes = talentItem.system.attributes;
+                rowTalent.longDesc = "";
+
+                if (row.Directions.Direction[index].Up && row.Directions.Direction[index].Up === "true") {
+                  rowTalent["links-top-1"] = true;
+                }
+
+                if (row.Directions.Direction[index].Right && row.Directions.Direction[index].Right === "true") {
+                  rowTalent["links-right"] = true;
+                }
+
+                const talentIndex = `talent${i * 4 + index}`;
+                data.system.talents[talentIndex] = foundry.utils.deepClone(rowTalent);
+
+                index++;
+              }
             }
 
             // populate tags

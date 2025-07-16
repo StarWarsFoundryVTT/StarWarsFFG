@@ -3224,6 +3224,7 @@ export default class ImportHelpers {
               name: attributeName,
               img: talent.img,
               changes: changes,
+              disabled: true,
             });
           }
         }

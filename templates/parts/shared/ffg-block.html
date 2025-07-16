@@ -45,7 +45,7 @@
                 {{ entry.date }}: {{ entry.action }} <b>{{ entry.description }}</b> for {{ entry.xp.cost }} xp ({{ entry.xp.available }} available, {{ entry.xp.total }} total)
                 {{#if (eq entry.id undefined) }}{{ else }}{{#if (or (eq entry.action "purchased") (eq entry.action "adjusted")) }}
                   <a class="xp refund" title="Refund Purchase" data-id="{{ entry.id }}">
-                    <i class="fas fa-trash"></i>
+                    <i class="fa-solid fa-rotate-left"></i>
                   </a>
                 {{/if}}{{/if}}
               </div>
