@@ -60,7 +60,9 @@ export default class ActorHelpers {
 
     const curXP = this.object?.system?.experience?.available ? this.object.system.experience.available : 0;
     const newXP = formData?.system?.experience?.available ? formData.system.experience.available : 0;
-    await xpLogEarn(this.object, newXP - curXP, newXP, formData?.system?.experience?.total, "manual adjustment", "Self");
+    if (curXP !== newXP && curXP !== 0 && newXP !== 0) {
+      await xpLogEarn(this.object, newXP - curXP, newXP, this.object?.system?.experience.total, "manual adjustment", "Self");
+    }
 
     return await this.object.update(formData);
   }
