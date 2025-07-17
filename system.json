@@ -39,6 +39,11 @@
       "lang": "pt-BR",
       "name": "Português (BR)",
       "path": "lang/pt-BR.json"
+    },
+    {
+      "lang": "ca",
+      "name": "Català (Catalan)",
+      "path": "lang/ca.json"
     }
   ],
   "grid": {

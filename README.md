@@ -13,7 +13,7 @@ The system for Foundry VTT contains no rules or proprietary content from the var
 For more info and documentation including various "How-To" guides, please check out the Wiki section of our GitHub repo.
 
 - For support on this game system : Discord [The Foundry](https://discord.gg/foundryvtt) #starwars-ffg
-- Read this document in another language : [Français](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/main/README-fr.md)
+- Read this document in another language : [Français](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/main/README-fr.md), [Català](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/main/README-ca.md)
 
 # Installing Star Wars FFG game system
 
