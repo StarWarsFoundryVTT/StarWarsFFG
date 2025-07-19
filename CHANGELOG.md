@@ -1,4 +1,4 @@
-`?`
+`1.907`
 * Features:
   *  [Active Effects](https://foundryvtt.com/article/active-effects/) have been implemented. This means it's now possible to make changes to actors with status effects - [even custom ones](https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki/Creating-New-Statuses)!
   * New built-in status effects for single-use boost/setback dice, staggered, disoriented, and staggered
