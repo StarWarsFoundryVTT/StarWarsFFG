@@ -1,3 +1,7 @@
+`1.908`
+* Fixes:
+  * Correct several bugs in the world migration code for `1.907`
+
 `1.907`
 * Features:
   *  [Active Effects](https://foundryvtt.com/article/active-effects/) have been implemented. This means it's now possible to make changes to actors with status effects - [even custom ones](https://github.com/StarWarsFoundryVTT/StarWarsFFG/wiki/Creating-New-Statuses)!
