@@ -11,6 +11,26 @@ import ItemHelpers from "../helpers/item-helpers.js";
  * @extends {Item}
  */
 export class ItemFFG extends ItemBaseFFG {
+  /** @override **/
+  async _preCreate(data, operation, user) {
+    const defaultImages = {
+      armour: "systems/starwarsffg/images/defaults/items/armor.png",
+      itemattachment: "systems/starwarsffg/images/defaults/items/attachment.png",
+      gear: "systems/starwarsffg/images/defaults/items/gear.png",
+      itemmodifier: "systems/starwarsffg/images/defaults/items/itemmodifier.png",
+      weapon: "systems/starwarsffg/images/defaults/items/weapon.png",
+    }
+    if (game.user.id === user.id && (!data?.img || data?.img === "icons/svg/mystery-man.svg")) {
+      if (Object.keys(defaultImages).includes(data.type)) {
+        this.updateSource({img: defaultImages[data.type]});
+      } else {
+        // fall back to the old default
+        this.updateSource({img: "icons/svg/item-bag.svg"});
+      }
+    }
+    return {data, operation, user};
+  }
+
   /** @override */
   async _onCreate(data, options, user) {
     if (user !== game.user.id) {
