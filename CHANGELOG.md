@@ -1,3 +1,9 @@
+`1.909`
+* Features:
+  * New default images have been added for common items and actors!
+    * These images have been commissioned specifically for this system
+    * Please check out the artists work if you like the icons! `DistraKit` [on Twitter](https://x.com/DistraKit)
+
 `1.908`
 * Fixes:
   * Correct several bugs in the world migration code for `1.907`

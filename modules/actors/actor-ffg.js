@@ -45,6 +45,26 @@ export class ActorFFG extends Actor {
     return super.create(createData, options);
   }
 
+  /** @override **/
+  async _preCreate(data, operation, user) {
+    const defaultImages = {
+      character: "systems/starwarsffg/images/defaults/actors/character.png",
+      minion: "systems/starwarsffg/images/defaults/actors/minion.png",
+      nemesis: "systems/starwarsffg/images/defaults/actors/nemesis.png",
+      rival: "systems/starwarsffg/images/defaults/actors/rival.png",
+      vehicle: "systems/starwarsffg/images/defaults/actors/vehicle.png",
+    }
+    if (game.user.id === user.id && (!data?.img || data?.img === "icons/svg/mystery-man.svg")) {
+      if (Object.keys(defaultImages).includes(data.type)) {
+        this.updateSource({img: defaultImages[data.type]});
+      } else {
+        // fall back to the previous default
+        this.updateSource({img: "icons/svg/mystery-man.svg"});
+      }
+    }
+    return {data, operation, user};
+  }
+
 
   /** @override
    * We use this to update wounds, strain, and soak when characteristics are changed
