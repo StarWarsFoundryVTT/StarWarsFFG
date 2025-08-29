@@ -1035,6 +1035,31 @@ export class ItemSheetFFG extends ItemSheet {
     });
   }
 
+  /*
+  This function exists because when calculating the available XP for an actor, we need to account for any active effects that may modify the available XP.
+  Otherwise, when you purchase something using XP, it will modify the available XP to be (AvailableXP + ActiveEffects), and then the ActiveEffects will apply again.
+  */
+  async _calculateBaseAvailableXp(owner) {
+   const totalAvailableXp = Number(owner.system.experience.available);
+  try {
+   
+    const effects = owner.getEmbeddedCollection("ActiveEffect") ?? [];
+    
+    const totalChange = effects
+      .filter(e => !e.disabled)
+      .flatMap(e => e.changes)
+      .filter(c => c.key === "system.experience.available")
+      .reduce((sum, c) => sum + Number(c.value), 0);
+
+    return totalAvailableXp - totalChange;
+  } catch (error) {
+    CONFIG.logger.error("Error calculating base available XP:", error);
+    // Reverting to old behaviour just in case of error.
+    return totalAvailableXp;
+  }
+}
+
+
   async _buyHandleClick(cost, desired_item_type) {
     const owned = this.object.flags?.starwarsffg?.ffgIsOwned;
     const type = this.object.type;
@@ -1060,17 +1085,18 @@ export class ItemSheetFFG extends ItemSheet {
       CONFIG.logger.warn("Refused to buy for item with no found owner actor");
       throw new Error("Refused to buy for item with no found owner actor");
     }
-    const availableXP = owner.system.experience.available;
-    const totalXP = owner.system.experience.total;
-    if (cost > availableXP) {
+    const totalAvailableXp = owner.system.experience.available;
+    const totalSpentXp = owner.system.experience.total;
+    if (cost > totalAvailableXp) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       throw new Error("Not enough XP");
     }
+    const baseAvailableXp = await this._calculateBaseAvailableXp(owner);
     return {
       owner: owner,
       cost: cost,
-      availableXP: availableXP,
-      totalXP: totalXP,
+      availableXP: baseAvailableXp,
+      totalXP: totalSpentXp,
     }
   }
 
