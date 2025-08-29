@@ -122,19 +122,21 @@ export class ActorFFG extends Actor {
       const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
       if (originalWillpower !== undefined && updatedWillpower !== undefined && originalWillpower !== updatedWillpower) {
         CONFIG.logger.debug(`Detected modified Willpower (${originalWillpower} -> ${updatedWillpower}, updating derived values`);
-        // get the soak without willpower modifying it, then add the new willpower value in
-        const originalStrain = this.system.stats?.strain.max;
-        const originalStrainWithoutWillpower = originalStrain - originalWillpower;
-        const updatedStrain = originalStrainWithoutWillpower + updatedWillpower;
-        CONFIG.logger.debug(`The character sheet showed ${originalStrain} strain, while that value without Willpower was ${originalStrainWithoutWillpower}. Updating to be ${updatedStrain}`);
-        changes.system.stats = foundry.utils.mergeObject(
-          changes.system.stats,
-          {
-            strain: {
-              max: updatedStrain,
+        if (system.stats?.strain) {
+          // get the soak without willpower modifying it, then add the new willpower value in
+          const originalStrain = this.system.stats?.strain.max;
+          const originalStrainWithoutWillpower = originalStrain - originalWillpower;
+          const updatedStrain = originalStrainWithoutWillpower + updatedWillpower;
+          CONFIG.logger.debug(`The character sheet showed ${originalStrain} strain, while that value without Willpower was ${originalStrainWithoutWillpower}. Updating to be ${updatedStrain}`);
+          changes.system.stats = foundry.utils.mergeObject(
+            changes.system.stats,
+            {
+              strain: {
+                max: updatedStrain,
+              }
             }
-          }
-        );
+          );
+        }
       }
     }
     await super._preUpdate(changes, options, user);
