@@ -1086,7 +1086,7 @@ export class ItemSheetFFG extends ItemSheet {
       throw new Error("Refused to buy for item with no found owner actor");
     }
     const totalAvailableXp = owner.system.experience.available;
-    const totalSpentXp = owner.system.experience.total;
+    const totalXp = owner.system.experience.total;
     if (cost > totalAvailableXp) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       throw new Error("Not enough XP");
@@ -1096,7 +1096,7 @@ export class ItemSheetFFG extends ItemSheet {
       owner: owner,
       cost: cost,
       availableXP: baseAvailableXp,
-      totalXP: totalSpentXp,
+      totalXP: totalXp,
     }
   }
 
