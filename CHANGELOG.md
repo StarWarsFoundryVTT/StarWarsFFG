@@ -3,6 +3,8 @@
   * New default images have been added for common items and actors!
     * These images have been commissioned specifically for this system
     * Please check out the artists work if you like the icons! `DistraKit` [on Twitter](https://x.com/DistraKit)
+* Fixes:
+  * Vehicle stats can now be edited when edit mode is enabled ([#1896](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1896))
 
 `1.908`
 * Fixes:
