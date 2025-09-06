@@ -5,6 +5,7 @@
     * Please check out the artists work if you like the icons! `DistraKit` [on Twitter](https://x.com/DistraKit)
 * Fixes:
   * Vehicle stats can now be edited when edit mode is enabled ([#1896](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1896))
+  * Removed the Active Effect from XP Adjustments to make them the same as XP Grants ([#1909](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1909))
 
 `1.908`
 * Fixes:
