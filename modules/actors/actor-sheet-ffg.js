@@ -2419,7 +2419,7 @@ export class ActorSheetFFG extends ActorSheet {
             const adjustReason = $("#adjustReason").val();
             const updatedAvailableXP = startingAvailableXP + adjustAmount;
             const updatedTotalXP = totalXP + adjustAmount;
-            this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
+            await this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
             await xpLogEarn(this.object, adjustAmount, updatedAvailableXP, updatedTotalXP, adjustReason, "Self");
             await this.render(true);
          }
