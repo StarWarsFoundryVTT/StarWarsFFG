@@ -141,15 +141,16 @@ export class RollFFG extends Roll {
     // Step 3 - evaluate any remaining terms and return any non-FFG dice to the total.
     this.results = await Promise.all(this.terms.map(async (term) => {
       if (!game.ffg.diceterms.includes(term.constructor)) {
-        if (term.evaluate) {
-          if (!(term instanceof foundry.dice.terms.OperatorTerm)) {
-            this.hasStandard = true;
-            let result = await term.evaluate({ minimize, maximize });
-            return result.total;
-          } else {
-            return await term.evaluate({ minimize, maximize }).total;
-          }
-        } else return term;
+        if (term.evaluate && !(term instanceof foundry.dice.terms.OperatorTerm)) {
+          this.hasStandard = true;
+          let result = await term.evaluate({ minimize, maximize });
+          return result.total;
+        } else if (term instanceof foundry.dice.terms.OperatorTerm) {
+          // in APIv13+ OperatorTerm cannot be evaluated again once it it has been evaluated. Just return its operator
+          return term.operator;
+        } else {
+          return term;
+        }
       } else {
         if (term.evaluate) await term.evaluate({ minimize, maximize });
         this.hasFFG = true;
