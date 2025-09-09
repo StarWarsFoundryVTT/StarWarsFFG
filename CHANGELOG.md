@@ -7,6 +7,7 @@
   * Vehicle stats can now be edited when edit mode is enabled ([#1896](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1896))
   * Removed the Active Effect from XP Adjustments to make them the same as XP Grants ([#1909](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1909))
   * Encumbrance is now properly calculated as Brawn + 5 ([#1921](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1921))
+  * Career Skills from imported Careers and Specializations applies without having to open/close item once ([#1903](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1903))
 
 `1.908`
 * Fixes:
