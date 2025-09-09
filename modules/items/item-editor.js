@@ -113,8 +113,6 @@ export class itemEditor extends FormApplication  {
       updateData = this.data.sourceObject.system.itemattachment;
       for (let attachment of updateData) {
         if (attachment._id === this.data.clickedObject._id) {
-          // merge our drag-and-dropped item into the existing data
-          attachment.system.itemmodifier.push(droppedObject.toObject());
           // update the local object so we can see the update in the editor
           this.data.clickedObject.system.itemmodifier.push(droppedObject.toObject());
         }

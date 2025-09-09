@@ -9,6 +9,7 @@
   * Encumbrance is now properly calculated as Brawn + 5 ([#1921](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1921))
   * Career Skills from imported Careers and Specializations applies without having to open/close item once ([#1903](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1903))
   * Buying a rank in Brawn now properly increases Soak as well ([#1905](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1905))
+  * Adding a Mod to an attachment on a Weapon no longer duplicates the mod ([#1838](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1838))
 
 `1.908`
 * Fixes:
