@@ -1561,6 +1561,7 @@ export class ActorSheetFFG extends ActorSheet {
               const characteristic = $(html).find("select[name='characteristic']").val();
 
               let newSkill = {
+                value: name,
                 careerskill: false,
                 characteristic,
                 groupskill: false,
