@@ -1662,6 +1662,15 @@ export class ActorSheetFFG extends ActorSheet {
         }
       ],
     };
+
+    // Brawn increases Soak
+    if (boughtPath === "system.characteristics.Brawn.value") {
+      effects.changes.push({
+        key: "system.stats.soak.value",
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: 1,
+      });
+    }
     await this.object.createEmbeddedDocuments("ActiveEffect", [effects]);
     return spentId;
   }
