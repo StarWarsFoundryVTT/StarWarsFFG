@@ -1,6 +1,7 @@
 import {xpLogEarn} from "./helpers/actor-helpers.js";
 
-export class GroupManagerLayer extends CanvasLayer {
+const CanvasLayerClass = foundry?.canvas?.layers?.CanvasLayer || CanvasLayer;
+export class GroupManagerLayer extends CanvasLayerClass {
   constructor() {
     super();
   }

@@ -756,7 +756,9 @@ function _buildInitiativePool(data, skill) {
   return pool;
 }
 
-export class CombatTrackerFFG extends CombatTracker {
+const CombatTrackerClass = foundry?.applications?.sidebar?.tabs?.CombatTracker || CombatTracker;
+
+export class CombatTrackerFFG extends CombatTrackerClass {
   /** @override */
   get template() {
     return "systems/starwarsffg/templates/dialogs/combat-tracker.html";

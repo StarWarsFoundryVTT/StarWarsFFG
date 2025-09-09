@@ -126,7 +126,9 @@ Hooks.once("init", async function () {
   CONFIG.ui.pause = PauseFFG;
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
-  Token.prototype._drawBar = function (number, bar, data) {
+  const TokenClass = foundry?.canvas?.placeables?.Token || Token;
+
+  TokenClass.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
     // FFG style behaviour for wounds and strain.
     let aboveThreshold = 0;
@@ -337,7 +339,9 @@ Hooks.once("init", async function () {
   };
 
   // Load character templates so that dynamic skills lists work correctly
-  loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
+  const loadTemplatesFn = foundry?.applications?.handlebars?.loadTemplates || loadTemplates;
+
+  await loadTemplatesFn(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
 
   SettingsHelpers.initLevelSettings();
 
@@ -626,14 +630,18 @@ Hooks.once("init", async function () {
   FFG.configureVehicleRange();
 
   // Register sheet application classes
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFG, { label: "Actor Sheet v1" });
-  Actors.registerSheet("ffg", ActorSheetFFGV2, { makeDefault: true, label: "Actor Sheet v2" });
-  Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
-  Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("ffg", ItemSheetFFG, { label: "Item Sheet v1" });
-  Items.registerSheet("ffg", ItemSheetFFGV2, { makeDefault: true, label: "Item Sheet v2" });
+  const ActorsCollection = foundry?.documents?.collections?.Actors || Actors;
+  const ActorSheetClass = foundry?.appv1?.sheets?.ActorSheet || ActorSheet; 
+  ActorsCollection.unregisterSheet("core", ActorSheetClass);
+  ActorsCollection.registerSheet("ffg", ActorSheetFFG, { label: "Actor Sheet v1" });
+  ActorsCollection.registerSheet("ffg", ActorSheetFFGV2, { makeDefault: true, label: "Actor Sheet v2" });
+  ActorsCollection.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
+  ActorsCollection.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
+  const ItemsCollection = foundry?.documents?.collections?.Items || Items;
+  const ItemSheetClass = foundry?.appv1?.sheets?.ItemSheet || ItemSheet;
+  ItemsCollection.unregisterSheet("core", ItemSheetClass);
+  ItemsCollection.registerSheet("ffg", ItemSheetFFG, { label: "Item Sheet v1" });
+  ItemsCollection.registerSheet("ffg", ItemSheetFFGV2, { makeDefault: true, label: "Item Sheet v2" });
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
