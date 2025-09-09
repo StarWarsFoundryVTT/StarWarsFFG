@@ -751,6 +751,8 @@ export default class ModifierHelpers {
           change.value = parseInt(wounds) + parseInt(newBrawn);
         } else if (change.key === "system.stats.strain.max") {
           change.value = parseInt(strain) + parseInt(newWillpower);
+        } else if (change.key === "system.stats.encumbrance.max") {
+          change.value = parseInt(newBrawn) + 5;
         }
       }
       await itemEffect.update({changes: newChanges});
