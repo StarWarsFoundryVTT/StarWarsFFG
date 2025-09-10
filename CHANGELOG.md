@@ -11,6 +11,7 @@
   * Buying a rank in Brawn now properly increases Soak as well ([#1905](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1905))
   * Adding a Mod to an attachment on a Weapon no longer duplicates the mod ([#1838](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1838))
   * Custom skills can now be set as Career Skills by Careers / Specializations ([#1907](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1907))
+  * `Skill Force Dice` modifiers now dynamically read the Force Dice pool (they still accept a number, it's just ignored) ([#1890])(https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1890)
 
 `1.908`
 * Fixes:
