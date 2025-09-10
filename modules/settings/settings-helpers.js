@@ -272,6 +272,32 @@ export default class SettingsHelpers {
       default: "#e3963e",
       type: String,
     });
+    game.settings.register("starwarsffg", "ui-token-stamina-ok", {
+      name: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Stamina.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.Tokens.Bar.Stamina.Hint"),
+      scope: "world",
+      config: false,
+      default: "#59a1f6",
+      type: String,
+    });
+    // Register setting for token wounded
+    game.settings.register("starwarsffg", "ui-token-stamina-damaged", {
+      name: game.i18n.localize("SWFFG.Settings.Tokens.Bar.StaminaDamaged.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.Tokens.Bar.StaminaDamaged.Hint"),
+      scope: "world",
+      config: false,
+      default: "#092A7EFF",
+      type: String,
+    });
+    // Register setting for token over-wounds
+    game.settings.register("starwarsffg", "ui-token-stamina-over", {
+      name: game.i18n.localize("SWFFG.Settings.Tokens.Bar.StaminaOver.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.Tokens.Bar.StaminaOver.Hint"),
+      scope: "world",
+      config: false,
+      default: "#bd1ad0",
+      type: String,
+    });
 
     game.settings.register("starwarsffg", "ui-pausedImage", {
       module: "starwarsffg",

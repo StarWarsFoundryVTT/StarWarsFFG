@@ -142,34 +142,59 @@ Hooks.once("init", async function () {
     let startX = 1;
     let startY = 1;
 
-    if (aboveThreshold > 0) {
-      // render the above-threshold portion of the bar
-      let abovePct = Math.min(aboveThreshold / data.max, 1);
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-overwounded"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, abovePct * (this.w - 2), h - 2, 2);
-      // render the rest as wounds
-      startX = abovePct * (this.w - 2) + 1;
-      let remainingLength = this.w  - abovePct * (this.w - 2) - 2;
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
-    } else if (["stats.wounds", "stats.hullTrauma"].includes(data.attribute)) {
-      // render healthy and then unhealthy portions of the bar
-      let woundedPct = Math.min((data.max - data.value) / data.max, 1);
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-healthy"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, woundedPct * (this.w - 2), h - 2, 2);
-      // remaining health
-      startX = woundedPct * (this.w - 2) + 1;
-      let remainingLength = this.w - woundedPct * (this.w - 2) - 2;
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+    const colors = {
+      "stats.wounds": {
+        ok: game.settings.get("starwarsffg", "ui-token-healthy"),
+        damaged: game.settings.get("starwarsffg", "ui-token-wounded"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-overwounded"),
+      },
+      "stats.hullTrauma": {
+        ok: game.settings.get("starwarsffg", "ui-token-healthy"),
+        damaged: game.settings.get("starwarsffg", "ui-token-wounded"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-overwounded"),
+      },
+      "stats.strain": {
+        ok: game.settings.get("starwarsffg", "ui-token-stamina-ok"),
+        damaged: game.settings.get("starwarsffg", "ui-token-stamina-damaged"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-stamina-over"),
+      },
+      "stats.systemStrain": {
+        ok: game.settings.get("starwarsffg", "ui-token-stamina-ok"),
+        damaged: game.settings.get("starwarsffg", "ui-token-stamina-damaged"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-stamina-over"),
+      },
+    }
+
+    if (["stats.wounds", "stats.hullTrauma", "stats.strain", "stats.systemStrain"].includes(data.attribute)) {
+      if (aboveThreshold > 0) {
+        // render the above-threshold portion of the bar
+        let abovePct = Math.min(aboveThreshold / data.max, 1);
+        bar
+        .beginFill(colors[data.attribute]["overDamaged"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, abovePct * (this.w - 2), h - 2, 2);
+        // render the rest as wounds
+        startX = abovePct * (this.w - 2) + 1;
+        let remainingLength = this.w  - abovePct * (this.w - 2) - 2;
+        bar
+        .beginFill(colors[data.attribute]["damaged"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+      } else {
+        // render healthy and then unhealthy portions of the bar
+        let woundedPct = Math.min((data.max - data.value) / data.max, 1);
+        bar
+        .beginFill(colors[data.attribute]["ok"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, woundedPct * (this.w - 2), h - 2, 2);
+        // remaining health
+        startX = woundedPct * (this.w - 2) + 1;
+        let remainingLength = this.w - woundedPct * (this.w - 2) - 2;
+        bar
+        .beginFill(colors[data.attribute]["damaged"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+      }
     } else {
       // render normally
       const pct = Math.clamp(val, 0, data.max) / data.max;
