@@ -298,15 +298,27 @@ export class ItemSheetFFG extends ItemSheetClass {
     data.FFG = CONFIG.FFG;
 
     // prepare skills for career skill usage
-    data.careerSkills = foundry.utils.mergeObject(
-      {
-        "(none)": {
-          value: "(none)",
-          label: "SWFFG.CareerSkills.None",
-        }
-      },
-      foundry.utils.deepClone(CONFIG.FFG.skills)
-    )
+    if (this?.actor?.system?.skills) {
+      data.careerSkills = foundry.utils.mergeObject(
+        {
+          "(none)": {
+            value: "(none)",
+            label: "SWFFG.CareerSkills.None",
+          }
+        },
+        foundry.utils.deepClone(this.actor.system.skills)
+      );
+    } else {
+      data.careerSkills = foundry.utils.mergeObject(
+        {
+          "(none)": {
+            value: "(none)",
+            label: "SWFFG.CareerSkills.None",
+          }
+        },
+        foundry.utils.deepClone(CONFIG.FFG.skills)
+      );
+    }
 
     data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
     if (!data.renderedDesc) {
