@@ -648,4 +648,16 @@ export class ActorFFG extends Actor {
     const allowed = Hooks.call("modifyTokenAttribute", {attribute, value, isDelta, isBar}, updates);
     return allowed !== false ? this.update(updates) : this;
   }
+
+  /** @override **/
+  applyActiveEffects() {
+    for (const effect of this.allApplicableEffects()) {
+      for (const change of effect.changes) {
+        if (change.key.includes("system.skills") && change.key.includes(".force")) {
+          change.value = Math.max(this.system?.stats?.forcePool?.max - this.system?.stats?.forcePool?.value, 0);
+        }
+      }
+    }
+    return super.applyActiveEffects();
+  }
 }
