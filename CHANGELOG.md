@@ -3,6 +3,7 @@
   * New default images have been added for common items and actors!
     * These images have been commissioned specifically for this system
     * Please check out the artists work if you like the icons! `DistraKit` [on Twitter](https://x.com/DistraKit)
+  * Stamina bars now indicate when a threshold has been exceeded! ([#1912](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1912))
 * Fixes:
   * Vehicle stats can now be edited when edit mode is enabled ([#1896](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1896))
   * Removed the Active Effect from XP Adjustments to make them the same as XP Grants ([#1909](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1909))

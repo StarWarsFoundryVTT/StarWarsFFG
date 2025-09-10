@@ -100,6 +100,9 @@ export class uiSettings extends ffgSettings {
       "starwarsffg.ui-token-healthy",
       "starwarsffg.ui-token-wounded",
       "starwarsffg.ui-token-overwounded",
+      "starwarsffg.ui-token-stamina-ok",
+      "starwarsffg.ui-token-stamina-damaged",
+      "starwarsffg.ui-token-stamina-over",
     ];
     return super.getData(includeSettingsNames);
   }
