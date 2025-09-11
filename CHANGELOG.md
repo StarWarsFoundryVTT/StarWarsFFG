@@ -14,6 +14,7 @@
   * Adding a Mod to an attachment on a Weapon no longer duplicates the mod ([#1838](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1838))
   * Custom skills can now be set as Career Skills by Careers / Specializations ([#1907](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1907))
   * `Skill Force Dice` modifiers now dynamically read the Force Dice pool (they still accept a number, it's just ignored) ([#1890])(https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1890)
+  * GMs granting XP no longer sends available XP plummeting like the younglings who trusted Anakin ([#1899](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1899))
 
 `1.908`
 * Fixes:

@@ -67,7 +67,15 @@ export default class ActorHelpers {
     return await this.object.update(formData);
   }
 
-  static async beginEditMode(actor) {
+  /**
+   * Records the state of all active effects on the actor and then suspends them.
+   * This is used to enable manual editing without an infinite loop from the two being combined
+   * Note that this returns a state, which is REQUIRED to restore the original AE state
+   * @param actor
+   * @param persistChanges - defaults to False, and generally should be. For GM XP granting, this should be True
+   * @returns {Promise<{directEffects: *[], itemEffects: {}}>}
+   */
+  static async beginEditMode(actor, persistChanges=false) {
     // Store initial state
     CONFIG.logger.debug(`Beginning Edit mode for ${actor.name}`);
     // Track both direct and item-based effects
@@ -83,7 +91,11 @@ export default class ActorHelpers {
         disabled: effect.disabled,
       });
       // update source so we don't persist disabling effects
-      await effect.updateSource({disabled: true});
+      if (!persistChanges) {
+        await effect.updateSource({disabled: true});
+      } else {
+        await effect.update({disabled: true});
+      }
     }
 
     // Record item-based effects
@@ -97,7 +109,11 @@ export default class ActorHelpers {
           disabled: effect.disabled,
         });
         CONFIG.logger.debug(`>> Disabling AE for ${effect.name}`);
-        await effect.updateSource({disabled: true});
+        if (!persistChanges) {
+          await effect.updateSource({disabled: true});
+        } else {
+          await effect.update({disabled: true});
+        }
       }
     }
 
@@ -105,14 +121,18 @@ export default class ActorHelpers {
     return initialState;
   }
 
-  static async endEditMode(actor, originalState) {
+  static async endEditMode(actor, originalState, persistChanges=false) {
     CONFIG.logger.debug(`Ending Edit mode for ${actor.name} - original state: ${JSON.stringify(originalState)}`);
     // revert the state for direct effects
     for (const effect of actor.effects) {
       const locatedEffect = originalState.directEffects.find((s) => s.id === effect.id);
       if (locatedEffect && effect.disabled !== locatedEffect.disabled) {
         // update source so we don't persist disabling effects
-        await effect.updateSource({disabled: locatedEffect.disabled});
+        if (!persistChanges) {
+          await effect.updateSource({disabled: locatedEffect.disabled});
+        } else {
+          await effect.update({disabled: locatedEffect.disabled});
+        }
       }
     }
 
@@ -127,7 +147,11 @@ export default class ActorHelpers {
           const storedEffectState = storedItemState.find((s) => s.id === effect.id);
           if (storedEffectState && effect.disabled !== storedEffectState.disabled) {
             CONFIG.logger.debug(">>> found a stored state for this effect, making adjustments");
-            await effect.updateSource({disabled: storedEffectState.disabled});
+            if (!persistChanges) {
+              await effect.updateSource({disabled: storedEffectState.disabled});
+            } else {
+              await effect.update({disabled: storedEffectState.disabled});
+            }
           } else {
             CONFIG.logger.debug(">>> no stored state for this effect or the state is the same, not making adjustments");
           }
