@@ -37,6 +37,11 @@
       <td class="pool-additional">{{{diceSymbols.upgrade}}}<input type="button" name="upgrades" min="0" />{{localize "SWFFG.Upgrade"}}</td>
       <td class="pool-additional"></td>
     </tr>
+    <tr>
+      <td class="pool-additional"></td>
+      <td class="pool-additional">{{{diceSymbols.force}}}<input type="button" name="force" min="0" />{{localize "SWFFG.Force"}}</td>
+      <td class="pool-additional"></td>
+    </tr>
   </table>
 </div>
 
@@ -81,7 +86,7 @@
       // setupInput(scope, pool, "difficulty");
       setupInput(scope, pool, "boost");
       setupInput(scope, pool, "setback");
-      // setupInput(scope, pool, "force");
+      setupInput(scope, pool, "force");
 
       setupInput(scope, pool, "advantage", true);
       setupInput(scope, pool, "success", true);
