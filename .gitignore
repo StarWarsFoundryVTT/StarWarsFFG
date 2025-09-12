@@ -3,6 +3,7 @@ node_modules
 cypress/audio/
 cypress/videos/
 cypress/screenshots/
+.DS_Store
 
 # Playwright
 /test-results/
