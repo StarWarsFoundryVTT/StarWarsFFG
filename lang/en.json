@@ -338,6 +338,8 @@
   "SWFFG.Settings.UseDefense.Hint": "Automatically add setback dice from targeted actors to the dice pool",
   "SWFFG.Settings.Simulate.Name": "Dice Simulation Mode",
   "SWFFG.Settings.Simulate.Hint": "Display success likelihood when creating a dice pool. Uses SWRPG online",
+  "SWFFG.Settings.SimulateCount.Name": "Dice Simulation Count",
+  "SWFFG.Settings.SimulateCount.Hint": "Number of times to run the simulation for each pool",
   "SWFFG.TalentsForce": "Force Talent?",
   "SWFFG.ForceTalent": "Force Talent",
   "SWFFG.ConflictTalent": "Conflict Talent",

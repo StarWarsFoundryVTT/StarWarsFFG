@@ -108,7 +108,8 @@ export default class RollBuilderFFG extends FormApplication {
       enableForceDie,
       labels,
       diceSymbols,
-      display: display,
+      simDisplay: display,
+      simCount: game.settings.get("starwarsffg", "rollSimulation")
     };
   }
 
@@ -364,7 +365,7 @@ export default class RollBuilderFFG extends FormApplication {
         setbackDice: this.dicePool.setback,
         // fixed results are not supported by the library
       },
-      500,
+      game.settings.get("starwarsffg", "rollSimulation"),
       false,
     );
     const simResults = simPool.simulate();

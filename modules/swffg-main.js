@@ -502,6 +502,14 @@ Hooks.once("init", async function () {
       None: "None",
     },
   });
+  game.settings.register("starwarsffg", "rollSimulation", {
+    name: game.i18n.localize("SWFFG.Settings.SimulateCount.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.SimulateCount.Hint"),
+    scope: "world",
+    config: false,
+    default: 10000,
+    type: Number,
+  });
 
   /**
    * Set an initiative formula for the system
