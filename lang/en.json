@@ -336,6 +336,8 @@
   "SWFFG.SettingsVehicleRangeHint": "Switch between Star Wars or Genesys vehicle range bands.",
   "SWFFG.Settings.UseDefense.Name": "Use Defense When Building Pool",
   "SWFFG.Settings.UseDefense.Hint": "Automatically add setback dice from targeted actors to the dice pool",
+  "SWFFG.Settings.Simulate.Name": "Dice Simulation Mode",
+  "SWFFG.Settings.Simulate.Hint": "Display success likelihood when creating a dice pool. Uses SWRPG online",
   "SWFFG.TalentsForce": "Force Talent?",
   "SWFFG.ForceTalent": "Force Talent",
   "SWFFG.ConflictTalent": "Conflict Talent",

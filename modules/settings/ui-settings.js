@@ -103,6 +103,7 @@ export class uiSettings extends ffgSettings {
       "starwarsffg.ui-token-stamina-ok",
       "starwarsffg.ui-token-stamina-damaged",
       "starwarsffg.ui-token-stamina-over",
+      "starwarsffg.displaySimulation",
     ];
     return super.getData(includeSettingsNames);
   }

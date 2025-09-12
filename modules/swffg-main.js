@@ -486,6 +486,22 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean,
   });
+   /**
+   * Register roll simulation mode
+   */
+  game.settings.register("starwarsffg", "displaySimulation", {
+    name: game.i18n.localize("SWFFG.Settings.Simulate.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Simulate.Hint"),
+    scope: "world",
+    config: false,
+    default: "GM",
+    type: String,
+    choices: {
+      GM: "GM Only",
+      All: "All Players",
+      None: "None",
+    },
+  });
 
   /**
    * Set an initiative formula for the system

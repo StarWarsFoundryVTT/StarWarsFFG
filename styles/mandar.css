@@ -4454,3 +4454,13 @@ img {
 .starwarsffg .xp.adjusted {
   color: rgb(159, 47, 172);
 }
+.starwarsffg .simulation {
+  padding: 5px;
+  text-align: center;
+}
+.starwarsffg .simulation .likely {
+  color: rgb(27, 106, 24);
+}
+.starwarsffg .simulation .unlikely {
+  color: #490c0b;
+}
