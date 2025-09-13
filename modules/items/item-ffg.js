@@ -214,18 +214,20 @@ export class ItemFFG extends ItemBaseFFG {
     // iterate over the changed data to look for any changes to attributes
     if (changed?.system?.attributes) {
       for (const attrKey of Object.keys(changed.system.attributes)) {
-        const existingEffect = existingEffects.find(i => i.name === attrKey)
-        const explodedMods = ModifierHelpers.explodeMod(
-          this.system.attributes[attrKey].modtype,
-          this.system.attributes[attrKey].mod
-        );
+        const existingEffect = existingEffects.find(i => i.name === attrKey);
+        const attr = this.system.attributes[attrKey];
+        // Defensive: only explode mods if modtype and mod are defined
+        let explodedMods = [];
+        if (attr && typeof attr.modtype !== 'undefined' && typeof attr.mod !== 'undefined') {
+          explodedMods = ModifierHelpers.explodeMod(attr.modtype, attr.mod);
+        }
 
         const changes = [];
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
             mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: this.system.attributes[attrKey].value,
+            value: attr?.value,
           });
         }
 
