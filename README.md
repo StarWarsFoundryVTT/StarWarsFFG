@@ -14,6 +14,7 @@ For more info and documentation including various "How-To" guides, please check 
 
 - For support on this game system : Discord [The Foundry](https://discord.gg/foundryvtt) #starwars-ffg
 - Read this document in another language : [Français](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/main/README-fr.md), [Català](https://github.com/StarWarsFoundryVTT/StarWarsFFG/blob/main/README-ca.md)
+- This system supports simulated dice rolls to determine success chance. Powered by [SWRPG Online](https://github.com/swrpg-online/monte-carlo)
 
 # Installing Star Wars FFG game system
 

@@ -1,3 +1,5 @@
+import { MonteCarlo } from "../../lib/@swrpg-online/monte-carlo/dist/index.esm.js";
+
 export default class RollBuilderFFG extends FormApplication {
   constructor(rollData, rollDicePool, rollDescription, rollSkillName, rollItem, rollAdditionalFlavor, rollSound) {
     super();
@@ -91,6 +93,12 @@ export default class RollBuilderFFG extends FormApplication {
       dark: game.settings.get("starwarsffg", "destiny-pool-dark"),
     };
 
+    let display = false;
+    const displaySimulation = game.settings.get("starwarsffg", "displaySimulation");
+    if (displaySimulation === "GM" && game.user.isGM || displaySimulation === "All") {
+      display = true;
+    }
+
     return {
       sounds,
       isGM: game.user.isGM,
@@ -100,6 +108,8 @@ export default class RollBuilderFFG extends FormApplication {
       enableForceDie,
       labels,
       diceSymbols,
+      simDisplay: display,
+      simCount: game.settings.get("starwarsffg", "rollSimulation")
     };
   }
 
@@ -253,6 +263,7 @@ export default class RollBuilderFFG extends FormApplication {
     const poolDiv = html.find(".dice-pool-dialog .dice-pool")[0];
     poolDiv.innerHTML = "";
     this.dicePool.renderPreview(poolDiv);
+    this._updateSimulationPreview();
   }
 
   _initializeInputs(html) {
@@ -338,4 +349,36 @@ export default class RollBuilderFFG extends FormApplication {
   }
 
   _updateObject() {}
+
+  /**
+   * Add the results of the dice simulation
+   * @private
+   */
+  _updateSimulationPreview() {
+    const simPool = new MonteCarlo(
+      {
+        abilityDice: this.dicePool.ability,
+        difficultyDice: this.dicePool.difficulty,
+        proficiencyDice: this.dicePool.proficiency,
+        challengeDice: this.dicePool.challenge,
+        boostDice: this.dicePool.boost,
+        setbackDice: this.dicePool.setback,
+        // fixed results are not supported by the library
+      },
+      game.settings.get("starwarsffg", "rollSimulation"),
+      false,
+    );
+    const simResults = simPool.simulate();
+
+    let newClass = "";
+    if (simResults.successProbability < .25) {
+      newClass = "unlikely";
+    } else if (simResults.successProbability > .75) {
+      newClass = "likely";
+    }
+
+    $("#success_chance").text(
+      `${(simResults.successProbability * 100).toLocaleString(undefined, {maximumFractionDigits: 0})}%`
+    ).removeClass("likely unlikely").addClass(newClass);
+  }
 }
