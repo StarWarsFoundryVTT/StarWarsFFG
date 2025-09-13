@@ -5,6 +5,7 @@ import OggDude from "./oggdude/oggdude.js";
  * A specialized form used to pop out the editor.
  * @extends {FormApplication}
  */
+//V13 Todo: FormApplication is deprecated in v13. Need to update this window to use ApplicationV2
 export default class DataImporter extends FormApplication {
   /** @override */
   static get defaultOptions() {
@@ -27,11 +28,14 @@ export default class DataImporter extends FormApplication {
   /** @override */
   async getData() {
     let data = await FilePicker.browse("data", "", { bucket: null, extensions: [".zip", ".ZIP"], wildcard: false });
-    const files = data.files.map((file) => {
-      return decodeURIComponent(file);
-    });
+    const files = data.files.map((file) => decodeURIComponent(file));
 
-    $(".import-progress").addClass("import-hidden");
+    // Hide the progress bar using jQuery for v12 or native DOM for v13+
+    if (window.SWFFG_USE_JQUERY) {
+      $(".import-progress").addClass("import-hidden");
+    } else {
+      document.querySelectorAll('.import-progress').forEach(el => el.classList.add('import-hidden'));
+    }
 
     if (!CONFIG?.temporary) {
       CONFIG.temporary = {};
@@ -48,15 +52,38 @@ export default class DataImporter extends FormApplication {
   activateListeners(html) {
     super.activateListeners(html);
 
-    $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#data-importer header a");
-
-    html.find(".dialog-button").on("click", this._dialogButton.bind(this));
-    html.find("#importAll").on("click", this._enableImportAll.bind(this));
+    if (window.SWFFG_USE_JQUERY) {
+      // jQuery (v12 or earlier)
+      $(`<span class="debug"><label><input type="checkbox" /> Generate Log</label></span>`).insertBefore("#data-importer header a");
+      html.find(".dialog-button").on("click", this._dialogButton.bind(this));
+      html.find("#importAll").on("click", this._enableImportAll.bind(this));
+    } else {
+      // Native DOM (v13 or later)
+      const debugSpan = document.createElement("span");
+      debugSpan.className = "debug";
+      debugSpan.innerHTML = `<label><input type="checkbox" /> Generate Log</label>`;
+      // Find the anchor inside the header of #data-importer
+      const headerA = html[0]?.querySelector("#data-importer header a");
+      if (headerA && headerA.parentNode) {
+        headerA.parentNode.insertBefore(debugSpan, headerA);
+      }
+      html[0].querySelectorAll(".dialog-button").forEach((el) => el.addEventListener("click", this._dialogButton.bind(this)));
+      html[0].querySelector("#importAll").addEventListener("click", this._enableImportAll.bind(this));
+    }
+  // Use a short timeout to ensure all async DOM updates are complete before positioning
+  setTimeout(this.setPosition.bind(this), 50);
   }
 
   _importLog = [];
   _importLogger(message) {
-    if ($(".debug input:checked").length > 0) {
+    let checked = false;
+    if (window.SWFFG_USE_JQUERY) {
+      checked = $(".debug input:checked").length > 0;
+    } else {
+      // Native DOM (v13+)
+      checked = Array.from(document.querySelectorAll('.debug input')).some(el => el.checked);
+    }
+    if (checked) {
       this._importLog.push(`[${new Date().getTime()}] ${message}`);
     }
   }
@@ -66,7 +93,13 @@ export default class DataImporter extends FormApplication {
    * @private
    */
   _enableImportAll() {
-    $("input[type='checkbox'][name='imports']").attr("checked", true);
+    if (window.SWFFG_USE_JQUERY) {
+      // jQuery (v12 or earlier)
+      $("input[type='checkbox'][name='imports']").attr("checked", true);
+    } else {
+      // Native DOM (v13+)
+      document.querySelectorAll("input[type='checkbox'][name='imports']").forEach(el => el.checked = true);
+    }
   }
 
   async _dialogButton(event) {
@@ -76,14 +109,26 @@ export default class DataImporter extends FormApplication {
     const action = a.dataset.button;
 
     // if clicking load file reset default
-    $("input[type='checkbox'][name='imports']").attr("disabled", true);
+    if (window.SWFFG_USE_JQUERY) {
+      $("input[type='checkbox'][name='imports']").attr("disabled", true);
+    } else {
+      // Native DOM (v13+)
+      const form = event.currentTarget.closest("form");
+      if (form) {
+        form.querySelectorAll("input[type='checkbox'][name='imports']").forEach(el => el.disabled = true);
+      }
+    }
 
     // load the requested file
     if (action === "load") {
       try {
-        const selectedFile = $("#import-file").val();
-
-        let zip;
+        let selectedFile, form, zip;
+        if (window.SWFFG_USE_JQUERY) {
+          selectedFile = $("#import-file").val();
+        } else {
+          const input = document.querySelector("#import-file");
+          selectedFile = input ? input.value : "";
+        }
 
         if (selectedFile) {
           zip = await fetch(`/${selectedFile}`)
@@ -96,14 +141,26 @@ export default class DataImporter extends FormApplication {
             })
             .then(JSZip.loadAsync);
         } else {
-          const form = $("form.data-importer-window")[0];
-
-          if (form.data.files.length) {
-            zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+          if (window.SWFFG_USE_JQUERY) {
+            form = $("form.data-importer-window")[0];
+            if (form.data.files.length) {
+              zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+            }
+          } else {
+            form = document.querySelector("form.data-importer-window");
+            if (form && form.data && form.data.files && form.data.files.length) {
+              zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+            }
           }
         }
 
-        $("input[id='importAll']").attr("disabled", false);
+        if (window.SWFFG_USE_JQUERY) {
+          $("input[id='importAll']").attr("disabled", false);
+        } else {
+          const importAll = document.querySelector("input[id='importAll']");
+          if (importAll) importAll.disabled = false;
+        }
+
         this._enableImportSelection(zip.files, "Talents");
         this._enableImportSelection(zip.files, "Force Abilities");
         this._enableImportSelection(zip.files, "Gear");
@@ -127,13 +184,24 @@ export default class DataImporter extends FormApplication {
       CONFIG.logger.debug("Importing Data Files");
       this._importLogger(`Starting import`);
 
-      const importFiles = $("input:checkbox[name=imports]:checked")
-        .map(function () {
-          return { file: $(this).val(), label: $(this).data("name"), type: $(this).data("type"), itemtype: $(this).data("itemtype") };
-        })
-        .get();
-
-      const selectedFile = $("#import-file").val();
+      let importFiles, selectedFile;
+      if (window.SWFFG_USE_JQUERY) {
+        importFiles = $("input:checkbox[name=imports]:checked")
+          .map(function () {
+            return { file: $(this).val(), label: $(this).data("name"), type: $(this).data("type"), itemtype: $(this).data("itemtype") };
+          })
+          .get();
+        selectedFile = $("#import-file").val();
+      } else {
+        importFiles = Array.from(document.querySelectorAll("input[type='checkbox'][name='imports']:checked")).map(el => ({
+          file: el.value,
+          label: el.dataset.name,
+          type: el.dataset.type,
+          itemtype: el.dataset.itemtype
+        }));
+        const input = document.querySelector("#import-file");
+        selectedFile = input ? input.value : "";
+      }
       this._importLogger(`Using ${selectedFile} for import source`);
 
       let zip;
@@ -149,10 +217,17 @@ export default class DataImporter extends FormApplication {
           })
           .then(JSZip.loadAsync);
       } else {
-        const form = $("form.data-importer-window")[0];
-
-        if (form.data.files.length) {
-          zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+        let form;
+        if (window.SWFFG_USE_JQUERY) {
+          form = $("form.data-importer-window")[0];
+          if (form.data.files.length) {
+            zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+          }
+        } else {
+          form = document.querySelector("form.data-importer-window");
+          if (form && form.data && form.data.files && form.data.files.length) {
+            zip = await ImportHelpers.readBlobFromFile(form.data.files[0]).then(JSZip.loadAsync);
+          }
         }
       }
 
@@ -248,7 +323,13 @@ export default class DataImporter extends FormApplication {
       });
       await Promise.all(promisesPhase2);
 
-      if ($(".debug input:checked").length > 0) {
+      let checked = false;
+      if (window.SWFFG_USE_JQUERY) {
+        checked = $(".debug input:checked").length > 0;
+      } else {
+        checked = Array.from(document.querySelectorAll('.debug input')).some(el => el.checked);
+      }
+      if (checked) {
         saveDataToFile(this._importLog.join("\n"), "text/plain", "import-log.txt");
       }
 
@@ -267,9 +348,19 @@ export default class DataImporter extends FormApplication {
         if (file.name.includes(`.xml`) && isDirectory) {
           filename = `${file.name.substring(0, file.name.lastIndexOf("/"))}/`;
         }
-        $(`#import${name.replace(" ", "")}`)
-          .removeAttr("disabled")
-          .val(filename);
+        const inputId = `import${name.replace(" ", "")}`;
+        if (window.SWFFG_USE_JQUERY) {
+          $(`#${inputId}`)
+            .removeAttr("disabled")
+            .val(filename);
+        } else {
+          // Native DOM (v13+)
+          const input = document.getElementById(inputId);
+          if (input) {
+            input.disabled = false;
+            input.value = filename;
+          }
+        }
         if (returnFilename) {
           fileName = file.name;
         }
