@@ -103,10 +103,13 @@ export class ActorSheetFFG extends ActorSheet {
                 label: game.i18n.localize("SWFFG.DragDrop.PurchaseItem"),
                 callback: async (that) => {
                   if (cost > 0) {
+                    const AEState = await ActorHelpers.beginEditMode(this.actor, true);
+                    const updatedAvailableXP = this.actor.system.experience.available;
+                    console.log(updatedAvailableXP)
                     await this.object.update({
                       system: {
                         experience: {
-                          available: availableXP - cost,
+                          available: updatedAvailableXP - cost,
                         }
                       }
                     });
@@ -116,6 +119,7 @@ export class ActorSheetFFG extends ActorSheet {
                         this.actor.system.experience.available,
                         this.actor.system.experience.total
                     );
+                    await ActorHelpers.endEditMode(this.actor, AEState, true);
                   }
                 },
               },
