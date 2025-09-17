@@ -87,6 +87,8 @@ Hooks.once("init", async function () {
     diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
   };
 
+  // Define if we are using JQuery or native DOM
+  window.SWFFG_USE_JQUERY = game.version < 13;
   // Define custom log prefix and logger
   CONFIG.module = "Starwars FFG";
   CONFIG.logger = Helpers.logger;
@@ -124,7 +126,9 @@ Hooks.once("init", async function () {
   CONFIG.ui.pause = PauseFFG;
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
-  Token.prototype._drawBar = function (number, bar, data) {
+  const TokenClass = foundry?.canvas?.placeables?.Token || Token;
+
+  TokenClass.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
     // FFG style behaviour for wounds and strain.
     let aboveThreshold = 0;
@@ -360,7 +364,9 @@ Hooks.once("init", async function () {
   };
 
   // Load character templates so that dynamic skills lists work correctly
-  loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
+  const loadTemplatesFn = foundry?.applications?.handlebars?.loadTemplates || loadTemplates;
+
+  await loadTemplatesFn(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
 
   SettingsHelpers.initLevelSettings();
 
@@ -673,14 +679,18 @@ Hooks.once("init", async function () {
   FFG.configureVehicleRange();
 
   // Register sheet application classes
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFG, { label: "Actor Sheet v1" });
-  Actors.registerSheet("ffg", ActorSheetFFGV2, { makeDefault: true, label: "Actor Sheet v2" });
-  Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
-  Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("ffg", ItemSheetFFG, { label: "Item Sheet v1" });
-  Items.registerSheet("ffg", ItemSheetFFGV2, { makeDefault: true, label: "Item Sheet v2" });
+  const ActorsCollection = foundry?.documents?.collections?.Actors || Actors;
+  const ActorSheetClass = foundry?.appv1?.sheets?.ActorSheet || ActorSheet; 
+  ActorsCollection.unregisterSheet("core", ActorSheetClass);
+  ActorsCollection.registerSheet("ffg", ActorSheetFFG, { label: "Actor Sheet v1" });
+  ActorsCollection.registerSheet("ffg", ActorSheetFFGV2, { makeDefault: true, label: "Actor Sheet v2" });
+  ActorsCollection.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
+  ActorsCollection.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
+  const ItemsCollection = foundry?.documents?.collections?.Items || Items;
+  const ItemSheetClass = foundry?.appv1?.sheets?.ItemSheet || ItemSheet;
+  ItemsCollection.unregisterSheet("core", ItemSheetClass);
+  ItemsCollection.registerSheet("ffg", ItemSheetFFG, { label: "Item Sheet v1" });
+  ItemsCollection.registerSheet("ffg", ItemSheetFFGV2, { makeDefault: true, label: "Item Sheet v2" });
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
@@ -820,56 +830,99 @@ Hooks.once("init", async function () {
 });
 
 Hooks.on("renderSidebarTab", (app, html, data) => {
-  html.find(".chat-control-icon").click(async (event) => {
-    const dicePool = new DicePoolFFG();
-
-    let user = {
-      data: game.user.system,
-    };
-
-    await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
-  });
+  if (window.SWFFG_USE_JQUERY) {
+    // jQuery (V12 and below)
+    html.find(".chat-control-icon").click(async (event) => {
+      const dicePool = new DicePoolFFG();
+      let user = {
+        data: game.user.system,
+      };
+      await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+    });
+  } else {
+    // Native DOM 
+    // TODO: Update this to add a new button to the chat sidebar in v13+
+  }
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
   // add character import button
-  const div = $(`<div class="og-character-import"></div>`);
-  const divider = $("<hr><h4>OggDude Import</h4>");
-  const characterImportButton = $('<button class="og-character">Character</button>');
-  const npcImportButton = $('<button class="og-npc">NPC</button>');
-  div.append(divider, characterImportButton, npcImportButton);
-
-  html.find(".directory-footer").append(div);
-
-  html.find(".og-character").click(async (event) => {
-    event.preventDefault();
-    new CharacterImporter().render(true);
-  });
-  html.find(".og-npc").click(async (event) => {
-    event.preventDefault();
-    new NPCImporter().render(true);
-  });
+  let div;
+  if (window.SWFFG_USE_JQUERY) {
+    // jQuery (V12 and below)
+    const div = $(`<div class="og-character-import"></div>`);
+    const divider = $("<hr><h4>OggDude Import</h4>");
+    const characterImportButton = $('<button class="og-character">Character</button>');
+    const npcImportButton = $('<button class="og-npc">NPC</button>');
+    div.append(divider, characterImportButton, npcImportButton);
+    html.find(".directory-footer").append(div);
+    // add event handlers with .on()
+    html.find(".og-character").on("click", (event) => {
+      event.preventDefault();
+      new CharacterImporter().render(true);
+    });
+    html.find(".og-npc").on("click", (event) => {
+      event.preventDefault();
+      new NPCImporter().render(true);
+    });
+  } else {
+    // Native DOM (V13+)
+    div = document.createElement("div");
+    div.className = "og-character-import";
+    div.innerHTML = `<hr><h4>OggDude Import</h4>
+      <button class="og-character" style="width:100%;margin-bottom:4px;">OggDude Character Importer</button>
+      <button class="og-npc" style="width:100%;">OggDude NPC Importer</button>`;
+    html.querySelector(".directory-footer")?.appendChild(div);
+    // add event handlers with addEventListener()
+    div.querySelector(".og-character")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      new CharacterImporter().render(true);
+    });
+    div.querySelector(".og-npc")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      new NPCImporter().render(true);
+    });
+  }
 });
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   if (game.user.isGM) {
-    const div = $(`<div class="og-character-import"></div>`);
-    const divider = $("<hr><h4>Importers</h4>");
-    const datasetImportButton = $('<button class="og-character">OggDude Dataset Importer</button>');
-    const datasetImportButton2 = $('<button class="swa-character">Adversaries Dataset Importer</button>');
-
-    div.append(divider, datasetImportButton, datasetImportButton2);
-    html.find(".directory-footer").append(div);
-
-    html.find(".og-character").click(async (event) => {
-      event.preventDefault();
-      new DataImporter().render(true);
-    });
-
-    html.find(".swa-character").click(async (event) => {
-      event.preventDefault();
-      new SWAImporter().render(true);
-    });
+    let div;
+    if (window.SWFFG_USE_JQUERY) {
+      // jQuery (V12 and below)
+      const div = $(`<div class="og-character-import"></div>`);
+      const divider = $("<hr><h4>Importers</h4>");
+      const datasetImportButton = $('<button class="og-character">OggDude Dataset Importer</button>');
+      const datasetImportButton2 = $('<button class="swa-character">Adversaries Dataset Importer</button>');
+      div.append(divider, datasetImportButton, datasetImportButton2);
+      html.find(".directory-footer").append(div);
+      // add event handlers with .on()
+      html.find(".og-character").on("click", (event) => {
+        event.preventDefault();
+        new DataImporter().render(true);
+      });
+      html.find(".swa-character").on("click", (event) => {
+        event.preventDefault();
+        new SWAImporter().render(true);
+      });
+    } else {
+      // Native DOM (V13+)
+      div = document.createElement("div");
+      div.className = "og-character-import";
+      div.innerHTML = `<hr><h4>Importers</h4>
+      <button class="og-character" style="width:100%;margin-bottom:4px;">OggDude Dataset Importer</button>
+      <button class="swa-character" style="width:100%;">Adversaries Dataset Importer</button>`;
+      html.querySelector(".directory-footer")?.appendChild(div);
+      // add event handlers with addEventListener()
+      div.querySelector(".og-character")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        new DataImporter().render(true);
+      });
+      div.querySelector(".swa-character")?.addEventListener("click", (event) => {
+        event.preventDefault();
+        new SWAImporter().render(true);
+      });
+    }
   }
 });
 

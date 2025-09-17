@@ -62,7 +62,8 @@ export default class PopoutEditor extends FormApplication {
 
     html = this.replaceRollTags(html, actorData);
     try {
-      html = await TextEditor.enrichHTML(html, { secrets: true, documents: true, async: false });
+      const TextEditorImpl = foundry?.applications?.ux?.TextEditor?.implementation || TextEditor;
+      html = await TextEditorImpl.enrichHTML(html, { secrets: true, documents: true, async: false });
     } catch (err) {
       // ignore the message below, it means that we already created an entity link (this could be part of an editor text)
       if (err.message !== "An Entity subclass must configure the EntityCollection it belongs to.") {
