@@ -5,6 +5,7 @@
     * Please check out the artists work if you like the icons! `DistraKit` [on Twitter](https://x.com/DistraKit)
   * Stamina bars now indicate when a threshold has been exceeded! ([#1912](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1912))
   * Force Dice can now be added to the Initiative roller ([#1915](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1915))
+  * The Dice Pool window now shows likelihood of success for the roll (this is configurable and defaults to only GMs)
 * Fixes:
   * Vehicle stats can now be edited when edit mode is enabled ([#1896](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1896))
   * Removed the Active Effect from XP Adjustments to make them the same as XP Grants ([#1909](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1909))
@@ -13,8 +14,9 @@
   * Buying a rank in Brawn now properly increases Soak as well ([#1905](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1905))
   * Adding a Mod to an attachment on a Weapon no longer duplicates the mod ([#1838](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1838))
   * Custom skills can now be set as Career Skills by Careers / Specializations ([#1907](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1907))
-  * `Skill Force Dice` modifiers now dynamically read the Force Dice pool (they still accept a number, it's just ignored) ([#1890])(https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1890)
+  * `Skill Force Dice` modifiers now dynamically read the Force Dice pool (they still accept a number, it's just ignored ([#1890](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1890))
   * GMs granting XP no longer sends available XP plummeting like the younglings who trusted Anakin ([#1899](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1899))
+  * Fix for dragging talent onto Specialization not properly persisting the Ranked property ([#1938](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1938))
 
 `1.908`
 * Fixes:

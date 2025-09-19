@@ -1632,7 +1632,7 @@ export class ItemSheetFFG extends ItemSheet {
               // these are cloned to avoid local-only clobbers to the dropped object
               description: foundry.utils.deepClone(itemObject.system.description),
               attributes: foundry.utils.deepClone(itemObject.system.attributes),
-              isRanked: itemObject.system.ranked,
+              isRanked: itemObject.system.ranks.ranked,
               isForceTalent: itemObject.system.isForceTalent,
               isConflictTalent: itemObject.system.isConflictTalent,
             },
