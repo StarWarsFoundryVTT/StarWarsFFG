@@ -126,6 +126,7 @@ export class combatSettings extends ffgSettings {
       "starwarsffg.initiativeRule",
       "starwarsffg.removeCombatantAction",
       "starwarsffg.useDefense",
+      "starwarsffg.additionalStatuses",
     ];
     return super.getData(includeSettingsNames);
   }
