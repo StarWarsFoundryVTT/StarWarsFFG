@@ -18,6 +18,7 @@
   * `Skill Force Dice` modifiers now dynamically read the Force Dice pool (they still accept a number, it's just ignored ([#1890](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1890))
   * GMs granting XP no longer sends available XP plummeting like the younglings who trusted Anakin ([#1899](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1899))
   * Fix for dragging talent onto Specialization not properly persisting the Ranked property ([#1938](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1938))
+  * Further improved migration of worlds made before 1.907
 
 `1.908`
 * Fixes:
