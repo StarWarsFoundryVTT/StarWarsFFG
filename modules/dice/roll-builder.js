@@ -355,8 +355,8 @@ export default class RollBuilderFFG extends FormApplication {
    * @private
    */
   _updateSimulationPreview() {
-    const simPool = new MonteCarlo(
-      {
+    const simPool = new MonteCarlo({
+      dicePool: {
         abilityDice: this.dicePool.ability,
         difficultyDice: this.dicePool.difficulty,
         proficiencyDice: this.dicePool.proficiency,
@@ -365,9 +365,17 @@ export default class RollBuilderFFG extends FormApplication {
         setbackDice: this.dicePool.setback,
         // fixed results are not supported by the library
       },
-      game.settings.get("starwarsffg", "rollSimulation"),
-      false,
-    );
+      iterations: game.settings.get("starwarsffg", "rollSimulation"),
+      runSimulate: false,
+      modifiers: {
+        automaticSuccesses: this.dicePool.success,
+        automaticFailures: this.dicePool.failure,
+        automaticAdvantages: this.dicePool.advantage,
+        automaticThreats: this.dicePool.threat,
+        automaticTriumphs: this.dicePool.triumph,
+        automaticDespairs: this.dicePool.despair,
+      },
+    });
     const simResults = simPool.simulate();
 
     let newClass = "";

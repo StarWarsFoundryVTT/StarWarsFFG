@@ -34,11 +34,113 @@ const simulation = new MonteCarlo(pool, 10000, false);
 const results = simulation.simulate();
 
 console.log("Success Probability:", results.successProbability);
-console.log("Average Successes:", results.averages.success);
+console.log("Average Successes:", results.averages.successes);
 console.log(
   "Standard Deviation of Successes:",
-  results.standardDeviations.success,
+  results.standardDeviations.successes,
 );
+```
+
+### Dice Pool Modifiers (New in v2.2.0)
+
+The Monte Carlo library now supports dice pool modifiers including automatic symbols, dice upgrades, and downgrades. These features integrate with @swrpg-online/dice v1.4.0+.
+
+#### Automatic Symbols
+
+Add automatic successes, failures, advantages, threats, triumphs, or despairs to your dice pools:
+
+```typescript
+import { MonteCarlo, SimulationConfig } from "@swrpg-online/monte-carlo";
+
+const config: SimulationConfig = {
+  dicePool: {
+    abilityDice: 2,
+    difficultyDice: 2,
+  },
+  iterations: 10000,
+  modifiers: {
+    automaticSuccesses: 1, // Add 1 automatic success
+    automaticAdvantages: 2, // Add 2 automatic advantages
+  },
+};
+
+const simulation = new MonteCarlo(config);
+const results = simulation.simulate();
+
+// Results include modifier analysis
+console.log(
+  "Automatic Contributions:",
+  results.modifierAnalysis?.automaticSymbolContribution,
+);
+console.log(
+  "Rolled Contributions:",
+  results.modifierAnalysis?.rolledSymbolContribution,
+);
+```
+
+#### Dice Upgrades and Downgrades
+
+Upgrade ability dice to proficiency dice, or downgrade challenge dice to difficulty dice:
+
+```typescript
+const config: SimulationConfig = {
+  dicePool: {
+    abilityDice: 3,
+    difficultyDice: 2,
+  },
+  modifiers: {
+    upgradeAbility: 2, // Upgrade 2 ability dice to proficiency
+    upgradeDifficulty: 1, // Upgrade 1 difficulty die to challenge
+  },
+};
+```
+
+#### Player vs Opposition Modifiers
+
+Apply different modifiers to player and opposition rolls:
+
+```typescript
+const config: SimulationConfig = {
+  dicePool: {
+    abilityDice: 2,
+    proficiencyDice: 1,
+    difficultyDice: 2,
+  },
+  playerModifiers: {
+    automaticSuccesses: 1,
+    upgradeAbility: 1,
+  },
+  oppositionModifiers: {
+    automaticThreats: 1,
+    upgradeDifficulty: 1,
+  },
+};
+```
+
+#### Modifier Analysis
+
+When using modifiers, the results include additional analysis:
+
+```typescript
+interface ModifierAnalysis {
+  automaticSymbolContribution: {
+    successes: number;
+    failures: number;
+    advantages: number;
+    threats: number;
+    triumphs: number;
+    despairs: number;
+  };
+  rolledSymbolContribution: {
+    // Same structure, showing dice-rolled symbols
+  };
+  upgradeImpact: {
+    abilityUpgrades: number;
+    difficultyUpgrades: number;
+    proficiencyDowngrades: number;
+    challengeDowngrades: number;
+  };
+}
 ```
 
 ### Results Include

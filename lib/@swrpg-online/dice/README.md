@@ -17,6 +17,10 @@ A TypeScript library that creates dice rolls using the [narrative dice system](h
   - Advantages / Threats
   - Triumphs / Despairs
   - Light / Dark Side Points (Force dice)
+- **Dice Pool Modifiers** (New!):
+  - Automatic symbols from talents, attachments, and equipment
+  - Dice upgrades (ability→proficiency, difficulty→challenge)
+  - Dice downgrades (proficiency→ability, challenge→difficulty)
 - Comprehensive Test Coverage
 - The safety of TypeScript
 - CLI Support
@@ -43,16 +47,21 @@ npm i @swrpg-online/dice
 swrpg-dice <dice-notation> [options]
 ```
 
-Example:
+Examples:
 
-```
-swrpg-dice 2y 1g 1p 1b 1sb --hints
+```bash
+# Basic roll with modifiers
+swrpg-dice 2y 1g 1p 1b 1sb +2s +1a --hints
+
+# With upgrades and downgrades
+swrpg-dice 3g 2p +2ua +1ud  # Upgrades 2 ability and 1 difficulty
+swrpg-dice 2y 1r +1dp +1dc  # Downgrades 1 proficiency and 1 challenge
 ```
 
 Output:
 
 ```
-1 Success(es), 4 Advantage(s), 1 Threat(s)
+3 Success(es), 5 Advantage(s)
 
 Possible actions:
  • 1 Advantage or 1 Triumph - Recover one strain (may be applied more than once).
@@ -71,11 +80,30 @@ Dice Options:
 - blk/k/sb/s = Black / Setback
 - w/f = White / Force
 
+Modifier Options (use + or - prefix):
+
+**Automatic Symbols:**
+
+- `+Ns` - Add N automatic successes
+- `+Nf` - Add N automatic failures
+- `+Na` - Add N automatic advantages
+- `+Nt` - Add N automatic threats
+- `+Ntr` - Add N automatic triumphs
+- `+Nd` - Add N automatic despairs
+
+**Dice Upgrades/Downgrades:**
+
+- `+Nua` - Upgrade N ability dice to proficiency
+- `+Nud` - Upgrade N difficulty dice to challenge
+- `+Ndp` - Downgrade N proficiency dice to ability
+- `+Ndc` - Downgrade N challenge dice to difficulty
+
 ## Programmatic Usage
 
 ```typescript
-import { roll, DicePool } from '@swrpg-online/dice';
+import { roll, DicePool, createCombatCheck, applyTalentModifiers } from '@swrpg-online/dice';
 
+// Basic usage
 const pool: DicePool = {
     abilityDice: 2,
     proficiencyDice: 1,
@@ -87,6 +115,27 @@ const result = roll(pool);
 
 console.log(result.results);
 console.log(result.summary);
+
+// With modifiers (talents, attachments, etc.)
+const enhancedPool: DicePool = {
+    abilityDice: 3,
+    difficultyDice: 2,
+    automaticSuccesses: 1,      // From a talent like Sharpshooter
+    automaticAdvantages: 1,      // From Superior weapon quality
+    upgradeAbility: 1,           // From Aim maneuver
+    upgradeDifficulty: 2,        // From Adversary 2 talent
+};
+
+const enhancedResult = roll(enhancedPool);
+
+// Using helper functions
+const basePool = createCombatCheck(3, 1, 1); // 3 ability, 1 proficiency, 1 boost
+const talentBonus = {
+    automaticSuccesses: 1,
+    upgradeAbility: 1
+};
+const modifiedPool = applyTalentModifiers(basePool, talentBonus);
+const finalResult = roll(modifiedPool);
 
 => {
   "results": [
