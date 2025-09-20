@@ -717,6 +717,8 @@
   "SWFFG.Combats.Slots.Dialog.Labels.Submit": "Submit",
   "SWFFG.Settings.UseGenericSlots.Name": "Use Generic Slots",
   "SWFFG.Settings.UseGenericSlots.Hint": "Replaces named slots in the combat tracker with generic, claimable slots",
+  "SWFFG.Settings.AdditionalStatuses.Name": "Custom Status Effects",
+  "SWFFG.Settings.AdditionalStatuses.Hint": "a JSON blob with new statuses to add. See the wiki for more info",
   "SWFFG.Settings.maxAttribute.Name": "Max characteristic value",
   "SWFFG.Settings.maxAttribute.Hint": "A characteristic above this value will be reduced to it. Setting this above 9 will result in errors.",
   "SWFFG.Settings.maxSkill.Name": "Max skill ranks",

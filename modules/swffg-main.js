@@ -123,6 +123,20 @@ Hooks.once("init", async function () {
 
   CONFIG.ui.pause = PauseFFG;
 
+
+   /**
+   * Register statuses to add
+   */
+  game.settings.register("starwarsffg", "additionalStatuses", {
+    name: game.i18n.localize("SWFFG.Settings.AdditionalStatuses.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.AdditionalStatuses.Hint"),
+    scope: "world",
+    config: false,
+    default: "[]",
+    type: String,
+    onChange: (rule) => window.location.reload()
+  });
+
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
@@ -357,6 +371,17 @@ Hooks.once("init", async function () {
         duration: "combat",
       }
     });
+
+    // custom statuses defined by the user
+    try {
+      const addedStatuses = $.parseJSON(game.settings.get("starwarsffg", "additionalStatuses"));
+      for (const status of addedStatuses) {
+        CONFIG.statusEffects.push(status);
+      }
+
+    } catch (e) {
+      ui.notifications.warn("Failed to load custom statuses, likely bad JSON");
+    }
   };
 
   // Load character templates so that dynamic skills lists work correctly

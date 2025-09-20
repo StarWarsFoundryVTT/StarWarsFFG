@@ -6,6 +6,7 @@
   * Stamina bars now indicate when a threshold has been exceeded! ([#1912](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1912))
   * Force Dice can now be added to the Initiative roller ([#1915](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1915))
   * The Dice Pool window now shows likelihood of success for the roll (this is configurable and defaults to only GMs)
+  * You can now define additional status effects to apply via the settings menu ([#1941](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1941))
 * Fixes:
   * Vehicle stats can now be edited when edit mode is enabled ([#1896](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1896))
   * Removed the Active Effect from XP Adjustments to make them the same as XP Grants ([#1909](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1909))
