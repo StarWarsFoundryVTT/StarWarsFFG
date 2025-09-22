@@ -2444,8 +2444,8 @@ export class ActorSheetFFG extends ActorSheet {
               updatedAvailableXP,
               updatedTotalXP,
               adjustReason,
-              "Self")
-            ;
+              "Self"
+            );
             await ActorHelpers.endEditMode(this.actor, AEState, true);
             await this.render(true);
          }
