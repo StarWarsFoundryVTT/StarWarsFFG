@@ -1,3 +1,7 @@
+`1.910`
+* Fixes:
+  * Correct XP manual adjustment bug ([#1948](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1948))
+
 `1.909`
 * Features:
   * New default images have been added for common items and actors!

@@ -2429,14 +2429,24 @@ export class ActorSheetFFG extends ActorSheet {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize("SWFFG.XP.Adjust.Confirm"),
           callback: async () => {
+            const originalXP = parseInt(this.actor.system.experience.available);
+            const AEState = await ActorHelpers.beginEditMode(this.actor, true);
             const startingAvailableXP =  parseInt(this.actor.system.experience.available);
             const totalXP =  parseInt(this.actor.system.experience.total);
             const adjustAmount = parseInt($("#adjustAmount").val());
             const adjustReason = $("#adjustReason").val();
-            const updatedAvailableXP = startingAvailableXP + adjustAmount;
+            const updatedAvailableXP = originalXP + adjustAmount;
             const updatedTotalXP = totalXP + adjustAmount;
             await this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
-            await xpLogEarn(this.object, adjustAmount, updatedAvailableXP, updatedTotalXP, adjustReason, "Self");
+            await xpLogEarn(
+              this.object,
+              adjustAmount,
+              updatedAvailableXP,
+              updatedTotalXP,
+              adjustReason,
+              "Self"
+            );
+            await ActorHelpers.endEditMode(this.actor, AEState, true);
             await this.render(true);
          }
       },
