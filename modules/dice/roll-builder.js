@@ -355,38 +355,42 @@ export default class RollBuilderFFG extends FormApplication {
    * @private
    */
   _updateSimulationPreview() {
-    const simPool = new MonteCarlo({
-      dicePool: {
-        abilityDice: this.dicePool.ability,
-        difficultyDice: this.dicePool.difficulty,
-        proficiencyDice: this.dicePool.proficiency,
-        challengeDice: this.dicePool.challenge,
-        boostDice: this.dicePool.boost,
-        setbackDice: this.dicePool.setback,
-        // fixed results are not supported by the library
-      },
-      iterations: game.settings.get("starwarsffg", "rollSimulation"),
-      runSimulate: false,
-      modifiers: {
-        automaticSuccesses: this.dicePool.success,
-        automaticFailures: this.dicePool.failure,
-        automaticAdvantages: this.dicePool.advantage,
-        automaticThreats: this.dicePool.threat,
-        automaticTriumphs: this.dicePool.triumph,
-        automaticDespairs: this.dicePool.despair,
-      },
-    });
-    const simResults = simPool.simulate();
+    try {
+      const simPool = new MonteCarlo({
+        dicePool: {
+          abilityDice: this.dicePool.ability,
+          difficultyDice: this.dicePool.difficulty,
+          proficiencyDice: this.dicePool.proficiency,
+          challengeDice: this.dicePool.challenge,
+          boostDice: this.dicePool.boost,
+          setbackDice: this.dicePool.setback,
+          // fixed results are not supported by the library
+        },
+        iterations: game.settings.get("starwarsffg", "rollSimulation"),
+        runSimulate: false,
+        modifiers: {
+          automaticSuccesses: this.dicePool.success,
+          automaticFailures: this.dicePool.failure,
+          automaticAdvantages: this.dicePool.advantage,
+          automaticThreats: this.dicePool.threat,
+          automaticTriumphs: this.dicePool.triumph,
+          automaticDespairs: this.dicePool.despair,
+        },
+      });
+      const simResults = simPool.simulate();
 
-    let newClass = "";
-    if (simResults.successProbability < .25) {
-      newClass = "unlikely";
-    } else if (simResults.successProbability > .75) {
-      newClass = "likely";
+      let newClass = "";
+      if (simResults.successProbability < .25) {
+        newClass = "unlikely";
+      } else if (simResults.successProbability > .75) {
+        newClass = "likely";
+      }
+
+      $("#success_chance").text(
+        `${(simResults.successProbability * 100).toLocaleString(undefined, {maximumFractionDigits: 0})}%`
+      ).removeClass("likely unlikely").addClass(newClass);
+    } catch (e) {
+
     }
-
-    $("#success_chance").text(
-      `${(simResults.successProbability * 100).toLocaleString(undefined, {maximumFractionDigits: 0})}%`
-    ).removeClass("likely unlikely").addClass(newClass);
   }
 }
