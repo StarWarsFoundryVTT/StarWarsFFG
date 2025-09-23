@@ -2,6 +2,7 @@
 * Fixes:
   * Correct XP manual adjustment bug ([#1948](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1948))
   * The chat Dice Roller now works again ([#1951](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1951))
+  * Remove sheet v1 for Actors and items, as it's not being supported and can actively that actor/item ([#1950](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1950))
 
 `1.909`
 * Features:
