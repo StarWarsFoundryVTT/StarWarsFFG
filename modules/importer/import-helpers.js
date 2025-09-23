@@ -2656,12 +2656,15 @@ export default class ImportHelpers {
     };
 
     await ImportHelpers.asyncForEach(mod.DieModifier, async (dieMod) => {
+      const key = `attr${new Date().getTime()}`;
+      // ensure further keys have a new entry
+      await new Promise(r => setTimeout(r, 1));
       if (!dieMod) {
         return;
       } else if (dieMod.SkillKey) {
         // this is a skill modifier
         const skillModifier = ImportHelpers.processSkillMod({ Key: dieMod.SkillKey, ...dieMod });
-        output.attributes[skillModifier.type.replace(" ", "_")] = skillModifier.value;
+        output.attributes[key] = skillModifier.value;
       } else if (dieMod.SkillChar) {
         // this is a skill modifier based on characteristic (ex all Brawn skills);
         const skillTheme = await game.settings.get("starwarsffg", "skilltheme");
@@ -2672,10 +2675,10 @@ export default class ImportHelpers {
         characteristicSkills.forEach((cs) => {
           const skillModifier = ImportHelpers.processSkillMod({ Skill: cs, ...dieMod });
 
-          if (output.attributes[skillModifier.type]) {
-            output.attributes[skillModifier.type].value += skillModifier.value.value;
+          if (output.attributes[key]) {
+            output.attributes[key].value += skillModifier.value.value;
           } else {
-            output.attributes[skillModifier.type] = skillModifier.value;
+            output.attributes[key] = skillModifier.value;
           }
         });
       } else if (dieMod.SkillType) {
@@ -2687,15 +2690,15 @@ export default class ImportHelpers {
         characteristicSkills.forEach((cs) => {
           const skillModifier = ImportHelpers.processSkillMod({ Skill: cs, ...dieMod });
 
-          if (output.attributes[skillModifier.type]) {
-            output.attributes[skillModifier.type].value += skillModifier.value.value;
+          if (output.attributes[key]) {
+            output.attributes[key].value += skillModifier.value.value;
           } else {
-            output.attributes[skillModifier.type] = skillModifier.value;
+            output.attributes[key] = skillModifier.value;
           }
         });
       } else {
         const skillModifier = ImportHelpers.processSkillMod({ Key: dieMod.SkillKey, ...dieMod }, true);
-        output.attributes[skillModifier.type] = skillModifier.value;
+        output.attributes[key] = skillModifier.value;
       }
     });
 
