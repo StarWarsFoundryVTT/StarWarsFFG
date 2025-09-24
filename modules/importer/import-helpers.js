@@ -3078,7 +3078,13 @@ export default class ImportHelpers {
           let modPath = ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']);
           const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
-            inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.attributes[k].value;
+            if (modPath === "system.stats.wounds.max" && item.type === "species") {
+              inherentEffect.changes[inherentEffectChangeIndex].value = parseInt(inherentEffect.changes[inherentEffectChangeIndex].value) + parseInt(item.system.attributes.Brawn.value);
+            } else if (modPath === "system.stats.strain.max" && item.type === "species") {
+              inherentEffect.changes[inherentEffectChangeIndex].value = parseInt(inherentEffect.changes[inherentEffectChangeIndex].value) + parseInt(item.system.attributes.Willpower.value);
+            } else {
+              inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.attributes[k].value;
+            }
           }
         }
       }
