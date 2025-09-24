@@ -256,10 +256,14 @@ export class ActorSheetFFG extends ActorSheet {
 
             // add them to the items, so we can render them on the sheet
             let roll;
-            if (crew[i].role !== "Pilot") {
-              roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+            if (actor) {
+              if (crew[i].role !== "Pilot") {
+                roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+              } else {
+                roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+              }
             } else {
-              roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+              deregister_crew(this.actor, crew[i].actor_id, crew[i].role);
             }
             if (!roll) {
               roll = 'N/A';
