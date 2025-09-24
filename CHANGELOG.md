@@ -8,6 +8,7 @@
   * Imported Species now apply characteristics to Wounds and Strain thresholds without having to open + close them once ([#1955](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1955))
     * Note that this requires a re-import of the species
   * Vehicle sheets no longer break when a crew member has been deleted ([#1959](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1959))
+  * Force Dice Boost now accounts for the full Force Rating ([#1949](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1949))
 
 `1.909`
 * Features:
