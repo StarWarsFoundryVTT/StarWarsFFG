@@ -4,6 +4,9 @@
   * The chat Dice Roller now works again ([#1951](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1951))
   * Remove sheet v1 for Actors and items, as it's not being supported and can actively that actor/item ([#1950](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1950))
   * The importer now correctly processes Die modifiers, fixing talents (especially on species) ([#1957](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1957))
+    * Note that this requires a re-import of the species and talents
+  * Imported Species now apply characteristics to Wounds and Strain thresholds without having to open + close them once ([#1955](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1955))
+    * Note that this requires a re-import of the species
 
 `1.909`
 * Features:
