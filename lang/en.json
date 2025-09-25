@@ -346,6 +346,7 @@
   "SWFFG.LoadFile": "Load File",
   "SWFFG.ImportFile": "Start Import",
   "SWFFG.CheckAll": "Select All",
+  "SWFFG.DeleteExisting": "Delete Existing Compendiums",
   "SWFFG.Cost": "COST:",
   "SWFFG.EnableSoakCalc": "Enable Soak Auto-Calculation",
   "SWFFG.EnableSoakCalcHint": "Enable soak auto-calculation and unload field for manual entry",

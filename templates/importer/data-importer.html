@@ -21,6 +21,12 @@
   <div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
+        <input type="checkbox" id="deleteExisting" name="deleteExisting" checked />
+        <label for="deleteExisting"> {{localize "SWFFG.DeleteExisting"}}</label><br />
+      </div>
+    </div>
+    <div style="display: flex;">
+      <div style="white-space: nowrap;">
         <button id="importAll">
           <i class="fa-solid fa-lasso"></i>
           {{ localize "SWFFG.CheckAll" }}

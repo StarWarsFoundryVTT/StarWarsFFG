@@ -9,6 +9,7 @@
     * Note that this requires a re-import of the species
   * Vehicle sheets no longer break when a crew member has been deleted ([#1959](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1959))
   * Force Dice Boost now accounts for the full Force Rating ([#1949](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1949))
+  * OggDude data imports now default to deleting existing compendiums (most updated import logic relies on the compendiums not existing) ([#1964](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1964))
 
 `1.909`
 * Features:
