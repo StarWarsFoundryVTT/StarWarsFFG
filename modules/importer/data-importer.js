@@ -133,6 +133,14 @@ export default class DataImporter extends FormApplication {
         })
         .get();
 
+      const shouldDelete = $("#deleteExisting").is(':checked');
+
+      if (shouldDelete) {
+        for (const itemType of importFiles) {
+          await this._deleteCompendium(itemType['itemtype']);
+        }
+      }
+
       const selectedFile = $("#import-file").val();
       this._importLogger(`Using ${selectedFile} for import source`);
 
@@ -286,4 +294,29 @@ export default class DataImporter extends FormApplication {
       await callback(array[index], index, array);
     }
   };
+
+  async _deleteCompendium(itemType) {
+    const typeToCompendium = {
+      armor: ["world.oggdudearmor"],
+      career: ["world.oggdudecareers"],
+      forcepower: ["world.oggdudeforcepowers"],
+      gear: ["world.oggdudegear"],
+      itemdescriptors: ["world.oggdudearmormods", "world.oggdudeweaponmods", "world.oggdudegenericmods", "world.oggdudevehiclemods"],
+      itemattachments: ["world.oggdudearmorattachments", "world.oggdudeweaponattachments", "world.oggdudegenericattachments", "world.oggdudevehicleattachments"],
+      signatureability: ["world.oggdudesignatureabilities"],
+      skills: [],
+      specialization: ["world.oggdudespecializations"],
+      species: ["world.oggdudespecies"],
+      talent: ["world.oggdudetalents"],
+      vehicle: ["world.oggdudevehiclesplanetary", "world.oggdudevehiclesspace"],
+      weapon: ["world.oggdudeweapons", "world.oggdudevehicleweapons"],
+    };
+
+    for (const curType of typeToCompendium[itemType]) {
+      const pack = game.packs.get(curType);
+      if (pack) {
+        await pack.deleteCompendium();
+      }
+    }
+  }
 }
