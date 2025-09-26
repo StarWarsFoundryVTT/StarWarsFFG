@@ -12,6 +12,7 @@
   * OggDude data imports now default to deleting existing compendiums (most updated import logic relies on the compendiums not existing) ([#1964](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1964))
   * Actor sheets should no longer go wild when manually adjusting XP ([#1954](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1954))
   * Fixed a strange bug where XP would sometimes plummet to -20 and total would become null
+  * Custom statuses are no longer defined in the _drawbar function (whoops lol)
 
 `1.909`
 * Features:

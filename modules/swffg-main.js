@@ -222,166 +222,6 @@ Hooks.once("init", async function () {
     // Set position
     let posY = number === 0 ? this.h - h : 0;
     bar.position.set(0, posY);
-
-    // define custom status effects
-    const allSkillChanges = {
-      boost: [],
-      setback: [],
-      upgrade: [],
-      success: [],
-    };
-    for (const skill of Object.keys(CONFIG.FFG.skills)) {
-      allSkillChanges['boost'].push({
-        key: `system.skills.${skill}.boost`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-      allSkillChanges['setback'].push({
-        key: `system.skills.${skill}.setback`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-      allSkillChanges['upgrade'].push({
-        key: `system.skills.${skill}.upgrades`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-      allSkillChanges['success'].push({
-        key: `system.skills.${skill}.success`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-    }
-
-    // set up our own statuses
-    CONFIG.statusEffects = [];
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-defeated",
-      img: "systems/starwarsffg/images/status/defeated.svg",
-      name: "SWFFG.Status.Defeated",
-      changes: [],
-    });
-
-    // one-time statuses
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-boost-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/blue.png`,
-      name: "SWFFG.Status.Boost.Next",
-      changes: allSkillChanges['boost'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-setback-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/black.png`,
-      name: "SWFFG.Status.Setback.Next",
-      changes: allSkillChanges['setback'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-upgrade-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/yellow.png`,
-      name: "SWFFG.Status.Upgrade.Next",
-      changes: allSkillChanges['upgrade'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-success-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/success.png`,
-      name: "SWFFG.Status.Success.Next",
-      changes: allSkillChanges['success'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-heavy-cover",
-      img: "icons/equipment/shield/buckler-wooden-boss-lightning.webp",
-      name: "SWFFG.Status.Cover.Heavy",
-      changes: [
-        {
-          key: "system.stats.defence.melee",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          value: "2",
-        },
-        {
-          key: "system.stats.defence.ranged",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          value: "2",
-        },
-      ],
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-disoriented",
-      img: "systems/starwarsffg/images/status/disoriented.svg",
-      name: "SWFFG.Status.Disoriented",
-      changes: allSkillChanges['setback'],
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-immobilized",
-      img: "systems/starwarsffg/images/status/immobilized.svg",
-      name: "SWFFG.Status.Immobilized",
-      changes: [],
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-staggered",
-      img: "systems/starwarsffg/images/status/staggered.svg",
-      name: "SWFFG.Status.Staggered",
-      changes: [],
-    });
-    // combat-length statuses
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-boost-combat",
-      img: `systems/starwarsffg/images/status/blue.png`,
-      name: "SWFFG.Status.Boost.Combat",
-      changes: allSkillChanges['boost'],
-      system: {
-        duration: "combat",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-setback-combat",
-      img: `systems/starwarsffg/images/status/black.png`,
-      name: "SWFFG.Status.Setback.Combat",
-      changes: allSkillChanges['setback'],
-      system: {
-        duration: "combat",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-upgrade-combat",
-      img: `systems/starwarsffg/images/status/yellow.png`,
-      name: "SWFFG.Status.Upgrade.Combat",
-      changes: allSkillChanges['upgrade'],
-      system: {
-        duration: "combat",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-success-combat",
-      img: `systems/starwarsffg/images/status/success.png`,
-      name: "SWFFG.Status.Success.Combat",
-      changes: allSkillChanges['success'],
-      system: {
-        duration: "combat",
-      }
-    });
-
-    // custom statuses defined by the user
-    try {
-      const addedStatuses = $.parseJSON(game.settings.get("starwarsffg", "additionalStatuses"));
-      for (const status of addedStatuses) {
-        CONFIG.statusEffects.push(status);
-      }
-
-    } catch (e) {
-      ui.notifications.warn("Failed to load custom statuses, likely bad JSON");
-    }
   };
 
   // Load character templates so that dynamic skills lists work correctly
@@ -696,6 +536,166 @@ Hooks.once("init", async function () {
 
   FFG.configureDice();
   FFG.configureVehicleRange();
+
+  // define custom status effects
+    const allSkillChanges = {
+      boost: [],
+      setback: [],
+      upgrade: [],
+      success: [],
+    };
+    for (const skill of Object.keys(CONFIG.FFG.skills)) {
+      allSkillChanges['boost'].push({
+        key: `system.skills.${skill}.boost`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+      allSkillChanges['setback'].push({
+        key: `system.skills.${skill}.setback`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+      allSkillChanges['upgrade'].push({
+        key: `system.skills.${skill}.upgrades`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+      allSkillChanges['success'].push({
+        key: `system.skills.${skill}.success`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+    }
+
+    // set up our own statuses
+    CONFIG.statusEffects = [];
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-defeated",
+      img: "systems/starwarsffg/images/status/defeated.svg",
+      name: "SWFFG.Status.Defeated",
+      changes: [],
+    });
+
+    // one-time statuses
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-boost-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/blue.png`,
+      name: "SWFFG.Status.Boost.Next",
+      changes: allSkillChanges['boost'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-setback-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/black.png`,
+      name: "SWFFG.Status.Setback.Next",
+      changes: allSkillChanges['setback'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-upgrade-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/yellow.png`,
+      name: "SWFFG.Status.Upgrade.Next",
+      changes: allSkillChanges['upgrade'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-success-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/success.png`,
+      name: "SWFFG.Status.Success.Next",
+      changes: allSkillChanges['success'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-heavy-cover",
+      img: "icons/equipment/shield/buckler-wooden-boss-lightning.webp",
+      name: "SWFFG.Status.Cover.Heavy",
+      changes: [
+        {
+          key: "system.stats.defence.melee",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: "2",
+        },
+        {
+          key: "system.stats.defence.ranged",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: "2",
+        },
+      ],
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-disoriented",
+      img: "systems/starwarsffg/images/status/disoriented.svg",
+      name: "SWFFG.Status.Disoriented",
+      changes: allSkillChanges['setback'],
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-immobilized",
+      img: "systems/starwarsffg/images/status/immobilized.svg",
+      name: "SWFFG.Status.Immobilized",
+      changes: [],
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-staggered",
+      img: "systems/starwarsffg/images/status/staggered.svg",
+      name: "SWFFG.Status.Staggered",
+      changes: [],
+    });
+    // combat-length statuses
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-boost-combat",
+      img: `systems/starwarsffg/images/status/blue.png`,
+      name: "SWFFG.Status.Boost.Combat",
+      changes: allSkillChanges['boost'],
+      system: {
+        duration: "combat",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-setback-combat",
+      img: `systems/starwarsffg/images/status/black.png`,
+      name: "SWFFG.Status.Setback.Combat",
+      changes: allSkillChanges['setback'],
+      system: {
+        duration: "combat",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-upgrade-combat",
+      img: `systems/starwarsffg/images/status/yellow.png`,
+      name: "SWFFG.Status.Upgrade.Combat",
+      changes: allSkillChanges['upgrade'],
+      system: {
+        duration: "combat",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-success-combat",
+      img: `systems/starwarsffg/images/status/success.png`,
+      name: "SWFFG.Status.Success.Combat",
+      changes: allSkillChanges['success'],
+      system: {
+        duration: "combat",
+      }
+    });
+
+    // custom statuses defined by the user
+    try {
+      const addedStatuses = $.parseJSON(game.settings.get("starwarsffg", "additionalStatuses"));
+      for (const status of addedStatuses) {
+        CONFIG.statusEffects.push(status);
+      }
+
+    } catch (e) {
+      ui.notifications.warn("Failed to load custom statuses, likely bad JSON");
+    }
 
   // Register sheet application classes
   Actors.unregisterSheet("core", ActorSheet);
