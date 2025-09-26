@@ -2434,11 +2434,11 @@ export class ActorSheetFFG extends ActorSheet {
           label: game.i18n.localize("SWFFG.XP.Adjust.Confirm"),
           callback: async () => {
             const availableXPToLog = foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
-            const AEState = await ActorHelpers.beginEditMode(this.actor, true);
-            const startingAvailableXP =  parseInt(this.actor.system.experience.available);
-            const totalXP =  parseInt(this.actor.system.experience.total);
             const adjustAmount = parseInt($("#adjustAmount").val());
-            const adjustReason = $("#adjustReason").val();
+            const adjustReason = foundry.utils.deepClone($("#adjustReason").val());
+            const AEState = await ActorHelpers.beginEditMode(this.actor, true);
+            const startingAvailableXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
+            const totalXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.total));
             const updatedAvailableXP = startingAvailableXP + adjustAmount;
             const updatedTotalXP = totalXP + adjustAmount;
             await this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
@@ -2451,7 +2451,6 @@ export class ActorSheetFFG extends ActorSheet {
               "Self"
             );
             await ActorHelpers.endEditMode(this.actor, AEState, true);
-            await this.render(true);
          }
       },
       two: {
@@ -2461,6 +2460,22 @@ export class ActorSheetFFG extends ActorSheet {
      },
     });
     d.render(true);
+  }
+
+  debounceRender = foundry.utils.debounce(
+    (force, options) => {
+      super.render(force, options);
+    },
+    100,
+    {
+      leading: true,
+      maxWait: 100,
+    },
+  );
+
+  /** @override **/
+  render(force, options) {
+    this.debounceRender(force, options);
   }
 }
 
