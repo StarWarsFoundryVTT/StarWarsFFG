@@ -1,3 +1,7 @@
+`1.911`
+* Fixes:
+  * Fix species talents/abilities being added/removed by each player online leading to duplicates if GM is online. ([#1832](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1832))
+
 `1.910`
 * Fixes:
   * Correct XP manual adjustment bug ([#1948](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1948))

@@ -1230,6 +1230,7 @@ Hooks.once("ready", async () => {
   });
 
   Hooks.on("createItem", async (item, options, userId) => {
+    if (userId != game.user.id) return
     // add talents from species to character
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
@@ -1272,6 +1273,7 @@ Hooks.once("ready", async () => {
   });
   // data for _onDropItemCreate has system.encumbrance.adjusted = 0, despite it being proper in the item itself
   Hooks.on("deleteItem", (item, options, userId) => {
+    if (userId != game.user.id) return
     // remove talents added by species
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
