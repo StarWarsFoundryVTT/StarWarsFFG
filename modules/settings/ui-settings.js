@@ -100,6 +100,11 @@ export class uiSettings extends ffgSettings {
       "starwarsffg.ui-token-healthy",
       "starwarsffg.ui-token-wounded",
       "starwarsffg.ui-token-overwounded",
+      "starwarsffg.ui-token-stamina-ok",
+      "starwarsffg.ui-token-stamina-damaged",
+      "starwarsffg.ui-token-stamina-over",
+      "starwarsffg.displaySimulation",
+      "starwarsffg.rollSimulation",
     ];
     return super.getData(includeSettingsNames);
   }
@@ -121,6 +126,7 @@ export class combatSettings extends ffgSettings {
       "starwarsffg.initiativeRule",
       "starwarsffg.removeCombatantAction",
       "starwarsffg.useDefense",
+      "starwarsffg.additionalStatuses",
     ];
     return super.getData(includeSettingsNames);
   }

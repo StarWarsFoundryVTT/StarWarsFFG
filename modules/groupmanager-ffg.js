@@ -1,4 +1,5 @@
 import {xpLogEarn} from "./helpers/actor-helpers.js";
+import ActorHelpers from "./helpers/actor-helpers.js";
 
 const CanvasLayerClass = foundry?.canvas?.layers?.CanvasLayer || CanvasLayer;
 export class GroupManagerLayer extends CanvasLayerClass {
@@ -343,6 +344,7 @@ export class GroupManager extends FormApplication {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize("SWFFG.GrantXP"),
           callback: async () => {
+            const state = await ActorHelpers.beginEditMode(character, true);
             const container = document.getElementById(id);
             const amount = container.querySelector('input[name="amount"]');
             const note = container.querySelector('input[name="note"]').value;
@@ -351,6 +353,7 @@ export class GroupManager extends FormApplication {
             character.update({ ["system.experience.total"]: +character.system.experience.total + +amount.value });
             character.update({ ["system.experience.available"]: +character.system.experience.available + +amount.value });
             await xpLogEarn(character, amount.value, available, total, note);
+            await ActorHelpers.endEditMode(character, state, true);
             ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
           },
         },
@@ -382,11 +385,13 @@ export class GroupManager extends FormApplication {
             const note = container.querySelector('input[name="note"]').value;
             for (const c of characters) {
               const character = game.actors.get(c);
+              const state = await ActorHelpers.beginEditMode(character, true);
               const available = +character.system.experience.available + +amount.value;
               const total = +character.system.experience.total + +amount.value;
               character.update({ ["system.experience.total"]: +character.system.experience.total + +amount.value });
               character.update({ ["system.experience.available"]: +character.system.experience.available + +amount.value });
               await xpLogEarn(character, amount.value, available, total, note);
+              await ActorHelpers.endEditMode(character, state, true);
               ui.notifications.info(`Granted ${amount.value} XP to ${character.name}.`);
             }
           },

@@ -222,6 +222,7 @@ export class CombatFFG extends Combat {
         threat: await TextEditor.enrichHTML("[TH]"),
         failure: await TextEditor.enrichHTML("[FA]"),
         upgrade: await TextEditor.enrichHTML("[PR]"),
+        force: await TextEditor.enrichHTML("[FO]"),
       };
 
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
@@ -268,6 +269,7 @@ export class CombatFFG extends Combat {
                   pool.threat += +addPool.threat;
                   pool.boost += +addPool.boost;
                   pool.setback += +addPool.setback;
+                  pool.force = +addPool.force;
                   pool.upgrade(addPool.upgrades)
 
                   const rollData = c.actor ? c.actor.getRollData() : {};

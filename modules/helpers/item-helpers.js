@@ -288,7 +288,6 @@ export default class ItemHelpers {
               "changes": [{
                 key: matchingEffect.changes[0].key,
                 mode: matchingEffect.changes[0].mode,
-                priority: matchingEffect.changes[0].priority,
                 value: newValue,
               }],
             });

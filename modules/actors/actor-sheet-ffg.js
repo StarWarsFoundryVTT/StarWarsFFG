@@ -104,10 +104,12 @@ export class ActorSheetFFG extends ActorSheetClass {
                 label: game.i18n.localize("SWFFG.DragDrop.PurchaseItem"),
                 callback: async (that) => {
                   if (cost > 0) {
+                    const AEState = await ActorHelpers.beginEditMode(this.actor, true);
+                    const updatedAvailableXP = this.actor.system.experience.available;
                     await this.object.update({
                       system: {
                         experience: {
-                          available: availableXP - cost,
+                          available: updatedAvailableXP - cost,
                         }
                       }
                     });
@@ -117,6 +119,7 @@ export class ActorSheetFFG extends ActorSheetClass {
                         this.actor.system.experience.available,
                         this.actor.system.experience.total
                     );
+                    await ActorHelpers.endEditMode(this.actor, AEState, true);
                   }
                 },
               },
@@ -254,10 +257,14 @@ export class ActorSheetFFG extends ActorSheetClass {
 
             // add them to the items, so we can render them on the sheet
             let roll;
-            if (crew[i].role !== "Pilot") {
-              roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+            if (actor) {
+              if (crew[i].role !== "Pilot") {
+                roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+              } else {
+                roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+              }
             } else {
-              roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+              deregister_crew(this.actor, crew[i].actor_id, crew[i].role);
             }
             if (!roll) {
               roll = 'N/A';
@@ -2320,15 +2327,18 @@ export class ActorSheetFFG extends ActorSheetClass {
                 }
               }
               await this.object.createEmbeddedDocuments("Item", [purchasedItem]);
+              const AEState = await ActorHelpers.beginEditMode(this.actor, true);
+              const updatedAvailableXP = this.actor.system.experience.available;
               // this does not use _spendXp as it's granting items, which AEs cannot reasonably do
               await this.object.update({
                 system: {
                   experience: {
-                    available: availableXP - cost,
+                    available: updatedAvailableXP - cost,
                   },
                 },
               });
               await xpLogSpend(game.actors.get(this.object.id), `new ${action} ${purchasedItem.name}`, cost, availableXP - cost, totalXP, undefined);
+              await ActorHelpers.endEditMode(this.actor, AEState, true);
             },
           },
           cancel: {
@@ -2424,15 +2434,24 @@ export class ActorSheetFFG extends ActorSheetClass {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize("SWFFG.XP.Adjust.Confirm"),
           callback: async () => {
-            const startingAvailableXP =  parseInt(this.actor.system.experience.available);
-            const totalXP =  parseInt(this.actor.system.experience.total);
+            const availableXPToLog = foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
             const adjustAmount = parseInt($("#adjustAmount").val());
-            const adjustReason = $("#adjustReason").val();
+            const adjustReason = foundry.utils.deepClone($("#adjustReason").val());
+            const AEState = await ActorHelpers.beginEditMode(this.actor, true);
+            const startingAvailableXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
+            const totalXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.total));
             const updatedAvailableXP = startingAvailableXP + adjustAmount;
             const updatedTotalXP = totalXP + adjustAmount;
             await this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
-            await xpLogEarn(this.object, adjustAmount, updatedAvailableXP, updatedTotalXP, adjustReason, "Self");
-            await this.render(true);
+            await xpLogEarn(
+              this.object,
+              adjustAmount,
+              availableXPToLog + adjustAmount,
+              updatedTotalXP,
+              adjustReason,
+              "Self"
+            );
+            await ActorHelpers.endEditMode(this.actor, AEState, true);
          }
       },
       two: {
@@ -2442,6 +2461,22 @@ export class ActorSheetFFG extends ActorSheetClass {
      },
     });
     d.render(true);
+  }
+
+  debounceRender = foundry.utils.debounce(
+    (force, options) => {
+      super.render(force, options);
+    },
+    100,
+    {
+      leading: true,
+      maxWait: 100,
+    },
+  );
+
+  /** @override **/
+  render(force, options) {
+    this.debounceRender(force, options);
   }
 }
 

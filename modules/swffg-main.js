@@ -125,6 +125,20 @@ Hooks.once("init", async function () {
 
   CONFIG.ui.pause = PauseFFG;
 
+
+   /**
+   * Register statuses to add
+   */
+  game.settings.register("starwarsffg", "additionalStatuses", {
+    name: game.i18n.localize("SWFFG.Settings.AdditionalStatuses.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.AdditionalStatuses.Hint"),
+    scope: "world",
+    config: false,
+    default: "[]",
+    type: String,
+    onChange: (rule) => window.location.reload()
+  });
+
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   const TokenClass = foundry?.canvas?.placeables?.Token || Token;
 
@@ -146,34 +160,59 @@ Hooks.once("init", async function () {
     let startX = 1;
     let startY = 1;
 
-    if (aboveThreshold > 0) {
-      // render the above-threshold portion of the bar
-      let abovePct = Math.min(aboveThreshold / data.max, 1);
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-overwounded"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, abovePct * (this.w - 2), h - 2, 2);
-      // render the rest as wounds
-      startX = abovePct * (this.w - 2) + 1;
-      let remainingLength = this.w  - abovePct * (this.w - 2) - 2;
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
-    } else if (["stats.wounds", "stats.hullTrauma"].includes(data.attribute)) {
-      // render healthy and then unhealthy portions of the bar
-      let woundedPct = Math.min((data.max - data.value) / data.max, 1);
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-healthy"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, woundedPct * (this.w - 2), h - 2, 2);
-      // remaining health
-      startX = woundedPct * (this.w - 2) + 1;
-      let remainingLength = this.w - woundedPct * (this.w - 2) - 2;
-      bar
-      .beginFill(game.settings.get("starwarsffg", "ui-token-wounded"), 0.8)
-      .lineStyle(1, 0x000000, 0.8)
-      .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+    const colors = {
+      "stats.wounds": {
+        ok: game.settings.get("starwarsffg", "ui-token-healthy"),
+        damaged: game.settings.get("starwarsffg", "ui-token-wounded"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-overwounded"),
+      },
+      "stats.hullTrauma": {
+        ok: game.settings.get("starwarsffg", "ui-token-healthy"),
+        damaged: game.settings.get("starwarsffg", "ui-token-wounded"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-overwounded"),
+      },
+      "stats.strain": {
+        ok: game.settings.get("starwarsffg", "ui-token-stamina-ok"),
+        damaged: game.settings.get("starwarsffg", "ui-token-stamina-damaged"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-stamina-over"),
+      },
+      "stats.systemStrain": {
+        ok: game.settings.get("starwarsffg", "ui-token-stamina-ok"),
+        damaged: game.settings.get("starwarsffg", "ui-token-stamina-damaged"),
+        overDamaged: game.settings.get("starwarsffg", "ui-token-stamina-over"),
+      },
+    }
+
+    if (["stats.wounds", "stats.hullTrauma", "stats.strain", "stats.systemStrain"].includes(data.attribute)) {
+      if (aboveThreshold > 0) {
+        // render the above-threshold portion of the bar
+        let abovePct = Math.min(aboveThreshold / data.max, 1);
+        bar
+        .beginFill(colors[data.attribute]["overDamaged"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, abovePct * (this.w - 2), h - 2, 2);
+        // render the rest as wounds
+        startX = abovePct * (this.w - 2) + 1;
+        let remainingLength = this.w  - abovePct * (this.w - 2) - 2;
+        bar
+        .beginFill(colors[data.attribute]["damaged"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+      } else {
+        // render healthy and then unhealthy portions of the bar
+        let woundedPct = Math.min((data.max - data.value) / data.max, 1);
+        bar
+        .beginFill(colors[data.attribute]["ok"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, woundedPct * (this.w - 2), h - 2, 2);
+        // remaining health
+        startX = woundedPct * (this.w - 2) + 1;
+        let remainingLength = this.w - woundedPct * (this.w - 2) - 2;
+        bar
+        .beginFill(colors[data.attribute]["damaged"], 0.8)
+        .lineStyle(1, 0x000000, 0.8)
+        .drawRoundedRect(startX, startY, remainingLength, h - 2, 2);
+      }
     } else {
       // render normally
       const pct = Math.clamp(val, 0, data.max) / data.max;
@@ -187,155 +226,6 @@ Hooks.once("init", async function () {
     // Set position
     let posY = number === 0 ? this.h - h : 0;
     bar.position.set(0, posY);
-
-    // define custom status effects
-    const allSkillChanges = {
-      boost: [],
-      setback: [],
-      upgrade: [],
-      success: [],
-    };
-    for (const skill of Object.keys(CONFIG.FFG.skills)) {
-      allSkillChanges['boost'].push({
-        key: `system.skills.${skill}.boost`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-      allSkillChanges['setback'].push({
-        key: `system.skills.${skill}.setback`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-      allSkillChanges['upgrade'].push({
-        key: `system.skills.${skill}.upgrades`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-      allSkillChanges['success'].push({
-        key: `system.skills.${skill}.success`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: "1",
-      });
-    }
-
-    // set up our own statuses
-    CONFIG.statusEffects = [];
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-defeated",
-      img: "systems/starwarsffg/images/status/defeated.svg",
-      name: "SWFFG.Status.Defeated",
-      changes: [],
-    });
-
-    // one-time statuses
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-boost-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/blue.png`,
-      name: "SWFFG.Status.Boost.Next",
-      changes: allSkillChanges['boost'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-setback-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/black.png`,
-      name: "SWFFG.Status.Setback.Next",
-      changes: allSkillChanges['setback'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-upgrade-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/yellow.png`,
-      name: "SWFFG.Status.Upgrade.Next",
-      changes: allSkillChanges['upgrade'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-success-once",
-      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/success.png`,
-      name: "SWFFG.Status.Success.Next",
-      changes: allSkillChanges['success'],
-      system: {
-        duration: "once",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-heavy-cover",
-      img: "icons/equipment/shield/buckler-wooden-boss-lightning.webp",
-      name: "SWFFG.Status.Cover.Heavy",
-      changes: [
-        {
-          key: "system.stats.defence.melee",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          value: "2",
-        },
-        {
-          key: "system.stats.defence.ranged",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          value: "2",
-        },
-      ],
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-disoriented",
-      img: "systems/starwarsffg/images/status/disoriented.svg",
-      name: "SWFFG.Status.Disoriented",
-      changes: allSkillChanges['setback'],
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-immobilized",
-      img: "systems/starwarsffg/images/status/immobilized.svg",
-      name: "SWFFG.Status.Immobilized",
-      changes: [],
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-staggered",
-      img: "systems/starwarsffg/images/status/staggered.svg",
-      name: "SWFFG.Status.Staggered",
-      changes: [],
-    });
-    // combat-length statuses
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-boost-combat",
-      img: `systems/starwarsffg/images/status/blue.png`,
-      name: "SWFFG.Status.Boost.Combat",
-      changes: allSkillChanges['boost'],
-      system: {
-        duration: "combat",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-setback-combat",
-      img: `systems/starwarsffg/images/status/black.png`,
-      name: "SWFFG.Status.Setback.Combat",
-      changes: allSkillChanges['setback'],
-      system: {
-        duration: "combat",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-upgrade-combat",
-      img: `systems/starwarsffg/images/status/yellow.png`,
-      name: "SWFFG.Status.Upgrade.Combat",
-      changes: allSkillChanges['upgrade'],
-      system: {
-        duration: "combat",
-      }
-    });
-    CONFIG.statusEffects.push({
-      id: "starwarsffg-success-combat",
-      img: `systems/starwarsffg/images/status/success.png`,
-      name: "SWFFG.Status.Success.Combat",
-      changes: allSkillChanges['success'],
-      system: {
-        duration: "combat",
-      }
-    });
   };
 
   // Load character templates so that dynamic skills lists work correctly
@@ -466,6 +356,30 @@ Hooks.once("init", async function () {
     config: false,
     default: true,
     type: Boolean,
+  });
+   /**
+   * Register roll simulation mode
+   */
+  game.settings.register("starwarsffg", "displaySimulation", {
+    name: game.i18n.localize("SWFFG.Settings.Simulate.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Simulate.Hint"),
+    scope: "world",
+    config: false,
+    default: "GM",
+    type: String,
+    choices: {
+      GM: "GM Only",
+      All: "All Players",
+      None: "None",
+    },
+  });
+  game.settings.register("starwarsffg", "rollSimulation", {
+    name: game.i18n.localize("SWFFG.Settings.SimulateCount.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.SimulateCount.Hint"),
+    scope: "world",
+    config: false,
+    default: 10000,
+    type: Number,
   });
 
   /**
@@ -628,6 +542,166 @@ Hooks.once("init", async function () {
 
   FFG.configureDice();
   FFG.configureVehicleRange();
+
+  // define custom status effects
+    const allSkillChanges = {
+      boost: [],
+      setback: [],
+      upgrade: [],
+      success: [],
+    };
+    for (const skill of Object.keys(CONFIG.FFG.skills)) {
+      allSkillChanges['boost'].push({
+        key: `system.skills.${skill}.boost`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+      allSkillChanges['setback'].push({
+        key: `system.skills.${skill}.setback`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+      allSkillChanges['upgrade'].push({
+        key: `system.skills.${skill}.upgrades`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+      allSkillChanges['success'].push({
+        key: `system.skills.${skill}.success`,
+        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        value: "1",
+      });
+    }
+
+    // set up our own statuses
+    CONFIG.statusEffects = [];
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-defeated",
+      img: "systems/starwarsffg/images/status/defeated.svg",
+      name: "SWFFG.Status.Defeated",
+      changes: [],
+    });
+
+    // one-time statuses
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-boost-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/blue.png`,
+      name: "SWFFG.Status.Boost.Next",
+      changes: allSkillChanges['boost'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-setback-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/black.png`,
+      name: "SWFFG.Status.Setback.Next",
+      changes: allSkillChanges['setback'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-upgrade-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/yellow.png`,
+      name: "SWFFG.Status.Upgrade.Next",
+      changes: allSkillChanges['upgrade'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-success-once",
+      img: `systems/starwarsffg/images/dice/${CONFIG.FFG.theme}/success.png`,
+      name: "SWFFG.Status.Success.Next",
+      changes: allSkillChanges['success'],
+      system: {
+        duration: "once",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-heavy-cover",
+      img: "icons/equipment/shield/buckler-wooden-boss-lightning.webp",
+      name: "SWFFG.Status.Cover.Heavy",
+      changes: [
+        {
+          key: "system.stats.defence.melee",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: "2",
+        },
+        {
+          key: "system.stats.defence.ranged",
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: "2",
+        },
+      ],
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-disoriented",
+      img: "systems/starwarsffg/images/status/disoriented.svg",
+      name: "SWFFG.Status.Disoriented",
+      changes: allSkillChanges['setback'],
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-immobilized",
+      img: "systems/starwarsffg/images/status/immobilized.svg",
+      name: "SWFFG.Status.Immobilized",
+      changes: [],
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-staggered",
+      img: "systems/starwarsffg/images/status/staggered.svg",
+      name: "SWFFG.Status.Staggered",
+      changes: [],
+    });
+    // combat-length statuses
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-boost-combat",
+      img: `systems/starwarsffg/images/status/blue.png`,
+      name: "SWFFG.Status.Boost.Combat",
+      changes: allSkillChanges['boost'],
+      system: {
+        duration: "combat",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-setback-combat",
+      img: `systems/starwarsffg/images/status/black.png`,
+      name: "SWFFG.Status.Setback.Combat",
+      changes: allSkillChanges['setback'],
+      system: {
+        duration: "combat",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-upgrade-combat",
+      img: `systems/starwarsffg/images/status/yellow.png`,
+      name: "SWFFG.Status.Upgrade.Combat",
+      changes: allSkillChanges['upgrade'],
+      system: {
+        duration: "combat",
+      }
+    });
+    CONFIG.statusEffects.push({
+      id: "starwarsffg-success-combat",
+      img: `systems/starwarsffg/images/status/success.png`,
+      name: "SWFFG.Status.Success.Combat",
+      changes: allSkillChanges['success'],
+      system: {
+        duration: "combat",
+      }
+    });
+
+    // custom statuses defined by the user
+    try {
+      const addedStatuses = $.parseJSON(game.settings.get("starwarsffg", "additionalStatuses"));
+      for (const status of addedStatuses) {
+        CONFIG.statusEffects.push(status);
+      }
+
+    } catch (e) {
+      ui.notifications.warn("Failed to load custom statuses, likely bad JSON");
+    }
 
   // Register sheet application classes
   const ActorsCollection = foundry?.documents?.collections?.Actors || Actors;
@@ -1212,6 +1286,7 @@ Hooks.once("ready", async () => {
   });
 
   Hooks.on("createItem", async (item, options, userId) => {
+    if (userId != game.user.id) return
     // add talents from species to character
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
@@ -1254,6 +1329,7 @@ Hooks.once("ready", async () => {
   });
   // data for _onDropItemCreate has system.encumbrance.adjusted = 0, despite it being proper in the item itself
   Hooks.on("deleteItem", (item, options, userId) => {
+    if (userId != game.user.id) return
     // remove talents added by species
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor

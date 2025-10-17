@@ -1,6 +1,10 @@
 <form style="overflow-y: scroll; scrollbar-width: thin;">
   <div class="dice-pool-dialog">
     <div class="dice-pool"></div>
+    <div class="simulation" {{#if simDisplay }} {{ else }}style="display: none"{{/if}}>
+      Success chance: <span id="success_chance">{{ success }}</span>
+      <i class="fa-regular fa-block-question" title="Based on {{ simCount }} simulated rolls. Powered by SWRPG Online"></i>
+    </div>
     <div class="upgrade-buttons">
       <button id="upgrade-ability">{{localize "SWFFG.UpgradeAbility"}}</button>
       <button id="upgrade-difficulty">{{localize "SWFFG.UpgradeDifficulty"}}</button>

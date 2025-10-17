@@ -1,8 +1,32 @@
+`1.911`
+* Fixes:
+  * Fix species talents/abilities being added/removed by each player online leading to duplicates if GM is online. ([#1832](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1832))
+
+`1.910`
+* Fixes:
+  * Correct XP manual adjustment bug ([#1948](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1948))
+  * The chat Dice Roller now works again ([#1951](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1951))
+  * Remove sheet v1 for Actors and items, as it's not being supported and can actively that actor/item ([#1950](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1950))
+  * The importer now correctly processes Die modifiers, fixing talents (especially on species) ([#1957](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1957))
+    * Note that this requires a re-import of the species and talents
+  * Imported Species now apply characteristics to Wounds and Strain thresholds without having to open + close them once ([#1955](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1955))
+    * Note that this requires a re-import of the species
+  * Vehicle sheets no longer break when a crew member has been deleted ([#1959](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1959))
+  * Force Dice Boost now accounts for the full Force Rating ([#1949](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1949))
+  * OggDude data imports now default to deleting existing compendiums (most updated import logic relies on the compendiums not existing) ([#1964](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1964))
+  * Actor sheets should no longer go wild when manually adjusting XP ([#1954](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1954))
+  * Fixed a strange bug where XP would sometimes plummet to -20 and total would become null
+  * Custom statuses are no longer defined in the _drawbar function (whoops lol)
+
 `1.909`
 * Features:
   * New default images have been added for common items and actors!
     * These images have been commissioned specifically for this system
     * Please check out the artists work if you like the icons! `DistraKit` [on Twitter](https://x.com/DistraKit)
+  * Stamina bars now indicate when a threshold has been exceeded! ([#1912](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1912))
+  * Force Dice can now be added to the Initiative roller ([#1915](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1915))
+  * The Dice Pool window now shows likelihood of success for the roll (this is configurable and defaults to only GMs)
+  * You can now define additional status effects to apply via the settings menu ([#1941](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1941))
 * Fixes:
   * Vehicle stats can now be edited when edit mode is enabled ([#1896](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1896))
   * Removed the Active Effect from XP Adjustments to make them the same as XP Grants ([#1909](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1909))
@@ -11,7 +35,10 @@
   * Buying a rank in Brawn now properly increases Soak as well ([#1905](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1905))
   * Adding a Mod to an attachment on a Weapon no longer duplicates the mod ([#1838](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1838))
   * Custom skills can now be set as Career Skills by Careers / Specializations ([#1907](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1907))
-  * `Skill Force Dice` modifiers now dynamically read the Force Dice pool (they still accept a number, it's just ignored) ([#1890])(https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1890)
+  * `Skill Force Dice` modifiers now dynamically read the Force Dice pool (they still accept a number, it's just ignored ([#1890](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1890))
+  * GMs granting XP no longer sends available XP plummeting like the younglings who trusted Anakin ([#1899](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1899))
+  * Fix for dragging talent onto Specialization not properly persisting the Ranked property ([#1938](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1938))
+  * Further improved migration of worlds made before 1.907
 
 `1.908`
 * Fixes:

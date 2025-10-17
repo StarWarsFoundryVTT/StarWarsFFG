@@ -2,10 +2,11 @@
   "id": "starwarsffg",
   "title": "Star Wars FFG",
   "description": "A system for playing Star Wars FFG games.",
-  "version": "1.908",
+  "version": "1.910",
   "compatibility": {
     "minimum": 12,
-    "verified": 12
+    "verified": 12,
+    "maximum": 12
   },
   "authors": [{"name": "Esrin"}, {"name": "CStadther"}, {"name": "Wrycu"}, {"name": "Jaxxa"}],
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
@@ -54,6 +55,6 @@
   "secondaryTokenAttribute": "strain",
   "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG",
   "manifest": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/latest/download/system.json",
-  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.908/system.zip",
+  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v1.910/system.zip",
   "license": "LICENSE.txt"
 }

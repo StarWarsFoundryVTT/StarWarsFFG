@@ -122,7 +122,7 @@ export class ActorFFG extends Actor {
       const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
       if (originalWillpower !== undefined && updatedWillpower !== undefined && originalWillpower !== updatedWillpower) {
         CONFIG.logger.debug(`Detected modified Willpower (${originalWillpower} -> ${updatedWillpower}, updating derived values`);
-        if (system.stats?.strain) {
+        if (this.system.stats?.strain) {
           // get the soak without willpower modifying it, then add the new willpower value in
           const originalStrain = this.system.stats?.strain.max;
           const originalStrainWithoutWillpower = originalStrain - originalWillpower;
@@ -519,18 +519,20 @@ export class ActorFFG extends Actor {
               const skillName = change.key.split('.')[2].capitalize();
               const skillMod = change.key.split('.')[3];
               const modType = ModifierHelpers.getModTypeByModPath(change.key);
-              if (!Object.keys(actorData.system.skills[skillName]).includes(`${skillMod}source`)) {
-                actorData.system.skills[skillName][`${skillMod}source`] = [];
-              }
+              if (Object.keys(actorData.system.skills).includes(skillName)) {
+                if (!Object.keys(actorData.system.skills[skillName]).includes(`${skillMod}source`)) {
+                  actorData.system.skills[skillName][`${skillMod}source`] = [];
+                }
 
-              // this is an active effect modifying a skill, add the source
-              actorData.system.skills[skillName][`${skillMod}source`].push({
-                modtype: modType,
-                key: "purchased",
-                name: effect.parent.type,
-                value: change.value,
-                type: effect.parent.name,
-              });
+                // this is an active effect modifying a skill, add the source
+                actorData.system.skills[skillName][`${skillMod}source`].push({
+                  modtype: modType,
+                  key: "purchased",
+                  name: effect.parent.type,
+                  value: change.value,
+                  type: effect.parent.name,
+                });
+              }
             }
           }
         }
@@ -651,10 +653,20 @@ export class ActorFFG extends Actor {
 
   /** @override **/
   applyActiveEffects() {
+    // collect force pool modifications since it appears the stat value is without AEs active
+    let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
+    for (const effect of this.allApplicableEffects()) {
+      for (const change of effect.changes) {
+        if (change.key === "system.stats.forcePool.max") {
+          maxForceRating += parseInt(change.value);
+        }
+      }
+    }
+    // apply the resulting value (minus any committed dice)
     for (const effect of this.allApplicableEffects()) {
       for (const change of effect.changes) {
         if (change.key.includes("system.skills") && change.key.includes(".force")) {
-          change.value = Math.max(this.system?.stats?.forcePool?.max - this.system?.stats?.forcePool?.value, 0);
+          change.value = Math.max(maxForceRating - parseInt(this.system?.stats?.forcePool?.value), 0);
         }
       }
     }
