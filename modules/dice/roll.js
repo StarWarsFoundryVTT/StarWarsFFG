@@ -237,8 +237,7 @@ export class RollFFG extends Roll {
     });
     parts.addedResults = this.addedResults;
     parts.flavorText = this.flavorText;
-    const renderTemplateFn = foundry?.applications?.handlebars?.renderTemplate || renderTemplate;
-    return await renderTemplateFn(this.constructor.TOOLTIP_TEMPLATE, { parts });
+    return await foundry.applications.handlebars.renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { parts });
   }
 
   /* -------------------------------------------- */
@@ -338,8 +337,7 @@ export class RollFFG extends Roll {
     const v12ChatData = migrateDataToSystem(chatData);
 
     // Render the roll display template
-    const renderTemplateFn = foundry?.applications?.handlebars?.renderTemplate || renderTemplate;
-    return await renderTemplateFn(chatOptions.template, v12ChatData);
+    return await foundry.applications.handlebars.renderTemplate(chatOptions.template, v12ChatData);
   }
 
   /* -------------------------------------------- */

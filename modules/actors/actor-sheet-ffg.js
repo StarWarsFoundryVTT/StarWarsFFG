@@ -22,8 +22,7 @@ import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
 import {itemPillHover} from "../swffg-main.js";
 
-const ActorSheetClass = foundry?.appv1?.sheets?.ActorSheet || ActorSheet;
-export class ActorSheetFFG extends ActorSheetClass {
+export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   constructor(...args) {
     super(...args);
     /**

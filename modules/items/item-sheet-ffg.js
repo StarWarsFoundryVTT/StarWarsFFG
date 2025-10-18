@@ -14,9 +14,8 @@ import {forcePowerEditor, itemEditor, talentEditor} from "./item-editor.js";
  * Extend the basic ItemSheet with some very simple modifications
  * @extends {ItemSheet}
  */
-const ItemSheetClass = foundry?.appv1?.sheets?.ItemSheet || ItemSheet;
 
-export class ItemSheetFFG extends ItemSheetClass {
+export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
