@@ -29,7 +29,6 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/chat/parts/item/ffg-header.html",
       "systems/starwarsffg/templates/chat/parts/item/ffg-footer.html",
     ];
-
-    return loadTemplates(templatePaths);
+    return foundry.applications.handlebars.loadTemplates(templatePaths);
   }
 }

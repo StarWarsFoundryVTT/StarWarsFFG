@@ -1,4 +1,4 @@
-export default class PauseFFG extends Pause {
+export default class PauseFFG extends foundry.applications.ui.GamePause {
   static get defaultOptions() {
     const options = super.defaultOptions;
     options.id = "pause";

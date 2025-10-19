@@ -138,7 +138,7 @@ Hooks.once("init", async function () {
   });
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
-  Token.prototype._drawBar = function (number, bar, data) {
+  foundry.canvas.placeables.Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
     // FFG style behaviour for wounds and strain.
     let aboveThreshold = 0;
@@ -225,7 +225,7 @@ Hooks.once("init", async function () {
   };
 
   // Load character templates so that dynamic skills lists work correctly
-  loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
+  await foundry.applications.handlebars.loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
 
   SettingsHelpers.initLevelSettings();
 
@@ -698,11 +698,14 @@ Hooks.once("init", async function () {
     }
 
   // Register sheet application classes
-  Actors.unregisterSheet("core", ActorSheet);
-  Actors.registerSheet("ffg", ActorSheetFFGV2, { makeDefault: true, label: "Actor Sheet v2" });
-  Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
-  Items.unregisterSheet("core", ItemSheet);
-  Items.registerSheet("ffg", ItemSheetFFGV2, { makeDefault: true, label: "Item Sheet v2" });
+  foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
+  foundry.documents.collections.Actors.registerSheet("ffg", ActorSheetFFG, { label: "Actor Sheet v1" });
+  foundry.documents.collections.Actors.registerSheet("ffg", ActorSheetFFGV2, { makeDefault: true, label: "Actor Sheet v2" });
+  foundry.documents.collections.Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
+  foundry.documents.collections.Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
+  foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
+  foundry.documents.collections.Items.registerSheet("ffg", ItemSheetFFG, { label: "Item Sheet v1" });
+  foundry.documents.collections.Items.registerSheet("ffg", ItemSheetFFGV2, { makeDefault: true, label: "Item Sheet v2" });
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
@@ -841,33 +844,32 @@ Hooks.once("init", async function () {
   await TemplateHelpers.preload();
 });
 
+// TODO: Update this to add a new button to the chat sidebar in v13+ and convert to native DOM
 Hooks.on("renderSidebarTab", (app, html, data) => {
   html.find(".chat-control-icon").click(async (event) => {
     const dicePool = new DicePoolFFG();
-
     let user = {
       data: game.user.system,
     };
-
     await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
   });
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
   // add character import button
-  const div = $(`<div class="og-character-import"></div>`);
-  const divider = $("<hr><h4>OggDude Import</h4>");
-  const characterImportButton = $('<button class="og-character">Character</button>');
-  const npcImportButton = $('<button class="og-npc">NPC</button>');
-  div.append(divider, characterImportButton, npcImportButton);
-
-  html.find(".directory-footer").append(div);
-
-  html.find(".og-character").click(async (event) => {
+  let div;
+  div = document.createElement("div");
+  div.className = "og-character-import";
+  div.innerHTML = `<hr><h4>OggDude Import</h4>
+    <button class="og-character" style="width:100%;margin-bottom:4px;">OggDude Character Importer</button>
+    <button class="og-npc" style="width:100%;">OggDude NPC Importer</button>`;
+  html.querySelector(".directory-footer")?.appendChild(div);
+  // add event handlers with addEventListener()
+  div.querySelector(".og-character")?.addEventListener("click", (event) => {
     event.preventDefault();
     new CharacterImporter().render(true);
   });
-  html.find(".og-npc").click(async (event) => {
+  div.querySelector(".og-npc")?.addEventListener("click", (event) => {
     event.preventDefault();
     new NPCImporter().render(true);
   });
@@ -875,20 +877,20 @@ Hooks.on("renderActorDirectory", (app, html, data) => {
 
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   if (game.user.isGM) {
-    const div = $(`<div class="og-character-import"></div>`);
-    const divider = $("<hr><h4>Importers</h4>");
-    const datasetImportButton = $('<button class="og-character">OggDude Dataset Importer</button>');
-    const datasetImportButton2 = $('<button class="swa-character">Adversaries Dataset Importer</button>');
-
-    div.append(divider, datasetImportButton, datasetImportButton2);
-    html.find(".directory-footer").append(div);
-
-    html.find(".og-character").click(async (event) => {
+    let div;
+    // Native DOM (V13+)
+    div = document.createElement("div");
+    div.className = "og-character-import";
+    div.innerHTML = `<hr><h4>Importers</h4>
+    <button class="og-character" style="width:100%;margin-bottom:4px;">OggDude Dataset Importer</button>
+    <button class="swa-character" style="width:100%;">Adversaries Dataset Importer</button>`;
+    html.querySelector(".directory-footer")?.appendChild(div);
+    // add event handlers with addEventListener()
+    div.querySelector(".og-character")?.addEventListener("click", (event) => {
       event.preventDefault();
       new DataImporter().render(true);
     });
-
-    html.find(".swa-character").click(async (event) => {
+    div.querySelector(".swa-character")?.addEventListener("click", (event) => {
       event.preventDefault();
       new SWAImporter().render(true);
     });
