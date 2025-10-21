@@ -901,7 +901,7 @@ export default class SWAImporter extends FormApplication {
     });
     if (!pack) {
       this._importLogger(`Compendium pack ${name} not found, creating new`);
-      pack = await CompendiumCollection.createCompendium({ type: type, label: name });
+      pack = await foundry.documents.collections.CompendiumCollection.createCompendium({ type: type, label: name });
     } else {
       this._importLogger(`Existing compendium pack ${name} found`);
     }

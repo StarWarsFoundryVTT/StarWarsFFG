@@ -1478,7 +1478,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     }
 
     if (action === "img") {
-      const fp = new FilePicker({
+      const fp = new foundry.applications.apps.FilePicker({
         type: "image",
         callback: async (path) => {
           await this.object.update({img: path});
