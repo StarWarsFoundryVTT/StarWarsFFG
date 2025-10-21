@@ -68,7 +68,7 @@ export default class DestinyTracker extends FormApplication {
   /** @override */
   activateListeners(html) {
     const d = html.find("swffg-destiny-container")[0];
-    new Draggable(this, html, d, this.options.resizable);
+    new foundry.applications.ux.Draggable(this, html, d, this.options.resizable);
 
     $("#destiny-tracker").css({ bottom: "0px", right: "305px" });
 

@@ -947,22 +947,6 @@ function isCurrentVersionNullOrBlank(currentVersion) {
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
 
-  if (!game.settings.get("starwarsffg", "token_configured")) {
-    const tokenData = {
-      bar1: {
-        attribute: "stats.wounds",
-      },
-      bar2: {
-        attribute: "stats.strain",
-      },
-      displayBars: 20, // hovered by owner
-    };
-    const existingSettings = game.settings.get("core", "defaultToken");
-    const updateData = foundry.utils.mergeObject(existingSettings, tokenData);
-    game.settings.set("core", "defaultToken", updateData);
-    game.settings.set("starwarsffg", "token_configured", true);
-  }
-
   // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
   // this is intended to encourage migrating code to this file to clean up the main file
   await handleUpdate();
@@ -1044,7 +1028,7 @@ Hooks.once("ready", async () => {
       try {
         let skillList = [];
 
-        let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
+        let data = await foundry.applications.apps.FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
         if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
           // if the skills.json file is found AND the skillsList in setting is the default skill list then read the data from the file.
           // This will make sure that the data from the JSON file overwrites the data in the setting.

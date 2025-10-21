@@ -20,18 +20,33 @@ export class ActorFFG extends Actor {
         createData.prototypeToken = {
           actorLink: false,
           disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+          bar1: {
+            attribute: "stats.wounds",
+          },
         };
         break;
       case "character":
         createData.prototypeToken = {
           actorLink: true,
           disposition: CONST.TOKEN_DISPOSITIONS.FRIENDLY,
+          bar1: {
+            attribute: "stats.wounds",
+          },
+          bar2: {
+            attribute: "stats.strain",
+          },
         };
         break;
       case "rival":
         createData.prototypeToken = {
           actorLink: false,
           disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+          bar1: {
+            attribute: "stats.wounds",
+          },
+          bar2: {
+            attribute: "stats.strain",
+          },
           prependAdjective: game.settings.get("starwarsffg", "RivalTokenPrepend"),
         };
         break;
@@ -39,6 +54,23 @@ export class ActorFFG extends Actor {
         createData.prototypeToken = {
           actorLink: true,
           disposition: CONST.TOKEN_DISPOSITIONS.HOSTILE,
+          bar1: {
+            attribute: "stats.wounds",
+          },
+          bar2: {
+            attribute: "stats.strain",
+          },
+        };
+        break;
+      case "vehicle":
+        createData.prototypeToken = {
+          actorLink: true,
+          bar1: {
+            attribute: "stats.hullTrauma",
+          },
+          bar2: {
+            attribute: "stats.systemStrain",
+          },
         };
         break;
     }

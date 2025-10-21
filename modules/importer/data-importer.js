@@ -27,7 +27,7 @@ export default class DataImporter extends FormApplication {
 
   /** @override */
   async getData() {
-    let data = await FilePicker.browse("data", "", { bucket: null, extensions: [".zip", ".ZIP"], wildcard: false });
+    let data = await foundry.applications.apps.FilePicker.browse("data", "", { bucket: null, extensions: [".zip", ".ZIP"], wildcard: false });
     const files = data.files.map((file) => decodeURIComponent(file));
 
     document.querySelectorAll('.import-progress').forEach(el => el.classList.add('import-hidden'));
@@ -148,6 +148,15 @@ export default class DataImporter extends FormApplication {
         type: el.dataset.type,
         itemtype: el.dataset.itemtype
       }));
+
+      const shouldDelete = document.querySelector("#deleteExisting").checked;
+
+      if (shouldDelete) {
+        for (const itemType of importFiles) {
+          await this._deleteCompendium(itemType['itemtype']);
+        }
+      }
+
       const input = document.querySelector("#import-file");
       selectedFile = input ? input.value : "";
       this._importLogger(`Using ${selectedFile} for import source`);
