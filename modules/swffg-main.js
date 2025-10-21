@@ -947,22 +947,6 @@ function isCurrentVersionNullOrBlank(currentVersion) {
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
 
-  if (!game.settings.get("starwarsffg", "token_configured")) {
-    const tokenData = {
-      bar1: {
-        attribute: "stats.wounds",
-      },
-      bar2: {
-        attribute: "stats.strain",
-      },
-      displayBars: 20, // hovered by owner
-    };
-    const existingSettings = game.settings.get("core", "defaultToken");
-    const updateData = foundry.utils.mergeObject(existingSettings, tokenData);
-    game.settings.set("core", "defaultToken", updateData);
-    game.settings.set("starwarsffg", "token_configured", true);
-  }
-
   // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
   // this is intended to encourage migrating code to this file to clean up the main file
   await handleUpdate();
