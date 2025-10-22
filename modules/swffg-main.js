@@ -844,15 +844,29 @@ Hooks.once("init", async function () {
   await TemplateHelpers.preload();
 });
 
-// TODO: Update this to add a new button to the chat sidebar in v13+ and convert to native DOM
-Hooks.on("renderSidebarTab", (app, html, data) => {
-  html.find(".chat-control-icon").click(async (event) => {
-    const dicePool = new DicePoolFFG();
-    let user = {
-      data: game.user.system,
-    };
-    await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
-  });
+Hooks.on("renderChatInput", (app, html, data) => {
+  if (app.id === "chat") {
+    // add in the chat dice roller
+    const rollButtonId = "ffgChatRoll";
+    if (!document.querySelector(`#${rollButtonId}`)) {
+
+      const rollButton = document.createElement("button");
+      rollButton.id = rollButtonId;
+      rollButton.type = "button";
+      rollButton.classList.add("ui-control", "icon", "fa-light", "fa-dice-d20");
+
+      const rollPrivacyElement = document.querySelector("#roll-privacy");
+      rollPrivacyElement.appendChild(rollButton);
+
+      rollButton.onclick = async function () {
+        const dicePool = new DicePoolFFG();
+        let user = {
+          data: game.user.system,
+        };
+        await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+      }
+    }
+  }
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
