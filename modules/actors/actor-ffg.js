@@ -685,27 +685,23 @@ export class ActorFFG extends Actor {
 
   /** @override **/
   applyActiveEffects() {
-    // While in editing mode, we don't want our AEs from items, talents, etc to mess up with the stats
-    if(!this.flags.starwarsffg.config.enableEditMode)
-    {
-      // collect force pool modifications since it appears the stat value is without AEs active
-      let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
-      for (const effect of this.allApplicableEffects()) {
-        for (const change of effect.changes) {
-          if (change.key === "system.stats.forcePool.max") {
-            maxForceRating += parseInt(change.value);
-          }
+    // collect force pool modifications since it appears the stat value is without AEs active
+    let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
+    for (const effect of this.allApplicableEffects()) {
+      for (const change of effect.changes) {
+        if (change.key === "system.stats.forcePool.max") {
+          maxForceRating += parseInt(change.value);
         }
       }
-      // apply the resulting value (minus any committed dice)
-      for (const effect of this.allApplicableEffects()) {
-        for (const change of effect.changes) {
-          if (change.key.includes("system.skills") && change.key.includes(".force")) {
-            change.value = Math.max(maxForceRating - parseInt(this.system?.stats?.forcePool?.value), 0);
-          }
-        }
-      }
-      return super.applyActiveEffects();
     }
+    // apply the resulting value (minus any committed dice)
+    for (const effect of this.allApplicableEffects()) {
+      for (const change of effect.changes) {
+        if (change.key.includes("system.skills") && change.key.includes(".force")) {
+          change.value = Math.max(maxForceRating - parseInt(this.system?.stats?.forcePool?.value), 0);
+        }
+      }
+    }
+    return super.applyActiveEffects();
   }
 }
