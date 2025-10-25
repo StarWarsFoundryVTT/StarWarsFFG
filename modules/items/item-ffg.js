@@ -478,8 +478,9 @@ export class ItemFFG extends ItemBaseFFG {
         if (this.isEmbedded && this.actor && this.actor.system) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
           for (let attr in data.attributes) {
-            if (data.attributes[attr].modtype === "Armor Stat") {
-              switch (data.attributes[attr].mod) {
+            let modtype = data.attributes[attr].modtype;
+            if (modtype === "Armor Stat" || modtype === "Stat" || modtype === "Stat All") {
+              switch (data.attributes[attr].mod.toLocaleLowerCase()) {
                 case "soak":
                   soakAdd += parseInt(data.attributes[attr].value, 10);
                   break;
