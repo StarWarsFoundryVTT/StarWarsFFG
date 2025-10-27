@@ -45,6 +45,11 @@
       "lang": "ca",
       "name": "Català (Catalan)",
       "path": "lang/ca.json"
+    },
+    {
+      "lang": "ua",
+      "name": "Українська мова (Ukrainian)",
+      "path": "lang/ua.json"
     }
   ],
   "grid": {
