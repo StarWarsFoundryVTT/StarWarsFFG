@@ -412,15 +412,27 @@ export default class ModifierHelpers {
    * @returns {[{modType, mod}]|[{modType, mod: string},{modType, mod: string}]}
    */
   static explodeMod(modType, mod) {
-    if (mod.toLocaleLowerCase().includes("defense-melee") || mod.toLocaleLowerCase().includes("defence-melee")) {
+    const modLower = mod.toLocaleLowerCase();
+    if (["defence-melee", "defense-melee"].includes(modLower)) {
       return [
         {
           modType: "Stat",
           mod: "Defence.Melee",
         },
       ];
-    } else if (mod.toLocaleLowerCase().includes("defense-ranged") || mod.toLocaleLowerCase().includes("defence-ranged")) {
+    } else if (["defence-ranged", "defense-ranged"].includes(modLower)) {
       return [
+        {
+          modType: "Stat",
+          mod: "Defence.Ranged",
+        },
+      ];
+    } else if (["defence", "defense"].includes(modLower)) {
+      return [
+        {
+          modType: "Stat",
+          mod: "Defence.Melee",
+        },
         {
           modType: "Stat",
           mod: "Defence.Ranged",
