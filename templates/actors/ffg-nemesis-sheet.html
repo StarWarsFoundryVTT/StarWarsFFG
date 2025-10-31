@@ -157,7 +157,8 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor data.enrichedBio target="system.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.enrichedBio target="system.biography" button=true owner=owner editable=editable engine="prosemirror"}}
+        {{!-- Footer info --}}
       </div>
 
       <div class="container flex-group-center biography-values">
@@ -233,7 +234,8 @@
   {{#if limited }}
     <section class="sheet-body">
       <div class="biography-editor">
-        {{editor data.enrichedBio target="system.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.enrichedBio target="system.biography" button=true owner=owner editable=editable engine="prosemirror"}}
+        {{!-- Footer info --}}
       </div>
     </section>
     {{/if }}

@@ -132,7 +132,8 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor data.biography target="system.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.biography target="system.biography" button=true owner=owner editable=editable engine="prosemirror"}}
+        {{!-- Footer info --}}
       </div>
 
       <div class="container flex-group-center biography-values">

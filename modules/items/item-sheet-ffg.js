@@ -287,7 +287,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           data.data.isReadOnly = true;
         }
         for (let x = 0; x < 8; x++) {
-          data.data.upgrades[`upgrade${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
+          data.data.upgrades[`upgrade${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
         }
         break;
       }
@@ -1944,7 +1944,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${await TextEditor.enrichHTML(desc)}</div>`);
+      let div = $(`<div class="item-details">${await foundry.applications.ux.TextEditor.enrichHTML(desc)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
