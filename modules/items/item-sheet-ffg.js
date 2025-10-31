@@ -424,7 +424,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   activateListeners(html) {
     super.activateListeners(html);
     html.find(".ffg-purchase").click(async (ev) => {
-      if(!this.actor?.verifyEditModeIsNotEnabled()) return;
+      if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
       await this._handleItemBuy(ev)
     });
 
@@ -1314,7 +1314,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
-    if(!this.actor?.verifyEditModeIsNotEnabled()) return;
+    if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
 
     const itemUpdate = ItemHelpers.itemUpdate.bind(this);
     itemUpdate(event, formData);
@@ -1327,7 +1327,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
    * @private
    */
   async _onClickUpgradeEdit(event) {
-    if(!this.actor?.verifyEditModeIsNotEnabled()) return;
+    if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
 
     // pull the item which the edit is on
     const li = $(event.currentTarget);
@@ -1385,7 +1385,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
    */
   async _onClickTalentControl(event) {
     event.preventDefault();
-    if(!this.actor?.verifyEditModeIsNotEnabled()) return;
+    if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
 
     const a = event.currentTarget;
     const action = a.dataset.action;
