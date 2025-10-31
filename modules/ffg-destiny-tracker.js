@@ -38,8 +38,8 @@ export default class DestinyTracker extends FormApplication {
     const x = $(window).width();
     const y = $(window).height();
 
-    this.position.left = x - 505;
-    this.position.top = y;
+    this.position.left = x - window.screen.width;
+    this.position.top = y - 250;
     //this.position.width = 150;
     //this.position.height = 105;
 

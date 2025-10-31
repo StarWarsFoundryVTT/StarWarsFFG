@@ -3236,6 +3236,7 @@ img {
   height: 100%;
   width: auto;
   text-align: center;
+  position: relative;
 }
 
 .starwarsffg .group-manager .PC-list {
