@@ -1365,6 +1365,8 @@ img {
   margin-top: 10px;
   min-height: 54px;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .starwarsffg .dice-pool-dialog .pool-value {
@@ -2265,6 +2267,8 @@ img {
 .starwarsffg .skillsGrid .dice-pool {
   margin: 0.5em 0;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 }
 
 .starwarsffg .skillsGrid .dice-pool img {
@@ -3232,6 +3236,7 @@ img {
   height: 100%;
   width: auto;
   text-align: center;
+  position: relative;
 }
 
 .starwarsffg .group-manager .PC-list {
