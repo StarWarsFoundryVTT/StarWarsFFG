@@ -236,13 +236,13 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         if (data.data.stats.credits.value > 999) {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
-        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography, {secrets: !data.limited});
-        data.data.general.enrichedNotes = await TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
-        data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
+        data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography, {secrets: !data.limited});
+        data.data.general.enrichedNotes = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
+        data.data.general.enrichedFeatures = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         data.maxAttribute = game.settings.get("starwarsffg", "maxAttribute");
         break;
       case "vehicle":
-        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
+        data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography);
         // add the crew to the items of the vehicle
         data.crew = [];
         // look up the flag data
@@ -324,11 +324,13 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    // convert jquery element to HTMLElement for usage with Foundry calls
+    const htmlElement = html.get(0);
 
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
-    new Tabs(tabs, {
+    new foundry.applications.ux.Tabs(tabs, {
       initial: initial,
       callback: (clicked) => {
         this._sheetTab = clicked.data("tab");
@@ -450,10 +452,11 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       );
     }
 
-    new ContextMenu(
-        html,
+    new foundry.applications.ux.ContextMenu(
+        htmlElement,
         ".skillsGrid .skill",
         contextMenuOptions,
+      {jQuery: false},
     );
 
     html.find(".skill-purchase").click(async (ev) => {
@@ -469,7 +472,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       await this._handleKillMinion(ev);
     });
 
-    new ContextMenu(html, "div.skillsHeader", [
+    new foundry.applications.ux.ContextMenu(htmlElement, "div.skillsHeader", [
       {
         name: game.i18n.localize("SWFFG.SkillAddContextItem"),
         icon: '<i class="fas fa-plus-circle"></i>',
@@ -477,7 +480,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           this._onCreateSkill(li);
         },
       },
-    ]);
+    ], {jQuery: false});
 
     html.find(".ffg-purchase").click(async (ev) => {
       await this._buyCore(ev)
@@ -497,8 +500,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const sendToChatContextItem = {
       name: game.i18n.localize("SWFFG.SendToChat"),
       icon: '<i class="far fa-comment"></i>',
-      callback: (li) => {
-        let itemId = li.data("itemId");
+      callback: (el) => {
+        let itemId = el.getAttribute("data-item-id");
         this._itemDetailsToChat(itemId);
       },
     };
@@ -506,8 +509,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const rollForceToChatContextItem = {
       name: game.i18n.localize("SWFFG.SendForceRollToChat"),
       icon: '<i class="fas fa-dice-d20"></i>',
-      callback: async (li) => {
-        let itemId = li.data("itemId");
+      callback: async (el) => {
+        let itemId = el.getAttribute("data-item-id");
         let item = this.actor.items.get(itemId);
         if (!item) {
           item = game.items.get(itemId);
@@ -528,9 +531,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       },
     };
 
-    new ContextMenu(html, "li.item:not(.forcepower)", [sendToChatContextItem]);
-    new ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
-    new ContextMenu(html, "div.item", [sendToChatContextItem]);
+    new foundry.applications.ux.ContextMenu(htmlElement, "li.item:not(.forcepower)", [sendToChatContextItem], {jQuery: false});
+    new foundry.applications.ux.ContextMenu(htmlElement, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem], {jQuery: false});
+    new foundry.applications.ux.ContextMenu(htmlElement, "div.item", [sendToChatContextItem], {jQuery: false});
 
     if (["nemesis", "rival"].includes(this.actor.type)) {
       this.sheetoptions = new ActorOptions(this, html);
@@ -942,7 +945,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const crewMemberRoles = vehicleRoles.filter(role => role.actor_id === crew_member_id);
       const rolesInUse = crewMemberRoles.map(role => role.role);
 
-      const content = await renderTemplate(
+      const content = await foundry.applications.handlebars.renderTemplate(
         "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
         {
           actor: crew_member,
@@ -1233,7 +1236,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
     // transfer items between owned actor objects
-    const dragDrop = new DragDrop({
+    const dragDrop = new foundry.applications.ux.DragDrop({
       dragSelector: ".items-list .item",
       dropSelector: ".sheet-body",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -1242,7 +1245,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     dragDrop.bind(html[0]);
 
-    const dragDrop1 = new DragDrop({
+    const dragDrop1 = new foundry.applications.ux.DragDrop({
       dragSelector: ".skill",
       dropSelector: ".macro",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -1453,7 +1456,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     }
 
     const template = "systems/starwarsffg/templates/chat/item-card.html";
-    const html = await renderTemplate(template, { itemDetails, item });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
       user: game.user.id,
@@ -1483,7 +1486,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     const itemDetails = { "desc": desc, "name": name };
     const template = "systems/starwarsffg/templates/chat/force-power-card.html";
-    const html = await renderTemplate(template, { itemDetails, item });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
       user: game.user.id,
@@ -1773,7 +1776,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       useSkillForInitiative = true;
     }
 
-    setProperty(updateData, `system.skills.${skill}.useForInitiative`, useSkillForInitiative);
+    foundry.utils.setProperty(updateData, `system.skills.${skill}.useForInitiative`, useSkillForInitiative);
     this.object.update(updateData);
   }
 
@@ -2120,7 +2123,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       groups.push("Universal");
       groups.push("In Career");
       groups.push("Out of Career");
-      content = await renderTemplate(template, { inCareer, outCareer, universal, baseCost, increasedCost, itemType: itemType, itemCategory: "specialization", groups: groups });
+      content = await foundry.applications.handlebars.renderTemplate(template, { inCareer, outCareer, universal, baseCost, increasedCost, itemType: itemType, itemCategory: "specialization", groups: groups });
     } else if (action === "signatureability") {
       const sources = game.settings.get("starwarsffg", "signatureAbilityCompendiums").split(",");
       const rawSelectableItems =  this.object.items.find(i => i.type === "career").system.signatureabilities;
@@ -2206,7 +2209,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.signatureability");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "signatureability" });
+      content = await foundry.applications.handlebars.renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "signatureability" });
     } else if (action === "forcepower") {
       const sources = game.settings.get("starwarsffg", "forcePowerCompendiums").split(",");
       let selectableItems = [];
@@ -2241,7 +2244,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.forcepower");
       groups.sort();
-      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower", groups: groups });
+      content = await foundry.applications.handlebars.renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower", groups: groups });
     } else if (action === "talent") {
       const purchasedItems = this.object.talentList;
       const sources = game.settings.get("starwarsffg", "talentCompendiums").split(",");
@@ -2284,7 +2287,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         selectableItems.push({pack: pack.metadata.label, items: packItems});
       }
       itemType = game.i18n.localize("TYPES.Item.talent");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "talent" });
+      content = await foundry.applications.handlebars.renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "talent" });
     } else if (action === "characteristic") {
       const characteristic = $(event.target).data("buy-characteristic");
       await this._buyCharacteristicRank(characteristic);

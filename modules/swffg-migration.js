@@ -41,7 +41,7 @@ async function handleMigration(oldVersion, newVersion) {
  */
 async function sendChanges(newVersion) {
   const template = "systems/starwarsffg/templates/notifications/new_version.html";
-  const html = await renderTemplate(template, { version: newVersion });
+  const html = await foundry.applications.handlebars.renderTemplate(template, { version: newVersion });
   const messageData = {
     user: game.user.id,
     type: CONST.CHAT_MESSAGE_TYPES.OTHER,

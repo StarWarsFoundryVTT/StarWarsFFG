@@ -478,8 +478,9 @@ export class ItemFFG extends ItemBaseFFG {
         if (this.isEmbedded && this.actor && this.actor.system) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
           for (let attr in data.attributes) {
-            if (data.attributes[attr].modtype === "Armor Stat") {
-              switch (data.attributes[attr].mod) {
+            let modtype = data.attributes[attr].modtype;
+            if (modtype === "Armor Stat" || modtype === "Stat" || modtype === "Stat All") {
+              switch (data.attributes[attr].mod.toLocaleLowerCase()) {
                 case "soak":
                   soakAdd += parseInt(data.attributes[attr].value, 10);
                   break;
@@ -724,7 +725,7 @@ export class ItemFFG extends ItemBaseFFG {
         const qualities = [];
         for (const modifier of modifiers) {
           qualities.push(`
-          <div class='item-pill-hover hover-tooltip' data-item-type="itemmodifier" data-item-embed-name="${ modifier.name }" data-item-embed-img="${ modifier.img }" data-desc="${ (await TextEditor.enrichHTML(modifier.description)).replaceAll('"', "'") }" data-item-ranks="${ modifier.totalRanks }" data-tooltip="Loading...">
+          <div class='item-pill-hover hover-tooltip' data-item-type="itemmodifier" data-item-embed-name="${ modifier.name }" data-item-embed-img="${ modifier.img }" data-desc="${ (await foundry.applications.ux.TextEditor.enrichHTML(modifier.description)).replaceAll('"', "'") }" data-item-ranks="${ modifier.totalRanks }" data-tooltip="Loading...">
             ${modifier.name} ${modifier.totalRanks === null || modifier.totalRanks === 0 ? "" : modifier.totalRanks}
           </div>
           `);

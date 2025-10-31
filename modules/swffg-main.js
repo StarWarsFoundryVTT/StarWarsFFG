@@ -13,6 +13,7 @@ import CombatantFFG, {
   registerHandleCombatantRemoval,
   updateCombatTracker
 } from "./combat-ffg.js";
+import { ActiveEffectFFG} from "./active-effects/active-effect-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
@@ -85,6 +86,7 @@ Hooks.once("init", async function () {
       PopoutEditor,
     },
     diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
+    ActiveEffectFFG,
   };
 
   // Define custom log prefix and logger
@@ -97,6 +99,7 @@ Hooks.once("init", async function () {
   CONFIG.Item.documentClass = ItemFFG;
   CONFIG.Combat.documentClass = CombatFFG;
   CONFIG.Combatant.documentClass = CombatantFFG;
+  CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
 
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee

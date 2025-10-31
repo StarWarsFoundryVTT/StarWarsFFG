@@ -1,5 +1,8 @@
-`1.911`
+`2.0.0`
+* Enhancements:
+  * Suppressing AE popups from items equipping
 * Fixes:
+  * Fix armor adjusted values was not considering all modifiers for soak, defence and encumbrance ([#1991](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1991)
   * Fix species talents/abilities being added/removed by each player online leading to duplicates if GM is online. ([#1832](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1832))
 
 `1.910`
