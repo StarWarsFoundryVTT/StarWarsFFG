@@ -699,7 +699,7 @@ export class ItemFFG extends ItemBaseFFG {
         } else {
           upgradeDescriptions.push({
             name: up.name,
-            description: await TextEditor.enrichHTML(up.description),
+            description: await foundry.applications.ux.TextEditor.enrichHTML(up.description),
             rank: 1,
           });
         }

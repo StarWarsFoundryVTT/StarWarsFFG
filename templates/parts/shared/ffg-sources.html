@@ -1,7 +1,7 @@
 {{#if data.hasLongDesc}}
 <h3>{{ localize "SWFFG.LongDescription" }}</h3>
 <!-- this should be enrichedLongDesc -->
-{{editor data.enrichedLongDesc target="system.longDesc" button=true owner=owner editable=editable}}
+{{editor data.enrichedLongDesc target="system.longDesc" button=true owner=owner editable=editable engine="prosemirror"}}
 <hr>
 {{/if}}
 <h3>{{ localize "SWFFG.Sources" }}</h3>
