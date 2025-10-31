@@ -84,19 +84,19 @@ export default class DiceHelpers {
 
     let dicePool = new DicePoolFFG({
       ability: Math.max(characteristic.value, skill.rank),
-      boost: skill.boost,
-      setback: skill.setback + status.setback + defenseDice,
-      force: skill.force,
-      advantage: skill.advantage,
-      dark: skill.dark,
-      light: skill.light,
-      failure: skill.failure,
-      threat: skill.threat,
-      success: skill.success,
-      triumph: skill.triumph,
-      despair: skill.despair,
-      upgrades: skill.upgrades,
-      remsetback: skill?.remsetback ? skill.remsetback : 0,
+      boost: skill.boost ?? 0,
+      setback: (skill.setback ?? 0) + status.setback + defenseDice,
+      force: skill.force ?? 0,
+      advantage: skill.advantage ?? 0,
+      dark: skill.dark ?? 0,
+      light: skill.light ?? 0,
+      failure: skill.failure ?? 0,
+      threat: skill.threat ?? 0,
+      success: skill.success ?? 0,
+      triumph: skill.triumph ?? 0,
+      despair: skill.despair ?? 0,
+      upgrades: skill.upgrades ?? 0,
+      remsetback: skill.remsetback ?? 0,
       difficulty: 2 + status.difficulty, // default to average difficulty
     });
 
