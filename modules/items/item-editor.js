@@ -629,6 +629,8 @@ export class talentEditor extends itemEditor {
 
   /** @override */
   async _updateObject(event, formData) {
+    if(!this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+    
     CONFIG.logger.debug("Updating talent");
     formData = foundry.utils.expandObject(formData);
 
