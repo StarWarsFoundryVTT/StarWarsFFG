@@ -188,6 +188,8 @@ export class itemEditor extends FormApplication  {
    * @param event
    */
   async _modificationControl(event) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const modTypeChoices = CONFIG.FFG.allowableModifierTypes;
@@ -569,6 +571,8 @@ export class talentEditor extends itemEditor {
    * @param event
    */
   async _modControl(event) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const nk = new Date().getTime();
@@ -625,6 +629,8 @@ export class talentEditor extends itemEditor {
 
   /** @override */
   async _updateObject(event, formData) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     CONFIG.logger.debug("Updating talent");
     formData = foundry.utils.expandObject(formData);
 
