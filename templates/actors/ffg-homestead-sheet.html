@@ -20,7 +20,7 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor data.biography target="system.biography" button=true owner=owner editable=editable}}
+        {{editor data.biography target="system.biography" button=true owner=owner editable=editable engine="prosemirror"}}
       </div>
       <div class="container flex-group-center biography-values">
         {{!-- Cost Box --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemsPrice" type="Number" name="data.stats.cost.value" value=data.stats.cost.value )}}

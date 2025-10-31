@@ -287,7 +287,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           data.data.isReadOnly = true;
         }
         for (let x = 0; x < 8; x++) {
-          data.data.upgrades[`upgrade${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
+          data.data.upgrades[`upgrade${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
         }
         break;
       }
@@ -424,6 +424,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   activateListeners(html) {
     super.activateListeners(html);
     html.find(".ffg-purchase").click(async (ev) => {
+      if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
       await this._handleItemBuy(ev)
     });
 
@@ -1313,6 +1314,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
   /** @override */
   _updateObject(event, formData) {
+    if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
+
     const itemUpdate = ItemHelpers.itemUpdate.bind(this);
     itemUpdate(event, formData);
   }
@@ -1324,6 +1327,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
    * @private
    */
   async _onClickUpgradeEdit(event) {
+    if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
+
     // pull the item which the edit is on
     const li = $(event.currentTarget);
     const clickedId = li.closest('.talent-block').attr('id');
@@ -1380,6 +1385,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
    */
   async _onClickTalentControl(event) {
     event.preventDefault();
+    if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
+
     const a = event.currentTarget;
     const action = a.dataset.action;
     const key = a.dataset.key;
@@ -1944,7 +1951,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${await TextEditor.enrichHTML(desc)}</div>`);
+      let div = $(`<div class="item-details">${await foundry.applications.ux.TextEditor.enrichHTML(desc)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }

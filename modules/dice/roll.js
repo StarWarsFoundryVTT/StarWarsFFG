@@ -102,7 +102,7 @@ export class RollFFG extends Roll {
 
   async updateSymbols() {
     for (const addedResult of this.addedResults) {
-      addedResult.symbol = await TextEditor.enrichHTML(addedResult.symbol);
+      addedResult.symbol = await foundry.applications.ux.TextEditor.enrichHTML(addedResult.symbol);
     }
   }
 

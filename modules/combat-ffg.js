@@ -217,12 +217,12 @@ export class CombatFFG extends Combat {
       }
 
       const diceSymbols = {
-        advantage: await TextEditor.enrichHTML("[AD]"),
-        success: await TextEditor.enrichHTML("[SU]"),
-        threat: await TextEditor.enrichHTML("[TH]"),
-        failure: await TextEditor.enrichHTML("[FA]"),
-        upgrade: await TextEditor.enrichHTML("[PR]"),
-        force: await TextEditor.enrichHTML("[FO]"),
+        advantage: await foundry.applications.ux.TextEditor.enrichHTML("[AD]"),
+        success: await foundry.applications.ux.TextEditor.enrichHTML("[SU]"),
+        threat: await foundry.applications.ux.TextEditor.enrichHTML("[TH]"),
+        failure: await foundry.applications.ux.TextEditor.enrichHTML("[FA]"),
+        upgrade: await foundry.applications.ux.TextEditor.enrichHTML("[PR]"),
+        force: await foundry.applications.ux.TextEditor.enrichHTML("[FO]"),
       };
 
       const title = game.i18n.localize("SWFFG.InitiativeRoll") + ` ${whosInitiative}...`;
