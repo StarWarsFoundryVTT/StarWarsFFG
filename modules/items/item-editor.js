@@ -76,7 +76,7 @@ export class itemEditor extends FormApplication  {
 
     // allow drag-and-dropping mods if this is an attachment
     if (this.data.clickedObject.type === "itemattachment") {
-      const dragDrop = new DragDrop({
+      const dragDrop = new foundry.applications.ux.DragDrop({
         dragSelector: ".item",
         dropSelector: ".starwarsffg.flat_editor",
         permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -145,7 +145,7 @@ export class itemEditor extends FormApplication  {
       CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
       CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         {
           modifierTypes: modifierTypes,
@@ -192,7 +192,7 @@ export class itemEditor extends FormApplication  {
     if (action === 'create') {
       const modTypeChoices = CONFIG.FFG.allowableModifierTypes;
       const modChoices = CONFIG.FFG.allowableModifierChoices;
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-modification.html',
         {
           modTypeChoices: modTypeChoices,
@@ -583,7 +583,7 @@ export class talentEditor extends itemEditor {
       CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
       CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
           modifierTypes: modifierTypes,
@@ -789,7 +789,7 @@ export class forcePowerEditor extends itemEditor {
       CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
       CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         {
           modifierTypes: modifierTypes,

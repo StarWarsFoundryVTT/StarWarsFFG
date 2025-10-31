@@ -34,15 +34,15 @@ export default class RollBuilderFFG extends FormApplication {
     //get all possible sounds
     let sounds = [];
     const diceSymbols = {
-      advantage: await TextEditor.enrichHTML("[AD]"),
-      success: await TextEditor.enrichHTML("[SU]"),
-      threat: await TextEditor.enrichHTML("[TH]"),
-      failure: await TextEditor.enrichHTML("[FA]"),
-      upgrade: await TextEditor.enrichHTML("[PR]"),
-      triumph: await TextEditor.enrichHTML("[TR]"),
-      despair: await TextEditor.enrichHTML("[DE]"),
-      light: await TextEditor.enrichHTML("[LI]"),
-      dark: await TextEditor.enrichHTML("[DA]"),
+      advantage: await foundry.applications.ux.TextEditor.enrichHTML("[AD]"),
+      success: await foundry.applications.ux.TextEditor.enrichHTML("[SU]"),
+      threat: await foundry.applications.ux.TextEditor.enrichHTML("[TH]"),
+      failure: await foundry.applications.ux.TextEditor.enrichHTML("[FA]"),
+      upgrade: await foundry.applications.ux.TextEditor.enrichHTML("[PR]"),
+      triumph: await foundry.applications.ux.TextEditor.enrichHTML("[TR]"),
+      despair: await foundry.applications.ux.TextEditor.enrichHTML("[DE]"),
+      light: await foundry.applications.ux.TextEditor.enrichHTML("[LI]"),
+      dark: await foundry.applications.ux.TextEditor.enrichHTML("[DA]"),
     };
 
     let canUserAddAudio = await game.settings.get("starwarsffg", "allowUsersAddRollAudio");

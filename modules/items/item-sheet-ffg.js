@@ -92,11 +92,11 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     }
 
     if (data?.data?.description) {
-      data.data.enrichedDescription = await TextEditor.enrichHTML(data.data.description);
+      data.data.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.description);
     }
 
     if (data?.data?.longDesc !== undefined) {
-      data.data.enrichedLongDesc = await TextEditor.enrichHTML(data.data.longDesc);
+      data.data.enrichedLongDesc = await foundry.applications.ux.TextEditor.enrichHTML(data.data.longDesc);
       data.data.hasLongDesc = true;
     } else {
       data.data.hasLongDesc = false;
@@ -169,7 +169,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           data.isReadOnly = true;
         }
         for (let x = 0; x < 16; x++) {
-          data.data.upgrades[`upgrade${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
+          data.data.upgrades[`upgrade${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
         }
         break;
       case "specialization":
@@ -190,7 +190,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           this.item.flags.starwarsffg.loaded = true;
         }
         for (let x = 0; x < 20; x++) {
-          data.data.talents[`talent${x}`].enrichedDescription = await TextEditor.enrichHTML(data.data.talents[`talent${x}`].description);
+          data.data.talents[`talent${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.talents[`talent${x}`].description);
         }
         break;
       case "species":
@@ -448,7 +448,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
-    new Tabs(tabs, {
+    new foundry.applications.ux.Tabs(tabs, {
       initial: initial,
       callback: (clicked) => (this._sheetTab = clicked.data("tab")),
     });
@@ -597,7 +597,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
       html.find(".talent-modifiers .fa-cog").on("click", this._onClickUpgradeEdit.bind(this));
       try {
-        const dragDrop = new DragDrop({
+        const dragDrop = new foundry.applications.ux.DragDrop({
           dragSelector: ".item",
           dropSelector: ".specialization-talent",
           permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -610,7 +610,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       }
     } else if (this.object.type === "career") {
       try {
-        const dragDrop = new DragDrop({
+        const dragDrop = new foundry.applications.ux.DragDrop({
           dragSelector: ".item",
           dropSelector: ".tab.career",
           permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -656,7 +656,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       });
     } else if (this.object.type === "species") {
       try {
-        const dragDrop = new DragDrop({
+        const dragDrop = new foundry.applications.ux.DragDrop({
           dragSelector: ".item",
           dropSelector: ".tab.talents",
           permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -715,7 +715,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     });
 
     if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.type)) {
-      const itemToItemAssociation = new DragDrop({
+      const itemToItemAssociation = new foundry.applications.ux.DragDrop({
         dragSelector: ".item",
         dropSelector: null,
         permissions: { dragstart: true, drop: true },
