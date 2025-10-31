@@ -282,7 +282,7 @@ export async function selectRoles(vehicle, crew_member_id) {
   const crewMemberRoles = vehicleRoles.filter(role => role.actor_id === crew_member_id);
   const rolesInUse = crewMemberRoles.map(role => role.role);
 
-  const content = await renderTemplate(
+  const content = await foundry.applications.handlebars.renderTemplate(
     "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
     {
       actor: crew_member,
