@@ -230,6 +230,8 @@ export default class ModifierHelpers {
    * @param  {object} event
    */
   static async onClickAttributeControl(event) {
+    if(!this.actor?.verifyEditModeIsNotEnabled()) return;
+
     event.preventDefault();
     const a = event.currentTarget;
     const action = a.dataset.action;

@@ -7,6 +7,15 @@ import ModifierHelpers from "../helpers/modifiers.js";
  */
 export class ActorFFG extends Actor {
 
+  // returns true if EditMode is not enabled, false otherwise. sends warning notification if EditMode is enabled and sendWarn is true
+  verifyEditModeIsNotEnabled(sendWarn = true){
+    const result = !this.flags.starwarsffg.config.enableEditMode;
+    if(sendWarn && !result) {
+      ui.notifications.warn("Can't do this while EditMode is enabled");
+    }
+      return result;
+  }
+
   static async create(data, options) {
     const createData = data;
 
