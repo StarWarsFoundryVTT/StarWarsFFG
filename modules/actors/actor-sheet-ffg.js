@@ -236,13 +236,13 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         if (data.data.stats.credits.value > 999) {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
-        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography, {secrets: !data.limited});
-        data.data.general.enrichedNotes = await TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
-        data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
+        data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography, {secrets: !data.limited});
+        data.data.general.enrichedNotes = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
+        data.data.general.enrichedFeatures = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         data.maxAttribute = game.settings.get("starwarsffg", "maxAttribute");
         break;
       case "vehicle":
-        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
+        data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography);
         // add the crew to the items of the vehicle
         data.crew = [];
         // look up the flag data
@@ -328,7 +328,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
-    new Tabs(tabs, {
+    new foundry.applications.ux.Tabs(tabs, {
       initial: initial,
       callback: (clicked) => {
         this._sheetTab = clicked.data("tab");
@@ -450,7 +450,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       );
     }
 
-    new ContextMenu(
+    new foundry.applications.ux.ContextMenu(
         html,
         ".skillsGrid .skill",
         contextMenuOptions,
@@ -469,7 +469,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       await this._handleKillMinion(ev);
     });
 
-    new ContextMenu(html, "div.skillsHeader", [
+    new foundry.applications.ux.ContextMenu(html, "div.skillsHeader", [
       {
         name: game.i18n.localize("SWFFG.SkillAddContextItem"),
         icon: '<i class="fas fa-plus-circle"></i>',
@@ -528,9 +528,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       },
     };
 
-    new ContextMenu(html, "li.item:not(.forcepower)", [sendToChatContextItem]);
-    new ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
-    new ContextMenu(html, "div.item", [sendToChatContextItem]);
+    new foundry.applications.ux.ContextMenu(html, "li.item:not(.forcepower)", [sendToChatContextItem]);
+    new foundry.applications.ux.ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
+    new foundry.applications.ux.ContextMenu(html, "div.item", [sendToChatContextItem]);
 
     if (["nemesis", "rival"].includes(this.actor.type)) {
       this.sheetoptions = new ActorOptions(this, html);
@@ -1233,7 +1233,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
     // transfer items between owned actor objects
-    const dragDrop = new DragDrop({
+    const dragDrop = new foundry.applications.ux.DragDrop({
       dragSelector: ".items-list .item",
       dropSelector: ".sheet-body",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -1242,7 +1242,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     dragDrop.bind(html[0]);
 
-    const dragDrop1 = new DragDrop({
+    const dragDrop1 = new foundry.applications.ux.DragDrop({
       dragSelector: ".skill",
       dropSelector: ".macro",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
