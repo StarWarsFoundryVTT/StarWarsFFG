@@ -59,9 +59,9 @@ export class itemEditor extends FormApplication  {
    */
   async _enrichData() {
     let enriched = this.data;
-    enriched.clickedObject.system.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.system.description);
+    enriched.clickedObject.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(this.data.clickedObject.system.description);
     for (let modification of enriched.clickedObject.system.itemmodifier) {
-      modification.system.enrichedDescription = await TextEditor.enrichHTML(modification.system.description);
+      modification.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(modification.system.description);
     }
     return enriched;
   }
@@ -188,6 +188,8 @@ export class itemEditor extends FormApplication  {
    * @param event
    */
   async _modificationControl(event) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const modTypeChoices = CONFIG.FFG.allowableModifierTypes;
@@ -569,6 +571,8 @@ export class talentEditor extends itemEditor {
    * @param event
    */
   async _modControl(event) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const nk = new Date().getTime();
@@ -619,12 +623,14 @@ export class talentEditor extends itemEditor {
    */
   async _enrichData() {
     let enriched = this.data;
-    enriched.clickedObject.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.description);
+    enriched.clickedObject.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(this.data.clickedObject.description);
     return enriched;
   }
 
   /** @override */
   async _updateObject(event, formData) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     CONFIG.logger.debug("Updating talent");
     formData = foundry.utils.expandObject(formData);
 
@@ -825,7 +831,7 @@ export class forcePowerEditor extends itemEditor {
    */
   async _enrichData() {
     let enriched = this.data;
-    enriched.clickedObject.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.description);
+    enriched.clickedObject.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(this.data.clickedObject.description);
     return enriched;
   }
 

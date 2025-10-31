@@ -57,6 +57,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
   /** @override */
   async _onDropItem(event, data) {
+    if(!this.actor.verifyEditModeIsNotEnabled()) return false;
+
     if (data?.type === "Item") {
       // this is the stock implementation, except that we do not pass "true" to item.toObject
       if ( !this.actor.isOwner ) return false;
@@ -102,6 +104,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
                 icon: '<i class="fas fa-hourglass"></i>',
                 label: game.i18n.localize("SWFFG.DragDrop.PurchaseItem"),
                 callback: async (that) => {
+                  if(!this.actor.verifyEditModeIsNotEnabled()) return false;
+
                   if (cost > 0) {
                     const AEState = await ActorHelpers.beginEditMode(this.actor, true);
                     const updatedAvailableXP = this.actor.system.experience.available;
@@ -446,6 +450,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
           icon: '<i class="fa-regular fa-circle-up"></i>',
           callback: (li) => {
+            if(!this.actor.verifyEditModeIsNotEnabled()) return false;
             this._buySkillRank(li);
           },
         },
@@ -744,6 +749,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Toggle item equipped
     html.find(".items .item a.toggle-equipped").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
+
       const li = $(ev.currentTarget);
       const item = this.actor.items.get(li.data("itemId"));
       if (item) {
@@ -849,6 +858,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Add Inventory Item
     html.find(".item-add").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
 
       let itemType = "";
       switch (ev.currentTarget.classList[1]) {
@@ -880,6 +892,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Delete Inventory Item
     html.find(".item-delete").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
+
       const li = $(ev.currentTarget).parents(".item");
       this.actor.items.get(li.data("itemId"))?.delete();
       li.slideUp(200, () => this.render(false));
@@ -887,6 +903,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Edit Inventory Item
     html.find(".item-edit").click(async (ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
+
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
       let item = this.actor.items.get(itemId);
@@ -936,6 +956,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Edit Crew
     html.find(".crew-edit").click(async (ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
       const crew_member_id = $(ev.currentTarget).parents(".item").data("actor-id");
       const crew_member = game.actors.get(crew_member_id);
       const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
@@ -962,6 +985,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             confirm: {
               label: game.i18n.localize("SWFFG.Crew.Role.Update"),
               callback: async (html) => {
+                if(!this.actor.verifyEditModeIsNotEnabled()) {
+                  return;
+                }
                 const newRoles = html.find('[name="select-many-things"]').val();
                 await updateRoles(actor, crew_member_id, newRoles);
               }
@@ -972,6 +998,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     });
 
     html.find(".item-info").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
@@ -993,6 +1022,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               icon: '<i class="fas fa-check"></i>',
               label: game.i18n.localize("SWFFG.ButtonAccept"),
               callback: (html) => {
+                if(!this.actor.verifyEditModeIsNotEnabled()) {
+                  return;
+                }
                 const talentsToRemove = $(html).find("input[type='checkbox']:checked");
                 CONFIG.logger.debug(`Removing ${talentsToRemove.length} talents`);
 
@@ -1403,7 +1435,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${await TextEditor.enrichHTML(desc)}</div>`);
+      let div = $(`<div class="item-details">${await foundry.applications.ux.TextEditor.enrichHTML(desc)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
@@ -1632,6 +1664,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
+              if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
               const id = await this._spendXp(`system.skills.${skill}.rank`, 1, cost);
               await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost, availableXP - cost, totalXP, id);
             },
@@ -1706,6 +1740,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               icon: '<i class="fa-solid fa-check"></i>',
               label: game.i18n.localize("SWFFG.Actors.Sheets.Refund.Confirm"),
               callback: async (that) => {
+                if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
                 await this.object.deleteEmbeddedDocuments("ActiveEffect", [purchasedEffect.id]);
                 CONFIG.logger.debug("deleted AE, updating log");
                 let logEntries = this.object.getFlag("starwarsffg", "xpLog") || [];
@@ -2070,6 +2106,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   }
 
   async _buyCore(event) {
+    if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
     const action = $(event.target).data("buy-action");
     const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
     let content;
@@ -2309,6 +2347,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
+              if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
               const cost = $("#ffgPurchase option:selected", that).data("cost");
               const selected_id = $("#ffgPurchase option:selected", that).data("id");
               const selected_source = $("#ffgPurchase option:selected", that).data("source");
@@ -2381,6 +2421,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
+              if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
               const statusId = await this._spendXp(`system.characteristics.${characteristic}.value`, 1, cost);
               await xpLogSpend(game.actors.get(this.object.id), `characteristic ${characteristic} level ${characteristicValue} --> ${characteristicValue + 1}`, cost, availableXP - cost, totalXP, statusId);
               await this.render(true);
