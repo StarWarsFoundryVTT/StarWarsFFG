@@ -32,13 +32,14 @@ export class CombatFFG extends Combat {
    */
   async addExtraSlot(round, disposition, initiative) {
     const extraSlot = await new CombatantFFG(
-{
+      {
         name: "__GENERIC_SLOT__",
         disposition: disposition,
         combatantId: foundry.utils.randomID(),
         hidden: false,
         visible: true,
         initiative: initiative,
+        group: null,
         flags: {
           fake: true,
           disposition: disposition,
@@ -759,15 +760,27 @@ function _buildInitiativePool(data, skill) {
 }
 
 export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTracker {
-  /** @override */
-  get template() {
-    return "systems/starwarsffg/templates/dialogs/combat-tracker.html";
-  }
+
+  /** @inheritdoc */
+  static PARTS = {
+    header: {
+      template: "templates/sidebar/tabs/combat/header.hbs",
+    },
+    tracker: {
+      template: "systems/starwarsffg/templates/dialogs/combat-tracker.html",
+    },
+    footer: {
+      template: "templates/sidebar/tabs/combat/footer.hbs",
+    },
+  };
 
   /** @override */
-  activateListeners(html) {
-    super.activateListeners(html);
-    html.find('a[data-claim-slot]').on('click', this._claimInitiativeSlot.bind(this));
+  _onRender(context, options) {
+    super._onRender(context, options);
+    const claimElement = this.element.querySelector('a[data-claim-slot]');
+    if (claimElement) {
+      claimElement.addEventListener("click", this._claimInitiativeSlot.bind(this));
+    }
   }
 
   /**
@@ -803,10 +816,10 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
   }
 
   /** @override */
-  async getData(options) {
+  async _prepareContext(options) {
     const combat = this.viewed;
-      if (!combat) {
-      return await super.getData(options);
+    if (!combat) {
+      return await super._prepareContext(options);
     }
 
     // create a copy of the turn data, then set hidden to false so non-GMs can view all turns, then set the data back
@@ -814,7 +827,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
     for (const turn of this.viewed.turns) {
       turn.hidden = false;
     }
-    const data = await super.getData(options);
+    const data = await super._prepareContext(options);
     this.viewed.turns = tempData;
 
     const newInitiatives = {
@@ -838,7 +851,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 0,
     };
 
-    const turns = data.turns.map((turn, index) => {
+    const turns = this.viewed.turns.map((turn, index) => {
       // check if anyone has claimed this slot
       const claimantId = combat.getSlotClaims(combat.round, turn.id);
       // if they have, pull the actor data
@@ -848,7 +861,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       // look up the normal actor for this slot
       const combatant = combat.combatants.get(turn.id);
       // track the disposition: the token, if it exists, then the actor, if it exists, then turn.defeated (which is where we stash extra slot initiative)
-      const disposition = combatant.disposition;
+      const disposition = turn.disposition;
       // determine if the user can claim this slot
       const canClaim = ((disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY || disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) && !claimed) || game.user.isGM;
 
@@ -969,10 +982,10 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
     const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
 
     const turnData = {
-      Friendly: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
-      Enemy: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
-      Neutral: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
-      Secret: data.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.SECRET),
+      Friendly: this.viewed.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
+      Enemy: this.viewed.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
+      Neutral: this.viewed.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL),
+      Secret: this.viewed.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.SECRET),
     };
 
     // update visibility state for each token
@@ -1002,7 +1015,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
 
     return {
       ...data,
-      turns,
+      custom_turns: turns,
       control: claimant?.players?.includes(game.user) ?? false,
       turnData,
     };
@@ -1125,7 +1138,6 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
 
   /** @override */
   async _onCombatantHoverIn(event) {
-    event.preventDefault();
 
     if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
       return;
@@ -1135,7 +1147,6 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
 
   /** @override */
   async _onCombatantMouseDown(event) {
-    event.preventDefault();
 
     if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
       return;
