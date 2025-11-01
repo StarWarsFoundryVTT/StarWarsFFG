@@ -800,7 +800,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       return;
     }
     const token = ownedTokenCount === 1 ? canvas.tokens.ownedTokens[0] : canvas.tokens.controlled[0];
-    const combatant = token.combatant;
+    const combatant = this.viewed.combatants.find(i => i.actorId === token.actor.id);
     if (!combatant) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.Combatant"));
       return;
@@ -1075,7 +1075,8 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
     const unClaimSlot = {
       name: 'SWFFG.Notifications.Combat.Claim.UnClaim',
       icon: '<i class="fa-regular fa-xmark"></i>',
-      callback: async (li) => {
+      callback: async (el) => {
+        const li = $(el);
         const index = +li.data('slot-index');
         if (!isNaN(index)) {
           await this.viewed.unclaimSlot(this.viewed.round, this.viewed.turns[index].id);
