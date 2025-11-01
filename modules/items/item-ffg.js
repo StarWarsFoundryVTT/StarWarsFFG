@@ -37,6 +37,7 @@ export class ItemFFG extends ItemBaseFFG {
       // only run onCreate for the user actually performing the update
       return;
     }
+    let force = false;
     // Ensure we're dealing with an embedded item
     if (this.isEmbedded && this.actor) {
       // If this is a weapon or armour item we must ensure its modifier-adjusted values are saved to the database
@@ -44,6 +45,7 @@ export class ItemFFG extends ItemBaseFFG {
         let that = this.toObject(true);
         delete that._id;
         await this.update(that);
+        force = true;
       }
     }
 
@@ -64,7 +66,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     await super._onCreate(data, options, user);
 
-    await this._onCreateAEs(options);
+    await this._onCreateAEs(options, force);
   }
 
   async _onCreateAEs(options, force=false) {
