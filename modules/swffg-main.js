@@ -99,11 +99,7 @@ Hooks.once("init", async function () {
   // to instead use our extended version.
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
-  CONFIG.Combat.documentClass = CombatFFG;
-  CONFIG.Combatant.documentClass = CombatantFFG;
   CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
-  // override the token placeable object so we can control turn indicators
-  CONFIG.Token.objectClass = TokenFFG;
 
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee
@@ -276,6 +272,10 @@ Hooks.once("init", async function () {
 
   if (game.settings.get("starwarsffg", "useGenericSlots")) {
     CONFIG.ui.combat = CombatTrackerFFG;
+    CONFIG.Combat.documentClass = CombatFFG;
+    CONFIG.Combatant.documentClass = CombatantFFG;
+    // override the token placeable object so we can control turn indicators
+    CONFIG.Token.objectClass = TokenFFG;
   }
 
   /**
