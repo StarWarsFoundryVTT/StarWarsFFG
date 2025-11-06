@@ -31,22 +31,24 @@ export class CombatFFG extends Combat {
    * @returns {Promise<void>}
    */
   async addExtraSlot(round, disposition, initiative) {
-    const extraSlot = await new CombatantFFG(
-      {
-        name: "__GENERIC_SLOT__",
+    const data = {
+      name: "__GENERIC_SLOT__",
+      disposition: disposition,
+      combatantId: foundry.utils.randomID(),
+      hidden: false,
+      visible: true,
+      initiative: initiative,
+      flags: {
+        fake: true,
         disposition: disposition,
-        combatantId: foundry.utils.randomID(),
-        hidden: false,
-        visible: true,
-        initiative: initiative,
-        group: null,
-        flags: {
-          fake: true,
-          disposition: disposition,
-        }
       },
-    );
-    return (await this.createEmbeddedDocuments("Combatant", [extraSlot]))[0].id;
+    };
+
+    const createdSlotId = (await this.createEmbeddedDocuments("Combatant", [data]))[0].id;
+    const createdSlot = this.combatants.get(createdSlotId);
+    await createdSlot.setFlag("starwarsffg", "fake", true);
+    await createdSlot.setFlag("starwarsffg", "disposition", disposition);
+    return createdSlotId;
   }
 
   /**
@@ -61,7 +63,7 @@ export class CombatFFG extends Combat {
    */
   async addIDedExtraSlot(disposition, initiative, actorId, tokenId, sceneId, claimantName) {
     const extraSlot = await new CombatantFFG(
-{
+    {
         name: claimantName,
         disposition: disposition,
         actorId: actorId,
@@ -501,6 +503,8 @@ export class CombatFFG extends Combat {
     }
     // re-render the tracker / re-order the turns
     CONFIG.logger.debug("Re-rendering the tracker and emitting a socket event for other clients");
+    // force re-checking slots before reordering
+    this.prepareDerivedData();
     this.setupTurns();
     // emit a socket event
     game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
@@ -710,6 +714,228 @@ export class CombatFFG extends Combat {
     }
     await super.delete();
   }
+
+  /** @override */
+  async prepareDerivedData() {
+    super.prepareDerivedData();
+    CONFIG.logger.debug("Preparing combat data for custom tracker!");
+
+    const newInitiatives = {
+      [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: this.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY).map(i => i.initiative),
+      [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: this.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL).map(i => i.initiative),
+      [CONST.TOKEN_DISPOSITIONS.SECRET]: this.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.SECRET).map(i => i.initiative),
+      [CONST.TOKEN_DISPOSITIONS.HOSTILE]: this.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE).map(i => i.initiative),
+    }
+
+    // sort the initiatives
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.FRIENDLY].sort(sortInit);
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.NEUTRAL].sort(sortInit);
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.SECRET].sort(sortInit);
+    newInitiatives[CONST.TOKEN_DISPOSITIONS.HOSTILE].sort(sortInit);
+
+    // used to track how many slots have occurred per side - we care to mark slots as "unused" if they're past the number of alive combatants
+    let turnTracker = {
+      [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 0,
+      [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 0,
+      [CONST.TOKEN_DISPOSITIONS.SECRET]: 0,
+      [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 0,
+    };
+
+    if (!this.turns) {
+      CONFIG.logger.debug("skipping due to lack of turns");
+      return;
+    }
+
+    const turns = this.turns.map((turn, index) => {
+      CONFIG.logger.debug(`Processing turn for ${turn?.name}`);
+      // combatant ID of the claimant of this slot, if it exists
+      const claimantId = this.getSlotClaims(this.round, turn.id);
+      // actor data of the claimant
+      const claimant = claimantId ? (this.combatants.get(claimantId)) : undefined;
+      // true if if there's a claim on the slot and combat has started
+      const claimed = this.started ? claimantId !== undefined : true;
+      // the normal actor for this slot. may or may not match the claimant
+      const combatant = foundry.utils.deepClone(this.combatants.get(turn.id));
+      if (!combatant) {
+        CONFIG.logger.debug("No combatant found, skipping");
+        return turn;
+      }
+      // track the disposition: the token, if it exists, then the actor, if it exists, then turn.defeated (which is where we stash extra slot initiative)
+      const disposition = combatant.disposition;
+      // can the user claim this slot?
+      const canClaim = (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY && !claimed) || game.user.isGM;
+
+      // the highest possible initiative for this combatant
+      let slotInitiative;
+      try {
+        slotInitiative = newInitiatives[disposition].pop();
+      } catch (e) {
+        CONFIG.logger.warn(`caught disposition issue: ${e}, skipping processing turn (this is normal when removing combatants)`);
+        return turn;
+      }
+
+      let claim = {};
+      let hasRolled = true;
+
+      if (this.started && claimant) {
+        // the slot is claimed
+        CONFIG.logger.debug(`slot ${index} has been claimed by ${claimant.name}`);
+        const hidden = this._getTokenHidden(claimant.tokenId);
+        let defeated = claimant.isDefeated;
+
+        const effects = new Set();
+        if (claimant.token) {
+          claimant.token.effects.forEach((e) => effects.add(e))
+          if (claimant.token.overlayEffect) {
+            effects.add(claimant.token.overlayEffect);
+          }
+        }
+
+        if (claimant.actor) {
+          if (claimant.isDefeated) {
+            defeated = true;
+          }
+          for (const effect of claimant.actor.temporaryEffects) {
+            if (effect?.icon) {
+              effects.add(effect.icon);
+            }
+          }
+        }
+
+        if (!hidden && turn.css) {
+          turn.css = turn?.css?.replace('hidden', '');
+        }
+
+        if (claimant.initiative === null || claimant.initiative === undefined) {
+          CONFIG.logger.debug("setting hasRolled to false (no initiative for claimant)");
+          hasRolled = false;
+        }
+
+        claim = {
+          id: claimant.id,
+          combatantId: combatant.id,
+          name: claimant.name,
+          img: claimant.img ?? CONST.DEFAULT_TOKEN,
+          owner: claimant.isOwner,
+          defeated,
+          hidden: hidden,
+          canPing: claimant.sceneId === canvas.scene?.id && game.user.hasPermission("PING_CANVAS"),
+          effects,
+          initiative: claimant.initiative,
+          claimantToken: claimant.token,
+        };
+
+        turn.hidden = hidden;
+        // trigger the turnActive marker to be refreshed
+        turn.claimed = claimantId;
+        claimant?.token?.object?._refreshTurnMarker();
+      } else {
+        CONFIG.logger.debug(`slot ${index} is unclaimed`);
+        if (combatant) {
+          turn.combatantId = combatant.id;
+
+          if (combatant && Object.keys(combatant).includes("tokenId")) {
+            combatant.hidden = this._getTokenHidden(combatant.tokenId);
+          } else {
+            combatant.hidden = false;
+          }
+
+          // sync the turn state to the token state
+          turn.hidden = combatant.hidden;
+          if (combatant.initiative === null || combatant.initiative === undefined) {
+            hasRolled = false;
+          }
+        }
+
+        // trigger the turnActive marker to be refreshed
+        turn.token?.object?._refreshTurnMarker();
+      }
+
+      if (combatant.css === undefined || combatant.css === null) {
+        combatant.css = "";
+      }
+      if (this.turn === index) {
+        combatant.active = true;
+        combatant.css += " active";
+      } else {
+        combatant.active = false;
+        combatant.css = "";
+      }
+
+      let slotType;
+      if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
+        slotType = 'Friendly';
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
+        slotType = 'Enemy';
+      } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
+        slotType = 'Secret';
+      } else {
+        slotType = 'Neutral';
+      }
+
+      // determine if we should mark the slot as unneeded
+      const aliveCount = this._getCombatantStateCount(disposition);
+      let unused = false;
+      turnTracker[disposition]++;
+
+      // we do not care about the defeated status since defeated units get their slot marked unused
+      if (turn.css) {
+        turn.css = turn.css.replace('defeated', '');
+      }
+
+      return {
+        ...turn,
+        ...claim,
+        slotType: slotType,
+        initiative: slotInitiative,
+        hasRolled: hasRolled,
+        claimed,
+        canClaim,
+        activationId: slotInitiative ? slotInitiative.activationId : undefined,
+        unused: unused,
+      }
+    });
+
+    console.log(turns)
+
+    // write to customTurns to avoid permanent changes
+    this.customTurns = turns;
+  }
+
+  /**
+   * Determine the hidden status of a token, since the state in the combat tracker seems to lag
+   * @param tokenId
+   * @returns {boolean}
+   * @private
+   */
+  _getTokenHidden(tokenId) {
+    let hidden = true;
+    const scene = game.scenes.find(i => i.isView);
+    if (!scene) {
+      return false;
+    }
+    const token = scene.tokens.get(tokenId);
+    if (token) {
+      hidden = token.hidden;
+    }
+    CONFIG.logger.debug(`looked up hidden state for ${token?.name}/${tokenId} on scene ${scene.id}: ${hidden}`);
+    return hidden;
+  }
+
+    /**
+   * get the number of alive combatants on a given side, including any who have claimed a slot and died
+   * essentially, the claimed and dead ones need to be included to get an accurate count to determine unused slots
+   * @param disposition
+   * @returns {number}
+   * @private
+   */
+  _getCombatantStateCount(disposition) {
+    const total =  this.combatants.filter(i => i.disposition === disposition);
+    const defeated = this.combatants.filter(i => i.disposition === disposition && i.isDefeated);
+    CONFIG.logger.debug(`getting combatant state count for ${disposition}`)
+    CONFIG.logger.debug(`detected ${total.length} real slots, and ${defeated.length} defeated slots`);
+    return total.length - defeated.length;
+  }
 }
 
 function _getInitiativeFormula(skill, ability) {
@@ -767,16 +993,20 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       template: "templates/sidebar/tabs/combat/header.hbs",
     },
     tracker: {
-      template: "systems/starwarsffg/templates/dialogs/combat-tracker.html",
+      template: "systems/starwarsffg/templates/combat/ffg-combat-tracker-body.html",
     },
     footer: {
-      template: "templates/sidebar/tabs/combat/footer.hbs",
+      template: "systems/starwarsffg/templates/combat/ffg-combat-tracker-footer.html",
     },
   };
 
   /** @override */
-  _onRender(context, options) {
-    super._onRender(context, options);
+  async _onRender(context, options) {
+    try {
+      await super._onRender(context, options);
+    } catch (error) {
+      CONFIG.logger.debug(`Custom combat tracker caught semi-expected render error: ${error}`)
+    }
     const claimElement = this.element.querySelector('a[data-claim-slot]');
     if (claimElement) {
       claimElement.addEventListener("click", this._claimInitiativeSlot.bind(this));
@@ -828,159 +1058,6 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       turn.hidden = false;
     }
     const data = await super._prepareContext(options);
-    this.viewed.turns = tempData;
-
-    const newInitiatives = {
-      [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY).map(i => i.initiative),
-      [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.NEUTRAL).map(i => i.initiative),
-      [CONST.TOKEN_DISPOSITIONS.SECRET]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.SECRET).map(i => i.initiative),
-      [CONST.TOKEN_DISPOSITIONS.HOSTILE]: combat.combatants.filter(i => i.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE).map(i => i.initiative),
-    }
-
-    // sort the initiatives
-    newInitiatives[CONST.TOKEN_DISPOSITIONS.FRIENDLY].sort(sortInit);
-    newInitiatives[CONST.TOKEN_DISPOSITIONS.NEUTRAL].sort(sortInit);
-    newInitiatives[CONST.TOKEN_DISPOSITIONS.SECRET].sort(sortInit);
-    newInitiatives[CONST.TOKEN_DISPOSITIONS.HOSTILE].sort(sortInit);
-
-    // used to track how many slots have occurred per side - we care to mark slots as "unused" if they're past the number of alive combatants
-    let turnTracker = {
-      [CONST.TOKEN_DISPOSITIONS.FRIENDLY]: 0,
-      [CONST.TOKEN_DISPOSITIONS.NEUTRAL]: 0,
-      [CONST.TOKEN_DISPOSITIONS.SECRET]: 0,
-      [CONST.TOKEN_DISPOSITIONS.HOSTILE]: 0,
-    };
-
-    const turns = this.viewed.turns.map((turn, index) => {
-      // check if anyone has claimed this slot
-      const claimantId = combat.getSlotClaims(combat.round, turn.id);
-      // if they have, pull the actor data
-      const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
-      // if there's a claim on the slot and combat has started, set claimed = true
-      const claimed = combat.started ? claimantId !== undefined : true;
-      // look up the normal actor for this slot
-      const combatant = combat.combatants.get(turn.id);
-      // track the disposition: the token, if it exists, then the actor, if it exists, then turn.defeated (which is where we stash extra slot initiative)
-      const disposition = turn.disposition;
-      // determine if the user can claim this slot
-      const canClaim = ((disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY || disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) && !claimed) || game.user.isGM;
-
-      // get the highest possible initiative for this combatant
-      const slotInitiative = newInitiatives[disposition].pop();
-
-      let claim = {};
-      let hasRolled = true;
-
-      if (combat.started && claimant) {
-        CONFIG.logger.debug(`slot ${index} has been claimed by ${claimant.name}`);
-        let defeated = claimant.isDefeated;
-
-        const effects = new Set();
-        if (claimant.token) {
-          claimant.token.effects.forEach((e) => effects.add(e))
-          if (claimant.token.overlayEffect) {
-            effects.add(claimant.token.overlayEffect);
-          }
-        }
-        if (claimant.actor) {
-          if (claimant.isDefeated) {
-            defeated = true;
-          }
-          for (const effect of claimant.actor.temporaryEffects) {
-            if (effect?.icon) {
-              effects.add(effect.icon);
-            }
-          }
-        }
-
-        const hidden = this._getTokenHidden(claimant.tokenId);
-
-        if (!hidden && turn.css) {
-          turn.css = turn?.css?.replace('hidden', '');
-        }
-
-        if (claimant.initiative === null) {
-          CONFIG.logger.debug("setting hasRolled to false (no initiative for claimant)");
-          hasRolled = false;
-        }
-
-        claim = {
-          id: claimant.id,
-          combatantId: combatant.id,
-          name: claimant.name,
-          img: claimant.img ?? CONST.DEFAULT_TOKEN,
-          owner: claimant.isOwner,
-          defeated,
-          hidden: hidden,
-          canPing: claimant.sceneId === canvas.scene?.id && game.user.hasPermission("PING_CANVAS"),
-          effects,
-          initiative: claimant.initiative,
-        };
-        turn.hidden = hidden;
-        turn.tokenId = claimant.tokenId;
-      } else {
-        CONFIG.logger.debug(`slot ${index} is unclaimed`);
-        if (combatant) {
-          turn.combatantId = combatant.id;
-          if (combatant && Object.keys(combatant).includes("tokenId")) {
-            combatant.hidden = this._getTokenHidden(combatant.tokenId);
-          } else {
-            combatant.hidden = false;
-          }
-          turn.tokenId = combatant.tokenId;
-          // sync the turn state to the token state
-          turn.hidden = combatant.hidden;
-          if (combatant.initiative === null && !combat?.started) {
-            hasRolled = false;
-          }
-
-          if (combatant.css === undefined) {
-            combatant.css = "";
-          }
-          if (combat.turn === index) {
-            combatant.active = true;
-            combatant.css += " active";
-          } else {
-            combatant.active = false;
-            combatant.css = "";
-          }
-        }
-      }
-      let slotType;
-      if (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY) {
-        slotType = 'Friendly';
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE) {
-        slotType = 'Enemy';
-      } else if (disposition === CONST.TOKEN_DISPOSITIONS.SECRET) {
-        slotType = 'Secret';
-      } else {
-        slotType = 'Neutral';
-      }
-
-      // determine if we should mark the slot as unneeded
-      const aliveCount = this._getCombatantStateCount(combat, disposition);
-      let unused = false;
-      turnTracker[disposition]++;
-
-      // we do not care about the defeated status since defeated units get their slot marked unused
-      turn.css = turn.css.replace('defeated', '');
-
-      return {
-        ...turn,
-        ...claim,
-        slotType: slotType,
-        initiative: slotInitiative,
-        hasRolled: hasRolled,
-        claimed,
-        canClaim,
-        activationId: slotInitiative ? slotInitiative.activationId : undefined,
-        unused: unused,
-      }
-    });
-
-    const claimantId = combat.getSlotClaims(combat.round, combat.turns[combat.turn]?.id);
-    const claimant = claimantId ? (combat.combatants.get(claimantId)) : undefined;
-
     const turnData = {
       Friendly: this.viewed.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY),
       Enemy: this.viewed.turns.filter(i => combat.combatants.get(i.id)?.token?.disposition === CONST.TOKEN_DISPOSITIONS.HOSTILE),
@@ -1013,28 +1090,19 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       turn.claimed = combat.hasClaims(combatant.id);
     }
 
+    // the current custom turn
+    const currentTurn = this.viewed.customTurns[this.viewed.turn];
+    // if the current user is an owner of the current turn (true is claimed, or they're a GM)
+    const customControl = currentTurn ? currentTurn.owner : false;
+
     return {
       ...data,
-      custom_turns: turns,
-      control: claimant?.players?.includes(game.user) ?? false,
+      hasCombat: this.viewed?.started,
+      round: this.viewed?.round,
+      custom_turns: this.viewed.customTurns,
+      customControl: customControl,
       turnData,
     };
-  }
-
-  /**
-   * get the number of alive combatants on a given side, including any who have claimed a slot and died
-   * essentially, the claimed and dead ones need to be included to get an accurate count to determine unused slots
-   * @param combat
-   * @param disposition
-   * @returns {number}
-   * @private
-   */
-  _getCombatantStateCount(combat, disposition) {
-    const total =  combat.combatants.filter(i => i.disposition === disposition);
-    const defeated = combat.combatants.filter(i => i.disposition === disposition && i.isDefeated);
-    CONFIG.logger.debug(`getting combatant state count for ${disposition}`)
-    CONFIG.logger.debug(`detected ${total.length} real slots, and ${defeated.length} defeated slots`);
-    return total.length - defeated.length;
   }
 
   /**
@@ -1178,8 +1246,8 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
 
 export default class CombatantFFG extends Combatant {
   get disposition() {
-    if (this.flags?.fake) {
-      return this.flags.disposition;
+    if (this.getFlag("starwarsffg", "fake")) {
+      return this.getFlag("starwarsffg", "disposition");
     } else {
       return this?.token ? this.token?.disposition : this?.actor?.prototypeToken?.disposition;
     }

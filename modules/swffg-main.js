@@ -7,6 +7,7 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
+import { TokenFFG } from "./tokens/token-ffg.js";
 import CombatantFFG, {
   CombatFFG,
   CombatTrackerFFG,
@@ -75,6 +76,7 @@ Hooks.once("init", async function () {
   // Place our classes in their own namespace for later reference.
   game.ffg = {
     ActorFFG,
+    TokenFFG,
     ItemFFG,
     CombatFFG,
     CombatantFFG,
@@ -100,6 +102,8 @@ Hooks.once("init", async function () {
   CONFIG.Combat.documentClass = CombatFFG;
   CONFIG.Combatant.documentClass = CombatantFFG;
   CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
+  // override the token placeable object so we can control turn indicators
+  CONFIG.Token.objectClass = TokenFFG;
 
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee

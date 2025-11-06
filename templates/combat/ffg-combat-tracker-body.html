@@ -132,7 +132,7 @@
 							<h4>{{ localize "SWFFG.Notifications.Combat.Claim.Unused" }} {{ slotType}} {{ localize "SWFFG.Notifications.Combat.Claim.Slot" }}</h4>
 						{{ else }}
 							{{#if (and canClaim active)}}
-								<a data-claim-slot="{{@index}}">{{ localize "SWFFG.Notifications.Combat.Claim.Claim" }}</a>
+								<h4><a data-claim-slot="{{@index}}">{{ localize "SWFFG.Notifications.Combat.Claim.Claim" }}</a></h4>
 							{{else}}
 								<h4>{{ slotType}} {{ localize "SWFFG.Notifications.Combat.Claim.Slot" }}</h4>
 							{{/if}}
@@ -152,24 +152,4 @@
 			{{/if}}
 		{{/each}}
 	</ol>
-
-	<nav id="combat-controls" class="directory-footer flexrow" data-tooltip-direction="UP">
-		{{#if hasCombat}}
-			{{#if user.isGM}}
-				{{#if round}}
-					<a class="combat-control" data-tooltip="COMBAT.RoundPrev" data-control="previousRound"><i class="fas fa-step-backward"></i></a>
-					<a class="combat-control" data-tooltip="COMBAT.TurnPrev" data-control="previousTurn"><i class="fas fa-arrow-left"></i></a>
-					<a class="combat-control center" data-control="endCombat">{{localize 'COMBAT.End'}}</a>
-					<a class="combat-control" data-tooltip="COMBAT.TurnNext" data-control="nextTurn"><i class="fas fa-arrow-right"></i></a>
-					<a class="combat-control" data-tooltip="COMBAT.RoundNext" data-control="nextRound"><i class="fas fa-step-forward"></i></a>
-				{{else}}
-					<a class="combat-control center" data-control="startCombat">{{localize 'COMBAT.Begin'}}</a>
-				{{/if}}
-			{{else if control}}
-				<a class="combat-control" data-tooltip="COMBAT.TurnPrev" data-control="previousTurn"><i class="fas fa-arrow-left"></i></a>
-				<a class="combat-control center" data-control="nextTurn">{{localize 'COMBAT.TurnEnd'}}</a>
-				<a class="combat-control" data-tooltip="COMBAT.TurnNext" data-control="nextTurn"><i class="fas fa-arrow-right"></i></a>
-			{{/if}}
-		{{/if}}
-	</nav>
 </section>

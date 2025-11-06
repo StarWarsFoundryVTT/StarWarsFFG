@@ -4469,3 +4469,7 @@ img {
 .starwarsffg .simulation .unlikely {
   color: #490c0b;
 }
+
+.combat-sidebar li.combatant .token-initiative {
+  flex: 0 0 48px;
+}
