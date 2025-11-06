@@ -7,6 +7,8 @@
   * Fix for defence not applied during combat checks as setback dice ([#2009](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2009)()
   * Fix for defence mods to distinguish between melee and ranged ([#1985](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1985))
   * Fix uncontrolled active effect messing with actor stats while in Edit Mode - disable any change instead of the base stats ([#1976](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1976))
+  * Fix for handling wasn't affecting piloting pool ([#1983](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1983))
+  * Fix defence and soak is not applying from armour if created within actor sheet ([#2011](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2011))
 
 `1.910`
 * Fixes:
