@@ -62,19 +62,19 @@ export class CombatFFG extends Combat {
    * @returns {Promise<void>}
    */
   async addIDedExtraSlot(disposition, initiative, actorId, tokenId, sceneId, claimantName) {
-    const extraSlot = await new CombatantFFG(
-    {
-        name: claimantName,
-        disposition: disposition,
-        actorId: actorId,
-        tokenId: tokenId,
-        sceneId: sceneId,
-        hidden: false,
-        visible: true,
-        initiative: initiative,
-      },
-    );
-    return (await this.createEmbeddedDocuments("Combatant", [extraSlot]))[0].id;
+    const data = {
+      name: claimantName,
+      disposition: disposition,
+      actorId: actorId,
+      tokenId: tokenId,
+      sceneId: sceneId,
+      hidden: false,
+      visible: true,
+      initiative: initiative,
+    };
+
+    const createdSlotId = (await this.createEmbeddedDocuments("Combatant", [data]))[0].id;
+    return createdSlotId;
   }
 
   /**
