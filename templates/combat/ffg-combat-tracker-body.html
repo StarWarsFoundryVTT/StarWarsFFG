@@ -95,18 +95,6 @@
 						{{/if}}
 					{{/if}}
 						<div class="combatant-controls flexrow">
-							{{#if ../user.isGM}}
-								{{#if (not hasRolled)}}
-								{{/if}}
-								<a class="combatant-control {{#if defeated}}active{{/if}}" data-tooltip="COMBAT.ToggleDead" data-control="toggleDefeated">
-									<i class="fas fa-skull"></i>
-								</a>
-							{{/if}}
-							{{#if canPing}}
-								<a class="combatant-control" data-tooltip="COMBAT.PingCombatant" data-control="pingCombatant">
-									<i class="fa-solid fa-bullseye-arrow"></i>
-								</a>
-							{{/if}}
 							<div class="token-effects">
 								{{#each effects}}
 									<img class="token-effect" src="{{this}}"/>
