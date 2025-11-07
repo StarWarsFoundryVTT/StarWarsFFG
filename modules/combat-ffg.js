@@ -1206,21 +1206,36 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
   }
 
   /** @override */
-  async _onCombatantHoverIn(event) {
-
-    if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
-      return;
-    }
-    return super._onCombatantHoverIn(event);
+  _attachFrameListeners() {
+    super._attachFrameListeners();
+    // allow clicking the custom combat stuff and zooming to the combatant
+    this.element.addEventListener("click", this._onCombatantMouseDown.bind(this));
   }
 
   /** @override */
   async _onCombatantMouseDown(event) {
-
-    if (!(event.currentTarget).classList.contains('claimed') && !(event.currentTarget).classList.contains('actor-header')) {
+    CONFIG.logger.debug("Caught click on custom combat tracker");
+    if ( (event.target instanceof HTMLInputElement) || (event.target instanceof HTMLButtonElement) ) {
+      CONFIG.logger.debug("Rejected click due to wrong place");
       return;
     }
-    return super._onCombatantMouseDown(event);
+    const { combatantId } = event.target?.dataset ?? {};
+    const combatant = this.viewed.combatants.get(combatantId);
+    if ( !combatant ) {
+      CONFIG.logger.debug("Unable to find combatant");
+      return;
+    }
+    if ( event.type === "dblclick" ) {
+      if ( combatant.actor?.testUserPermission(game.user, "OBSERVER") ) combatant.actor?.sheet.render(true);
+      return;
+    }
+    const token = combatant.token?.object;
+    if ( !token ) {
+      CONFIG.logger.debug("Unable to find token");
+      return;
+    }
+    CONFIG.logger.debug("Accepted, should be animating");
+    canvas.animatePan(token.center);
   }
 
   /**
