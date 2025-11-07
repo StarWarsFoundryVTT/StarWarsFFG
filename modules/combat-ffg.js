@@ -990,7 +990,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
   /** @inheritdoc */
   static PARTS = {
     header: {
-      template: "templates/sidebar/tabs/combat/header.hbs",
+      template: "systems/starwarsffg/templates/combat/ffg-combat-tracker-header.html",
     },
     tracker: {
       template: "systems/starwarsffg/templates/combat/ffg-combat-tracker-body.html",
