@@ -74,7 +74,7 @@
 		{{/if}}
 		{{#each custom_turns}}
 			{{#if claimed}}
-				<li class="combatant actor directory-item flexrow {{css}}{{#if ../user.isGM}}{{#if hidden}} hidden{{/if}}{{/if}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-alt-id="{{ combatantId }}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}" data-disposition="{{slotType}}" data-initiative="{{initiative}}">
+				<li class="combatant actor directory-item flexrow {{css}}{{#if ../user.isGM}}{{/if}} slot-{{slotType}} claimed" data-combatant-id="{{id}}" data-alt-id="{{ combatantId }}" data-slot-index="{{@index}}" data-activation-id="{{activationId}}" data-disposition="{{slotType}}" data-initiative="{{initiative}}">
 					{{#if ../user.isGM}}
 						<img class="token-image" src="{{img}}" title="{{name}}"/>
 					{{else}}
