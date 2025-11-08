@@ -658,6 +658,45 @@ export class CombatFFG extends Combat {
     await this.unsetFlag('starwarsffg', `combatClaims.${round}.${slot_id}`);
   }
 
+  /**
+   * Used by the Combat Tracker to update the initiative of a single slot
+   * @param el
+   * @returns {Promise<void>}
+   */
+  async updateCombatant(el) {
+    const slotId = el.getAttribute("data-alt-id");
+    const combatant = this.combatants.get(slotId);
+    const currentInitiative = combatant.initiative;
+    console.log(slotId)
+    console.log("updating!")
+    console.log(combatant)
+    const updateDialog = new Dialog({
+      title: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Title"),
+      content: `
+        <p>${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Initiative")} :</p>
+        <input type="number" id="initiative" name="initiative" value="${currentInitiative}">
+      `,
+      buttons: {
+        submit: {
+          icon: '<i class="fas fa-check"></i>',
+          label: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Submit"),
+          callback: async (obj, event) => {
+            const jObj = $(obj);
+            const initiative = +jObj.find("#initiative")[0].value;
+            if (initiative === "") {
+              ui.notifications.warn("You must provide an initiative value");
+              return;
+            }
+            await combatant.update({initiative: initiative});
+            game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: this.id});
+          }
+        }
+      },
+      default: "submit",
+    });
+    updateDialog.render(true);
+  }
+
   async removeCombatant(el) {
     const round = this.round;
     // find the combatant being right-clicked
@@ -1123,10 +1162,19 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
   _getEntryContextOptions() {
     const baseEntries = super._getEntryContextOptions();
     // replace the default remove combatant entry with our custom one, which allows us to detect and remove extra slots
+    const updateCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantUpdate");
+    if (updateCombatantEntry) {
+      updateCombatantEntry.name = "SWFFG.Notifications.Combat.Initiative.Update";
+      updateCombatantEntry.callback = async el => {
+        await this.viewed.updateCombatant(el);
+      };
+      baseEntries[0] = updateCombatantEntry;
+    }
+
     const removeCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantRemove");
     if (removeCombatantEntry) {
-      removeCombatantEntry.callback = li => {
-        this.viewed.removeCombatant(li);
+      removeCombatantEntry.callback = async el => {
+        await this.viewed.removeCombatant(el);
       };
       baseEntries[4] = removeCombatantEntry;
     }
@@ -1154,6 +1202,9 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
         }
       },
     };
+
+    // remove reroll initiative
+    baseEntries.splice(2, 1);
 
     return [...baseEntries, removeSlot, unClaimSlot];
   }
