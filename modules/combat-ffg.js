@@ -658,19 +658,22 @@ export class CombatFFG extends Combat {
     await this.unsetFlag('starwarsffg', `combatClaims.${round}.${slot_id}`);
   }
 
-  async removeCombatant(li) {
+  async removeCombatant(el) {
     const round = this.round;
     // find the combatant being right-clicked
-    const clickedCombatantId = li.data("alt-id");
+    const clickedCombatantId = el.getAttribute("data-alt-id");
     const clickedCombatantName = this.combatants.get(clickedCombatantId)?.name;
     CONFIG.logger.debug("Detected combatant removal on custom combat tracker, working...");
     CONFIG.logger.debug(`Right clicked original actor was ${clickedCombatantName} (${clickedCombatantId})`);
     // find the claimant on the slot being right-clicked
     const toRemoveCombatantId = this.getSlotClaims(round, clickedCombatantId);
+    if (!toRemoveCombatantId) {
+      return ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Remove.Slot"));
+    }
     const toRemoveCombatantName = this.combatants.get(toRemoveCombatantId)?.name;
     CONFIG.logger.debug(`Actor actually being removed is ${toRemoveCombatantName} (${toRemoveCombatantId})`);
     // pull disposition and initiative from the actor being removed (so we can re-create the slot with those values)
-    const disposition = CONST.TOKEN_DISPOSITIONS[li.data("disposition").replace('Enemy', 'Hostile').toUpperCase()];
+    const disposition = CONST.TOKEN_DISPOSITIONS[el.getAttribute("data-disposition").replace('Enemy', 'Hostile').toUpperCase()];
     const initiative = this.combatants.get(toRemoveCombatantId).initiative;
 
     // see if there is a claim on the slot for the actor being removed (which may not have been the one right-clicked)
@@ -1125,16 +1128,16 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       removeCombatantEntry.callback = li => {
         this.viewed.removeCombatant(li);
       };
-      baseEntries[3] = removeCombatantEntry;
+      baseEntries[4] = removeCombatantEntry;
     }
 
     const removeSlot = {
       name: 'SWFFG.Notifications.Combat.Claim.RemoveSlot',
       icon: '<i class="fa-regular fa-trash-alt"></i>',
-      callback: async (li) => {
-        const index = +li.data('slot-index');
+      callback: async (el) => {
+        const index = +el.getAttribute("data-slot-index");
         if (!isNaN(index)) {
-          await this._removeSlot(this.viewed.round, li);
+          await this._removeSlot(this.viewed.round, el);
         }
       },
     };
@@ -1155,17 +1158,17 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
     return [...baseEntries, removeSlot, unClaimSlot];
   }
 
-  async _removeSlot(tracker, li) {
+  async _removeSlot(tracker, el) {
     const combat = this.viewed;
     if (!combat) {
       ui.notifications.error("Error detecting combat, try starting/ending combat?");
     }
     const round = combat.round;
-    const turn = li.data("slot-index");
+    const turn = el.getAttribute("data-slot-index");
     const combatant = combat.turns[turn];
     const claim = combat.getSlotClaims(round, combatant.id);
     const claimed = claim !== undefined;
-    const disposition = CONST.TOKEN_DISPOSITIONS[li.data("disposition").replace('Enemy', 'Hostile').toUpperCase()];
+    const disposition = CONST.TOKEN_DISPOSITIONS[el.getAttribute("data-disposition").replace('Enemy', 'Hostile').toUpperCase()];
 
     if (claimed) {
       ui.notifications.warn("You must un-claim the slot before removing it");
