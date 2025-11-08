@@ -7,12 +7,12 @@
 		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
 			{{#each turnData.Friendly }}
 				{{#if ../user.isGM }}
-					<img class="combatant token-image actor-header friendly{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+					<img class="combatant token-image actor-header friendly{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 				{{else}}
 					{{#if hidden}}
-						<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+						<img class="combatant token-image actor-header enemy{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
 					{{else}}
-						<img class="combatant token-image actor-header friendly{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+						<img class="combatant token-image actor-header friendly{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 					{{/if}}
 				{{/if}}
 			{{/each}}
@@ -25,12 +25,12 @@
 		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
 			{{#each turnData.Enemy }}
 				{{#if ../user.isGM }}
-					<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+					<img class="combatant token-image actor-header enemy{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 				{{else}}
 					{{#if hidden}}
-						<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+						<img class="combatant token-image actor-header enemy{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
 					{{else}}
-						<img class="combatant token-image actor-header enemy{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+						<img class="combatant token-image actor-header enemy{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 					{{/if}}
 				{{/if}}
 			{{/each}}
@@ -43,12 +43,12 @@
 		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
 			{{#each turnData.Neutral }}
 				{{#if ../user.isGM }}
-					<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+					<img class="combatant token-image actor-header neutral{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 				{{else}}
 					{{#if hidden}}
-						<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+						<img class="combatant token-image actor-header neutral{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
 					{{else}}
-						<img class="combatant token-image actor-header neutral{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+						<img class="combatant token-image actor-header neutral{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 					{{/if}}
 				{{/if}}
 			{{/each}}
@@ -61,12 +61,12 @@
 		<div class="encounter-controls flexrow flex-center{{#if hasCombat}} combat{{/if}}">
 			{{#each turnData.Secret }}
 				{{#if ../user.isGM }}
-					<img class="combatant token-image actor-header Secret{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+					<img class="combatant token-image actor-header Secret{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 				{{else}}
 					{{#if hidden}}
-						<img class="combatant token-image actor-header secret{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
+						<img class="combatant token-image actor-header secret{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="systems/starwarsffg/images/combat/hidden.png" alt="{{localize "SWFFG.Combats.Actors.Hidden"}}"/>
 					{{else}}
-						<img class="combatant token-image actor-header secret{{#if claimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
+						<img class="combatant token-image actor-header secret{{#if slotClaimed}} slot-claimed{{/if}}{{#if defeated}} defeated{{/if}}" src="{{img}}" title="{{name}}" data-combatant-id="{{id}}"/>
 					{{/if}}
 				{{/if}}
 			{{/each}}

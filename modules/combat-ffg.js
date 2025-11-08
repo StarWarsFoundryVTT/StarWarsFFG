@@ -399,6 +399,7 @@ export class CombatFFG extends Combat {
     if (!claims) {
       return false;
     }
+    console.log(claims)
     if (Object.values(claims).includes(combatantId)) {
       return Object.keys(claims).find(key => claims[key] === combatantId);
     } else {
@@ -896,8 +897,6 @@ export class CombatFFG extends Combat {
       }
     });
 
-    console.log(turns)
-
     // write to customTurns to avoid permanent changes
     this.customTurns = turns;
   }
@@ -1069,28 +1068,29 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
     for (const turn of turnData['Friendly']) {
       const combatant = combat.combatants.get(turn.id);
       turn.hidden = this._getTokenHidden(combatant.tokenId);
-      turn.claimed = combat.hasClaims(combatant.id);
+      turn.slotClaimed = combat.hasClaims(combatant.id);
     }
 
     for (const turn of turnData['Enemy']) {
       const combatant = combat.combatants.get(turn.id);
       turn.hidden = this._getTokenHidden(combatant.tokenId);
-      turn.claimed = combat.hasClaims(combatant.id);
+      turn.slotClaimed = combat.hasClaims(combatant.id);
     }
 
     for (const turn of turnData['Neutral']) {
       const combatant = combat.combatants.get(turn.id);
       turn.hidden = this._getTokenHidden(combatant.tokenId);
-      turn.claimed = combat.hasClaims(combatant.id);
+      turn.slotClaimed = combat.hasClaims(combatant.id);
     }
 
     for (const turn of turnData['Secret']) {
       const combatant = combat.combatants.get(turn.id);
       turn.hidden = this._getTokenHidden(combatant.tokenId);
-      turn.claimed = combat.hasClaims(combatant.id);
+      turn.slotClaimed = combat.hasClaims(combatant.id);
     }
 
     // the current custom turn
+    await this.viewed.prepareDerivedData();
     const currentTurn = this.viewed.customTurns[this.viewed.turn];
     // if the current user is an owner of the current turn (true is claimed, or they're a GM)
     const customControl = currentTurn ? currentTurn.owner : false;

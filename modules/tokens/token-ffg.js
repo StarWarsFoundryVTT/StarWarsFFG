@@ -18,11 +18,29 @@ export class TokenFFG extends foundry.canvas.placeables.Token {
       canvas.tokens.turnMarkers.add(this);
       this.turnMarker.draw();
     }
-    else if (this.turnMarker || !game.combat) {
+    else {
       // Remove a Turn Marker
       canvas.tokens.turnMarkers?.delete(this);
       this.turnMarker?.destroy();
       this.turnMarker = null;
+    }
+  }
+
+  /** @override */
+  _refreshSize() {
+    this._refreshMeshSizeAndScale();
+
+    // Adjust nameplate and tooltip positioning
+    const {width, height} = this.document.getSize();
+
+    this.nameplate.position.set(width / 2, height + 2);
+    this.tooltip.position.set(width / 2, -2);
+
+    // Adjust turn marker size (150% size by default);
+    // fixes a bug where the default refreshSize does not check that this.turnMarker.mesh is defined
+    if ( this.turnMarker && this.turnMarker.mesh ) {
+      const mesh = this.turnMarker.mesh;
+      mesh.width = mesh.height = this.externalRadius * 3;
     }
   }
 }
