@@ -140,6 +140,16 @@ Hooks.once("init", async function () {
     onChange: (rule) => window.location.reload()
   });
 
+  // register turn marker reconfigurator
+  game.settings.register("starwarsffg", "configuredTurnMarker", {
+    name: "configuredTurnMarker",
+    hint: "configuredTurnMarker",
+    scope: "world",
+    config: false,
+    default: false,
+    type: Boolean,
+  });
+
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
   foundry.canvas.placeables.Token.prototype._drawBar = function (number, bar, data) {
     let val = Number(data.value);
@@ -1388,6 +1398,14 @@ Hooks.once("ready", async () => {
         }
         effect.update({changes: effect.changes});
     });
+  }
+
+  const turnMarkerConfigured = game.settings.get("starwarsffg", "configuredTurnMarker");
+  const combatTrackerConfig = game.settings.get("core", "combatTrackerConfig");
+  if (combatTrackerConfig.turnMarker.enabled && !turnMarkerConfigured) {
+    await game.settings.set("starwarsffg", "configuredTurnMarker", true);
+    combatTrackerConfig.turnMarker.enabled = false;
+    await game.settings.set("core", "combatTrackerConfig", combatTrackerConfig);
   }
 });
 
