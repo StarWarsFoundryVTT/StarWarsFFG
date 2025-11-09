@@ -920,24 +920,27 @@ export class CombatFFG extends Combat {
       }
 
       // extract the initiative information into icons for rendering on the combat tracker
-      const initiativeParts = slotInitiative.toFixed(2);
-      const decimalPosition = initiativeParts.indexOf(".");
-      const successes = initiativeParts.substring(0, decimalPosition);
-      const triumphs = initiativeParts.substring(decimalPosition + 1, decimalPosition + 2);
-      const advantages = initiativeParts.substring(decimalPosition + 2, decimalPosition + 3);
       const initiativeImage = {
         "successes": "",
         "advantages": "",
         "triumphs": "",
       }
-      for (let x = 0; x < successes; x++) {
-        initiativeImage['successes'] += await foundry.applications.ux.TextEditor.enrichHTML("[su]");
-      }
-      for (let x = 0; x < advantages; x++) {
-        initiativeImage['advantages'] += await foundry.applications.ux.TextEditor.enrichHTML("[ad]");
-      }
-      for (let x = 0; x < triumphs; x++) {
-        initiativeImage['triumphs'] += await foundry.applications.ux.TextEditor.enrichHTML("[tr]");
+      if (slotInitiative) {
+        const initiativeParts = slotInitiative.toFixed(2);
+        const decimalPosition = initiativeParts.indexOf(".");
+        const successes = initiativeParts.substring(0, decimalPosition);
+        const triumphs = initiativeParts.substring(decimalPosition + 1, decimalPosition + 2);
+        const advantages = initiativeParts.substring(decimalPosition + 2, decimalPosition + 3);
+
+        for (let x = 0; x < successes; x++) {
+          initiativeImage['successes'] += await foundry.applications.ux.TextEditor.enrichHTML("[su]");
+        }
+        for (let x = 0; x < advantages; x++) {
+          initiativeImage['advantages'] += await foundry.applications.ux.TextEditor.enrichHTML("[ad]");
+        }
+        for (let x = 0; x < triumphs; x++) {
+          initiativeImage['triumphs'] += await foundry.applications.ux.TextEditor.enrichHTML("[tr]");
+        }
       }
 
       return {
