@@ -4219,7 +4219,7 @@ img {
 }
 
 .starwarsffg #combat-tracker .slot-claimed {
-  filter: grayscale(100%);
+  opacity: 20%;
 }
 .starwarsffg #combat-tracker .token-image.actor-header.defeated {
   filter: blur(1px) grayscale(50%);
@@ -4468,4 +4468,10 @@ img {
 }
 .starwarsffg .simulation .unlikely {
   color: #490c0b;
+}
+
+.combat-sidebar li.combatant .token-initiative {
+  flex: 0 0 50px;
+  display: flex;
+  flex-direction: column;
 }

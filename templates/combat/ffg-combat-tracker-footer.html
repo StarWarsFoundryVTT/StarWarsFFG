@@ -1,0 +1,37 @@
+<nav class="combat-controls" data-tooltip-direction="UP">
+  {{~#if hasCombat~}}
+    {{!-- GM Controls --}}
+    {{#if user.isGM}}
+      {{#if combat.round}}
+        <button type="button" class="inline-control combat-control icon fa-solid fa-backward-step"
+                data-action="previousRound" data-tooltip aria-label="{{ localize "COMBAT.RoundPrev" }}"></button>
+        <button type="button" class="inline-control combat-control icon fa-solid fa-arrow-left"
+                data-action="previousTurn" data-tooltip aria-label="{{ localize "COMBAT.TurnPrev" }}"></button>
+        <button type="button" class="combat-control combat-control-lg" data-action="endCombat">
+            <i class="fa-solid fa-xmark" inert></i>
+            <span>{{ localize "COMBAT.End" }}</span>
+        </button>
+        <button type="button" class="inline-control combat-control icon fa-solid fa-arrow-right"
+                data-action="nextTurn" data-tooltip aria-label="{{ localize "COMBAT.TurnNext" }}"></button>
+        <button type="button" class="inline-control combat-control icon fa-solid fa-forward-step"
+                data-action="nextRound" data-tooltip aria-label="{{ localize "COMBAT.RoundNext" }}"></button>
+      {{else}}
+        <button type="button" class="combat-control combat-control-lg" data-action="startCombat">
+            <i class="fa-solid fa-swords" inert></i>
+            <span>{{ localize "COMBAT.Begin" }}</span>
+        </button>
+      {{/if}}
+
+    {{!-- Active Player Controls --}}
+    {{else if customControl}}
+      <button type="button" class="inline-control combat-control icon fa-solid fa-arrow-left"
+              data-action="previousTurn" data-tooltip aria-label="{{ localize "COMBAT.TurnPrev" }}"></button>
+      <button type="button" class="combat-control combat-control-lg" data-action="nextTurn">
+          <i class="fa-solid fa-check"></i>
+          <span>{{ localize "COMBAT.TurnEnd" }}</span>
+      </button>
+      <button type="button" class="inline-control combat-control icon fa-solid fa-arrow-right"
+              data-action="nextTurn" data-tooltip aria-label="{{ localize "COMBAT.TurnNext" }}"></button>
+      {{/if}}
+  {{/if}}
+</nav>

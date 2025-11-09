@@ -7,6 +7,7 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
+import { TokenFFG } from "./tokens/token-ffg.js";
 import CombatantFFG, {
   CombatFFG,
   CombatTrackerFFG,
@@ -75,6 +76,7 @@ Hooks.once("init", async function () {
   // Place our classes in their own namespace for later reference.
   game.ffg = {
     ActorFFG,
+    TokenFFG,
     ItemFFG,
     CombatFFG,
     CombatantFFG,
@@ -97,8 +99,6 @@ Hooks.once("init", async function () {
   // to instead use our extended version.
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
-  CONFIG.Combat.documentClass = CombatFFG;
-  CONFIG.Combatant.documentClass = CombatantFFG;
   CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
 
   // we do not want the legacy active effect transfer mode
@@ -138,6 +138,16 @@ Hooks.once("init", async function () {
     default: "[]",
     type: String,
     onChange: (rule) => window.location.reload()
+  });
+
+  // register turn marker reconfigurator
+  game.settings.register("starwarsffg", "configuredTurnMarker", {
+    name: "configuredTurnMarker",
+    hint: "configuredTurnMarker",
+    scope: "world",
+    config: false,
+    default: false,
+    type: Boolean,
   });
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
@@ -272,6 +282,10 @@ Hooks.once("init", async function () {
 
   if (game.settings.get("starwarsffg", "useGenericSlots")) {
     CONFIG.ui.combat = CombatTrackerFFG;
+    CONFIG.Combat.documentClass = CombatFFG;
+    CONFIG.Combatant.documentClass = CombatantFFG;
+    // override the token placeable object so we can control turn indicators
+    CONFIG.Token.objectClass = TokenFFG;
   }
 
   /**
@@ -1384,6 +1398,14 @@ Hooks.once("ready", async () => {
         }
         effect.update({changes: effect.changes});
     });
+  }
+
+  const turnMarkerConfigured = game.settings.get("starwarsffg", "configuredTurnMarker");
+  const combatTrackerConfig = game.settings.get("core", "combatTrackerConfig");
+  if (combatTrackerConfig.turnMarker.enabled && !turnMarkerConfigured) {
+    await game.settings.set("starwarsffg", "configuredTurnMarker", true);
+    combatTrackerConfig.turnMarker.enabled = false;
+    await game.settings.set("core", "combatTrackerConfig", combatTrackerConfig);
   }
 });
 
