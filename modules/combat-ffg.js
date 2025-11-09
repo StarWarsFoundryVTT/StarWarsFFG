@@ -1210,6 +1210,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
   }
 
   async _removeSlot(tracker, el) {
+    CONFIG.logger.debug("Removing slot from combat");
     const combat = this.viewed;
     if (!combat) {
       ui.notifications.error("Error detecting combat, try starting/ending combat?");
@@ -1234,28 +1235,36 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       ui.notifications.warn(`You must retain enough slots for all actors in the combat (${presentCount})`);
       return;
     }
-    // if it's a fake slot, delete it
-    // otherwise, pick another slot, copy the data from it, copy claims over (if applicable), and delete this slot
+
     const fakeTurn = combatant?.flags?.fake || false;
     if (fakeTurn) {
+      // if it's a fake slot, delete it
+      CONFIG.logger.debug("This is a non-actor turn, deleting");
       Hooks.off("preDeleteCombatant", registerHandleCombatantRemoval);
       await combatant.delete();
       CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
     } else {
       // this is a real slot, we need to find a replacement
+      // the approach is to pick another slot, copy data from that slot to our slot, copy claims to our slot (as needed)
+      //   and then delete that fake slot
       // locate a fake turn
+      CONFIG.logger.debug("This slot is owned by a real actor, doing some magic");
       const replacementTurn = combat.turns.find(i => i.flags?.fake && i.disposition === combatant.disposition);
       if (!replacementTurn) {
         CONFIG.logger.warn("Unable to find a replacement turn, likely concurrency issues");
         return;
       }
+      CONFIG.logger.debug(`Replacement turn is ${replacementTurn.name} / ${replacementTurn.id}`);
       await combatant.update({initiative: replacementTurn.initiative});
       const replacementClaimed = combat.getSlotClaims(round, replacementTurn.id);
+      CONFIG.logger.debug(`Claims on replacement slot: ${replacementClaimed}`);
       if (replacementClaimed) {
         await combat.unclaimSlot(round, replacementTurn.id);
         await combat.claimSlot(round, combatant.id, replacementClaimed);
       }
-      replacementTurn.delete();
+      Hooks.off("preDeleteCombatant", registerHandleCombatantRemoval);
+      await replacementTurn.delete();
+      CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
     }
   }
 
