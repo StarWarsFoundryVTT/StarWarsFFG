@@ -129,8 +129,10 @@
 
 					<div class="token-initiative">
 						{{#if hasRolled}}
-							<span class="initiative">
-								{{ initiative }}
+              <span class="initiative">
+								{{{ initiativeImage.successes }}}
+                {{{ initiativeImage.advantages }}}
+                {{{ initiativeImage.triumphs }}}
 							</span>
 						{{else if owner}}
 							<a class="combatant-control roll" data-tooltip="COMBAT.InitiativeRoll" data-control="rollInitiative"></a>

@@ -4471,5 +4471,7 @@ img {
 }
 
 .combat-sidebar li.combatant .token-initiative {
-  flex: 0 0 48px;
+  flex: 0 0 50px;
+  display: flex;
+  flex-direction: column;
 }

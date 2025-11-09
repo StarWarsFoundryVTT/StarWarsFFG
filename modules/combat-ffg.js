@@ -399,7 +399,6 @@ export class CombatFFG extends Combat {
     if (!claims) {
       return false;
     }
-    console.log(claims)
     if (Object.values(claims).includes(combatantId)) {
       return Object.keys(claims).find(key => claims[key] === combatantId);
     } else {
@@ -480,9 +479,7 @@ export class CombatFFG extends Combat {
       CONFIG.logger.debug("Someone claimed the actors slot, un-claiming it");
       await this.unclaimSlot(round, originalCombatantId);
     }
-    console.log("un-claiming any slots claimed by the actor")
     await this.unclaimSlot(round, combatantId);
-    console.log("deleting the combatant")
     // now delete the toRemoveCombatantId slot
     Hooks.off("preDeleteCombatant", CONFIG.FFG.preCombatDelete);
     CONFIG.FFG.preCombatDelete = undefined;
@@ -495,7 +492,6 @@ export class CombatFFG extends Combat {
       CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
       const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
     }
-    console.log("done!")
 
     // if there was a claim on the slot replaced, add it back
     if (claimedSlot && claimedSlot !== combatantId) {
@@ -667,9 +663,6 @@ export class CombatFFG extends Combat {
     const slotId = el.getAttribute("data-alt-id");
     const combatant = this.combatants.get(slotId);
     const currentInitiative = combatant.initiative;
-    console.log(slotId)
-    console.log("updating!")
-    console.log(combatant)
     const updateDialog = new Dialog({
       title: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Title"),
       content: `
@@ -789,7 +782,7 @@ export class CombatFFG extends Combat {
       return;
     }
 
-    const turns = this.turns.map((turn, index) => {
+    const turns = await Promise.all(this.turns.map(async (turn, index) => {
       CONFIG.logger.debug(`Processing turn for ${turn?.name}`);
       // combatant ID of the claimant of this slot, if it exists
       const claimantId = this.getSlotClaims(this.round, turn.id);
@@ -926,6 +919,27 @@ export class CombatFFG extends Combat {
         turn.css = turn.css.replace('defeated', '');
       }
 
+      // extract the initiative information into icons for rendering on the combat tracker
+      const initiativeParts = slotInitiative.toFixed(2);
+      const decimalPosition = initiativeParts.indexOf(".");
+      const successes = initiativeParts.substring(0, decimalPosition);
+      const triumphs = initiativeParts.substring(decimalPosition + 1, decimalPosition + 2);
+      const advantages = initiativeParts.substring(decimalPosition + 2, decimalPosition + 3);
+      const initiativeImage = {
+        "successes": "",
+        "advantages": "",
+        "triumphs": "",
+      }
+      for (let x = 0; x < successes; x++) {
+        initiativeImage['successes'] += await foundry.applications.ux.TextEditor.enrichHTML("[su]");
+      }
+      for (let x = 0; x < advantages; x++) {
+        initiativeImage['advantages'] += await foundry.applications.ux.TextEditor.enrichHTML("[ad]");
+      }
+      for (let x = 0; x < triumphs; x++) {
+        initiativeImage['triumphs'] += await foundry.applications.ux.TextEditor.enrichHTML("[tr]");
+      }
+
       return {
         ...turn,
         ...claim,
@@ -936,8 +950,9 @@ export class CombatFFG extends Combat {
         canClaim,
         activationId: slotInitiative ? slotInitiative.activationId : undefined,
         unused: unused,
+        initiativeImage,
       }
-    });
+    }));
 
     // write to customTurns to avoid permanent changes
     this.customTurns = turns;
