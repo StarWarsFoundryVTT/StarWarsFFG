@@ -1301,7 +1301,7 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       return;
     }
     const { combatantId } = event.target?.dataset ?? {};
-    const combatant = this.viewed.combatants.get(combatantId);
+    const combatant = this.viewed?.combatants?.get(combatantId);
     if ( !combatant ) {
       CONFIG.logger.debug("Unable to find combatant");
       return;

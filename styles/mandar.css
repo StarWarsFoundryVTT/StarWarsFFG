@@ -2091,6 +2091,13 @@ img {
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
+.starwarsffg .item-sheet-weapon .resource.single  {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  margin: auto;
+}
+
 .starwarsffg .item-sheet-gear .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-talent .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-weapon .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-armor .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-vehicle-attachment .characteristic-item .characteristic .characteristic-value {
   height: 100%;
 }
