@@ -1769,7 +1769,6 @@ img {
   line-height: 2rem;
   background-color: rgba(73, 12, 11, 0.85);
   color: white;
-  background-color: rgba(73, 12, 11, 0.85);
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% 100%, 0 100%, 0% 0%, 0% 100%);
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% 100%, 0 100%, 0% 0%, 0% 100%);
 }
