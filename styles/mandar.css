@@ -4465,6 +4465,20 @@ img {
 .starwarsffg .xp.adjusted {
   color: rgb(159, 47, 172);
 }
+.starwarsffg .tab.xp .resource {
+  width: 100%;
+}
+.starwarsffg .tab.xp .resource.split .block-background-shadow {
+  height: 45px;
+}
+.starwarsffg .tab.crits .resource {
+  width: 100%;
+}
+.starwarsffg .tab.crits .injuries .severity {
+  display: flex;
+  justify-content: center;
+}
+
 .starwarsffg .simulation {
   padding: 5px;
   text-align: center;
