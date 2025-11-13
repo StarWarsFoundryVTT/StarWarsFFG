@@ -358,7 +358,8 @@ export default class ModifierHelpers {
     return dicePool;
   }
 
-  static applyBrawnToDamage(data) {
+  // Returns true if data item has characteristic that impacts its damage, false otherwise
+  static shouldApplyCharacteristicToDamage(data) {
     if(data.characteristic?.value !== "" && data.characteristic?.value !== undefined) {
       return true;
     }
