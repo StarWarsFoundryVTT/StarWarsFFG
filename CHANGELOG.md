@@ -9,6 +9,7 @@
   * Fix uncontrolled active effect messing with actor stats while in Edit Mode - disable any change instead of the base stats ([#1976](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1976))
   * Fix for handling wasn't affecting piloting pool ([#1983](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1983))
   * Fix defence and soak is not applying from armour if created within actor sheet ([#2011](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2011))
+  * Fix characteristics not applying damage to item
 
 `1.910`
 * Fixes:
