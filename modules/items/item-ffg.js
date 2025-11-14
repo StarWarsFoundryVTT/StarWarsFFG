@@ -315,7 +315,7 @@ export class ItemFFG extends ItemBaseFFG {
         data.hardpoints.value = parseInt(data.hardpoints.value, 10);
 
         data.range.adjusted = data.range.value;
-        data.damage.adjusted = parseInt(data.damage.value, 10);
+        data.damage.adjusted = 0;
         data.crit.adjusted = parseInt(data.crit.value, 10);
         data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
         data.price.adjusted = parseInt(data.price.value, 10);
@@ -397,10 +397,9 @@ export class ItemFFG extends ItemBaseFFG {
             }
           }
           if (this.actor.type !== "vehicle") {
-            if (ModifierHelpers.applyBrawnToDamage(data)) {
-              const olddamage = data.damage.value;
-              data.damage.value = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
-              data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
+            if (ModifierHelpers.shouldApplyCharacteristicToDamage(data)) {
+              const extraDamage = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
+              data.damage.adjusted += extraDamage + data.damage.value;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
               data.damage.adjusted += damageAdd;
