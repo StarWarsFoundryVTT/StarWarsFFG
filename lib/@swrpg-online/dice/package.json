@@ -1,6 +1,6 @@
 {
   "name": "@swrpg-online/dice",
-  "version": "2.1.0",
+  "version": "1.4.0",
   "description": "A TypeScript library that creates dice rolls using the narrative dice system for the Star Wars Roleplaying Game by Fantasy Flight Games and Edge Studio.",
   "keywords": [
     "swrpg",

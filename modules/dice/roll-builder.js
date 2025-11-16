@@ -343,8 +343,8 @@ export default class RollBuilderFFG extends FormApplication {
       if (input.value > 0 || allowNegative) {
         input.value--;
         this.dicePool[input.name] = parseInt(input.value);
-        this._updatePreview(html);
       }
+      this._updatePreview(html);
     });
   }
 
@@ -364,7 +364,6 @@ export default class RollBuilderFFG extends FormApplication {
           challengeDice: this.dicePool.challenge,
           boostDice: this.dicePool.boost,
           setbackDice: this.dicePool.setback,
-          // fixed results are not supported by the library
         },
         iterations: game.settings.get("starwarsffg", "rollSimulation"),
         runSimulate: false,

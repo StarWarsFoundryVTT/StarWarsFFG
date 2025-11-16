@@ -10,6 +10,7 @@
   * Fix for handling wasn't affecting piloting pool ([#1983](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1983))
   * Fix defence and soak is not applying from armour if created within actor sheet ([#2011](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2011))
   * Fix characteristics not applying damage to item
+  * Bump dice simulation library version to bring in a fix where two dice faces were wrong
 
 `1.910`
 * Fixes:
