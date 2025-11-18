@@ -329,6 +329,15 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
     data.modifierTypes = CONFIG.FFG.allowableModifierTypes;
     data.modifierChoices = CONFIG.FFG.allowableModifierChoices;
+    // allow modifiers to impact actor-specific custom skills, if present
+
+    if (this?.actor?.system?.skills) {
+      const updatedChoices = foundry.utils.deepClone(data.modifierChoices);
+      for (const modifierChoice of Object.keys(CONFIG.FFG.allowableModifierChoices).filter(i => i.indexOf("Skill") >= 0)) {
+        updatedChoices[modifierChoice] = this?.actor?.system?.skills;
+      }
+      data.modifierChoices = updatedChoices;
+    }
 
     return data;
   }
