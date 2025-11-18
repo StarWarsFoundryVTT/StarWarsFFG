@@ -680,9 +680,6 @@ img {
   z-index: 1;
   border: 0;
 }
-.starwarsffg .attribute .block-background-shadow {
-  top: 36px;
-}
 .starwarsffg .attribute .block-background {
   padding: 5px 5px;
 }
@@ -739,7 +736,6 @@ img {
 }
 .starwarsffg .attribute .shadow-text {
   position: absolute;
-  top: 5px;
   font-size: 9px;
   left: 50%;
   transform: translateX(-50%);
@@ -2873,10 +2869,6 @@ img {
 }
 
 .swffg-destiny {
-  background: url(../../../ui/denim075.png) repeat;
-  border: 1px solid #000;
-  border-radius: 5px;
-  box-shadow: 0 0 10px #000;
   box-sizing: content-box;
   color: #fff;
   font-family: "warnock-pro", "sans-serif";

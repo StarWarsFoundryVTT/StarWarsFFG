@@ -37,6 +37,7 @@ export class ItemFFG extends ItemBaseFFG {
       // only run onCreate for the user actually performing the update
       return;
     }
+    let force = false;
     // Ensure we're dealing with an embedded item
     if (this.isEmbedded && this.actor) {
       // If this is a weapon or armour item we must ensure its modifier-adjusted values are saved to the database
@@ -44,6 +45,7 @@ export class ItemFFG extends ItemBaseFFG {
         let that = this.toObject(true);
         delete that._id;
         await this.update(that);
+        force = true;
       }
     }
 
@@ -64,7 +66,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     await super._onCreate(data, options, user);
 
-    await this._onCreateAEs(options);
+    await this._onCreateAEs(options, force);
   }
 
   async _onCreateAEs(options, force=false) {
@@ -313,7 +315,7 @@ export class ItemFFG extends ItemBaseFFG {
         data.hardpoints.value = parseInt(data.hardpoints.value, 10);
 
         data.range.adjusted = data.range.value;
-        data.damage.adjusted = parseInt(data.damage.value, 10);
+        data.damage.adjusted = 0;
         data.crit.adjusted = parseInt(data.crit.value, 10);
         data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
         data.price.adjusted = parseInt(data.price.value, 10);
@@ -395,10 +397,9 @@ export class ItemFFG extends ItemBaseFFG {
             }
           }
           if (this.actor.type !== "vehicle") {
-            if (ModifierHelpers.applyBrawnToDamage(data)) {
-              const olddamage = data.damage.value;
-              data.damage.value = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
-              data.damage.adjusted += parseInt(data.damage.value, 10) - olddamage;
+            if (ModifierHelpers.shouldApplyCharacteristicToDamage(data)) {
+              const extraDamage = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
+              data.damage.adjusted += extraDamage + data.damage.value;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
               data.damage.adjusted += damageAdd;
@@ -478,8 +479,9 @@ export class ItemFFG extends ItemBaseFFG {
         if (this.isEmbedded && this.actor && this.actor.system) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
           for (let attr in data.attributes) {
-            if (data.attributes[attr].modtype === "Armor Stat") {
-              switch (data.attributes[attr].mod) {
+            let modtype = data.attributes[attr].modtype;
+            if (modtype === "Armor Stat" || modtype === "Stat" || modtype === "Stat All") {
+              switch (data.attributes[attr].mod.toLocaleLowerCase()) {
                 case "soak":
                   soakAdd += parseInt(data.attributes[attr].value, 10);
                   break;
@@ -698,7 +700,7 @@ export class ItemFFG extends ItemBaseFFG {
         } else {
           upgradeDescriptions.push({
             name: up.name,
-            description: await TextEditor.enrichHTML(up.description),
+            description: await foundry.applications.ux.TextEditor.enrichHTML(up.description),
             rank: 1,
           });
         }
@@ -724,7 +726,7 @@ export class ItemFFG extends ItemBaseFFG {
         const qualities = [];
         for (const modifier of modifiers) {
           qualities.push(`
-          <div class='item-pill-hover hover-tooltip' data-item-type="itemmodifier" data-item-embed-name="${ modifier.name }" data-item-embed-img="${ modifier.img }" data-desc="${ (await TextEditor.enrichHTML(modifier.description)).replaceAll('"', "'") }" data-item-ranks="${ modifier.totalRanks }" data-tooltip="Loading...">
+          <div class='item-pill-hover hover-tooltip' data-item-type="itemmodifier" data-item-embed-name="${ modifier.name }" data-item-embed-img="${ modifier.img }" data-desc="${ (await foundry.applications.ux.TextEditor.enrichHTML(modifier.description)).replaceAll('"', "'") }" data-item-ranks="${ modifier.totalRanks }" data-tooltip="Loading...">
             ${modifier.name} ${modifier.totalRanks === null || modifier.totalRanks === 0 ? "" : modifier.totalRanks}
           </div>
           `);

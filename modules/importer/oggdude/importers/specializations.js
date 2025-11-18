@@ -67,7 +67,7 @@ export default class Specializations {
               for (const talentKey of row.Talents.Key) {
                 let rowTalent = {};
 
-                let talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, undefined, "talent");
+                let talentItem = await ImportHelpers.findCompendiumEntityByImportId("Item", talentKey, undefined, "talent", false);
                 if (!talentItem) {
                   talentItem = ImportHelpers.findEntityByImportId("items", talentKey);
                 }

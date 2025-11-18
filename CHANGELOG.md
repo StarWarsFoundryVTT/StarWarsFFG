@@ -1,6 +1,16 @@
-`1.911`
+`2.0.0`
+* Enhancements:
+  * Suppressing AE popups from items equipping
 * Fixes:
+  * Fix armor adjusted values was not considering all modifiers for soak, defence and encumbrance ([#1991](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1991)
   * Fix species talents/abilities being added/removed by each player online leading to duplicates if GM is online. ([#1832](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1832))
+  * Fix for defence not applied during combat checks as setback dice ([#2009](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2009)()
+  * Fix for defence mods to distinguish between melee and ranged ([#1985](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1985))
+  * Fix uncontrolled active effect messing with actor stats while in Edit Mode - disable any change instead of the base stats ([#1976](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1976))
+  * Fix for handling wasn't affecting piloting pool ([#1983](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1983))
+  * Fix defence and soak is not applying from armour if created within actor sheet ([#2011](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2011))
+  * Fix characteristics not applying damage to item
+  * Bump dice simulation library version to bring in a fix where two dice faces were wrong
 
 `1.910`
 * Fixes:

@@ -230,6 +230,8 @@ export default class ModifierHelpers {
    * @param  {object} event
    */
   static async onClickAttributeControl(event) {
+    if(this.actor && !this.actor.verifyEditModeIsNotEnabled()) return;
+
     event.preventDefault();
     const a = event.currentTarget;
     const action = a.dataset.action;
@@ -356,7 +358,8 @@ export default class ModifierHelpers {
     return dicePool;
   }
 
-  static applyBrawnToDamage(data) {
+  // Returns true if data item has characteristic that impacts its damage, false otherwise
+  static shouldApplyCharacteristicToDamage(data) {
     if(data.characteristic?.value !== "" && data.characteristic?.value !== undefined) {
       return true;
     }
@@ -412,7 +415,22 @@ export default class ModifierHelpers {
    * @returns {[{modType, mod}]|[{modType, mod: string},{modType, mod: string}]}
    */
   static explodeMod(modType, mod) {
-    if (mod.toLocaleLowerCase().includes("defense") || mod.toLocaleLowerCase().includes("defence")) {
+    const modLower = mod.toLocaleLowerCase();
+    if (["defence-melee", "defense-melee"].includes(modLower)) {
+      return [
+        {
+          modType: "Stat",
+          mod: "Defence.Melee",
+        },
+      ];
+    } else if (["defence-ranged", "defense-ranged"].includes(modLower)) {
+      return [
+        {
+          modType: "Stat",
+          mod: "Defence.Ranged",
+        },
+      ];
+    } else if (["defence", "defense"].includes(modLower)) {
       return [
         {
           modType: "Stat",

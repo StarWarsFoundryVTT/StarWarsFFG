@@ -57,6 +57,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
   /** @override */
   async _onDropItem(event, data) {
+    if(!this.actor.verifyEditModeIsNotEnabled()) return false;
+
     if (data?.type === "Item") {
       // this is the stock implementation, except that we do not pass "true" to item.toObject
       if ( !this.actor.isOwner ) return false;
@@ -102,6 +104,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
                 icon: '<i class="fas fa-hourglass"></i>',
                 label: game.i18n.localize("SWFFG.DragDrop.PurchaseItem"),
                 callback: async (that) => {
+                  if(!this.actor.verifyEditModeIsNotEnabled()) return false;
+
                   if (cost > 0) {
                     const AEState = await ActorHelpers.beginEditMode(this.actor, true);
                     const updatedAvailableXP = this.actor.system.experience.available;
@@ -236,13 +240,13 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         if (data.data.stats.credits.value > 999) {
           data.data.stats.credits.value = data.data.stats.credits.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         }
-        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography, {secrets: !data.limited});
-        data.data.general.enrichedNotes = await TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
-        data.data.general.enrichedFeatures = await TextEditor.enrichHTML(this.actor.system.general?.features) || "";
+        data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography, {secrets: !data.limited});
+        data.data.general.enrichedNotes = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
+        data.data.general.enrichedFeatures = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         data.maxAttribute = game.settings.get("starwarsffg", "maxAttribute");
         break;
       case "vehicle":
-        data.data.enrichedBio = await TextEditor.enrichHTML(this.actor.system.biography);
+        data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography);
         // add the crew to the items of the vehicle
         data.crew = [];
         // look up the flag data
@@ -324,11 +328,13 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    // convert jquery element to HTMLElement for usage with Foundry calls
+    const htmlElement = html.get(0);
 
     // Activate tabs
     let tabs = html.find(".tabs");
     let initial = this._sheetTab;
-    new Tabs(tabs, {
+    new foundry.applications.ux.Tabs(tabs, {
       initial: initial,
       callback: (clicked) => {
         this._sheetTab = clicked.data("tab");
@@ -444,16 +450,18 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
           icon: '<i class="fa-regular fa-circle-up"></i>',
           callback: (li) => {
+            if(!this.actor.verifyEditModeIsNotEnabled()) return false;
             this._buySkillRank(li);
           },
         },
       );
     }
 
-    new ContextMenu(
-        html,
+    new foundry.applications.ux.ContextMenu(
+        htmlElement,
         ".skillsGrid .skill",
         contextMenuOptions,
+      {jQuery: false},
     );
 
     html.find(".skill-purchase").click(async (ev) => {
@@ -469,7 +477,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       await this._handleKillMinion(ev);
     });
 
-    new ContextMenu(html, "div.skillsHeader", [
+    new foundry.applications.ux.ContextMenu(htmlElement, "div.skillsHeader", [
       {
         name: game.i18n.localize("SWFFG.SkillAddContextItem"),
         icon: '<i class="fas fa-plus-circle"></i>',
@@ -477,7 +485,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           this._onCreateSkill(li);
         },
       },
-    ]);
+    ], {jQuery: false});
 
     html.find(".ffg-purchase").click(async (ev) => {
       await this._buyCore(ev)
@@ -497,8 +505,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const sendToChatContextItem = {
       name: game.i18n.localize("SWFFG.SendToChat"),
       icon: '<i class="far fa-comment"></i>',
-      callback: (li) => {
-        let itemId = li.data("itemId");
+      callback: (el) => {
+        let itemId = el.getAttribute("data-item-id");
         this._itemDetailsToChat(itemId);
       },
     };
@@ -506,8 +514,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const rollForceToChatContextItem = {
       name: game.i18n.localize("SWFFG.SendForceRollToChat"),
       icon: '<i class="fas fa-dice-d20"></i>',
-      callback: async (li) => {
-        let itemId = li.data("itemId");
+      callback: async (el) => {
+        let itemId = el.getAttribute("data-item-id");
         let item = this.actor.items.get(itemId);
         if (!item) {
           item = game.items.get(itemId);
@@ -528,9 +536,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       },
     };
 
-    new ContextMenu(html, "li.item:not(.forcepower)", [sendToChatContextItem]);
-    new ContextMenu(html, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem]);
-    new ContextMenu(html, "div.item", [sendToChatContextItem]);
+    new foundry.applications.ux.ContextMenu(htmlElement, "li.item:not(.forcepower)", [sendToChatContextItem], {jQuery: false});
+    new foundry.applications.ux.ContextMenu(htmlElement, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem], {jQuery: false});
+    new foundry.applications.ux.ContextMenu(htmlElement, "div.item", [sendToChatContextItem], {jQuery: false});
 
     if (["nemesis", "rival"].includes(this.actor.type)) {
       this.sheetoptions = new ActorOptions(this, html);
@@ -741,6 +749,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Toggle item equipped
     html.find(".items .item a.toggle-equipped").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
+
       const li = $(ev.currentTarget);
       const item = this.actor.items.get(li.data("itemId"));
       if (item) {
@@ -846,6 +858,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Add Inventory Item
     html.find(".item-add").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
 
       let itemType = "";
       switch (ev.currentTarget.classList[1]) {
@@ -877,6 +892,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Delete Inventory Item
     html.find(".item-delete").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
+
       const li = $(ev.currentTarget).parents(".item");
       this.actor.items.get(li.data("itemId"))?.delete();
       li.slideUp(200, () => this.render(false));
@@ -884,6 +903,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Edit Inventory Item
     html.find(".item-edit").click(async (ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
+
       const li = $(ev.currentTarget).parents(".item");
       let itemId = li.data("itemId");
       let item = this.actor.items.get(itemId);
@@ -933,6 +956,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Edit Crew
     html.find(".crew-edit").click(async (ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
       const crew_member_id = $(ev.currentTarget).parents(".item").data("actor-id");
       const crew_member = game.actors.get(crew_member_id);
       const registeredRoles = game.settings.get('starwarsffg', 'arrayCrewRoles');
@@ -942,7 +968,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const crewMemberRoles = vehicleRoles.filter(role => role.actor_id === crew_member_id);
       const rolesInUse = crewMemberRoles.map(role => role.role);
 
-      const content = await renderTemplate(
+      const content = await foundry.applications.handlebars.renderTemplate(
         "systems/starwarsffg/templates/dialogs/ffg-crew-change.html",
         {
           actor: crew_member,
@@ -959,6 +985,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             confirm: {
               label: game.i18n.localize("SWFFG.Crew.Role.Update"),
               callback: async (html) => {
+                if(!this.actor.verifyEditModeIsNotEnabled()) {
+                  return;
+                }
                 const newRoles = html.find('[name="select-many-things"]').val();
                 await updateRoles(actor, crew_member_id, newRoles);
               }
@@ -969,6 +998,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     });
 
     html.find(".item-info").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
@@ -990,6 +1022,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               icon: '<i class="fas fa-check"></i>',
               label: game.i18n.localize("SWFFG.ButtonAccept"),
               callback: (html) => {
+                if(!this.actor.verifyEditModeIsNotEnabled()) {
+                  return;
+                }
                 const talentsToRemove = $(html).find("input[type='checkbox']:checked");
                 CONFIG.logger.debug(`Removing ${talentsToRemove.length} talents`);
 
@@ -1233,7 +1268,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
     // transfer items between owned actor objects
-    const dragDrop = new DragDrop({
+    const dragDrop = new foundry.applications.ux.DragDrop({
       dragSelector: ".items-list .item",
       dropSelector: ".sheet-body",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -1242,7 +1277,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     dragDrop.bind(html[0]);
 
-    const dragDrop1 = new DragDrop({
+    const dragDrop1 = new foundry.applications.ux.DragDrop({
       dragSelector: ".skill",
       dropSelector: ".macro",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -1400,7 +1435,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       let details = li.children(".item-details");
       details.slideUp(200, () => details.remove());
     } else {
-      let div = $(`<div class="item-details">${await TextEditor.enrichHTML(desc)}</div>`);
+      let div = $(`<div class="item-details">${await foundry.applications.ux.TextEditor.enrichHTML(desc)}</div>`);
       li.append(div.hide());
       div.slideDown(200);
     }
@@ -1453,7 +1488,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     }
 
     const template = "systems/starwarsffg/templates/chat/item-card.html";
-    const html = await renderTemplate(template, { itemDetails, item });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
       user: game.user.id,
@@ -1483,7 +1518,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     const itemDetails = { "desc": desc, "name": name };
     const template = "systems/starwarsffg/templates/chat/force-power-card.html";
-    const html = await renderTemplate(template, { itemDetails, item });
+    const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
       user: game.user.id,
@@ -1629,6 +1664,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
+              if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
               const id = await this._spendXp(`system.skills.${skill}.rank`, 1, cost);
               await xpLogSpend(game.actors.get(this.object.id), `skill rank ${skill} ${curRank} --> ${curRank + 1}`, cost, availableXP - cost, totalXP, id);
             },
@@ -1703,6 +1740,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               icon: '<i class="fa-solid fa-check"></i>',
               label: game.i18n.localize("SWFFG.Actors.Sheets.Refund.Confirm"),
               callback: async (that) => {
+                if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
                 await this.object.deleteEmbeddedDocuments("ActiveEffect", [purchasedEffect.id]);
                 CONFIG.logger.debug("deleted AE, updating log");
                 let logEntries = this.object.getFlag("starwarsffg", "xpLog") || [];
@@ -1773,7 +1812,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       useSkillForInitiative = true;
     }
 
-    setProperty(updateData, `system.skills.${skill}.useForInitiative`, useSkillForInitiative);
+    foundry.utils.setProperty(updateData, `system.skills.${skill}.useForInitiative`, useSkillForInitiative);
     this.object.update(updateData);
   }
 
@@ -2067,6 +2106,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   }
 
   async _buyCore(event) {
+    if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
     const action = $(event.target).data("buy-action");
     const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
     let content;
@@ -2120,7 +2161,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       groups.push("Universal");
       groups.push("In Career");
       groups.push("Out of Career");
-      content = await renderTemplate(template, { inCareer, outCareer, universal, baseCost, increasedCost, itemType: itemType, itemCategory: "specialization", groups: groups });
+      content = await foundry.applications.handlebars.renderTemplate(template, { inCareer, outCareer, universal, baseCost, increasedCost, itemType: itemType, itemCategory: "specialization", groups: groups });
     } else if (action === "signatureability") {
       const sources = game.settings.get("starwarsffg", "signatureAbilityCompendiums").split(",");
       const rawSelectableItems =  this.object.items.find(i => i.type === "career").system.signatureabilities;
@@ -2206,7 +2247,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.signatureability");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "signatureability" });
+      content = await foundry.applications.handlebars.renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "signatureability" });
     } else if (action === "forcepower") {
       const sources = game.settings.get("starwarsffg", "forcePowerCompendiums").split(",");
       let selectableItems = [];
@@ -2241,7 +2282,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       selectableItems = sortDataBy(selectableItems, "name");
       itemType = game.i18n.localize("TYPES.Item.forcepower");
       groups.sort();
-      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower", groups: groups });
+      content = await foundry.applications.handlebars.renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "forcepower", groups: groups });
     } else if (action === "talent") {
       const purchasedItems = this.object.talentList;
       const sources = game.settings.get("starwarsffg", "talentCompendiums").split(",");
@@ -2284,7 +2325,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         selectableItems.push({pack: pack.metadata.label, items: packItems});
       }
       itemType = game.i18n.localize("TYPES.Item.talent");
-      content = await renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "talent" });
+      content = await foundry.applications.handlebars.renderTemplate(template, { selectableItems, itemType: itemType, itemCategory: "talent" });
     } else if (action === "characteristic") {
       const characteristic = $(event.target).data("buy-characteristic");
       await this._buyCharacteristicRank(characteristic);
@@ -2306,6 +2347,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
+              if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
               const cost = $("#ffgPurchase option:selected", that).data("cost");
               const selected_id = $("#ffgPurchase option:selected", that).data("id");
               const selected_source = $("#ffgPurchase option:selected", that).data("source");
@@ -2378,6 +2421,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
+              if(!this.actor.verifyEditModeIsNotEnabled()) return;
+
               const statusId = await this._spendXp(`system.characteristics.${characteristic}.value`, 1, cost);
               await xpLogSpend(game.actors.get(this.object.id), `characteristic ${characteristic} level ${characteristicValue} --> ${characteristicValue + 1}`, cost, availableXP - cost, totalXP, statusId);
               await this.render(true);

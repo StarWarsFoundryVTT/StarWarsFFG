@@ -49,7 +49,7 @@ export default class Helpers {
     fd.set("upload", file);
     Object.entries(options).forEach((o) => fd.set(...o));
 
-    const request = await fetch(FilePicker.uploadURL, { method: "POST", body: fd });
+    const request = await fetch(foundry.applications.apps.FilePicker.uploadURL, { method: "POST", body: fd });
     if (request.status === 413) {
       return ui.notifications.error(game.i18n.localize("FILES.ErrorTooLarge"));
     }

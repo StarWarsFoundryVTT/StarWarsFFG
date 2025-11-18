@@ -1365,6 +1365,8 @@ img {
   margin-top: 10px;
   min-height: 54px;
   text-align: center;
+  display: flex;
+  justify-content: center;
 }
 
 .starwarsffg .dice-pool-dialog .pool-value {
@@ -1767,7 +1769,6 @@ img {
   line-height: 2rem;
   background-color: rgba(73, 12, 11, 0.85);
   color: white;
-  background-color: rgba(73, 12, 11, 0.85);
   -webkit-clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% 100%, 0 100%, 0% 0%, 0% 100%);
   clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% 100%, 0 100%, 0% 0%, 0% 100%);
 }
@@ -2089,6 +2090,13 @@ img {
   border: 1px solid rgba(0, 0, 0, 0.5);
 }
 
+.starwarsffg .item-sheet-weapon .resource.single  {
+  position: relative;
+  width: 3rem;
+  height: 3rem;
+  margin: auto;
+}
+
 .starwarsffg .item-sheet-gear .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-talent .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-weapon .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-armor .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-vehicle-weapon .characteristic-item .characteristic .characteristic-value, .starwarsffg .item-sheet-vehicle-attachment .characteristic-item .characteristic .characteristic-value {
   height: 100%;
 }
@@ -2265,6 +2273,8 @@ img {
 .starwarsffg .skillsGrid .dice-pool {
   margin: 0.5em 0;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
 }
 
 .starwarsffg .skillsGrid .dice-pool img {
@@ -3232,6 +3242,7 @@ img {
   height: 100%;
   width: auto;
   text-align: center;
+  position: relative;
 }
 
 .starwarsffg .group-manager .PC-list {
@@ -4214,7 +4225,7 @@ img {
 }
 
 .starwarsffg #combat-tracker .slot-claimed {
-  filter: grayscale(100%);
+  opacity: 20%;
 }
 .starwarsffg #combat-tracker .token-image.actor-header.defeated {
   filter: blur(1px) grayscale(50%);
@@ -4454,6 +4465,20 @@ img {
 .starwarsffg .xp.adjusted {
   color: rgb(159, 47, 172);
 }
+.starwarsffg .tab.xp .resource {
+  width: 100%;
+}
+.starwarsffg .tab.xp .resource.split .block-background-shadow {
+  height: 45px;
+}
+.starwarsffg .tab.crits .resource {
+  width: 100%;
+}
+.starwarsffg .tab.crits .injuries .severity {
+  display: flex;
+  justify-content: center;
+}
+
 .starwarsffg .simulation {
   padding: 5px;
   text-align: center;
@@ -4463,4 +4488,10 @@ img {
 }
 .starwarsffg .simulation .unlikely {
   color: #490c0b;
+}
+
+.combat-sidebar li.combatant .token-initiative {
+  flex: 0 0 50px;
+  display: flex;
+  flex-direction: column;
 }

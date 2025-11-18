@@ -6,7 +6,7 @@
   "compatibility": {
     "minimum": 12,
     "verified": 12,
-    "maximum": 12
+    "maximum": 13
   },
   "authors": [{"name": "Esrin"}, {"name": "CStadther"}, {"name": "Wrycu"}, {"name": "Jaxxa"}],
   "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],

@@ -7,12 +7,14 @@
 // Import Modules
 import { FFG } from "./swffg-config.js";
 import { ActorFFG } from "./actors/actor-ffg.js";
+import { TokenFFG } from "./tokens/token-ffg.js";
 import CombatantFFG, {
   CombatFFG,
   CombatTrackerFFG,
   registerHandleCombatantRemoval,
   updateCombatTracker
 } from "./combat-ffg.js";
+import { ActiveEffectFFG} from "./active-effects/active-effect-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
@@ -74,6 +76,7 @@ Hooks.once("init", async function () {
   // Place our classes in their own namespace for later reference.
   game.ffg = {
     ActorFFG,
+    TokenFFG,
     ItemFFG,
     CombatFFG,
     CombatantFFG,
@@ -85,6 +88,7 @@ Hooks.once("init", async function () {
       PopoutEditor,
     },
     diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
+    ActiveEffectFFG,
   };
 
   // Define custom log prefix and logger
@@ -95,8 +99,7 @@ Hooks.once("init", async function () {
   // to instead use our extended version.
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
-  CONFIG.Combat.documentClass = CombatFFG;
-  CONFIG.Combatant.documentClass = CombatantFFG;
+  CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
 
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee
@@ -135,6 +138,16 @@ Hooks.once("init", async function () {
     default: "[]",
     type: String,
     onChange: (rule) => window.location.reload()
+  });
+
+  // register turn marker reconfigurator
+  game.settings.register("starwarsffg", "configuredTurnMarker", {
+    name: "configuredTurnMarker",
+    hint: "configuredTurnMarker",
+    scope: "world",
+    config: false,
+    default: false,
+    type: Boolean,
   });
 
   // Override the default Token _drawBar function to allow for FFG style wound and strain values.
@@ -269,6 +282,10 @@ Hooks.once("init", async function () {
 
   if (game.settings.get("starwarsffg", "useGenericSlots")) {
     CONFIG.ui.combat = CombatTrackerFFG;
+    CONFIG.Combat.documentClass = CombatFFG;
+    CONFIG.Combatant.documentClass = CombatantFFG;
+    // override the token placeable object so we can control turn indicators
+    CONFIG.Token.objectClass = TokenFFG;
   }
 
   /**
@@ -844,15 +861,29 @@ Hooks.once("init", async function () {
   await TemplateHelpers.preload();
 });
 
-// TODO: Update this to add a new button to the chat sidebar in v13+ and convert to native DOM
-Hooks.on("renderSidebarTab", (app, html, data) => {
-  html.find(".chat-control-icon").click(async (event) => {
-    const dicePool = new DicePoolFFG();
-    let user = {
-      data: game.user.system,
-    };
-    await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
-  });
+Hooks.on("renderChatInput", (app, html, data) => {
+  if (app.id === "chat") {
+    // add in the chat dice roller
+    const rollButtonId = "ffgChatRoll";
+    if (!document.querySelector(`#${rollButtonId}`)) {
+
+      const rollButton = document.createElement("button");
+      rollButton.id = rollButtonId;
+      rollButton.type = "button";
+      rollButton.classList.add("ui-control", "icon", "fa-light", "fa-dice-d20");
+
+      const rollPrivacyElement = document.querySelector("#roll-privacy");
+      rollPrivacyElement.appendChild(rollButton);
+
+      rollButton.onclick = async function () {
+        const dicePool = new DicePoolFFG();
+        let user = {
+          data: game.user.system,
+        };
+        await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+      }
+    }
+  }
 });
 
 Hooks.on("renderActorDirectory", (app, html, data) => {
@@ -947,22 +978,6 @@ function isCurrentVersionNullOrBlank(currentVersion) {
 Hooks.once("ready", async () => {
   SettingsHelpers.readyLevelSetting();
 
-  if (!game.settings.get("starwarsffg", "token_configured")) {
-    const tokenData = {
-      bar1: {
-        attribute: "stats.wounds",
-      },
-      bar2: {
-        attribute: "stats.strain",
-      },
-      displayBars: 20, // hovered by owner
-    };
-    const existingSettings = game.settings.get("core", "defaultToken");
-    const updateData = foundry.utils.mergeObject(existingSettings, tokenData);
-    game.settings.set("core", "defaultToken", updateData);
-    game.settings.set("starwarsffg", "token_configured", true);
-  }
-
   // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
   // this is intended to encourage migrating code to this file to clean up the main file
   await handleUpdate();
@@ -1044,7 +1059,7 @@ Hooks.once("ready", async () => {
       try {
         let skillList = [];
 
-        let data = await FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
+        let data = await foundry.applications.apps.FilePicker.browse("data", `worlds/${game.world.id}`, { bucket: null, extensions: [".json", ".JSON"], wildcard: false });
         if (data.files.includes(`worlds/${game.world.id}/skills.json`)) {
           // if the skills.json file is found AND the skillsList in setting is the default skill list then read the data from the file.
           // This will make sure that the data from the JSON file overwrites the data in the setting.
@@ -1383,6 +1398,14 @@ Hooks.once("ready", async () => {
         }
         effect.update({changes: effect.changes});
     });
+  }
+
+  const turnMarkerConfigured = game.settings.get("starwarsffg", "configuredTurnMarker");
+  const combatTrackerConfig = game.settings.get("core", "combatTrackerConfig");
+  if (combatTrackerConfig.turnMarker.enabled && !turnMarkerConfigured) {
+    await game.settings.set("starwarsffg", "configuredTurnMarker", true);
+    combatTrackerConfig.turnMarker.enabled = false;
+    await game.settings.set("core", "combatTrackerConfig", combatTrackerConfig);
   }
 });
 

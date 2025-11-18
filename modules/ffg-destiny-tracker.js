@@ -38,8 +38,8 @@ export default class DestinyTracker extends FormApplication {
     const x = $(window).width();
     const y = $(window).height();
 
-    this.position.left = x - 505;
-    this.position.top = y;
+    this.position.left = x - window.screen.width;
+    this.position.top = y - 250;
     //this.position.width = 150;
     //this.position.height = 105;
 
@@ -68,7 +68,7 @@ export default class DestinyTracker extends FormApplication {
   /** @override */
   activateListeners(html) {
     const d = html.find("swffg-destiny-container")[0];
-    new Draggable(this, html, d, this.options.resizable);
+    new foundry.applications.ux.Draggable(this, html, d, this.options.resizable);
 
     $("#destiny-tracker").css({ bottom: "0px", right: "305px" });
 

@@ -21,7 +21,7 @@ export default class ImportHelpers {
           if (currentSource !== paths[i]) {
             currentSource = `${currentSource}/${paths[i]}`;
           }
-          await FilePicker.createDirectory(startingSource, `${currentSource}`, { bucket: null });
+          await foundry.applications.apps.FilePicker.createDirectory(startingSource, `${currentSource}`, { bucket: null });
         } catch (err) {
           CONFIG.logger.debug(`Error verifying path ${startingSource}, ${path}`, err);
         }
@@ -2438,7 +2438,7 @@ export default class ImportHelpers {
     const pack = game.packs.get(searchName);
     if (!pack) {
       const compendiumLabel = name.split(".")[name.split(".").length - 1];
-      const createdCompendium = await CompendiumCollection.createCompendium({
+      const createdCompendium = await foundry.documents.collections.CompendiumCollection.createCompendium({
         label: compendiumLabel,
         name: name.replaceAll(".", "").toLowerCase(),
         type: type,

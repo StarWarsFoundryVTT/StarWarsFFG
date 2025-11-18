@@ -9,12 +9,6 @@ export default class ItemHelpers {
     }
     CONFIG.logger.debug(`Updating ${this.object.type}`);
 
-    if (this.object.type === "weapon") {
-      if (ModifierHelpers.applyBrawnToDamage(formData.data)) {
-        foundry.utils.setProperty(formData, `data.damage.value`, 0);
-      }
-    }
-
     // Handle the free-form attributes list
     const formAttrs = foundry.utils.expandObject(formData)?.data?.attributes || {};
     const attributes = Object.values(formAttrs).reduce((obj, v) => {

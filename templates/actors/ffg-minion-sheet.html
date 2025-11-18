@@ -112,11 +112,13 @@
     {{!-- Biography Tab --}}
     <div class="tab biography active" data-group="primary" data-tab="description">
       <div class="biography-editor">
-        {{editor data.biography target="system.biography" button=true owner=owner editable=editable}} {{!-- Footer info --}}
+        {{editor data.biography target="system.biography" button=true owner=owner editable=editable engine="prosemirror"}}
+        {{!-- Footer info --}}
       </div>
       {{#if this.settings.enableCriticalInjuries}}
       <div class="container flex-group-center biography-values">
-        {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}} {{!-- Experience Box --}}
+        {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
+        {{!-- Experience Box --}}
       </div>
       {{/if}}
     </div>

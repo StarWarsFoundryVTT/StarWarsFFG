@@ -59,9 +59,9 @@ export class itemEditor extends FormApplication  {
    */
   async _enrichData() {
     let enriched = this.data;
-    enriched.clickedObject.system.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.system.description);
+    enriched.clickedObject.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(this.data.clickedObject.system.description);
     for (let modification of enriched.clickedObject.system.itemmodifier) {
-      modification.system.enrichedDescription = await TextEditor.enrichHTML(modification.system.description);
+      modification.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(modification.system.description);
     }
     return enriched;
   }
@@ -76,7 +76,7 @@ export class itemEditor extends FormApplication  {
 
     // allow drag-and-dropping mods if this is an attachment
     if (this.data.clickedObject.type === "itemattachment") {
-      const dragDrop = new DragDrop({
+      const dragDrop = new foundry.applications.ux.DragDrop({
         dragSelector: ".item",
         dropSelector: ".starwarsffg.flat_editor",
         permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
@@ -145,7 +145,7 @@ export class itemEditor extends FormApplication  {
       CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
       CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         {
           modifierTypes: modifierTypes,
@@ -188,11 +188,13 @@ export class itemEditor extends FormApplication  {
    * @param event
    */
   async _modificationControl(event) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const modTypeChoices = CONFIG.FFG.allowableModifierTypes;
       const modChoices = CONFIG.FFG.allowableModifierChoices;
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-modification.html',
         {
           modTypeChoices: modTypeChoices,
@@ -569,6 +571,8 @@ export class talentEditor extends itemEditor {
    * @param event
    */
   async _modControl(event) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     let action = event.currentTarget.getAttribute('data-action');
     if (action === 'create') {
       const nk = new Date().getTime();
@@ -583,7 +587,7 @@ export class talentEditor extends itemEditor {
       CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
       CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         { // TODO: this should probably be a new item of the correct type so it assumes any changes to the data model automatically
           modifierTypes: modifierTypes,
@@ -619,12 +623,14 @@ export class talentEditor extends itemEditor {
    */
   async _enrichData() {
     let enriched = this.data;
-    enriched.clickedObject.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.description);
+    enriched.clickedObject.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(this.data.clickedObject.description);
     return enriched;
   }
 
   /** @override */
   async _updateObject(event, formData) {
+    if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
+
     CONFIG.logger.debug("Updating talent");
     formData = foundry.utils.expandObject(formData);
 
@@ -789,7 +795,7 @@ export class forcePowerEditor extends itemEditor {
       CONFIG.logger.debug(`expected new modtype is ${Object.keys(modifierTypes)[0]}`);
       CONFIG.logger.debug(`expected new mod mod is ${modifierChoices[Object.keys(modifierTypes)[0]]}`);
 
-      let rendered = await renderTemplate(
+      let rendered = await foundry.applications.handlebars.renderTemplate(
         'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
         {
           modifierTypes: modifierTypes,
@@ -825,7 +831,7 @@ export class forcePowerEditor extends itemEditor {
    */
   async _enrichData() {
     let enriched = this.data;
-    enriched.clickedObject.enrichedDescription = await TextEditor.enrichHTML(this.data.clickedObject.description);
+    enriched.clickedObject.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(this.data.clickedObject.description);
     return enriched;
   }
 
