@@ -43,11 +43,21 @@ export class itemEditor extends FormApplication  {
   async getData(options) {
     // update the title since it isn't available when creating the application
     this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
-    let data = await this._enrichData();
+    const data = await this._enrichData();
+    let modifierChoices = CONFIG.FFG.allowableModifierChoices;
+
+    // add in custom skills from the actor, if present
+    if (this.data.sourceObject?.actor?.system?.skills) {
+      const updatedChoices = foundry.utils.deepClone(modifierChoices);
+      for (const modifierChoice of Object.keys(modifierChoices).filter(i => i.indexOf("Skill") >= 0)) {
+        updatedChoices[modifierChoice] = this.data.sourceObject?.actor?.system?.skills;
+      }
+      modifierChoices = updatedChoices;
+    }
 
     return {
       modifierTypes: CONFIG.FFG.allowableModifierTypes,
-      modifierChoices: CONFIG.FFG.allowableModifierChoices,
+      modifierChoices: modifierChoices,
       data: data,
     };
   }
@@ -552,15 +562,19 @@ export class talentEditor extends itemEditor {
     // update the title since it isn't available when creating the application
     this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
 
-    // build out the mod type and mod choices
-    let modTypeChoices = CONFIG.FFG.allowableModifierTypes;
-    let modChoices = CONFIG.FFG.allowableModifierChoices;
     let activations = CONFIG.FFG.activations;
     let data = await this._enrichData();
 
+    // add in custom skills from the actor, if present
+    if (this.data.sourceObject?.actor?.system?.skills) {
+      const updatedChoices = foundry.utils.deepClone(data.modifierChoices);
+      for (const modifierChoice of Object.keys(CONFIG.FFG.allowableModifierChoices).filter(i => i.indexOf("Skill") >= 0)) {
+        updatedChoices[modifierChoice] = this.data.sourceObject?.actor?.system?.skills;
+      }
+      data.modifierChoices = updatedChoices;
+    }
+
     return {
-      modTypeChoices: modTypeChoices,
-      modChoices: modChoices,
       activations: activations,
       data: data,
     };
@@ -767,6 +781,17 @@ export class forcePowerEditor extends itemEditor {
     let modChoices = CONFIG.FFG.allowableModifierChoices;
     let activations = CONFIG.FFG.activations;
     let data = await this._enrichData();
+
+    let modifierChoices = CONFIG.FFG.allowableModifierChoices;
+
+    // add in custom skills from the actor, if present
+    if (this.data.sourceObject?.actor?.system?.skills) {
+      const updatedChoices = foundry.utils.deepClone(modifierChoices);
+      for (const modifierChoice of Object.keys(modifierChoices).filter(i => i.indexOf("Skill") >= 0)) {
+        updatedChoices[modifierChoice] = this.data.sourceObject?.actor?.system?.skills;
+      }
+      data.modifierChoices = updatedChoices;
+    }
 
     return {
       modTypeChoices: modTypeChoices,

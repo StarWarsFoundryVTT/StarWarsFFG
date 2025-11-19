@@ -11,6 +11,7 @@
   * Fix defence and soak is not applying from armour if created within actor sheet ([#2011](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2011))
   * Fix characteristics not applying damage to item
   * Bump dice simulation library version to bring in a fix where two dice faces were wrong
+  * Mods and Modifiers can now target custom skills on actors ([#1973](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1973))
 
 `1.910`
 * Fixes:
