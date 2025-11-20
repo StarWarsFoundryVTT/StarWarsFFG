@@ -253,34 +253,46 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         const crew = this.actor.getFlag('starwarsffg', 'crew');
         if (crew) {
           for (let i = 0; i < crew.length; i++) {
-            // iterate over the crew members in the flag data
-            const actor = game.actors.get(crew[i].actor_id);
-            // pull the image from the actor to display it
-            const img = actor?.img || 'icons/svg/mystery-man.svg';
+            try {
+              // iterate over the crew members in the flag data
+              const actor = game.actors.get(crew[i].actor_id);
+              // pull the image from the actor to display it
+              const img = actor?.img || 'icons/svg/mystery-man.svg';
 
-            // add them to the items, so we can render them on the sheet
-            let roll;
-            if (actor) {
-              if (crew[i].role !== "Pilot") {
-                roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+              // add them to the items, so we can render them on the sheet
+              let roll;
+              if (actor) {
+                if (crew[i].role !== "Pilot") {
+                  roll = build_crew_roll(this.actor.id, crew[i].actor_id, crew[i].role);
+                } else {
+                  roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+                }
               } else {
-                roll = (await buildPilotRoll(this.actor.id, crew[i].actor_id, 0)).renderPreview().innerHTML;
+                deregister_crew(this.actor, crew[i].actor_id, crew[i].role);
               }
-            } else {
-              deregister_crew(this.actor, crew[i].actor_id, crew[i].role);
+              if (!roll) {
+                roll = 'N/A';
+              }
+              data.crew.push({
+                'type': 'shipcrew',
+                'id': crew[i].actor_id,
+                'name': crew[i].actor_name,
+                'role': crew[i].role,
+                'img': img,
+                'roll': roll,
+                'link': crew[i]?.link,
+              });
+            } catch (e) {
+              data.crew.push({
+                'type': 'shipcrew',
+                'id': crew[i].actor_id,
+                'name': crew[i].actor_name,
+                'role': crew[i].role,
+                'img': '',
+                'roll': '(broken role)',
+                'link': '',
+              });
             }
-            if (!roll) {
-              roll = 'N/A';
-            }
-            data.crew.push({
-              'type': 'shipcrew',
-              'id': crew[i].actor_id,
-              'name': crew[i].actor_name,
-              'role': crew[i].role,
-              'img': img,
-              'roll': roll,
-              'link': crew[i]?.link,
-            })
           }
         }
       default:
