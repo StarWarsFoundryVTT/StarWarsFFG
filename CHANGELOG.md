@@ -12,6 +12,7 @@
   * Fix characteristics not applying damage to item
   * Bump dice simulation library version to bring in a fix where two dice faces were wrong
   * Mods and Modifiers can now target custom skills on actors ([#1973](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1973))
+  * Imported species now correctly set Encumbrance without having to open/close them ([#1982](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1982))
   * Fix for inability to add a modifier to a talent after creating it, closing the sheet, and re-opening it ([#1972](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1972))
 
 `1.910`
