@@ -3,9 +3,7 @@ import {migrateDataToSystem} from "./migration.js";
 
 export default class ActorHelpers {
   static async updateActor(event, formData) {
-    console.log(foundry.utils.deepClone(formData))
     formData = foundry.utils.expandObject(formData);
-    console.log(foundry.utils.deepClone(formData))
     const ownedItems = this.actor.items;
 
     // as of Foundry v10, saving an editor only submits the single entry for that editor
