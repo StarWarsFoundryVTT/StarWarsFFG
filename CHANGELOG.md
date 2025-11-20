@@ -15,6 +15,7 @@
   * Imported species now correctly set Encumbrance without having to open/close them ([#1982](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1982))
   * Fix for inability to add a modifier to a talent after creating it, closing the sheet, and re-opening it ([#1972](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1972))
   * Fix vehicle sheets not opening if skill is missing from assigned crew ([#1978](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1978))
+  * Max characteristic setting is now properly enforced when manually editing sheets ([#1994](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1994))
 
 `1.910`
 * Fixes:

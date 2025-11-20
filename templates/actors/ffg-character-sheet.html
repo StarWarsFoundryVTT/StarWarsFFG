@@ -140,7 +140,7 @@
         <div class="characteristic-item flex-group-center" data-ability="{{id}}">
           <div class="characteristic">
             <div class="characteristic-value">
-              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" pattern="[0-{{ ../maxAttribute }}]" {{#if ../disabled }}disabled{{/if }}/>
+              <input type="text" name="data.characteristics.{{id}}.value" value="{{characteristic.value}}" data-dtype="Number" max="{{ ../maxAttribute }}" {{#if ../disabled }}disabled{{/if }}/>
             </div>
           </div>
           <div class="characteristic-label ffg-purchase" data-buy-action="characteristic" data-buy-characteristic="{{ id }}">
