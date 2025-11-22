@@ -784,6 +784,7 @@ export class CombatFFG extends Combat {
 
     const turns = await Promise.all(this.turns.map(async (turn, index) => {
       CONFIG.logger.debug(`Processing turn for ${turn?.name}`);
+      turn.owner = turn?.isOwner || false;
       // combatant ID of the claimant of this slot, if it exists
       const claimantId = this.getSlotClaims(this.round, turn.id);
       // actor data of the claimant
@@ -1300,6 +1301,11 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       CONFIG.logger.debug("Rejected click due to wrong place");
       return;
     }
+    if (event.target.classList.contains("roll")) {
+      CONFIG.logger.debug("rejecting click as this is an initiative roll");
+      return;
+    }
+
     const { combatantId } = event.target?.dataset ?? {};
     const combatant = this.viewed?.combatants?.get(combatantId);
     if ( !combatant ) {
