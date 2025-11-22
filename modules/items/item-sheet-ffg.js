@@ -1298,13 +1298,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               } catch (e) {
                 return;
               }
+              owner.update({system: {experience: {available: availableXP - cost}}});
+              await xpLogSpend(owner, `specialization ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
+              await ActorHelpers.endEditMode(owner, AEState, true);
               // update the form because the fields are read when an update is performed
               const input = $(`[name="data.talents.${upgradeId}.islearned"]`, this.element)[0];
               input.checked = true;
               await this.object.sheet.submit({preventClose: true});
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `specialization ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
-              await ActorHelpers.endEditMode(owner, AEState, true);
             },
           },
           cancel: {
