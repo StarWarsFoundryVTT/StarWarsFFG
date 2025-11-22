@@ -2534,6 +2534,15 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   render(force, options) {
     this.debounceRender(force, options);
   }
+
+  /** @override **/
+  async _onSubmit(event) {
+    const formValid = event?.target?.form?.reportValidity();
+    if (formValid === false) {
+      return;
+    }
+    return await super._onSubmit(event);
+  }
 }
 
 /**
