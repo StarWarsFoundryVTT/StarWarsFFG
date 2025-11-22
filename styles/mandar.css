@@ -4495,3 +4495,12 @@ img {
   display: flex;
   flex-direction: column;
 }
+
+.starwarsffg .resetMedical {
+  height: 20px;
+  display: flex;
+}
+
+.starwarsffg .resetMedical>i {
+  height: 14px;
+}
