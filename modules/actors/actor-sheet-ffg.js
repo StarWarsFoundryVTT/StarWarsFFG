@@ -139,6 +139,15 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         }
       }
 
+      if (Object.keys(itemData).includes("effects") && ["gear", "armour", "weapon"].includes(itemData.type)) {
+        // make sure all non-inherent AEs are disabled on the item before the drag-and-drop
+        for (const effect of itemData.effects) {
+          if (effect.name !== "(inherent)") {
+            effect.disabled = true;
+          }
+        }
+      }
+
       // Create the owned item
       return this._onDropItemCreate(itemData);
     } else {
