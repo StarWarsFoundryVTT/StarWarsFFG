@@ -2508,13 +2508,14 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               "Self"
             );
             await ActorHelpers.endEditMode(this.actor, AEState, true);
-         }
+          },
+        },
+        two: {
+          icon: '<i class="fas fa-times"></i>',
+          label: "Cancel",
+        },
       },
-      two: {
-       icon: '<i class="fas fa-times"></i>',
-       label: "Cancel",
-      }
-     },
+      default: "one",
     });
     d.render(true);
   }
