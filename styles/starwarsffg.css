@@ -265,7 +265,6 @@ img {
 .starwarsffg .block-background-shadow {
   position: absolute;
   width: 100%;
-  top: 30px;
   height: 30px;
   background-color: #7da9c2;
   padding: 5px;
@@ -2952,4 +2951,13 @@ img {
 
 .starwarsffg.sheet.item .item-sheet-career .signatureability-pill.item-pill2 .item-delete, .starwarsffg.sheet.item .item-sheet-career .specialization-pill.item-pill2 .item-delete {
   cursor: pointer;
+}
+
+.combat-sidebar li.combatant .roll {
+    display: block;
+    width: 40px;
+    height: var(--sidebar-item-height);
+    background: url(../../../icons/svg/d20.svg) no-repeat 50% 50%;
+    background-size: 32px;
+    margin: 0 0.5em;
 }

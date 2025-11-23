@@ -1,8 +1,9 @@
 <div id="{{id}}" class="dialog-content initiative-dialog dice-pool-dialog">
   <div style="text-align: center;"><span>{{localize "SWFFG.InitiativePoolSelectorHint"}}</span></div>
   <div class="pool-selector">
-    {{#each dicePools as |p key|}} <input type="radio" id="{{key}}" name="skill" value="{{p.name}}" {{#if (eq ../defaultInitiativeFormula p.name) }}checked{{/if}}>
-    <label for="{{key}}">{{localize p.label}}</label>
+    {{#each dicePools as |p key|}}
+      <input type="radio" id="{{key}}" name="skill" value="{{p.name}}" {{#if (eq ../defaultInitiativeFormula p.name) }}checked{{/if}}>
+      <label for="{{key}}">{{localize p.label}}</label>
     {{/each}}
   </div>
   <div id="Vigilancepool" class="hidden-content">

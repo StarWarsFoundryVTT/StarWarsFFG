@@ -1012,6 +1012,10 @@ img {
   max-height: 20%;
 }
 
+.starwarsffg .talent-grid .talent-body {
+  overflow-y: hidden;
+}
+
 .starwarsffg .talent-grid .talent-tier-row-label {
   flex: 0 0 30px;
   max-width: 30px;
@@ -2275,6 +2279,7 @@ img {
   cursor: pointer;
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .starwarsffg .skillsGrid .dice-pool img {
@@ -4494,4 +4499,13 @@ img {
   flex: 0 0 50px;
   display: flex;
   flex-direction: column;
+}
+
+.starwarsffg .resetMedical {
+  height: 20px;
+  display: flex;
+}
+
+.starwarsffg .resetMedical>i {
+  height: 14px;
 }
