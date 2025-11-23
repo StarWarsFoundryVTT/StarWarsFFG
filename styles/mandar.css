@@ -2691,6 +2691,10 @@ img {
   padding: 0 5px 0 5px;
   margin-bottom: 0;
 }
+.starwarsffg.sheet.item.v2 .item-sheet-weapon .container.special {
+  padding: 0 0 15px 5px;
+  margin-bottom: 0;
+}
 
 .starwarsffg.sheet.item.v2 .item-sheet-weapon .weapon-values {
   margin: 0 5px;

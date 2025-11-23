@@ -76,6 +76,14 @@ export default class DiceHelpers {
         item = obj.actor.token.actor.items.get(itemID);
       }
     }
+
+    if (item && item.type === "weapon") {
+      const ammoEnabled = item.getFlag("starwarsffg", "config.enableAmmo");
+      if (ammoEnabled && item.system.ammo.value <= 0) {
+        return ui.notifications.warn("Not enough ammo!");
+      }
+    }
+
     const itemData = item || {};
     const status = this.getWeaponStatus(itemData);
     let defenseDice = this.getDefenseDice(skill, itemData);
