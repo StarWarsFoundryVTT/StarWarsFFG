@@ -18,6 +18,7 @@
   * Max characteristic setting is now properly enforced when manually editing sheets ([#1994](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1994))
   * Purchasing a talent in a specialization now properly activates any modifiers for tha talent
   * Manually adjusting XP can be submitted with the enter key ([#2036](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2036))
+  * Fix for AEs on items dragged onto actors being active despite the item not being equipped ([#2037](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2037))
 
 `1.910`
 * Fixes:
