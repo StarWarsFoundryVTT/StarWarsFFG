@@ -189,6 +189,20 @@ export default class RollBuilderFFG extends FormApplication {
         CONFIG.logger.warn(`Caught error in roller: ${error}`);
       }
 
+      try {
+        if (this?.roll?.item && this.roll.item.type === "weapon") {
+          const item = await foundry.utils.fromUuid(this.roll.item.uuid);
+          if (item) {
+            const ammoEnabled = item.getFlag("starwarsffg", "config.enableAmmo");
+            if (ammoEnabled) {
+              await item.update({"system.ammo.value": item.system.ammo.value - 1});
+            }
+          }
+        }
+      } catch (error) {
+        CONFIG.logger.warn(`Caught ammo error in roller: ${error}`);
+      }
+
       const sentToPlayer = html.find(".user-selection")?.[0]?.value;
       if (sentToPlayer) {
         let container = $(`<div class='dice-pool'></div>`)[0];

@@ -682,6 +682,13 @@ export class ItemFFG extends ItemBaseFFG {
       data.doNotSubmit = (await this.sheet.getData()).data.doNotSubmit;
     }
 
+    if (this.type === "weapon") {
+      const ammoEnabled = this.getFlag("starwarsffg", "config.enableAmmo");
+      if (ammoEnabled) {
+        props.push(`Ammo: ${data.ammo.value}/${data.ammo.max}`);
+      }
+    }
+
     if (this.type === "forcepower" || this.type === "signatureability") {
       //Display upgrades
 

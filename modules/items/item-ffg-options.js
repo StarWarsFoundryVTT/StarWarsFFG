@@ -27,7 +27,7 @@ export default class ItemOptions {
           one: {
             icon: '<i class="fas fa-check"></i>',
             label: game.i18n.localize("SWFFG.ButtonAccept"),
-            callback: (html) => {
+            callback: async (html) => {
               const controls = html.find("input, select");
 
               let updateObject = {};
@@ -43,6 +43,14 @@ export default class ItemOptions {
 
                 updateObject[control.name] = value;
                 this.options[control.id].value = value;
+              }
+
+              const item = await fromUuid(this.data.item.uuid);
+              if (!item) {
+                return ui.notifications.warn("Unable to find item");
+              }
+              for (const flag of Object.keys(updateObject)) {
+                await item.setFlag("starwarsffg", flag, updateObject[flag]);
               }
 
               this.data.object.update(updateObject);

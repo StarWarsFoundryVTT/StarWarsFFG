@@ -692,6 +692,10 @@
         "value": "",
         "type": "String",
         "label": "Special"
+      },
+      "ammo": {
+        "max": 0,
+        "value": 0
       }
     },
     "armour": {

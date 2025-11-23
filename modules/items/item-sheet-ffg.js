@@ -452,6 +452,14 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         type: "Boolean",
         default: true,
       });
+      if (this.object.type === "weapon") {
+        this.sheetoptions.register("enableAmmo", {
+          name: game.i18n.localize("SWFFG.SheetOptions2.enableAmmo.Name"),
+          hint: game.i18n.localize("SWFFG.SheetOptions2.enableAmmo.Hint"),
+          type: "Boolean",
+          default: false,
+        });
+      }
     }
 
     // TODO: This is not needed in Foundry 0.6.0
