@@ -2,6 +2,9 @@
 * Enhancements:
   * Suppressing AE popups from items equipping
   * Weapons now have an ammo option, fantastic for Grenades and Launchers! ([#1984](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1984))
+* Notes:
+  * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
+    * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
 * Fixes:
   * Fix armor adjusted values was not considering all modifiers for soak, defence and encumbrance ([#1991](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1991)
   * Fix species talents/abilities being added/removed by each player online leading to duplicates if GM is online. ([#1832](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1832))
