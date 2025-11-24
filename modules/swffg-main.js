@@ -886,26 +886,6 @@ Hooks.on("renderChatInput", (app, html, data) => {
   }
 });
 
-Hooks.on("renderActorDirectory", (app, html, data) => {
-  // add character import button
-  let div;
-  div = document.createElement("div");
-  div.className = "og-character-import";
-  div.innerHTML = `<hr><h4>OggDude Import</h4>
-    <button class="og-character" style="width:100%;margin-bottom:4px;">OggDude Character Importer</button>
-    <button class="og-npc" style="width:100%;">OggDude NPC Importer</button>`;
-  html.querySelector(".directory-footer")?.appendChild(div);
-  // add event handlers with addEventListener()
-  div.querySelector(".og-character")?.addEventListener("click", (event) => {
-    event.preventDefault();
-    new CharacterImporter().render(true);
-  });
-  div.querySelector(".og-npc")?.addEventListener("click", (event) => {
-    event.preventDefault();
-    new NPCImporter().render(true);
-  });
-});
-
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   if (game.user.isGM) {
     let div;
