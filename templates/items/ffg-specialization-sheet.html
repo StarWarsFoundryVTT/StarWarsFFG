@@ -115,7 +115,7 @@
       </div>
     </div>
     <div class="tab" data-group="primary" data-tab="skills">
-      <h2>Career Skills</h2>
+      <h2>{{ localize "SWFFG.Spec.CareerSkills" }}s</h2>
       <div class="container career-skills">
         {{#each data.careerSkills as |skill index|}}
           <div class="career-skill">
@@ -124,6 +124,10 @@
             </select>
           </div>
         {{/each }}
+      </div>
+      <div class="container">
+        <label for="data.universal" style="align-content: center;">{{ localize "SWFFG.Spec.Universal" }}</label>
+        <input class="ranked-toggle" style="text-align: center;" type="checkbox" name="data.universal" data-dtype="Boolean" {{checked data.universal}} />
       </div>
     </div>
   </section>
