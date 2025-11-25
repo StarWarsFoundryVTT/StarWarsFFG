@@ -437,6 +437,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       await this._handleItemBuy(ev)
     });
 
+    html.find(".source-control").click(async (ev) => {
+      await this._handleSourceControl(ev)
+    });
+
     // register sheet options
     if (["gear", "weapon", "armour"].includes(this.object.type)) {
       this.sheetoptions = new ItemOptions(this, html);
@@ -1153,6 +1157,47 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         classes: ["dialog", "starwarsffg"],
       }
     ).render(true);
+  }
+
+  async _handleSourceControl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = $(event.currentTarget).data("action");
+    const sourceIndex = $(event.currentTarget).data("index");
+    if (action === "add") {
+      const addSource = new Dialog({
+        title: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Title"),
+        content: `
+          <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Book")} :</p>
+          <input type="text" id="book" name="book" value="Force and Destiny Core Rulebook">
+          <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Page")}:</p>
+          <input type="number" id="page" name="page" value="0">
+        `,
+        buttons: {
+          submit: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Submit"),
+            callback: async (obj, event) => {
+              const jObj = $(obj);
+              const bookName = jObj.find("#book").val();
+              const pageNum = jObj.find("#page").val();
+              await this.object.update({"system.metadata.sources": [`${bookName} pg. ${pageNum}`]});
+            }
+          },
+          cancel: {
+            icon: '<i class="fas fa-x"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Cancel"),
+          },
+        },
+        default: "submit",
+      });
+      addSource.render(true);
+    } else if (action === "remove") {
+      const sources = foundry.utils.deepClone(this.item.system.metadata.sources);
+      sources.splice(sourceIndex, 1);
+      await this.object.update({"system.metadata.sources": sources});
+    }
+    this.render(true);
   }
 
   async _handleItemBuy(event) {

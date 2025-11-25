@@ -847,5 +847,10 @@
   "SWFFG.Roll.ForcePowers.NoDice": "Cannot roll, all Force Dice are committed!",
   "SWFFG.CareerSkills.None": "(none)",
   "SWFFG.Spec.CareerSkills": "Career Skills",
-  "SWFFG.Spec.Universal": "Universal"
+  "SWFFG.Spec.Universal": "Universal",
+  "SWFFG.Meta.Sources.AddSource.Title": "Add Source",
+  "SWFFG.Meta.Sources.AddSource.Submit": "Submit",
+  "SWFFG.Meta.Sources.AddSource.Cancel": "Cancel",
+  "SWFFG.Meta.Sources.AddSource.Book": "Book",
+  "SWFFG.Meta.Sources.AddSource.Page": "Page number"
 }
