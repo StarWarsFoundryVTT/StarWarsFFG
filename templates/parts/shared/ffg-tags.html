@@ -1,0 +1,14 @@
+<div class="container">
+  <h3 class="tag_tooltip_h3">{{ localize "SWFFG.TabTags" }}&nbsp;<div class="tag_tooltip" data-tooltip="{{ localize "SWFFG.Meta.Tags.AddTag.Helper" }}" data-tooltip-direction="DOWN"><i class="fa-regular fa-circle-question"></i></div></h3>
+  <div style="margin-left: auto; margin-right: 0;">
+    <a class="tag-control" data-action="add" title="Add Tag"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
+<ul>
+{{#each data.metadata.tags}}
+    <li>
+      {{ this }}
+      <a class="tag-control" data-action="remove" data-index="{{ @index }}" title="Remove Tag"><i class="fas fa-trash"></i></a>
+    </li>
+{{/each}}
+</ul>

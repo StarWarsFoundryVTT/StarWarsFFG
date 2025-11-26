@@ -438,7 +438,11 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     });
 
     html.find(".source-control").click(async (ev) => {
-      await this._handleSourceControl(ev)
+      await this._handleSourceControl(ev);
+    });
+
+    html.find(".tag-control").click(async (ev) => {
+      await this._handleTagControl(ev);
     });
 
     // register sheet options
@@ -1196,6 +1200,46 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       const sources = foundry.utils.deepClone(this.item.system.metadata.sources);
       sources.splice(sourceIndex, 1);
       await this.object.update({"system.metadata.sources": sources});
+    }
+    this.render(true);
+  }
+
+  async _handleTagControl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = $(event.currentTarget).data("action");
+    const tagIndex = $(event.currentTarget).data("index");
+    if (action === "add") {
+      const addTag = new Dialog({
+        title: game.i18n.localize("SWFFG.Meta.Tags.AddTag.Title"),
+        content: `
+          <p>${game.i18n.localize("SWFFG.Meta.Tags.AddTag.Tag")} :</p>
+          <input type="text" id="tag" name="tag" value="">
+        `,
+        buttons: {
+          submit: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Tags.AddTag.Submit"),
+            callback: async (obj, event) => {
+              const jObj = $(obj);
+              const tag = jObj.find("#tag").val();
+              const updatedTags = this.item.system.metadata.tags || [];
+              updatedTags.push(tag);
+              await this.object.update({"system.metadata.tags": updatedTags});
+            }
+          },
+          cancel: {
+            icon: '<i class="fas fa-x"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Tags.AddTag.Cancel"),
+          },
+        },
+        default: "submit",
+      });
+      addTag.render(true);
+    } else if (action === "remove") {
+      const tags = foundry.utils.deepClone(this.item.system.metadata.tags);
+      tags.splice(tagIndex, 1);
+      await this.object.update({"system.metadata.tags": tags});
     }
     this.render(true);
   }
