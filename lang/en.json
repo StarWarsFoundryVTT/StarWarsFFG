@@ -55,6 +55,7 @@
   "SWFFG.TabDescription": "Description",
   "SWFFG.TabModifiers": "Modifiers",
   "SWFFG.TabSources": "Long Description and Sources",
+  "SWFFG.TabTags": "Tags",
   "SWFFG.TabSpecializations": "Specializations",
   "SWFFG.TabCareer": "Career Data",
   "SWFFG.TabXpLog": "XP log",
@@ -845,5 +846,17 @@
   "SWFFG.Status.Staggered": "Staggered",
   "SWFFG.Status.Defeated": "Defeated",
   "SWFFG.Roll.ForcePowers.NoDice": "Cannot roll, all Force Dice are committed!",
-  "SWFFG.CareerSkills.None": "(none)"
+  "SWFFG.CareerSkills.None": "(none)",
+  "SWFFG.Spec.CareerSkills": "Career Skills",
+  "SWFFG.Spec.Universal": "Universal",
+  "SWFFG.Meta.Sources.AddSource.Title": "Add Source",
+  "SWFFG.Meta.Sources.AddSource.Submit": "Submit",
+  "SWFFG.Meta.Sources.AddSource.Cancel": "Cancel",
+  "SWFFG.Meta.Sources.AddSource.Book": "Book",
+  "SWFFG.Meta.Sources.AddSource.Page": "Page number",
+  "SWFFG.Meta.Tags.AddTag.Title": "Add Tag",
+  "SWFFG.Meta.Tags.AddTag.Submit": "Submit",
+  "SWFFG.Meta.Tags.AddTag.Cancel": "Cancel",
+  "SWFFG.Meta.Tags.AddTag.Tag": "Tag",
+  "SWFFG.Meta.Tags.AddTag.Helper": "Tags can be used to dynamically filter items"
 }

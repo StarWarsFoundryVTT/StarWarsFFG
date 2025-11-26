@@ -4,9 +4,17 @@
 {{editor data.enrichedLongDesc target="system.longDesc" button=true owner=owner editable=editable engine="prosemirror"}}
 <hr>
 {{/if}}
-<h3>{{ localize "SWFFG.Sources" }}</h3>
+<div class="container">
+  <h3>{{ localize "SWFFG.Sources" }}</h3>
+  <div style="margin-left: auto; margin-right: 0;">
+    <a class="source-control" data-action="add" title="Add Source"><i class="fas fa-plus"></i></a>
+  </div>
+</div>
 <ul>
 {{#each data.metadata.sources}}
-    <li>{{ this }}</li>
+    <li>
+      {{ this }}
+      <a class="source-control" data-action="remove" data-index="{{ @index }}" title="Remove Source"><i class="fas fa-trash"></i></a>
+    </li>
 {{/each}}
 </ul>

@@ -97,7 +97,14 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType) (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType) (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}}
+  {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array
+    (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType)
+    (object tab="attributes" label="SWFFG.TabModifiers" icon="fas fa-cog" cls=classType)
+    (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType)
+    (object tab="tags" label="SWFFG.TabTags" icon="fa-sharp fa-regular fa-tags" cls=classType)
+  )}}
+  {{!-- Sheet Body --}}
   <section class="sheet-body small armour">
     {{!-- Description Tab --}}
     <div class="tab" data-group="primary" data-tab="description">
@@ -115,6 +122,11 @@
     {{!-- Long Description and Sources Tab --}}
     <div class="tab sources" data-group="primary" data-tab="sources">
       {{> "systems/starwarsffg/templates/parts/shared/ffg-sources.html" data=data}}
+    </div>
+
+    {{!-- Tags Tab --}}
+    <div class="tab tags" data-group="primary" data-tab="tags">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-tags.html" data=data}}
     </div>
   </section>
 </form>

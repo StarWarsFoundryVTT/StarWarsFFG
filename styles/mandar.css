@@ -4513,3 +4513,11 @@ img {
 .starwarsffg .resetMedical>i {
   height: 14px;
 }
+
+.starwarsffg .tag_tooltip_h3 {
+  display: flex;
+}
+
+.starwarsffg .container .tag_tooltip {
+  align-content: center;
+}
