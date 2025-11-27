@@ -74,6 +74,8 @@ export default class Gear {
             let imgPath = await ImportHelpers.getImageFilename(zip, "Equipment", "Gear", data.flags.starwarsffg.ffgimportid);
             if (imgPath) {
               data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+            } else {
+              data.img = "systems/starwarsffg/images/defaults/items/gear.png";
             }
 
             await ImportHelpers.addImportItemToCompendium("Item", data, pack);
