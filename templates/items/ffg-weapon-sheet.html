@@ -13,8 +13,31 @@
             <div class="characteristic-item flex-group-center">
               <div class="characteristic">
                 <div class="characteristic-value">
-                  <input type="text" name="data.damage.value" value="{{#if (and (or (contains data.skill.value "Brawl") (contains data.skill.value "Melee") (contains data.skill.value "Lightsaber")) (eq data.skill.useBrawn true))}}0{{else}}{{data.damage.value}}{{/if}}" data-dtype="Number" {{#if (and (or (contains data.skill.value "Brawl") (contains data.skill.value "Melee") (contains data.skill.value "Lightsaber")) (eq data.skill.useBrawn true))}}disabled{{/if}} /> {{#if (ne data.damage.adjusted data.damage.value)}}
-                  <div class="adjustedvalues-left {{#if (gt data.damage.adjusted data.damage.value)}}positive{{/if}}">{{data.damage.adjusted}}</div>
+                  <input type="text" name="data.damage.value" value="{{~#if
+                    (and
+                      (or
+                        (contains data.skill.value "Brawl")
+                        (contains data.skill.value "Melee")
+                        (contains data.skill.value "Lightsaber")
+                      )
+                      (eq data.skill.useBrawn true)
+                    )}}
+                      0
+                    {{~else~}}
+                      {{~data.damage.value~}}
+                    {{/if~}}" data-dtype="Number" {{~#if
+                      (and
+                        (or
+                          (contains data.skill.value "Brawl")
+                          (contains data.skill.value "Melee")
+                          (contains data.skill.value "Lightsaber")
+                        )
+                      (eq data.skill.useBrawn true)
+                    )}}
+                      disabled
+                  {{/if~}} />
+                  {{#if (and (ne data.damage.adjusted data.damage.value) (ne data.characteristic.value ""))}}
+                    <div class="adjustedvalues-left {{#if (gt data.damage.adjusted data.damage.value)}}positive{{/if}}">{{data.damage.adjusted}}</div>
                   {{/if}}
                 </div>
               </div>
