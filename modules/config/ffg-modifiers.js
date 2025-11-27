@@ -108,10 +108,6 @@ export const itemmodifier_resultmodifiers = {
  * Used for the "modifier type" selector for modifiers
  */
 export const allModifiersTypes = {
-  "Stat All": {
-    "value": "Stat All",
-    "label": "SWFFG.ModTypeStatAll",
-  },
   "Stat": {
     "value": "Stat",
     "label": "SWFFG.ModTypeStat",
@@ -213,7 +209,6 @@ export const allModifiersMap = {
   "Weapon Stat": foundry.utils.duplicate(weapon_stats),
   "Armor Stat": foundry.utils.duplicate(armor_stats),
   "Vehicle Stat": foundry.utils.duplicate(vehicle_stats),
-  "Stat All": Object.assign(foundry.utils.duplicate(character_stats), foundry.utils.duplicate(vehicle_stats), foundry.utils.duplicate(armor_stats), foundry.utils.duplicate(weapon_stats)),
   "Stat": character_stats,
   "Result Modifiers": foundry.utils.duplicate(itemmodifier_resultmodifiers),
   "Dice Modifiers": foundry.utils.duplicate(itemmodifier_dicemodifiers),
