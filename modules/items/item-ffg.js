@@ -682,6 +682,10 @@ export class ItemFFG extends ItemBaseFFG {
       data.doNotSubmit = (await this.sheet.getData()).data.doNotSubmit;
     }
 
+    if (["talent"].includes(this.type) && data.longDesc) {
+      data.description = data.longDesc;
+    }
+
     if (this.type === "weapon") {
       const ammoEnabled = this.getFlag("starwarsffg", "config.enableAmmo");
       if (ammoEnabled) {
