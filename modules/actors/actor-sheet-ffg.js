@@ -1421,8 +1421,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
    */
   async _itemDisplayDetails(item, event) {
     event.preventDefault();
-    let li = $(event.currentTarget),
-      itemDetails = await item.getItemDetails();
+    let li = $(event.currentTarget);
+    const itemDetails = await item.getItemDetails();
 
     // Toggle summary
     if (li.hasClass("expanded")) {
@@ -1506,6 +1506,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           isConflictTalent: talentData.isConflictTalent,
         }
       };
+    }
+
+    if (item.type === "talent") {
+      itemDetails.prettyDesc = item.system.longDesc;
     }
 
     const template = "systems/starwarsffg/templates/chat/item-card.html";
