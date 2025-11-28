@@ -26,8 +26,6 @@ import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 
-import CharacterImporter from "./importer/character-importer.js";
-import NPCImporter from "./importer/npc-importer.js";
 import DiceHelpers from "./helpers/dice-helpers.js";
 import Helpers from "./helpers/common.js";
 import TemplateHelpers from "./helpers/partial-templates.js";
