@@ -12,7 +12,7 @@
       <input type="file" name="data" accept=".zip" />
     </div>
     <div>
-      <button class="dialog-button" id="load" data-button="load">
+      <button class="dialog-button" id="load" data-button="load" data-action="loadFile">
         <i class="fas fa-check"></i>
         {{localize "SWFFG.LoadFile"}}
       </button>
@@ -27,7 +27,7 @@
     </div>
     <div style="display: flex;">
       <div style="white-space: nowrap;">
-        <button id="importAll">
+        <button type="button" id="importAll" data-action="selectAll" disabled>
           <i class="fa-solid fa-lasso"></i>
           {{ localize "SWFFG.CheckAll" }}
         </button>
@@ -44,11 +44,5 @@
         </div>
       </div>
     {{/each }}
-  </div>
-  <div>
-    <button class="dialog-button" data-button="import">
-      <i class="fas fa-file-import"></i>
-      {{localize "SWFFG.ImportFile"}}
-    </button>
   </div>
 </form>
