@@ -137,9 +137,6 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
   }
   
   static async _loadFile(event, target) {
-    event.preventDefault();
-    event.stopPropagation();
-
     // Reset defaults
     const form = target.closest("form");
     if (form) {
@@ -167,8 +164,8 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
   }
 
   static async _startImport(event, form, formData) {
-    event.preventDefault();
-    event.stopPropagation();
+    CONFIG.logger.debug("Importing Data Files");
+    this._importLogger(`Starting import`);
 
     let zip = await DataImporter._readFile();
     if (typeof zip === "undefined") {
