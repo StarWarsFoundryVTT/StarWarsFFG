@@ -144,7 +144,7 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
     }
 
     try {
-      zip = await DataImporter._readFile();
+      let zip = await DataImporter._readFile();
       if (typeof zip === "undefined") return;
 
       const selectAll = document.querySelector("[data-action='selectAll']");
@@ -158,7 +158,7 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
       if (startImport !== null) startImport.disabled = false;
 
     } catch (err) {
-      ui.notifications.warn("There was an error trying to load the import file, check the console log for more information.");
+      ui.notifications.error(game.i18n.localize("SWFFG.Notifications.Import.FileLoadError"));
       console.error(err);
     }
   }
