@@ -4521,3 +4521,12 @@ img {
 .starwarsffg .container .tag_tooltip {
   align-content: center;
 }
+
+.starwarsffg.wizard .background-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.starwarsffg.wizard .background-container  .background-content {
+  flex: 1;
+}

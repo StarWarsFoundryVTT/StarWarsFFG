@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Skills {
+  static getMetaData() {
+    return {
+      displayName: 'Skills',
+      className: "Skills",
+      itemName: "skills",
+      localizationName: "SWFFG.Skills",
+      fileNames: ["Skills.xml"],
+      filesAreDir: false,
+      phase: 1,
+    };
+  }
+
   static async Import(xml, createJournalCompendium) {
     CONFIG.temporary["skills"] = {};
 

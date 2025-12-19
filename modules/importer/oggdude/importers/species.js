@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Species {
+  static getMetaData() {
+    return {
+      displayName: 'Species',
+      className: "Species",
+      itemName: "species",
+      localizationName: "TYPES.Item.species",
+      fileNames: ["/Species/"],
+      filesAreDir: true,
+      phase: 4,
+    };
+  }
+
   static async Import(zip) {
     try {
       const files = Object.values(zip.files).filter((file) => {

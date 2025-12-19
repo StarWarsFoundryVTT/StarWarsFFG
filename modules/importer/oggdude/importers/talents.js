@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Talents {
+  static getMetaData() {
+    return {
+      displayName: 'Talents',
+      className: "Talent",
+      itemName: "talent",
+      localizationName: "TYPES.Item.talent",
+      fileNames: ["/Talents.xml"],
+      filesAreDir: false,
+      phase: 3,
+    };
+  }
+
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);
@@ -103,6 +115,8 @@ export default class Talents {
             CONFIG.logger.error(`Error importing record : `, err);
           }
         });
+      } else {
+        CONFIG.logger.warn("Unable to find any talents!");
       }
     } catch (err) {
       CONFIG.logger.error(`Error importing record : `, err);

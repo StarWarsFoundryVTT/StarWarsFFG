@@ -48,6 +48,7 @@ import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
 import {handleUpdate} from "./swffg-migration.js";
 import SWAImporter from "./importer/swa-importer.js";
+import {CharacterCreator} from "./helpers/character-creator.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -1385,6 +1386,10 @@ Hooks.once("ready", async () => {
     combatTrackerConfig.turnMarker.enabled = false;
     await game.settings.set("core", "combatTrackerConfig", combatTrackerConfig);
   }
+
+  // TODO: clean this up
+  const create = new CharacterCreator();
+  create.render(true);
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {

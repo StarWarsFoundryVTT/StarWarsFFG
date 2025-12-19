@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class SignatureAbilities {
+  static getMetaData() {
+    return {
+      displayName: 'Signature Abilities',
+      className: "SignatureAbility",
+      itemName: "signatureability",
+      localizationName: "TYPES.Item.signatureability",
+      fileNames: ["SigAbilityNodes.xml"],
+      filesAreDir: false,
+      phase: 8,
+    };
+  }
+
   static async Import(xml, zip) {
     const base = JXON.xmlToJs(xml);
     let items = base?.SigAbilityNodes?.SigAbilityNode;

@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class ItemAttachments {
+  static getMetaData() {
+    return {
+      displayName: 'Item Attachments',
+      className: "ItemAttachments",
+      itemName: "itemattachment",
+      localizationName: "SWFFG.Labels.ItemAttachments",
+      fileNames: ["ItemAttachments.xml"],
+      filesAreDir: false,
+      phase: 3,
+    };
+  }
+
   static async Import(xml) {
     const base = JXON.xmlToJs(xml);
     let items = base?.ItemAttachments?.ItemAttachment;

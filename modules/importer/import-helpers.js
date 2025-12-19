@@ -2345,7 +2345,7 @@ export default class ImportHelpers {
       CONFIG.temporary[pack.collection][data.flags.starwarsffg.ffgimportid] = foundry.utils.deepClone(crt);
       return crt;
     } else {
-      CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name} : ${JSON.stringify(entry)}`);
+      CONFIG.logger.debug(`Found existing ${type} ${dataType} ${data.name}`);
       let upd;
       if (removeFirst) {
         await pack.delete(entry._id);
@@ -2478,6 +2478,7 @@ export default class ImportHelpers {
     const actorItemFolder = "Actor Items";
     const equipmentItemFolder = "Equipment";
     const vehicleItemFolder = "Vehicles";
+    const characterCreatorFolderName = "Character Creator";
 
     if (["Careers", "ForcePowers", "SignatureAbilities", "Specializations", "Species", "Talents"].includes(packName)) {
       // create the actor item folder
@@ -2539,6 +2540,20 @@ export default class ImportHelpers {
         equipmentFolder = modFolder;
       }
       return equipmentFolder;
+    } else if (["Backgrounds", "Obligations"].includes(packName)) {
+      // create or locate the top-level equipment folder
+      let characterCreatorFolder = game.folders.find((f) => f.name === characterCreatorFolderName);
+      if (!characterCreatorFolder) {
+        await Folder.create({
+          name: characterCreatorFolderName,
+          type: "Compendium",
+        });
+        characterCreatorFolder = game.folders.find((f) => f.name === characterCreatorFolderName);
+        await characterCreatorFolder.update({
+          folder: parentFolder.id,
+        });
+      }
+      return characterCreatorFolder;
     } else if (["VehicleWeapons", "VehicleAttachments", "VehicleMods", "Planetary", "Space"].includes(packName)) {
         // create the actor item folder
         let actorFolder = game.folders.find((f) => f.name === vehicleItemFolder);

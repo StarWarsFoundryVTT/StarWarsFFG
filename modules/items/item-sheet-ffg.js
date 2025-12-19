@@ -291,6 +291,17 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         break;
       }
+      case "background": {
+        this.position.height = 545;
+        data.data.backgroundTypes = CONFIG.FFG.characterCreator.backgroundTypes;
+        break;
+      }
+      case "obligation": {
+        this.position.height = 545;
+        data.data.obligationTypes = CONFIG.FFG.characterCreator.obligationTypes;
+        break;
+      }
+      break;
       default:
     }
 

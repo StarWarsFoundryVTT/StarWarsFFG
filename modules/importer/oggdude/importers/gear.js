@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Gear {
+  static getMetaData() {
+    return {
+      displayName: 'Gear',
+      className: "Gear",
+      itemName: "gear",
+      localizationName: "TYPES.Item.gear",
+      fileNames: ["Gear.xml"],
+      filesAreDir: false,
+      phase: 3,
+    };
+  }
+
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);

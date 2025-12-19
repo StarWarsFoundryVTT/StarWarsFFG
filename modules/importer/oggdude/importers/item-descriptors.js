@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class ItemDescriptors {
+  static getMetaData() {
+    return {
+      displayName: 'Item Modifiers',
+      className: "ItemModifiers",
+      itemName: "itemmodifier",
+      localizationName: "TYPES.Item.itemmodifier",
+      fileNames: ["ItemDescriptors.xml"],
+      filesAreDir: false,
+      phase: 2,
+    };
+  }
+
   static async Import(xml) {
     const base = JXON.xmlToJs(xml);
     let items = base.ItemDescriptors.ItemDescriptor;

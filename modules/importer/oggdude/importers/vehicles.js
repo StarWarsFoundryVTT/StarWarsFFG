@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Vehicles {
+  static getMetaData() {
+    return {
+      displayName: 'Vehicles',
+      className: "Vehicle",
+      itemName: "vehicle",
+      localizationName: "SWFFG.ItemsVehicles",
+      fileNames: ["/Vehicles/"],
+      filesAreDir: true,
+      phase: 7,
+    };
+  }
+
   static async Import(zip) {
     try {
       const files = Object.values(zip.files).filter((file) => {

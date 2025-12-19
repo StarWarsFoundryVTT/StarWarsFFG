@@ -1,0 +1,12 @@
+<section
+  class='tab startingBonus {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='startingBonus'
+>
+  <div class="form-group">
+    <label>Choose a Starting Bonus:</label> <!-- TODO: localize -->
+    <div class="form-fields" data-action="selectStartingBonus">
+      {{radioBoxes "startingBonus" startingBonusesRadio checked=data.current.startingBonus localize=true}}
+    </div>
+  </div>
+</section>

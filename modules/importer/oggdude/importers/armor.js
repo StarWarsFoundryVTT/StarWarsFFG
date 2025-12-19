@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Armor {
+  static getMetaData() {
+    return {
+      displayName: 'Armor',
+      className: "Armor",
+      itemName: "armor",
+      localizationName: "SWFFG.ItemsArmor",
+      fileNames: ["Armor.xml"],
+      filesAreDir: false,
+      phase: 3,
+    };
+  }
+
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);

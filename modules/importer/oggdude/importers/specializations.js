@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Specializations {
+  static getMetaData() {
+    return {
+      displayName: 'Specializations',
+      className: "Specialization",
+      itemName: "specialization",
+      localizationName: "SWFFG.Specializations",
+      fileNames: ["/Specializations/"],
+      filesAreDir: true,
+      phase: 5,
+    };
+  }
+
   static async Import(zip) {
     try {
       const files = Object.values(zip.files).filter((file) => {

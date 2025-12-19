@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Weapons {
+  static getMetaData() {
+    return {
+      displayName: 'Weapons',
+      className: "Weapon",
+      itemName: "weapon",
+      localizationName: "SWFFG.ItemsWeapons",
+      fileNames: ["/Weapons.xml"],
+      filesAreDir: false,
+      phase: 3,
+    };
+  }
+
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);

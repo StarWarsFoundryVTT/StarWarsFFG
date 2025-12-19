@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Career {
+  static getMetaData() {
+    return {
+      displayName: 'Careers',
+      className: "Career",
+      itemName: "career",
+      localizationName: "SWFFG.Career",
+      fileNames: ["Careers"],
+      filesAreDir: true,
+      phase: 6,
+    };
+  }
+
   static async Import(zip) {
     try {
       const files = Object.values(zip.files).filter((file) => {
