@@ -39,7 +39,7 @@
           <input type="checkbox" id="import{{ importer.className }}" name="imports" data-fileNames="{{ importer.fileNames }}" data-filesAreDir="{{ importer.filesAreDir }}" data-name="{{ importer.displayName }}" data-type="Item" data-itemtype="{{ importer.itemName }}" disabled />
           <label for="import{{ importer.className }}"> {{localize importer.localizationName }}</label><br />
         </div>
-        <div class="import-progress {{ importer.className }} import-hidden">
+        <div class="import-progress {{ importer.itemName }} import-hidden">
           <div class="import-progress-bar" style="width: 0%;"></div>
         </div>
       </div>

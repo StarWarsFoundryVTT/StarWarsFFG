@@ -24,7 +24,7 @@ export default class Career {
       if (files.length) {
         let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Careers`);
         CONFIG.logger.debug(`Starting Oggdude Careers Import`);
-        $(".import-progress.careers").toggleClass("import-hidden");
+        $(".import-progress.career").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(files, async (file) => {
           try {
@@ -130,7 +130,7 @@ export default class Career {
             await ImportHelpers.addImportItemToCompendium("Item", data, pack);
             currentCount += 1;
 
-            $(".careers .import-progress-bar")
+            $(".career .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {

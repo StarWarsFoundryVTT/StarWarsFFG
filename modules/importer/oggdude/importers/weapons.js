@@ -25,7 +25,7 @@ export default class Weapons {
           shipweapon: await ImportHelpers.getCompendiumPack("Item", `oggdude.VehicleWeapons`),
         };
         CONFIG.logger.debug(`Starting Oggdude Weapons Import`);
-        $(".import-progress.weapons").toggleClass("import-hidden");
+        $(".import-progress.weapon").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(items, async (item) => {
           try {
@@ -137,7 +137,7 @@ export default class Weapons {
 
             currentCount += 1;
 
-            $(".weapons .import-progress-bar")
+            $(".weapon .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {

@@ -22,7 +22,7 @@ export default class Talents {
         let currentCount = 0;
         let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Talents`);
         CONFIG.logger.debug(`Starting Oggdude Talents Import`);
-        $(".import-progress.talents").toggleClass("import-hidden");
+        $(".import-progress.talent").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(items, async (item) => {
           try {
@@ -108,7 +108,7 @@ export default class Talents {
 
             currentCount += 1;
 
-            $(".talents .import-progress-bar")
+            $(".talent .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {

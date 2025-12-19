@@ -30,7 +30,7 @@ export default class ForcePowers {
       if (files?.length) {
         let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.ForcePowers`);
         CONFIG.logger.debug(`Starting Oggdude Force Powers Import`);
-        $(".import-progress.force").toggleClass("import-hidden");
+        $(".import-progress.forcepower").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(files, async (file) => {
           try {
@@ -186,7 +186,7 @@ export default class ForcePowers {
 
             currentCount += 1;
 
-            $(".force .import-progress-bar")
+            $(".forcepower .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {

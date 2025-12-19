@@ -25,7 +25,7 @@ export default class SignatureAbilities {
       let totalCount = files.length;
       let currentCount = 0;
 
-      $(".import-progress.signatureabilities").toggleClass("import-hidden");
+      $(".import-progress.signatureability").toggleClass("import-hidden");
       let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.SignatureAbilities`);
       CONFIG.logger.debug(`Starting Oggdude Signature Ability (${files.length}) Import`);
 
@@ -188,7 +188,7 @@ export default class SignatureAbilities {
             }
           }
 
-          $(".signatureabilities .import-progress-bar")
+          $(".signatureability .import-progress-bar")
             .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
         } catch (err) {
