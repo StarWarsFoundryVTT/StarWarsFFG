@@ -24,7 +24,7 @@ export default class Specializations {
       if (files.length) {
         let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Specializations`);
         CONFIG.logger.debug(`Starting Oggdude Specialization Import`);
-        $(".import-progress.specializations").toggleClass("import-hidden");
+        $(".import-progress.specialization").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(files, async (file) => {
           try {
@@ -148,7 +148,7 @@ export default class Specializations {
 
             currentCount += 1;
 
-            $(".specializations .import-progress-bar")
+            $(".specialization .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {

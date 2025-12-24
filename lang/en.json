@@ -712,6 +712,8 @@
   "SWFFG.Notifications.Combat.Claim.Slot": "Slot",
   "SWFFG.Notifications.Combat.Remove.Slot": "The slot must be claimed to remove a combatant!",
   "SWFFG.Notifications.Combat.Initiative.Update": "Update Initiative",
+  "SWFFG.Notifications.Import.NoFileWarning": "No file specifed!",
+  "SWFFG.Notifications.Import.FileLoadError": "There was an error trying to load the import file, check the console log for more information.",
   "SWFFG.Combats.Actors.Friendly": "Friendly Actors",
   "SWFFG.Combats.Actors.Enemy": "Enemy Actors",
   "SWFFG.Combats.Actors.Neutral": "Neutral Actors",

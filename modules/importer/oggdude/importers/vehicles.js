@@ -23,7 +23,7 @@ export default class Vehicles {
 
       if (files.length) {
         CONFIG.logger.debug(`Starting Oggdude Vehicles Import`);
-        $(".import-progress.vehicles").toggleClass("import-hidden");
+        $(".import-progress.vehicle").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(files, async (file) => {
           try {
@@ -178,7 +178,7 @@ export default class Vehicles {
 
             currentCount += 1;
 
-            $(".vehicles .import-progress-bar")
+            $(".vehicle .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {

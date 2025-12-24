@@ -41,7 +41,7 @@ export default class Obligation {
         let currentCount = 0;
         let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Obligations`);
         CONFIG.logger.debug(`Starting Oggdude Obligations Import`);
-        $(".import-progress.motivation").toggleClass("import-hidden");
+        $(".import-progress.obligation").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(items, async (item) => {
           let data = ImportHelpers.prepareBaseObject(item, "obligation");
@@ -65,6 +65,8 @@ export default class Obligation {
           }
 
           await ImportHelpers.addImportItemToCompendium("Item", data, pack);
+
+          currentCount += 1;
 
           $(".obligation .import-progress-bar").width(
             `${Math.trunc((currentCount / totalCount) * 100)}%`

@@ -65,6 +65,8 @@ export default class Backgrounds {
 
           await ImportHelpers.addImportItemToCompendium("Item", data, pack);
 
+          currentCount += 1;
+
           $(".background .import-progress-bar").width(
             `${Math.trunc((currentCount / totalCount) * 100)}%`
           ).html(
