@@ -1,0 +1,27 @@
+<section
+  class='tab career {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='career'
+>
+  <div class="career-container">
+    <div class="career-content">
+      <label for="career">
+        <!-- TODO: localize -->
+        Choose a Career:
+      </label>
+      <select class="" id="career_choice" name="career_choice">
+        <option data-placeholder="true"></option>
+        {{#each availableCareers as |career|}}
+          <option value="{{career.uuid}}">{{career.name}}</option>
+        {{/each }}
+      </select>
+    </div>
+    <div class="career-content">
+      <label for="career_choice_desc">Career Info<!-- TODO: localize --></label>
+      <img id="career_choice_img" />
+      <div id="career_choice_desc" >
+
+      </div>
+    </div>
+  </div>
+</section>

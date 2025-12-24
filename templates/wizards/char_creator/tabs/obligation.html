@@ -7,29 +7,29 @@
     <div class="obligation-content">
       <label for="obligation_choice">
         <!-- TODO: localize -->
-        {{#if (eq data.rules "fad")}}
+        {{#if (eq data.selected.rules "fad")}}
           Choose a Force Attitude:
         {{/if}}
-        {{#if (eq data.rules "aor")}}
+        {{#if (eq data.selected.rules "aor")}}
           Choose a Duty:
         {{/if}}
-        {{#if (eq data.rules "eote")}}
+        {{#if (eq data.selected.rules "eote")}}
           Choose an Obligation:
         {{/if}}
       </label>
-      <select class="" id="obligation_choice" name="obligation_choice">
+      <select class="" id="obligation_choice" name="obligation_choice" multiple>
         <option data-placeholder="true"></option>
-        {{#if (eq data.rules "fad")}}
+        {{#if (eq data.selected.rules "fad")}}
           {{#each availableMoralities as |morality|}}
             <option value="{{morality.uuid}}">{{morality.name}}</option>
           {{/each }}
         {{/if}}
-        {{#if (eq data.rules "aor")}}
+        {{#if (eq data.selected.rules "aor")}}
           {{#each availableDuties as |duty|}}
             <option value="{{duty.uuid}}">{{duty.name}}</option>
           {{/each }}
         {{/if}}
-        {{#if (eq data.rules "eote")}}
+        {{#if (eq data.selected.rules "eote")}}
           {{#each availableObligations as |obligation|}}
             <option value="{{obligation.uuid}}">{{obligation.name}}</option>
           {{/each }}
@@ -37,7 +37,7 @@
       </select>
     </div>
     <div class="obligation-content">
-      <label for="obligation_choice_desc">Attitude Description<!-- TODO: localize --></label>
+      <label for="obligation_choice_desc">Obligation Description<!-- TODO: localize --></label>
       <div id="obligation_choice_desc" >
 
       </div>

@@ -1,3 +1,5 @@
+import {xpLogEarn} from "./actor-helpers.js";
+
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
 export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) {
@@ -18,13 +20,13 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/obligation.html'
     },
     species: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
+      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/species.html'
     },
     career: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
+      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/career.html'
     },
     specialization: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
+      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/specialization.html'
     },
     xp_spending: {
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
@@ -62,6 +64,18 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           id: "obligation",
           label: "obligation"
         },
+        {
+          id: "species",
+          label: "species"
+        },
+        {
+          id: "career",
+          label: "career"
+        },
+        {
+          id: "specialization",
+          label: "specialization"
+        },
       ],
       //labelPrefix: "MYSYS.tab", // Optional. Prepended to the id to generate a localization key
       initial: "rules", // Set the initial tab
@@ -89,34 +103,34 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   constructor(options={}) {
     super(options);
     this.data = {
-      rules: "fad",
-      starting: {
-        xp: 0,
-        credits: 0,
-        duty: 0,
-        obligation: 0,
-        conflict: 0,
+      grants: {
+        gm: {},
+        bonus: {
+          xp: 0,
+          credits: 0,
+          duty: 0,
+          obligation: 0,
+          morality: 0,
+        },
+        species: {},
+        career: {},
+        specialization: {},
+      },
+      selected: {
+        background: {
+          culture: null,
+          hook: null,
+          forceAttitude: null,
+        },
+        startingBonus: null,
+        obligation: null,
         species: null,
+        career: null,
         specialization: null,
-        xp_spend: null,
-        derived_attributes: null,
-        motivation: null,
-        gear: null,
+        rules: 'fad',
       },
-      bonus: {
-        xp: 0,
-        credits: 0,
-        duty: 0,
-        obligation: 0,
-        conflict: 0,
-      },
-      current: {
-        xp: 0,
-        credits: 0,
-        duty: 0,
-        obligation: 0,
-        conflict: 0,
-        startingBonus: "",
+      available: {
+        specializations: [],
       },
     };
     this.builtin = {
@@ -153,13 +167,17 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
    */
 
+  async _postRender(context, options) {
+    await super._postRender(context, options);
+  }
+
   /** @override */
-  _onRender(context, options) {
-    super._onRender(context, options);
+  async _onRender(context, options) {
+    await super._onRender(context, options);
     console.log("render")
 
     // backgrounds
-    new SlimSelect({
+    const cultureSelector = new SlimSelect({
       select: '#culture',
       cssClasses: {
         option: "starwarsffg" // TODO: select a real class here
@@ -171,7 +189,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         }
       }
     });
-    new SlimSelect({
+    cultureSelector.setSelected(this.data.selected.background.culture?.uuid, false);
+    const hookSelector = new SlimSelect({
       select: '#hook',
       cssClasses: {
         option: "starwarsffg" // TODO: select a real class here
@@ -183,7 +202,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         }
       }
     });
-    new SlimSelect({
+    hookSelector.setSelected(this.data.selected.background.hook?.uuid, false);
+    const forceAttitudeSelector = new SlimSelect({
       select: '#force_attitude',
       cssClasses: {
         option: "starwarsffg" // TODO: select a real class here
@@ -195,19 +215,63 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         }
       }
     });
+    forceAttitudeSelector.setSelected(this.data.selected.background.forceAttitude?.uuid, false);
+
     // obligations
-    // TODO: permit multiple choices
-    new SlimSelect({
+    const obligationSelector = new SlimSelect({
       select: '#obligation_choice',
       cssClasses: {
         option: "starwarsffg" // TODO: select a real class here
       },
       events: {
-        afterChange: async (newVal) => {
-          await this.selectObligation(newVal[0].value, newVal[0].text);
+        afterChange: async (selections) => {
+          await this.selectObligation(selections);
         }
       }
     });
+    obligationSelector.setSelected(this.data.selected.background.obligation?.uuid, false);
+
+    // species
+    const speciesSelector = new SlimSelect({
+      select: '#species_choice',
+      cssClasses: {
+        option: "starwarsffg" // TODO: select a real class here
+      },
+      events: {
+        afterChange: async (selection) => {
+          await this.selectSpecies(selection[0].value, selection[0].text);
+        }
+      }
+    });
+    speciesSelector.setSelected(this.data.selected.species?.uuid, false);
+
+    // careers
+    const careerSelector = new SlimSelect({
+      select: '#career_choice',
+      cssClasses: {
+        option: "starwarsffg" // TODO: select a real class here
+      },
+      events: {
+        afterChange: async (selection) => {
+          await this.selectCareer(selection[0].value, selection[0].text);
+        }
+      }
+    });
+    careerSelector.setSelected(this.data.selected.career?.uuid, false);
+
+    // specializations
+    const specializationSelector = new SlimSelect({
+      select: '#specialization_choice',
+      cssClasses: {
+        option: "starwarsffg" // TODO: select a real class here
+      },
+      events: {
+        afterChange: async (selection) => {
+          await this.selectSpecialization(selection[0].value, selection[0].text);
+        }
+      }
+    });
+    specializationSelector.setSelected(this.data.selected.specialization?.uuid, false);
   }
 
 
@@ -238,13 +302,16 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       builtin: this.builtin,
     };
 
-
+    // TODO: include items in the world instead of just compendiums
     context.availableBackgrounds = await this.getBackgrounds();
-    context.startingBonusesRadio = CONFIG.FFG.characterCreator.startingBonusesRadio[this.data.rules];
-    const obligations = await this.getAvailableMoralities(this.data.rules);
+    context.startingBonusesRadio = CONFIG.FFG.characterCreator.startingBonusesRadio[this.data.selected.rules];
+    const obligations = await this.getAvailableMoralities(this.data.selected.rules);
     context.availableMoralities = obligations.moralities;
     context.availableObligations = obligations.obligations;
     context.availableDuties = obligations.duties;
+    context.availableSpecies = await this.getAvailableSpecies();
+    context.availableCareers = await this.getAvailableCareers();
+    context.filteredSpecializations = await this.getFilteredSpecializations(); // TODO: add dynamic career
     /*
     this.terms = await Promise.all(this.terms.map(async (t) => {
       if (t instanceof RollFFG) {
@@ -336,6 +403,48 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
   }
 
+  async getAvailableSpecies() {
+    const sources = ["world.oggdudespecies"];
+    const species = [];
+
+    for (const source of sources) {
+      const pack = game.packs.get(source);
+      if (!pack) {
+        continue;
+      }
+      const items = await pack.getDocuments();
+      for (const item of items) {
+        species.push(item);
+      }
+    }
+
+    return species;
+  }
+
+  async getAvailableCareers() {
+    // TODO: we probably want to show available specializations in this window
+    // and possibly even fold it into the same tab in the wizard
+    const sources = ["world.oggdudecareers"];
+    const careers = [];
+
+    for (const source of sources) {
+      const pack = game.packs.get(source);
+      if (!pack) {
+        continue;
+      }
+      const items = await pack.getDocuments();
+      for (const item of items) {
+        careers.push(item);
+      }
+    }
+
+    return careers;
+  }
+
+  async getFilteredSpecializations(career) {
+    return this.data.available.specializations;
+  }
+
   /**
    * @param {PointerEvent} event - The originating click event
    * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
@@ -344,7 +453,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     // <a data-action="myAction">Using a link for inline text</a> triggers this function
     const choice = $(target).find(":checked")[0].value;
     console.log(`selected ${choice}`)
-    this.data.rules = choice;
+    this.data.selected.rules = choice;
     this.render(true);
   }
 
@@ -357,8 +466,47 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     console.log(target)
     const choice = $(target).find(":checked")[0].value;
     console.log(`selected starting bonus ${choice}`)
-    //this.data.rules = choice;
-    //this.render(true);
+    const ruleToBonusMap = {
+      fad: 'conflict',
+      aor: 'duty',
+      eote: 'obligation',
+    };
+    this.data.grants.bonus.xp = 0;
+    this.data.grants.bonus.duty = 0;
+    this.data.grants.bonus.obligation = 0;
+    this.data.grants.bonus.conflict = 0;
+    this.data.grants.bonus.credits = 0;
+
+    if (this.data.selected.rules === 'fad') {
+      if (choice === '10xp') {
+        this.data.grants.bonus.xp = 10;
+      } else if (choice === '2k_credits') {
+        this.data.grants.bonus.credits = 2500;
+      } else if (choice === '5xp' ) {
+        this.data.grants.bonus.xp = 5;
+        this.data.grants.bonus.credits = 1000;
+      } else if (choice === '21_plus_morality' ) {
+        this.data.grants.bonus.morality = 21;
+      } else if (choice === '21_minus_morality' ) {
+        this.data.grants.bonus.morality = -21;
+      }
+    } else {
+      if (choice === '5xp') {
+        this.data.grants.bonus.xp = 5;
+        this.data.grants.bonus[ruleToBonusMap[this.data.grants.rules]] = 5;
+      } else if (choice === '10xp') {
+        this.data.grants.bonus.xp = 10;
+        this.data.grants.bonus[ruleToBonusMap[this.data.grants.rules]] = 10;
+      } else if (choice === '1k_credits') {
+        this.data.grants.bonus.credits = 1000;
+        this.data.grants.bonus[ruleToBonusMap[this.data.grants.rules]] = 5;
+      } else if (choice === '2k_credits') {
+        this.data.grants.bonus.credits = 2500;
+        this.data.grants.bonus[ruleToBonusMap[this.data.grants.rules]] = 10;
+      }
+    }
+    this.data.selected.startingBonus = choice;
+    this.render(true);
   }
 
   /**
@@ -372,6 +520,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return;
     }
     $("#cultured_esc").text(selectedItem.system.description);
+    this.data.selected.background.culture = selectedItem;
   }
 
   /**
@@ -385,6 +534,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return;
     }
     $("#hook_desc").text(selectedItem.system.description);
+    this.data.selected.background.hook = selectedItem;
   }
 
   /**
@@ -398,19 +548,140 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return;
     }
     $("#force_attitude_desc").text(selectedItem.system.description);
+    this.data.selected.background.forceAttitude = selectedItem;
   }
 
   /**
    * @param {PointerEvent} event - The originating click event
    * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
   */
-  async selectObligation(itemUuid, itemNametarget) {
-    // TODO: if the obligation is a morality, we need to use strength/weakness instead of magnitude
-    const selectedItem = await fromUuid(itemUuid);
-    if (!selectedItem) {
-      ui.notifications.warn(`Unable to find obligation ${itemNametarget}!`);
+  async selectObligation(selections) {
+    console.log(selections)
+    if (selections.length === 0) {
+      $("#obligation_choice_desc").text("");
+    } else {
+      const newestSelection = selections[selections.length - 1];
+      const selectedItem = await fromUuid(newestSelection.value);
+      if (!selectedItem) {
+        ui.notifications.warn(`Unable to find obligation ${itemNametarget}!`);
+        return;
+      }
+      $("#obligation_choice_desc").text(selectedItem.system.description);
+      this.data.selected.obligation = selectedItem;
+    }
+  }
+
+  /**
+   * @param {string} itemUuid - The originating click event
+   * @param {HTMLElement} itemNameTarget - the capturing HTML element which defined a [data-action]
+  */
+  async selectSpecies(itemUuid, itemNameTarget) {
+    const selectedSpecies = await fromUuid(itemUuid);
+    if (!selectedSpecies) {
+      ui.notifications.warn(`Unable to find species ${itemNameTarget}!`);
       return;
     }
-    $("#obligation_choice_desc").text(selectedItem.system.description);
+    $("#species_choice_desc").text(selectedSpecies.system.description);
+    $("#species_choice_img").attr("src", selectedSpecies.img);
+    this.data.selected.species = selectedSpecies;
+  }
+
+  /**
+   * @param {string} itemUuid - The originating click event
+   * @param {HTMLElement} itemNameTarget - the capturing HTML element which defined a [data-action]
+  */
+  async selectCareer(itemUuid, itemNameTarget) {
+    const selectedCareer = await fromUuid(itemUuid);
+    if (!selectedCareer) {
+      ui.notifications.warn(`Unable to find career ${itemNameTarget}!`);
+      return;
+    }
+
+    $("#career_choice_desc").text(selectedCareer.system.description);
+    this.data.selected.career = selectedCareer;
+    //$("#career_choice_img").attr("src", selectedCareer.img); // TODO: CSS to a normal size
+
+    // update specialization information
+    this.data.available.specializations = [];
+    for (const specData of Object.values(selectedCareer.system.specializations)) {
+      const specItem = await fromUuid(specData.source);
+      if (specItem) {
+        this.data.available.specializations.push(specItem);
+      } else {
+        CONFIG.logger.debug(`Unable to find specialization with UUID ${specData.source}`);
+      }
+    }
+    // TODO: this is currently cleared by the render which occurs
+    await this.render(true);
+  }
+
+  /**
+   * @param {string} itemUuid - The originating click event
+   * @param {HTMLElement} itemNameTarget - the capturing HTML element which defined a [data-action]
+  */
+  async selectSpecialization(itemUuid, itemNameTarget) {
+    const selectedSpecialization = await fromUuid(itemUuid);
+    if (!selectedSpecialization) {
+      ui.notifications.warn(`Unable to find career ${itemNameTarget}!`);
+      return;
+    }
+    $("#specialization_choice_desc").text(selectedSpecialization.system.description);
+    //$("#career_choice_img").attr("src", selectedSpecialization.img); // TODO: CSS to a normal size
+    this.data.selected.specialization = selectedSpecialization;
+    await this.showCharacterStatus();
+  }
+
+  async showCharacterStatus() {
+    // temporary: delete previous copies of the actor
+    const existingActor = game.actors.getName("temp actor");
+    if (existingActor) {
+      await existingActor.delete();
+    }
+
+    // temporary: create a new actor to add stuff to
+    const tempActor = await Actor.create(
+      {
+        name: "temp actor",
+        type: "character",
+        displaySheet: false,
+      },
+    );
+
+    // add items to the actor
+    const items = [];
+    for (const key of Object.keys(this.data.selected)) {
+      if (key !== 'background' && this.data.selected[key]?.uuid) {
+        items.push(this.data.selected[key]);
+      } else if (key === 'background') {
+        for (const backKey of Object.keys(this.data.selected.background)) {
+          if (this.data.selected.background[backKey]?.uuid) {
+            items.push(this.data.selected.background[backKey]);
+          }
+        }
+      }
+    }
+    console.log(items)
+    const total = 100;
+    const available = 100;
+
+    await tempActor.createEmbeddedDocuments("Item", items);
+    if (this.data.selected.species?.uuid) {
+      await tempActor.update({
+        "system.experience": {
+          total: total,
+          available: available,
+        }
+      });
+      // XP log from species is on the actor sheet drop handler, so we need to manually fire it
+      await xpLogEarn(
+        tempActor,
+        total,
+        total,
+        total,
+        game.i18n.format("SWFFG.GrantXPSpecies", {species: this.data.selected.species.name})
+      );
+    }
+
+    // TODO: add bonus stuff
   }
 }

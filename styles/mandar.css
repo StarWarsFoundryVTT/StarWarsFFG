@@ -4530,3 +4530,27 @@ img {
 .starwarsffg.wizard .background-container  .background-content {
   flex: 1;
 }
+
+.starwarsffg.wizard, .starwarsffg {
+  /* Colors */
+  --ss-primary-color: #302831;
+  --ss-bg-color: #302831;
+  --ss-font-color: #4d4d4d;
+  --ss-border-color: #aa0f91;
+  --ss-border-radius: 4px;
+
+  /* Heights */
+  --ss-main-height: 40px;
+  --ss-search-height: 40px;
+  --ss-option-height: auto;
+  --ss-content-height: 300px;
+
+  /* Spacing */
+  --ss-spacing-l: 9px;
+  --ss-spacing-m: 7px;
+  --ss-spacing-s: 5px;
+
+  /* Other Properties */
+  --ss-border-radius: 4px;
+  --ss-animation-timing: 0.2s;
+}

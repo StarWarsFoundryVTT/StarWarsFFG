@@ -6,7 +6,7 @@
   <div class="form-group">
     <label>{{ localize "SWFFG.CharacterCreator.Wizard.Rules.Label" }}</label>
     <div class="form-fields" data-action="selectRules">
-      {{radioBoxes "rules" builtin.rules checked=data.rules localize=true}}
+      {{radioBoxes "rules" builtin.rules checked=data.selected.rules localize=true}}
     </div>
   </div>
 </section>

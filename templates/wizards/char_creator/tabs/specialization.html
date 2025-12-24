@@ -1,0 +1,27 @@
+<section
+  class='tab specialization {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='specialization'
+>
+  <div class="specialization-container">
+    <div class="specialization-content">
+      <label for="specialization">
+        <!-- TODO: localize -->
+        Choose a specialization:
+      </label>
+      <select class="" id="specialization_choice" name="specialization_choice">
+        <option data-placeholder="true"></option>
+        {{#each filteredSpecializations as |specialization|}}
+          <option value="{{specialization.uuid}}">{{specialization.name}}</option>
+        {{/each }}
+      </select>
+    </div>
+    <div class="specialization-content">
+      <label for="specialization_choice_desc">Specialization Info<!-- TODO: localize --></label>
+      <img id="specialization_choice_img" />
+      <div id="specialization_choice_desc" >
+
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,27 @@
+<section
+  class='tab species {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='species'
+>
+  <div class="species-container">
+    <div class="species-content">
+      <label for="species_choice">
+        <!-- TODO: localize -->
+        Choose a Species:
+      </label>
+      <select class="" id="species_choice" name="species_choice">
+        <option data-placeholder="true"></option>
+        {{#each availableSpecies as |species|}}
+          <option value="{{species.uuid}}">{{species.name}}</option>
+        {{/each }}
+      </select>
+    </div>
+    <div class="species-content">
+      <label for="species_choice_desc">Species Stats<!-- TODO: localize --></label>
+      <img id="species_choice_img" />
+      <div id="species_choice_desc" >
+
+      </div>
+    </div>
+  </div>
+</section>
