@@ -1,0 +1,16 @@
+<section
+  class='tab xp_spend {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='xp_spend'
+>
+  {{ availableXp }} / {{ totalXp }}xp
+  {{> "systems/starwarsffg/templates/wizards/char_creator/actor_preview.html" (
+    object data=data actor=tempActor skillsList=skillsList
+  )}}
+  <div class="actions">
+    <button>Purchase Specialization</button>
+    {{# if (eq data.selected.rules "fad") }}
+    <button>Purchase Force Power</button>
+    {{/if }}
+  </div>
+</section>

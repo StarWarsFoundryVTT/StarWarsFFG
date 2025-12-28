@@ -9,7 +9,7 @@ export class ActorFFG extends Actor {
 
   // returns true if EditMode is not enabled, false otherwise. sends warning notification if EditMode is enabled and sendWarn is true
   verifyEditModeIsNotEnabled(sendWarn = true){
-    const result = !this.flags.starwarsffg.config.enableEditMode;
+    const result = !this.getFlag("starwarsffg", "config.enableEditMode");
     if(sendWarn && !result) {
       ui.notifications.warn("Can't do this while EditMode is enabled");
     }

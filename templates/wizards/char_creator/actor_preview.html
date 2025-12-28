@@ -1,0 +1,82 @@
+<div class="actor_summary">
+  <div class="characteristics grid grid-6col">
+    {{#each actor.system.characteristics as |chrData chrName| }}
+      <div class="characteristic-item flex-group-center">
+        {{#if (gt chrData.value 0) }}
+        <i class="far fa-minus-square" data-action="characteristic-control" data-direction="decrease" data-target="{{ chrName }}" data-value="{{ chrData.value }}"></i>
+        {{/if }}
+        {{#if (lt chrData.value 6) }}
+        <i class="far fa-plus-square" data-action="characteristic-control" data-direction="increase" data-target="{{ chrName }}" data-value="{{ chrData.value }}"></i>
+        {{/if }}
+        <div class="characteristic">
+          <div class="characteristic-value">
+            <input type="number" value="{{ chrData.value }}" disabled="">
+          </div>
+        </div>
+        <div class="characteristic-label">
+          {{ chrName }}
+        </div>
+      </div>
+    {{/each }}
+  </div>
+  <div class="stats container flex-group-center">
+    <!-- wounds -->
+    <div class="attribute">
+      <div class="block-background">
+        <div class="block-title">
+          Wounds
+        </div>
+        <div class="block-attribute">
+          <div class="block-value">
+            <input type="number" value="{{ actor.system.stats.wounds.max }}" disabled="">
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- strain -->
+    <div class="attribute">
+      <div class="block-background">
+        <div class="block-title">
+          Strain
+        </div>
+        <div class="block-attribute">
+          <div class="block-value">
+            <input type="number" value="{{ actor.system.stats.strain.max }}" disabled="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="skills">
+    <div class="skills skills-container">
+      {{> "systems/starwarsffg/templates/wizards/char_creator/preview/skills.html" (
+        object skillsList=skillsList actor=actor
+      )}}
+    </div>
+  </div>
+
+  <div class="specializations">
+    <div class="specialization specialization-container">
+      {{ data.selected.specialization.name }}
+      <div class="specialization-summary" style="display: none;">
+        {{> "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html" (
+          object specialization=data.selected.specialization purchased=false
+        )}}
+      </div>
+    </div>
+    <div class="specialization">
+      {{#each data.purchases.xp.specializations as |purchase|}}
+        <div class="specialization-purchased specialization-container">
+          {{ purchase.name }}
+          <i class="fas fa-trash specialization-remove" data-name="{{ purchase.name }}"></i>
+          <div class="specialization-summary" style="display: none;">
+            {{> "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html" (
+              object specialization=purchase purchased=true
+            )}}
+          </div>
+        </div>
+      {{/each }}
+    </div>
+  </div>
+</div>

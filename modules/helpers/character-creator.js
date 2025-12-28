@@ -1,4 +1,5 @@
 import {xpLogEarn} from "./actor-helpers.js";
+import DiceHelpers from "./dice-helpers.js";
 
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
@@ -28,8 +29,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     specialization: {
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/specialization.html'
     },
-    xp_spending: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
+    xp_spend: {
+      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/xp_spend.html'
     },
     motivation: {
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
@@ -76,6 +77,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           id: "specialization",
           label: "specialization"
         },
+        {
+          id: "xp_spend",
+          label: "xp_spend"
+        },
       ],
       //labelPrefix: "MYSYS.tab", // Optional. Prepended to the id to generate a localization key
       initial: "rules", // Set the initial tab
@@ -94,8 +99,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       selectStartingBonus: this.selectStartingBonus,
     },
     position: {
-      width: 600,
-      height: 400,
+      width: 650,
+      height: 800,
     },
     classes: ["starwarsffg", "wizard", "charCreator"],
   }
@@ -132,6 +137,15 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       available: {
         specializations: [],
       },
+      purchases: {
+        xp: {
+          characteristics: [],
+          skills: [],
+          talents: [],
+          specializations: [],
+          forcePowers: [],
+        },
+      },
     };
     this.builtin = {
       rules: {
@@ -140,6 +154,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         eote: "Edge of the Empire",
       },
     };
+
+    // TODO: remove this block
+    this.data.selected.species = game.items.getName("species");
+    this.data.purchases.xp.specializations.push(game.items.getName("Advisor"));
+    this.showCharacterStatus() // TODO: remove
   }
 
   /** @override */
@@ -203,19 +222,21 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     });
     hookSelector.setSelected(this.data.selected.background.hook?.uuid, false);
-    const forceAttitudeSelector = new SlimSelect({
-      select: '#force_attitude',
-      cssClasses: {
-        option: "starwarsffg" // TODO: select a real class here
-      },
-      events: {
-        afterChange: async (newVal) => {
-          // could be >1 but we only allow one here
-          await this.selectForceAttitude(newVal[0].value, newVal[0].text);
+    if (this.data.selected.rules === "fad") {
+      const forceAttitudeSelector = new SlimSelect({
+        select: '#force_attitude',
+        cssClasses: {
+          option: "starwarsffg" // TODO: select a real class here
+        },
+        events: {
+          afterChange: async (newVal) => {
+            // could be >1 but we only allow one here
+            await this.selectForceAttitude(newVal[0].value, newVal[0].text);
+          }
         }
-      }
-    });
-    forceAttitudeSelector.setSelected(this.data.selected.background.forceAttitude?.uuid, false);
+      });
+      forceAttitudeSelector.setSelected(this.data.selected.background.forceAttitude?.uuid, false);
+    }
 
     // obligations
     const obligationSelector = new SlimSelect({
@@ -272,6 +293,35 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     });
     specializationSelector.setSelected(this.data.selected.specialization?.uuid, false);
+
+    $(".starwarsffg.wizard").find(".skill").each(async (_, elem) => {
+      const skillData = foundry.utils.deepClone(
+        this.tempActor.system
+      );
+      await DiceHelpers.addSkillDicePool({data: skillData}, elem);
+    });
+
+    // handled spending XP
+    $('[data-action="characteristic-control"]').on("click", async (event) => {
+      await this.handleCharacteristicModify(event);
+    });
+    $('[data-action="skill-control"]').on("click", async (event) => {
+      await this.handleSkillModify(event);
+    });
+    $(".skills-container").on("click", function() {
+      $(".skills-summary").toggle('slow');
+    });
+    $(".specialization-container").on("click", function(event) {
+      $(event.target).find(".specialization-summary").toggle('slow');
+    });
+    $(".specialization-remove").on("click", async (event) => {
+      await this.handleRemoveSpecialization(event);
+    });
+    $(".specialization-talent-purchase").on("change", async (event) => {
+      await this.handleSpecializationTalentPurchase(event);
+    });
+
+    console.log(this.data)
   }
 
 
@@ -323,13 +373,24 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return t;
     }));
      */
+    context.tempActor = this.tempActor;
+    if (this.tempActor) {
+      const skillData = foundry.utils.deepClone(
+        this.tempActor.system
+      );
+      context.skillsList = this.tempActor.sheet._createSkillColumns({data: skillData});
+
+    }
+    const xp = this.calcXp();
+    context.totalXp = xp.total;
+    context.availableXp = xp.available;
 
 
     return context;
   }
 
   /** @override */
-  async _preparePartContext(partId, context) {
+  async _preparePartContext(partId, context, options) {
     // TODO: add switch back
     switch (partId) {
       case 'rules':
@@ -672,16 +733,158 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           available: available,
         }
       });
-      // XP log from species is on the actor sheet drop handler, so we need to manually fire it
-      await xpLogEarn(
-        tempActor,
-        total,
-        total,
-        total,
-        game.i18n.format("SWFFG.GrantXPSpecies", {species: this.data.selected.species.name})
-      );
     }
 
+    // apply purchases
+    for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
+      const updateKey = `system.characteristics[${characteristicPurchase.key}].value`;
+      await tempActor.update({updateKey: [tempActor.system.characteristics[characteristicPurchase.key].value++]})
+    }
+    for (const skillPurchase of this.data.purchases.xp.skills) {
+      const updateKey = `system.skills[${skillPurchase.key}].rank`;
+      await tempActor.update({updateKey: [tempActor.system.skills[skillPurchase.key].rank++]})
+    }
+
+    this.tempActor = tempActor;
+    this.render();
+
     // TODO: add bonus stuff
+  }
+
+  async handleCharacteristicModify(event) {
+    // TODO: handle brawn/willpower modifications, which should mpact wounds/strain/soak
+    const target = $(event.currentTarget);
+    const characteristic = target.data("target");
+    const direction = target.data("direction");
+    const curValue = target.data("value");
+    let newValue;
+    if (direction === "increase") {
+      newValue = curValue + 1;
+      this.data.purchases.xp.characteristics.push({
+        key: characteristic,
+        value: newValue,
+        cost: newValue * 10,
+      });
+    } else {
+      const purchaseIndex = this.data.purchases.xp.characteristics.findIndex(function(purchase) {
+        return purchase.key === characteristic && purchase.value === curValue;
+      });
+      this.data.purchases.xp.characteristics.splice(purchaseIndex, 1);
+    }
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
+  }
+
+  async handleSkillModify(event) {
+    const target = $(event.currentTarget);
+    const skill = target.data("target");
+    const direction = target.data("direction");
+    const curValue = target.data("value");
+    let newValue;
+    if (direction === "increase") {
+      newValue = curValue + 1;
+      let cost;
+      if (this.tempActor.system.skills[skill].careerskill) {
+        cost = newValue * 5;
+      } else {
+        cost = (newValue * 5) + 5;
+      }
+      this.data.purchases.xp.skills.push({
+        key: skill,
+        value: newValue,
+        cost: cost,
+      });
+    } else {
+      const purchaseIndex = this.data.purchases.xp.skills.findIndex(function(purchase) {
+        return purchase.key === skill && purchase.value === curValue;
+      });
+      this.data.purchases.xp.skills.splice(purchaseIndex, 1);
+    }
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
+  }
+
+  // handleRemoveSpecialization
+  async handleRemoveSpecialization(event) {
+    const target = $(event.currentTarget);
+    const specName = target.data("name");
+    const talentPurchaseLength = this.data.purchases.xp.talents.length - 1;
+    const specializationPurchaseLength = this.data.purchases.xp.specializations.length - 1;
+
+    console.log(specName, talentPurchaseLength)
+
+    for (let index = talentPurchaseLength; index >= 0; index--) {
+      const talentPurchase = this.data.purchases.xp.talents[index];
+      if (talentPurchase.specName === specName) {
+        this.data.purchases.xp.talents.splice(index, 1);
+      }
+    }
+
+    for (let index = specializationPurchaseLength; index >= 0; index--) {
+      const specPurchase = this.data.purchases.xp.specializations[index];
+      if (specPurchase.name === specName) {
+        this.data.purchases.xp.specializations.splice(index, 1);
+      }
+    }
+
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
+  }
+
+  async handleSpecializationTalentPurchase(event) {
+    const target = $(event.currentTarget);
+    const talent = target.data("target");
+    const wasLearned = this.data.selected.specialization?.system?.talents[talent]?.islearned || false;
+    const cost = target.data("cost");
+    const specializationName = target.data("specialization");
+    console.log(target, talent, wasLearned, cost)
+
+    if (specializationName === this.data.selected.specialization?.name) {
+      this.data.selected.specialization.system.talents[talent].islearned = !wasLearned;
+    } else {
+      // TODO: update the (purchased) specialization
+      const parentSpec = this.data.purchases.xp.specializations.find(s => s.name === specializationName);
+      if (!parentSpec) {
+        ui.notifications.warn(`Unable to find specialization ${talent} is within! bailing`);
+        return;
+      }
+      parentSpec.system.talents[talent].islearned = !wasLearned;
+    }
+
+    if (!wasLearned) {
+      // TODO: support non-selected specialization purchases
+      this.data.purchases.xp.talents.push({
+        specName: specializationName,
+        key: talent,
+        value: true, // TODO: this is not currently used lol
+        cost: cost,
+      });
+    } else {
+      const purchaseIndex = this.data.purchases.xp.talents.findIndex(function(purchase) {
+        return purchase.key === talent && purchase.specName === specializationName;
+      });
+      this.data.purchases.xp.talents.splice(purchaseIndex, 1);
+    }
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
+  }
+
+  calcXp() {
+    let total = (this.data.selected.species?.system?.startingXP || 0) + this.data.grants.bonus.xp;
+    let available = total;
+    for (const purchase of this.data.purchases.xp.characteristics) {
+      available-= purchase.cost;
+    }
+    for (const purchase of this.data.purchases.xp.skills) {
+      available-= purchase.cost;
+    }
+    for (const purchase of this.data.purchases.xp.talents) {
+      available-= purchase.cost;
+    }
+
+    return {
+      total: total,
+      available: available,
+    }
   }
 }

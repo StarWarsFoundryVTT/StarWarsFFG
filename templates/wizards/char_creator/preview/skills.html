@@ -1,0 +1,54 @@
+<div class="skillsTablesGrid">
+  <div class="pure-g skillsGrid">
+    {{#each skillsList as |skillcolumn|}}
+    <div class="pure-u-12-24 skillTypeGrid skillColumnGrid">
+      {{#each skillcolumn as |skill|}} {{#if (eq skill.id "header")}}
+      <div class="skillTable" data-type="{{skill.type}}">
+        <div class="pure-g skillsHeader">
+          <div class="pure-u-12-24">
+            {{skill.label}}
+          </div>
+          <div class="pure-u-3-24 hover">
+            <span data-tooltip="{{localize 'SWFFG.SkillsCareerSkill'}}" data-tooltip-direction="DOWN">
+              {{localize "SWFFG.SkillsCS"}}
+            </span>
+          </div>
+          <div class="pure-u-3-24">{{localize "SWFFG.SkillsRank"}}</div>
+          <div class="pure-u-6-24">{{localize "SWFFG.SkillsRoll"}}</div>
+        </div>
+      </div>
+      {{else}}
+      <div class="skillTable" data-type="{{skill.type}}">
+        <div class="pure-g skill" data-custom="{{ skill.custom }}" data-ability="{{skill.name}}">
+          <div class="pure-u-12-24">
+            <div class="skill-name">
+              {{skill.label}}
+              {{#if (gt skill.rank 0) }}
+                <i class="far fa-minus-square" data-action="skill-control" data-direction="decrease" data-target="{{ skill.label }}" data-value="{{ skill.rank }}"></i>
+              {{/if }}
+              {{#if (lt skill.rank 2) }}
+                <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.label }}" data-value="{{ skill.rank }}"></i>
+              {{/if }}
+              {{#with (lookup ../../actor.system.characteristics [characteristic])~}}
+                <div class="skill-characteristic">
+                  ({{localize abrev}})
+                </div>
+              {{/with}}
+            </div>
+          </div>
+          <div class="pure-u-3-24 hover">
+            <input class="careerskill-toggle" type="checkbox" {{checked skill.careerskill}} disabled=""/>
+          </div>
+          <div class="pure-u-3-24">
+            <input class="careerskill-rank" value="{{skill.rank}}" disabled=""/>
+          </div>
+          <div class="pure-u-6-24">
+            <div class="roll-button dice-pool"></div>
+          </div>
+        </div>
+      </div>
+      {{/if}} {{/each}}
+    </div>
+    {{/each}}
+  </div>
+</div>

@@ -144,8 +144,7 @@ export default class DiceHelpers {
     return new RollBuilderFFG(data, dicePool, description, skillName, item, flavorText, sound).render(true);
   }
 
-  static async addSkillDicePool(obj, elem) {
-    const data = await obj.getData();
+  static async addSkillDicePool(data, elem) {
     const skillName = elem.dataset["ability"];
     if (data.data.skills[skillName]) {
       const skill = data.data.skills[skillName];

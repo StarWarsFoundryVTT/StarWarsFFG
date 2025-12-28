@@ -31,6 +31,9 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/combat/ffg-combat-tracker-footer.html",
       "systems/starwarsffg/templates/chat/parts/item/ffg-header.html",
       "systems/starwarsffg/templates/chat/parts/item/ffg-footer.html",
+      "systems/starwarsffg/templates/wizards/char_creator/actor_preview.html",
+      "systems/starwarsffg/templates/wizards/char_creator/preview/skills.html",
+      "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html",
     ];
     return foundry.applications.handlebars.loadTemplates(templatePaths);
   }
