@@ -34,6 +34,7 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/wizards/char_creator/actor_preview.html",
       "systems/starwarsffg/templates/wizards/char_creator/preview/skills.html",
       "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html",
+      "systems/starwarsffg/templates/wizards/char_creator/preview/forcepower.html",
     ];
     return foundry.applications.handlebars.loadTemplates(templatePaths);
   }

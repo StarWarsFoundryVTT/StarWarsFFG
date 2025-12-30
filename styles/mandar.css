@@ -4535,6 +4535,37 @@ img {
   cursor: pointer;
 }
 
+.starwarsffg.wizard .forcePower-summary .talent-cost {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  z-index: 10;
+  width: auto;
+  height: 0.75rem;
+  padding: 0 0.25rem 0 0.5rem;
+  font-size: 0.75rem;
+  background: #ddd;
+  color: rgba(0, 0, 0, 0.75);
+  --notchSize: 0.5rem;
+  -webkit-clip-path: polygon(0 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
+}
+.starwarsffg.wizard .forcePower-summary .talent-background .talent-header {
+  background-color: #0e4400;
+}
+
+.starwarsffg.wizard .forcePower-summary .talent-background .talent-header div input[type="text"] {
+  background-color: #1a8200;
+}
+
+.starwarsffg.wizard input:disabled{
+  border: none;
+}
+
+.starwarsffg.wizard .remove-purchase {
+  cursor: pointer;
+}
+
 .starwarsffg.wizard, .starwarsffg {
   /* Colors */
   --ss-primary-color: #302831;

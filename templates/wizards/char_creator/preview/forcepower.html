@@ -1,0 +1,119 @@
+<header class="sheet-header">
+  <div class="header-fields">
+    <div class="talent-background talent-block">
+      <div class="talent-header">
+        <div></div>
+        <div class="required_fr">
+          {{localize 'SWFFG.ForcePowerRequiredFR'}} {{forcePower.system.required_force_rating}}
+        </div><br><br>
+        <div>{{localize 'SWFFG.ForceBasicPower'}}</div>
+      </div>
+      <div class="talent-body">
+        <div class="popout-editor" data-target="data.description" data-label="{{forcePower.name}} {{localize 'SWFFG.ForceBasicPower'}}">
+          <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
+          {{{ffgDiceSymbols forcePower.system.description}}}
+        </div>
+      </div>
+      <div class="talent-actions"></div>
+      <div class="talent-cost">{{ localize "SWFFG.Cost"}} {{forcePower.system.base_cost}}</div>
+    </div>
+  </div>
+</header>
+<div class="talent-grid">
+  {{#each forcePower.system.upgrades as |upgrade key|}}
+  <div class="talent-block talent-upgrade talent-{{#if upgrade.size}}{{upgrade.size}}{{else}}single{{/if}} {{#if upgrade.visible}}{{else}}talent-hidden{{/if}} force-power" id="{{key}}" data-cost="{{upgrade.cost}}" data-base-item-name="{{../forcePower.name}}">
+    <div class="talent-background">
+      <div class="talent-header">
+        <div><input type="checkbox" class="forcePower-talent-purchase" name="data.upgrades.{{key}}.islearned" data-dtype="Boolean" {{#if upgrade.islearned }}checked{{else}} {{/if}} data-action="forcePower-control" data-target="{{key}}" data-learned="{{ upgrade.islearned }}" data-cost="{{ upgrade.cost }}" data-forcepower="{{ ../forcePower.name }}"></div>
+        <div class="talent-name" data-name="{{upgrade.name}}">{{upgrade.name}}</div>
+      </div>
+      <div class="talent-body">
+        <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-label="{{upgrade.name}}">
+            <div class="popout-editor-button"></div>
+            {{{ upgrade.description }}}
+          </div>
+        <input class="talent-hidden" name="data.upgrades.{{key}}.size" type="text" value="{{upgrade.size}}" data-dtype="String" />
+        <input class="talent-hidden" name="data.upgrades.{{key}}.visible" type="text" value="{{upgrade.visible}}" data-dtype="Boolean" />
+      </div>
+    </div>
+    <div class="talent-cost">{{ localize "SWFFG.Cost"}} {{upgrade.cost}}</div>
+    <div class="talent-modifiers">
+      <a class="talent-action" data-itemid="{{key}}"></a>
+      <a class="talent-action" data-itemid="{{key}}"></a>
+    </div>
+    <div class="talent-actions {{#if upgrade.canCombine}}talent-canCombine{{/if}} {{#if upgrade.canSplit}}talent-canSplit{{/if}}">
+    </div>
+    <div class="talent-connections">
+      {{#iff upgrade.size '==' "single"}}
+      <div class="talent-connection-point-top">
+        <div class="{{#if upgrade.links-top-1}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="1">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-1" type="text" value="{{upgrade.links-top-1}}" data-dtype="Boolean" />
+        </div>
+      </div>
+      {{/iff}} {{#iff upgrade.size '==' "double"}}
+      <div class="talent-connection-point-top">
+        <div class="{{#if upgrade.links-top-1}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="1">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-1" type="text" value="{{upgrade.links-top-1}}" data-dtype="Boolean" />
+        </div>
+        <div class="{{#if upgrade.links-top-2}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="2">
+
+          <div class="talent-connector-up"><</div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-2" type="text" value="{{upgrade.links-top-2}}" data-dtype="Boolean" />
+        </div>
+      </div>
+      {{/iff}} {{#iff upgrade.size '==' "triple"}}
+      <div class="talent-connection-point-top">
+        <div class="{{#if upgrade.links-top-1}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="1">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-1" type="text" value="{{upgrade.links-top-1}}" data-dtype="Boolean" />
+        </div>
+        <div class="{{#if upgrade.links-top-2}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="2">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-2" type="text" value="{{upgrade.links-top-2}}" data-dtype="Boolean" />
+        </div>
+        <div class="{{#if upgrade.links-top-3}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="3">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-3" type="text" value="{{upgrade.links-top-3}}" data-dtype="Boolean" />
+        </div>
+      </div>
+      {{/iff}} {{#iff upgrade.size '==' "full"}}
+      <div class="talent-connection-point-top">
+        <div class="{{#if upgrade.links-top-1}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="1">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-1" type="text" value="{{upgrade.links-top-1}}" data-dtype="Boolean" />
+        </div>
+        <div class="{{#if upgrade.links-top-2}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="2">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-2" type="text" value="{{upgrade.links-top-2}}" data-dtype="Boolean" />
+        </div>
+        <div class="{{#if upgrade.links-top-3}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="3">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-3" type="text" value="{{upgrade.links-top-3}}" data-dtype="Boolean" />
+        </div>
+        <div class="{{#if upgrade.links-top-4}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="4">
+
+          <div class="talent-connector-up"></div>
+          <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-4" type="text" value="{{upgrade.links-top-4}}" data-dtype="Boolean" />
+        </div>
+      </div>
+      {{/iff}}
+
+      <div class="{{#if upgrade.links-right}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkRight}}talent-connection-point-right{{else}}talent-hidden{{/if}}" data-action="link-right" data-key="{{key}}">
+        <div class="talent-connector-side"></div>
+        <input class="talent-hidden" name="data.upgrades.{{key}}.links-right" type="text" value="{{upgrade.links-right}}" data-dtype="Boolean" />
+      </div>
+    </div>
+  </div>
+
+  {{/each}}
+</div>

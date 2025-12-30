@@ -2565,7 +2565,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
  * @param byKey
  * @returns {*}
  */
-function sortDataBy(data, byKey) {
+export function sortDataBy(data, byKey) {
  return data.sort((a, b) => {
     if (a[byKey] < b[byKey]) {
       return -1;
@@ -2583,7 +2583,7 @@ function sortDataBy(data, byKey) {
  * @param element
  * @returns {*}
  */
-function addIfNotExist(array, element) {
+export function addIfNotExist(array, element) {
   let index = array.indexOf(element);
   // Check if the object with the specified property value exists in the array
   if (index === -1) {

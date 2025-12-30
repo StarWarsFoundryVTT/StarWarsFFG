@@ -1,25 +1,3 @@
-<!--
-<header class="sheet-header">
-  <div class="header-fields">
-    <div class="talent-background talent-block">
-      <div class="talent-header">
-        <div></div>
-        <div class="talent-name">
-          <input name="name" type="text" value="{{specialization.name}}" disabled="" />
-        </div>
-      </div>
-      <div class="talent-body">
-        <div>
-          {{{ specialization.system.enrichedDescription }}}
-        </div>
-      </div>
-      <div class="talent-actions"></div>
-    </div>
-  </div>
-</header>
--->
-
-{{!-- Sheet Body --}}
 <div class="talent-grid specialization-grid {{#if data.isEditing}}{{else}}talent-disable-edit{{/if}}">
   {{#each specialization.system.talents as |talent key|}}
 
