@@ -2540,7 +2540,7 @@ export default class ImportHelpers {
         equipmentFolder = modFolder;
       }
       return equipmentFolder;
-    } else if (["Backgrounds", "Obligations"].includes(packName)) {
+    } else if (["Backgrounds", "Obligations", "Motivations"].includes(packName)) {
       // create or locate the top-level equipment folder
       let characterCreatorFolder = game.folders.find((f) => f.name === characterCreatorFolderName);
       if (!characterCreatorFolder) {

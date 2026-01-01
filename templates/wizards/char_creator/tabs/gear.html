@@ -1,0 +1,72 @@
+<section
+  class='tab gear {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='gear'
+>
+  <div class="form-group">
+    {{ availableCredits }} / {{ totalCredits }} CR
+    <table id="purchased_gear">
+      <thead><tr>
+        <td>Cancel</td>
+        <td>Name</td>
+        <td>Price</td>
+      </tr></thead>
+      <tbody>
+      {{#each data.purchases.credits as |purchase| }}
+      <tr>
+        <td><i class="fas fa-trash credit-refund" data-name="{{ purchase.item.name }}" data-tooltip="Cancel Purchase"></i></td>
+        <td><img src="{{ item.img }}"/>{{ purchase.item.name }}</td>
+        <td>{{ purchase.cost }}</td>
+      </tr>
+      {{/each }}
+      </tbody>
+    </table>
+    stuff goes here
+    <table id="buy_gear">
+      <thead>
+      <tr>
+        <td>Type</td> <!-- 0: all -->
+        <td>Buy</td>
+        <td>Name</td> <!-- 1: all -->
+        <td>Price</td> <!-- 2: weapon, armour, gear, attachment  -->
+        <td>DMG</td> <!-- 3: weapon only -->
+        <td>CR</td> <!-- 4: weapon only -->
+        <td>Rarity</td> <!-- 5: weapon, armour, gear, attachment -->
+        <td>ENC</td> <!-- 6: weapon, armour, gear -->
+        <td>HP</td> <!-- 7: weapon, armour, attachment -->
+        <td>Skill</td> <!-- 8: weapon only -->
+        <td>Range</td> <!-- 9: weapon only -->
+        <td>Qualities</td> <!-- 10: weapon, armour, gear, attachment -->
+        <td>DEF</td> <!-- 11: armour -->
+        <td>Soak</td> <!-- 12: armour -->
+        <td>Type</td> <!-- 13: attachment, mod -->
+      </tr>
+      </thead>
+      <tbody>
+        {{#each items as |item| }}
+        <tr>
+          <td>{{ item.type }}</td>
+          <td><i class="fa-solid fa-cart-shopping credit-spend" data-source="{{ item.uuid }}" data-type="{{ item.type }}" data-tooltip="Purchase"></i></td>
+          <td><img src="{{ item.img }}"/>{{ item.name }}<!-- TODO: add button to purchase, style image to max size--></td>
+          <td>{{ item.system.price.value }}</td>
+          <td>{{ item.system.damage.value }}</td>
+          <td>{{ item.system.crit.value}}</td>
+          <td>{{ item.system.rarity.value }}<!--TODO: include restricted flag?--></td>
+          <td>{{ item.system.encumbrance.value }}</td>
+          <td>{{ item.system.hardpoints.value }}</td>
+          <td>{{ item.system.skill.value }}</td>
+          <td>{{ item.system.range.value }}</td>
+          <td>
+            {{#each item.system.itemmodifier as |quality| }}
+              <div class="item-pill hover-tooltip" data-tooltip="{{ quality.system.description }}">{{ quality.name }}</div>
+            {{/each }}
+          </td>
+          <td>{{ item.system.defence.value }}</td>
+          <td>{{ item.system.soak.value }}</td>
+          <td>{{ item.system.type }}</td>
+        </tr>
+        {{/each }}
+      </tbody>
+    </table>
+  </div>
+</section>

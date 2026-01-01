@@ -4396,7 +4396,7 @@ img {
   border-radius: 1rem;
 }
 
-.starwarsffg.item-card .properties .tag .hover-tooltip, .starwarsffg .item-display .item-properties .tag .hover-tooltip, .starwarsffg .specials .hover-tooltip, .starwarsffg .item-pill-hover {
+.starwarsffg .hover-tooltip, .starwarsffg .item-pill-hover {
   display: inline-block;
   margin: 0.1rem;
   border-bottom: 2px dotted black;
@@ -4531,7 +4531,7 @@ img {
   flex: 1;
 }
 
-.starwarsffg.wizard .xp_spend .actor_summary .fa-minus-square, .starwarsffg.wizard .xp_spend .actor_summary .fa-plus-square {
+.starwarsffg.wizard .xp_spend .actor_summary .fa-minus-square, .starwarsffg.wizard .xp_spend .actor_summary .fa-plus-square, .starwarsffg.wizard .credit-spend  {
   cursor: pointer;
 }
 
@@ -4562,8 +4562,13 @@ img {
   border: none;
 }
 
-.starwarsffg.wizard .remove-purchase {
+.starwarsffg.wizard .remove-purchase, .starwarsffg.wizard .credit-refund {
   cursor: pointer;
+}
+
+.starwarsffg.wizard table img {
+  max-width: 64px;
+  max-height: 64px;
 }
 
 .starwarsffg.wizard, .starwarsffg {

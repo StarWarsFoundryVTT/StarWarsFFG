@@ -922,6 +922,11 @@
       "type": "duty",
       "magnitude": 0,
       "description": ""
+    },
+    "motivation": {
+      "templates": ["core", "basic"],
+      "type": "ambition",
+      "description": ""
     }
   }
 }

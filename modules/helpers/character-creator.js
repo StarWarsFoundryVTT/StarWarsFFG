@@ -37,7 +37,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
     },
     gear: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
+      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/gear.html'
     },
     review: {
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
@@ -82,6 +82,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           id: "xp_spend",
           label: "xp_spend"
         },
+        {
+          id: "gear",
+          label: "gear"
+        },
       ],
       //labelPrefix: "MYSYS.tab", // Optional. Prepended to the id to generate a localization key
       initial: "rules", // Set the initial tab
@@ -100,7 +104,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       selectStartingBonus: this.selectStartingBonus,
     },
     position: {
-      width: 720,
+      width: 800,
       height: 800,
     },
     classes: ["starwarsffg", "wizard", "charCreator"],
@@ -146,6 +150,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           specializations: [],
           forcePowers: [],
         },
+        credits: [],
       },
     };
     this.builtin = {
@@ -165,6 +170,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.data.purchases.xp.forcePowers.push({
       item: game.items.getName("Alter"),
       cost: 10,
+    });
+    this.data.grants.bonus.credits = 2500;
+    this.data.purchases.credits.push({
+      item: game.items.getName("weapon"),
+      cost: 300,
     });
     this.showCharacterStatus() // TODO: remove
   }
@@ -345,7 +355,141 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       await this.handleForcePowerTalentPurchase(event);
     });
 
+    // credit spending
+    const gearTable = new DataTable(
+      "#buy_gear",
+      {
+        columnDefs: [{
+          visible: false,
+          targets: 0,
+        }],
+        layout: {
+          topStart: {
+            buttons: [
+              {
+                text: 'Weapons',
+                action: async (e, dt, node, config) => {
+                  dt.column(3).visible(true);
+                  dt.column(4).visible(true);
+                  dt.column(5).visible(true);
+                  dt.column(6).visible(true);
+                  dt.column(7).visible(true);
+                  dt.column(8).visible(true);
+                  dt.column(9).visible(true);
+                  dt.column(10).visible(true);
+                  dt.column(11).visible(true);
+                  dt.column(12).visible(false);
+                  dt.column(13).visible(false);
+                  dt.column(14).visible(false);
+                  dt.column(0).search('weapon').draw(false);
+                  await this.activateShopListeners();
+                },
+                className: 'weapon',
+              },
+              {
+                text: 'Armor',
+                action: async (e, dt, node, config) => {
+                  dt.column(3).visible(true);
+                  dt.column(4).visible(false);
+                  dt.column(5).visible(false);
+                  dt.column(6).visible(true);
+                  dt.column(7).visible(true);
+                  dt.column(8).visible(true);
+                  dt.column(9).visible(false);
+                  dt.column(10).visible(false);
+                  dt.column(11).visible(true);
+                  dt.column(12).visible(true);
+                  dt.column(13).visible(true);
+                  dt.column(14).visible(false);
+                  dt.column(0).search('armour').draw(false);
+                  await this.activateShopListeners();
+                },
+                className: 'armor',
+              },
+              {
+                text: 'Gear',
+                action: async (e, dt, node, config) => {
+                  dt.column(3).visible(true);
+                  dt.column(4).visible(false);
+                  dt.column(5).visible(false);
+                  dt.column(6).visible(true);
+                  dt.column(7).visible(true);
+                  dt.column(8).visible(false);
+                  dt.column(9).visible(false);
+                  dt.column(10).visible(false);
+                  dt.column(11).visible(true);
+                  dt.column(12).visible(false);
+                  dt.column(13).visible(false);
+                  dt.column(14).visible(false);
+                  dt.column(0).search('gear').draw(false);
+                  await this.activateShopListeners();
+                },
+                className: 'gear',
+              },
+              {
+                text: 'Attachment',
+                action: async (e, dt, node, config) => {
+                  dt.column(3).visible(true);
+                  dt.column(4).visible(false);
+                  dt.column(5).visible(false);
+                  dt.column(6).visible(true);
+                  dt.column(7).visible(false);
+                  dt.column(8).visible(true);
+                  dt.column(9).visible(false);
+                  dt.column(10).visible(false);
+                  dt.column(11).visible(true);
+                  dt.column(12).visible(false);
+                  dt.column(13).visible(false);
+                  dt.column(14).visible(true);
+                  dt.column(0).search('itemattachment').draw(false);
+                  await this.activateShopListeners();
+                },
+                className: 'attachment',
+              },
+              {
+                text: 'Mod',
+                action: async (e, dt, node, config) => {
+                  dt.column(3).visible(false);
+                  dt.column(4).visible(false);
+                  dt.column(5).visible(false);
+                  dt.column(6).visible(false);
+                  dt.column(7).visible(false);
+                  dt.column(8).visible(false);
+                  dt.column(9).visible(false);
+                  dt.column(10).visible(false);
+                  dt.column(11).visible(false);
+                  dt.column(12).visible(false);
+                  dt.column(13).visible(false);
+                  dt.column(14).visible(true);
+                  dt.column(0).search('itemmod').draw(false);
+                  await this.activateShopListeners();
+                },
+                className: 'mod',
+              },
+            ],
+          }
+        }
+      }
+    );
+    gearTable.buttons('.weapon').trigger();
+
+    /**
+     * new DataTable('#myTable', {
+     *     columnDefs: [{ visible: false, targets: 0 }]
+     * });
+     *
+     */
+
     console.log(this.data)
+  }
+
+  async activateShopListeners() {
+    $(".credit-spend").on("click", async (event) => {
+      await this.handleCreditPurchase(event);
+    });
+    $(".credit-refund").on("click", async (event) => {
+      await this.handleCreditRefund(event);
+    });
   }
 
 
@@ -409,6 +553,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     context.totalXp = xp.total;
     context.availableXp = xp.available;
 
+    // items for the shop
+    context.items = await this.getItems();
+
+    const credits = this.calcCredits();
+    context.totalCredits = credits.total;
+    context.availableCredits = credits.available;
 
     return context;
   }
@@ -425,6 +575,31 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
     context.tab = context.tabs[partId];
     return context;
+  }
+
+  async getItems() {
+     //const sources = game.settings.get("starwarsffg", "specializationCompendiums").split(",");
+    const sources = [
+      "world.oggdudeweapons",
+      "world.oggdudearmor",
+      "world.oggdudegear",
+      "world.oggdudearmorattachments", "world.oggdudegenericattachments", "world.oggdudeweaponattachments",
+      "world.oggdudearmormods", "world.oggdudegenericmods", "world.oggdudeweaponmods"
+    ];
+    const preparedItems = [];
+
+    for (const source of sources) {
+      const pack = game.packs.get(source);
+      if (!pack) {
+        continue;
+      }
+      const items = await pack.getDocuments();
+      for (const item of items) {
+        preparedItems.push(item);
+      }
+    }
+
+    return preparedItems;
   }
 
   async getBackgrounds() {
@@ -746,15 +921,15 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }
     console.log(items)
-    const total = 100;
-    const available = 100;
+    const totalXp = 100;
+    const availableXp = 100;
 
     await tempActor.createEmbeddedDocuments("Item", items);
     if (this.data.selected.species?.uuid) {
       await tempActor.update({
         "system.experience": {
-          total: total,
-          available: available,
+          total: totalXp,
+          available: availableXp,
         }
       });
     }
@@ -1104,6 +1279,52 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
     for (const purchase of this.data.purchases.xp.forcePowers) {
       available-= purchase.cost;
+    }
+
+    return {
+      total: total,
+      available: available,
+    }
+  }
+
+  async handleCreditPurchase(event) {
+    const target = $(event.currentTarget);
+    const itemUuid = target.data("source");
+    console.log("click")
+    const purchasedItem = await fromUuid(itemUuid);
+    if (!purchasedItem) {
+      return ui.notifications.warn("Unable to locate purchased item, sorry!");
+    }
+    this.data.purchases.credits.push({
+      item: purchasedItem,
+      cost: purchasedItem.system.price.value,
+    });
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
+  }
+
+  async handleCreditRefund(event) {
+    const target = $(event.currentTarget);
+    const itemName = target.data("name");
+    const purchasedItemLength = this.data.purchases.credits.length - 1;
+
+    for (let index = purchasedItemLength; index >= 0; --index) {
+      const itemPurchase = this.data.purchases.credits[index];
+      if (itemPurchase.item.name === itemName) {
+        this.data.purchases.credits.splice(index, 1);
+      }
+    }
+
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
+  }
+
+  calcCredits() {
+    const total = this.data.grants.bonus.credits;
+    let available = total;
+
+    for (const purchase of this.data.purchases.credits) {
+      available -= purchase.cost;
     }
 
     return {
