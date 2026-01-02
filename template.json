@@ -613,7 +613,8 @@
       "species",
       "weapon",
       "background",
-      "obligation"
+      "obligation",
+      "motivation"
     ],
     "templates": {
       "core": {

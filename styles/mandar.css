@@ -4571,6 +4571,12 @@ img {
   max-height: 64px;
 }
 
+.starwarsffg .item-type-highlight {
+  background: rgba(73, 12, 11, 0.85);
+  color:#ffffff;
+  flex-grow: 1;
+}
+
 .starwarsffg.wizard, .starwarsffg {
   /* Colors */
   --ss-primary-color: #302831;

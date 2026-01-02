@@ -13,6 +13,7 @@ import Vehicles from "./importers/vehicles.js";
 import Weapons from "./importers/weapons.js";
 import Backgrounds from "./importers/backgrounds.js";
 import Obligation from "./importers/obligation.js";
+import Motivations from "./importers/motivations.js";
 
 export default class OggDude {
   static Import = {
@@ -31,6 +32,7 @@ export default class OggDude {
     Weapon: Weapons.Import,
     Backgrounds: Backgrounds.Import,
     Obligations: Obligation.Import,
+    Motivations: Motivations.Import,
   };
   static Meta = {
     Armor: Armor.getMetaData(),
@@ -42,6 +44,7 @@ export default class OggDude {
     Gear: Gear.getMetaData(),
     ItemAttachments: ItemAttachments.getMetaData(),
     ItemModifiers: ItemDescriptors.getMetaData(),
+    Motivations: Motivations.getMetaData(),
     Obligations: Obligation.getMetaData(),
     SignatureAbilities: SignatureAbilities.getMetaData(),
     Skills: Skills.getMetaData(),

@@ -301,6 +301,11 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         data.data.obligationTypes = CONFIG.FFG.characterCreator.obligationTypes;
         break;
       }
+      case "motivation": {
+        this.position.height = 545;
+        data.data.motivationTypes = CONFIG.FFG.characterCreator.motivationTypes;
+        break;
+      }
       break;
       default:
     }

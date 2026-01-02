@@ -43,6 +43,37 @@ const obligationTypes = {
   },
 };
 
+const motivationTypes = {
+  "Ambition": {
+    "value": "ambition",
+    "label": "SWFFG.CharacterCreator.Motivation.ambition",
+  },
+  "Belief": {
+    "value": "belief",
+    "label": "SWFFG.CharacterCreator.Motivation.belief",
+  },
+  "Cause": {
+    "value": "cause",
+    "label": "SWFFG.CharacterCreator.Motivation.cause",
+  },
+  "Connection": {
+    "value": "connection",
+    "label": "SWFFG.CharacterCreator.Motivation.connection",
+  },
+  "Faith": {
+    "value": "faith",
+    "label": "SWFFG.CharacterCreator.Motivation.faith",
+  },
+  "Quest": {
+    "value": "quest",
+    "label": "SWFFG.CharacterCreator.Motivation.quest",
+  },
+  "Relationship": {
+    "value": "relationship",
+    "label": "SWFFG.CharacterCreator.Motivation.relationship",
+  },
+};
+
 const startingBonusesRadio = {
   "aor": {
     "5xp": "SWFFG.CharacterCreator.startingBonus.aor.5xp",
@@ -70,5 +101,6 @@ export const characterCreator = {
   rules: rules,
   backgroundTypes: backgroundTypes,
   obligationTypes: obligationTypes,
+  motivationTypes: motivationTypes,
   startingBonusesRadio: startingBonusesRadio,
 };
