@@ -62,6 +62,8 @@ export default class Obligation {
           let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", data.flags.starwarsffg.ffgimportid);
           if (imgPath) {
             data.img = await ImportHelpers.importImage(imgPath.name, zip, pack);
+          } else {
+            data.img = "icons/svg/book.svg";
           }
 
           await ImportHelpers.addImportItemToCompendium("Item", data, pack);
