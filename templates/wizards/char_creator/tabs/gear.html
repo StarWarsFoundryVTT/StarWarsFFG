@@ -25,20 +25,20 @@
       <thead>
       <tr>
         <td>Type</td> <!-- 0: all -->
-        <td>Buy</td>
-        <td>Name</td> <!-- 1: all -->
-        <td>Price</td> <!-- 2: weapon, armour, gear, attachment  -->
-        <td>DMG</td> <!-- 3: weapon only -->
-        <td>CR</td> <!-- 4: weapon only -->
-        <td>Rarity</td> <!-- 5: weapon, armour, gear, attachment -->
-        <td>ENC</td> <!-- 6: weapon, armour, gear -->
-        <td>HP</td> <!-- 7: weapon, armour, attachment -->
-        <td>Skill</td> <!-- 8: weapon only -->
-        <td>Range</td> <!-- 9: weapon only -->
-        <td>Qualities</td> <!-- 10: weapon, armour, gear, attachment -->
-        <td>DEF</td> <!-- 11: armour -->
-        <td>Soak</td> <!-- 12: armour -->
-        <td>Type</td> <!-- 13: attachment, mod -->
+        <td>Buy</td> <!-- 1: all -->
+        <td>Name</td> <!-- 2: all -->
+        <td>Price</td> <!-- 3: weapon, armour, gear, attachment  -->
+        <td>DMG</td> <!-- 4: weapon only -->
+        <td>CR</td> <!-- 5: weapon only -->
+        <td>Rarity</td> <!-- 6: weapon, armour, gear, attachment -->
+        <td>ENC</td> <!-- 7: weapon, armour, gear -->
+        <td>HP</td> <!-- 8: weapon, armour, attachment -->
+        <td>Skill</td> <!-- 9: weapon only -->
+        <td>Range</td> <!-- 10: weapon only -->
+        <td>Qualities</td> <!-- 11: weapon, armour, gear, attachment -->
+        <td>DEF</td> <!-- 12: armour -->
+        <td>Soak</td> <!-- 13: armour -->
+        <td>Type</td> <!-- 14: attachment, mod -->
       </tr>
       </thead>
       <tbody>
@@ -46,7 +46,7 @@
         <tr>
           <td>{{ item.type }}</td>
           <td><i class="fa-solid fa-cart-shopping credit-spend" data-source="{{ item.uuid }}" data-type="{{ item.type }}" data-tooltip="Purchase"></i></td>
-          <td><img src="{{ item.img }}"/>{{ item.name }}<!-- TODO: add button to purchase, style image to max size--></td>
+          <td><img src="{{ item.img }}"/>{{ item.name }}</td>
           <td>{{ item.system.price.value }}</td>
           <td>{{ item.system.damage.value }}</td>
           <td>{{ item.system.crit.value}}</td>

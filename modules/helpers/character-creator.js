@@ -104,7 +104,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       selectStartingBonus: this.selectStartingBonus,
     },
     position: {
-      width: 800,
+      width: 950,
       height: 800,
     },
     classes: ["starwarsffg", "wizard", "charCreator"],
@@ -271,18 +271,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     obligationSelector.setSelected(this.data.selected.background.obligation?.uuid, false);
 
     // species
-    const speciesSelector = new SlimSelect({
-      select: '#species_choice',
-      cssClasses: {
-        option: "starwarsffg" // TODO: select a real class here
-      },
-      events: {
-        afterChange: async (selection) => {
-          await this.selectSpecies(selection[0].value, selection[0].text);
-        }
-      }
+    const speciesTable = new DataTable(
+      "#species",
+    );
+    $(".species-spend").on("click", async (event) => {
+      await this.handleSpeciesSelect(event);
     });
-    speciesSelector.setSelected(this.data.selected.species?.uuid, false);
 
     // careers
     const careerSelector = new SlimSelect({
@@ -559,6 +553,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const credits = this.calcCredits();
     context.totalCredits = credits.total;
     context.availableCredits = credits.available;
+    context.FFGCONFIG = CONFIG.FFG;
 
     return context;
   }
@@ -831,19 +826,15 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
   }
 
-  /**
-   * @param {string} itemUuid - The originating click event
-   * @param {HTMLElement} itemNameTarget - the capturing HTML element which defined a [data-action]
-  */
-  async selectSpecies(itemUuid, itemNameTarget) {
-    const selectedSpecies = await fromUuid(itemUuid);
+  async handleSpeciesSelect(event) {
+    const target = $(event.currentTarget);
+    const selectedSpecies = await fromUuid(target.data("source"));
     if (!selectedSpecies) {
       ui.notifications.warn(`Unable to find species ${itemNameTarget}!`);
       return;
     }
-    $("#species_choice_desc").text(selectedSpecies.system.description);
-    $("#species_choice_img").attr("src", selectedSpecies.img);
     this.data.selected.species = selectedSpecies;
+    await this.showCharacterStatus();
   }
 
   /**

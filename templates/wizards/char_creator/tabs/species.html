@@ -4,24 +4,51 @@
   data-tab='species'
 >
   <div class="species-container">
-    <div class="species-content">
-      <label for="species_choice">
-        <!-- TODO: localize -->
-        Choose a Species:
-      </label>
-      <select class="" id="species_choice" name="species_choice">
-        <option data-placeholder="true"></option>
-        {{#each availableSpecies as |species|}}
-          <option value="{{species.uuid}}">{{species.name}}</option>
+    <table id="species">
+      <thead><tr>
+        <td>Select</td>
+        <td>Name</td>
+        {{#each FFGCONFIG.characteristics as |attr attrName| }}
+          <td>
+            {{#with (lookup ../FFGCONFIG.characteristics [attrName])~}}
+              {{localize abrev}}
+            {{/with}}
+          </td>
         {{/each }}
-      </select>
-    </div>
-    <div class="species-content">
-      <label for="species_choice_desc">Species Stats<!-- TODO: localize --></label>
-      <img id="species_choice_img" />
-      <div id="species_choice_desc" >
-
-      </div>
-    </div>
+        <td>WT</td>
+        <td>ST</td>
+        <td>XP</td>
+        <td>Talents</td>
+        <td>Abilities</td>
+      </tr></thead>
+      <tbody>
+      {{#each availableSpecies as |species| }}
+      <tr>
+        <td><i class="fa-solid fa-cart-shopping species-spend" data-source="{{ species.uuid }}" data-tooltip="Select Species"></i></td>
+        <td><img src="{{ species.img }}"/>{{ species.name }}</td>
+        {{#each ../FFGCONFIG.characteristics as |attr attrName| }}
+          <td>
+            {{#with (lookup species.system.attributes [attrName])~}}
+              {{ value }}
+            {{/with}}
+          </td>
+        {{/each }}
+        <td>{{ species.system.attributes.Wounds.value }}</td>
+        <td>{{ species.system.attributes.Strain.value }}</td>
+        <td>{{ species.system.startingXP }}</td>
+        <td>
+          {{#each species.system.talents as |talent talentId| }}
+            <div class="item-pill hover-tooltip" data-tooltip="{{ talent.system.description }}">{{ talent.name }}</div>
+          {{/each }}
+        </td>
+        <td>
+          {{#each species.system.abilities as |ability abilityId| }}
+          <div class="item-pill hover-tooltip" data-tooltip="{{ ability.system.description }}">{{ ability.name }}</div>
+          {{/each }}
+        </td>
+      </tr>
+      {{/each }}
+      </tbody>
+    </table>
   </div>
 </section>
