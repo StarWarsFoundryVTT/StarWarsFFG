@@ -1013,6 +1013,7 @@ img {
 }
 
 .starwarsffg .talent-grid .talent-body {
+  height: calc(100% - 2rem);
   overflow-y: hidden;
 }
 
@@ -3603,6 +3604,10 @@ img {
   width: 100%;
   min-height: 2rem;
   position: relative;
+}
+
+.starwarsffg.sheet.item .item-sheet-specialization .talent-grid .popout-editor {
+  height: calc(100% - 1.3rem);
 }
 
 .starwarsffg .item-sheet-specialization {
