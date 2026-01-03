@@ -1152,6 +1152,9 @@ img {
   line-height: 1rem;
   font-size: 0.9rem;
   text-align: right;
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 
 .starwarsffg .talent-background .talent-header div.talent-name span {
