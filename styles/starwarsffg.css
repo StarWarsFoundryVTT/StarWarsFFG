@@ -830,6 +830,9 @@ img {
   flex-wrap: wrap;
   position: relative;
 }
+.starwarsffg .talent-grid .talent-body {
+  height: calc(100% - 2rem);
+}
 .starwarsffg .talent-upgrade {
   position: relative;
   margin: 10px 10px 5px 10px;
@@ -2415,6 +2418,9 @@ img {
   width: 100%;
   min-height: 2rem;
   position: relative;
+}
+.starwarsffg.sheet.item .item-sheet-specialization .talent-grid .popout-editor {
+  height: calc(100% - 1.3rem);
 }
 .starwarsffg .item-sheet-specialization {
   min-width: 700px;
