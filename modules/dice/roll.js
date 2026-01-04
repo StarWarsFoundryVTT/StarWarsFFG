@@ -230,14 +230,14 @@ export class RollFFG extends Roll {
         rolls: d.results.map((r) => {
           return {
             result: d.getResultLabel(r),
-            classes: [cls.name.toLowerCase(), isFFG, "d" + d.faces, r.rerolled ? "rerolled" : null, r.exploded ? "exploded" : null, r.discarded ? "discarded" : null, r.result === 1 ? "min" : null, r.result === d.faces ? "max" : null].filterJoin(" "),
+            classes: [cls.name.toLowerCase(), isFFG, "d" + d.faces, r.rerolled ? "rerolled" : null, r.exploded ? "exploded" : null, r.discarded ? "discarded" : null].filterJoin(" "),
           };
         }),
       };
     });
     parts.addedResults = this.addedResults;
     parts.flavorText = this.flavorText;
-    return await foundry.applications.handlebars.renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { parts });
+    return foundry.applications.handlebars.renderTemplate(this.constructor.TOOLTIP_TEMPLATE, { parts });
   }
 
   /* -------------------------------------------- */
@@ -337,7 +337,7 @@ export class RollFFG extends Roll {
     const v12ChatData = migrateDataToSystem(chatData);
 
     // Render the roll display template
-    return await foundry.applications.handlebars.renderTemplate(chatOptions.template, v12ChatData);
+    return foundry.applications.handlebars.renderTemplate(chatOptions.template, v12ChatData);
   }
 
   /* -------------------------------------------- */

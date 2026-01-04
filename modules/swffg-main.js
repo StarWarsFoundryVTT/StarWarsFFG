@@ -1731,12 +1731,8 @@ export function itemPillHover(event) {
   let embeddedContent = `
     <section class="chat-msg-tooltip content">
       <section class="header">
-        <div class="top">
-          <img class="tooltip-img" src="${itemImage}"/>
-          <div class="name name-stacked">
-            <span class="title">${itemName}</span>
-          </div>
-        </div>
+        <img class="tooltip-img" src="${itemImage}"/>
+        <div class="title">${itemName}</div>
       </section>
       <section class="description">
         ${desc}

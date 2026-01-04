@@ -1477,6 +1477,11 @@ img {
   float: left;
 }
 
+.inline-roll .dice-rolls .roll.isFFG {
+  width: 24px;
+  float: left;
+}
+
 .starwarsffg .dice-result .roll-success {
   color: darkgreen;
 }
@@ -1503,6 +1508,8 @@ img {
 }
 
 .starwarsffg .item-display h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 18px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1513,8 +1520,13 @@ img {
   width: 70%;
 }
 
+.starwarsffg .item-display h5 {
+  font-size: 16px;
+}
+
 .starwarsffg .item-display .item-miss {
   text-align: center;
+  font-size: 20px;
   font-style: italic;
   color: darkred;
 }
@@ -2496,11 +2508,22 @@ img {
 .chat-msg-tooltip .tooltip-img {
   max-width: 32px;
   max-height: 32px;
+  justify-self: left;
 }
 
 .chat-msg-tooltip .header {
   color: #781428;
   font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.25rem;
+}
+
+.chat-msg-tooltip .header .title {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
 }
 
 .chat-msg-tooltip .ranks {
