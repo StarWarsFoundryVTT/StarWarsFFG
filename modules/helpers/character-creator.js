@@ -34,7 +34,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/xp_spend.html'
     },
     motivation: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
+      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/motivation.html'
     },
     gear: {
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/gear.html'
@@ -85,6 +85,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         {
           id: "gear",
           label: "gear"
+        },
+        {
+          id: "motivation",
+          label: "motivation"
         },
       ],
       //labelPrefix: "MYSYS.tab", // Optional. Prepended to the id to generate a localization key
@@ -138,6 +142,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         career: null,
         specialization: null,
         rules: 'fad',
+        motivations: [],
       },
       available: {
         specializations: [],
@@ -467,6 +472,20 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     );
     gearTable.buttons('.weapon').trigger();
 
+    // motivations
+    const purchasedMotivationTable = new DataTable(
+      "#selected_motivations",
+    );
+    const availableMotivationTable = new DataTable(
+      "#motivations",
+    );
+    $(".motivation-spend").on("click", async (event) => {
+      await this.handleMotivationPurchase(event);
+    });
+    $(".motivation-refund").on("click", async (event) => {
+      await this.handleMotivationRefund(event);
+    });
+
     /**
      * new DataTable('#myTable', {
      *     columnDefs: [{ visible: false, targets: 0 }]
@@ -523,7 +542,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     context.availableDuties = obligations.duties;
     context.availableSpecies = await this.getAvailableSpecies();
     context.availableCareers = await this.getAvailableCareers();
-    context.filteredSpecializations = await this.getFilteredSpecializations(); // TODO: add dynamic career
+    context.filteredSpecializations = await this.getFilteredSpecializations();
+    context.availableMotivations = await this.getAvailableMotivations();
     /*
     this.terms = await Promise.all(this.terms.map(async (t) => {
       if (t instanceof RollFFG) {
@@ -712,6 +732,24 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.render(true);
   }
 
+  async getAvailableMotivations() {
+    const sources = ["world.oggdudemotivations"];
+    const motivations = [];
+
+    for (const source of sources) {
+      const pack = game.packs.get(source);
+      if (!pack) {
+        continue;
+      }
+      const items = await pack.getDocuments();
+      for (const item of items) {
+        motivations.push(item);
+      }
+    }
+
+    return motivations;
+  }
+
   /**
    * @param {PointerEvent} event - The originating click event
    * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
@@ -880,6 +918,22 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     //$("#career_choice_img").attr("src", selectedSpecialization.img); // TODO: CSS to a normal size
     this.data.selected.specialization = selectedSpecialization;
     await this.showCharacterStatus();
+  }
+
+  async selectMotivation(selections) {
+    console.log(selections)
+    if (selections.length === 0) {
+      $("#motivation_choice_desc").text("");
+    } else {
+      const newestSelection = selections[selections.length - 1];
+      const selectedItem = await fromUuid(newestSelection.value);
+      if (!selectedItem) {
+        ui.notifications.warn(`Unable to find motivation ${itemNametarget}!`);
+        return;
+      }
+      $("#motivation_choice_desc").text(selectedItem.system.description);
+      this.data.selected.motivations = selectedItem;
+    }
   }
 
   async showCharacterStatus() {
@@ -1322,5 +1376,36 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       total: total,
       available: available,
     }
+  }
+
+  async handleMotivationPurchase(event) {
+    const target = $(event.currentTarget);
+    const itemUuid = target.data("source");
+    console.log("click")
+    const purchasedItem = await fromUuid(itemUuid);
+    if (!purchasedItem) {
+      return ui.notifications.warn("Unable to locate motivation item, sorry!");
+    }
+    this.data.selected.motivations.push({
+      item: purchasedItem,
+    });
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
+  }
+
+  async handleMotivationRefund(event) {
+    const target = $(event.currentTarget);
+    const itemName = target.data("name");
+    const purchasedItemLength = this.data.selected.motivations.length - 1;
+
+    for (let index = purchasedItemLength; index >= 0; --index) {
+      const itemPurchase = this.data.selected.motivations[index];
+      if (itemPurchase.item.name === itemName) {
+        this.data.selected.motivations.splice(index, 1);
+      }
+    }
+
+    // rebuild the actor to apply the changes
+    await this.showCharacterStatus();
   }
 }

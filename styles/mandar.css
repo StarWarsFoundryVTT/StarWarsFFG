@@ -4531,7 +4531,7 @@ img {
   flex: 1;
 }
 
-.starwarsffg.wizard .xp_spend .actor_summary .fa-minus-square, .starwarsffg.wizard .xp_spend .actor_summary .fa-plus-square, .starwarsffg.wizard .credit-spend, .starwarsffg.wizard .species-spend  {
+.starwarsffg.wizard .xp_spend .actor_summary .fa-minus-square, .starwarsffg.wizard .xp_spend .actor_summary .fa-plus-square, .starwarsffg.wizard .credit-spend, .starwarsffg.wizard .species-spend, .starwarsffg.wizard .motivation-spend  {
   cursor: pointer;
 }
 
@@ -4562,7 +4562,7 @@ img {
   border: none;
 }
 
-.starwarsffg.wizard .remove-purchase, .starwarsffg.wizard .credit-refund {
+.starwarsffg.wizard .remove-purchase, .starwarsffg.wizard .credit-refund, .starwarsffg.wizard .motivation-refund {
   cursor: pointer;
 }
 
@@ -4575,28 +4575,4 @@ img {
   background: rgba(73, 12, 11, 0.85);
   color:#ffffff;
   flex-grow: 1;
-}
-
-.starwarsffg.wizard, .starwarsffg {
-  /* Colors */
-  --ss-primary-color: #302831;
-  --ss-bg-color: #302831;
-  --ss-font-color: #4d4d4d;
-  --ss-border-color: #aa0f91;
-  --ss-border-radius: 4px;
-
-  /* Heights */
-  --ss-main-height: 40px;
-  --ss-search-height: 40px;
-  --ss-option-height: auto;
-  --ss-content-height: 300px;
-
-  /* Spacing */
-  --ss-spacing-l: 9px;
-  --ss-spacing-m: 7px;
-  --ss-spacing-s: 5px;
-
-  /* Other Properties */
-  --ss-border-radius: 4px;
-  --ss-animation-timing: 0.2s;
 }

@@ -1,0 +1,45 @@
+<section
+  class='tab motivation {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='motivation'
+>
+  <div class="motivation-container">
+    <table id="selected_motivations">
+      <thead><tr>
+        <td>Select</td>
+        <td>Type</td>
+        <td>Name</td>
+        <td>Description</td>
+      </tr></thead>
+      <tbody>
+      {{#each data.selected.motivations as |motivation|}}
+        <tr>
+          <td><i class="fas fa-trash motivation-refund" data-name="{{ motivation.item.name }}" data-tooltip="Select Motivation"></i></td>
+          <td>{{ motivation.item.system.type }}</td>
+          <td>{{ motivation.item.name }}</td>
+          <td>{{ motivation.item.system.description }}</td>
+        </tr>
+      {{/each }}
+      </tbody>
+    </table>
+
+    <table id="motivations">
+      <thead><tr>
+        <td>Select</td>
+        <td>Type</td>
+        <td>Name</td>
+        <td>Description</td>
+      </tr></thead>
+      <tbody>
+      {{#each availableMotivations as |motivation|}}
+        <tr>
+          <td><i class="fa-solid fa-cart-shopping motivation-spend" data-source="{{ motivation.uuid }}" data-tooltip="Select Motivation"></i></td>
+          <td>{{ motivation.system.type }}</td>
+          <td>{{ motivation.name }}</td>
+          <td>{{ motivation.system.description }}</td>
+        </tr>
+      {{/each }}
+      </tbody>
+    </table>
+  </div>
+</section>
