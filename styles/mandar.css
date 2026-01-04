@@ -1477,6 +1477,11 @@ img {
   float: left;
 }
 
+.inline-roll .dice-rolls .roll.isFFG {
+  width: 24px;
+  float: left;
+}
+
 .starwarsffg .dice-result .roll-success {
   color: darkgreen;
 }
