@@ -40,7 +40,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/gear.html'
     },
     review: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/another_tab.html'
+      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/review.html'
     },
     //footer: { template: 'systems/starwarsffg/templates/wizards/char_creator/footer.html' },
   }
@@ -89,6 +89,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         {
           id: "motivation",
           label: "motivation"
+        },
+        {
+          id: "review",
+          label: "review"
         },
       ],
       //labelPrefix: "MYSYS.tab", // Optional. Prepended to the id to generate a localization key
@@ -484,6 +488,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     });
     $(".motivation-refund").on("click", async (event) => {
       await this.handleMotivationRefund(event);
+    });
+
+    // create the actor!
+    $(".create-actor").on("click", async (event) => {
+      await this.createActor(event);
     });
 
     /**
@@ -944,6 +953,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // temporary: create a new actor to add stuff to
+    console.log("creating temp actor...")
     const tempActor = await Actor.create(
       {
         name: "temp actor",
@@ -951,6 +961,31 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         displaySheet: false,
       },
     );
+
+    console.log("updating XP for temp actor")
+    const totalXp = 100;
+    const availableXp = 100;
+    if (this.data.selected.species?.uuid) {
+      await tempActor.update({
+        "system.experience": {
+          total: totalXp,
+          available: availableXp,
+        }
+      });
+    }
+
+    console.log("applying XP purchases")
+    // apply purchases
+    for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
+      const updateKey = `system.characteristics.${characteristicPurchase.key}.value`;
+      const newValue = tempActor.system.characteristics[characteristicPurchase.key].value + 1;
+      await tempActor.update({[updateKey]: newValue})
+    }
+    for (const skillPurchase of this.data.purchases.xp.skills) {
+      const updateKey = `system.skills.${skillPurchase.key}.rank`;
+      const newValue = tempActor.system.skills[skillPurchase.key].rank + 1;
+      await tempActor.update({[updateKey]: newValue})
+    }
 
     // add items to the actor
     const items = [];
@@ -965,31 +1000,13 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         }
       }
     }
+    console.log("adding the following items to the temp actor")
     console.log(items)
-    const totalXp = 100;
-    const availableXp = 100;
-
     await tempActor.createEmbeddedDocuments("Item", items);
-    if (this.data.selected.species?.uuid) {
-      await tempActor.update({
-        "system.experience": {
-          total: totalXp,
-          available: availableXp,
-        }
-      });
-    }
 
-    // apply purchases
-    for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
-      const updateKey = `system.characteristics[${characteristicPurchase.key}].value`;
-      await tempActor.update({updateKey: [tempActor.system.characteristics[characteristicPurchase.key].value++]})
-    }
-    for (const skillPurchase of this.data.purchases.xp.skills) {
-      const updateKey = `system.skills[${skillPurchase.key}].rank`;
-      await tempActor.update({updateKey: [tempActor.system.skills[skillPurchase.key].rank++]})
-    }
-
+    console.log("assigning to local actor record")
     this.tempActor = tempActor;
+    console.log("re-rendering")
     this.render();
 
     // TODO: add bonus stuff
@@ -1000,7 +1017,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const target = $(event.currentTarget);
     const characteristic = target.data("target");
     const direction = target.data("direction");
-    const curValue = target.data("value");
+    const curValue = parseInt(target.data("value"));
     let newValue;
     if (direction === "increase") {
       newValue = curValue + 1;
@@ -1407,5 +1424,86 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
     // rebuild the actor to apply the changes
     await this.showCharacterStatus();
+  }
+
+  async createActor() {
+    console.log("creating!")
+    const actorName = `${game.user.name}'s new actor!`;
+    // TODO: validate state before creating actor
+    // temporary: delete previous copies of the actor
+    const existingActor = game.actors.getName(actorName);
+    if (existingActor) {
+      console.log("deleting previous copy...")
+      await existingActor.delete();
+    }
+
+    // temporary: create a new actor to add stuff to
+    const newActor = await Actor.create(
+      {
+        name: actorName,
+        type: "character",
+        displaySheet: false,
+      },
+    );
+
+    const xp = await this.calcXp();
+    const totalXp = xp.total;
+    const availableXp = xp.available;
+
+    // grant XP
+    await newActor.update({
+      "system.experience": {
+        total: totalXp,
+        available: availableXp,
+      }
+    });
+
+    // apply XP purchases
+    for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
+      const updateKey = `system.characteristics.${characteristicPurchase.key}.value`;
+      const newValue = newActor.system.characteristics[characteristicPurchase.key].value + 1;
+      await newActor.update({[updateKey]: newValue})
+    }
+    for (const skillPurchase of this.data.purchases.xp.skills) {
+      const updateKey = `system.skills.${skillPurchase.key}.rank`;
+      const newValue = newActor.system.skills[skillPurchase.key].rank + 1;
+      await newActor.update({[updateKey]: newValue})
+    }
+
+    // add actor items to the actor
+    const items = [];
+    for (const key of Object.keys(this.data.selected)) {
+      if (key !== 'background' && this.data.selected[key]?.uuid) {
+        items.push(this.data.selected[key]);
+      } else if (key === 'background') {
+        for (const backKey of Object.keys(this.data.selected.background)) {
+          if (this.data.selected.background[backKey]?.uuid) {
+            items.push(this.data.selected.background[backKey]);
+          }
+        }
+      }
+    }
+    console.log("Granting the following items:")
+    console.log(items)
+    await newActor.createEmbeddedDocuments("Item", items);
+
+    // apply credit purchases
+    const credits = await this.calcCredits();
+    const creditItems = [];
+    for (const creditItem of this.data.purchases.credits) {
+      creditItems.push(creditItem.item);
+    }
+    console.log("processed the following credit purchases:")
+    console.log(creditItems)
+
+    await newActor.createEmbeddedDocuments("Item", creditItems);
+    await newActor.update({
+      "system.stats.credits": {
+        value: credits.available,
+      }
+    });
+
+    // apply XP spend log items
+
   }
 }

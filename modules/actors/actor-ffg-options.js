@@ -48,7 +48,7 @@ export default class ActorOptions {
                 this.options[control.id].value = value;
               }
 
-              const editMode = updateObject['flags.starwarsffg.config.enableEditMode'];
+              const editMode = this.data.object.getFlag("starwarsffg", "config.enableEditMode");
               if (editMode) {
                 // suspend AEs
                 this.suspended = await ActorHelpers.beginEditMode(this.data.object);

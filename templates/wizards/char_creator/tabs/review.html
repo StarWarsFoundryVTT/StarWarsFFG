@@ -1,0 +1,51 @@
+<section
+  class='tab review {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='review'
+>
+  <div class="review-container">
+    <div class="review-item background">
+      <b>Backgrounds</b><br>
+      {{ data.selected.background.culture.name }}, {{ data.selected.background.hook.name }}, {{ data.selected.background.forceAttitude.name }}
+    </div>
+    <div class="review-item startingBonus">
+      <b>Starting Values</b><br>
+      {{ totalXp }} XP, {{ totalCredits }} credits,
+      {{ data.grants.bonus.morality }}, {{ data.grants.bonus.duty }}, {{ data.grants.bonus.obligation }} morality/duty/obligation
+    </div>
+    <div class="review-item obligation">
+      <b>Obligations</b><br>
+      {{ data.selected.obligation.name }}: {{ data.selected.obligation.system.description }}
+    </div>
+    <div class="review-item species">
+      <b>Species</b><br>
+      {{ data.selected.species.name }}
+    </div>
+    <div class="review-item career">
+      <b>Career / Specialization</b><br>
+      {{ data.selected.career.name }}: {{ data.selected.specialization.name }}
+    </div>
+    <div class="review-item purchase-xp">
+      <b>XP Purchases</b><br>
+      {{#each data.purchases.xp.characteristics as |attr| }}
+        {{ attr.key }} -> {{ attr.value }}
+      {{/each }}
+    </div>
+    <div class="review-item purchase-credits">
+      <b>Credit Purchases</b><br>
+      {{#each data.purchases.credits as |purchase|}}
+        {{ purchase.item.name }} ({{ purchase.item.type }}) -> {{ purchase.cost }}
+      {{/each }}
+    </div>
+    <div class="review-item motivation">
+      <b>Motivations</b><br>
+      {{#each data.selected.motivations as |motivation|}}
+        {{ motivation.item.name }}: {{ motivation.item.system.description }}
+      {{/each }}
+    </div>
+  </div>
+  <button class="create-actor" type="button">
+    Confirm Creation
+    <i class="fas fa-check-square"></i>
+  </button>
+</section>

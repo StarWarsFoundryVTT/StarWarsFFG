@@ -264,8 +264,6 @@ export class ItemFFG extends ItemBaseFFG {
   async prepareData() {
     await super.prepareData();
 
-    CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
-
     // Get the Item's data
     const item = this;
     const actor = this.actor ? this.actor : {};
