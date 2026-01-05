@@ -30,6 +30,11 @@ export default class Motivations {
         await ImportHelpers.asyncForEach(items, async (item) => {
           let data = ImportHelpers.prepareBaseObject(item, "motivation");
 
+          if (item.Description.split('\n').length > 0 && item.Description.includes('[H4]')) {
+            // remove the item name in the description....
+            item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+          }
+
           data.data = {
             type: CONFIG.FFG.characterCreator.motivationTypes[item.Motivation].value,
             description: item.Description,
