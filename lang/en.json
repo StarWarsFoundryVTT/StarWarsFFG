@@ -853,7 +853,7 @@
   "SWFFG.Status.Defeated": "Defeated",
   "SWFFG.Roll.ForcePowers.NoDice": "Cannot roll, all Force Dice are committed!",
   "SWFFG.CareerSkills.None": "(none)",
-  "SWFFG.Spec.CareerSkills": "Career Skills",
+  "SWFFG.Spec.CareerSkills": "Bonus Career Skills",
   "SWFFG.Spec.Universal": "Universal",
   "SWFFG.Meta.Sources.AddSource.Title": "Add Source",
   "SWFFG.Meta.Sources.AddSource.Submit": "Submit",
