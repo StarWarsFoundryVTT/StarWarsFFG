@@ -44,7 +44,7 @@ export default class ActorOptions {
                   value = control.value;
                 }
 
-                updateObject[control.name] = value;
+                updateObject[`flags.starwarsffg.${control.name}`] = value;
                 this.options[control.id].value = value;
               }
 
