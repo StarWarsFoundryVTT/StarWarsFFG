@@ -1185,7 +1185,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               const jObj = $(obj);
               const bookName = jObj.find("#book").val();
               const pageNum = jObj.find("#page").val();
-              await this.object.update({"system.metadata.sources": [`${bookName} pg. ${pageNum}`]});
+              await this.object.update({"system.metadata.sources": [...this.object.system.metadata.sources, `${bookName} pg. ${pageNum}`]});
             }
           },
           cancel: {
