@@ -15,7 +15,9 @@
     </div>
     <div class="review-item obligation">
       <b>Obligations</b><br>
-      {{ data.selected.obligation.name }}: {{ data.selected.obligation.system.description }}
+      {{#each data.selected.obligation as |obl|}}
+        {{ obl.name }}: {{ obl.system.description }}<br>
+      {{/each }}
     </div>
     <div class="review-item species">
       <b>Species</b><br>

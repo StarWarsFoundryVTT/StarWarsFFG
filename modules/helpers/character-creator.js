@@ -141,7 +141,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           forceAttitude: null,
         },
         startingBonus: null,
-        obligation: null,
+        obligation: [],
         species: null,
         career: null,
         specialization: null,
@@ -160,6 +160,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           forcePowers: [],
         },
         credits: [],
+      },
+      initial: { // TODO: retrieve from settings
+        duty: 20,        // decreased with starting bonuses
+        obligation: 20,    // increased with starting bonuses
+        morality: 50,  // increased or decreased with starting bonuses
       },
     };
     this.builtin = {
@@ -277,7 +282,13 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         }
       }
     });
-    obligationSelector.setSelected(this.data.selected.background.obligation?.uuid, false);
+    if (this.data.selected.obligation.length > 0) {
+      const selectedUuids = [];
+      for (const obligation of this.data.selected.obligation) {
+        selectedUuids.push(obligation.uuid);
+      }
+      obligationSelector.setSelected(selectedUuids, false);
+    }
 
     // species
     const speciesTable = new DataTable(
@@ -584,6 +595,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     context.availableCredits = credits.available;
     context.FFGCONFIG = CONFIG.FFG;
 
+    const obligation = await this.calcObligation();
+    context.startingObligation = obligation.starting;
+    context.availableObligation = obligation.available;
+    context.obligationKey = obligation.key;
+
     return context;
   }
 
@@ -859,6 +875,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   */
   async selectObligation(selections) {
     console.log(selections)
+    const selectedItems = [];
+
     if (selections.length === 0) {
       $("#obligation_choice_desc").text("");
     } else {
@@ -869,8 +887,21 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         return;
       }
       $("#obligation_choice_desc").text(selectedItem.system.description);
-      this.data.selected.obligation = selectedItem;
+
+      for (const obligation of selections) {
+        const selectedItem = await fromUuid(obligation.value);
+        selectedItems.push(selectedItem);
+      }
     }
+    this.data.selected.obligation = selectedItems;
+  }
+
+  /** @override */
+  async _onClickTab(event) {
+    if ($(event.target).data("tab") === "review") {
+      await this.render(true);
+    }
+    await super._onClickTab(event);
   }
 
   async handleSpeciesSelect(event) {
@@ -1346,6 +1377,56 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     return {
       total: total,
       available: available,
+    }
+  }
+
+  async calcObligation() {
+    let starting = 0;
+    let available = 0;
+    let key;
+
+    if (this.data.selected.rules === "fad") {
+      starting = this.data.initial.morality;
+      available = starting;
+      key = "morality";
+      if (this.data.selected.startingBonus === "21_plus_morality") {
+        available += 21;
+      } else if (this.data.selected.startingBonus === "21_minus_morality") {
+        available -= 21;
+      }
+    } else if (this.data.selected.rules === "eote") {
+      starting = this.data.initial.obligation;
+      available = starting;
+      key = "obligation";
+      if (this.data.selected.startingBonus === "5xp") {
+        available += 5;
+      } else if (this.data.selected.startingBonus === "10xp") {
+        available += 10;
+      } else if (this.data.selected.startingBonus === "1k_credits") {
+        available += 5;
+      } else if (this.data.selected.startingBonus === "2k_credits") {
+        available += 10;
+      }
+      // TODO: further adjust count based on selected obligations
+    } else if (this.data.selected.rules === "aor") {
+      starting = this.data.initial.duty;
+      available = starting;
+      key = "duty";
+      if (this.data.selected.startingBonus === "5xp") {
+        available -= 5;
+      } else if (this.data.selected.startingBonus === "10xp") {
+        available -= 10;
+      } else if (this.data.selected.startingBonus === "1k_credits") {
+        available -= 5;
+      } else if (this.data.selected.startingBonus === "2k_credits") {
+        available -= 10;
+      }
+      // TODO: further adjust count based on selected obligations
+    }
+    return {
+      starting: starting,
+      available: available,
+      key: key,
     }
   }
 
