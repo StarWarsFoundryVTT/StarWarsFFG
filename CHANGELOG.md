@@ -32,6 +32,7 @@
   * Fix for editing specialization top description not showing current text ([#2041](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2041))
   * the OggDude Dataset importer now uses custom default images if images are not provided ([#2044](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2044))
   * Removed the `Stat All` modifier option, which was a union of `Stat`, `Weapon Stat`, `Vehicle Stat`, and `Amor Stat` ([#1986](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1986))
+  * Fix universal specializations costing more XP when purchased via drag-and-drop ([2057](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2057))
 
 `1.910`
 * Fixes:
