@@ -1407,7 +1407,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       } else if (this.data.selected.startingBonus === "2k_credits") {
         available += 10;
       }
-      // TODO: further adjust count based on selected obligations
     } else if (this.data.selected.rules === "aor") {
       starting = this.data.initial.duty;
       available = starting;
@@ -1421,7 +1420,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       } else if (this.data.selected.startingBonus === "2k_credits") {
         available -= 10;
       }
-      // TODO: further adjust count based on selected obligations
     }
     return {
       starting: starting,
@@ -1586,5 +1584,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
     // apply XP spend log items
 
+    // apply obligation values
+    const obligation = await this.calcObligation();
+    await newActor.update({"system": {
+      [obligation.key]: {
+        value: obligation.available,
+      }
+    }});
   }
 }
