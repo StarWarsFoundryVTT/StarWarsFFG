@@ -1609,12 +1609,10 @@ Hooks.once("diceSoNiceReady", (dice3d) => {
   });
 });
 
-Hooks.on("pauseGame", () => {
-  if (game.data.paused) {
-    const pausedImage = game.settings.get("starwarsffg", "ui-pausedImage");
-    if (pausedImage) {
-      $("#pause img").css("content", `url(${pausedImage})`);
-    }
+Hooks.on("renderGamePause", function (_application, element, _context, _options) {
+  const pausedImage = game.settings.get("starwarsffg", "ui-pausedImage");
+  if (pausedImage) {
+    element.querySelector("img").src = pausedImage;
   }
 });
 
