@@ -171,7 +171,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         }
         const specializationCount = (this.actor.items.filter(i => i.type === "specialization") || []).length;
         cost = (specializationCount + 1) * 10;
-        if (!inCareer) {
+        if (!inCareer && !itemData.system.universal) {
           cost += 10;
         }
         return cost;
