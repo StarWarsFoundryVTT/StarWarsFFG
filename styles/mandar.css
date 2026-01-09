@@ -4566,6 +4566,10 @@ img {
   cursor: pointer;
 }
 
+.starwarsffg.wizard .career-spend  {
+  cursor: pointer;
+}
+
 .starwarsffg.wizard .forcePower-summary .talent-cost {
   bottom: 0;
   left: 0;

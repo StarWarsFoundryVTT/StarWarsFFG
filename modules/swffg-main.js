@@ -830,6 +830,21 @@ Hooks.once("init", async function () {
     }
   });
 
+  Handlebars.registerHelper("keylen", function (obj) {
+    try {
+      return Object.keys(obj).length;
+    } catch (e) {
+      return 0;
+    }
+  });
+
+  Handlebars.registerHelper("in", function (value, array) {
+    if (!Array.isArray(array)) {
+      return false;
+    }
+    return array.indexOf(value) >= 0;
+  });
+
   Handlebars.registerHelper("ffgDiceSymbols", function (text) {
     //return PopoutEditor.renderDiceImages(text);
     CONFIG.logger.warn("This function is no longer needed and should not be called. Please notify the devs if you see this message.");

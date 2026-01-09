@@ -27,9 +27,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     career: {
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/career.html'
     },
-    specialization: {
-      template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/specialization.html'
-    },
     xp_spend: {
       template: 'systems/starwarsffg/templates/wizards/char_creator/tabs/xp_spend.html'
     },
@@ -73,10 +70,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         {
           id: "career",
           label: "career"
-        },
-        {
-          id: "specialization",
-          label: "specialization"
         },
         {
           id: "xp_spend",
@@ -144,7 +137,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         obligation: [],
         species: null,
         career: null,
+        careerCareerSkillRanks: [],
         specialization: null,
+        specializationCareerSkillRanks: [],
         rules: 'fad',
         motivations: [],
       },
@@ -190,6 +185,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       item: game.items.getName("weapon"),
       cost: 300,
     });
+
+    // TODO: remove
+    this.data.selected.careerCareerSkillRanks.push("Astrogation");
+    this.data.selected.specializationCareerSkillRanks.push("Cool");
+
     this.showCharacterStatus() // TODO: remove
   }
 
@@ -299,32 +299,27 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     });
 
     // careers
-    const careerSelector = new SlimSelect({
-      select: '#career_choice',
-      cssClasses: {
-        option: "starwarsffg" // TODO: select a real class here
-      },
-      events: {
-        afterChange: async (selection) => {
-          await this.selectCareer(selection[0].value, selection[0].text);
-        }
-      }
+    const careersTable = new DataTable(
+      "#careers",
+    );
+    $(".career-spend").on("click", async (event) => {
+      await this.handleCareerSelect(event);
     });
-    careerSelector.setSelected(this.data.selected.career?.uuid, false);
+    $(".career_tab-container").on("click", function(event) {
+      $(event.target).find(".career-selection").toggle('slow');
+      $(event.target).find(".career_skill_rank_select-selection").toggle('slow');
+      $(event.target).find(".specialization-selection").toggle('slow');
+      $(event.target).find(".specialization_skill_rank_select-selection").toggle('slow');
+    });
+    $(".career-select-container").click();
 
     // specializations
-    const specializationSelector = new SlimSelect({
-      select: '#specialization_choice',
-      cssClasses: {
-        option: "starwarsffg" // TODO: select a real class here
-      },
-      events: {
-        afterChange: async (selection) => {
-          await this.selectSpecialization(selection[0].value, selection[0].text);
-        }
-      }
+    const specializationsTable = new DataTable(
+      "#specializations",
+    );
+    $(".specialization-spend").on("click", async (event) => {
+      await this.handleSpecializationSelect(event);
     });
-    specializationSelector.setSelected(this.data.selected.specialization?.uuid, false);
 
     $(".starwarsffg.wizard").find(".skill").each(async (_, elem) => {
       const skillData = foundry.utils.deepClone(
@@ -599,6 +594,53 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     context.startingObligation = obligation.starting;
     context.availableObligation = obligation.available;
     context.obligationKey = obligation.key;
+
+    // include career / specialization career ranks
+    const combinedPurchases = {};
+    const careerPurchases = {};
+    const specializationPurchases = {};
+    for (const skillName of this.data.selected.careerCareerSkillRanks) {
+      // add to career purchases
+      if (!Object.keys(careerPurchases).includes(skillName)) {
+        careerPurchases[skillName] = 0;
+      }
+      careerPurchases[skillName]++;
+      // add to combined purchases
+      if (!Object.keys(combinedPurchases).includes(skillName)) {
+        combinedPurchases[skillName] = 0;
+      }
+      combinedPurchases[skillName]++;
+    }
+    for (const skillName of this.data.selected.specializationCareerSkillRanks) {
+      // add to career purchases
+      if (!Object.keys(specializationPurchases).includes(skillName)) {
+        specializationPurchases[skillName] = 0;
+      }
+      specializationPurchases[skillName]++;
+      // add to combined purchases
+      if (!Object.keys(combinedPurchases).includes(skillName)) {
+        combinedPurchases[skillName] = 0;
+      }
+      combinedPurchases[skillName]++;
+    }
+    context.careerSkillPurchases = careerPurchases;
+    context.specializationSkillPurchases = specializationPurchases;
+    context.combinedPurchases = combinedPurchases;
+
+    const careerKeys = [];
+    const specializationKeys = [];
+    if (this.data.selected.career?.system?.careerSkills) {
+      for (const skillName of Object.values(this.data.selected.career.system.careerSkills)) {
+        careerKeys.push(skillName);
+      }
+    }
+    if (this.data.selected.specialization?.system?.careerSkills) {
+      for (const skillName of Object.values(this.data.selected.specialization.system.careerSkills)) {
+        specializationKeys.push(skillName);
+      }
+    }
+    context.careerKeys = careerKeys;
+    context.specializationKeys = specializationKeys;
 
     return context;
   }
@@ -908,30 +950,24 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const target = $(event.currentTarget);
     const selectedSpecies = await fromUuid(target.data("source"));
     if (!selectedSpecies) {
-      ui.notifications.warn(`Unable to find species ${itemNameTarget}!`);
-      return;
+      return ui.notifications.warn(`Unable to find species!`);
     }
     this.data.selected.species = selectedSpecies;
     await this.showCharacterStatus();
   }
 
-  /**
-   * @param {string} itemUuid - The originating click event
-   * @param {HTMLElement} itemNameTarget - the capturing HTML element which defined a [data-action]
-  */
-  async selectCareer(itemUuid, itemNameTarget) {
-    const selectedCareer = await fromUuid(itemUuid);
+  async handleCareerSelect(event) {
+    const target = $(event.currentTarget);
+    const selectedCareer = await fromUuid(target.data("source"));
     if (!selectedCareer) {
-      ui.notifications.warn(`Unable to find career ${itemNameTarget}!`);
-      return;
+      return ui.notifications.warn(`Unable to find career!`);
     }
-
-    $("#career_choice_desc").text(selectedCareer.system.description);
     this.data.selected.career = selectedCareer;
-    //$("#career_choice_img").attr("src", selectedCareer.img); // TODO: CSS to a normal size
+    this.data.selected.careerCareerSkillRanks = [];
 
     // update specialization information
     this.data.available.specializations = [];
+    this.data.selected.specializationCareerSkillRanks = [];
     for (const specData of Object.values(selectedCareer.system.specializations)) {
       const specItem = await fromUuid(specData.source);
       if (specItem) {
@@ -940,23 +976,18 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         CONFIG.logger.debug(`Unable to find specialization with UUID ${specData.source}`);
       }
     }
-    // TODO: this is currently cleared by the render which occurs
-    await this.render(true);
+
+    await this.showCharacterStatus();
   }
 
-  /**
-   * @param {string} itemUuid - The originating click event
-   * @param {HTMLElement} itemNameTarget - the capturing HTML element which defined a [data-action]
-  */
-  async selectSpecialization(itemUuid, itemNameTarget) {
-    const selectedSpecialization = await fromUuid(itemUuid);
+  async handleSpecializationSelect(event) {
+    const target = $(event.currentTarget);
+    const selectedSpecialization = await fromUuid(target.data("source"));
     if (!selectedSpecialization) {
-      ui.notifications.warn(`Unable to find career ${itemNameTarget}!`);
-      return;
+      return ui.notifications.warn(`Unable to find specialization!`);
     }
-    $("#specialization_choice_desc").text(selectedSpecialization.system.description);
-    //$("#career_choice_img").attr("src", selectedSpecialization.img); // TODO: CSS to a normal size
     this.data.selected.specialization = selectedSpecialization;
+    this.data.selected.specializationCareerSkillRanks = [];
     await this.showCharacterStatus();
   }
 
@@ -1041,6 +1072,18 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.render();
 
     // TODO: add bonus stuff
+
+    // apply career skill ranks from career and specialization
+    for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
+      const updateKey = `system.skills.${skillPurchase}.rank`;
+      const newValue = tempActor.system.skills[skillPurchase].rank + 1;
+      await tempActor.update({[updateKey]: newValue})
+    }
+    for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
+      const updateKey = `system.skills.${skillPurchase}.rank`;
+      const newValue = tempActor.system.skills[skillPurchase].rank + 1;
+      await tempActor.update({[updateKey]: newValue})
+    }
   }
 
   async handleCharacteristicModify(event) {
@@ -1072,25 +1115,46 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const skill = target.data("target");
     const direction = target.data("direction");
     const curValue = target.data("value");
+    const skillMode = target.data("mode");
     let newValue;
-    if (direction === "increase") {
-      newValue = curValue + 1;
-      let cost;
-      if (this.tempActor.system.skills[skill].careerskill) {
-        cost = newValue * 5;
+    if (skillMode === "career") {
+      if (direction === "increase") {
+        this.data.selected.careerCareerSkillRanks.push(skill);
       } else {
-        cost = (newValue * 5) + 5;
+        const purchaseIndex = this.data.selected.careerCareerSkillRanks.findIndex(function (purchase) {
+          return purchase === skill;
+        });
+        this.data.selected.careerCareerSkillRanks.splice(purchaseIndex, 1);
       }
-      this.data.purchases.xp.skills.push({
-        key: skill,
-        value: newValue,
-        cost: cost,
-      });
+    } else if (skillMode === "specialization") {
+      if (direction === "increase") {
+        this.data.selected.specializationCareerSkillRanks.push(skill);
+      } else {
+        const purchaseIndex = this.data.selected.specializationCareerSkillRanks.findIndex(function (purchase) {
+          return purchase === skill;
+        });
+        this.data.selected.specializationCareerSkillRanks.splice(purchaseIndex, 1);
+      }
     } else {
-      const purchaseIndex = this.data.purchases.xp.skills.findIndex(function(purchase) {
-        return purchase.key === skill && purchase.value === curValue;
-      });
-      this.data.purchases.xp.skills.splice(purchaseIndex, 1);
+      if (direction === "increase") {
+        newValue = curValue + 1;
+        let cost;
+        if (this.tempActor.system.skills[skill].careerskill) {
+          cost = newValue * 5;
+        } else {
+          cost = (newValue * 5) + 5;
+        }
+        this.data.purchases.xp.skills.push({
+          key: skill,
+          value: newValue,
+          cost: cost,
+        });
+      } else {
+        const purchaseIndex = this.data.purchases.xp.skills.findIndex(function (purchase) {
+          return purchase.key === skill && purchase.value === curValue;
+        });
+        this.data.purchases.xp.skills.splice(purchaseIndex, 1);
+      }
     }
     // rebuild the actor to apply the changes
     await this.showCharacterStatus();
@@ -1591,5 +1655,18 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         value: obligation.available,
       }
     }});
+
+    // apply skill ranks from careers and specializations
+    // TODO: these should probably be modifiers on their respective items, so that source tooltips work properly
+    for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
+      const updateKey = `system.skills.${skillPurchase}.rank`;
+      const newValue = newActor.system.skills[skillPurchase].rank + 1;
+      await newActor.update({[updateKey]: newValue})
+    }
+    for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
+      const updateKey = `system.skills.${skillPurchase}.rank`;
+      const newValue = newActor.system.skills[skillPurchase].rank + 1;
+      await newActor.update({[updateKey]: newValue})
+    }
   }
 }

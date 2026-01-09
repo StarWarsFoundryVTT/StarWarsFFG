@@ -3,25 +3,105 @@
   data-group='primary'
   data-tab='career'
 >
-  <div class="career-container">
-    <div class="career-content">
-      <label for="career">
-        <!-- TODO: localize -->
-        Choose a Career:
-      </label>
-      <select class="" id="career_choice" name="career_choice">
-        <option data-placeholder="true"></option>
+  <!--
+    show top-level buttons:
+    1. select career
+    2. select free career skills ranks
+    3. select specialization
+    4. select free career skills ranks
+    hopefully, with a little progress bar which saves the state
+  -->
+  <div class="career-select-container career_tab-container">
+    Select Career
+    <div class="career-selection" style="display: none;">
+      <!-- hidden content here -->
+      <table id="careers">
+        <thead><tr>
+          <td>Select</td>
+          <td>Name</td>
+          <td>Career Skills</td>
+          <td>Specializations</td>
+          <td>Signature Abilities</td>
+        </tr></thead>
+        <tbody>
         {{#each availableCareers as |career|}}
-          <option value="{{career.uuid}}">{{career.name}}</option>
+          <tr>
+            <td><i class="fa-solid fa-cart-shopping career-spend" data-source="{{ career.uuid }}" data-tooltip="Select Career"></i></td>
+            <td>{{ career.name }}</td>
+            <td>
+              {{#each career.system.careerSkills as |careerSkill key|}}
+                {{ careerSkill }}
+                {{#if @last }}{{ else }},{{/if }}
+              {{/each }}
+            </td>
+            <td>
+              {{#each career.system.specializations as |spec key|}}
+                {{ spec.name }}
+                {{#if @last }}{{ else }},{{/if }}
+              {{/each }}
+            </td>
+            <td>
+              {{#each career.system.signatureabilities as |sa key|}}
+                {{ sa.name }}
+                {{#if @last }}{{ else }},{{/if }}
+              {{/each }}
+            </td>
+          </tr>
         {{/each }}
-      </select>
-    </div>
-    <div class="career-content">
-      <label for="career_choice_desc">Career Info<!-- TODO: localize --></label>
-      <img id="career_choice_img" />
-      <div id="career_choice_desc" >
-
-      </div>
+        </tbody>
+      </table>
     </div>
   </div>
+  <div class="career_skill_rank_select-container career_tab-container">
+    Select Career Skill Ranks ({{ keylen careerSkillPurchases }}/4 selected)
+    <div class="career_skill_rank_select-selection" style="display: none;">
+      {{> "systems/starwarsffg/templates/wizards/char_creator/preview/skills.html" (
+        object skillsList=skillsList actor=actor mode="career" purchases=careerSkillPurchases keys=careerKeys
+      )}}
+    </div>
+  </div>
+  <div class="specialization_select-container career_tab-container">
+    Select Specialization
+    <!-- TODO: add a preview of the full talent tree when clicked -->
+    <div class="specialization-selection" style="display: none;">
+      <!-- hidden content here -->
+      <table id="specializations">
+        <thead><tr>
+          <td>Select</td>
+          <td>Name</td>
+          <td>Career Skills</td>
+          <td>Talents</td>
+        </tr></thead>
+        <tbody>
+        {{#each filteredSpecializations as |specialization|}}
+          <tr>
+            <td><i class="fa-solid fa-cart-shopping specialization-spend" data-source="{{ specialization.uuid }}" data-tooltip="Select Specialization"></i></td>
+            <td>{{ specialization.name }}</td>
+            <td>
+              {{#each specialization.system.careerSkills as |careerSkill key|}}
+                {{ careerSkill }}
+                {{#if @last }}{{ else }},{{/if }}
+              {{/each }}
+            </td>
+            <td>
+              {{#each specialization.system.talents as |talent key|}}
+                {{ talent.name }}
+                {{#if @last }}{{ else }},{{/if }}
+              {{/each }}
+            </td>
+          </tr>
+        {{/each }}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="specialization_skill_rank_select-container career_tab-container">
+    Select Specialization Career Skill Ranks ({{ keylen specializationSkillPurchases }}/2 selected)
+    <div class="specialization_skill_rank_select-selection" style="display: none;">
+      {{> "systems/starwarsffg/templates/wizards/char_creator/preview/skills.html" (
+        object skillsList=skillsList actor=actor mode="specialization" purchases=specializationSkillPurchases keys=specializationKeys
+      )}}
+    </div>
+  </div>
+
 </section>
