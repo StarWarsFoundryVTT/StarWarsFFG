@@ -493,7 +493,7 @@ export class ActorFFG extends Actor {
           obligation += parseInt(item.magnitude, 10);
         }
       });
-      data.obligation.value = obligation;
+      data.obligations.value = obligation;
     }
 
     if (data?.dutylist && Object.keys(data.dutylist).length > 0) {

@@ -134,7 +134,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           forceAttitude: null,
         },
         startingBonus: null,
-        obligation: [],
+        obligations: [],
         species: null,
         career: null,
         careerCareerSkillRanks: [],
@@ -271,24 +271,15 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // obligations
-    const obligationSelector = new SlimSelect({
-      select: '#obligation_choice',
-      cssClasses: {
-        option: "starwarsffg" // TODO: select a real class here
-      },
-      events: {
-        afterChange: async (selections) => {
-          await this.selectObligation(selections);
-        }
-      }
+    const obligationsTable = new DataTable(
+      "#obligations",
+    );
+    $(".obligation-spend").on("click", async (event) => {
+      await this.handleObligationSelect(event);
     });
-    if (this.data.selected.obligation.length > 0) {
-      const selectedUuids = [];
-      for (const obligation of this.data.selected.obligation) {
-        selectedUuids.push(obligation.uuid);
-      }
-      obligationSelector.setSelected(selectedUuids, false);
-    }
+    $(".obligation-control").on("click", async (event) => {
+      await this.handleObligationEdit(event);
+    });
 
     // species
     const speciesTable = new DataTable(
@@ -551,25 +542,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     // TODO: include items in the world instead of just compendiums
     context.availableBackgrounds = await this.getBackgrounds();
     context.startingBonusesRadio = CONFIG.FFG.characterCreator.startingBonusesRadio[this.data.selected.rules];
-    const obligations = await this.getAvailableMoralities(this.data.selected.rules);
-    context.availableMoralities = obligations.moralities;
-    context.availableObligations = obligations.obligations;
-    context.availableDuties = obligations.duties;
+    context.availableObligations = await this.getAvailableMoralities();
     context.availableSpecies = await this.getAvailableSpecies();
     context.availableCareers = await this.getAvailableCareers();
     context.filteredSpecializations = await this.getFilteredSpecializations();
     context.availableMotivations = await this.getAvailableMotivations();
-    /*
-    this.terms = await Promise.all(this.terms.map(async (t) => {
-      if (t instanceof RollFFG) {
-        hasInner = true;
-        await t.evaluate({ minimize, maximize });
-        this._dice = this._dice.concat(t.dice);
-        return `${t.total}`;
-      }
-      return t;
-    }));
-     */
     context.tempActor = this.tempActor;
     if (this.tempActor) {
       const skillData = foundry.utils.deepClone(
@@ -715,11 +692,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
   }
 
-  async getAvailableMoralities(rules) {
+  async getAvailableMoralities() {
     const sources = ["world.oggdudeobligations"];
     const obligations = [];
-    const duties = [];
-    const moralities = [];
 
     for (const source of sources) {
       const pack = game.packs.get(source);
@@ -728,21 +703,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
-        if (item.system.type === "obligation") {
-          obligations.push(item);
-        } else if (item.system.type === "duty") {
-          duties.push(item);
-        } else if (item.system.type === "morality") {
-          moralities.push(item);
-        }
+        obligations.push(item);
       }
     }
 
-    return {
-      obligations: obligations,
-      duties: duties,
-      moralities: moralities,
-    }
+    return obligations;
   }
 
   async getAvailableSpecies() {
@@ -911,33 +876,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.data.selected.background.forceAttitude = selectedItem;
   }
 
-  /**
-   * @param {PointerEvent} event - The originating click event
-   * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
-  */
-  async selectObligation(selections) {
-    console.log(selections)
-    const selectedItems = [];
-
-    if (selections.length === 0) {
-      $("#obligation_choice_desc").text("");
-    } else {
-      const newestSelection = selections[selections.length - 1];
-      const selectedItem = await fromUuid(newestSelection.value);
-      if (!selectedItem) {
-        ui.notifications.warn(`Unable to find obligation ${itemNametarget}!`);
-        return;
-      }
-      $("#obligation_choice_desc").text(selectedItem.system.description);
-
-      for (const obligation of selections) {
-        const selectedItem = await fromUuid(obligation.value);
-        selectedItems.push(selectedItem);
-      }
-    }
-    this.data.selected.obligation = selectedItems;
-  }
-
   /** @override */
   async _onClickTab(event) {
     if ($(event.target).data("tab") === "review") {
@@ -980,6 +918,49 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     await this.showCharacterStatus();
   }
 
+  async handleObligationEdit(event) {
+    const target = $(event.currentTarget);
+    const action = target.data("action");
+    const input = target.parent().parent().children("td").children("input");
+    const obligationIndex = target.data("index");
+    const editBtn = target.parent().parent().children("td").children(".fa-edit");
+    const saveBtn = target.parent().parent().children("td").children(".fa-save");
+
+    if (action === "edit") {
+      input.prop("disabled", false);
+      editBtn.addClass("control-inactive");
+      editBtn.removeClass("control-active");
+      saveBtn.addClass("control-active");
+      saveBtn.removeClass("control-inactive");
+    } else if (action === "save") {
+      for (const attr of input) {
+        const propName = attr.name;
+        const propValue = attr.value;
+        this.data.selected.obligations[obligationIndex]["system"][propName] = propValue;
+      }
+      input.prop("disabled", true);
+
+      editBtn.addClass("control-active");
+      editBtn.removeClass("control-inactive");
+      saveBtn.addClass("control-inactive");
+      saveBtn.removeClass("control-active");
+    } else if (action === "deselect") {
+      this.data.selected.obligations.splice(obligationIndex, 1);
+      target.parent().parent().remove();
+    }
+    console.log(this.data.selected)
+  }
+
+  async handleObligationSelect(event) {
+    const target = $(event.currentTarget);
+    const selectedObligation = await fromUuid(target.data("source"));
+    if (!selectedObligation) {
+      return ui.notifications.warn(`Unable to find obligation!`);
+    }
+    this.data.selected.obligations.push(selectedObligation);
+    await this.showCharacterStatus();
+  }
+
   async handleSpecializationSelect(event) {
     const target = $(event.currentTarget);
     const selectedSpecialization = await fromUuid(target.data("source"));
@@ -989,22 +970,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.data.selected.specialization = selectedSpecialization;
     this.data.selected.specializationCareerSkillRanks = [];
     await this.showCharacterStatus();
-  }
-
-  async selectMotivation(selections) {
-    console.log(selections)
-    if (selections.length === 0) {
-      $("#motivation_choice_desc").text("");
-    } else {
-      const newestSelection = selections[selections.length - 1];
-      const selectedItem = await fromUuid(newestSelection.value);
-      if (!selectedItem) {
-        ui.notifications.warn(`Unable to find motivation ${itemNametarget}!`);
-        return;
-      }
-      $("#motivation_choice_desc").text(selectedItem.system.description);
-      this.data.selected.motivations = selectedItem;
-    }
   }
 
   async showCharacterStatus() {
@@ -1051,15 +1016,35 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
     // add items to the actor
     const items = [];
-    for (const key of Object.keys(this.data.selected)) {
-      if (key !== 'background' && this.data.selected[key]?.uuid) {
-        items.push(this.data.selected[key]);
-      } else if (key === 'background') {
-        for (const backKey of Object.keys(this.data.selected.background)) {
-          if (this.data.selected.background[backKey]?.uuid) {
-            items.push(this.data.selected.background[backKey]);
-          }
-        }
+    // the various item types are in slightly different formats, so let's add them explicitly
+    // backgrounds
+    for (const backKey of Object.keys(this.data.selected.background)) {
+      if (this.data.selected.background[backKey]?.uuid) {
+        items.push(this.data.selected.background[backKey]);
+      }
+    }
+    // obligations
+    for (const item of this.data.selected.obligations) {
+      if (item?.uuid) {
+        items.push(item);
+      }
+    }
+    // species
+    if (this.data.selected.species?.uuid) {
+      items.push(this.data.selected.species);
+    }
+    // career (skill ranks are later)
+    if (this.data.selected.career?.uuid) {
+      items.push(this.data.selected.career);
+    }
+    // specialization (skill ranks are later)
+    if (this.data.selected.specialization?.uuid) {
+      items.push(this.data.selected.specialization);
+    }
+    // motivations
+    for (const item of this.data.selected.motivations) {
+      if (item?.uuid) {
+        items.push(item);
       }
     }
     console.log("adding the following items to the temp actor")
@@ -1615,17 +1600,38 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
     // add actor items to the actor
     const items = [];
-    for (const key of Object.keys(this.data.selected)) {
-      if (key !== 'background' && this.data.selected[key]?.uuid) {
-        items.push(this.data.selected[key]);
-      } else if (key === 'background') {
-        for (const backKey of Object.keys(this.data.selected.background)) {
-          if (this.data.selected.background[backKey]?.uuid) {
-            items.push(this.data.selected.background[backKey]);
-          }
-        }
+    // the various item types are in slightly different formats, so let's add them explicitly
+    // backgrounds
+    for (const backKey of Object.keys(this.data.selected.background)) {
+      if (this.data.selected.background[backKey]?.uuid) {
+        items.push(this.data.selected.background[backKey]);
       }
     }
+    // obligations
+    for (const item of this.data.selected.obligations) {
+      if (item?.uuid) {
+        items.push(item);
+      }
+    }
+    // species
+    if (this.data.selected.species?.uuid) {
+      items.push(this.data.selected.species);
+    }
+    // career (skill ranks are later)
+    if (this.data.selected.career?.uuid) {
+      items.push(this.data.selected.career);
+    }
+    // specialization (skill ranks are later)
+    if (this.data.selected.specialization?.uuid) {
+      items.push(this.data.selected.specialization);
+    }
+    // motivations
+    for (const item of this.data.selected.motivations) {
+      if (item?.uuid) {
+        items.push(item);
+      }
+    }
+
     console.log("Granting the following items:")
     console.log(items)
     await newActor.createEmbeddedDocuments("Item", items);

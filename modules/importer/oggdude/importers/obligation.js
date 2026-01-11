@@ -54,7 +54,7 @@ export default class Obligation {
           data.data = {
             type: motivationType,
             description: item.Description,
-            magnitude: 8,
+            magnitude: 0,
             metadata: {
               tags: [
                 "obligation",

@@ -4570,6 +4570,10 @@ img {
   cursor: pointer;
 }
 
+.starwarsffg.wizard .obligation-control  {
+  cursor: pointer;
+}
+
 .starwarsffg.wizard .forcePower-summary .talent-cost {
   bottom: 0;
   left: 0;
@@ -4611,3 +4615,8 @@ img {
   color:#ffffff;
   flex-grow: 1;
 }
+
+.starwarsffg .control-inactive {
+  display: none;
+}
+

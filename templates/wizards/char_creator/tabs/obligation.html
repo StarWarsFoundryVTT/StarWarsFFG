@@ -4,43 +4,53 @@
   data-tab='obligation'
 >
   <div class="obligation-container">
-    <div class="obligation-content">
-      <label for="obligation_choice">
-        <!-- TODO: localize -->
-        {{#if (eq data.selected.rules "fad")}}
-          Choose a Force Attitude:
-        {{/if}}
-        {{#if (eq data.selected.rules "aor")}}
-          Choose a Duty:
-        {{/if}}
-        {{#if (eq data.selected.rules "eote")}}
-          Choose an Obligation:
-        {{/if}}
-      </label>
-      <select class="" id="obligation_choice" name="obligation_choice" multiple>
-        <option data-placeholder="true"></option>
-        {{#if (eq data.selected.rules "fad")}}
-          {{#each availableMoralities as |morality|}}
-            <option value="{{morality.uuid}}">{{morality.name}}</option>
-          {{/each }}
-        {{/if}}
-        {{#if (eq data.selected.rules "aor")}}
-          {{#each availableDuties as |duty|}}
-            <option value="{{duty.uuid}}">{{duty.name}}</option>
-          {{/each }}
-        {{/if}}
-        {{#if (eq data.selected.rules "eote")}}
-          {{#each availableObligations as |obligation|}}
-            <option value="{{obligation.uuid}}">{{obligation.name}}</option>
-          {{/each }}
-        {{/if}}
-      </select>
+    <div class="obligation-selected">
+      <table id="selected_obligations">
+        <thead><tr>
+          <td>Modify</td>
+          <td>Type</td>
+          <td>Name</td>
+          <td>Magnitude</td>
+          <td>Description</td>
+        </tr></thead>
+        <tbody>
+        {{#each data.selected.obligations as |obligation|}}
+          <tr>
+            <td>
+              <i class="fas fa-trash obligation-control obligation-refund" data-name="{{ obligation.name }}" data-tooltip="De-select Obligation" data-action="deselect" data-index="{{@index}}"></i>
+              <i class="fas fa-edit obligation-control obligation-edit control-active" data-name="{{ obligation.name }}" data-tooltip="Modify Magnitude and Description" data-action="edit" data-index="{{@index}}"></i>
+              <i class="fas fa-save obligation-control obligation-save control-inactive" data-name="{{ obligation.name }}" data-tooltip="Save Changes" data-action="save" data-index="{{@index}}"></i>
+            </td>
+            <td>{{ obligation.system.type }}</td>
+            <td>{{ obligation.name }}</td>
+            <td><input name="magnitude" type="number" disabled value="{{ obligation.system.magnitude }}"/></td>
+            <td><input name="description" type="text" disabled value="{{ obligation.system.description }}"/></td>
+          </tr>
+        {{/each }}
+        </tbody>
+      </table>
     </div>
     <div class="obligation-content">
-      <label for="obligation_choice_desc">Obligation Description<!-- TODO: localize --></label>
-      <div id="obligation_choice_desc" >
-
-      </div>
+      <table id="obligations">
+        <thead><tr>
+          <td>Select</td>
+          <td>Type</td>
+          <td>Name</td>
+          <td>Description</td>
+        </tr></thead>
+        <tbody>
+        {{#each availableObligations as |obligation|}}
+          <tr>
+            <td><i class="fa-solid fa-cart-shopping obligation-spend" data-source="{{ obligation.uuid }}" data-tooltip="Select Obligation"></i></td>
+            <td>
+              {{ obligation.system.type }}
+            </td>
+            <td>{{ obligation.name }}</td>
+            <td>{{ obligation.system.description }}</td>
+          </tr>
+        {{/each }}
+        </tbody>
+      </table>
     </div>
   </div>
 </section>
