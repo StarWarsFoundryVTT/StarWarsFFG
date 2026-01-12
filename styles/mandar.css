@@ -4620,3 +4620,10 @@ img {
   display: none;
 }
 
+.starwarsffg .state_good {
+  color: #0e4400;
+}
+.starwarsffg .state_bad {
+  color: #8b0000;
+}
+

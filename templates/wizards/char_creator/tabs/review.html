@@ -5,43 +5,100 @@
 >
   <div class="review-container">
     <div class="review-item background">
-      <b>{{ localize "SWFFG.CharacterCreator.review.background" }}</b><br>
+      <span class="background status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.background" }}</b>&nbsp;
+        {{#if (or data.selected.background.culture.name data.selected.background.hook.name data.selected.background.forceAttitude.name) }}
+          <i class="fa-regular fa-circle-check state_good"></i>
+        {{ else }}
+          <i class="fa-regular fa-circle-x state_bad"></i>
+        {{/if }}
+      </span><br>
       {{ data.selected.background.culture.name }}, {{ data.selected.background.hook.name }}, {{ data.selected.background.forceAttitude.name }}
     </div>
     <div class="review-item startingBonus">
-      <b>{{ localize "SWFFG.CharacterCreator.review.startingValues" }}</b><br>
+      <span class="startingBonus status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.startingValues" }}</b>
+      </span><br>
       {{ totalXp }} {{ localize "SWFFG.CharacterCreator.review.XP" }} {{ totalCredits }} {{ localize "SWFFG.CharacterCreator.review.credits" }}
       {{ data.grants.bonus.morality }}, {{ data.grants.bonus.duty }}, {{ data.grants.bonus.obligation }}
       {{ localize "SWFFG.CharacterCreator.review.morality_duty_obligation" }}
     </div>
     <div class="review-item obligation">
-      <b>{{ localize "SWFFG.CharacterCreator.review.obligation" }}</b><br>
+      <span class="obligation status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.obligation" }}</b>&nbsp;
+        {{#if data.selected.obligations }}
+          <i class="fa-regular fa-circle-check state_good"></i>
+        {{ else }}
+          <i class="fa-regular fa-circle-x state_bad"></i>
+        {{/if }}
+      </span><br>
       {{#each data.selected.obligations as |obl|}}
         {{ obl.name }} ({{ obl.system.magnitude }}): {{ obl.system.description }}<br>
       {{/each }}
     </div>
     <div class="review-item species">
-      <b>{{ localize "SWFFG.CharacterCreator.review.species" }}</b><br>
+      <span class="species status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.species" }}</b>&nbsp;
+        {{#if data.selected.species.name }}
+          <i class="fa-regular fa-circle-check state_good"></i>
+        {{ else }}
+          <i class="fa-regular fa-circle-x state_bad"></i>
+        {{/if }}
+      </span><br>
       {{ data.selected.species.name }}
     </div>
     <div class="review-item career">
-      <b>{{ localize "SWFFG.CharacterCreator.review.career" }} / {{ localize "SWFFG.CharacterCreator.review.specialization" }}</b><br>
+      <span class="career status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.career" }} / {{ localize "SWFFG.CharacterCreator.review.specialization" }}</b>&nbsp;
+        {{#if (and data.selected.career.name data.selected.specialization.name) }}
+          <i class="fa-regular fa-circle-check state_good"></i>
+        {{ else }}
+          <i class="fa-regular fa-circle-x state_bad"></i>
+        {{/if }}
+      </span><br>
       {{ data.selected.career.name }}: {{ data.selected.specialization.name }}
     </div>
     <div class="review-item purchase-xp">
-      <b>{{ localize "SWFFG.CharacterCreator.review.purchases.xp" }}</b><br>
+      <span class="purchase-xp status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.purchases.xp" }}</b>&nbsp;
+        {{#if (or
+          (gt data.purchases.xp.characteristics.length 0)
+          (gt data.purchases.xp.skills.length 0)
+        ) }}
+          <i class="fa-regular fa-circle-check state_good"></i>
+        {{ else }}
+          <i class="fa-regular fa-circle-x state_bad"></i>
+        {{/if }}
+      </span><br>
       {{#each data.purchases.xp.characteristics as |attr| }}
+        {{ attr.key }} -> {{ attr.value }}
+      {{/each }}
+      {{#each data.purchases.xp.skills as |attr| }}
         {{ attr.key }} -> {{ attr.value }}
       {{/each }}
     </div>
     <div class="review-item purchase-credits">
-      <b>{{ localize "SWFFG.CharacterCreator.review.purchases.credits" }}</b><br>
+      <span class="urchase-credits status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.purchases.credits" }}</b>&nbsp;
+        {{#if data.purchases.credits }}
+          <i class="fa-regular fa-circle-check state_good"></i>
+        {{ else }}
+          <i class="fa-regular fa-circle-x state_bad"></i>
+        {{/if }}
+      </span><br>
       {{#each data.purchases.credits as |purchase|}}
         {{ purchase.item.name }} ({{ purchase.item.type }}) -> {{ purchase.cost }}
       {{/each }}
     </div>
     <div class="review-item motivation">
-      <b>{{ localize "SWFFG.CharacterCreator.review.motivation" }}</b><br>
+      <span class="motivation status">
+        <b>{{ localize "SWFFG.CharacterCreator.review.motivation" }}</b>&nbsp;
+        {{#if data.selected.motivations }}
+          <i class="fa-regular fa-circle-check state_good"></i>
+        {{ else }}
+          <i class="fa-regular fa-circle-x state_bad"></i>
+        {{/if }}
+      </span><br>
       {{#each data.selected.motivations as |motivation|}}
         {{ motivation.item.name }}: {{ motivation.item.system.description }}
       {{/each }}
