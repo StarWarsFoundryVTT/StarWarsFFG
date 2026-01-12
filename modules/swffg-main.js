@@ -265,6 +265,46 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean,
   });
+  game.settings.register("starwarsffg", "defaultObligation", {
+    name: game.i18n.localize("SWFFG.Settings.Obligation.Default.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Obligation.Default.Hint"),
+    scope: "world",
+    config: false,
+    default: 20,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "defaultDuty", {
+    name: game.i18n.localize("SWFFG.Settings.Duty.Default.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Duty.Default.Hint"),
+    scope: "world",
+    config: false,
+    default: 20,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "defaultMorality", {
+    name: game.i18n.localize("SWFFG.Settings.Morality.Default.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Morality.Default.Hint"),
+    scope: "world",
+    config: false,
+    default: 50,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "maxRarity", {
+    name: game.i18n.localize("SWFFG.Settings.CharCreator.Items.maxRarity.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.CharCreator.Items.maxRarity.Hint"),
+    scope: "world",
+    config: false,
+    default: 6,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "allowRestricted", {
+    name: game.i18n.localize("SWFFG.Settings.CharCreator.Items.allowRestricted.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.CharCreator.Items.allowRestricted.Hint"),
+    scope: "world",
+    config: false,
+    default: false,
+    type: Boolean,
+  });
 
   /**
    * Register the option to use generic slots for combat

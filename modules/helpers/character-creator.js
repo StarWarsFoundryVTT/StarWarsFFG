@@ -114,6 +114,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   constructor(options={}) {
     super(options);
     this.data = {
+      // items granted - either by the GM or by the starting bonus, etc
       grants: {
         gm: {},
         bonus: {
@@ -127,6 +128,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         career: {},
         specialization: {},
       },
+      // choices made by the user
       selected: {
         background: {
           culture: null,
@@ -143,9 +145,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         rules: 'fad',
         motivations: [],
       },
+      // filtered list of specializations based on the selected career
       available: {
         specializations: [],
       },
+      // things purchased by the user, with XP or credits
       purchases: {
         xp: {
           characteristics: [],
@@ -231,7 +235,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const cultureSelector = new SlimSelect({
       select: '#culture',
       cssClasses: {
-        option: "starwarsffg" // TODO: select a real class here
+        option: "starwarsffg"
       },
       events: {
         afterChange: async (newVal) => {
@@ -244,7 +248,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const hookSelector = new SlimSelect({
       select: '#hook',
       cssClasses: {
-        option: "starwarsffg" // TODO: select a real class here
+        option: "starwarsffg"
       },
       events: {
         afterChange: async (newVal) => {
@@ -258,7 +262,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       const forceAttitudeSelector = new SlimSelect({
         select: '#force_attitude',
         cssClasses: {
-          option: "starwarsffg" // TODO: select a real class here
+          option: "starwarsffg"
         },
         events: {
           afterChange: async (newVal) => {
@@ -662,6 +666,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   async getItems() {
     const sources = this.getSources("item");
     const preparedItems = [];
+    const maxRarity = game.settings.get("starwarsffg", "maxRarity");
+    const allowRestricted = game.settings.get("starwarsffg", "allowRestricted");
 
     for (const source of sources) {
       const pack = game.packs.get(source);
@@ -670,6 +676,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
+        if (item.system?.rarity?.value > maxRarity || (!allowRestricted && item.system?.rarity?.isrestricted)) {
+          // do not include items disallowed by the GM
+          continue;
+        }
         item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
         preparedItems.push(item);
       }
