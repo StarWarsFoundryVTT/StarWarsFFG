@@ -274,6 +274,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const obligationsTable = new DataTable(
       "#obligations",
     );
+    obligationsTable.on("draw", () => {
+      $(".obligation-spend").on("click", async (event) => {
+        await this.handleObligationSelect(event);
+      });
+    });
     $(".obligation-spend").on("click", async (event) => {
       await this.handleObligationSelect(event);
     });
@@ -285,6 +290,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const speciesTable = new DataTable(
       "#species",
     );
+    speciesTable.on("draw", () => {
+      $(".species-spend").on("click", async (event) => {
+        await this.handleSpeciesSelect(event);
+      });
+    });
     $(".species-spend").on("click", async (event) => {
       await this.handleSpeciesSelect(event);
     });
@@ -293,6 +303,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const careersTable = new DataTable(
       "#careers",
     );
+    careersTable.on("draw", () => {
+      $(".career-spend").on("click", async (event) => {
+        await this.handleCareerSelect(event);
+      });
+    });
     $(".career-spend").on("click", async (event) => {
       await this.handleCareerSelect(event);
     });
@@ -472,6 +487,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     );
     gearTable.buttons('.weapon').trigger();
+    gearTable.on("draw", async () => {
+      await this.activateShopListeners();
+    });
 
     // motivations
     const purchasedMotivationTable = new DataTable(
@@ -480,6 +498,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const availableMotivationTable = new DataTable(
       "#motivations",
     );
+    availableMotivationTable.on("draw", async () => {
+      $(".motivation-spend").on("click", async (event) => {
+        await this.handleMotivationPurchase(event);
+      });
+    });
     $(".motivation-spend").on("click", async (event) => {
       await this.handleMotivationPurchase(event);
     });
