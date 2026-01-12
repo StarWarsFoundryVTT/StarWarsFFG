@@ -325,7 +325,7 @@ Hooks.once("init", async function () {
   });
 
   /**
-   * Register compendiums for sources for purchasing
+   * Register compendiums for sources for purchasing and character creation
    */
   game.settings.register("starwarsffg", "specializationCompendiums", {
     name: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Name"),
@@ -359,6 +359,61 @@ Hooks.once("init", async function () {
     default: "",
     type: String,
   });
+  // backgrounds
+  game.settings.register("starwarsffg", "backgroundCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Background.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Background.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudebackgrounds",
+    type: String,
+  });
+  // obligations
+  game.settings.register("starwarsffg", "obligationCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Obligation.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Obligation.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudeobligations",
+    type: String,
+  });
+  // species
+  game.settings.register("starwarsffg", "speciesCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Species.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Species.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudespecies",
+    type: String,
+  });
+  // careers
+  game.settings.register("starwarsffg", "careerCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Career.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Career.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudecareers",
+    type: String,
+  });
+  // motivations
+  game.settings.register("starwarsffg", "motivationCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Motivation.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Motivation.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudemotivations",
+    type: String,
+  });
+  // items
+  game.settings.register("starwarsffg", "itemCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Item.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Item.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudeweapons,world.oggdudearmor,world.oggdudegear,world.oggdudearmorattachments,world.oggdudegenericattachments,world.oggdudeweaponattachments,world.oggdudearmormods,world.oggdudegenericmods,world.oggdudeweaponmods",
+    type: String,
+  });
+  // defense dice setting
   game.settings.register("starwarsffg", "useDefense", {
     name: game.i18n.localize("SWFFG.Settings.UseDefense.Name"),
     hint: game.i18n.localize("SWFFG.Settings.UseDefense.Hint"),

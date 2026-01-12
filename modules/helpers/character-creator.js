@@ -637,14 +637,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async getItems() {
-     //const sources = game.settings.get("starwarsffg", "specializationCompendiums").split(",");
-    const sources = [
-      "world.oggdudeweapons",
-      "world.oggdudearmor",
-      "world.oggdudegear",
-      "world.oggdudearmorattachments", "world.oggdudegenericattachments", "world.oggdudeweaponattachments",
-      "world.oggdudearmormods", "world.oggdudegenericmods", "world.oggdudeweaponmods"
-    ];
+    const sources = this.getSources("item");
     const preparedItems = [];
 
     for (const source of sources) {
@@ -654,6 +647,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
+        item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
         preparedItems.push(item);
       }
     }
@@ -662,8 +656,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async getBackgrounds() {
-     //const sources = game.settings.get("starwarsffg", "specializationCompendiums").split(",");
-    const sources = ["world.oggdudebackgrounds"];
+    const sources = this.getSources("background");
     const cultures = [];
     const hooks = [];
     const forceAttitudes = [];
@@ -675,6 +668,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
+        item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
         if (item.system.type === "culture") {
           cultures.push(item);
         } else if (item.system.type === "hook") {
@@ -686,6 +680,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     for (const item of game.items.filter(i => i.type === "background")) {
+      item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
       if (item.system.type === "culture") {
         cultures.push(item);
       } else if (item.system.type === "hook") {
@@ -703,7 +698,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async getAvailableMoralities() {
-    const sources = ["world.oggdudeobligations"];
+    const sources = this.getSources("obligation");
     const obligations = [];
 
     for (const source of sources) {
@@ -713,11 +708,13 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
+        item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
         obligations.push(item);
       }
     }
 
     for (const item of game.items.filter(i => i.type === "obligation")) {
+      item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
       obligations.push(item);
     }
 
@@ -725,7 +722,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async getAvailableSpecies() {
-    const sources = ["world.oggdudespecies"];
+    const sources = this.getSources("species");
     const species = [];
 
     for (const source of sources) {
@@ -735,11 +732,13 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
+        item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
         species.push(item);
       }
     }
 
     for (const item of game.items.filter(i => i.type === "species")) {
+      item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
       species.push(item);
     }
 
@@ -747,9 +746,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async getAvailableCareers() {
-    // TODO: we probably want to show available specializations in this window
-    // and possibly even fold it into the same tab in the wizard
-    const sources = ["world.oggdudecareers"];
+    const sources = this.getSources("career");
     const careers = [];
 
     for (const source of sources) {
@@ -759,11 +756,13 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
+        item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
         careers.push(item);
       }
     }
 
     for (const item of game.items.filter(i => i.type === "careers")) {
+      item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
       careers.push(item);
     }
 
@@ -786,8 +785,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.render(true);
   }
 
+  getSources(sourcesType) {
+    return game.settings.get("starwarsffg", `${sourcesType}Compendiums`).split(',');
+  }
+
   async getAvailableMotivations() {
-    const sources = ["world.oggdudemotivations"];
+    const sources = this.getSources("motivation");
     const motivations = [];
 
     for (const source of sources) {
@@ -797,11 +800,13 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
       const items = await pack.getDocuments();
       for (const item of items) {
+        item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
         motivations.push(item);
       }
     }
 
     for (const item of game.items.filter(i => i.type === "motivation")) {
+      item.pill = await foundry.applications.ux.TextEditor.enrichHTML(item?.link);
       motivations.push(item);
     }
 
@@ -935,6 +940,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     for (const specData of Object.values(selectedCareer.system.specializations)) {
       const specItem = await fromUuid(specData.source);
       if (specItem) {
+        specItem.pill = await foundry.applications.ux.TextEditor.enrichHTML(specItem?.link);
         this.data.available.specializations.push(specItem);
       } else {
         CONFIG.logger.debug(`Unable to find specialization with UUID ${specData.source}`);

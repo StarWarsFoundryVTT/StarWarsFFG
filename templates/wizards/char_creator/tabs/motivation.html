@@ -16,7 +16,13 @@
         <tr>
           <td><i class="fas fa-trash motivation-refund" data-name="{{ motivation.item.name }}" data-tooltip="Select Motivation"></i></td>
           <td>{{ motivation.item.system.type }}</td>
-          <td>{{ motivation.item.name }}</td>
+          <td>
+            {{#if motivation.item.pill}}
+              {{{ motivation.item.pill }}}
+            {{else}}
+              {{ motivation.item.name }}
+            {{/if}}
+          </td>
           <td>{{ motivation.item.system.description }}</td>
         </tr>
       {{/each }}
@@ -35,7 +41,13 @@
         <tr>
           <td><i class="fa-solid fa-cart-shopping motivation-spend" data-source="{{ motivation.uuid }}" data-tooltip="Select Motivation"></i></td>
           <td>{{ motivation.system.type }}</td>
-          <td>{{ motivation.name }}</td>
+          <td>
+            {{#if motivation.pill}}
+              {{{ motivation.pill }}}
+            {{else}}
+              {{ motivation.name }}
+            {{/if}}
+          </td>
           <td>{{ motivation.system.description }}</td>
         </tr>
       {{/each }}

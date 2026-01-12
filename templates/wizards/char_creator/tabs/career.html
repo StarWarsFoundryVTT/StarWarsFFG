@@ -27,7 +27,13 @@
         {{#each availableCareers as |career|}}
           <tr>
             <td><i class="fa-solid fa-cart-shopping career-spend" data-source="{{ career.uuid }}" data-tooltip="Select Career"></i></td>
-            <td>{{ career.name }}</td>
+            <td>
+              {{#if career.pill}}
+                {{{ career.pill }}}
+              {{else}}
+                {{ career.name }}
+              {{/if}}
+            </td>
             <td>
               {{#each career.system.careerSkills as |careerSkill key|}}
                 {{ careerSkill }}
@@ -76,7 +82,13 @@
         {{#each filteredSpecializations as |specialization|}}
           <tr>
             <td><i class="fa-solid fa-cart-shopping specialization-spend" data-source="{{ specialization.uuid }}" data-tooltip="Select Specialization"></i></td>
-            <td>{{ specialization.name }}</td>
+            <td>
+              {{#if specialization.pill}}
+                {{{ specialization.pill }}}
+              {{else}}
+                {{ specialization.name }}
+              {{/if}}
+            </td>
             <td>
               {{#each specialization.system.careerSkills as |careerSkill key|}}
                 {{ careerSkill }}

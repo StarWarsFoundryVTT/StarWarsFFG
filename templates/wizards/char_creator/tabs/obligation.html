@@ -45,7 +45,13 @@
             <td>
               {{ obligation.system.type }}
             </td>
-            <td>{{ obligation.name }}</td>
+            <td>
+              {{#if obligation.pill}}
+                {{{ obligation.pill }}}
+              {{else}}
+                {{ obligation.name }}
+              {{/if}}
+            </td>
             <td>{{ obligation.system.description }}</td>
           </tr>
         {{/each }}

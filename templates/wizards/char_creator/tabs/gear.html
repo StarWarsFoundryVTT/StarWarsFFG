@@ -14,7 +14,14 @@
       {{#each data.purchases.credits as |purchase| }}
       <tr>
         <td><i class="fas fa-trash credit-refund" data-name="{{ purchase.item.name }}" data-tooltip="Cancel Purchase"></i></td>
-        <td><img src="{{ item.img }}"/>{{ purchase.item.name }}</td>
+        <td>
+          <img src="{{ item.img }}"/>
+          {{#if purchase.item.pill}}
+            {{{ purchase.item.pill }}}
+          {{else}}
+            {{ purchase.item.name }}
+          {{/if}}
+        </td>
         <td>{{ purchase.cost }}</td>
       </tr>
       {{/each }}
@@ -46,7 +53,14 @@
         <tr>
           <td>{{ item.type }}</td>
           <td><i class="fa-solid fa-cart-shopping credit-spend" data-source="{{ item.uuid }}" data-type="{{ item.type }}" data-tooltip="Purchase"></i></td>
-          <td><img src="{{ item.img }}"/>{{ item.name }}</td>
+          <td>
+            <img src="{{ item.img }}"/>
+            {{#if item.pill}}
+              {{{ item.pill }}}
+            {{else}}
+              {{ item.name }}
+            {{/if}}
+          </td>
           <td>{{ item.system.price.value }}</td>
           <td>{{ item.system.damage.value }}</td>
           <td>{{ item.system.crit.value}}</td>

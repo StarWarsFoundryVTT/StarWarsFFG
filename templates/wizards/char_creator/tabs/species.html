@@ -25,7 +25,14 @@
       {{#each availableSpecies as |species| }}
       <tr>
         <td><i class="fa-solid fa-cart-shopping species-spend" data-source="{{ species.uuid }}" data-tooltip="Select Species"></i></td>
-        <td><img src="{{ species.img }}"/>{{ species.name }}</td>
+        <td>
+          <img src="{{ species.img }}"/>
+          {{#if species.pill}}
+            {{{ species.pill }}}
+          {{else}}
+            {{ species.name }}
+          {{/if}}
+        </td>
         {{#each ../FFGCONFIG.characteristics as |attr attrName| }}
           <td>
             {{#with (lookup species.system.attributes [attrName])~}}
