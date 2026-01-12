@@ -173,63 +173,15 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         eote: "Edge of the Empire",
       },
     };
-
-    // TODO: remove this block
-    this.data.selected.species = game.items.getName("species");
-    this.data.purchases.xp.specializations.push({
-      item: game.items.getName("Advisor"),
-      cost: 20,
-    });
-    this.data.purchases.xp.forcePowers.push({
-      item: game.items.getName("Alter"),
-      cost: 10,
-    });
-    this.data.grants.bonus.credits = 2500;
-    this.data.purchases.credits.push({
-      item: game.items.getName("weapon"),
-      cost: 300,
-    });
-
-    // TODO: remove
-    this.data.selected.careerCareerSkillRanks.push("Astrogation");
-    this.data.selected.specializationCareerSkillRanks.push("Cool");
-
-    this.showCharacterStatus() // TODO: remove
-  }
-
-  /** @override */
-  /*
-  _configureRenderOptions(options) {
-    super._configureRenderOptions(options);
-    // This fills in `options.parts` with an array of ALL part keys by default
-    // So we need to call `super` first
-    super._configureRenderOptions(options);
-    // Completely overriding the parts
-    options.parts = ['header', 'tabs']
-    // Don't show the other tabs if only limited view
-    if (this.document?.limited) return;
-    // Keep in mind that the order of `parts` *does* matter
-    // So you may need to use array manipulation
-    switch (this.document?.type) {
-      case 'typeA':
-        options.parts.push('foo')
-        break;
-      case 'typeB':
-        options.parts.push('bar')
-        break;
-    }
-  }
-
-   */
-
-  async _postRender(context, options) {
-    await super._postRender(context, options);
   }
 
   /** @override */
   async _onRender(context, options) {
+    /**
+     * Used to activateListeners on ApplicationV2
+     */
     await super._onRender(context, options);
-    console.log("render")
+    CONFIG.logger.debug("Rendering Character Creator");
 
     // backgrounds
     const cultureSelector = new SlimSelect({
@@ -360,6 +312,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     $(".specialization-talent-purchase").on("change", async (event) => {
       await this.handleSpecializationTalentPurchase(event);
     });
+
     // force powers
     $(".purchase-forcePower").on("click", async (event) => {
       await this.handleForcePowerPurchase(event);
@@ -519,16 +472,14 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       await this.createActor(event);
     });
 
-    /**
-     * new DataTable('#myTable', {
-     *     columnDefs: [{ visible: false, targets: 0 }]
-     * });
-     *
-     */
-
-    console.log(this.data)
+    CONFIG.logger.debug(`Current state: ${JSON.stringify(this.data)}`)
   }
 
+  /**
+   * Activates credit listeners
+   * Done here since they're called repeatedly within the various filtered views in the datatable
+   * @returns {Promise<void>}
+   */
   async activateShopListeners() {
     $(".credit-spend").on("click", async (event) => {
       await this.handleCreditPurchase(event);
@@ -536,21 +487,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     $(".credit-refund").on("click", async (event) => {
       await this.handleCreditRefund(event);
     });
-  }
-
-
-  /**
-   * Process form submission for the sheet
-   * @this {CharacterCreator}                      The handler is called with the application as its bound scope
-   * @param {SubmitEvent} event                   The originating form submission event
-   * @param {HTMLFormElement} form                The form element that was submitted
-   * @param {FormDataExtended} formData           Processed data for the submitted form
-   * @returns {Promise<void>}
-   */
-  static async myFormHandler(event, form, formData) {
-    // Do things with the returned FormData
-    console.log("form handler")
-    console.log(formData)
   }
 
   /** @override */
@@ -566,13 +502,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       builtin: this.builtin,
     };
 
-    // TODO: include items in the world instead of just compendiums
     context.availableBackgrounds = await this.getBackgrounds();
     context.startingBonusesRadio = CONFIG.FFG.characterCreator.startingBonusesRadio[this.data.selected.rules];
     context.availableObligations = await this.getAvailableMoralities();
     context.availableSpecies = await this.getAvailableSpecies();
     context.availableCareers = await this.getAvailableCareers();
-    context.filteredSpecializations = await this.getFilteredSpecializations();
+    context.filteredSpecializations = this.data.available.specializations;
     context.availableMotivations = await this.getAvailableMotivations();
     context.tempActor = this.tempActor;
     if (this.tempActor) {
@@ -651,7 +586,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
   /** @override */
   async _preparePartContext(partId, context, options) {
-    // TODO: add switch back
+    // TODO: is this needed? valuable?
     switch (partId) {
       case 'rules':
       case 'another_tab':
@@ -663,6 +598,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     return context;
   }
 
+  /**
+   * Retrieve all items available for the player to buy
+   * @returns {Promise<*[]>}
+   */
   async getItems() {
     const sources = this.getSources("item");
     const preparedItems = [];
@@ -688,6 +627,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     return preparedItems;
   }
 
+  /**
+   * Retrieve all backgrounds available for the player to buy
+   * @returns {Promise<{cultures: *[], hooks: *[], forceAttitudes: *[]}>}
+   */
   async getBackgrounds() {
     const sources = this.getSources("background");
     const cultures = [];
@@ -730,6 +673,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
   }
 
+  /**
+   * Retrieve all Moralities available for the player to buy
+   * @returns {Promise<*[]>}
+   */
   async getAvailableMoralities() {
     const sources = this.getSources("obligation");
     const obligations = [];
@@ -754,6 +701,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     return obligations;
   }
 
+  /**
+   * Retrieve all Species available for the player to buy
+   * @returns {Promise<*[]>}
+   */
   async getAvailableSpecies() {
     const sources = this.getSources("species");
     const species = [];
@@ -778,6 +729,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     return species;
   }
 
+  /**
+   * Retrieve all Careers available for the player to buy
+   * @returns {Promise<*[]>}
+   */
   async getAvailableCareers() {
     const sources = this.getSources("career");
     const careers = [];
@@ -802,26 +757,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     return careers;
   }
 
-  async getFilteredSpecializations(career) {
-    return this.data.available.specializations;
-  }
-
   /**
-   * @param {PointerEvent} event - The originating click event
-   * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
-  */
-  static selectRules(event, target) {
-    // <a data-action="myAction">Using a link for inline text</a> triggers this function
-    const choice = $(target).find(":checked")[0].value;
-    console.log(`selected ${choice}`)
-    this.data.selected.rules = choice;
-    this.render(true);
-  }
-
-  getSources(sourcesType) {
-    return game.settings.get("starwarsffg", `${sourcesType}Compendiums`).split(',');
-  }
-
+   * Retrieve all Motivations available for the player to buy
+   * @returns {Promise<*[]>}
+   */
   async getAvailableMotivations() {
     const sources = this.getSources("motivation");
     const motivations = [];
@@ -847,14 +786,30 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   /**
-   * @param {PointerEvent} event - The originating click event
-   * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
+   * Common function for retrieving compendiums for a specific item type
+   * (reads from settings)
+   * @param sourcesType
+   * @returns {*}
+   */
+  getSources(sourcesType) {
+    return game.settings.get("starwarsffg", `${sourcesType}Compendiums`).split(',');
+  }
+
+  /**
+   * Handler for the user selecting which ruleset to use
+  */
+  static selectRules(event, target) {
+    const choice = $(target).find(":checked")[0].value;
+    this.data.selected.rules = choice;
+    this.render(true);
+  }
+
+  /**
+  * Handler for the user selecting their starting bonus
   */
   static selectStartingBonus(event, target) {
-    console.log(event)
-    console.log(target)
     const choice = $(target).find(":checked")[0].value;
-    console.log(`selected starting bonus ${choice}`)
+    CONFIG.logger.debug(`selected starting bonus ${choice}`);
     const ruleToBonusMap = {
       fad: 'conflict',
       aor: 'duty',
@@ -899,9 +854,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   /**
-   * @param {PointerEvent} event - The originating click event
-   * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
-  */
+   * Handler for culture selection
+   * @param itemUuid
+   * @param itemNametarget
+   * @returns {Promise<void>}
+   */
   async selectCulture(itemUuid, itemNametarget) {
     const selectedItem = await fromUuid(itemUuid);
     if (!selectedItem) {
@@ -913,8 +870,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   /**
-   * @param {PointerEvent} event - The originating click event
-   * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
+   * Handler for hook selection
+   * @param itemUuid
+   * @param itemNametarget
+   * @returns {Promise<void>}
   */
   async selectHook(itemUuid, itemNametarget) {
     const selectedItem = await fromUuid(itemUuid);
@@ -927,8 +886,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   /**
-   * @param {PointerEvent} event - The originating click event
-   * @param {HTMLElement} target - the capturing HTML element which defined a [data-action]
+   * Handler for forceAttitude selection
+   * @param itemUuid
+   * @param itemNametarget
+   * @returns {Promise<void>}
   */
   async selectForceAttitude(itemUuid, itemNametarget) {
     const selectedItem = await fromUuid(itemUuid);
@@ -943,6 +904,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   /** @override */
   async _onClickTab(event) {
     if ($(event.target).data("tab") === "review") {
+      // force a re-render on the review tab so we are sure we're using the latest data
       await this.render(true);
     }
     await super._onClickTab(event);
@@ -1013,7 +975,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       this.data.selected.obligations.splice(obligationIndex, 1);
       target.parent().parent().remove();
     }
-    console.log(this.data.selected)
   }
 
   async handleObligationSelect(event) {
@@ -1137,7 +1098,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async handleCharacteristicModify(event) {
-    // TODO: handle brawn/willpower modifications, which should mpact wounds/strain/soak
     const target = $(event.currentTarget);
     const characteristic = target.data("target");
     const direction = target.data("direction");
@@ -1211,7 +1171,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async handleSpecializationPurchase(event) {
-    console.log(event)
     const availableXP = this.calcXp()['available'];
     const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
     const groups = [];
@@ -1252,8 +1211,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       const baseCost = (this.data.purchases.xp.specializations.length + 1) * 10;
       const increasedCost = baseCost + 10;
       if (baseCost > availableXP) {
-        ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
-        return;
+        return ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       } else if (increasedCost > availableXP) {
         outCareer = [];
       }
@@ -1313,8 +1271,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const talentPurchaseLength = this.data.purchases.xp.talents.length - 1;
     const specializationPurchaseLength = this.data.purchases.xp.specializations.length - 1;
 
-    console.log(specName, talentPurchaseLength)
-
     for (let index = talentPurchaseLength; index >= 0; index--) {
       const talentPurchase = this.data.purchases.xp.talents[index];
       if (talentPurchase.specName === specName) {
@@ -1338,8 +1294,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const specName = target.data("name");
     const talentPurchaseLength = this.data.purchases.xp.talents.length - 1;
     const forcePowerPurchaseLength = this.data.purchases.xp.forcePowers.length - 1;
-
-    console.log(specName, talentPurchaseLength)
 
     for (let index = talentPurchaseLength; index >= 0; index--) {
       const talentPurchase = this.data.purchases.xp.talents[index];
@@ -1365,15 +1319,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     const forcePowerName = target.data("forcepower");
     const parentForcePower = this.data.purchases.xp.forcePowers.find(s => s.item.name === forcePowerName)?.item;
     if (!parentForcePower) {
-      ui.notifications.warn(`Unable to find force power ${forcePowerName} with upgrade ${upgrade}! bailing`);
-      return;
+      return ui.notifications.warn(`Unable to find force power ${forcePowerName} with upgrade ${upgrade}! bailing`);
     }
     const wasLearned = parentForcePower.system.upgrades[upgrade]?.islearned || false
     const cost = target.data("cost");
 
     parentForcePower.system.upgrades[upgrade].islearned = !wasLearned;
-
-    console.log(target, upgrade, wasLearned, cost)
 
     if (!wasLearned) {
       this.data.purchases.xp.talents.push({
@@ -1404,8 +1355,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     } else {
       const parentSpec = this.data.purchases.xp.specializations.find(s => s.item.name === specializationName)?.item;
       if (!parentSpec) {
-        ui.notifications.warn(`Unable to find specialization ${specializationName} talent ${talent} is within! bailing`);
-        return;
+        return ui.notifications.warn(`Unable to find specialization ${specializationName} talent ${talent} is within! bailing`);
       }
       wasLearned = parentSpec.system.talents[talent]?.islearned || false;
       parentSpec.system.talents[talent].islearned = !wasLearned;
@@ -1545,7 +1495,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   async handleCreditPurchase(event) {
     const target = $(event.currentTarget);
     const itemUuid = target.data("source");
-    console.log("click")
     const purchasedItem = await fromUuid(itemUuid);
     if (!purchasedItem) {
       return ui.notifications.warn("Unable to locate purchased item, sorry!");
@@ -1591,7 +1540,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   async handleMotivationPurchase(event) {
     const target = $(event.currentTarget);
     const itemUuid = target.data("source");
-    console.log("click")
     const purchasedItem = await fromUuid(itemUuid);
     if (!purchasedItem) {
       return ui.notifications.warn("Unable to locate motivation item, sorry!");
@@ -1620,17 +1568,16 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async createActor() {
-    console.log("creating!")
+    CONFIG.logger.debug("Creating new actor...");
     const actorName = `${game.user.name}'s new actor!`;
     // TODO: validate state before creating actor
     // temporary: delete previous copies of the actor
     const existingActor = game.actors.getName(actorName);
     if (existingActor) {
-      console.log("deleting previous copy...")
+      CONFIG.logger.debug("Deleting old actor");
       await existingActor.delete();
     }
 
-    // temporary: create a new actor to add stuff to
     const newActor = await Actor.create(
       {
         name: actorName,
@@ -1697,8 +1644,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }
 
-    console.log("Granting the following items:")
-    console.log(items)
+    CONFIG.logger.debug(`Granting the following items: ${JSON.stringify(items)}`);
     await newActor.createEmbeddedDocuments("Item", items);
 
     // apply credit purchases
@@ -1707,8 +1653,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     for (const creditItem of this.data.purchases.credits) {
       creditItems.push(creditItem.item);
     }
-    console.log("processed the following credit purchases:")
-    console.log(creditItems)
+    CONFIG.logger.debug(`Processed the following credit purchases: ${JSON.stringify(creditItems)}`);
 
     await newActor.createEmbeddedDocuments("Item", creditItems);
     await newActor.update({
