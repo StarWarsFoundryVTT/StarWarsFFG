@@ -4570,7 +4570,7 @@ img {
   cursor: pointer;
 }
 
-.starwarsffg.wizard .obligation-control  {
+.starwarsffg.wizard .obligation-control, .starwarsffg.wizard .obligation-spend, .starwarsffg.wizard .specialization-spend  {
   cursor: pointer;
 }
 

@@ -12,21 +12,21 @@
     hopefully, with a little progress bar which saves the state
   -->
   <div class="career-select-container career_tab-container">
-    Select Career
+    {{ localize "SWFFG.CharacterCreator.buttons.career.select" }}
     <div class="career-selection" style="display: none;">
       <!-- hidden content here -->
       <table id="careers">
         <thead><tr>
-          <td>Select</td>
-          <td>Name</td>
-          <td>Career Skills</td>
-          <td>Specializations</td>
-          <td>Signature Abilities</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Select" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.CareerSkills" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Specializations" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.SignatureAbilities" }}</td>
         </tr></thead>
         <tbody>
         {{#each availableCareers as |career|}}
           <tr>
-            <td><i class="fa-solid fa-cart-shopping career-spend" data-source="{{ career.uuid }}" data-tooltip="Select Career"></i></td>
+            <td><i class="fa-solid fa-cart-shopping career-spend" data-source="{{ career.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.buttons.career.select" }}"></i></td>
             <td>
               {{#if career.pill}}
                 {{{ career.pill }}}
@@ -59,7 +59,7 @@
     </div>
   </div>
   <div class="career_skill_rank_select-container career_tab-container">
-    Select Career Skill Ranks ({{ keylen careerSkillPurchases }}/4 selected)
+    {{ localize "SWFFG.CharacterCreator.buttons.career.skillRanks" }} ({{ keylen careerSkillPurchases }}/4 selected)
     <div class="career_skill_rank_select-selection" style="display: none;">
       {{> "systems/starwarsffg/templates/wizards/char_creator/preview/skills.html" (
         object skillsList=skillsList actor=actor mode="career" purchases=careerSkillPurchases keys=careerKeys
@@ -67,21 +67,21 @@
     </div>
   </div>
   <div class="specialization_select-container career_tab-container">
-    Select Specialization
+    {{ localize "SWFFG.CharacterCreator.buttons.specialization.select" }}
     <!-- TODO: add a preview of the full talent tree when clicked -->
     <div class="specialization-selection" style="display: none;">
       <!-- hidden content here -->
       <table id="specializations">
         <thead><tr>
-          <td>Select</td>
-          <td>Name</td>
-          <td>Career Skills</td>
-          <td>Talents</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Select" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.CareerSkills" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Talents" }}</td>
         </tr></thead>
         <tbody>
         {{#each filteredSpecializations as |specialization|}}
           <tr>
-            <td><i class="fa-solid fa-cart-shopping specialization-spend" data-source="{{ specialization.uuid }}" data-tooltip="Select Specialization"></i></td>
+            <td><i class="fa-solid fa-cart-shopping specialization-spend" data-source="{{ specialization.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.buttons.specialization.select" }}"></i></td>
             <td>
               {{#if specialization.pill}}
                 {{{ specialization.pill }}}
@@ -108,7 +108,7 @@
     </div>
   </div>
   <div class="specialization_skill_rank_select-container career_tab-container">
-    Select Specialization Career Skill Ranks ({{ keylen specializationSkillPurchases }}/2 selected)
+    {{ localize "SWFFG.CharacterCreator.buttons.specialization.skillRanks" }} ({{ keylen specializationSkillPurchases }}/2 selected)
     <div class="specialization_skill_rank_select-selection" style="display: none;">
       {{> "systems/starwarsffg/templates/wizards/char_creator/preview/skills.html" (
         object skillsList=skillsList actor=actor mode="specialization" purchases=specializationSkillPurchases keys=specializationKeys

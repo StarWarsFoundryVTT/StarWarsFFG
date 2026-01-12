@@ -5,49 +5,50 @@
 >
   <div class="review-container">
     <div class="review-item background">
-      <b>Backgrounds</b><br>
+      <b>{{ localize "SWFFG.CharacterCreator.review.background" }}</b><br>
       {{ data.selected.background.culture.name }}, {{ data.selected.background.hook.name }}, {{ data.selected.background.forceAttitude.name }}
     </div>
     <div class="review-item startingBonus">
-      <b>Starting Values</b><br>
-      {{ totalXp }} XP, {{ totalCredits }} credits,
-      {{ data.grants.bonus.morality }}, {{ data.grants.bonus.duty }}, {{ data.grants.bonus.obligation }} morality/duty/obligation
+      <b>{{ localize "SWFFG.CharacterCreator.review.startingValues" }}</b><br>
+      {{ totalXp }} {{ localize "SWFFG.CharacterCreator.review.XP" }} {{ totalCredits }} {{ localize "SWFFG.CharacterCreator.review.credits" }}
+      {{ data.grants.bonus.morality }}, {{ data.grants.bonus.duty }}, {{ data.grants.bonus.obligation }}
+      {{ localize "SWFFG.CharacterCreator.review.morality_duty_obligation" }}
     </div>
     <div class="review-item obligation">
-      <b>Obligations</b><br>
+      <b>{{ localize "SWFFG.CharacterCreator.review.obligation" }}</b><br>
       {{#each data.selected.obligations as |obl|}}
         {{ obl.name }} ({{ obl.system.magnitude }}): {{ obl.system.description }}<br>
       {{/each }}
     </div>
     <div class="review-item species">
-      <b>Species</b><br>
+      <b>{{ localize "SWFFG.CharacterCreator.review.species" }}</b><br>
       {{ data.selected.species.name }}
     </div>
     <div class="review-item career">
-      <b>Career / Specialization</b><br>
+      <b>{{ localize "SWFFG.CharacterCreator.review.career" }} / {{ localize "SWFFG.CharacterCreator.review.specialization" }}</b><br>
       {{ data.selected.career.name }}: {{ data.selected.specialization.name }}
     </div>
     <div class="review-item purchase-xp">
-      <b>XP Purchases</b><br>
+      <b>{{ localize "SWFFG.CharacterCreator.review.purchases.xp" }}</b><br>
       {{#each data.purchases.xp.characteristics as |attr| }}
         {{ attr.key }} -> {{ attr.value }}
       {{/each }}
     </div>
     <div class="review-item purchase-credits">
-      <b>Credit Purchases</b><br>
+      <b>{{ localize "SWFFG.CharacterCreator.review.purchases.credits" }}</b><br>
       {{#each data.purchases.credits as |purchase|}}
         {{ purchase.item.name }} ({{ purchase.item.type }}) -> {{ purchase.cost }}
       {{/each }}
     </div>
     <div class="review-item motivation">
-      <b>Motivations</b><br>
+      <b>{{ localize "SWFFG.CharacterCreator.review.motivation" }}</b><br>
       {{#each data.selected.motivations as |motivation|}}
         {{ motivation.item.name }}: {{ motivation.item.system.description }}
       {{/each }}
     </div>
   </div>
   <button class="create-actor" type="button">
-    Confirm Creation
+    {{ localize "SWFFG.CharacterCreator.review.Confirm" }}
     <i class="fas fa-check-square"></i>
   </button>
 </section>

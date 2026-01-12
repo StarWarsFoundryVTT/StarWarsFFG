@@ -6,14 +6,14 @@
   <div class="form-group">
     <table id="purchased_gear">
       <thead><tr>
-        <td>Cancel</td>
-        <td>Name</td>
-        <td>Price</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Cancel" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Price" }}</td>
       </tr></thead>
       <tbody>
       {{#each data.purchases.credits as |purchase| }}
       <tr>
-        <td><i class="fas fa-trash credit-refund" data-name="{{ purchase.item.name }}" data-tooltip="Cancel Purchase"></i></td>
+        <td><i class="fas fa-trash credit-refund" data-name="{{ purchase.item.name }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tooltips.purchases.cancel" }}"></i></td>
         <td>
           <img src="{{ item.img }}"/>
           {{#if purchase.item.pill}}
@@ -27,32 +27,32 @@
       {{/each }}
       </tbody>
     </table>
-    stuff goes here
+    <hr>
     <table id="buy_gear">
       <thead>
       <tr>
-        <td>Type</td> <!-- 0: all -->
-        <td>Buy</td> <!-- 1: all -->
-        <td>Name</td> <!-- 2: all -->
-        <td>Price</td> <!-- 3: weapon, armour, gear, attachment  -->
-        <td>DMG</td> <!-- 4: weapon only -->
-        <td>CR</td> <!-- 5: weapon only -->
-        <td>Rarity</td> <!-- 6: weapon, armour, gear, attachment -->
-        <td>ENC</td> <!-- 7: weapon, armour, gear -->
-        <td>HP</td> <!-- 8: weapon, armour, attachment -->
-        <td>Skill</td> <!-- 9: weapon only -->
-        <td>Range</td> <!-- 10: weapon only -->
-        <td>Qualities</td> <!-- 11: weapon, armour, gear, attachment -->
-        <td>DEF</td> <!-- 12: armour -->
-        <td>Soak</td> <!-- 13: armour -->
-        <td>Type</td> <!-- 14: attachment, mod -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td> <!-- 0: all -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Buy" }}</td> <!-- 1: all -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td> <!-- 2: all -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Price" }}</td> <!-- 3: weapon, armour, gear, attachment  -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Damage" }}</td> <!-- 4: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.CritRating" }}</td> <!-- 5: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Rarity" }}</td> <!-- 6: weapon, armour, gear, attachment -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Encumbrance" }}</td> <!-- 7: weapon, armour, gear -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.HardPoints" }}</td> <!-- 8: weapon, armour, attachment -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Skill" }}</td> <!-- 9: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Range" }}</td> <!-- 10: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Qualities" }}</td> <!-- 11: weapon, armour, gear, attachment -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Defense" }}</td> <!-- 12: armour -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Soak" }}</td> <!-- 13: armour -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td> <!-- 14: attachment, mod -->
       </tr>
       </thead>
       <tbody>
         {{#each items as |item| }}
         <tr>
           <td>{{ item.type }}</td>
-          <td><i class="fa-solid fa-cart-shopping credit-spend" data-source="{{ item.uuid }}" data-type="{{ item.type }}" data-tooltip="Purchase"></i></td>
+          <td><i class="fa-solid fa-cart-shopping credit-spend" data-source="{{ item.uuid }}" data-type="{{ item.type }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.purchase" }}"></i></td>
           <td>
             <img src="{{ item.img }}"/>
             {{#if item.pill}}

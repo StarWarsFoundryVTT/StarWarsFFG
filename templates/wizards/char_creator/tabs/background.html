@@ -5,7 +5,7 @@
 >
   <div class="background-container">
     <div class="background-content">
-      <label for="culture">Choose a Culture:</label> <!-- TODO: localize -->
+      <label for="culture">{{ localize "SWFFG.CharacterCreator.background.Culture.Label" }}</label>
       <select class="" id="culture" name="culture">
         <option data-placeholder="true"></option>
         {{#each availableBackgrounds.cultures as |culture|}}
@@ -15,7 +15,7 @@
 
     </div>
     <div class="background-content">
-      <label for="cultured_esc">Culture Description<!-- TODO: localize --></label>
+      <label for="cultured_esc">{{ localize "SWFFG.CharacterCreator.background.Culture.Description" }}</label>
       <div id="cultured_esc" >
 
       </div>
@@ -23,7 +23,7 @@
   </div>
   <div class="background-container">
     <div class="background-content">
-      <label for="hook">Choose a Hook:</label> <!-- TODO: localize -->
+      <label for="hook">{{ localize "SWFFG.CharacterCreator.background.Hook.Label" }}</label>
       <select class="" id="hook" name="hook">
         <option data-placeholder="true"></option>
         {{#each availableBackgrounds.hooks as |hook|}}
@@ -33,7 +33,7 @@
 
     </div>
     <div class="background-content">
-      <label for="hook_desc">Hook Description<!-- TODO: localize --></label>
+      <label for="hook_desc">{{ localize "SWFFG.CharacterCreator.background.Hook.Description" }}</label>
       <div id="hook_desc" >
 
       </div>
@@ -42,7 +42,7 @@
   {{#if (eq data.selected.rules "fad")}}
     <div class="background-container">
       <div class="background-content">
-        <label for="force_attitude">Choose a Force Attitude:</label> <!-- TODO: localize -->
+        <label for="force_attitude">{{ localize "SWFFG.CharacterCreator.background.ForceAttitude.Label" }}</label>
         <select class="" id="force_attitude" name="force_attitude">
           <option data-placeholder="true"></option>
           {{#each availableBackgrounds.forceAttitudes as |fa|}}
@@ -52,7 +52,7 @@
 
       </div>
       <div class="background-content">
-        <label for="force_attitude_desc">Attitude Description<!-- TODO: localize --></label>
+        <label for="force_attitude_desc">{{ localize "SWFFG.CharacterCreator.background.ForceAttitude.Description" }}</label>
         <div id="force_attitude_desc" >
 
         </div>

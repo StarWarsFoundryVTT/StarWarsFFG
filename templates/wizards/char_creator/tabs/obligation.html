@@ -7,19 +7,19 @@
     <div class="obligation-selected">
       <table id="selected_obligations">
         <thead><tr>
-          <td>Modify</td>
-          <td>Type</td>
-          <td>Name</td>
-          <td>Magnitude</td>
-          <td>Description</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Modify" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Magnitude" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Description" }}</td>
         </tr></thead>
         <tbody>
         {{#each data.selected.obligations as |obligation|}}
           <tr>
             <td>
-              <i class="fas fa-trash obligation-control obligation-refund" data-name="{{ obligation.name }}" data-tooltip="De-select Obligation" data-action="deselect" data-index="{{@index}}"></i>
-              <i class="fas fa-edit obligation-control obligation-edit control-active" data-name="{{ obligation.name }}" data-tooltip="Modify Magnitude and Description" data-action="edit" data-index="{{@index}}"></i>
-              <i class="fas fa-save obligation-control obligation-save control-inactive" data-name="{{ obligation.name }}" data-tooltip="Save Changes" data-action="save" data-index="{{@index}}"></i>
+              <i class="fas fa-trash obligation-control obligation-refund" data-name="{{ obligation.name }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.obligation.deselect" }}" data-action="deselect" data-index="{{@index}}"></i>
+              <i class="fas fa-edit obligation-control obligation-edit control-active" data-name="{{ obligation.name }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.obligation.modify" }}" data-action="edit" data-index="{{@index}}"></i>
+              <i class="fas fa-save obligation-control obligation-save control-inactive" data-name="{{ obligation.name }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.obligation.save" }}" data-action="save" data-index="{{@index}}"></i>
             </td>
             <td>{{ obligation.system.type }}</td>
             <td>{{ obligation.name }}</td>
@@ -34,14 +34,14 @@
       <table id="obligations">
         <thead><tr>
           <td>Select</td>
-          <td>Type</td>
-          <td>Name</td>
-          <td>Description</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+          <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Description" }}</td>
         </tr></thead>
         <tbody>
         {{#each availableObligations as |obligation|}}
           <tr>
-            <td><i class="fa-solid fa-cart-shopping obligation-spend" data-source="{{ obligation.uuid }}" data-tooltip="Select Obligation"></i></td>
+            <td><i class="fa-solid fa-cart-shopping obligation-spend" data-source="{{ obligation.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.obligation.select" }}"></i></td>
             <td>
               {{ obligation.system.type }}
             </td>

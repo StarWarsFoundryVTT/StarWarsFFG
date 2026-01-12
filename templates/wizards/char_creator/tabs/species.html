@@ -6,8 +6,8 @@
   <div class="species-container">
     <table id="species">
       <thead><tr>
-        <td>Select</td>
-        <td>Name</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Select" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
         {{#each FFGCONFIG.characteristics as |attr attrName| }}
           <td>
             {{#with (lookup ../FFGCONFIG.characteristics [attrName])~}}
@@ -15,16 +15,16 @@
             {{/with}}
           </td>
         {{/each }}
-        <td>WT</td>
-        <td>ST</td>
-        <td>XP</td>
-        <td>Talents</td>
-        <td>Abilities</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.WoundThreshold" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.StrainThreshold" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.XP" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Talents" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Abilities" }}</td>
       </tr></thead>
       <tbody>
       {{#each availableSpecies as |species| }}
       <tr>
-        <td><i class="fa-solid fa-cart-shopping species-spend" data-source="{{ species.uuid }}" data-tooltip="Select Species"></i></td>
+        <td><i class="fa-solid fa-cart-shopping species-spend" data-source="{{ species.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.species.select" }}"></i></td>
         <td>
           <img src="{{ species.img }}"/>
           {{#if species.pill}}
