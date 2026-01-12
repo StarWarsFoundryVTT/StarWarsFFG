@@ -160,10 +160,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         },
         credits: [],
       },
-      initial: { // TODO: retrieve from settings
-        duty: 20,        // decreased with starting bonuses
-        obligation: 20,    // increased with starting bonuses
-        morality: 50,  // increased or decreased with starting bonuses
+      initial: {
+        duty: game.settings.get("starwarsffg", "defaultDuty"),             // decreased with starting bonuses
+        obligation: game.settings.get("starwarsffg", "defaultObligation"), // increased with starting bonuses
+        morality: game.settings.get("starwarsffg", "defaultMorality"),     // increased or decreased with starting bonuses
       },
     };
     this.builtin = {
