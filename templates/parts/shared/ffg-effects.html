@@ -1,0 +1,39 @@
+<div class="resource full">
+  <div class="attribute flex-group-center">
+    <div class="block-background">
+      <div class="block-title">
+        {{localize "SWFFG.TabEffects"}}
+      </div>
+      <div class="block-attribute">
+        <table>
+          <thead>
+          <tr>
+            <th></th>
+            <th>{{localize "SWFFG.Name"}}</th>
+            <th>{{localize "SWFFG.ConsumablesDuration"}}</th>
+            <th>{{localize "SWFFG.Source"}}</th>
+          </tr>
+          </thead>
+          <tbody>
+          {{#each data.effects as |effect|}}
+            <tr id="{{effect.id}}" class="effect-row">
+              <td class="expand-icon">+</td>
+              <td>{{effect.name}}</td>
+              <td>{{effect.duration}}</td>
+              <td>{{effect.sourceName}}</td>
+            </tr>
+            {{#each effect.changes as |change|}}
+            <tr class="change-row hidden {{effect.id}}">
+              <td><i class="far fa-arrow-right"></i></td>
+              <td>{{change.key}}</td>
+              <td>{{change.mode}}</td>
+              <td>{{change.value}}</td>
+            </tr>
+            {{/each}}
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

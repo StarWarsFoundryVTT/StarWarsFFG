@@ -1,5 +1,6 @@
 import PopoutEditor from "../popout-editor.js";
 import ModifierHelpers from "../helpers/modifiers.js";
+import EffectHelper from "../helpers/effects.js";
 
 /**
  * Extend the base Actor entity.
@@ -261,6 +262,9 @@ export class ActorFFG extends Actor {
         data.skills[skill].label = localizedField;
       }
     }
+
+    // Include active effects
+    data.effects = actorData.effects.map(EffectHelper.transformEffects);
 
     if (["character", "nemesis", "rival", "minion"].includes(actorData.type)) {
       if (game.settings.get("starwarsffg", "enableSoakCalc")) {

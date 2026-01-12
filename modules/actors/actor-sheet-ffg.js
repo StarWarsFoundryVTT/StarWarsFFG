@@ -1378,6 +1378,18 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           this.actor.items.get(i.id).delete();
       });
     });
+
+    html.find(".effect-row").on("click", async (event) => {
+      event.preventDefault();
+      let effectRow = html.find(`#${event.currentTarget.id}`);
+      effectRow.toggleClass("expanded");
+      if (effectRow.hasClass("expanded")) {
+        html.find(`#${event.currentTarget.id} .expand-icon`).text("-");
+      } else {
+        html.find(`#${event.currentTarget.id} .expand-icon`).text("+");
+      }
+      html.find(`.change-row.${event.currentTarget.id}`).toggleClass("hidden");
+    });
   }
 
   /**

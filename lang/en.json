@@ -59,6 +59,7 @@
   "SWFFG.TabSpecializations": "Specializations",
   "SWFFG.TabCareer": "Career Data",
   "SWFFG.TabXpLog": "XP log",
+  "SWFFG.TabEffects": "Active Effects",
   "SWFFG.LongDescription": "Long Description",
   "SWFFG.Sources": "Source(s):",
   "SWFFG.CharacteristicBrawn": "Brawn",
@@ -857,5 +858,10 @@
   "SWFFG.Meta.Tags.AddTag.Submit": "Submit",
   "SWFFG.Meta.Tags.AddTag.Cancel": "Cancel",
   "SWFFG.Meta.Tags.AddTag.Tag": "Tag",
-  "SWFFG.Meta.Tags.AddTag.Helper": "Tags can be used to dynamically filter items"
+  "SWFFG.Meta.Tags.AddTag.Helper": "Tags can be used to dynamically filter items",
+  "SWFFG.Effect.Duration.Permanent": "Permanent",
+  "SWFFG.Effect.Duration.CurrentCombat": "Current Combat",
+  "SWFFG.Effect.Duration.Seconds": "Seconds",
+  "SWFFG.Effect.Duration.Rounds": "Rounds",
+  "SWFFG.Effect.Duration.Turns": "Turns"
 }
