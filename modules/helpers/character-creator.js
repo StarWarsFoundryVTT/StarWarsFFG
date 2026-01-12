@@ -685,6 +685,16 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }
 
+    for (const item of game.items.filter(i => i.type === "background")) {
+      if (item.system.type === "culture") {
+        cultures.push(item);
+      } else if (item.system.type === "hook") {
+        hooks.push(item);
+      } else if (item.system.type === "attitude") {
+        forceAttitudes.push(item);
+      }
+    }
+
     return {
       cultures: cultures,
       hooks: hooks,
@@ -707,6 +717,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }
 
+    for (const item of game.items.filter(i => i.type === "obligation")) {
+      obligations.push(item);
+    }
+
     return obligations;
   }
 
@@ -723,6 +737,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       for (const item of items) {
         species.push(item);
       }
+    }
+
+    for (const item of game.items.filter(i => i.type === "species")) {
+      species.push(item);
     }
 
     return species;
@@ -743,6 +761,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       for (const item of items) {
         careers.push(item);
       }
+    }
+
+    for (const item of game.items.filter(i => i.type === "careers")) {
+      careers.push(item);
     }
 
     return careers;
@@ -777,6 +799,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       for (const item of items) {
         motivations.push(item);
       }
+    }
+
+    for (const item of game.items.filter(i => i.type === "motivation")) {
+      motivations.push(item);
     }
 
     return motivations;
