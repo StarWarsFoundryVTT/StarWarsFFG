@@ -503,6 +503,48 @@ img {
   min-height: 4.6875rem;
 }
 
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource {
+  width: 100%;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table {
+  width: 97.4%;
+  margin: 0 0 0 0.5rem;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .grid {
+  margin: 0;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table th {
+  line-height: 0.875rem;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table thead {
+  background: #919191;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table tr.effect-row {
+  line-height: 1rem;
+  text-align: left;
+  font-weight: bold;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table tr.effect-row:hover {
+  background: #415064;
+  color: white;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table tr.effect-row .expand-icon {
+  text-align: center;
+  font-weight: bolder;
+}
+
+.starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table tr.change-row {
+  line-height: 0.875rem;
+  text-align: left;
+}
+
 .starwarsffg.sheet.actor .character .sheet-body table.force-powers {
   border: 0;
 }

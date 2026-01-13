@@ -4,6 +4,7 @@ export default class TemplateHelpers {
       "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html",
       "systems/starwarsffg/templates/parts/shared/ffg-sources.html",
       "systems/starwarsffg/templates/parts/shared/ffg-tags.html",
+      "systems/starwarsffg/templates/parts/shared/ffg-effects.html",
       "systems/starwarsffg/templates/parts/actor/ffg-skills.html",
       "systems/starwarsffg/templates/parts/actor/ffg-weapon-armor-gear.html",
       "systems/starwarsffg/templates/parts/actor/ffg-vehicle-weapon-attachments.html",

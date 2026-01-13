@@ -260,6 +260,12 @@ export class ActorFFG extends Actor {
         data.skills[skill].label = localizedField;
       }
     }
+    
+    // Create list of active effects changing this actor
+    data.effects = actorData.effects.contents;
+    actorData.items.forEach(item => {
+      data.effects.push(...item.effects.contents);
+    });
 
     if (["character", "nemesis", "rival", "minion"].includes(actorData.type)) {
       if (game.settings.get("starwarsffg", "enableSoakCalc")) {

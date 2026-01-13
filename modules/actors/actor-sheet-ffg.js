@@ -10,6 +10,7 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers, {xpLogEarn, xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
+import EffectHelpers from "../helpers/effects.js";
 import {
   change_role,
   deregister_crew,
@@ -329,6 +330,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     data.modTypeSelected = "all"; // TODO: should this be something else?
     data.modifierTypes = CONFIG.FFG.allowableModifierTypes;
     data.modifierChoices = CONFIG.FFG.allowableModifierChoices;
+
+    // Include active effects
+    data.effects = actorData.system.effects.map(EffectHelpers.transformEffects);
 
     return data;
   }
@@ -1377,6 +1381,18 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       itemsToDelete.forEach((i) => {
           this.actor.items.get(i.id).delete();
       });
+    });
+
+    html.find(".effect-row").on("click", async (event) => {
+      event.preventDefault();
+      let effectRow = html.find(`#${event.currentTarget.id}`);
+      effectRow.toggleClass("expanded");
+      if (effectRow.hasClass("expanded")) {
+        html.find(`#${event.currentTarget.id} .expand-icon`).text("-");
+      } else {
+        html.find(`#${event.currentTarget.id} .expand-icon`).text("+");
+      }
+      html.find(`.change-row.${event.currentTarget.id}`).toggleClass("hidden");
     });
   }
 

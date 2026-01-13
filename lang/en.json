@@ -62,6 +62,7 @@
   "SWFFG.TabSpecializations": "Specializations",
   "SWFFG.TabCareer": "Career Data",
   "SWFFG.TabXpLog": "XP log",
+  "SWFFG.TabEffects": "Active Effects",
   "SWFFG.LongDescription": "Long Description",
   "SWFFG.Sources": "Source(s):",
   "SWFFG.CharacteristicBrawn": "Brawn",
@@ -1011,5 +1012,10 @@
   "SWFFG.CharacterCreator.review.Confirm": "Confirm Creation",
   "SWFFG.CharacterCreator.review.morality_duty_obligation": "morality/duty/obligation",
   "SWFFG.CharacterCreator.review.XP": "XP,",
-  "SWFFG.CharacterCreator.review.credits": "credits,"
+  "SWFFG.CharacterCreator.review.credits": "credits,",
+  "SWFFG.Effect.Duration.Permanent": "Permanent",
+  "SWFFG.Effect.Duration.CurrentCombat": "Current Combat",
+  "SWFFG.Effect.Duration.Seconds": "Seconds",
+  "SWFFG.Effect.Duration.Rounds": "Rounds",
+  "SWFFG.Effect.Duration.Turns": "Turns"
 }
