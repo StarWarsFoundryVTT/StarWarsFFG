@@ -1,6 +1,5 @@
 import PopoutEditor from "../popout-editor.js";
 import ModifierHelpers from "../helpers/modifiers.js";
-import EffectHelper from "../helpers/effects.js";
 
 /**
  * Extend the base Actor entity.
@@ -262,11 +261,11 @@ export class ActorFFG extends Actor {
         data.skills[skill].label = localizedField;
       }
     }
-
-    // Include active effects
-    data.effects = actorData.effects.map(EffectHelper.transformEffects);
+    
+    // Create list of active effects changing this actor
+    data.effects = actorData.effects.contents;
     actorData.items.forEach(item => {
-      data.effects.push(...item.effects.map(EffectHelper.transformEffects));
+      data.effects.push(...item.effects.contents);
     });
 
     if (["character", "nemesis", "rival", "minion"].includes(actorData.type)) {

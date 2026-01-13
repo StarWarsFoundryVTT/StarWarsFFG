@@ -15,11 +15,11 @@
           </tr>
           </thead>
           <tbody>
-          {{#each data.effects as |effect|}}
+          {{#each effects as |effect|}}
             {{#if effect.active}}
             <tr id="{{effect.id}}" class="effect-row">
               <td class="expand-icon">+</td>
-              <td>{{effect.parent.name}}</td>
+              <td>{{effect.parentName}}</td>
               <td>{{effect.name}}</td>
               <td>{{effect.duration}}</td>
             </tr>

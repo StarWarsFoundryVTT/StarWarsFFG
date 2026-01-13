@@ -10,6 +10,7 @@ import ModifierHelpers from "../helpers/modifiers.js";
 import ActorHelpers, {xpLogEarn, xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
+import EffectHelpers from "../helpers/effects.js";
 import {
   change_role,
   deregister_crew,
@@ -329,6 +330,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     data.modTypeSelected = "all"; // TODO: should this be something else?
     data.modifierTypes = CONFIG.FFG.allowableModifierTypes;
     data.modifierChoices = CONFIG.FFG.allowableModifierChoices;
+
+    // Include active effects
+    data.effects = actorData.system.effects.map(EffectHelpers.transformEffects);
 
     return data;
   }

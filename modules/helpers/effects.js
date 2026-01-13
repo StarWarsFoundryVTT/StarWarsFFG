@@ -1,4 +1,4 @@
-export default class EffectHelper {
+export default class EffectHelpers {
 
   // Lookup mode name from int
   static MODES = Object.fromEntries(
@@ -7,7 +7,14 @@ export default class EffectHelper {
     );
 
   // Map effects from EmbeddedCollection
-  static transformEffects(effect, _iterator, _effects) {
+  static transformEffects(originalEffect, _iterator, _effects) {
+    let effect = structuredClone(originalEffect);
+
+    // Copy properties we need from the prototype
+    effect.id = originalEffect.id;
+    effect.parentName = originalEffect.parent.name;
+    effect.active = originalEffect.active;
+
     // Convert duration to string
     if (effect.duration.combat) {
       effect.duration = game.i18n.localize("SWFFG.Effect.Duration.CurrentCombat");
@@ -24,7 +31,7 @@ export default class EffectHelper {
     // Update each change from this effect
     effect.changes.forEach((change, index) => {
       // Convert mode to string
-      change.mode = EffectHelper.MODES[change.mode];
+      change.mode = EffectHelpers.MODES[change.mode];
 
       // LStrip 'system.' for shorter keys
       if (change.key.startsWith("system.")) {
