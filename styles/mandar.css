@@ -542,6 +542,7 @@ img {
 
 .starwarsffg.sheet.actor .character .sheet-body .effects .resource.full table tr.change-row {
   line-height: 0.875rem;
+  text-align: left;
 }
 
 .starwarsffg.sheet.actor .character .sheet-body table.force-powers {
