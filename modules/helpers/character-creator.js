@@ -1672,17 +1672,54 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }});
 
-    // apply skill ranks from careers and specializations
-    // TODO: these should probably be modifiers on their respective items, so that source tooltips work properly
-    for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
-      const updateKey = `system.skills.${skillPurchase}.rank`;
-      const newValue = newActor.system.skills[skillPurchase].rank + 1;
-      await newActor.update({[updateKey]: newValue})
+    const careerItem = newActor.items.find(i => i.type === "career");
+    if (careerItem) {
+      for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
+        const nk = new Date().getTime();
+        await careerItem.update({
+          "system.attributes": {
+            [`attr${nk}`]: {
+              modtype: "Skill Rank",
+              mod: skillPurchase,
+              value: 1,
+            },
+          }
+        });
+        const AE = {
+          name: `attr${nk}`,
+          changes: [{
+            key: `system.skills.${skillPurchase}.rank`,
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: 1,
+          }],
+        };
+        await careerItem.createEmbeddedDocuments("ActiveEffect", [AE]);
+      }
     }
-    for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
-      const updateKey = `system.skills.${skillPurchase}.rank`;
-      const newValue = newActor.system.skills[skillPurchase].rank + 1;
-      await newActor.update({[updateKey]: newValue})
+
+    const specializationItem = newActor.items.find(i => i.type === "specialization" && i.name === this.data.selected.specialization?.name);
+    if (specializationItem) {
+      for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
+        const nk = new Date().getTime();
+        await specializationItem.update({
+          "system.attributes": {
+            [`attr${nk}`]: {
+              modtype: "Skill Rank",
+              mod: skillPurchase,
+              value: 1,
+            },
+          }
+        });
+        const AE = {
+          name: `attr${nk}`,
+          changes: [{
+            key: `system.skills.${skillPurchase}.rank`,
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: 1,
+          }],
+        };
+        await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
+      }
     }
   }
 }

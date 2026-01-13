@@ -291,7 +291,7 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
       itemmodifier: ["world.oggdudearmormods", "world.oggdudeweaponmods", "world.oggdudegenericmods", "world.oggdudevehiclemods"],
       itemattachment: ["world.oggdudearmorattachments", "world.oggdudeweaponattachments", "world.oggdudegenericattachments", "world.oggdudevehicleattachments"],
       motivation: ["world.oggdudemotivations"],
-      obligations: ["world.oggdudeobligation"],
+      obligation: ["world.oggdudeobligation"],
       signatureability: ["world.oggdudesignatureabilities"],
       skills: ["world.oggdudeskilldescriptions"],
       specialization: ["world.oggdudespecializations"],
