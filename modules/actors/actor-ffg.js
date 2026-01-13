@@ -265,6 +265,9 @@ export class ActorFFG extends Actor {
 
     // Include active effects
     data.effects = actorData.effects.map(EffectHelper.transformEffects);
+    actorData.items.forEach(item => {
+      data.effects.push(...item.effects.map(EffectHelper.transformEffects));
+    });
 
     if (["character", "nemesis", "rival", "minion"].includes(actorData.type)) {
       if (game.settings.get("starwarsffg", "enableSoakCalc")) {
