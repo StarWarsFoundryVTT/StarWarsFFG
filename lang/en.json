@@ -1013,6 +1013,7 @@
   "SWFFG.CharacterCreator.review.morality_duty_obligation": "morality/duty/obligation",
   "SWFFG.CharacterCreator.review.XP": "XP,",
   "SWFFG.CharacterCreator.review.credits": "credits,",
+  "SWFFG.CharacterCreator.Entry.Button": "PC Wizard",
   "SWFFG.Effect.Duration.Permanent": "Permanent",
   "SWFFG.Effect.Duration.CurrentCombat": "Current Combat",
   "SWFFG.Effect.Duration.Seconds": "Seconds",

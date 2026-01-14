@@ -995,6 +995,34 @@ Hooks.on("renderChatInput", (app, html, data) => {
   }
 });
 
+Hooks.on("renderActorDirectory", (app, html) => {
+  if (app.id === "actors") {
+    const wizardId = "ffgCharacterWizard";
+    if (!document.querySelector(`#${wizardId}`)) {
+      const wizardButtonIcon = document.createElement("i");
+      wizardButtonIcon.classList.add("fa-solid", "fa-wand-magic-sparkles");
+
+      const wizardButtonText = document.createElement("span");
+      wizardButtonText.textContent = game.i18n.localize("SWFFG.CharacterCreator.Entry.Button");
+
+      const wizardButton = document.createElement("button");
+      wizardButton.id = wizardId;
+      wizardButton.type = "button";
+      wizardButton.classList.add("activate-wizard");
+      wizardButton.appendChild(wizardButtonIcon);
+      wizardButton.appendChild(wizardButtonText);
+
+      const folderElement = html.querySelector(".header-actions.action-buttons");
+      folderElement.appendChild(wizardButton);
+
+      wizardButton.onclick = async function () {
+        const create = new CharacterCreator();
+        create.render(true);
+      }
+    }
+  }
+});
+
 Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   if (game.user.isGM) {
     let div;
@@ -1496,10 +1524,6 @@ Hooks.once("ready", async () => {
     combatTrackerConfig.turnMarker.enabled = false;
     await game.settings.set("core", "combatTrackerConfig", combatTrackerConfig);
   }
-
-  // TODO: clean this up
-  const create = new CharacterCreator();
-  create.render(true);
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {
