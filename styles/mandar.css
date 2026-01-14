@@ -1400,6 +1400,10 @@ img {
   cursor: pointer;
 }
 
+.starwarsffg .talent-disable-edit .talent-connector.talent-action {
+  cursor: default;
+}
+
 .starwarsffg .header-fields {
   position: relative;
 }
