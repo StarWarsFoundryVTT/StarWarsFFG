@@ -922,6 +922,7 @@
       "templates": ["core", "basic"],
       "type": "duty",
       "magnitude": 0,
+      "subtype": "",
       "description": ""
     },
     "motivation": {

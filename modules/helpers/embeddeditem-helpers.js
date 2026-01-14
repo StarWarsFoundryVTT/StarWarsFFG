@@ -90,7 +90,7 @@ export default class EmbeddedItemHelpers {
     }
     // because this could be a temporary item, item-ffg.js may not fire, we need to set the renderedDesc.
     if (temporaryItem.system.description) {
-      temporaryItem.system.renderedDesc = PopoutEditor.renderDiceImages(
+      temporaryItem.system.renderedDesc = await PopoutEditor.renderDiceImages(
           temporaryItem.system.description,
           {},
       );

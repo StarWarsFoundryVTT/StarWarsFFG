@@ -43,6 +43,17 @@ const obligationTypes = {
   },
 };
 
+const obligationSubTypes = {
+  "Strength": {
+    "value": "Emotional Strength",
+    "label": "SWFFG.CharacterCreator.Obligation.EmotionalStrength",
+  },
+  "Weakness": {
+    "value": "Emotional Weakness",
+    "label": "SWFFG.CharacterCreator.Obligation.EmotionalWeakness",
+  },
+};
+
 const motivationTypes = {
   "Ambition": {
     "value": "Ambition",
@@ -197,6 +208,7 @@ export const characterCreator = {
   rules: rules,
   backgroundTypes: backgroundTypes,
   obligationTypes: obligationTypes,
+  obligationSubTypes: obligationSubTypes,
   motivationTypes: motivationTypes,
   startingBonusesRadio: startingBonusesRadio,
 };

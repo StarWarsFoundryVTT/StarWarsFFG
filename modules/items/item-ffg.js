@@ -298,7 +298,7 @@ export class ItemFFG extends ItemBaseFFG {
       }
     }
 
-    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actor);
+    data.renderedDesc = await PopoutEditor.renderDiceImages(data.description, actor);
 
     // perform localisation of dynamic values
     switch (this.type) {

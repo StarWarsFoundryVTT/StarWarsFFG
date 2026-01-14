@@ -1639,7 +1639,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
     // motivations
     for (const item of this.data.selected.motivations) {
-      if (item?.uuid) {
+      if (item?.item?.uuid) {
         items.push(item);
       }
     }

@@ -4669,3 +4669,7 @@ img {
   color: #8b0000;
 }
 
+.starwarsffg .morality-controls {
+  display: flex;
+}
+

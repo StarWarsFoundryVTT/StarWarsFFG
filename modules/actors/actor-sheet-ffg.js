@@ -254,6 +254,11 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         data.data.general.enrichedNotes = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.notes) || "";
         data.data.general.enrichedFeatures = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.general?.features) || "";
         data.maxAttribute = game.settings.get("starwarsffg", "maxAttribute");
+        data.obligationItems = {
+          obligations: data.items.filter(i => i.system?.type === "obligation"),
+          duties: data.items.filter(i => i.system?.type === "duty"),
+          moralities: data.items.filter(i => i.system?.type === "morality"),
+        };
         break;
       case "vehicle":
         data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography);
@@ -317,9 +322,6 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       data.data.skilllist = this._createSkillColumns(data);
     }
 
-    if (this.actor.flags?.config?.enableObligation === false && this.actor.flags?.config?.enableDuty === false && this.actor.flags?.config?.enableMorality === false && this.actor.flags?.config?.enableConflict === false) {
-      data.hideObligationDutyMoralityConflictTab = true;
-    }
     if (this.actor.flags?.starwarsffg?.xpLog) {
       data.xpLog = this.object.getFlag("starwarsffg", "xpLog") || [];
     }
@@ -593,30 +595,6 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         hint: game.i18n.localize("SWFFG.MedicalItemNameHint"),
         type: "String",
         default: game.settings.get("starwarsffg", "medItemName"),
-      });
-      this.sheetoptions.register("enableObligation", {
-        name: game.i18n.localize("SWFFG.EnableObligation"),
-        hint: game.i18n.localize("SWFFG.EnableObligationHint"),
-        type: "Boolean",
-        default: true,
-      });
-      this.sheetoptions.register("enableDuty", {
-        name: game.i18n.localize("SWFFG.EnableDuty"),
-        hint: game.i18n.localize("SWFFG.EnableDutyHint"),
-        type: "Boolean",
-        default: true,
-      });
-      this.sheetoptions.register("enableMorality", {
-        name: game.i18n.localize("SWFFG.EnableMorality"),
-        hint: game.i18n.localize("SWFFG.EnableMoralityHint"),
-        type: "Boolean",
-        default: true,
-      });
-      this.sheetoptions.register("enableConflict", {
-        name: game.i18n.localize("SWFFG.EnableConflict"),
-        hint: game.i18n.localize("SWFFG.EnableConflictHint"),
-        type: "Boolean",
-        default: true,
       });
       this.sheetoptions.register("enableForcePool", {
         name: game.i18n.localize("SWFFG.EnableForcePool"),
@@ -1332,23 +1310,68 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       }
     });
 
-    html.find(".add-obligation").on("click", async (event) => {
+    html.find(".edit-item").on("click", async (event) => {
       event.preventDefault();
       const a = event.currentTarget;
-      const form = this.form;
-
-      const nk = randomID();
-      let newKey = document.createElement("div");
-      newKey.innerHTML = `<input type="text" name="data.obligationlist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.obligationlist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
-      form.appendChild(newKey);
-      await this._onSubmit(event);
+      const itemId = a.dataset["id"];
+      let item = this.actor.items.get(itemId);
+      if (!item) {
+        return ui.notifications.warn("Unable to locate item on actor!");
+      }
+      if (item?.sheet) {
+        item.sheet.render(true);
+      }
     });
 
-    html.find(".remove-obligation").on("click", async (event) => {
+    html.find(".add-obligation").on("click", async (event) => {
+      event.preventDefault();
+      const itemData = {
+        name: "new Obligation",
+        type: "obligation",
+        system: {
+          type: "obligation",
+          description: "Newly-created obligation",
+          magnitude: 0,
+        },
+      };
+      await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    });
+
+    html.find(".add-motivation").on("click", async (event) => {
+      event.preventDefault();
+      const itemData = {
+        name: "new Motivation",
+        type: "motivation",
+        system: {
+          type: "Ambition",
+          description: "Newly-created motivation",
+        },
+      };
+      await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    });
+
+    html.find(".add-background").on("click", async (event) => {
+      event.preventDefault();
+      const itemData = {
+        name: "new Background",
+        type: "background",
+        system: {
+          type: "hook",
+          description: "Newly-created background",
+        },
+      };
+      await this.actor.createEmbeddedDocuments("Item", [itemData]);
+    });
+
+    html.find(".remove-item").on("click", async (event) => {
       event.preventDefault();
       const a = event.currentTarget;
       const id = a.dataset["id"];
-      this.object.update({ "system.obligationlist": { ["-=" + id]: null } });
+      const item = this.object.items.find(i => i.id === id);
+      if (!item) {
+        return ui.notifications.warn("Unable to remove item: cannot find it!");
+      }
+      await this.object.deleteEmbeddedDocuments("Item", [id]);
     });
 
     html.find(".add-duty").on("click", async (event) => {

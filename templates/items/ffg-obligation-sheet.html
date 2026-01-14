@@ -10,7 +10,11 @@
 
       <div class="container flex-group-center">
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.CharacterCreator.Obligation.Label" type="Dropdown" name="data.type" value=data.type options=data.obligationTypes) }}
-        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.CharacterCreator.Obligation.Magnitude" type="Number" name="data.magnitude" value=data.magnitude) }}
+        {{#if (eq item.system.type "morality") }}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.CharacterCreator.Obligation.SubType" type="Dropdown" name="data.subtype" value=data.subtype options=data.subtypes) }}
+        {{ else }}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.CharacterCreator.Obligation.Magnitude" type="Number" name="data.magnitude" value=data.magnitude) }}
+        {{/if }}
       </div>
     </div>
   </header>
