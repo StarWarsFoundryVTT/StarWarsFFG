@@ -173,6 +173,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         eote: "Edge of the Empire",
       },
     };
+
+    this.compendiumData = {};
   }
 
   /** @override */
@@ -472,7 +474,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       await this.createActor(event);
     });
 
-    CONFIG.logger.debug(`Current state: ${JSON.stringify(this.data)}`)
+    CONFIG.logger.debug(`Current state: ${JSON.stringify(this.data)}`);
   }
 
   /**
@@ -502,13 +504,22 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       builtin: this.builtin,
     };
 
-    context.availableBackgrounds = await this.getBackgrounds();
+    if (Object.keys(this.compendiumData).length === 0) {
+      this.compendiumData['availableBackgrounds'] = await this.getBackgrounds();
+      this.compendiumData['availableObligations'] = await this.getAvailableMoralities();
+      this.compendiumData['availableSpecies'] = await this.getAvailableSpecies();
+      this.compendiumData['availableCareers'] = await this.getAvailableCareers();
+      this.compendiumData['availableMotivations'] = await this.getAvailableMotivations();
+      this.compendiumData['items'] = await this.getItems();
+    }
+
+    context.availableBackgrounds = this.compendiumData['availableBackgrounds'];
     context.startingBonusesRadio = CONFIG.FFG.characterCreator.startingBonusesRadio[this.data.selected.rules];
-    context.availableObligations = await this.getAvailableMoralities();
-    context.availableSpecies = await this.getAvailableSpecies();
-    context.availableCareers = await this.getAvailableCareers();
+    context.availableObligations = this.compendiumData['availableObligations'];
+    context.availableSpecies = this.compendiumData['availableSpecies'];
+    context.availableCareers = this.compendiumData['availableCareers'];
     context.filteredSpecializations = this.data.available.specializations;
-    context.availableMotivations = await this.getAvailableMotivations();
+    context.availableMotivations = this.compendiumData['availableMotivations'];
     context.tempActor = this.tempActor;
     if (this.tempActor) {
       const skillData = foundry.utils.deepClone(
@@ -522,7 +533,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     context.availableXp = xp.available;
 
     // items for the shop
-    context.items = await this.getItems();
+    context.items = this.compendiumData['items'];
 
     const credits = this.calcCredits();
     context.totalCredits = credits.total;
