@@ -1732,5 +1732,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
       }
     }
+
+    newActor.sheet.render(true);
   }
 }
