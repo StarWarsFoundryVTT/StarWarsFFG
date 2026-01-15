@@ -1,0 +1,85 @@
+<section
+  class='tab gear {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='gear'
+>
+  <div class="form-group">
+    <table id="purchased_gear">
+      <thead><tr>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Cancel" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Price" }}</td>
+      </tr></thead>
+      <tbody>
+      {{#each data.purchases.credits as |purchase| }}
+      <tr>
+        <td><i class="fas fa-trash credit-refund" data-name="{{ purchase.item.name }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tooltips.purchases.cancel" }}"></i></td>
+        <td>
+          <img src="{{ item.img }}"/>
+          {{#if purchase.item.pill}}
+            {{{ purchase.item.pill }}}
+          {{else}}
+            {{ purchase.item.name }}
+          {{/if}}
+        </td>
+        <td>{{ purchase.cost }}</td>
+      </tr>
+      {{/each }}
+      </tbody>
+    </table>
+    <hr>
+    <table id="buy_gear">
+      <thead>
+      <tr>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td> <!-- 0: all -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Buy" }}</td> <!-- 1: all -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td> <!-- 2: all -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Price" }}</td> <!-- 3: weapon, armour, gear, attachment  -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Damage" }}</td> <!-- 4: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.CritRating" }}</td> <!-- 5: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Rarity" }}</td> <!-- 6: weapon, armour, gear, attachment -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Encumbrance" }}</td> <!-- 7: weapon, armour, gear -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.HardPoints" }}</td> <!-- 8: weapon, armour, attachment -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Skill" }}</td> <!-- 9: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Range" }}</td> <!-- 10: weapon only -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Qualities" }}</td> <!-- 11: weapon, armour, gear, attachment -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Defense" }}</td> <!-- 12: armour -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Soak" }}</td> <!-- 13: armour -->
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td> <!-- 14: attachment, mod -->
+      </tr>
+      </thead>
+      <tbody>
+        {{#each items as |item| }}
+        <tr>
+          <td>{{ item.type }}</td>
+          <td><i class="fa-solid fa-cart-shopping credit-spend" data-source="{{ item.uuid }}" data-type="{{ item.type }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.purchase" }}"></i></td>
+          <td>
+            <img src="{{ item.img }}"/>
+            {{#if item.pill}}
+              {{{ item.pill }}}
+            {{else}}
+              {{ item.name }}
+            {{/if}}
+          </td>
+          <td>{{ item.system.price.value }}</td>
+          <td>{{ item.system.damage.value }}</td>
+          <td>{{ item.system.crit.value}}</td>
+          <td>{{ item.system.rarity.value }}<!--TODO: include restricted flag?--></td>
+          <td>{{ item.system.encumbrance.value }}</td>
+          <td>{{ item.system.hardpoints.value }}</td>
+          <td>{{ item.system.skill.value }}</td>
+          <td>{{ item.system.range.value }}</td>
+          <td>
+            {{#each item.system.itemmodifier as |quality| }}
+              <div class="item-pill hover-tooltip" data-tooltip="{{ quality.system.description }}">{{ quality.name }}</div>
+            {{/each }}
+          </td>
+          <td>{{ item.system.defence.value }}</td>
+          <td>{{ item.system.soak.value }}</td>
+          <td>{{ item.system.type }}</td>
+        </tr>
+        {{/each }}
+      </tbody>
+    </table>
+  </div>
+</section>

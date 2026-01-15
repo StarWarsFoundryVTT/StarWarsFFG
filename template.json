@@ -597,7 +597,25 @@
   },
   "Item": {
     "types": [
-      "ability", "armour", "career", "criticaldamage", "criticalinjury", "forcepower", "gear", "itemattachment", "itemmodifier", "talent", "shipattachment", "shipweapon", "homesteadupgrade", "signatureability", "specialization", "species", "weapon"],
+      "ability",
+      "armour",
+      "career",
+      "criticaldamage", "criticalinjury",
+      "forcepower",
+      "gear",
+      "itemattachment", "itemmodifier",
+      "talent",
+      "shipattachment",
+      "shipweapon",
+      "homesteadupgrade",
+      "signatureability",
+      "specialization",
+      "species",
+      "weapon",
+      "background",
+      "obligation",
+      "motivation"
+    ],
     "templates": {
       "core": {
         "description": "",
@@ -894,6 +912,23 @@
       "templates": ["core", "qualities"],
       "type": "all",
       "rank": 0
+    },
+    "background": {
+      "templates": ["core", "basic"],
+      "type": "culture",
+      "description": ""
+    },
+    "obligation": {
+      "templates": ["core", "basic"],
+      "type": "duty",
+      "magnitude": 0,
+      "subtype": "",
+      "description": ""
+    },
+    "motivation": {
+      "templates": ["core", "basic"],
+      "type": "ambition",
+      "description": ""
     }
   }
 }

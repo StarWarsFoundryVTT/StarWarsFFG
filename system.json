@@ -9,9 +9,9 @@
     "maximum": 13
   },
   "authors": [{"name": "Esrin"}, {"name": "CStadther"}, {"name": "Wrycu"}, {"name": "Jaxxa"}],
-  "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js"],
-  "styles": ["styles/starwarsffg.css", "lib/select2/select2.min.css", "lib/pure/grids-min.css"],
-  "scripts": ["lib/select2/select2.min.js", "lib/jszip/jszip.min.js", "lib/jxon/jxon.min.js"],
+  "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js", "lib/slimselect/slimselect.js", "lib/datatables/datatables.min.js"],
+  "styles": ["styles/starwarsffg.css", "lib/pure/grids-min.css", "lib/slimselect/slimselect.css", "lib/datatables/datatables.min.css"],
+  "scripts": ["lib/jszip/jszip.min.js", "lib/jxon/jxon.min.js", "lib/slimselect/slimselect.js"],
   "socket": true,
   "packs": [],
   "packFolders": [],

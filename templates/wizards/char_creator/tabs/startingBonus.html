@@ -1,0 +1,12 @@
+<section
+  class='tab startingBonus {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='startingBonus'
+>
+  <div class="form-group">
+    <label>{{ localize "SWFFG.CharacterCreator.startingBonus.Label" }}</label>
+    <div class="form-fields" data-action="selectStartingBonus">
+      {{radioBoxes "startingBonus" startingBonusesRadio checked=data.selected.startingBonus localize=true}}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,57 @@
+<section
+  class='tab motivation {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='motivation'
+>
+  <div class="motivation-container">
+    <table id="selected_motivations">
+      <thead><tr>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Select" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Description" }}</td>
+      </tr></thead>
+      <tbody>
+      {{#each data.selected.motivations as |motivation|}}
+        <tr>
+          <td><i class="fas fa-trash motivation-refund" data-name="{{ motivation.item.name }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tooltips.motivation.deselect" }}"></i></td>
+          <td>{{ motivation.item.system.type }}</td>
+          <td>
+            {{#if motivation.item.pill}}
+              {{{ motivation.item.pill }}}
+            {{else}}
+              {{ motivation.item.name }}
+            {{/if}}
+          </td>
+          <td>{{ motivation.item.system.description }}</td>
+        </tr>
+      {{/each }}
+      </tbody>
+    </table>
+
+    <table id="motivations">
+      <thead><tr>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Select" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Type" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Description" }}</td>
+      </tr></thead>
+      <tbody>
+      {{#each availableMotivations as |motivation|}}
+        <tr>
+          <td><i class="fa-solid fa-cart-shopping motivation-spend" data-source="{{ motivation.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tooltips.motivation.select" }}"></i></td>
+          <td>{{ motivation.system.type }}</td>
+          <td>
+            {{#if motivation.pill}}
+              {{{ motivation.pill }}}
+            {{else}}
+              {{ motivation.name }}
+            {{/if}}
+          </td>
+          <td>{{ motivation.system.description }}</td>
+        </tr>
+      {{/each }}
+      </tbody>
+    </table>
+  </div>
+</section>

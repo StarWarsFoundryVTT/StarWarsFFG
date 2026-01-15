@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Armor {
+  static getMetaData() {
+    return {
+      displayName: 'Armor',
+      className: "Armor",
+      itemName: "armor",
+      localizationName: "SWFFG.ItemsArmor",
+      fileNames: ["Armor.xml"],
+      filesAreDir: false,
+      phase: 3,
+    };
+  }
+
   static async Import(xml, zip) {
     try {
       const base = JXON.xmlToJs(xml);
@@ -15,6 +27,11 @@ export default class Armor {
         await ImportHelpers.asyncForEach(items, async (item) => {
           try {
             let data = ImportHelpers.prepareBaseObject(item, "armour");
+
+            if (item.Description.split('\n').length > 0 && item.Description.includes('[H4]')) {
+              // remove the item name in the description....
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
 
             data.data = {
               attributes: {},

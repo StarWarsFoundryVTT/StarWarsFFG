@@ -48,6 +48,7 @@ import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
 import {handleUpdate} from "./swffg-migration.js";
 import SWAImporter from "./importer/swa-importer.js";
+import {CharacterCreator} from "./helpers/character-creator.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -264,6 +265,46 @@ Hooks.once("init", async function () {
     default: true,
     type: Boolean,
   });
+  game.settings.register("starwarsffg", "defaultObligation", {
+    name: game.i18n.localize("SWFFG.Settings.Obligation.Default.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Obligation.Default.Hint"),
+    scope: "world",
+    config: false,
+    default: 20,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "defaultDuty", {
+    name: game.i18n.localize("SWFFG.Settings.Duty.Default.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Duty.Default.Hint"),
+    scope: "world",
+    config: false,
+    default: 20,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "defaultMorality", {
+    name: game.i18n.localize("SWFFG.Settings.Morality.Default.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Morality.Default.Hint"),
+    scope: "world",
+    config: false,
+    default: 50,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "maxRarity", {
+    name: game.i18n.localize("SWFFG.Settings.CharCreator.Items.maxRarity.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.CharCreator.Items.maxRarity.Hint"),
+    scope: "world",
+    config: false,
+    default: 6,
+    type: Number,
+  });
+  game.settings.register("starwarsffg", "allowRestricted", {
+    name: game.i18n.localize("SWFFG.Settings.CharCreator.Items.allowRestricted.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.CharCreator.Items.allowRestricted.Hint"),
+    scope: "world",
+    config: false,
+    default: false,
+    type: Boolean,
+  });
 
   /**
    * Register the option to use generic slots for combat
@@ -324,7 +365,7 @@ Hooks.once("init", async function () {
   });
 
   /**
-   * Register compendiums for sources for purchasing
+   * Register compendiums for sources for purchasing and character creation
    */
   game.settings.register("starwarsffg", "specializationCompendiums", {
     name: game.i18n.localize("SWFFG.Settings.Purchase.Specialization.Name"),
@@ -358,6 +399,61 @@ Hooks.once("init", async function () {
     default: "",
     type: String,
   });
+  // backgrounds
+  game.settings.register("starwarsffg", "backgroundCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Background.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Background.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudebackgrounds",
+    type: String,
+  });
+  // obligations
+  game.settings.register("starwarsffg", "obligationCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Obligation.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Obligation.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudeobligations",
+    type: String,
+  });
+  // species
+  game.settings.register("starwarsffg", "speciesCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Species.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Species.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudespecies",
+    type: String,
+  });
+  // careers
+  game.settings.register("starwarsffg", "careerCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Career.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Career.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudecareers",
+    type: String,
+  });
+  // motivations
+  game.settings.register("starwarsffg", "motivationCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Motivation.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Motivation.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudemotivations",
+    type: String,
+  });
+  // items
+  game.settings.register("starwarsffg", "itemCompendiums", {
+    name: game.i18n.localize("SWFFG.Settings.Purchase.Item.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Purchase.Item.Hint"),
+    scope: "world",
+    config: false,
+    default: "world.oggdudeweapons,world.oggdudearmor,world.oggdudegear,world.oggdudearmorattachments,world.oggdudegenericattachments,world.oggdudeweaponattachments,world.oggdudearmormods,world.oggdudegenericmods,world.oggdudeweaponmods",
+    type: String,
+  });
+  // defense dice setting
   game.settings.register("starwarsffg", "useDefense", {
     name: game.i18n.localize("SWFFG.Settings.UseDefense.Name"),
     hint: game.i18n.localize("SWFFG.Settings.UseDefense.Hint"),
@@ -829,6 +925,21 @@ Hooks.once("init", async function () {
     }
   });
 
+  Handlebars.registerHelper("keylen", function (obj) {
+    try {
+      return Object.keys(obj).length;
+    } catch (e) {
+      return 0;
+    }
+  });
+
+  Handlebars.registerHelper("in", function (value, array) {
+    if (!Array.isArray(array)) {
+      return false;
+    }
+    return array.indexOf(value) >= 0;
+  });
+
   Handlebars.registerHelper("ffgDiceSymbols", function (text) {
     //return PopoutEditor.renderDiceImages(text);
     CONFIG.logger.warn("This function is no longer needed and should not be called. Please notify the devs if you see this message.");
@@ -879,6 +990,35 @@ Hooks.on("renderChatInput", (app, html, data) => {
           data: game.user.system,
         };
         await DiceHelpers.displayRollDialog(user, dicePool, game.i18n.localize("SWFFG.RollingDefaultTitle"), "");
+      }
+    }
+  }
+});
+
+Hooks.on("renderActorDirectory", (app, html) => {
+  if (app.id === "actors") {
+    const wizardId = "ffgCharacterWizard";
+    if (!document.querySelector(`#${wizardId}`)) {
+      const wizardButtonIcon = document.createElement("i");
+      wizardButtonIcon.classList.add("fa-solid", "fa-wand-magic-sparkles");
+
+      const wizardButtonText = document.createElement("span");
+      wizardButtonText.textContent = game.i18n.localize("SWFFG.CharacterCreator.Entry.Button");
+
+      const wizardButton = document.createElement("button");
+      wizardButton.id = wizardId;
+      wizardButton.type = "button";
+      wizardButton.classList.add("activate-wizard");
+      wizardButton.appendChild(wizardButtonIcon);
+      wizardButton.appendChild(wizardButtonText);
+
+      const folderElement = html.querySelector(".header-actions.action-buttons");
+      folderElement.appendChild(wizardButton);
+
+      wizardButton.onclick = async function () {
+        ui.notifications.info(game.i18n.localize("SWFFG.CharacterCreator.Entry.Loading"));
+        const create = new CharacterCreator();
+        create.render(true);
       }
     }
   }

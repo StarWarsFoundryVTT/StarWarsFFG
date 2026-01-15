@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class ItemDescriptors {
+  static getMetaData() {
+    return {
+      displayName: 'Item Modifiers',
+      className: "ItemModifiers",
+      itemName: "itemmodifier",
+      localizationName: "TYPES.Item.itemmodifier",
+      fileNames: ["ItemDescriptors.xml"],
+      filesAreDir: false,
+      phase: 2,
+    };
+  }
+
   static async Import(xml) {
     const base = JXON.xmlToJs(xml);
     let items = base.ItemDescriptors.ItemDescriptor;
@@ -8,7 +20,7 @@ export default class ItemDescriptors {
     let currentCount = 0;
     let pack;
     CONFIG.logger.debug(`Starting Oggdude Item Descriptor Import`);
-    $(".import-progress.itemdescriptors").toggleClass("import-hidden");
+    $(".import-progress.itemmodifier").toggleClass("import-hidden");
     const packMap = {
       "armor": await ImportHelpers.getCompendiumPack("Item", "oggdude.ArmorMods"),
       "weapon": await ImportHelpers.getCompendiumPack("Item", "oggdude.WeaponMods"),
@@ -71,7 +83,7 @@ export default class ItemDescriptors {
 
         currentCount += 1;
 
-        $(".itemdescriptors .import-progress-bar")
+        $(".itemmodifier .import-progress-bar")
           .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
           .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
       } catch (err) {

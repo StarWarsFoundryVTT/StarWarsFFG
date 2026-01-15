@@ -1,0 +1,15 @@
+<section
+  class='tab xp_spend {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='xp_spend'
+>
+  {{> "systems/starwarsffg/templates/wizards/char_creator/actor_preview.html" (
+    object data=data actor=tempActor skillsList=skillsList combinedPurchases=combinedPurchases
+  )}}
+  <div class="actions">
+    <button type="button" class="purchase-specialization">{{ localize "SWFFG.CharacterCreator.buttons.specialization.purchase" }}</button>
+    {{# if (eq data.selected.rules "fad") }}
+    <button type="button" class="purchase-forcePower">{{ localize "SWFFG.CharacterCreator.buttons.forcePower.purchase" }}</button>
+    {{/if }}
+  </div>
+</section>

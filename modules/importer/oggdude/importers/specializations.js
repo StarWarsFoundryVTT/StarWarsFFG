@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Specializations {
+  static getMetaData() {
+    return {
+      displayName: 'Specializations',
+      className: "Specialization",
+      itemName: "specialization",
+      localizationName: "SWFFG.Specializations",
+      fileNames: ["/Specializations/"],
+      filesAreDir: true,
+      phase: 5,
+    };
+  }
+
   static async Import(zip) {
     try {
       const files = Object.values(zip.files).filter((file) => {
@@ -12,7 +24,7 @@ export default class Specializations {
       if (files.length) {
         let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Specializations`);
         CONFIG.logger.debug(`Starting Oggdude Specialization Import`);
-        $(".import-progress.specializations").toggleClass("import-hidden");
+        $(".import-progress.specialization").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(files, async (file) => {
           try {
@@ -20,6 +32,11 @@ export default class Specializations {
             const xmlData = ImportHelpers.stringToXml(zipData);
             const specializationData = JXON.xmlToJs(xmlData);
             const item = specializationData.Specialization;
+
+            if (item.Description.split('\n').length > 0 && item.Description.includes('[H4]')) {
+              // remove the item name in the description....
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
 
             let data = ImportHelpers.prepareBaseObject(item, "specialization");
             data.system = {
@@ -136,7 +153,7 @@ export default class Specializations {
 
             currentCount += 1;
 
-            $(".specializations .import-progress-bar")
+            $(".specialization .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {

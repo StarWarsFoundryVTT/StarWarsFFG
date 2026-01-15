@@ -4469,7 +4469,7 @@ img {
   border-radius: 1rem;
 }
 
-.starwarsffg.item-card .properties .tag .hover-tooltip, .starwarsffg .item-display .item-properties .tag .hover-tooltip, .starwarsffg .specials .hover-tooltip, .starwarsffg .item-pill-hover {
+.starwarsffg .hover-tooltip, .starwarsffg .item-pill-hover {
   display: inline-block;
   margin: 0.1rem;
   border-bottom: 2px dotted black;
@@ -4594,3 +4594,82 @@ img {
 .starwarsffg .container .tag_tooltip {
   align-content: center;
 }
+
+.starwarsffg.wizard .background-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.starwarsffg.wizard .background-container  .background-content {
+  flex: 1;
+}
+
+.starwarsffg.wizard .xp_spend .actor_summary .fa-minus-square, .starwarsffg.wizard .xp_spend .actor_summary .fa-plus-square, .starwarsffg.wizard .credit-spend, .starwarsffg.wizard .species-spend, .starwarsffg.wizard .motivation-spend  {
+  cursor: pointer;
+}
+
+.starwarsffg.wizard .career-spend  {
+  cursor: pointer;
+}
+
+.starwarsffg.wizard .obligation-control, .starwarsffg.wizard .obligation-spend, .starwarsffg.wizard .specialization-spend  {
+  cursor: pointer;
+}
+
+.starwarsffg.wizard .forcePower-summary .talent-cost {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  z-index: 10;
+  width: auto;
+  height: 0.75rem;
+  padding: 0 0.25rem 0 0.5rem;
+  font-size: 0.75rem;
+  background: #ddd;
+  color: rgba(0, 0, 0, 0.75);
+  --notchSize: 0.5rem;
+  -webkit-clip-path: polygon(0 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
+  clip-path: polygon(0 0, var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%, 100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%, 0 100%, 0% calc(100% - var(--notchSize)));
+}
+.starwarsffg.wizard .forcePower-summary .talent-background .talent-header {
+  background-color: #0e4400;
+}
+
+.starwarsffg.wizard .forcePower-summary .talent-background .talent-header div input[type="text"] {
+  background-color: #1a8200;
+}
+
+.starwarsffg.wizard input:disabled{
+  border: none;
+}
+
+.starwarsffg.wizard .remove-purchase, .starwarsffg.wizard .credit-refund, .starwarsffg.wizard .motivation-refund {
+  cursor: pointer;
+}
+
+.starwarsffg.wizard table img {
+  max-width: 64px;
+  max-height: 64px;
+}
+
+.starwarsffg .item-type-highlight {
+  background: rgba(73, 12, 11, 0.85);
+  color:#ffffff;
+  flex-grow: 1;
+}
+
+.starwarsffg .control-inactive {
+  display: none;
+}
+
+.starwarsffg .state_good {
+  color: #0e4400;
+}
+.starwarsffg .state_bad {
+  color: #8b0000;
+}
+
+.starwarsffg .morality-controls {
+  display: flex;
+}
+

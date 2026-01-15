@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class SignatureAbilities {
+  static getMetaData() {
+    return {
+      displayName: 'Signature Abilities',
+      className: "SignatureAbility",
+      itemName: "signatureability",
+      localizationName: "TYPES.Item.signatureability",
+      fileNames: ["SigAbilityNodes.xml"],
+      filesAreDir: false,
+      phase: 8,
+    };
+  }
+
   static async Import(xml, zip) {
     const base = JXON.xmlToJs(xml);
     let items = base?.SigAbilityNodes?.SigAbilityNode;
@@ -13,7 +25,7 @@ export default class SignatureAbilities {
       let totalCount = files.length;
       let currentCount = 0;
 
-      $(".import-progress.signatureabilities").toggleClass("import-hidden");
+      $(".import-progress.signatureability").toggleClass("import-hidden");
       let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.SignatureAbilities`);
       CONFIG.logger.debug(`Starting Oggdude Signature Ability (${files.length}) Import`);
 
@@ -25,6 +37,11 @@ export default class SignatureAbilities {
           const item = signatureAbility.SigAbility;
 
           let data = ImportHelpers.prepareBaseObject(item, "signatureability");
+
+          if (item.Description.split('\n').length > 0 && item.Description.includes('[H4]')) {
+            // remove the item name in the description....
+            item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+          }
 
           data.data = {
             description: item.Description,
@@ -176,7 +193,7 @@ export default class SignatureAbilities {
             }
           }
 
-          $(".signatureabilities .import-progress-bar")
+          $(".signatureability .import-progress-bar")
             .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
             .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
         } catch (err) {

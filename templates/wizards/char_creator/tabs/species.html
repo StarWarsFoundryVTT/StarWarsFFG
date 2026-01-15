@@ -1,0 +1,61 @@
+<section
+  class='tab species {{tab.cssClass}}'
+  data-group='primary'
+  data-tab='species'
+>
+  <div class="species-container">
+    <table id="species">
+      <thead><tr>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Select" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Name" }}</td>
+        {{#each FFGCONFIG.characteristics as |attr attrName| }}
+          <td>
+            {{#with (lookup ../FFGCONFIG.characteristics [attrName])~}}
+              {{localize abrev}}
+            {{/with}}
+          </td>
+        {{/each }}
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.WoundThreshold" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.StrainThreshold" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.XP" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Talents" }}</td>
+        <td>{{ localize "SWFFG.CharacterCreator.tables.labels.Abilities" }}</td>
+      </tr></thead>
+      <tbody>
+      {{#each availableSpecies as |species| }}
+      <tr>
+        <td><i class="fa-solid fa-cart-shopping species-spend" data-source="{{ species.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.species.select" }}"></i></td>
+        <td>
+          <img src="{{ species.img }}"/>
+          {{#if species.pill}}
+            {{{ species.pill }}}
+          {{else}}
+            {{ species.name }}
+          {{/if}}
+        </td>
+        {{#each ../FFGCONFIG.characteristics as |attr attrName| }}
+          <td>
+            {{#with (lookup species.system.attributes [attrName])~}}
+              {{ value }}
+            {{/with}}
+          </td>
+        {{/each }}
+        <td>{{ species.system.attributes.Wounds.value }}</td>
+        <td>{{ species.system.attributes.Strain.value }}</td>
+        <td>{{ species.system.startingXP }}</td>
+        <td>
+          {{#each species.system.talents as |talent talentId| }}
+            <div class="item-pill hover-tooltip" data-tooltip="{{ talent.system.description }}">{{ talent.name }}</div>
+          {{/each }}
+        </td>
+        <td>
+          {{#each species.system.abilities as |ability abilityId| }}
+          <div class="item-pill hover-tooltip" data-tooltip="{{ ability.system.description }}">{{ ability.name }}</div>
+          {{/each }}
+        </td>
+      </tr>
+      {{/each }}
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -9,7 +9,7 @@ export class ActorFFG extends Actor {
 
   // returns true if EditMode is not enabled, false otherwise. sends warning notification if EditMode is enabled and sendWarn is true
   verifyEditModeIsNotEnabled(sendWarn = true){
-    const result = !this.flags.starwarsffg.config.enableEditMode;
+    const result = !this.getFlag("starwarsffg", "config.enableEditMode");
     if(sendWarn && !result) {
       ui.notifications.warn("Can't do this while EditMode is enabled");
     }
@@ -132,7 +132,7 @@ export class ActorFFG extends Actor {
         // get the wounds without brawn modifying it, then add the new brawn value in
         const originalWounds = this.system.stats?.wounds.max;
         const originalWoundsWithoutBrawn = originalWounds - originalBrawn;
-        const updatedWounds = originalWoundsWithoutBrawn + updatedBrawn;
+        const updatedWounds = originalWoundsWithoutBrawn + parseInt(updatedBrawn);
         if (!Object.keys(changes.system).includes("stats")) {
           changes.system.stats = {};
         }
@@ -187,7 +187,6 @@ export class ActorFFG extends Actor {
    * Augment the basic actor data with additional dynamic data.
    */
   prepareDerivedData() {
-    CONFIG.logger.debug(`Preparing Actor Data ${this.type}`);
     const actor = this;
     const data = actor.system;
     const flags = actor.flags;
@@ -500,7 +499,7 @@ export class ActorFFG extends Actor {
           obligation += parseInt(item.magnitude, 10);
         }
       });
-      data.obligation.value = obligation;
+      data.obligations.value = obligation;
     }
 
     if (data?.dutylist && Object.keys(data.dutylist).length > 0) {

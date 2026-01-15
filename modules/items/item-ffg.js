@@ -264,8 +264,6 @@ export class ItemFFG extends ItemBaseFFG {
   async prepareData() {
     await super.prepareData();
 
-    CONFIG.logger.debug(`Preparing Item Data ${this.type} ${this.name}`);
-
     // Get the Item's data
     const item = this;
     const actor = this.actor ? this.actor : {};
@@ -300,7 +298,7 @@ export class ItemFFG extends ItemBaseFFG {
       }
     }
 
-    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, actor);
+    data.renderedDesc = await PopoutEditor.renderDiceImages(data.description, actor);
 
     // perform localisation of dynamic values
     switch (this.type) {

@@ -1,6 +1,18 @@
 import ImportHelpers from "../../import-helpers.js";
 
 export default class Career {
+  static getMetaData() {
+    return {
+      displayName: 'Careers',
+      className: "Career",
+      itemName: "career",
+      localizationName: "SWFFG.Career",
+      fileNames: ["Careers"],
+      filesAreDir: true,
+      phase: 6,
+    };
+  }
+
   static async Import(zip) {
     try {
       const files = Object.values(zip.files).filter((file) => {
@@ -12,7 +24,7 @@ export default class Career {
       if (files.length) {
         let pack = await ImportHelpers.getCompendiumPack("Item", `oggdude.Careers`);
         CONFIG.logger.debug(`Starting Oggdude Careers Import`);
-        $(".import-progress.careers").toggleClass("import-hidden");
+        $(".import-progress.career").toggleClass("import-hidden");
 
         await ImportHelpers.asyncForEach(files, async (file) => {
           try {
@@ -24,6 +36,11 @@ export default class Career {
             let data = ImportHelpers.prepareBaseObject(item, "career");
 
             if (item.Description.split('\n').length > 0) {
+              item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
+            }
+
+            if (item.Description.split('\n').length > 0 && item.Description.includes('[H4]')) {
+              // remove the item name in the description....
               item.Description = item.Description.replace('\n\n', '\n').split('\n').slice(1).join('<br>');
             }
 
@@ -118,7 +135,7 @@ export default class Career {
             await ImportHelpers.addImportItemToCompendium("Item", data, pack);
             currentCount += 1;
 
-            $(".careers .import-progress-bar")
+            $(".career .import-progress-bar")
               .width(`${Math.trunc((currentCount / totalCount) * 100)}%`)
               .html(`<span>${Math.trunc((currentCount / totalCount) * 100)}%</span>`);
           } catch (err) {
