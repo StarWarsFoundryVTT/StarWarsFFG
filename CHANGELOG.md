@@ -11,6 +11,7 @@
   * Added "Active Effects" tab to character sheet ([#2060](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2060))
   * Added the ability to export/import XP log ([#2050](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2050))
   * Allow gear to have modifiers which impact actors ([#2058](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2058))
+  * Allow setting images for Force Powers and Signature Abilities ([#2076](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2076))
 * Notes:
   * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
     * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
