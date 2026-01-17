@@ -500,6 +500,14 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       await this._xpAdjustment(ev);
     });
 
+    html.find(".xp-export").click(async (ev) => {
+      await this._xpExport(ev);
+    });
+
+    html.find(".xp-import").click(async (ev) => {
+      await this._xpImport(ev);
+    });
+
     html.find(".minion-control").click(async (ev) => {
       await this._handleKillMinion(ev);
     });
@@ -2560,6 +2568,69 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               "Self"
             );
             await ActorHelpers.endEditMode(this.actor, AEState, true);
+          },
+        },
+        two: {
+          icon: '<i class="fas fa-times"></i>',
+          label: "Cancel",
+        },
+      },
+      default: "one",
+    });
+    d.render(true);
+  }
+
+  async _xpExport(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const existingLog = this.actor.getFlag("starwarsffg", "xpLog");
+    const downloadLog = [];
+    for (const entry of existingLog) {
+      if (Object.keys(entry).includes("id")) {
+        delete entry.id;
+      }
+      downloadLog.push(entry);
+    }
+    const blob = new Blob([JSON.stringify(downloadLog)], {type: "text/plain"});
+    const blobUrl = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = `${this.actor.name}-xpLog.txt`;
+    link.click();
+    URL.revokeObjectURL(blobUrl);
+  }
+
+  async _xpImport(event) {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const content = `
+    <label for="adjustAmount">${game.i18n.localize("SWFFG.XP.Import.Title")}</label>
+    <div>
+      <input type="file" name="xpLogFile" id="xpLogFile" accept=".txt" />
+    </div>
+    `;
+
+    let d = new Dialog({
+      title: game.i18n.localize("SWFFG.XP.Import.Title"),
+      content: content,
+      buttons: {
+        one: {
+          icon: '<i class="fas fa-check"></i>',
+          label: game.i18n.localize("SWFFG.XP.Import.Title"),
+          callback: async () => {
+            const fileElement = $("#xpLogFile");
+            const file = fileElement[0].files?.[0];
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = async ({ target }) => {
+              const parsedLog = JSON.parse(target.result);
+              CONFIG.logger.debug(`Loading processed XP log: ${JSON.stringify(parsedLog)}`);
+              await this.actor.setFlag("starwarsffg", "xpLog", parsedLog);
+            }
+            reader.onerror = function() {
+              ui.notifications.error("Failed to load file contents");
+            }
           },
         },
         two: {

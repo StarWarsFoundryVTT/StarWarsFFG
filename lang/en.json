@@ -853,6 +853,8 @@
   "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Name": "Roll - Apply \"Remove setback\" mods",
   "SWFFG.Settings.dice.ApplyRemoveSetbackMods.Hint": "Automatically apply \"Remove setback\" modifiers when rolling dice.",
   "SWFFG.XP.Adjust.Title": "Adjust XP",
+  "SWFFG.XP.Export.Title": "Export Log",
+  "SWFFG.XP.Import.Title": "Import Log",
   "SWFFG.XP.Adjust.Confirm": "Adjust",
   "SWFFG.XP.Adjust.Window.Title": "Adjust Available XP",
   "SWFFG.XP.Adjust.Window.Reason": "Adjustment Reason",
