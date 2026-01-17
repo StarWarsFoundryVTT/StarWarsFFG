@@ -9,6 +9,7 @@
     * Additionally, they're used by the NPC generator
   * Expanding talents on actor sheets or sending to chat now displays the long description instead of the short ([#2029](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2029))
   * Added "Active Effects" tab to character sheet ([#2060](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2060))
+  * Added the ability to export/import XP log ([#2050](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2050))
 * Notes:
   * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
     * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
