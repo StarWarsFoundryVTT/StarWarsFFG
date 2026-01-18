@@ -48,16 +48,19 @@ export default class ActorOptions {
                 this.options[control.id].value = value;
               }
 
-              const editMode = this.data.object.getFlag("starwarsffg", "config.enableEditMode");
+              // read the most recent version, not the registered flag version
+              const editMode = updateObject['flags.starwarsffg.config.enableEditMode'];
               if (editMode) {
                 // suspend AEs
                 this.suspended = await ActorHelpers.beginEditMode(this.data.object);
+                updateObject[`flags.starwarsffg.config.editModeActor`] = game.user.id;
               } else {
                 // unsuspend AEs
                 if (Object.keys(this.suspended).length > 0) {
                   await ActorHelpers.endEditMode(this.data.object, this.suspended);
                   this.suspended = {};
                 }
+                updateObject[`flags.starwarsffg.config.editModeActor`] = "";
               }
 
               this.data.object.update(updateObject);
