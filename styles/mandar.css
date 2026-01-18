@@ -2341,8 +2341,8 @@ img {
 }
 
 .starwarsffg .skillsGrid .dice-pool img {
-  width: 1em;
-  height: 1em;
+  max-width: 1em;
+  max-height: 1em;
   border: 0;
 }
 
@@ -2419,6 +2419,11 @@ img {
 .starwarsffg .items .items-list .item img {
   flex: 0 0 24px;
   margin-right: 5px;
+}
+
+.starwarsffg .items .items-list .item .crew img {
+  flex: 0 0 24px;
+  margin-right: 0;
 }
 
 .starwarsffg .items .items-list .item .toggle-equipped {
