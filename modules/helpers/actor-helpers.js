@@ -242,3 +242,28 @@ export async function xpLogEarn(actor, grant, available, total, note, granter="G
   };
   await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
 }
+
+/**
+ * Undoes an XP grant, e.g., from removing a species
+ * @param actor - ffgActor object
+ * @param undone - XP undone
+ * @param available - (new) XP available
+ * @param total - (new) XP total
+ * @returns {Promise<void>}
+ */
+export async function xpLogUndo(actor, undone, available, total) {
+  const xpLog = actor.getFlag("starwarsffg", "xpLog") || [];
+  const date = new Date().toISOString().slice(0, 10);
+  const newEntry = {
+    action: "undid",
+    id: undefined,
+    xp: {
+      cost: undone,
+      available: available,
+      total: total,
+    },
+    date: date,
+    description: "Species XP",
+  };
+  await actor.setFlag("starwarsffg", "xpLog", [newEntry, ...xpLog]);
+}

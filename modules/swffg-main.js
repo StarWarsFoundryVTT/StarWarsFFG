@@ -49,6 +49,7 @@ import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./help
 import {handleUpdate} from "./swffg-migration.js";
 import SWAImporter from "./importer/swa-importer.js";
 import {CharacterCreator} from "./helpers/character-creator.js";
+import {xpLogUndo} from "./helpers/actor-helpers.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -1407,12 +1408,25 @@ Hooks.once("ready", async () => {
     }
   });
   // data for _onDropItemCreate has system.encumbrance.adjusted = 0, despite it being proper in the item itself
-  Hooks.on("deleteItem", (item, options, userId) => {
+  Hooks.on("deleteItem", async (item, options, userId) => {
     if (userId != game.user.id) return
     // remove talents added by species
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
       if (item.type === "species" && actor.type === "character") {
+        const grantedXp = item.system.startingXP;
+        const currentAvailable = actor.system.experience.available;
+        const currentTotal = actor.system.experience.total;
+        await actor.update({"system.experience": {
+          available: currentAvailable - grantedXp,
+          total: currentTotal - grantedXp,
+        }});
+        await xpLogUndo(
+          actor,
+          grantedXp,
+          currentAvailable - grantedXp,
+          currentTotal - grantedXp,
+        );
         const toDelete = [];
         for(const talentId of Object.keys(item.system.talents)) {
           const speciesTalent = item.system.talents[talentId];

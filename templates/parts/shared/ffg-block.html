@@ -42,6 +42,9 @@
               {{#if (eq entry.action "adjusted")}}
                   <div class="xp adjusted">
               {{/if}}
+              {{#if (eq entry.action "undid")}}
+                  <div class="xp undid">
+              {{/if}}
                 {{ entry.date }}: {{ entry.action }} <b>{{ entry.description }}</b> for {{ entry.xp.cost }} xp ({{ entry.xp.available }} available, {{ entry.xp.total }} total)
                 {{#if (eq entry.id undefined) }}{{ else }}{{#if (or (eq entry.action "purchased") (eq entry.action "adjusted")) }}
                   <a class="xp refund" title="Refund Purchase" data-id="{{ entry.id }}">
