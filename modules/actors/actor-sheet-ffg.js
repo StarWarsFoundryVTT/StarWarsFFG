@@ -34,6 +34,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       skills: new Set(),
     };
     this.object.setFlag("starwarsffg", "config.enableEditMode", false);
+    this.object.setFlag("starwarsffg", "config.editModeActor", "");
   }
 
   pools = new Map();
@@ -327,7 +328,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     }
 
     data.actor.items = ActorSheetFFG.sortForActorSheet(data.actor.items);
-    data.disabled = !this.object.getFlag("starwarsffg", "config.enableEditMode");
+    const editModeEnabled = this.object.getFlag("starwarsffg", "config.enableEditMode");
+    const editModeActor = this.object.getFlag("starwarsffg", "config.editModeActor");
+    data.disabled = !(editModeEnabled && editModeActor === game.user.id);
 
     data.modTypeSelected = "all"; // TODO: should this be something else?
     data.modifierTypes = CONFIG.FFG.allowableModifierTypes;
