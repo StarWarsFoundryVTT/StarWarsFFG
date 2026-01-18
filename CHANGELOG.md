@@ -37,6 +37,7 @@
   * the OggDude Dataset importer now uses custom default images if images are not provided ([#2044](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2044))
   * Removed the `Stat All` modifier option, which was a union of `Stat`, `Weapon Stat`, `Vehicle Stat`, and `Amor Stat` ([#1986](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1986))
   * Fix universal specializations costing more XP when purchased via drag-and-drop ([2057](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2057))
+  * Moving items from a token to an actor will no longer remove the item from the parent actor of the token ([#2067](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2067))
 
 `1.910`
 * Fixes:
