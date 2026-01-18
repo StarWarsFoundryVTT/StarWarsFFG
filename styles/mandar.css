@@ -4549,7 +4549,7 @@ img {
 .starwarsffg .xp.grant {
   color: rgb(27, 106, 24);
 }
-.starwarsffg .xp.adjusted {
+.starwarsffg .xp.adjusted, .starwarsffg .xp.undid {
   color: rgb(159, 47, 172);
 }
 .starwarsffg .tab.xp .resource {

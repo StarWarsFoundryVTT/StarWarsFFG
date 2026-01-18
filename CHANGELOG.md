@@ -39,6 +39,7 @@
   * Fix universal specializations costing more XP when purchased via drag-and-drop ([2057](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2057))
   * Moving items from a token to an actor will no longer remove the item from the parent actor of the token ([#2067](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2067))
   * Fix for Force Power upgrades sometimes being purchasable despite not having enough XP ([#2074](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2074))
+  * XP granted by species is now removed if the species is removed ([#2083](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2083))
 
 `1.910`
 * Fixes:
