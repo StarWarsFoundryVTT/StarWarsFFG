@@ -1994,6 +1994,15 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       if (!sameActor) {
         try {
           this.actor.createEmbeddedDocuments("Item", [foundry.utils.duplicate(data.data)]); // Create a new Item
+          let token;
+          if (game.scenes.current) {
+            token = game.scenes.current.tokens.get(data?.tokenId);
+            if (token) {
+              // Delete originating item from other _token_
+              token.actor.items.get(data.data._id)?.delete();
+              return;
+            }
+          }
           const actor = game.actors.get(data.actorId);
           await actor.items.get(data.data._id)?.delete(); // Delete originating item from other actor
         } catch (err) {
