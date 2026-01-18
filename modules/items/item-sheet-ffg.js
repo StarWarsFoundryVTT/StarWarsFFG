@@ -1117,13 +1117,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       throw new Error("Refused to buy for item with no found owner actor");
     }
     const availableXPToLog = foundry.utils.deepClone(owner.system.experience.available);
-    const AEState = await ActorHelpers.beginEditMode(owner, true);
     const availableXP = owner.system.experience.available;
     const totalXP = owner.system.experience.total;
     if (cost > availableXP) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       throw new Error("Not enough XP");
     }
+    const AEState = await ActorHelpers.beginEditMode(owner, true);
     return {
       owner: owner,
       cost: cost,
