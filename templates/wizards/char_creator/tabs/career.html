@@ -12,6 +12,8 @@
     hopefully, with a little progress bar which saves the state
   -->
   <div class="career-select-container career_tab-container">
+    {{ localize "SWFFG.CharacterCreator.Wizard.Career.Select" }} {{ localize "SWFFG.CharacterCreator.Wizard.Career.Label" }}, {{ localize "SWFFG.CharacterCreator.Wizard.CareerRanks.Label" }}, {{ localize "SWFFG.CharacterCreator.Wizard.Specialization.Label" }}, & {{ localize "SWFFG.CharacterCreator.Wizard.SpecializationRanks.Label" }}
+    <br>
     {{ localize "SWFFG.CharacterCreator.buttons.career.select" }}
     <div class="career-selection" style="display: none;">
       <!-- hidden content here -->
@@ -97,7 +99,7 @@
             </td>
             <td>
               {{#each specialization.system.talents as |talent key|}}
-                {{ talent.name }}
+                <div class="item-pill hover-tooltip" data-tooltip="{{ talent.description }}">{{ talent.name }}</div>
                 {{#if @last }}{{ else }},{{/if }}
               {{/each }}
             </td>
