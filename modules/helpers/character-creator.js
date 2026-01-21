@@ -460,9 +460,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     );
     gearTable.buttons('.weapon').trigger();
-    gearTable.on("draw", async () => {
-      await this.activateShopListeners();
-    });
 
     // motivations
     const purchasedMotivationTable = new DataTable(
