@@ -1016,7 +1016,7 @@
   "SWFFG.CharacterCreator.review.XP": "XP,",
   "SWFFG.CharacterCreator.review.credits": "credits,",
   "SWFFG.CharacterCreator.Entry.Button": "PC Wizard",
-  "SWFFG.CharacterCreator.Entry.Loading": "PC Wizard",
+  "SWFFG.CharacterCreator.Entry.Loading": "PC Wizard Loading...",
   "SWFFG.Effect.Duration.Permanent": "Permanent",
   "SWFFG.Effect.Duration.CurrentCombat": "Current Combat",
   "SWFFG.Effect.Duration.Seconds": "Seconds",

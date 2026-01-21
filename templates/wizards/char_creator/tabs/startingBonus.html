@@ -4,9 +4,16 @@
   data-tab='startingBonus'
 >
   <div class="form-group">
-    <label>{{ localize "SWFFG.CharacterCreator.startingBonus.Label" }}</label>
-    <div class="form-fields" data-action="selectStartingBonus">
-      {{radioBoxes "startingBonus" startingBonusesRadio checked=data.selected.startingBonus localize=true}}
+    <div class="background-container">
+      <div class="background-content">
+        <label for="startingBonus">{{ localize "SWFFG.CharacterCreator.startingBonus.Label" }}</label>
+        <select class="" id="startingBonus" name="startingBonus">
+          <option data-placeholder="true"></option>
+          {{#each startingBonusesRadio as |startingBonus|}}
+            <option value="{{startingBonus.value}}">{{localize startingBonus.label}}</option>
+          {{/each }}
+        </select>
+      </div>
     </div>
   </div>
 </section>

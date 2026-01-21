@@ -102,7 +102,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     },
     actions: {
       selectRules: CharacterCreator.selectRules,
-      selectStartingBonus: this.selectStartingBonus,
     },
     position: {
       width: 950,
@@ -227,6 +226,21 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       });
       forceAttitudeSelector.setSelected(this.data.selected.background.forceAttitude?.uuid, false);
     }
+
+    // starting bonuses
+    const startingBonusSelector = new SlimSelect({
+        select: '#startingBonus',
+        cssClasses: {
+          option: "starwarsffg"
+        },
+        events: {
+          afterChange: async (newVal) => {
+            // could be >1 but we only allow one here
+            this.selectStartingBonus(newVal[0].value);
+          }
+        }
+      });
+      startingBonusSelector.setSelected(this.data.selected.startingBonus, false);
 
     // obligations
     const obligationsTable = new DataTable(
@@ -514,7 +528,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     context.availableBackgrounds = this.compendiumData['availableBackgrounds'];
-    context.startingBonusesRadio = CONFIG.FFG.characterCreator.startingBonusesRadio[this.data.selected.rules];
+    context.startingBonusesRadio = this.startingBonusForHTML();
     context.availableObligations = this.compendiumData['availableObligations'];
     context.availableSpecies = this.compendiumData['availableSpecies'];
     context.availableCareers = this.compendiumData['availableCareers'];
@@ -607,6 +621,23 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
     context.tab = context.tabs[partId];
     return context;
+  }
+
+  /**
+   * Converts the config object into an object slimselect can use
+   * @returns {*[]}
+   */
+  startingBonusForHTML() {
+    const startingBonuses = CONFIG.FFG.characterCreator.startingBonusesRadio[this.data.selected.rules];
+    const options = [];
+    for (const value of Object.keys(startingBonuses)) {
+      const label = startingBonuses[value];
+      options.push({
+        value: value,
+        label: label,
+      });
+    }
+    return options;
   }
 
   /**
@@ -818,8 +849,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   /**
   * Handler for the user selecting their starting bonus
   */
-  static selectStartingBonus(event, target) {
-    const choice = $(target).find(":checked")[0].value;
+  selectStartingBonus(choice) {
     CONFIG.logger.debug(`selected starting bonus ${choice}`);
     const ruleToBonusMap = {
       fad: 'conflict',
