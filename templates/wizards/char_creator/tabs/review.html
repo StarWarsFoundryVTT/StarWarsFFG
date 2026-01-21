@@ -14,7 +14,23 @@
           <i class="fa-regular fa-circle-x state_bad"></i>
         {{/if }}
       </span><br>
-      {{ data.selected.background.culture.name }}, {{ data.selected.background.hook.name }}, {{ data.selected.background.forceAttitude.name }}
+      {{#if data.selected.background.culture.pill}}
+        {{{ data.selected.background.culture.pill }}}
+      {{else}}
+        {{ data.selected.background.culture.name }}
+      {{/if}}
+      ,
+      {{#if data.selected.background.hook.pill}}
+        {{{ data.selected.background.hook.pill }}}
+      {{else}}
+        {{ data.selected.background.hook.name }}
+      {{/if}}
+      ,
+      {{#if data.selected.background.forceAttitude.pill}}
+        {{{ data.selected.background.forceAttitude.pill }}}
+      {{else}}
+        {{ data.selected.background.forceAttitude.name }}
+      {{/if}}
     </div>
     <div class="review-item startingBonus">
       <span class="startingBonus status">
@@ -34,7 +50,12 @@
         {{/if }}
       </span><br>
       {{#each data.selected.obligations as |obl|}}
-        {{ obl.name }} ({{ obl.system.magnitude }}): {{ obl.system.description }}<br>
+        {{#if obl.pill}}
+          {{{ obl.pill }}}
+        {{else}}
+          {{ obl.name }}
+        {{/if}}
+        ({{ obl.system.magnitude }}): {{ obl.system.description }}<br>
       {{/each }}
     </div>
     <div class="review-item species">
@@ -46,7 +67,12 @@
           <i class="fa-regular fa-circle-x state_bad"></i>
         {{/if }}
       </span><br>
-      {{ data.selected.species.name }}
+      <img src="{{ data.selected.species.img }}" style="max-height: 64px; max-width: 64px;"/>
+      {{#if data.selected.species.pill}}
+        {{{ data.selected.species.pill }}}
+      {{else}}
+        {{ data.selected.species.name }}
+      {{/if}}
     </div>
     <div class="review-item career">
       <span class="career status">
@@ -57,7 +83,17 @@
           <i class="fa-regular fa-circle-x state_bad"></i>
         {{/if }}
       </span><br>
-      {{ data.selected.career.name }}: {{ data.selected.specialization.name }}
+      {{#if data.selected.career.pill}}
+        {{{ data.selected.career.pill }}}
+      {{else}}
+        {{ data.selected.career.name }}
+      {{/if}}
+      :
+      {{#if data.selected.specialization.pill}}
+        {{{ data.selected.specialization.pill }}}
+      {{else}}
+        {{ data.selected.specialization.name }}
+      {{/if}}
     </div>
     <div class="review-item purchase-xp">
       <span class="purchase-xp status">
@@ -87,9 +123,18 @@
           <i class="fa-regular fa-circle-x state_bad"></i>
         {{/if }}
       </span><br>
+      <div class="review-purchases-credits">
       {{#each data.purchases.credits as |purchase|}}
-        {{ purchase.item.name }} ({{ purchase.item.type }}) -> {{ purchase.cost }}
+        <img src="{{ purchase.item.img }}" style="max-height: 64px; max-width: 64px;"/>
+        {{#if purchase.item.pill}}
+          {{{ purchase.item.pill }}}
+        {{else}}
+          {{ purchase.item.name }}
+        {{/if}}
+        ({{ purchase.cost }})
+        <br>
       {{/each }}
+      </div>
     </div>
     <div class="review-item motivation">
       <span class="motivation status">
@@ -101,7 +146,12 @@
         {{/if }}
       </span><br>
       {{#each data.selected.motivations as |motivation|}}
-        {{ motivation.item.name }}: {{ motivation.item.system.description }}
+        {{#if motivation.item.pill}}
+          {{{ motivation.item.pill }}}
+        {{else}}
+          {{ motivation.item.name }}
+        {{/if}}
+        : {{ motivation.item.system.description }}
       {{/each }}
     </div>
   </div>
