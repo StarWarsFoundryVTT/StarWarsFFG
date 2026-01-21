@@ -25,7 +25,11 @@
       <tbody>
       {{#each availableSpecies as |species| }}
       <tr>
-        <td><i class="fa-solid fa-cart-shopping species-spend" data-source="{{ species.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.species.select" }}"></i></td>
+        <td>
+          {{#if (eq ../data.selected.species.uuid species.uuid ) }} {{ else }}
+            <i class="fa-solid fa-cart-shopping species-spend" data-source="{{ species.uuid }}" data-tooltip="{{ localize "SWFFG.CharacterCreator.tables.buttons.species.select" }}"></i>
+          {{/if}}
+        </td>
         <td>
           <img src="{{ species.img }}"/>
           {{#if species.pill}}
