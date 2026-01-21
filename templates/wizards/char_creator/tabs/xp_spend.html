@@ -3,6 +3,9 @@
   data-group='primary'
   data-tab='xp_spend'
 >
+  <div>
+    <label>{{ localize "SWFFG.CharacterCreator.Wizard.XP.Label" }}</label>
+  </div>
   {{> "systems/starwarsffg/templates/wizards/char_creator/actor_preview.html" (
     object data=data actor=tempActor skillsList=skillsList combinedPurchases=combinedPurchases
   )}}
