@@ -99,7 +99,7 @@
             </td>
             <td>
               {{#each specialization.system.talents as |talent key|}}
-                {{ talent.name }}
+                <div class="item-pill hover-tooltip" data-tooltip="{{ talent.description }}">{{ talent.name }}</div>
                 {{#if @last }}{{ else }},{{/if }}
               {{/each }}
             </td>
