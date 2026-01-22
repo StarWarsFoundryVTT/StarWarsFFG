@@ -460,9 +460,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     );
     gearTable.buttons('.weapon').trigger();
-    gearTable.on("draw", async () => {
-      await this.activateShopListeners();
-    });
 
     // motivations
     const purchasedMotivationTable = new DataTable(
@@ -1118,24 +1115,60 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     console.log(items)
     await tempActor.createEmbeddedDocuments("Item", items);
 
+    // apply career skill ranks from career and specialization
+    const careerItem = tempActor.items.find(i => i.type === "career");
+    if (careerItem) {
+      for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
+        const nk = new Date().getTime();
+        await careerItem.update({
+          "system.attributes": {
+            [`attr${nk}`]: {
+              modtype: "Skill Rank",
+              mod: skillPurchase,
+              value: 1,
+            },
+          }
+        });
+        const AE = {
+          name: `attr${nk}`,
+          changes: [{
+            key: `system.skills.${skillPurchase}.rank`,
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: 1,
+          }],
+        };
+        await careerItem.createEmbeddedDocuments("ActiveEffect", [AE]);
+      }
+    }
+
+    const specializationItem = tempActor.items.find(i => i.type === "specialization" && i.name === this.data.selected.specialization?.name);
+    if (specializationItem) {
+      for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
+        const nk = new Date().getTime();
+        await specializationItem.update({
+          "system.attributes": {
+            [`attr${nk}`]: {
+              modtype: "Skill Rank",
+              mod: skillPurchase,
+              value: 1,
+            },
+          }
+        });
+        const AE = {
+          name: `attr${nk}`,
+          changes: [{
+            key: `system.skills.${skillPurchase}.rank`,
+            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            value: 1,
+          }],
+        };
+        await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
+      }
+    }
     console.log("assigning to local actor record")
     this.tempActor = tempActor;
     console.log("re-rendering")
     this.render();
-
-    // TODO: add bonus stuff
-
-    // apply career skill ranks from career and specialization
-    for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
-      const updateKey = `system.skills.${skillPurchase}.rank`;
-      const newValue = tempActor.system.skills[skillPurchase].rank + 1;
-      await tempActor.update({[updateKey]: newValue})
-    }
-    for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
-      const updateKey = `system.skills.${skillPurchase}.rank`;
-      const newValue = tempActor.system.skills[skillPurchase].rank + 1;
-      await tempActor.update({[updateKey]: newValue})
-    }
   }
 
   async handleCharacteristicModify(event) {
@@ -1762,6 +1795,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
       }
     }
+
+    await xpLogEarn(newActor, totalXp, totalXp, totalXp, "Initial State");
+    await xpLogSpend(newActor, "Character Creation Changes", totalXp - availableXp, availableXp, totalXp);
 
     newActor.sheet.render(true);
   }
