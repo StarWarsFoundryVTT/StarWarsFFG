@@ -1796,6 +1796,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }
 
+    await xpLogEarn(newActor, totalXp, totalXp, totalXp, "Initial State");
+    await xpLogSpend(newActor, "Character Creation Changes", totalXp - availableXp, availableXp, totalXp);
+
     newActor.sheet.render(true);
   }
 }
