@@ -4613,7 +4613,7 @@ img {
   cursor: pointer;
 }
 
-.starwarsffg.wizard .career-spend  {
+.starwarsffg.wizard .career-spend, .starwarsffg.wizard .fa-minus-square, .starwarsffg.wizard .fa-plus-square  {
   cursor: pointer;
 }
 
