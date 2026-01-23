@@ -1,17 +1,18 @@
 `2.0.0`
 * Enhancements:
+  * Foundry v13 support!
   * Suppressing AE popups from items equipping
   * Weapons now have an ammo option, fantastic for Grenades and Launchers! ([#1984](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1984))
   * Specializations can now be set as universal via their sheets ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
   * Item sources can now be added and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
   * Item tags can now be viewed, added, and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
     * These tags can be used by macros and will be used by the Enhancements module
-    * Additionally, they're used by the NPC generator
   * Expanding talents on actor sheets or sending to chat now displays the long description instead of the short ([#2029](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2029))
   * Added "Active Effects" tab to character sheet ([#2060](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2060))
   * Added the ability to export/import XP log ([#2050](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2050))
   * Allow gear to have modifiers which impact actors ([#2058](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2058))
   * Allow setting images for Force Powers and Signature Abilities ([#2076](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2076))
+  * Added a player character creation wizard ([#1974](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1974))
 * Notes:
   * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
     * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
@@ -36,7 +37,7 @@
   * Fix for editing specialization top description not showing current text ([#2041](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2041))
   * the OggDude Dataset importer now uses custom default images if images are not provided ([#2044](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2044))
   * Removed the `Stat All` modifier option, which was a union of `Stat`, `Weapon Stat`, `Vehicle Stat`, and `Amor Stat` ([#1986](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1986))
-  * Fix universal specializations costing more XP when purchased via drag-and-drop ([2057](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2057))
+  * Fix universal specializations costing more XP when purchased via drag-and-drop ([#2057](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2057))
   * Moving items from a token to an actor will no longer remove the item from the parent actor of the token ([#2067](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2067))
   * Fix for Force Power upgrades sometimes being purchasable despite not having enough XP ([#2074](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2074))
   * XP granted by species is now removed if the species is removed ([#2083](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2083))
