@@ -1,0 +1,43 @@
+{
+  "title": "Edit Mode",
+  "description": "Understand how to manually adjust stats",
+  "display": true,
+  "closeWindows": false,
+  "steps": [
+    {
+      "id": "welcome",
+      "title": "SWFFG.Tours.EditMode.welcome.title",
+      "content": "SWFFG.Tours.EditMode.welcome.content",
+      "selector": "[name=\"data.characteristics.Brawn.value\"]",
+      "position": "bottom"
+    },
+    {
+      "id": "sheet-options",
+      "selector": ".ffg-sheet-options",
+      "title": "SWFFG.Tours.EditMode.sheet-options.title",
+      "content": "SWFFG.Tours.EditMode.sheet-options.content",
+      "position": "bottom"
+    },
+    {
+      "id": "enable-edit-mode",
+      "selector": "[name=\"config.enableEditMode\"]",
+      "title": "SWFFG.Tours.EditMode.enable-edit-mode.title",
+      "content": "SWFFG.Tours.EditMode.enable-edit-mode.content",
+      "position": "top"
+    },
+    {
+      "id": "stat-changes",
+      "selector": "[name=\"data.characteristics.Brawn.value\"]",
+      "title": "SWFFG.Tours.EditMode.stat-changes.title",
+      "content": "SWFFG.Tours.EditMode.stat-changes.content",
+      "position": "top"
+    },
+    {
+      "id": "disable-edit-mode",
+      "selector": ".ffg-sheet-options",
+      "title": "SWFFG.Tours.EditMode.disable-edit-mode.title",
+      "content": "SWFFG.Tours.EditMode.disable-edit-mode.content",
+      "position": "bottom"
+    }
+  ]
+}

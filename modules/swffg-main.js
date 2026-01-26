@@ -50,6 +50,7 @@ import {handleUpdate} from "./swffg-migration.js";
 import SWAImporter from "./importer/swa-importer.js";
 import {CharacterCreator} from "./helpers/character-creator.js";
 import {xpLogUndo} from "./helpers/actor-helpers.js";
+import {register_system_tours} from "./helpers/tours.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -69,6 +70,7 @@ Hooks.on("setup", function (){
   register_roll_tag_enricher();
   register_oggdude_tag_enricher();
   register_dice_enricher();
+  register_system_tours();
 });
 
 Hooks.once("init", async function () {
