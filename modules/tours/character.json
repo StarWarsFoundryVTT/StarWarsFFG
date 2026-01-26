@@ -1,0 +1,57 @@
+{
+  "title": "Actor Guide",
+  "description": "Howto use player character actors",
+  "display": true,
+  "closeWindows": false,
+  "steps": [
+    {
+      "id": "welcome",
+      "title": "SWFFG.Tours.Character.welcome.title",
+      "content": "SWFFG.Tours.Character.welcome.content",
+      "selector": ".starwarsffg.actor",
+      "position": "center"
+    },
+    {
+      "id": "basic-items",
+      "selector": ".header-name.header-description-block",
+      "title": "SWFFG.Tours.Character.basic-items.title",
+      "content": "SWFFG.Tours.Character.basic-items.content",
+      "position": "bottom"
+    },
+    {
+      "id": "roll-dice",
+      "selector": "[data-ability=\"Athletics\"] .pure-u-6-24",
+      "title": "SWFFG.Tours.Character.roll-dice.title",
+      "content": "SWFFG.Tours.Character.roll-dice.content",
+      "position": "bottom"
+    },
+    {
+      "id": "dice-pool",
+      "selector": ".pool-value input[name=\"ability\"]",
+      "title": "SWFFG.Tours.Character.dice-pool.title",
+      "content": "SWFFG.Tours.Character.dice-pool.content",
+      "position": "bottom"
+    },
+    {
+      "id": "spending-xp-1",
+      "selector": "[data-buy-action=\"signatureability\"]",
+      "title": "SWFFG.Tours.Character.spending-xp-1.title",
+      "content": "SWFFG.Tours.Character.spending-xp-1.content",
+      "position": "bottom"
+    },
+    {
+      "id": "spending-xp-2",
+      "selector": "[data-buy-characteristic=\"Brawn\"]",
+      "title": "SWFFG.Tours.Character.spending-xp-2.title",
+      "content": "SWFFG.Tours.Character.spending-xp-2.content",
+      "position": "bottom"
+    },
+    {
+      "id": "spending-xp-3",
+      "selector": "[data-ability=\"Athletics\"] .ffg-purchase",
+      "title": "SWFFG.Tours.Character.spending-xp-3.title",
+      "content": "SWFFG.Tours.Character.spending-xp-3.content",
+      "position": "bottom"
+    }
+  ]
+}

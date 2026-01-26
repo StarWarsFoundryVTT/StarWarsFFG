@@ -13,6 +13,7 @@
   * Allow gear to have modifiers which impact actors ([#2058](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2058))
   * Allow setting images for Force Powers and Signature Abilities ([#2076](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2076))
   * Added a player character creation wizard ([#1974](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1974))
+  * Added two tours to explain the system - one for basic sheet use and one for Edit Mode ([#1987](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1987))
 * Notes:
   * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
     * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
