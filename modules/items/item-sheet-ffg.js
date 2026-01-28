@@ -1190,7 +1190,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         title: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Title"),
         content: `
           <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Book")} :</p>
-          <input type="text" id="book" name="book" value="Force and Destiny Core Rulebook">
+          <input type="text" id="book" name="book" value="Force and Destiny Core Rulebook" autofocus>
           <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Page")}:</p>
           <input type="number" id="page" name="page" value="0">
         `,
@@ -1203,7 +1203,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               const bookName = jObj.find("#book").val();
               const pageNum = jObj.find("#page").val();
               await this.object.update({"system.metadata.sources": [...this.object.system.metadata.sources, `${bookName} pg. ${pageNum}`]});
-            }
+            },
           },
           cancel: {
             icon: '<i class="fas fa-x"></i>',
@@ -1212,7 +1212,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         },
         default: "submit",
       });
-      addSource.render(true);
+      addSource.render(true, {focus: true, classes: ["app", "window-app", "dialog", "themed", "theme-light", "starwarsffg-dialog"]});
     } else if (action === "remove") {
       const sources = foundry.utils.deepClone(this.item.system.metadata.sources);
       sources.splice(sourceIndex, 1);
@@ -1231,7 +1231,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         title: game.i18n.localize("SWFFG.Meta.Tags.AddTag.Title"),
         content: `
           <p>${game.i18n.localize("SWFFG.Meta.Tags.AddTag.Tag")} :</p>
-          <input type="text" id="tag" name="tag" value="">
+          <input type="text" id="tag" name="tag" value="" autofocus>
         `,
         buttons: {
           submit: {
@@ -1252,7 +1252,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         },
         default: "submit",
       });
-      addTag.render(true);
+      addTag.render(true, {focus: true, classes: ["app", "window-app", "dialog", "themed", "theme-light", "starwarsffg-dialog"]});
     } else if (action === "remove") {
       const tags = foundry.utils.deepClone(this.item.system.metadata.tags);
       tags.splice(tagIndex, 1);

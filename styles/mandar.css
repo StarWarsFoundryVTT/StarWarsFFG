@@ -4678,3 +4678,7 @@ img {
   display: flex;
 }
 
+.starwarsffg-dialog {
+  z-index: 500 !important;
+}
+

@@ -617,6 +617,12 @@
       "motivation"
     ],
     "templates": {
+      "meta_only": {
+        "metadata": {
+          "tags": [],
+          "sources": []
+        }
+      },
       "core": {
         "description": "",
         "attributes": {},
@@ -678,6 +684,9 @@
     },
     "gear": {
       "templates": ["core", "basic", "itemattachments", "qualities"]
+    },
+    "homesteadupgrade": {
+      "templates": ["meta_only"]
     },
     "weapon": {
       "templates": ["core", "basic", "hardpoints", "equippable", "itemattachments", "qualities"],
