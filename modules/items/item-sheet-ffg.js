@@ -191,6 +191,18 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         for (let x = 0; x < 20; x++) {
           data.data.talents[`talent${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.talents[`talent${x}`].description);
+
+          if (x - 4 < 0) {
+            data.data.talents[`talent${x}`].isTopLearned = false;
+          } else {
+            data.data.talents[`talent${x}`].isTopLearned = data.data.talents[`talent${x-4}`].islearned;
+          }
+
+          if ((x + 1) % 4 == 0) {
+            data.data.talents[`talent${x}`].isRightLearned = false;
+          } else {
+            data.data.talents[`talent${x}`].isRightLearned = data.data.talents[`talent${x+1}`].islearned;
+          }
         }
         break;
       case "species":
