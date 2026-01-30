@@ -228,13 +228,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           if (x - 4 < 0) {
             data.data.talents[`talent${x}`].isTopLearned = false;
           } else {
-            data.data.talents[`talent${x}`].isTopLearned = data.data.talents[`talent${x-4}`].islearned;
+            data.data.talents[`talent${x}`].isTopLearned = data.data.talents[`talent${x-4}`]?.islearned ?? false;
           }
 
           if ((x + 1) % 4 == 0) {
             data.data.talents[`talent${x}`].isRightLearned = false;
           } else {
-            data.data.talents[`talent${x}`].isRightLearned = data.data.talents[`talent${x+1}`].islearned;
+            data.data.talents[`talent${x}`].isRightLearned = data.data.talents[`talent${x+1}`]?.islearned ?? false;
           }
         }
         break;
