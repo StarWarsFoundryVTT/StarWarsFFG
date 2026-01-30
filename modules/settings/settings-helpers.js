@@ -218,17 +218,6 @@ export default class SettingsHelpers {
       },
     });
 
-    // Enable debug messages in console
-    game.settings.register("starwarsffg", "enableDebug", {
-      name: game.i18n.localize("SWFFG.EnableDebug"),
-      hint: game.i18n.localize("SWFFG.EnableDebugHint"),
-      scope: "world",
-      config: true,
-      default: false,
-      type: Boolean,
-      onChange: this.debouncedReload,
-    });
-
     // Register settings for UI Themes
     game.settings.register("starwarsffg", "ui-uitheme", {
       module: "starwarsffg",
