@@ -112,7 +112,7 @@
               </div>
               <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-1" type="text" value="{{upgrade.links-top-1}}" data-dtype="Boolean" />
             </div>
-            {{#iff upgrade.sizeInt '>' 1}}
+            {{#iff upgrade.sizeInt ">" 1}}
             <div class="{{#if upgrade.links-top-2}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="2">
               <i class="fas fa-chevron-up"></i>
               <div class="talent-connector-up {{#if (or upgrade.islearned upgrade.isTop2Learned)}}lightsaber-blue{{else}}lightsaber-red{{/if}}">
@@ -120,7 +120,7 @@
               </div>
               <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-2" type="text" value="{{upgrade.links-top-2}}" data-dtype="Boolean" />
             </div>
-            {{/iff}} {{#iff upgrade.sizeInt '>' 2}}
+            {{/iff}} {{#iff upgrade.sizeInt ">" 2}}
             <div class="{{#if upgrade.links-top-3}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="3">
               <i class="fas fa-chevron-up"></i>
               <div class="talent-connector-up {{#if (or upgrade.islearned upgrade.isTop3Learned)}}lightsaber-blue{{else}}lightsaber-red{{/if}}">
@@ -128,7 +128,7 @@
               </div>
               <input class="talent-hidden" name="data.upgrades.{{key}}.links-top-3" type="text" value="{{upgrade.links-top-3}}" data-dtype="Boolean" />
             </div>
-            {{/iff}} {{#iff upgrade.size '==' "full"}}
+            {{/iff}} {{#iff upgrade.sizeInt ">" 3}}
             <div class="{{#if upgrade.links-top-4}}talent-connector{{/if}} talent-action {{#if upgrade.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{upgrade.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="4">
               <i class="fas fa-chevron-up"></i>
               <div class="talent-connector-up {{#if (or upgrade.islearned upgrade.isTop4Learned)}}lightsaber-blue{{else}}lightsaber-red{{/if}}">
