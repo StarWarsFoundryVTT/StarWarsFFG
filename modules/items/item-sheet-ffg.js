@@ -35,6 +35,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
   /* -------------------------------------------- */
 
+  static SIZE_TO_INT = {
+    "single": 1,
+    "double": 2,
+    "triple": 3,
+    "full": 4
+  }
+
   /** @override */
   async getData(options) {
     let data = super.getData(options);
@@ -170,6 +177,32 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         for (let x = 0; x < 16; x++) {
           data.data.upgrades[`upgrade${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
+          let upgradeSize = ItemSheetFFG.SIZE_TO_INT[data.data.upgrades[`upgrade${x}`].size];
+          data.data.upgrades[`upgrade${x}`].sizeInt = upgradeSize;
+
+          // Check if top connections are learned
+          if (x - 4 < 0) {
+            // Top row, all true because basic power is always learned
+            for (let y = 1; y < upgradeSize + 1; y++) {
+              data.data.upgrades[`upgrade${x}`][`isTop${y}Learned`] = true;
+            }
+          } else {
+            // Other rows
+            for (let y = 1; y < upgradeSize + 1; y++) {
+              for (let z = 0; z < x % 4 + y; z++) {
+                if (data.data.upgrades[`upgrade${x-5+y-z}`].sizeInt >= z + 1) {
+                  data.data.upgrades[`upgrade${x}`][`isTop${y}Learned`] = data.data.upgrades[`upgrade${x-5+y-z}`]?.islearned ?? false;
+                }
+              }
+            }
+          }
+
+          // Check if right connection is learned
+          if ((x + upgradeSize) % 4 == 0) {
+            data.data.upgrades[`upgrade${x}`].isRightLearned = false;
+          } else {
+            data.data.upgrades[`upgrade${x}`].isRightLearned = data.data.upgrades[`upgrade${x+upgradeSize}`]?.islearned ?? false;
+          }
         }
         break;
       case "specialization":
@@ -191,6 +224,18 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         for (let x = 0; x < 20; x++) {
           data.data.talents[`talent${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.talents[`talent${x}`].description);
+
+          if (x - 4 < 0) {
+            data.data.talents[`talent${x}`].isTopLearned = false;
+          } else {
+            data.data.talents[`talent${x}`].isTopLearned = data.data.talents[`talent${x-4}`]?.islearned ?? false;
+          }
+
+          if ((x + 1) % 4 == 0) {
+            data.data.talents[`talent${x}`].isRightLearned = false;
+          } else {
+            data.data.talents[`talent${x}`].isRightLearned = data.data.talents[`talent${x+1}`]?.islearned ?? false;
+          }
         }
         break;
       case "species":
@@ -288,6 +333,32 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         for (let x = 0; x < 8; x++) {
           data.data.upgrades[`upgrade${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.upgrades[`upgrade${x}`].description);
+          let upgradeSize = ItemSheetFFG.SIZE_TO_INT[data.data.upgrades[`upgrade${x}`].size];
+          data.data.upgrades[`upgrade${x}`].sizeInt = upgradeSize;
+
+          // Check if top connections are learned
+          if (x - 4 < 0) {
+            // Top row, all true because basic power is always learned
+            for (let y = 1; y < upgradeSize + 1; y++) {
+              data.data.upgrades[`upgrade${x}`][`isTop${y}Learned`] = true;
+            }
+          } else {
+            // Other rows
+            for (let y = 1; y < upgradeSize + 1; y++) {
+              for (let z = 0; z < x % 4 + y; z++) {
+                if (data.data.upgrades[`upgrade${x-5+y-z}`].sizeInt >= z + 1) {
+                  data.data.upgrades[`upgrade${x}`][`isTop${y}Learned`] = data.data.upgrades[`upgrade${x-5+y-z}`]?.islearned ?? false;
+                }
+              }
+            }
+          }
+
+          // Check if right connection is learned
+          if ((x + upgradeSize) % 4 == 0) {
+            data.data.upgrades[`upgrade${x}`].isRightLearned = false;
+          } else {
+            data.data.upgrades[`upgrade${x}`].isRightLearned = data.data.upgrades[`upgrade${x+upgradeSize}`]?.islearned ?? false;
+          }
         }
         break;
       }

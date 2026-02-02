@@ -89,13 +89,17 @@
                 <div class="talent-connection-point-top">
                   <div class="{{#if talent.links-top-1}}talent-connector{{/if}} talent-action {{#if talent.canLinkTop}}talent-connection-point-top{{else}}talent-hidden{{/if}} talent-{{talent.size}}" data-action="link-top" data-key="{{key}}" data-linknumber="1">
                     <i class="fas fa-chevron-up talent-button"></i>
-                    <div class="talent-connector-up lightsaber-red"><i class="fas fa-chevron-down talent-button"></i></div>
+                    <div class="talent-connector-up {{#if (or talent.islearned talent.isTopLearned)}}lightsaber-blue{{else}}lightsaber-red{{/if}}">
+                      <i class="fas fa-chevron-down talent-button"></i>
+                    </div>
                     <input class="talent-hidden" name="data.talents.{{key}}.links-top-1" type="text" value="{{talent.links-top-1}}" data-dtype="Boolean" />
                   </div>
                 </div>
                 <div class="{{#if talent.links-right}}talent-connector{{/if}} talent-action {{#if talent.canLinkRight}}talent-connection-point-right{{else}}talent-hidden{{/if}}" data-action="link-right" data-key="{{key}}">
                   <i class="fas fa-chevron-right talent-button"></i>
-                  <div class="talent-connector-side lightsaber-red"><i class="fas fa-chevron-right talent-button"></i><i class="fas fa-chevron-left talent-button"></i></div>
+                  <div class="talent-connector-side {{#if (or talent.islearned talent.isRightLearned)}}lightsaber-blue{{else}}lightsaber-red{{/if}}">
+                    <i class="fas fa-chevron-right talent-button"></i><i class="fas fa-chevron-left talent-button"></i>
+                  </div>
                   <input class="talent-hidden" name="data.talents.{{key}}.links-right" type="text" value="{{talent.links-right}}" data-dtype="Boolean" />
                 </div>
               </div>
