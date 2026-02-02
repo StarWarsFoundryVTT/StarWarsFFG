@@ -1196,7 +1196,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
   async handleSkillModify(event) {
     const target = $(event.currentTarget);
-    const skill = target.data("target");
+    const skill = target.data("target").replace(" ", " ");
     const direction = target.data("direction");
     const curValue = target.data("value");
     const skillMode = target.data("mode");
