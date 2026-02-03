@@ -557,7 +557,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     context.obligationKey = obligation.key;
 
     // include career / specialization career ranks
-    const combinedPurchases = {};
+    let combinedPurchases = {};
+    if (this.tempActor) {
+      combinedPurchases = Object.fromEntries(
+        Object.keys(this.tempActor.system.skills).map(key => [key.replace(" ", " "), 0])
+      ); // default to 0 as 0 is not > undefined (for use in the template)
+    }
     const careerPurchases = {};
     const specializationPurchases = {};
     for (const skillName of this.data.selected.careerCareerSkillRanks) {
@@ -566,10 +571,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         careerPurchases[skillName] = 0;
       }
       careerPurchases[skillName]++;
-      // add to combined purchases
-      if (!Object.keys(combinedPurchases).includes(skillName)) {
-        combinedPurchases[skillName] = 0;
-      }
       combinedPurchases[skillName]++;
     }
     for (const skillName of this.data.selected.specializationCareerSkillRanks) {
@@ -578,10 +579,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         specializationPurchases[skillName] = 0;
       }
       specializationPurchases[skillName]++;
-      // add to combined purchases
-      if (!Object.keys(combinedPurchases).includes(skillName)) {
-        combinedPurchases[skillName] = 0;
-      }
       combinedPurchases[skillName]++;
     }
     context.careerSkillPurchases = careerPurchases;
