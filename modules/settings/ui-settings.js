@@ -187,6 +187,7 @@ export class xpSpendingSettings extends ffgSettings {
       "starwarsffg.defaultMorality",
       "starwarsffg.maxRarity",
       "starwarsffg.allowRestricted",
+      "starwarsffg.defaultCredits",
     ];
     return super.getData(includeSettingsNames);
   }

@@ -115,7 +115,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.data = {
       // items granted - either by the GM or by the starting bonus, etc
       grants: {
-        gm: {},
+        gm: {
+          credits: game.settings.get("starwarsffg", "defaultCredits"),
+        },
         bonus: {
           xp: 0,
           credits: 0,
@@ -1598,7 +1600,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   calcCredits() {
-    const total = this.data.grants.bonus.credits;
+    const total = this.data.grants.gm.credits + this.data.grants.bonus.credits;
     let available = total;
 
     for (const purchase of this.data.purchases.credits) {

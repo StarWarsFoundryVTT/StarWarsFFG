@@ -319,6 +319,14 @@ Hooks.once("init", async function () {
     default: false,
     type: Boolean,
   });
+  game.settings.register("starwarsffg", "defaultCredits", {
+    name: game.i18n.localize("SWFFG.Settings.Credits.Default.Name"),
+    hint: game.i18n.localize("SWFFG.Settings.Credits.Default.Hint"),
+    scope: "world",
+    config: false,
+    default: 0,
+    type: Number,
+  });
 
   /**
    * Register the option to use generic slots for combat
