@@ -247,7 +247,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#obligations",
     );
     obligationsTable.on("draw", () => {
-      $(".obligation-spend").on("click", async (event) => {
+      $(".obligation-spend").off("click").on("click", async (event) => {
         await this.handleObligationSelect(event);
       });
     });
@@ -263,7 +263,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#species",
     );
     speciesTable.on("draw", () => {
-      $(".species-spend").on("click", async (event) => {
+      $(".species-spend").off("click").on("click", async (event) => {
         await this.handleSpeciesSelect(event);
       });
     });
@@ -276,7 +276,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#careers",
     );
     careersTable.on("draw", () => {
-      $(".career-spend").on("click", async (event) => {
+      $(".career-spend").off("click").on("click", async (event) => {
         await this.handleCareerSelect(event);
       });
     });
@@ -459,6 +459,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         }
       }
     );
+    gearTable.on("draw", async () => {
+      await this.activateShopListeners();
+    });
     gearTable.buttons('.weapon').trigger();
 
     // motivations
@@ -469,7 +472,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#motivations",
     );
     availableMotivationTable.on("draw", async () => {
-      $(".motivation-spend").on("click", async (event) => {
+      $(".motivation-spend").off("click").on("click", async (event) => {
         await this.handleMotivationPurchase(event);
       });
     });
@@ -494,10 +497,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
    * @returns {Promise<void>}
    */
   async activateShopListeners() {
-    $(".credit-spend").on("click", async (event) => {
+    $(".credit-spend").off("click").on("click", async (event) => {
       await this.handleCreditPurchase(event);
     });
-    $(".credit-refund").on("click", async (event) => {
+    $(".credit-refund").off("click").on("click", async (event) => {
       await this.handleCreditRefund(event);
     });
   }
