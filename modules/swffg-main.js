@@ -324,7 +324,7 @@ Hooks.once("init", async function () {
     hint: game.i18n.localize("SWFFG.Settings.Credits.Default.Hint"),
     scope: "world",
     config: false,
-    default: 0,
+    default: 500,
     type: Number,
   });
 

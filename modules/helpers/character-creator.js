@@ -166,6 +166,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         obligation: game.settings.get("starwarsffg", "defaultObligation"), // increased with starting bonuses
         morality: game.settings.get("starwarsffg", "defaultMorality"),     // increased or decreased with starting bonuses
       },
+      spendingCredits: Math.floor(Math.random() * 100) + 1,
     };
     this.builtin = {
       rules: {
@@ -1734,7 +1735,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     await newActor.createEmbeddedDocuments("Item", creditItems);
     await newActor.update({
       "system.stats.credits": {
-        value: credits.available,
+        value: credits.available + this.data.spendingCredits,
       }
     });
 
