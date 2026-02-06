@@ -91,7 +91,7 @@
                 (eq ../../mode "career")
                 (eq (lookup ../../purchases skill.label) undefined)
                 (lt (keylen ../../purchases) 4)
-                (in skill.label ../../keys )
+                (in skill.name ../../keys)
               )}}
                 <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}
@@ -104,7 +104,7 @@
                 (eq ../../mode "specialization")
                 (eq (lookup ../../purchases skill.label) undefined)
                 (lt (keylen ../../purchases) 2)
-                (in skill.label ../../keys)
+                (in skill.name ../../keys)
               )}}
                 <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}
