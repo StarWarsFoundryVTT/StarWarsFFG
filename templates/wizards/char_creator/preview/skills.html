@@ -53,7 +53,7 @@
               {{#if (and
                 (gt skill.rank 0)
                 (eq ../../mode "purchase")
-                (gt skill.rank (lookup ../../purchases skill.label))
+                (gt skill.rank (lookup ../../combinedPurchases skill.label))
               )}}
                 <i class="far fa-minus-square" data-action="skill-control" data-direction="decrease" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}

@@ -357,6 +357,8 @@
   "SWFFG.Settings.CharCreator.Items.maxRarity.Hint": "Maximum rarity of items players can buy when creating characters",
   "SWFFG.Settings.CharCreator.Items.allowRestricted.Name": "Allow Restricted Items",
   "SWFFG.Settings.CharCreator.Items.allowRestricted.Hint": "Allow or restrict players from buying restricted items during character creation",
+  "SWFFG.Settings.Credits.Default.Name": "Default Starting Credits",
+  "SWFFG.Settings.Credits.Default.Hint": "Starting value for players creating characters",
   "SWFFG.TalentsForce": "Force Talent?",
   "SWFFG.ForceTalent": "Force Talent",
   "SWFFG.ConflictTalent": "Conflict Talent",

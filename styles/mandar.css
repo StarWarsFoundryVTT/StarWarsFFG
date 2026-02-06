@@ -2409,6 +2409,10 @@ img {
   padding: 0;
 }
 
+.starwarsffg .character .items .items-list {
+  padding-bottom: 7px;
+}
+
 .starwarsffg .items .items-list .item {
   line-height: 24px;
   padding: 3px 0;
@@ -4653,7 +4657,7 @@ img {
 }
 
 .starwarsffg.wizard .remove-purchase, .starwarsffg.wizard .credit-refund, .starwarsffg.wizard .motivation-refund {
-  cursor: pointer;
+  cursor: pointer;f
 }
 
 .starwarsffg.wizard table img {

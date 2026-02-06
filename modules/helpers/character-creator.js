@@ -115,7 +115,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     this.data = {
       // items granted - either by the GM or by the starting bonus, etc
       grants: {
-        gm: {},
+        gm: {
+          credits: game.settings.get("starwarsffg", "defaultCredits"),
+        },
         bonus: {
           xp: 0,
           credits: 0,
@@ -164,6 +166,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         obligation: game.settings.get("starwarsffg", "defaultObligation"), // increased with starting bonuses
         morality: game.settings.get("starwarsffg", "defaultMorality"),     // increased or decreased with starting bonuses
       },
+      spendingCredits: Math.floor(Math.random() * 100) + 1,
     };
     this.builtin = {
       rules: {
@@ -247,7 +250,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#obligations",
     );
     obligationsTable.on("draw", () => {
-      $(".obligation-spend").on("click", async (event) => {
+      $(".obligation-spend").off("click").on("click", async (event) => {
         await this.handleObligationSelect(event);
       });
     });
@@ -263,7 +266,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#species",
     );
     speciesTable.on("draw", () => {
-      $(".species-spend").on("click", async (event) => {
+      $(".species-spend").off("click").on("click", async (event) => {
         await this.handleSpeciesSelect(event);
       });
     });
@@ -276,7 +279,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#careers",
     );
     careersTable.on("draw", () => {
-      $(".career-spend").on("click", async (event) => {
+      $(".career-spend").off("click").on("click", async (event) => {
         await this.handleCareerSelect(event);
       });
     });
@@ -459,6 +462,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         }
       }
     );
+    gearTable.on("draw", async () => {
+      await this.activateShopListeners();
+    });
     gearTable.buttons('.weapon').trigger();
 
     // motivations
@@ -469,7 +475,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       "#motivations",
     );
     availableMotivationTable.on("draw", async () => {
-      $(".motivation-spend").on("click", async (event) => {
+      $(".motivation-spend").off("click").on("click", async (event) => {
         await this.handleMotivationPurchase(event);
       });
     });
@@ -494,10 +500,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
    * @returns {Promise<void>}
    */
   async activateShopListeners() {
-    $(".credit-spend").on("click", async (event) => {
+    $(".credit-spend").off("click").on("click", async (event) => {
       await this.handleCreditPurchase(event);
     });
-    $(".credit-refund").on("click", async (event) => {
+    $(".credit-refund").off("click").on("click", async (event) => {
       await this.handleCreditRefund(event);
     });
   }
@@ -557,7 +563,12 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     context.obligationKey = obligation.key;
 
     // include career / specialization career ranks
-    const combinedPurchases = {};
+    let combinedPurchases = {};
+    if (this.tempActor) {
+      combinedPurchases = Object.fromEntries(
+        Object.keys(this.tempActor.system.skills).map(key => [key.replace(" ", " "), 0])
+      ); // default to 0 as 0 is not > undefined (for use in the template)
+    }
     const careerPurchases = {};
     const specializationPurchases = {};
     for (const skillName of this.data.selected.careerCareerSkillRanks) {
@@ -566,10 +577,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         careerPurchases[skillName] = 0;
       }
       careerPurchases[skillName]++;
-      // add to combined purchases
-      if (!Object.keys(combinedPurchases).includes(skillName)) {
-        combinedPurchases[skillName] = 0;
-      }
       combinedPurchases[skillName]++;
     }
     for (const skillName of this.data.selected.specializationCareerSkillRanks) {
@@ -578,10 +585,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         specializationPurchases[skillName] = 0;
       }
       specializationPurchases[skillName]++;
-      // add to combined purchases
-      if (!Object.keys(combinedPurchases).includes(skillName)) {
-        combinedPurchases[skillName] = 0;
-      }
       combinedPurchases[skillName]++;
     }
     context.careerSkillPurchases = careerPurchases;
@@ -1196,7 +1199,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
   async handleSkillModify(event) {
     const target = $(event.currentTarget);
-    const skill = target.data("target");
+    const skill = target.data("target").replace(" ", " ");
     const direction = target.data("direction");
     const curValue = target.data("value");
     const skillMode = target.data("mode");
@@ -1598,7 +1601,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   calcCredits() {
-    const total = this.data.grants.bonus.credits;
+    const total = this.data.grants.gm.credits + this.data.grants.bonus.credits;
     let available = total;
 
     for (const purchase of this.data.purchases.credits) {
@@ -1732,7 +1735,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     await newActor.createEmbeddedDocuments("Item", creditItems);
     await newActor.update({
       "system.stats.credits": {
-        value: credits.available,
+        value: credits.available + this.data.spendingCredits,
       }
     });
 

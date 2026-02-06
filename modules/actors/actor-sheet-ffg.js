@@ -667,12 +667,14 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       });
     }
 
-    this.sheetoptions.register("enableEditMode", {
-      name: game.i18n.localize("SWFFG.EnableEditMode"),
-      hint: game.i18n.localize("SWFFG.EnableEditModeHint"),
-      type: "Boolean",
-      default: false,
-    });
+    if (this.actor.type !== "homestead") {
+      this.sheetoptions.register("enableEditMode", {
+        name: game.i18n.localize("SWFFG.EnableEditMode"),
+        hint: game.i18n.localize("SWFFG.EnableEditModeHint"),
+        type: "Boolean",
+        default: false,
+      });
+    }
 
     html.find(".medical").click(async (ev) => {
       const item = await $(ev.currentTarget);
