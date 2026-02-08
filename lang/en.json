@@ -1059,5 +1059,8 @@
   "SWFFG.Tours.Character.spending-xp-2.title": "Improving Characteristics",
   "SWFFG.Tours.Character.spending-xp-2.content": "<p>You can buy improvements to characteristics by clicking the name of any one.</p>",
   "SWFFG.Tours.Character.spending-xp-3.title": "Improving Skills",
-  "SWFFG.Tours.Character.spending-xp-3.content": "<p>Skill ranks may be purchased by clicking this icon.</p>"
+  "SWFFG.Tours.Character.spending-xp-3.content": "<p>Skill ranks may be purchased by clicking this icon.</p>",
+  "SWFFG.Migrate.Unsupported.Button": "Ok",
+  "SWFFG.Migrate.Unsupported.Title": "Unsupported world",
+  "SWFFG.Migrate.Unsupported.Text": "Worlds created before v2 are not supported in v2+.<br>Please create a new world."
 }

@@ -10,7 +10,12 @@ export async function handleUpdate() {
   if (registeredVersion !== runningVersion) {
     await handleMigration(registeredVersion, runningVersion);
     await sendChanges(runningVersion);
-    await game.settings.set("starwarsffg", "systemMigrationVersion", runningVersion);
+    if (parseFloat(registeredVersion) >= 2.0) {
+      await game.settings.set("starwarsffg", "systemMigrationVersion", runningVersion);
+    } else {
+      // do not register the updated warning and instead throw an error every time that the world is unsupported
+      await warnUnsupportedWorld();
+    }
   }
 }
 
@@ -406,4 +411,23 @@ async function migrateTo1907() {
     ui.notifications.error("The migration to 1.907 has failed for an unknown world. You may need to replace items on actors with items to fully experience 1.907.");
     CONFIG.logger.debug(e);
   }
+}
+
+async function warnUnsupportedWorld() {
+  const content = game.i18n.localize("SWFFG.Migrate.Unsupported.Text");
+  new Dialog(
+    {
+      title: game.i18n.localize("SWFFG.Migrate.Unsupported.Title"),
+      content: content,
+      buttons: {
+        ok: {
+          icon: '<i class="fas fa-exclamation"></i>',
+          label: game.i18n.localize("SWFFG.Migrate.Unsupported.Button"),
+        },
+      },
+    },
+    {
+      classes: ["dialog", "starwarsffg"],
+    }
+  ).render(true);
 }

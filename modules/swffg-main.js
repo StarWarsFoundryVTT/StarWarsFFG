@@ -1351,7 +1351,6 @@ Hooks.once("ready", async () => {
       }
       ui.notifications.info('Done updating skill groupings!');
     }
-    game.settings.set("starwarsffg", "systemMigrationVersion", version);
   }
 
   // enable functional testing
