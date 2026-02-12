@@ -15,7 +15,7 @@
   * Added a player character creation wizard ([#1974](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1974))
   * Added two tours to explain the system - one for basic sheet use and one for Edit Mode ([#1987](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1987))
   * Specialization, force power, and signature ability pages update the color of connections from learned talents/upgrades ([#2064](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2064))
-  * Medical item flag, which allows to do less actions in order to use stimpack/droid patch: increases stimpacks usage, decreases the current healing item's quantity, applies proper amount of healing to actor's current wounds)
+  * Medical item flag, which allows to do less actions in order to use stimpack/droid patch: increases stimpacks usage, decreases the current healing item's quantity, applies proper amount of healing to actor's current wounds) ([#2113](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/2113))
 * Notes:
   * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
     * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
