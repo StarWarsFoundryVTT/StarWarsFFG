@@ -125,6 +125,12 @@
       background-position: center;
     }
   }
+  &.stimpack-button:hover {
+    background-image: url(/systems/starwarsffg/images/medical.png) !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 } 
 
 &.item-card {

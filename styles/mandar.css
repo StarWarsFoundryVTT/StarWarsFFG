@@ -2533,6 +2533,13 @@ img {
   background-position: center;
 }
 
+.starwarsffg .item-rollable.stimpack-button:hover {
+  background-image: url(/systems/starwarsffg/images/medical.png) !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .starwarsffg.item-card .item-details .item-properties .item-pill {
   list-style-type: none;
   display: inline-block;

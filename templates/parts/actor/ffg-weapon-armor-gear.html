@@ -103,7 +103,13 @@
     {{#each items as |item id|}} {{#iff item.type '==' 'gear'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">
+        {{#if item.flags.starwarsffg.config.isMedical}}
+        <div class="stimpack-button">
+          <div class="skill-label rollable stimpack-button starwarsffg item-rollable" style="background-image: url('{{ item.img }}')"></div>
+        </div>
+        {{else}}
         <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
+        {{/if}}
         <div class="hover {{#if item.system.rarity.isrestricted}}restricted{{/if}}">
           {{item.name}} {{#if item.system.rarity.isrestricted}}
           <div class="tooltip2">This is a Restricted item</div>
