@@ -548,6 +548,19 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         type: "Boolean",
         default: true,
       });
+      if (this.object.type === "gear") {
+        this.sheetoptions.register("isMedicalType", {
+          name: game.i18n.localize("SWFFG.SheetOptions2.isMedical.Name"),
+          hint: game.i18n.localize("SWFFG.SheetOptions2.isMedical.Hint"),
+          type: "Array",
+          default: "No",
+          options: {
+            "No": game.i18n.localize("SWFFG.MedicalItemType.No"),
+            "Stimpack": game.i18n.localize("SWFFG.MedicalItemType.Stimpack"),
+            "EmergencyRepairPatch": game.i18n.localize("SWFFG.MedicalItemType.EmergencyRepairPatch"),
+          },
+        });
+      }
       if (this.object.type === "weapon") {
         this.sheetoptions.register("enableAmmo", {
           name: game.i18n.localize("SWFFG.SheetOptions2.enableAmmo.Name"),
