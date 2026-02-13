@@ -1151,7 +1151,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Use repair item
     html
-      .find(".stimpack-button")
+      .find(".repair-button")
       .on("click", async (event) => {
         event.stopPropagation();
 
