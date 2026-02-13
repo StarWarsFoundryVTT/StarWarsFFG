@@ -131,7 +131,13 @@
     background-repeat: no-repeat;
     background-position: center;
   }
-} 
+  &.repair-button:hover {
+    background-image: url(/systems/starwarsffg/images/repair-patch.webp) !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
 
 &.item-card {
   .item-details {
@@ -148,7 +154,7 @@
         font-size: 12px;
         line-height: 20px;
         white-space: nowrap;
-    
+
         &.adjusted {
           color: #8b0000;
         }

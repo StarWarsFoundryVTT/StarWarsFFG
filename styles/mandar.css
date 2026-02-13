@@ -2540,6 +2540,13 @@ img {
   background-position: center;
 }
 
+.starwarsffg .item-rollable.repair-button:hover {
+  background-image: url(/systems/starwarsffg/images/repair-patch.webp) !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
 .starwarsffg.item-card .item-details .item-properties .item-pill {
   list-style-type: none;
   display: inline-block;
