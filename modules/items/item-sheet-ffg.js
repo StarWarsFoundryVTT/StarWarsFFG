@@ -1188,13 +1188,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       throw new Error("Refused to buy for item with no found owner actor");
     }
     const availableXPToLog = foundry.utils.deepClone(owner.system.experience.available);
-    const availableXP = owner.system.experience.available;
     const totalXP = owner.system.experience.total;
-    if (cost > availableXP) {
+    if (cost > availableXPToLog) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       throw new Error("Not enough XP");
     }
     const AEState = await ActorHelpers.beginEditMode(owner, true);
+    const availableXP = owner.system.experience.available;
     return {
       owner: owner,
       cost: cost,
@@ -1473,7 +1473,6 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
             callback: async (that) => {
 
               try {
-                // this fixes the actual math bugs but the log shows incorrect values. need to fix that.
                 const basic_data = await this._buyHandleClick(cost, "specialization");
                 owner = basic_data.owner;
                 availableXP = basic_data.availableXP;
