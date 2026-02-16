@@ -46,6 +46,7 @@
   * Fix various stats on an actor changing when Edit Mode is enabled and >1 person has the sheet open
   * Removing a species now removes associated Abilities
   * Drag-and-dropping a talent onto an actor in Genesys now prompts to spend XP
+  * Macros coming from Compendiums will no longer generate an error and fail to copy
 
 `1.910`
 * Fixes:
