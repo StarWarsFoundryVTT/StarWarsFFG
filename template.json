@@ -2,6 +2,12 @@
   "Actor": {
     "types": ["character", "minion", "vehicle", "homestead", "rival", "nemesis"],
     "templates": {
+      "meta_only": {
+        "metadata": {
+          "tags": [],
+          "sources": []
+        }
+      },
       "biography": {
         "biography": ""
       },
@@ -442,7 +448,7 @@
       }
     },
     "vehicle": {
-      "templates": ["biography", "attributes"],
+      "templates": ["biography", "attributes", "meta_only"],
       "stats": {
         "silhouette": {
           "value": 1,

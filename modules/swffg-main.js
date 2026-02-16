@@ -1409,6 +1409,7 @@ Hooks.once("ready", async () => {
               type: "ability",
               system: {
                 description: abilityData.system.description,
+                fromSpecies: item.id,
               }
             },
             {
@@ -1430,7 +1431,7 @@ Hooks.once("ready", async () => {
   // data for _onDropItemCreate has system.encumbrance.adjusted = 0, despite it being proper in the item itself
   Hooks.on("deleteItem", async (item, options, userId) => {
     if (userId != game.user.id) return
-    // remove talents added by species
+    // remove talents, abilities added by species
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
       if (item.type === "species" && actor.type === "character") {
@@ -1454,6 +1455,10 @@ Hooks.once("ready", async () => {
           if (actorTalent) {
             toDelete.push(actorTalent.id);
           }
+        }
+        // build the abilities list
+        for (const ability of actor.items.filter(i => i.type === "ability" && i.system?.fromSpecies === item.id)) {
+          toDelete.push(ability.id);
         }
         if (toDelete.length > 0) {
           actor.deleteEmbeddedDocuments("Item", toDelete);

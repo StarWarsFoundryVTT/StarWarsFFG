@@ -180,8 +180,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       } else {
         return -1;
       }
-    } else if (itemData.type === "talent") {
-      return -1;
+    } else if (itemData.type === "talent" && game.settings.get("starwarsffg", "dicetheme") === "genesys") {
+      return itemData.system.tier * 5;
     } else if (itemData.type === "signatureability") {
       return itemData.system.base_cost;
     } else if (itemData.type === "forcepower") {
@@ -664,6 +664,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         hint: game.i18n.localize("SWFFG.EnableSensorsHint"),
         type: "Boolean",
         default: true,
+      });
+      html.find(".source-control").click(async (ev) => {
+        await this._handleSourceControl(ev);
       });
     }
 
@@ -2680,6 +2683,53 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       return;
     }
     return await super._onSubmit(event);
+  }
+
+  /**
+   * Handle adding a source to vehicles
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _handleSourceControl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = $(event.currentTarget).data("action");
+    const sourceIndex = $(event.currentTarget).data("index");
+    if (action === "add") {
+      const addSource = new Dialog({
+        title: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Title"),
+        content: `
+          <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Book")} :</p>
+          <input type="text" id="book" name="book" value="Force and Destiny Core Rulebook" autofocus>
+          <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Page")}:</p>
+          <input type="number" id="page" name="page" value="0">
+        `,
+        buttons: {
+          submit: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Submit"),
+            callback: async (obj, event) => {
+              const jObj = $(obj);
+              const bookName = jObj.find("#book").val();
+              const pageNum = jObj.find("#page").val();
+              await this.object.update({"system.metadata.sources": [...this.object.system.metadata.sources, `${bookName} pg. ${pageNum}`]});
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-x"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Cancel"),
+          },
+        },
+        default: "submit",
+      });
+      addSource.render(true, {focus: true, classes: ["app", "window-app", "dialog", "themed", "theme-light", "starwarsffg-dialog"]});
+    } else if (action === "remove") {
+      const sources = foundry.utils.deepClone(this.object.system.metadata.sources);
+      sources.splice(sourceIndex, 1);
+      await this.object.update({"system.metadata.sources": sources});
+    }
+    this.render(true);
   }
 }
 

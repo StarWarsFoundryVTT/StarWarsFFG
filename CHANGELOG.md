@@ -44,6 +44,9 @@
   * Fix for Force Power upgrades sometimes being purchasable despite not having enough XP ([#2074](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2074))
   * XP granted by species is now removed if the species is removed ([#2083](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2083))
   * Fix various stats on an actor changing when Edit Mode is enabled and >1 person has the sheet open
+  * Removing a species now removes associated Abilities
+  * Drag-and-dropping a talent onto an actor in Genesys now prompts to spend XP
+  * Macros coming from Compendiums will no longer generate an error and fail to copy
 
 `1.910`
 * Fixes:

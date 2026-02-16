@@ -192,6 +192,24 @@
       {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
     </div>
 
+    {{!-- Biography Tab --}}
+    <div class="tab biography active" data-group="primary" data-tab="description">
+      <div class="biography-editor">
+        {{editor data.enrichedBio target="system.biography" button=true editable=editable engine="prosemirror"}}
+      </div>
+
+      <div class="container flex-group-center biography-values">
+        {{#if (contains classType "V2")}}{{else}}
+          {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
+        {{/if}}
+        {{!-- Experience Box --}}
+
+        <div class="grid bio-grid">
+
+        </div>
+      </div>
+    </div>
+
     {{!-- Critical injuries Tab --}}
     <div class="tab crits items" data-group="primary" data-tab="crits">
       {{!-- Talents List --}}
