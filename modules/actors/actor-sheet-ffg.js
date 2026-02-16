@@ -180,8 +180,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       } else {
         return -1;
       }
-    } else if (itemData.type === "talent") {
-      return -1;
+    } else if (itemData.type === "talent" && game.settings.get("starwarsffg", "dicetheme") === "genesys") {
+      return itemData.system.tier * 5;
     } else if (itemData.type === "signatureability") {
       return itemData.system.base_cost;
     } else if (itemData.type === "forcepower") {
