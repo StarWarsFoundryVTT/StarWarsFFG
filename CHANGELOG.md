@@ -5,7 +5,7 @@
   * Weapons now have an ammo option, fantastic for Grenades and Launchers! ([#1984](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1984))
   * Specializations can now be set as universal via their sheets ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
   * Item sources can now be added and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
-  * Item tags can now be viewed, added, and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
+  * Item and actor tags can now be viewed, added, and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
     * These tags can be used by macros and will be used by the Enhancements module
   * Expanding talents on actor sheets or sending to chat now displays the long description instead of the short ([#2029](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2029))
   * Added "Active Effects" tab to character sheet ([#2060](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2060))

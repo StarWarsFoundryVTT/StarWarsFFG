@@ -100,6 +100,7 @@ export default class SWAImporter extends FormApplication {
         const adversaries = this._getFilePath(zip.files, "adversaries", true);
 
         if (adversaries) {
+          await this._deleteExistingAdversaries();
           await this._handleAdversaries(zip, filter);
         }
       }
@@ -110,6 +111,14 @@ export default class SWAImporter extends FormApplication {
     CONFIG.logger.debug(`Completed Importing SW Adversaries Data Files`);
     this._importLogger(`Completed Importing SW Adversaries Data Files`);
     this.close();
+  }
+
+  async _deleteExistingAdversaries() {
+    const pack = game.packs.get("world.star-wars-adversaries");
+    if (pack) {
+      this._importLogger(`Deleting compendium: ${pack.metadata.name}`);
+      await pack.deleteCompendium();
+    }
   }
 
   _loadSkillsList(data) {
@@ -397,9 +406,19 @@ export default class SWAImporter extends FormApplication {
                     stats: {
                       defence: {},
                     },
+                    metadata: {
+                      tags: [],
+                      sources: [],
+                    },
                   },
                   items: [],
                 };
+
+                if (item?.tags) {
+                  adversary.system.metadata.tags = item.tags.filter(t => !t.includes("book:"));
+                  adversary.system.metadata.sources = item.tags.filter(t => t.includes("book:"));
+                }
+                adversary.system.metadata.tags.push(item.type);
 
                 Object.values(CONFIG.FFG.characteristics).forEach((char) => {
                   adversary.system.characteristics[char.value] = {
