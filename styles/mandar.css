@@ -2533,8 +2533,14 @@ img {
   background-position: center;
 }
 
-.starwarsffg .item-rollable.stimpack-button:hover {
+.starwarsffg .item-rollable.stimpack-button[data-medical-type="1"]:hover {
   background-image: url(/systems/starwarsffg/images/medical.png) !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.starwarsffg .item-rollable.stimpack-button[data-medical-type="2"]:hover {
+  background-image: url(/systems/starwarsffg/images/repair-patch.webp) !important;
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
