@@ -394,6 +394,8 @@
   "SWFFG.MedicalItemResetStart": "Resets",
   "SWFFG.MedicalItemResetEnd": "count",
   "SWFFG.MedicalItemSetting": "Healing Item Action",
+  "SWFFG.ConsumeHealingItem": "Consume Healing Item on Usage",
+  "SWFFG.ConsumeHealingItemHint": "When enabled, healing items will be consumed (quantity reduced) when used.",
   "SWFFG.EnablePrivateTriggers": "Enable Private Group Manager Table Rolls",
   "SWFFG.EnablePrivateTriggersHint": "Enable making Obligation/Duty/Morality Table Rolls from group manager private so that players do not see the result",
   "SWFFG.EnableDebug": "Enable console debugging",

@@ -103,18 +103,12 @@
     {{#each items as |item id|}} {{#iff item.type '==' 'gear'}}
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">
-        {{#iff item.flags.starwarsffg.config.isMedicalType '==' 'Stimpack'}}
+        {{#iff item.flags.starwarsffg.config.medicalType '>' '0'}} <!-- 0 is not medical, 1 is stimpack, 2 is droid patch -->
         <div class="stimpack-button">
           <div class="skill-label rollable stimpack-button starwarsffg item-rollable" style="background-image: url('{{ item.img }}')"></div>
         </div>
         {{else}}
-          {{#iff item.flags.starwarsffg.config.isMedicalType '==' 'EmergencyRepairPatch'}}
-          <div class="repair-patch-button">
-            <div class="skill-label rollable repair-button starwarsffg item-rollable" style="background-image: url('{{ item.img }}')"></div>
-          </div>
-          {{else}}
           <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
-          {{/iff}}
         {{/iff}}
         <div class="hover {{#if item.system.rarity.isrestricted}}restricted{{/if}}">
           {{item.name}} {{#if item.system.rarity.isrestricted}}
