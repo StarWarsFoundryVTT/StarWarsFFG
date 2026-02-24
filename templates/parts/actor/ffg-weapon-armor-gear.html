@@ -104,11 +104,10 @@
     <li class="item flexrow" data-item-id="{{item._id}}">
       <div class="item-name">
         {{#iff item.flags.starwarsffg.config.medicalType '>' '0'}} <!-- 0 is not medical, 1 is stimpack, 2 is droid patch -->
-        <div class="stimpack-button">
-          <div class="item-rollable rollable stimpack-button starwarsffg"
-               data-medical-type="{{item.flags.starwarsffg.config.medicalType}}"
-               style="background-image: url('{{ item.img }}')"></div>
-        </div>
+          <div class="starwarsffg item-medical"
+               data-medical-type="{{item.flags.starwarsffg.config.medicalType}}">
+            <img src="{{ item.img }}" />
+          </div>
         {{else}}
           <div class="item-rollable" style="background-image: url('{{ item.img }}')"></div>
         {{/iff}}
