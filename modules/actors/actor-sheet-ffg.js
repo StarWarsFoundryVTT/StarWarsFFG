@@ -1112,7 +1112,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     // Use medical/repair item
     html
-      .find(".stimpack-button")
+      .find(".item-medical")
       .on("click", async (event) => {
         event.stopPropagation();
 
@@ -1140,10 +1140,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           const newUses = prevUses + 1;
           const currentWounds = this.actor.system?.stats?.wounds?.value ?? 0;
           let woundsHealing = 0;
-          if(item.flags.starwarsffg.config.medicalType == 'Stimpack') {
+          if(item.flags.starwarsffg.config.medicalType == 1) { // stimpack
             woundsHealing = 5 - prevUses;
           }
-          else if (item.flags.starwarsffg.config.medicalType == 'EmergencyRepairPatch') {
+          else if (item.flags.starwarsffg.config.medicalType == 2) { // emergency droid patch
             woundsHealing = 3;
           }
           const newWounds = Math.max(currentWounds - woundsHealing, 0);
