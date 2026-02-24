@@ -434,6 +434,15 @@ export default class SettingsHelpers {
       onChange: this.debouncedReload,
     });
 
+    game.settings.register("starwarsffg", "consumeHealingItem", {
+      name: game.i18n.localize("SWFFG.ConsumeHealingItem"),
+      hint: game.i18n.localize("SWFFG.ConsumeHealingItemHint"),
+      scope: "world",
+      config: true,
+      default: false,
+      type: Boolean,
+    });
+
     let stimpackChoices = [
       game.i18n.localize("SWFFG.MedicalItemNameUsePrompt"),
       game.i18n.localize("SWFFG.MedicalItemNameUseRest"),
