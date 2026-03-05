@@ -1938,6 +1938,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         case "itemattachment": {
           if (this.object.system.hardpoints.adjusted - itemObject.system.hardpoints.value >= 0) {
+            for (const mod of itemObject.system.itemmodifier) {
+              // mark the mods as active so they transfer to the parent item
+              mod.system.active = true;
+            }
             itemObject = await ItemHelpers.uniqueAttrs(itemObject, this.object);
             items.push(itemObject);
           } else {

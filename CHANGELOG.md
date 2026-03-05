@@ -49,6 +49,7 @@
   * Drag-and-dropping a talent onto an actor in Genesys now prompts to spend XP
   * Macros coming from Compendiums will no longer generate an error and fail to copy
   * Drag-and-dropping items from an actor sheet now preserves Foundry-native information ([#2117](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2117))
+  * Qualities on attachments are now properly transferred to items when the attachment is drag-and-dropped to an item ([#2125](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2125))
 
 `1.910`
 * Fixes:
