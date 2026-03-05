@@ -1118,6 +1118,55 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         await DiceHelpers.rollSkill(this, event, upgradeType);
       });
 
+    // Use medical/repair item
+    html
+      .find(".item-medical")
+      .on("click", async (event) => {
+        event.stopPropagation();
+
+        // Get current item's quantity
+        const li = $(event.currentTarget).parents(".item");
+        const itemId = li.data("itemId");
+        const item = this.actor.items.get(itemId);
+        const consumeHealingItemSetting = game.settings.get("starwarsffg", "consumeHealingItem");
+        // Check that current item is not empty of uses/quantity
+        if (item && (item.system.quantity.value > 0 || !consumeHealingItemSetting)) {
+          // Check that already used number of *stimpacks* is not maxed out
+          const prevUses = this.actor.system?.stats?.medical?.uses ?? 0;
+          if (prevUses >= 5) {
+            ChatMessage.create({
+              speaker: { alias: this.actor.name },
+              content: `<i>${game.i18n.localize("SWFFG.MedicalItemCannotUseMore")}</i>`,
+            });
+            return;
+          }
+
+          if(consumeHealingItemSetting) {
+            const count = item.system.quantity.value - 1;
+            item.update({["system.quantity.value"]: count});
+          }
+          const newUses = prevUses + 1;
+          const currentWounds = this.actor.system?.stats?.wounds?.value ?? 0;
+          let woundsHealing = 0;
+          if(item.flags.starwarsffg.config.medicalType == 1) { // stimpack
+            woundsHealing = 5 - prevUses;
+          }
+          else if (item.flags.starwarsffg.config.medicalType == 2) { // emergency droid patch
+            woundsHealing = 3;
+          }
+          const newWounds = Math.max(currentWounds - woundsHealing, 0);
+          this.actor.update({
+            ["system.stats.medical.uses"]: newUses,
+            ["system.stats.wounds.value"]: newWounds,
+          });
+          const itemName = this.actor?.flags?.starwarsffg?.config?.medicalItemName || game.i18n.localize("SWFFG.DefaultMedicalItemName");
+          ChatMessage.create({
+            speaker: { alias: this.actor.name },
+            content: `<i>${game.i18n.localize("SWFFG.MedicalItemUse")} ${itemName} #${newUses}</i>`,
+          });
+        }
+      });
+
     // Roll crew
     html.find(".roll-button-crew").children().on("click", async (event) => {
       const roles = $(event.currentTarget).parents(".item").data("itemId").split('-');

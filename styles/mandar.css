@@ -2533,6 +2533,33 @@ img {
   background-position: center;
 }
 
+.starwarsffg.item-medical {
+  height: 60px;
+  width: 90px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 5px;
+  border: none;
+  position: relative;
+}
+.starwarsffg.item-medical img
+{
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.starwarsffg.item-medical:hover img {
+  display: none;
+}
+
+.starwarsffg.item-medical[data-medical-type="1"]:hover {
+  background-image: url(/systems/starwarsffg/images/medical.png);
+}
+.starwarsffg.item-medical[data-medical-type="2"]:hover {
+  background-image: url(/systems/starwarsffg/images/repair-patch.webp);
+}
+
 .starwarsffg.item-card .item-details .item-properties .item-pill {
   list-style-type: none;
   display: inline-block;
