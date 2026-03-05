@@ -10,7 +10,7 @@ export async function handleUpdate() {
   if (registeredVersion !== runningVersion) {
     await handleMigration(registeredVersion, runningVersion);
     await sendChanges(runningVersion);
-    if (parseFloat(registeredVersion) >= 2.0) {
+    if (parseFloat(registeredVersion) >= 2.0 || !registeredVersion) {
       await game.settings.set("starwarsffg", "systemMigrationVersion", runningVersion);
     } else {
       // do not register the updated warning and instead throw an error every time that the world is unsupported
