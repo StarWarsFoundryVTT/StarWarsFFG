@@ -190,9 +190,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     // backgrounds
     const cultureSelector = new SlimSelect({
       select: '#culture',
-      cssClasses: {
-        option: "starwarsffg"
-      },
       events: {
         afterChange: async (newVal) => {
           // could be >1 but we only allow one here
@@ -203,9 +200,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     cultureSelector.setSelected(this.data.selected.background.culture?.uuid, false);
     const hookSelector = new SlimSelect({
       select: '#hook',
-      cssClasses: {
-        option: "starwarsffg"
-      },
       events: {
         afterChange: async (newVal) => {
           // could be >1 but we only allow one here
@@ -217,9 +211,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     if (this.data.selected.rules === "fad") {
       const forceAttitudeSelector = new SlimSelect({
         select: '#force_attitude',
-        cssClasses: {
-          option: "starwarsffg"
-        },
         events: {
           afterChange: async (newVal) => {
             // could be >1 but we only allow one here
@@ -233,9 +224,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     // starting bonuses
     const startingBonusSelector = new SlimSelect({
         select: '#startingBonus',
-        cssClasses: {
-          option: "starwarsffg"
-        },
         events: {
           afterChange: async (newVal) => {
             // could be >1 but we only allow one here
@@ -286,11 +274,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     $(".career-spend").on("click", async (event) => {
       await this.handleCareerSelect(event);
     });
-    $(".career_tab-container").on("click", function(event) {
-      $(event.target).find(".career-selection").toggle('slow');
-      $(event.target).find(".career_skill_rank_select-selection").toggle('slow');
-      $(event.target).find(".specialization-selection").toggle('slow');
-      $(event.target).find(".specialization_skill_rank_select-selection").toggle('slow');
+    $(".career_tab-container").on("click", function() {
+      $(this).next(".career-selection").toggle('slow');
+      $(this).next(".career_skill_rank_select-selection").toggle('slow');
+      $(this).next(".specialization-selection").toggle('slow');
+      $(this).next(".specialization_skill_rank_select-selection").toggle('slow');
     });
     $(".career-select-container").click();
 
@@ -319,8 +307,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     $(".skills-container").on("click", function() {
       $(".skills-summary").toggle('slow');
     });
-    $(".specialization-container").on("click", function(event) {
-      $(event.target).find(".specialization-summary").toggle('slow');
+    $(".specialization-container").on("click", function() {
+      $(this).next(".specialization-summary").toggle('slow');
     });
     $(".specialization-remove").on("click", async (event) => {
       await this.handleRemoveSpecialization(event);
@@ -336,8 +324,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     $(".purchase-forcePower").on("click", async (event) => {
       await this.handleForcePowerPurchase(event);
     });
-    $(".forcePower-container").on("click", function(event) {
-      $(event.target).find(".forcePower-summary").toggle('slow');
+    $(".forcePower-container").on("click", function() {
+      $(this).next(".forcePower-summary").toggle('slow');
     });
     $(".forcePower-remove").on("click", async (event) => {
       await this.handleRemoveForcePower(event);
