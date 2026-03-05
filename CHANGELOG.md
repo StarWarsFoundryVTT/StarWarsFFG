@@ -47,6 +47,7 @@
   * Removing a species now removes associated Abilities
   * Drag-and-dropping a talent onto an actor in Genesys now prompts to spend XP
   * Macros coming from Compendiums will no longer generate an error and fail to copy
+  * Drag-and-dropping items from an actor sheet now preserves Foundry-native information ([#2117](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2117))
 
 `1.910`
 * Fixes:

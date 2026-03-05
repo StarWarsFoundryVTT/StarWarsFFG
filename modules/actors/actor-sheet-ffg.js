@@ -1971,6 +1971,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         type: "Transfer",
         actorId: this.actor.id,
         data: item,
+        // useful for other modules, e.g., item piles
+        nativeData: item.toDragData(),
       };
       if (this.actor.isToken) dragData.tokenId = this.actor.token.id;
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
