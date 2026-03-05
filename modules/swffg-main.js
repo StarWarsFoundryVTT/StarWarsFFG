@@ -32,6 +32,7 @@ import TemplateHelpers from "./helpers/partial-templates.js";
 import SkillListImporter from "./importer/skills-list-importer.js";
 import DestinyTracker from "./ffg-destiny-tracker.js";
 import { defaultSkillList } from "./config/ffg-skillslist.js";
+import { skillModifierTypes } from "./config/ffg-modifiers.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
 import {register_crew} from "./helpers/crew.js";
 
@@ -625,6 +626,9 @@ Hooks.once("init", async function () {
         });
 
         CONFIG.FFG.skills = ordered;
+        skillModifierTypes.forEach((modType) => {
+          CONFIG.FFG.allowableModifierChoices[modType] = foundry.utils.duplicate(ordered);
+        });
       }
     } catch (err) {
       console.error(err);
