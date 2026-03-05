@@ -1,5 +1,22 @@
-<div>
-  {{ data.selected.species.name }} / {{ data.selected.career.name }} / {{ data.selected.specialization.name }}<br>
+<div class="wizard-header">
+  {{#if data.selected.species.name}}
+    {{ data.selected.species.name }}
+  {{ else }}
+    No Species Selected
+  {{/if}}
+  /
+  {{#if data.selected.career.name}}
+    {{ data.selected.career.name }}
+  {{ else }}
+    No Career Selected
+  {{/if}}
+  /
+  {{#if data.selected.specialization.name}}
+    {{ data.selected.specialization.name }}
+  {{ else }}
+    No Specialization Selected
+  {{/if}}
+  <br>
   XP: {{ availableXp }} / {{ totalXp }}, Credits: {{ availableCredits }} / {{ totalCredits }},
   {{ obligationKey }}: {{ availableObligation }}
 </div>
