@@ -136,6 +136,9 @@ export class ActorFFG extends Actor {
         if (!Object.keys(changes.system).includes("stats")) {
           changes.system.stats = {};
         }
+        if (Object.keys(changes.system).includes("characteristics")) {
+          changes.system.stats = changes.system.characteristics;
+        }
         CONFIG.logger.debug(`The character sheet showed ${originalWounds} wounds, while that value without Brawn was ${originalWoundsWithoutBrawn}. Updating to be ${updatedWounds}`);
         changes.system.stats = foundry.utils.mergeObject(
           changes.system.stats,
@@ -163,6 +166,12 @@ export class ActorFFG extends Actor {
       const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
       if (originalWillpower !== undefined && updatedWillpower !== undefined && originalWillpower !== updatedWillpower) {
         CONFIG.logger.debug(`Detected modified Willpower (${originalWillpower} -> ${updatedWillpower}, updating derived values`);
+        if (!Object.keys(changes.system).includes("stats")) {
+          changes.system.stats = {};
+        }
+        if (Object.keys(changes.system).includes("characteristics")) {
+          changes.system.stats = changes.system.characteristics;
+        }
         if (this.system.stats?.strain) {
           // get the soak without willpower modifying it, then add the new willpower value in
           const originalStrain = this.system.stats?.strain.max;
@@ -260,7 +269,7 @@ export class ActorFFG extends Actor {
         data.skills[skill].label = localizedField;
       }
     }
-    
+
     // Create list of active effects changing this actor
     data.effects = actorData.effects.contents;
     actorData.items.forEach(item => {
