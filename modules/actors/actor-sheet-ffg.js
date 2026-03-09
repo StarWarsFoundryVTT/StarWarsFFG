@@ -693,7 +693,6 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       let msg_content;
       if (item[0].className === "fas fa-plus-circle medical") {
         newUses = prevUses + 1;
-        newUses = (newUses > 5) ? 5 : newUses;
         msg_content = `<i>${game.i18n.localize("SWFFG.MedicalItemUse")} ${item_name} #${newUses}</i>`;
       } else {
         newUses = prevUses - 1;
@@ -1133,13 +1132,6 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         if (item && (item.system.quantity.value > 0 || !consumeHealingItemSetting)) {
           // Check that already used number of *stimpacks* is not maxed out
           const prevUses = this.actor.system?.stats?.medical?.uses ?? 0;
-          if (prevUses >= 5) {
-            ChatMessage.create({
-              speaker: { alias: this.actor.name },
-              content: `<i>${game.i18n.localize("SWFFG.MedicalItemCannotUseMore")}</i>`,
-            });
-            return;
-          }
 
           if(consumeHealingItemSetting) {
             const count = item.system.quantity.value - 1;
@@ -1148,10 +1140,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           const newUses = prevUses + 1;
           const currentWounds = this.actor.system?.stats?.wounds?.value ?? 0;
           let woundsHealing = 0;
-          if(item.flags.starwarsffg.config.medicalType == 1) { // stimpack
-            woundsHealing = 5 - prevUses;
+          if (item.flags.starwarsffg.config.medicalType === 1) { // stimpack
+            woundsHealing = Math.max(5 - prevUses, 0);
           }
-          else if (item.flags.starwarsffg.config.medicalType == 2) { // emergency droid patch
+          else if (item.flags.starwarsffg.config.medicalType === 2) { // emergency droid patch
             woundsHealing = 3;
           }
           const newWounds = Math.max(currentWounds - woundsHealing, 0);
