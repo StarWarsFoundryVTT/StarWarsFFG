@@ -6,6 +6,8 @@ const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
 
 export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) {
   // https://foundryvtt.wiki/en/development/api/applicationv2
+  _openCareerSection = "career-select-container";
+
   static PARTS = {
     header: { template: 'systems/starwarsffg/templates/wizards/char_creator/header.html' },
     tabs: { template: 'templates/generic/tab-navigation.hbs' },
@@ -274,13 +276,16 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     $(".career-spend").on("click", async (event) => {
       await this.handleCareerSelect(event);
     });
-    $(".career_tab-container").on("click", function() {
-      $(this).next(".career-selection").toggle('slow');
-      $(this).next(".career_skill_rank_select-selection").toggle('slow');
-      $(this).next(".specialization-selection").toggle('slow');
-      $(this).next(".specialization_skill_rank_select-selection").toggle('slow');
+    $(".career_tab-container").on("click", (event) => {
+      const $container = $(event.currentTarget);
+      const uniqueClass = $container.attr("class").split(/\s+/).find(c => c !== "career_tab-container");
+      this._openCareerSection = uniqueClass;
+      $container.next(".career-selection").toggle('slow');
+      $container.next(".career_skill_rank_select-selection").toggle('slow');
+      $container.next(".specialization-selection").toggle('slow');
+      $container.next(".specialization_skill_rank_select-selection").toggle('slow');
     });
-    $(".career-select-container").click();
+    $(`.${this._openCareerSection}`).next().show();
 
     // specializations
     const specializationsTable = new DataTable(
