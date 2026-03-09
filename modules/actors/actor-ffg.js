@@ -136,8 +136,8 @@ export class ActorFFG extends Actor {
         if (!Object.keys(changes.system).includes("stats")) {
           changes.system.stats = {};
         }
-        if (Object.keys(changes.system).includes("characteristics")) {
-          changes.system.stats = changes.system.characteristics;
+        if (changes.system.characteristics?.Brawn?.value) {
+          changes.system.stats.Brawn = changes.system.characteristics.Brawn;
         }
         CONFIG.logger.debug(`The character sheet showed ${originalWounds} wounds, while that value without Brawn was ${originalWoundsWithoutBrawn}. Updating to be ${updatedWounds}`);
         changes.system.stats = foundry.utils.mergeObject(
@@ -169,8 +169,8 @@ export class ActorFFG extends Actor {
         if (!Object.keys(changes.system).includes("stats")) {
           changes.system.stats = {};
         }
-        if (Object.keys(changes.system).includes("characteristics")) {
-          changes.system.stats = changes.system.characteristics;
+        if (changes.system.characteristics?.Willpower?.value) {
+          changes.system.stats.Willpower = changes.system.characteristics.Willpower;
         }
         if (this.system.stats?.strain) {
           // get the soak without willpower modifying it, then add the new willpower value in
