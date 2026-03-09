@@ -1387,7 +1387,7 @@ img {
 }
 .starwarsffg.v2 .tabs .item.active {
   background: #cccccc;
-  background: linear-gradient(to right, #cccccc 0%, #7da9c2 100%);
+  background-color: rgba(73, 12, 11, 0.85);
   margin-right: -10px;
 }
 .starwarsffg .skill-characteristic {
