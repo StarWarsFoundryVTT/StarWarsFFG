@@ -282,6 +282,19 @@ img {
   font-family: "Roboto", sans-serif;
 }
 
+/* Prevent black border flash on input hover/unhover */
+.starwarsffg input,
+.starwarsffg select,
+.starwarsffg textarea {
+  transition: none;
+}
+.starwarsffg input:hover,
+.starwarsffg select:hover,
+.starwarsffg textarea:hover {
+  outline: none;
+  border: 0;
+}
+
 .starwarsffg .block-background {
   background-color: #eeeeee;
   padding: 5px;
