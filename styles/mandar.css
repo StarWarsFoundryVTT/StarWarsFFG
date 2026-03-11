@@ -82,10 +82,6 @@ section {
   z-index: 99999;
 }
 
-.sidebar-tab {
-  height: 100%;
-}
-
 .hidden-content {
   display: none;
 }
