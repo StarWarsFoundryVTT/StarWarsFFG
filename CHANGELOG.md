@@ -1,3 +1,7 @@
+`2.0.1`
+* Fixes:
+  * Correct armor and weapon encumbrance not applying to actors ([#2159](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2159))
+
 `2.0.0`
 * Enhancements:
   * Foundry v13 support!

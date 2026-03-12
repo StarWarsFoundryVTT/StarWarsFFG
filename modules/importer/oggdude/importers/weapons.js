@@ -42,6 +42,7 @@ export default class Weapons {
               description: item.Description.replace('[H3]', '<h3>').replace('[h3]', '</h3>').replace('[BR]', '<br>'),
               encumbrance: {
                 value: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
+                adjusted: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
               },
               price: {
                 value: item.Price ? parseInt(item.Price, 10) : 0,

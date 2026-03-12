@@ -38,6 +38,7 @@ export default class Armor {
               description: item.Description,
               encumbrance: {
                 value: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
+                adjusted: item.Encumbrance ? parseInt(item.Encumbrance, 10) : 0,
               },
               price: {
                 value: item.Price ? parseInt(item.Price, 10) : 0,
