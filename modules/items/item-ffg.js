@@ -171,8 +171,8 @@ export class ItemFFG extends ItemBaseFFG {
           }
         }
 
-        if (["armour", "weapon", "gear"].includes(this.type)) {
-          CONFIG.logger.debug("Detected equippible item creation, suspending Active Effects");
+        if (["armour", "weapon", "gear"].includes(this.type) && effects.name !== "(inherent)") {
+          CONFIG.logger.debug("Detected equippable item creation, suspending Active Effects");
           effects.disabled = true;
         }
 
