@@ -1568,6 +1568,83 @@ Hooks.once("ready", async () => {
     combatTrackerConfig.turnMarker.enabled = false;
     await game.settings.set("core", "combatTrackerConfig", combatTrackerConfig);
   }
+
+  // handle character creation requests
+  if (game.user.isGM && game.user.id === game.users.find(u => u.isGM && u.active).id) {
+    game.socket.on("system.starwarsffg", async (...args) => {
+      CONFIG.logger.debug("Processing PC wizard from player");
+      if (args[0]?.eventType === "pcWizard") {
+        const requestor = args[1];
+        const requestorName = game.users.get(requestor).name;
+        const actorName = `temp actor - ${requestorName}`;
+        if (args[0]?.event === "createCharacterRequest") {
+          CONFIG.logger.debug("create Character request, deleting old copies...");
+          // delete previous (temporary) copies of the actor
+          const existingActor = game.actors.getName(actorName);
+          if (existingActor) {
+            await existingActor.delete();
+          }
+
+          CONFIG.logger.debug("creating new temporary copy...");
+          // create a new temporary actor
+          const tempActor = await Actor.create(
+            {
+              name: actorName,
+              type: "character",
+              displaySheet: false,
+              ownership: {
+                [requestor]: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+              },
+            },
+          );
+
+          CONFIG.logger.debug("Returning event to player");
+          // notify the user that their actor is ready
+          game.socket.emit("system.starwarsffg", {
+            eventType: "pcWizard",
+            event: "createCharacterResponse",
+            actorId: tempActor.id,
+          });
+
+        } else if (args[0]?.event === "deleteCharacter") {
+          CONFIG.logger.debug("Deleting old copies...");
+          // delete temporary copies of the actor
+          const existingActor = game.actors.getName(actorName);
+          if (existingActor) {
+            await existingActor.delete();
+          }
+
+          CONFIG.logger.debug("Returning event to player...r");
+          // notify the user that the actor has been deleted
+          game.socket.emit("system.starwarsffg", {
+            eventType: "pcWizard",
+            event: "deleteCharacterResponse",
+          });
+        } else if (args[0]?.event === "createFinalActorRequest") {
+          CONFIG.logger.debug("Processing final actor request from player");
+          // create a new temporary actor
+          const newActor = await Actor.create(
+            {
+              name: `${requestorName}'s new PC!`,
+              type: "character",
+              displaySheet: false,
+              ownership: {
+                [requestor]: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+              },
+            },
+          );
+
+          CONFIG.logger.debug("Returning event to player...");
+          // notify the user that their actor is ready
+          game.socket.emit("system.starwarsffg", {
+            eventType: "pcWizard",
+            event: "createFinalActorResponse",
+            actorId: newActor.id,
+          });
+        }
+      }
+    });
+  }
 });
 
 Hooks.once("diceSoNiceReady", (dice3d) => {

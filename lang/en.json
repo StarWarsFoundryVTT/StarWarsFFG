@@ -1039,6 +1039,7 @@
   "SWFFG.CharacterCreator.review.credits": "credits,",
   "SWFFG.CharacterCreator.Entry.Button": "PC Wizard",
   "SWFFG.CharacterCreator.Entry.Loading": "PC Wizard Loading...",
+  "SWFFG.CharacterCreator.Checks.GM": "At least one GM must be online to use the PC Wizard",
   "SWFFG.Effect.Duration.Permanent": "Permanent",
   "SWFFG.Effect.Duration.CurrentCombat": "Current Combat",
   "SWFFG.Effect.Duration.Seconds": "Seconds",

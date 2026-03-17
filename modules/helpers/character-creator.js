@@ -179,6 +179,19 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     };
 
     this.compendiumData = {};
+
+    if (game.users.filter(u => u.isGM && u.active).length === 0) {
+      ui.notifications.error(game.i18n.localize("SWFFG.CharacterCreator.Checks.GM"));
+      return this.close();
+    }
+    // configure socket events
+    game.socket.on("system.starwarsffg", async (...args) => {
+      if (args[0]?.eventType === "pcWizard" && args[0]?.event === "createCharacterResponse") {
+        await this.showCharacterStatus(args[0].actorId);
+      } else if (args[0]?.eventType === "pcWizard" && args[0]?.event === "createFinalActorResponse") {
+        await this.createActor(args[0].actorId);
+      }
+    });
   }
 
   /** @override */
@@ -481,7 +494,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
     // create the actor!
     $(".create-actor").on("click", async (event) => {
-      await this.createActor(event);
+      await this.createActorShim(event);
     });
 
     CONFIG.logger.debug(`Current state: ${JSON.stringify(this.data)}`);
@@ -951,7 +964,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return ui.notifications.warn(`Unable to find species!`);
     }
     this.data.selected.species = selectedSpecies;
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleCareerSelect(event) {
@@ -976,7 +989,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }
 
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleObligationEdit(event) {
@@ -1018,7 +1031,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return ui.notifications.warn(`Unable to find obligation!`);
     }
     this.data.selected.obligations.push(selectedObligation);
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleSpecializationSelect(event) {
@@ -1029,27 +1042,45 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
     this.data.selected.specialization = selectedSpecialization;
     this.data.selected.specializationCareerSkillRanks = [];
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
-  async showCharacterStatus() {
-    // temporary: delete previous copies of the actor
-    const existingActor = game.actors.getName("temp actor");
-    if (existingActor) {
-      await existingActor.delete();
+  /**
+   * Initial handler for showCharacterStatus, since we need different code paths based on if a socket event is needed
+   * @returns {Promise<void>}
+   */
+  async showCharacterStatusShim() {
+    if (game.user.isGM) {
+      // temporary: delete previous copies of the actor
+      const existingActor = game.actors.getName("temp actor");
+      if (existingActor) {
+        await existingActor.delete();
+      }
+      // temporary: create a new actor to add stuff to
+      const tempActor = await Actor.create(
+        {
+          name: `temp actor - ${game.user.name}`,
+          type: "character",
+          displaySheet: false,
+        },
+      );
+      await this.showCharacterStatus(tempActor.id);
+    } else {
+      game.socket.emit("system.starwarsffg", {
+        eventType: "pcWizard",
+        event: "createCharacterRequest",
+      });
+    }
+  }
+
+  async showCharacterStatus(actorId) {
+    const tempActor = game.actors.get(actorId);
+    if (!tempActor) {
+      ui.notifications.error(`Unable to find temp actor!`);
+      return;
     }
 
-    // temporary: create a new actor to add stuff to
-    console.log("creating temp actor...")
-    const tempActor = await Actor.create(
-      {
-        name: "temp actor",
-        type: "character",
-        displaySheet: false,
-      },
-    );
-
-    console.log("updating XP for temp actor")
+    CONFIG.logger.debug("updating XP for temp actor")
     const totalXp = 100;
     const availableXp = 100;
     if (this.data.selected.species?.uuid) {
@@ -1061,7 +1092,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       });
     }
 
-    console.log("applying XP purchases")
+    CONFIG.logger.debug("applying XP purchases")
     // apply purchases
     for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
       const updateKey = `system.characteristics.${characteristicPurchase.key}.value`;
@@ -1107,8 +1138,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         items.push(item);
       }
     }
-    console.log("adding the following items to the temp actor")
-    console.log(items)
+    CONFIG.logger.debug("adding the following items to the temp actor")
+    CONFIG.logger.debug(items)
     await tempActor.createEmbeddedDocuments("Item", items);
 
     // apply career skill ranks from career and specialization
@@ -1161,9 +1192,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
       }
     }
-    console.log("assigning to local actor record")
+    CONFIG.logger.debug("assigning to local actor record")
     this.tempActor = tempActor;
-    console.log("re-rendering")
+    CONFIG.logger.debug("re-rendering")
     this.render();
   }
 
@@ -1187,7 +1218,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       this.data.purchases.xp.characteristics.splice(purchaseIndex, 1);
     }
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleSkillModify(event) {
@@ -1237,7 +1268,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     }
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleSpecializationPurchase(event) {
@@ -1356,7 +1387,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleRemoveForcePower(event) {
@@ -1380,7 +1411,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleForcePowerTalentPurchase(event) {
@@ -1410,7 +1441,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleSpecializationTalentPurchase(event) {
@@ -1445,7 +1476,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async showPurchaseConfirmation(itemType, content) {
@@ -1458,11 +1489,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (purchaseWindow) => {
-              console.log(purchaseWindow)
+              CONFIG.logger.debug(purchaseWindow)
               const cost = $("#ffgPurchase option:selected", purchaseWindow).data("cost");
               const selectedUuid = $("#ffgPurchase option:selected", purchaseWindow).data("source");
 
-              console.log(cost, selectedUuid)
+              CONFIG.logger.debug(cost, selectedUuid)
 
               const selectedItem = await fromUuid(selectedUuid);
               if (!selectedItem) {
@@ -1474,7 +1505,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
                 cost: cost,
               });
               // rebuild the actor to apply the changes
-              await this.showCharacterStatus();
+              await this.showCharacterStatusShim();
             },
           },
           cancel: {
@@ -1574,7 +1605,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       cost: purchasedItem.system.price.value,
     });
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleCreditRefund(event) {
@@ -1590,7 +1621,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   calcCredits() {
@@ -1618,7 +1649,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       item: purchasedItem,
     });
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
   async handleMotivationRefund(event) {
@@ -1634,27 +1665,36 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // rebuild the actor to apply the changes
-    await this.showCharacterStatus();
+    await this.showCharacterStatusShim();
   }
 
-  async createActor() {
-    CONFIG.logger.debug("Creating new actor...");
-    const actorName = `${game.user.name}'s new actor!`;
-    // TODO: validate state before creating actor
-    // temporary: delete previous copies of the actor
-    const existingActor = game.actors.getName(actorName);
-    if (existingActor) {
-      CONFIG.logger.debug("Deleting old actor");
-      await existingActor.delete();
+  async createActorShim() {
+    if (game.user.isGM) {
+      // temporary: create a new actor to add stuff to
+      CONFIG.logger.debug("creating final actor...")
+      const finalActor = await Actor.create(
+        {
+          name: `${game.user.name}'s new PC!`,
+          type: "character",
+          displaySheet: false,
+        },
+      );
+      await this.showCharacterStatus(finalActor.id);
+    } else {
+      game.socket.emit("system.starwarsffg", {
+        eventType: "pcWizard",
+        event: "createFinalActorRequest",
+      });
     }
+  }
 
-    const newActor = await Actor.create(
-      {
-        name: actorName,
-        type: "character",
-        displaySheet: false,
-      },
-    );
+  async createActor(actorId) {
+    CONFIG.logger.debug("Creating new actor...");
+    const newActor = game.actors.get(actorId);
+    if (!newActor) {
+      ui.notifications.error("Actor not found.");
+      return;
+    }
 
     const xp = await this.calcXp();
     const totalXp = xp.total;
