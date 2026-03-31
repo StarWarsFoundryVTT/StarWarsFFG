@@ -693,7 +693,7 @@ export class ActorFFG extends Actor {
 
     // Determine the updates to make to the actor data
     let updates;
-    if (isBar && attribute === "stats.wounds") {
+    if (isBar && ["stats.wounds", "stats.strain", "stats.hullTrauma", "stats.systemStrain"].includes(attribute)) {
       updates = {[`system.${attribute}.value`]: Math.max(update, 0)};
     } else if (isBar) {
       updates = {[`system.${attribute}.value`]: Math.clamp(update, 0, attr.max)};

@@ -1,3 +1,7 @@
+`2.0.3`
+* Enhancements:
+  * Strain, Hull Trauma, and System Strain can now be set above the threshold on tokens ([#2177](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2177))
+
 `2.0.2`
 * Fixes:
   * the PC wizard now works for non-GMs ([#2165](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2165))
