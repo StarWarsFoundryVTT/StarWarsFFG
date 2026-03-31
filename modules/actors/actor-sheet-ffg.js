@@ -1140,10 +1140,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           const newUses = prevUses + 1;
           const currentWounds = this.actor.system?.stats?.wounds?.value ?? 0;
           let woundsHealing = 0;
-          if (item.flags.starwarsffg.config.medicalType === 1) { // stimpack
+          if (item.flags.starwarsffg.config.medicalType == 1) { // stimpack
             woundsHealing = Math.max(5 - prevUses, 0);
           }
-          else if (item.flags.starwarsffg.config.medicalType === 2) { // emergency droid patch
+          else if (item.flags.starwarsffg.config.medicalType == 2) { // emergency droid patch
             woundsHealing = 3;
           }
           const newWounds = Math.max(currentWounds - woundsHealing, 0);
