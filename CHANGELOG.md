@@ -4,6 +4,7 @@
 * Fixes:
   * Fixes an issue where edit mode can get stuck on and require a reload to fix ([#2202](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2202))
   * "Rival" and "Nemesis" default images are now swapped (to their appropriate setting!)
+  * The PC Wizard no longer spams a trillion temporary actors ([#2183](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2183))
 
 `2.0.2`
 * Fixes:
