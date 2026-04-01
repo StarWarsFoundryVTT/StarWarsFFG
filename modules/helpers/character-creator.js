@@ -1052,7 +1052,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   async showCharacterStatusShim() {
     if (game.user.isGM) {
       // temporary: delete previous copies of the actor
-      const existingActor = game.actors.getName("temp actor");
+      const existingActor = game.actors.getName(`temp actor - ${game.user.name}`);
       if (existingActor) {
         await existingActor.delete();
       }
