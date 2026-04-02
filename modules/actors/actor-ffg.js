@@ -161,6 +161,19 @@ export class ActorFFG extends Actor {
             }
           }
         );
+        // repeat the above process, but for encumbrance threshold
+        const originalEncumbrance = this.system.stats?.encumbrance.max;
+        const originalEncumbranceWithoutBrawn = originalEncumbrance - originalBrawn;
+        const updatedEncumbrance = originalEncumbranceWithoutBrawn + parseInt(updatedBrawn);
+        CONFIG.logger.debug(`The character sheet showed ${originalEncumbrance} encumbrance max, while that value without Brawn was ${originalEncumbranceWithoutBrawn}. Updating to be ${updatedEncumbrance}`);
+        changes.system.stats = foundry.utils.mergeObject(
+          changes.system.stats,
+          {
+            encumbrance: {
+              max: updatedEncumbrance,
+            }
+          }
+        );
       }
       const originalWillpower = this.system.characteristics.Willpower.value;
       const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
