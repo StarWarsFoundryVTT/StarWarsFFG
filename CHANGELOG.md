@@ -9,6 +9,7 @@
   * Fix for Talents granting their modifier when dropped onto a Specialization regardless of learned status ([#2203](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2203))
   * Encumbrance threshold now updates when manual edits to Brawn are applied ([#2197](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2197))
   * Re-importing data without also loading skills no longer automatically fails ([#2196](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2196))
+  * Vehicle and Force Power sheet content heights have been corrected - they now use all available space instead of including a large amount of deadspace at the bottom ([#2194](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2194))
 
 `2.0.2`
 * Fixes:

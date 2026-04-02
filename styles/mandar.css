@@ -789,10 +789,12 @@ img {
 }
 
 .starwarsffg.sheet .sheet-body.vehicle {
-  height: calc(100% - 36rem);
+  flex: 1;
+  min-height: 0;
+  height: auto;
 }
 .starwarsffg.sheet.v2 .sheet-body.vehicle {
-  height: calc(100% - 32rem);
+  height: auto;
 }
 
 .starwarsffg.sheet .sheet-body .tab {
@@ -3034,6 +3036,12 @@ img {
   height: calc(100% - 13.5rem);
 }
 
+.starwarsffg.sheet.actor .vehicle {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .starwarsffg.sheet.actor .vehicle .grid {
   width: 100%;
 }
@@ -3643,6 +3651,9 @@ img {
 .starwarsffg .item-sheet-forcepower {
   min-width: 700px;
   min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .starwarsffg .item-sheet-forcepower .talent-background .talent-header {
@@ -3675,7 +3686,9 @@ img {
 }
 
 .starwarsffg .item-sheet-forcepower .sheet-body {
-  height: calc(100% - 10.25rem);
+  flex: 1;
+  min-height: 0;
+  height: auto;
   margin: 0;
   padding: 0;
   border: 0 none;
