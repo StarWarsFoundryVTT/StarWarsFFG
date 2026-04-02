@@ -5,6 +5,7 @@
   * Fixes an issue where edit mode can get stuck on and require a reload to fix ([#2202](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2202))
   * "Rival" and "Nemesis" default images are now swapped (to their appropriate setting!)
   * The PC Wizard no longer spams a trillion temporary actors ([#2183](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2183))
+  * The PC Wizard now properly sets starting/total XP and generates entries in the XP log ([#2178](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2178))
 
 `2.0.2`
 * Fixes:

@@ -1080,9 +1080,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return;
     }
 
-    CONFIG.logger.debug("updating XP for temp actor")
-    const totalXp = 100;
-    const availableXp = 100;
+    CONFIG.logger.debug("updating XP for temp actor");
+    const { total: totalXp, available: availableXp } = this.calcXp();
     if (this.data.selected.species?.uuid) {
       await tempActor.update({
         "system.experience": {
@@ -1092,7 +1091,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       });
     }
 
-    CONFIG.logger.debug("applying XP purchases")
+    CONFIG.logger.debug("applying XP purchases");
     // apply purchases
     for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
       const updateKey = `system.characteristics.${characteristicPurchase.key}.value`;
@@ -1138,8 +1137,8 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         items.push(item);
       }
     }
-    CONFIG.logger.debug("adding the following items to the temp actor")
-    CONFIG.logger.debug(items)
+    CONFIG.logger.debug("adding the following items to the temp actor");
+    CONFIG.logger.debug(items);
     await tempActor.createEmbeddedDocuments("Item", items);
 
     // apply career skill ranks from career and specialization
@@ -1192,9 +1191,9 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
       }
     }
-    CONFIG.logger.debug("assigning to local actor record")
+    CONFIG.logger.debug("assigning to local actor record");
     this.tempActor = tempActor;
-    CONFIG.logger.debug("re-rendering")
+    CONFIG.logger.debug("re-rendering");
     this.render();
   }
 
@@ -1489,11 +1488,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (purchaseWindow) => {
-              CONFIG.logger.debug(purchaseWindow)
+              CONFIG.logger.debug(purchaseWindow);
               const cost = $("#ffgPurchase option:selected", purchaseWindow).data("cost");
               const selectedUuid = $("#ffgPurchase option:selected", purchaseWindow).data("source");
 
-              CONFIG.logger.debug(cost, selectedUuid)
+              CONFIG.logger.debug(cost, selectedUuid);
 
               const selectedItem = await fromUuid(selectedUuid);
               if (!selectedItem) {
@@ -1671,7 +1670,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   async createActorShim() {
     if (game.user.isGM) {
       // temporary: create a new actor to add stuff to
-      CONFIG.logger.debug("creating final actor...")
+      CONFIG.logger.debug("creating final actor...");
       const finalActor = await Actor.create(
         {
           name: `${game.user.name}'s new PC!`,
@@ -1679,7 +1678,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           displaySheet: false,
         },
       );
-      await this.showCharacterStatus(finalActor.id);
+      await this.createActor(finalActor.id);
     } else {
       game.socket.emit("system.starwarsffg", {
         eventType: "pcWizard",
