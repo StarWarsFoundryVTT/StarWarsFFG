@@ -6,6 +6,7 @@
   * "Rival" and "Nemesis" default images are now swapped (to their appropriate setting!)
   * The PC Wizard no longer spams a trillion temporary actors ([#2183](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2183))
   * The PC Wizard now properly sets starting/total XP and generates entries in the XP log ([#2178](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2178))
+  * Fix for Talents granting their modifier when dropped onto a Specialization regardless of learned status ([#2203](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2203))
 
 `2.0.2`
 * Fixes:
