@@ -1998,8 +1998,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         toCreate.push(activeEffect);
       }
       CONFIG.logger.debug(toCreate);
-      await this.object.createEmbeddedDocuments("ActiveEffect", toCreate);
-      await ItemHelpers.syncAEStatus(this.object, toCreate);
+      const createdEffects = await this.object.createEmbeddedDocuments("ActiveEffect", toCreate);
+      await ItemHelpers.syncAEStatus(this.object, createdEffects);
     } else {
       CONFIG.logger.debug(`Rejected transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
     }
