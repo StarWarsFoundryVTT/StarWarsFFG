@@ -365,6 +365,10 @@ img {
   background: none;
 }
 
+.starwarsffg.sheet.actor .character-details-table td {
+  padding-right: 0.25rem;
+}
+
 .starwarsffg.sheet.actor .character .header-fields .drag-note {
   border: 2px dotted;
   border-radius: 10px;
@@ -393,6 +397,7 @@ img {
   border-radius: 1rem;
   cursor: pointer;
   width: fit-content;
+  white-space: nowrap;
 }
 
 .starwarsffg.sheet.actor .character .header-fields .specialization-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .species-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .career-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .signatureability-pill .item-delete, .starwarsffg.sheet.actor .character .header-fields .forcepower-pill .item-delete {
