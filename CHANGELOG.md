@@ -12,6 +12,7 @@
   * Vehicle and Force Power sheet content heights have been corrected - they now use all available space instead of including a large amount of deadspace at the bottom ([#2194](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2194))
   * Character sheets have had their main details block slightly rearranged and had the styling slightly improved ([#2187](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2187))
   * Characteristic mods are now properly created when importing items (requires a re-import to apply) ([#2193](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2193))
+  * Characteristic-based weapons now get their base damage correct without having to open/close the item sheet ([#2180](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2180))
 
 `2.0.2`
 * Fixes:
