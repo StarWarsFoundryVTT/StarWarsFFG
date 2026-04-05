@@ -569,6 +569,8 @@ export default class ModifierHelpers {
       }
     } else if (["Weapon Stat", "Armor Stat"].includes(modType) && mod === "encumbrance") {
         return `system.stats.encumbrance.value`;
+    } else if (modType === "Armor Stat" && mod === "soak") {
+        return `system.stats.soak.value`;
     } else {
       // TODO: this probably shouldn't be a UI notification in the released version
       CONFIG.logger.debug(`Unknown mod type: ${modType}`);
