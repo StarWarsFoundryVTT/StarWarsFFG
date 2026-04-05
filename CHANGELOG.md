@@ -15,6 +15,7 @@
   * Characteristic-based weapons now get their base damage correct without having to open/close the item sheet ([#2180](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2180))
   * Fix for Armor Soak mods not applying correctly (note that the mods will need to be re-created for the fix to apply) ([#2191](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2191))
   * Fix for weapons not receiving dice modifiers from Modifiers installed on Attachments ([#2179](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2179))
+  * Hide tabs on sheets when a player has a limited view to it ([#2161](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2161))
 
 `2.0.2`
 * Fixes:
