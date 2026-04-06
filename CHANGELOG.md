@@ -18,6 +18,7 @@
   * Hide tabs on sheets when a player has a limited view to it ([#2161](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2161))
   * The edit button is no longer shown for talents from specializations (which cannot be edited) ([#2143](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2143))
   * Correct opening Talent information for custom Specializations ([#2144](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2144))
+  * Update Mod value for Career Skills to be a checkbox ([#2146](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2146))
 
 `2.0.2`
 * Fixes:
