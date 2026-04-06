@@ -14,7 +14,11 @@
     <select name="data.attributes.{{ key }}.mod" class="flat_editor dropdown mod" data-type="mod" data-attr-key="{{ key }}">
       {{ selectOptions (lookup ../modifierChoices attr.modtype) selected=attr.mod  valueAttr="value" labelAttr="label"localize=true }}
     </select>
+    {{#if (eq attr.modtype "Career Skill")}}
+    <input name="data.attributes.{{ key }}.value" type="checkbox" class="modvalue" {{#if attr.value}}checked{{/if}} data-attr-key="{{ key }}">
+    {{else}}
     <input name="data.attributes.{{ key }}.value" type="number" class="modvalue" value="{{ attr.value }}" data-attr-key="{{ key }}">
+    {{/if}}
     <a class="attribute-control flat_editor add-mod" data-action="delete"><i class="fas fa-trash"></i></a>
   </li>
   {{/if}} {{/each}}

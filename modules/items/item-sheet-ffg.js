@@ -708,6 +708,18 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
 
+    // Swap value input between checkbox and number when modtype changes
+    html.find(".attributes").on("change", ".flat_editor.dropdown.modtype", (event) => {
+      const new_value = event.currentTarget.value;
+      const valueName = event.currentTarget.name.replace(/\.modtype$/, '.value');
+      const $valueInput = $(event.currentTarget).parent().find(".modvalue");
+      if (new_value === "Career Skill") {
+        $valueInput.replaceWith(`<input name="${valueName}" type="checkbox" class="modvalue" data-attr-key="${$valueInput.data('attr-key')}">`);
+      } else if ($valueInput.attr('type') === 'checkbox') {
+        $valueInput.replaceWith(`<input name="${valueName}" type="number" class="modvalue" value="0" data-attr-key="${$valueInput.data('attr-key')}">`);
+      }
+    });
+
     if (["signatureability"].includes(this.object.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
       html.find(".talent-actions .fa-cog").on("click", ModifierHelpers.popoutModiferWindow.bind(this));
