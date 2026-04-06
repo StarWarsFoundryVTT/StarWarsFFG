@@ -468,8 +468,10 @@ export class ActorFFG extends Actor {
       });
 
       if (index < 0 || !item.isRanked) {
+        item.isDirectlyAdded = true;
         globalTalentList.push(item);
       } else {
+        globalTalentList[index].isDirectlyAdded = true;
         globalTalentList[index].source.push({
           type: element?.flags?.starwarsffg?.fromSpecies ? "species" : "talent",
           typeLabel: element?.flags?.starwarsffg?.fromSpecies ? "SWFFG.Species" : "SWFFG.Talent",
