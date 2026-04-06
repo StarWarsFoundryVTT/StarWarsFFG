@@ -32,6 +32,7 @@ import TemplateHelpers from "./helpers/partial-templates.js";
 import SkillListImporter from "./importer/skills-list-importer.js";
 import DestinyTracker from "./ffg-destiny-tracker.js";
 import { defaultSkillList } from "./config/ffg-skillslist.js";
+import { skillModifierTypes } from "./config/ffg-modifiers.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
 import {register_crew} from "./helpers/crew.js";
 
@@ -625,6 +626,9 @@ Hooks.once("init", async function () {
         });
 
         CONFIG.FFG.skills = ordered;
+        skillModifierTypes.forEach((modType) => {
+          CONFIG.FFG.allowableModifierChoices[modType] = foundry.utils.duplicate(ordered);
+        });
       }
     } catch (err) {
       console.error(err);
@@ -1409,6 +1413,7 @@ Hooks.once("ready", async () => {
               type: "ability",
               system: {
                 description: abilityData.system.description,
+                fromSpecies: item.id,
               }
             },
             {
@@ -1430,7 +1435,7 @@ Hooks.once("ready", async () => {
   // data for _onDropItemCreate has system.encumbrance.adjusted = 0, despite it being proper in the item itself
   Hooks.on("deleteItem", async (item, options, userId) => {
     if (userId != game.user.id) return
-    // remove talents added by species
+    // remove talents, abilities added by species
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
       if (item.type === "species" && actor.type === "character") {
@@ -1454,6 +1459,10 @@ Hooks.once("ready", async () => {
           if (actorTalent) {
             toDelete.push(actorTalent.id);
           }
+        }
+        // build the abilities list
+        for (const ability of actor.items.filter(i => i.type === "ability" && i.system?.fromSpecies === item.id)) {
+          toDelete.push(ability.id);
         }
         if (toDelete.length > 0) {
           actor.deleteEmbeddedDocuments("Item", toDelete);
@@ -1558,6 +1567,83 @@ Hooks.once("ready", async () => {
     await game.settings.set("starwarsffg", "configuredTurnMarker", true);
     combatTrackerConfig.turnMarker.enabled = false;
     await game.settings.set("core", "combatTrackerConfig", combatTrackerConfig);
+  }
+
+  // handle character creation requests
+  if (game.user.isGM && game.user.id === game.users.find(u => u.isGM && u.active).id) {
+    game.socket.on("system.starwarsffg", async (...args) => {
+      CONFIG.logger.debug("Processing PC wizard from player");
+      if (args[0]?.eventType === "pcWizard") {
+        const requestor = args[1];
+        const requestorName = game.users.get(requestor).name;
+        const actorName = `temp actor - ${requestorName}`;
+        if (args[0]?.event === "createCharacterRequest") {
+          CONFIG.logger.debug("create Character request, deleting old copies...");
+          // delete previous (temporary) copies of the actor
+          const existingActor = game.actors.getName(actorName);
+          if (existingActor) {
+            await existingActor.delete();
+          }
+
+          CONFIG.logger.debug("creating new temporary copy...");
+          // create a new temporary actor
+          const tempActor = await Actor.create(
+            {
+              name: actorName,
+              type: "character",
+              displaySheet: false,
+              ownership: {
+                [requestor]: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+              },
+            },
+          );
+
+          CONFIG.logger.debug("Returning event to player");
+          // notify the user that their actor is ready
+          game.socket.emit("system.starwarsffg", {
+            eventType: "pcWizard",
+            event: "createCharacterResponse",
+            actorId: tempActor.id,
+          });
+
+        } else if (args[0]?.event === "deleteCharacter") {
+          CONFIG.logger.debug("Deleting old copies...");
+          // delete temporary copies of the actor
+          const existingActor = game.actors.getName(actorName);
+          if (existingActor) {
+            await existingActor.delete();
+          }
+
+          CONFIG.logger.debug("Returning event to player...r");
+          // notify the user that the actor has been deleted
+          game.socket.emit("system.starwarsffg", {
+            eventType: "pcWizard",
+            event: "deleteCharacterResponse",
+          });
+        } else if (args[0]?.event === "createFinalActorRequest") {
+          CONFIG.logger.debug("Processing final actor request from player");
+          // create a new temporary actor
+          const newActor = await Actor.create(
+            {
+              name: `${requestorName}'s new PC!`,
+              type: "character",
+              displaySheet: false,
+              ownership: {
+                [requestor]: foundry.CONST.DOCUMENT_OWNERSHIP_LEVELS.OWNER,
+              },
+            },
+          );
+
+          CONFIG.logger.debug("Returning event to player...");
+          // notify the user that their actor is ready
+          game.socket.emit("system.starwarsffg", {
+            eventType: "pcWizard",
+            event: "createFinalActorResponse",
+            actorId: newActor.id,
+          });
+        }
+      }
+    });
   }
 });
 

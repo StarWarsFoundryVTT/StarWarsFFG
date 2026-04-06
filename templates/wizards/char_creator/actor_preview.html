@@ -59,22 +59,22 @@
   <div class="specializations">
     <div class="specialization specialization-container">
       {{ data.selected.specialization.name }}
-      <div class="specialization-summary" style="display: none;">
-        {{> "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html" (
-          object specialization=data.selected.specialization purchased=false
-        )}}
-      </div>
+    </div>
+    <div class="specialization-summary" style="display: none;">
+      {{> "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html" (
+        object specialization=data.selected.specialization purchased=false
+      )}}
     </div>
     <div class="specialization">
       {{#each data.purchases.xp.specializations as |purchase|}}
         <div class="specialization-purchased specialization-container">
           {{ purchase.item.name }}
           <i class="fas fa-trash specialization-remove remove-purchase" data-name="{{ purchase.item.name }}"></i>
-          <div class="specialization-summary" style="display: none;">
-            {{> "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html" (
-              object specialization=purchase.item purchased=true
-            )}}
-          </div>
+        </div>
+        <div class="specialization-summary" style="display: none;">
+          {{> "systems/starwarsffg/templates/wizards/char_creator/preview/specialization.html" (
+            object specialization=purchase.item purchased=true
+          )}}
         </div>
       {{/each }}
     </div>
@@ -84,13 +84,13 @@
     <div class="forcePower">
       {{#each data.purchases.xp.forcePowers as |purchase|}}
         <div class="forcePower-purchased forcePower-container">
-          {{ purchase.item.name }}
+          <div class="forcePower-name">{{ purchase.item.name }}</div>
           <i class="fas fa-trash forcePower-remove remove-purchase" data-name="{{ purchase.item.name }}"></i>
-          <div class="forcePower-summary" style="display: none;">
-            {{> "systems/starwarsffg/templates/wizards/char_creator/preview/forcepower.html" (
-              object forcePower=purchase.item purchased=true
-            )}}
-          </div>
+        </div>
+        <div class="forcePower-summary" style="display: none;">
+          {{> "systems/starwarsffg/templates/wizards/char_creator/preview/forcepower.html" (
+            object forcePower=purchase.item purchased=true
+          )}}
         </div>
       {{/each }}
     </div>

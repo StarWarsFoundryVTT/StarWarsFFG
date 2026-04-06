@@ -64,7 +64,7 @@ export async function createFFGMacro(bar, data, slot) {
         command: command,
       });
     }
-  } else if (data.data.type === "skill") {
+  } else if (data?.data?.type === "skill") {
       const actor = game.actors.get(data.actorId);
       const command = `
     // game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, actorSheet, flavortext, sound);

@@ -136,6 +136,9 @@ export class ActorFFG extends Actor {
         if (!Object.keys(changes.system).includes("stats")) {
           changes.system.stats = {};
         }
+        if (changes.system.characteristics?.Brawn?.value) {
+          changes.system.stats.Brawn = changes.system.characteristics.Brawn;
+        }
         CONFIG.logger.debug(`The character sheet showed ${originalWounds} wounds, while that value without Brawn was ${originalWoundsWithoutBrawn}. Updating to be ${updatedWounds}`);
         changes.system.stats = foundry.utils.mergeObject(
           changes.system.stats,
@@ -158,11 +161,30 @@ export class ActorFFG extends Actor {
             }
           }
         );
+        // repeat the above process, but for encumbrance threshold
+        const originalEncumbrance = this.system.stats?.encumbrance.max;
+        const originalEncumbranceWithoutBrawn = originalEncumbrance - originalBrawn;
+        const updatedEncumbrance = originalEncumbranceWithoutBrawn + parseInt(updatedBrawn);
+        CONFIG.logger.debug(`The character sheet showed ${originalEncumbrance} encumbrance max, while that value without Brawn was ${originalEncumbranceWithoutBrawn}. Updating to be ${updatedEncumbrance}`);
+        changes.system.stats = foundry.utils.mergeObject(
+          changes.system.stats,
+          {
+            encumbrance: {
+              max: updatedEncumbrance,
+            }
+          }
+        );
       }
       const originalWillpower = this.system.characteristics.Willpower.value;
       const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
       if (originalWillpower !== undefined && updatedWillpower !== undefined && originalWillpower !== updatedWillpower) {
         CONFIG.logger.debug(`Detected modified Willpower (${originalWillpower} -> ${updatedWillpower}, updating derived values`);
+        if (!Object.keys(changes.system).includes("stats")) {
+          changes.system.stats = {};
+        }
+        if (changes.system.characteristics?.Willpower?.value) {
+          changes.system.stats.Willpower = changes.system.characteristics.Willpower;
+        }
         if (this.system.stats?.strain) {
           // get the soak without willpower modifying it, then add the new willpower value in
           const originalStrain = this.system.stats?.strain.max;
@@ -260,7 +282,7 @@ export class ActorFFG extends Actor {
         data.skills[skill].label = localizedField;
       }
     }
-    
+
     // Create list of active effects changing this actor
     data.effects = actorData.effects.contents;
     actorData.items.forEach(item => {
@@ -446,8 +468,10 @@ export class ActorFFG extends Actor {
       });
 
       if (index < 0 || !item.isRanked) {
+        item.isDirectlyAdded = true;
         globalTalentList.push(item);
       } else {
+        globalTalentList[index].isDirectlyAdded = true;
         globalTalentList[index].source.push({
           type: element?.flags?.starwarsffg?.fromSpecies ? "species" : "talent",
           typeLabel: element?.flags?.starwarsffg?.fromSpecies ? "SWFFG.Species" : "SWFFG.Talent",
@@ -684,7 +708,7 @@ export class ActorFFG extends Actor {
 
     // Determine the updates to make to the actor data
     let updates;
-    if (isBar && attribute === "stats.wounds") {
+    if (isBar && ["stats.wounds", "stats.strain", "stats.hullTrauma", "stats.systemStrain"].includes(attribute)) {
       updates = {[`system.${attribute}.value`]: Math.max(update, 0)};
     } else if (isBar) {
       updates = {[`system.${attribute}.value`]: Math.clamp(update, 0, attr.max)};

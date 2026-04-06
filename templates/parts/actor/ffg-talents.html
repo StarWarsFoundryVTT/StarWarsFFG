@@ -10,7 +10,7 @@
   </li>
   <ul class="items-list">
     {{#each talentList as |item id|}}
-    <li class="item specialization-talent-item flexrow" data-item-id="{{item.itemId}}">
+    <li class="item specialization-talent-item flexrow" data-item-id="{{item.itemId}}" data-item-name="{{item.name}}">
       <div class="item-name">
         {{item.name}}
       </div>
@@ -20,7 +20,7 @@
       <div>{{item.tier}}</div>
       {{/if}}
       <div class="item-controls">
-        <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
+        {{#if item.isDirectlyAdded}}<a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>{{/if}}
         <a class="item-control item-info" title="Item Information"><i class="fas fa-info-circle"></i></a>
       </div>
     </li>

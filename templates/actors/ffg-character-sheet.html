@@ -29,15 +29,12 @@
                     <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
                 </td>
-                <td style="{{#if limited}}display:none;{{/if}}">
-                  <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="signatureability" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SignatureAbility"}}"></i>
-                  {{localize "SWFFG.SignatureAbilities"}}:
+                <td>
+                  {{localize "SWFFG.Career"}}:
                 </td>
-                <td style="{{#if limited}}display:none;{{/if}}">
-                  {{#each_when actor.items "type" "signatureability"}}
-                  <div class="signatureability-pill item" data-item-id="{{item._id}}">
-                    {{item.name}} <i class="fas fa-times item-delete"></i>
-                  </div>
+                <td>
+                  {{#each_when actor.items "type" "career"}}
+                  <div class="career-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
                   {{else}}
                   <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
@@ -45,11 +42,14 @@
               </tr>
               <tr style="{{#if limited}}display:none;{{/if}}">
                 <td>
-                  {{localize "SWFFG.Career"}}:
+                  <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="specialization" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.Specialization" }}"></i>
+                  {{localize "SWFFG.Specializations"}}:
                 </td>
                 <td>
-                  {{#each_when actor.items "type" "career"}}
-                  <div class="career-pill item" data-item-id="{{item._id}}">{{item.name}} <i class="fas fa-times item-delete"></i></div>
+                  {{#each_when actor.items "type" "specialization"}}
+                  <div class="specialization-pill item" data-item-id="{{item._id}}">
+                    {{item.name}} <i class="fas fa-times item-delete"></i>
+                  </div>
                   {{else}}
                   <div class="drag-note">{{localize "SWFFG.DragNotes"}}</div>
                   {{/each_when}}
@@ -73,13 +73,13 @@
                 </td>
               </tr>
               <tr style="{{#if limited}}display:none;{{/if}}">
-                <td>
-                  <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="specialization" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.Specialization" }}"></i>
-                  {{localize "SWFFG.Specializations"}}:
+                <td style="{{#if limited}}display:none;{{/if}}">
+                  <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="signatureability" title="{{localize "SWFFG.Actors.Sheets.Purchase.Tooltip.SignatureAbility"}}"></i>
+                  {{localize "SWFFG.SignatureAbilities"}}:
                 </td>
-                <td>
-                  {{#each_when actor.items "type" "specialization"}}
-                  <div class="specialization-pill item" data-item-id="{{item._id}}">
+                <td style="{{#if limited}}display:none;{{/if}}">
+                  {{#each_when actor.items "type" "signatureability"}}
+                  <div class="signatureability-pill item" data-item-id="{{item._id}}">
                     {{item.name}} <i class="fas fa-times item-delete"></i>
                   </div>
                   {{else}}
@@ -89,19 +89,6 @@
                 <td></td>
                 <td></td>
               </tr>
-              {{#if (contains classType "V2")}}{{else}}
-              <tr style="{{#if limited}}display:none;{{/if}}">
-                <td>
-                  <div>
-                    <a class="alt-tab" data-tab="general"><i class="far fa-id-card"></i></a>
-                    <a class="alt-tab" data-tab="xp"><i class="far fa-note"></i></a>
-                  </div>
-                </td>
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-              {{/if}}
               </tbody>
             </table>
           </div>
@@ -130,7 +117,7 @@
   </header>
 
   {{!-- Sheet Tab Navigation --}}
-  {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array
+  {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=false limited=limited items=(array
     (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType)
     (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType)
     (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType)
@@ -190,6 +177,24 @@
       {{!-- Abilities List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-abilities.html"}}
       {{!-- Force Powers List --}} {{> "systems/starwarsffg/templates/parts/actor/ffg-forcepowers.html"}}
       {{> "systems/starwarsffg/templates/parts/actor/ffg-signatureability.html"}}
+    </div>
+
+    {{!-- Biography Tab --}}
+    <div class="tab biography active" data-group="primary" data-tab="description">
+      <div class="biography-editor">
+        {{editor data.enrichedBio target="system.biography" button=true editable=editable engine="prosemirror"}}
+      </div>
+
+      <div class="container flex-group-center biography-values">
+        {{#if (contains classType "V2")}}{{else}}
+          {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
+        {{/if}}
+        {{!-- Experience Box --}}
+
+        <div class="grid bio-grid">
+
+        </div>
+      </div>
     </div>
 
     {{!-- Critical injuries Tab --}}

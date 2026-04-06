@@ -119,7 +119,16 @@
     </div>
   </header>
 
-  {{!-- Sheet Tab Navigation --}} {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType) (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType) (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType) (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType) )}} {{!-- Sheet Body --}}
+  {{!-- Sheet Tab Navigation --}}
+  {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array
+    (object tab="characteristics" label="SWFFG.TabCharacteristics" icon="fas fa-user-circle" cls=classType)
+    (object tab="items" label="SWFFG.TabGear" icon="fas fa-toolbox" cls=classType)
+    (object tab="talents" label="SWFFG.TabTalents" icon="fab fa-superpowers" cls=classType)
+    (object tab="description" label="SWFFG.TabBiography" icon="fas fa-sticky-note" cls=classType)
+    (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType)
+    (object tab="tags" label="SWFFG.TabTags" icon="fa-sharp fa-regular fa-tags" cls=classType)
+  )}}
+  {{!-- Sheet Body --}}
   <section class="sheet-body" style="{{#if limited}}display:none;{{/if}}">
     {{!-- Characteristics Tab --}}
     <div class="tab characteristics active" data-group="primary" data-tab="characteristics">
@@ -181,6 +190,16 @@
     {{!-- Modifiers Tab --}}
     <div class="tab attributes" data-group="primary" data-tab="attributes">
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
+    </div>
+
+    {{!-- Long Description and Sources Tab --}}
+    <div class="tab sources" data-group="primary" data-tab="sources">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-sources.html" data=data}}
+    </div>
+
+    {{!-- Tags Tab --}}
+    <div class="tab tags" data-group="primary" data-tab="tags">
+      {{> "systems/starwarsffg/templates/parts/shared/ffg-tags.html" data=data}}
     </div>
   </section>
 </form>

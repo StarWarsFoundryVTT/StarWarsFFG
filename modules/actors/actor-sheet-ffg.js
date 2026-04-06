@@ -180,8 +180,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       } else {
         return -1;
       }
-    } else if (itemData.type === "talent") {
-      return -1;
+    } else if (itemData.type === "talent" && game.settings.get("starwarsffg", "dicetheme") === "genesys") {
+      return itemData.system.tier * 5;
     } else if (itemData.type === "signatureability") {
       return itemData.system.base_cost;
     } else if (itemData.type === "forcepower") {
@@ -676,6 +676,14 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       });
     }
 
+    // activate source and tag controls for actors
+    html.find(".source-control").click(async (ev) => {
+      await this._handleSourceControl(ev);
+    });
+    html.find(".tag-control").click(async (ev) => {
+      await this._handleTagControl(ev);
+    });
+
     html.find(".medical").click(async (ev) => {
       const item = await $(ev.currentTarget);
       let prevUses = (this.object.system?.stats?.medical?.uses === undefined) ? 0 : this.object.system.stats.medical.uses;
@@ -685,7 +693,6 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       let msg_content;
       if (item[0].className === "fas fa-plus-circle medical") {
         newUses = prevUses + 1;
-        newUses = (newUses > 5) ? 5 : newUses;
         msg_content = `<i>${game.i18n.localize("SWFFG.MedicalItemUse")} ${item_name} #${newUses}</i>`;
       } else {
         newUses = prevUses - 1;
@@ -1020,9 +1027,11 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
+      const itemName = li.data("itemName");
 
       const item = this.actor.talentList.find((talent) => {
-        return talent.itemId === itemId;
+        if (itemId) return talent.itemId === itemId;
+        return talent.name === itemName;
       });
 
       const title = `${game.i18n.localize("SWFFG.TalentSource")} ${item.name}`;
@@ -1108,6 +1117,48 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           upgradeType = "difficulty";
         }
         await DiceHelpers.rollSkill(this, event, upgradeType);
+      });
+
+    // Use medical/repair item
+    html
+      .find(".item-medical")
+      .on("click", async (event) => {
+        event.stopPropagation();
+
+        // Get current item's quantity
+        const li = $(event.currentTarget).parents(".item");
+        const itemId = li.data("itemId");
+        const item = this.actor.items.get(itemId);
+        const consumeHealingItemSetting = game.settings.get("starwarsffg", "consumeHealingItem");
+        // Check that current item is not empty of uses/quantity
+        if (item && (item.system.quantity.value > 0 || !consumeHealingItemSetting)) {
+          // Check that already used number of *stimpacks* is not maxed out
+          const prevUses = this.actor.system?.stats?.medical?.uses ?? 0;
+
+          if(consumeHealingItemSetting) {
+            const count = item.system.quantity.value - 1;
+            item.update({["system.quantity.value"]: count});
+          }
+          const newUses = prevUses + 1;
+          const currentWounds = this.actor.system?.stats?.wounds?.value ?? 0;
+          let woundsHealing = 0;
+          if (item.flags.starwarsffg.config.medicalType == 1) { // stimpack
+            woundsHealing = Math.max(5 - prevUses, 0);
+          }
+          else if (item.flags.starwarsffg.config.medicalType == 2) { // emergency droid patch
+            woundsHealing = 3;
+          }
+          const newWounds = Math.max(currentWounds - woundsHealing, 0);
+          this.actor.update({
+            ["system.stats.medical.uses"]: newUses,
+            ["system.stats.wounds.value"]: newWounds,
+          });
+          const itemName = this.actor?.flags?.starwarsffg?.config?.medicalItemName || game.i18n.localize("SWFFG.DefaultMedicalItemName");
+          ChatMessage.create({
+            speaker: { alias: this.actor.name },
+            content: `<i>${game.i18n.localize("SWFFG.MedicalItemUse")} ${itemName} #${newUses}</i>`,
+          });
+        }
       });
 
     // Roll crew
@@ -1963,6 +2014,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         type: "Transfer",
         actorId: this.actor.id,
         data: item,
+        // useful for other modules, e.g., item piles
+        nativeData: item.toDragData(),
       };
       if (this.actor.isToken) dragData.tokenId = this.actor.token.id;
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
@@ -2680,6 +2733,99 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       return;
     }
     return await super._onSubmit(event);
+  }
+
+  /**
+   * Handle adding a source to vehicles
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _handleSourceControl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = $(event.currentTarget).data("action");
+    const sourceIndex = $(event.currentTarget).data("index");
+    if (action === "add") {
+      const addSource = new Dialog({
+        title: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Title"),
+        content: `
+          <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Book")} :</p>
+          <input type="text" id="book" name="book" value="Force and Destiny Core Rulebook" autofocus>
+          <p>${game.i18n.localize("SWFFG.Meta.Sources.AddSource.Page")}:</p>
+          <input type="number" id="page" name="page" value="0">
+        `,
+        buttons: {
+          submit: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Submit"),
+            callback: async (obj, event) => {
+              const jObj = $(obj);
+              const bookName = jObj.find("#book").val();
+              const pageNum = jObj.find("#page").val();
+              await this.object.update({"system.metadata.sources": [...this.object.system.metadata.sources, `${bookName} pg. ${pageNum}`]});
+            },
+          },
+          cancel: {
+            icon: '<i class="fas fa-x"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Sources.AddSource.Cancel"),
+          },
+        },
+        default: "submit",
+      });
+      addSource.render(true, {focus: true, classes: ["app", "window-app", "dialog", "themed", "theme-light", "starwarsffg-dialog"]});
+    } else if (action === "remove") {
+      const sources = foundry.utils.deepClone(this.object.system.metadata.sources);
+      sources.splice(sourceIndex, 1);
+      await this.object.update({"system.metadata.sources": sources});
+    }
+    this.render(true);
+  }
+
+  /**
+   * Handle adding a tag to actors
+   * @param event
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _handleTagControl(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    const action = $(event.currentTarget).data("action");
+    const tagIndex = $(event.currentTarget).data("index");
+    if (action === "add") {
+      const addTag = new Dialog({
+        title: game.i18n.localize("SWFFG.Meta.Tags.AddTag.Title"),
+        content: `
+          <p>${game.i18n.localize("SWFFG.Meta.Tags.AddTag.Tag")} :</p>
+          <input type="text" id="tag" name="tag" value="" autofocus>
+        `,
+        buttons: {
+          submit: {
+            icon: '<i class="fas fa-check"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Tags.AddTag.Submit"),
+            callback: async (obj, event) => {
+              const jObj = $(obj);
+              const tag = jObj.find("#tag").val();
+              const updatedTags = this.object.system.metadata.tags || [];
+              updatedTags.push(tag);
+              await this.object.update({"system.metadata.tags": updatedTags});
+            }
+          },
+          cancel: {
+            icon: '<i class="fas fa-x"></i>',
+            label: game.i18n.localize("SWFFG.Meta.Tags.AddTag.Cancel"),
+          },
+        },
+        default: "submit",
+      });
+      addTag.render(true, {focus: true, classes: ["app", "window-app", "dialog", "themed", "theme-light", "starwarsffg-dialog"]});
+    } else if (action === "remove") {
+      const tags = foundry.utils.deepClone(this.object.system.metadata.tags);
+      tags.splice(tagIndex, 1);
+      await this.object.update({"system.metadata.tags": tags});
+    }
+    this.render(true);
   }
 }
 

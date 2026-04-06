@@ -548,6 +548,20 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         type: "Boolean",
         default: true,
       });
+
+      if (this.object.type === "gear") {
+        this.sheetoptions.register("medicalType", {
+          name: game.i18n.localize("SWFFG.SheetOptions2.isMedical.Name"),
+          hint: game.i18n.localize("SWFFG.SheetOptions2.isMedical.Hint"),
+          type: "Array",
+          default: 0,
+          options: {
+            0: game.i18n.localize("SWFFG.MedicalItemType.No"),
+            1: game.i18n.localize("SWFFG.MedicalItemType.Stimpack"),
+            2: game.i18n.localize("SWFFG.MedicalItemType.EmergencyRepairPatch"),
+          },
+        });
+      }
       if (this.object.type === "weapon") {
         this.sheetoptions.register("enableAmmo", {
           name: game.i18n.localize("SWFFG.SheetOptions2.enableAmmo.Name"),
@@ -693,6 +707,18 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
+
+    // Swap value input between checkbox and number when modtype changes
+    html.find(".attributes").on("change", ".flat_editor.dropdown.modtype", (event) => {
+      const new_value = event.currentTarget.value;
+      const valueName = event.currentTarget.name.replace(/\.modtype$/, '.value');
+      const $valueInput = $(event.currentTarget).parent().find(".modvalue");
+      if (new_value === "Career Skill") {
+        $valueInput.replaceWith(`<input name="${valueName}" type="checkbox" class="modvalue" data-attr-key="${$valueInput.data('attr-key')}">`);
+      } else if ($valueInput.attr('type') === 'checkbox') {
+        $valueInput.replaceWith(`<input name="${valueName}" type="number" class="modvalue" value="0" data-attr-key="${$valueInput.data('attr-key')}">`);
+      }
+    });
 
     if (["signatureability"].includes(this.object.type)) {
       html.find(".talent-action").on("click", this._onClickTalentControl.bind(this));
@@ -1188,13 +1214,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       throw new Error("Refused to buy for item with no found owner actor");
     }
     const availableXPToLog = foundry.utils.deepClone(owner.system.experience.available);
-    const availableXP = owner.system.experience.available;
     const totalXP = owner.system.experience.total;
-    if (cost > availableXP) {
+    if (cost > availableXPToLog) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotEnoughXP"));
       throw new Error("Not enough XP");
     }
     const AEState = await ActorHelpers.beginEditMode(owner, true);
+    const availableXP = owner.system.experience.available;
     return {
       owner: owner,
       cost: cost,
@@ -1473,7 +1499,6 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
             callback: async (that) => {
 
               try {
-                // this fixes the actual math bugs but the log shows incorrect values. need to fix that.
                 const basic_data = await this._buyHandleClick(cost, "specialization");
                 owner = basic_data.owner;
                 availableXP = basic_data.availableXP;
@@ -1925,6 +1950,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         case "itemattachment": {
           if (this.object.system.hardpoints.adjusted - itemObject.system.hardpoints.value >= 0) {
+            for (const mod of itemObject.system.itemmodifier) {
+              // mark the mods as active so they transfer to the parent item
+              mod.system.active = true;
+            }
             itemObject = await ItemHelpers.uniqueAttrs(itemObject, this.object);
             items.push(itemObject);
           } else {
@@ -1981,8 +2010,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         toCreate.push(activeEffect);
       }
       CONFIG.logger.debug(toCreate);
-      await this.object.createEmbeddedDocuments("ActiveEffect", toCreate);
-      await ItemHelpers.syncAEStatus(this.object, toCreate);
+      const createdEffects = await this.object.createEmbeddedDocuments("ActiveEffect", toCreate);
+      await ItemHelpers.syncAEStatus(this.object, createdEffects);
     } else {
       CONFIG.logger.debug(`Rejected transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
     }

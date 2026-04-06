@@ -1,3 +1,33 @@
+`2.0.3`
+* Enhancements:
+  * Strain, Hull Trauma, and System Strain can now be set above the threshold on tokens ([#2177](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2177))
+* Fixes:
+  * Fixes an issue where edit mode can get stuck on and require a reload to fix ([#2202](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2202))
+  * "Rival" and "Nemesis" default images are now swapped (to their appropriate setting!)
+  * The PC Wizard no longer spams a trillion temporary actors ([#2183](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2183))
+  * The PC Wizard now properly sets starting/total XP and generates entries in the XP log ([#2178](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2178))
+  * Fix for Talents granting their modifier when dropped onto a Specialization regardless of learned status ([#2203](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2203))
+  * Encumbrance threshold now updates when manual edits to Brawn are applied ([#2197](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2197))
+  * Re-importing data without also loading skills no longer automatically fails ([#2196](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2196))
+  * Vehicle and Force Power sheet content heights have been corrected - they now use all available space instead of including a large amount of deadspace at the bottom ([#2194](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2194))
+  * Character sheets have had their main details block slightly rearranged and had the styling slightly improved ([#2187](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2187))
+  * Characteristic mods are now properly created when importing items (requires a re-import to apply) ([#2193](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2193))
+  * Characteristic-based weapons now get their base damage correct without having to open/close the item sheet ([#2180](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2180))
+  * Fix for Armor Soak mods not applying correctly (note that the mods will need to be re-created for the fix to apply) ([#2191](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2191))
+  * Fix for weapons not receiving dice modifiers from Modifiers installed on Attachments ([#2179](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2179))
+  * Hide tabs on sheets when a player has a limited view to it ([#2161](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2161))
+  * The edit button is no longer shown for talents from specializations (which cannot be edited) ([#2143](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2143))
+  * Correct opening Talent information for custom Specializations ([#2144](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2144))
+  * Update Mod value for Career Skills to be a checkbox ([#2146](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2146))
+
+`2.0.2`
+* Fixes:
+  * the PC wizard now works for non-GMs ([#2165](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2165))
+
+`2.0.1`
+* Fixes:
+  * Correct armor and weapon encumbrance not applying to actors ([#2159](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2159))
+
 `2.0.0`
 * Enhancements:
   * Foundry v13 support!
@@ -5,7 +35,7 @@
   * Weapons now have an ammo option, fantastic for Grenades and Launchers! ([#1984](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1984))
   * Specializations can now be set as universal via their sheets ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
   * Item sources can now be added and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
-  * Item tags can now be viewed, added, and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
+  * Item and actor tags can now be viewed, added, and removed ([#2028](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2028))
     * These tags can be used by macros and will be used by the Enhancements module
   * Expanding talents on actor sheets or sending to chat now displays the long description instead of the short ([#2029](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2029))
   * Added "Active Effects" tab to character sheet ([#2060](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2060))
@@ -15,6 +45,7 @@
   * Added a player character creation wizard ([#1974](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1974))
   * Added two tours to explain the system - one for basic sheet use and one for Edit Mode ([#1987](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1987))
   * Specialization, force power, and signature ability pages update the color of connections from learned talents/upgrades ([#2064](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2064))
+  * Medical item flag, which allows to do less actions in order to use stimpack/droid patch: increases stimpacks usage, decreases the current healing item's quantity, applies proper amount of healing to actor's current wounds) ([#2113](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/2113))
 * Notes:
   * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
     * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
@@ -44,6 +75,12 @@
   * Fix for Force Power upgrades sometimes being purchasable despite not having enough XP ([#2074](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2074))
   * XP granted by species is now removed if the species is removed ([#2083](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2083))
   * Fix various stats on an actor changing when Edit Mode is enabled and >1 person has the sheet open
+  * Removing a species now removes associated Abilities
+  * Drag-and-dropping a talent onto an actor in Genesys now prompts to spend XP
+  * Macros coming from Compendiums will no longer generate an error and fail to copy
+  * Drag-and-dropping items from an actor sheet now preserves Foundry-native information ([#2117](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2117))
+  * Qualities on attachments are now properly transferred to items when the attachment is drag-and-dropped to an item ([#2125](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2125))
+  * Popped-out elements are no longer set to max height ([#1714](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1714))
 
 `1.910`
 * Fixes:

@@ -171,8 +171,8 @@ export class ItemFFG extends ItemBaseFFG {
           }
         }
 
-        if (["armour", "weapon", "gear"].includes(this.type)) {
-          CONFIG.logger.debug("Detected equippible item creation, suspending Active Effects");
+        if (["armour", "weapon", "gear"].includes(this.type) && effects.name !== "(inherent)") {
+          CONFIG.logger.debug("Detected equippable item creation, suspending Active Effects");
           effects.disabled = true;
         }
 
@@ -313,7 +313,7 @@ export class ItemFFG extends ItemBaseFFG {
         data.hardpoints.value = parseInt(data.hardpoints.value, 10);
 
         data.range.adjusted = data.range.value;
-        data.damage.adjusted = 0;
+        data.damage.adjusted = parseInt(data.damage.value, 10);
         data.crit.adjusted = parseInt(data.crit.value, 10);
         data.encumbrance.adjusted = parseInt(data.encumbrance.value, 10);
         data.price.adjusted = parseInt(data.price.value, 10);
@@ -397,7 +397,7 @@ export class ItemFFG extends ItemBaseFFG {
           if (this.actor.type !== "vehicle") {
             if (ModifierHelpers.shouldApplyCharacteristicToDamage(data)) {
               const extraDamage = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
-              data.damage.adjusted += extraDamage + data.damage.value;
+              data.damage.adjusted += extraDamage;
             } else {
               data.damage.value = parseInt(data.damage.value, 10);
               data.damage.adjusted += damageAdd;
@@ -445,6 +445,7 @@ export class ItemFFG extends ItemBaseFFG {
           data.itemattachment.forEach((attachment) => {
             const activeModifiers = attachment.system?.itemmodifier?.filter((i) => i?.system?.active) || [];
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
+            data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Soak", "Stat");
             data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
             data.encumbrance.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "encumbrance", "Armor Stat");
             data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Armor Stat");
