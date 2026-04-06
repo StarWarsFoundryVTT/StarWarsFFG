@@ -1027,9 +1027,11 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       ev.stopPropagation();
       const li = $(ev.currentTarget).parents(".item");
       const itemId = li.data("itemId");
+      const itemName = li.data("itemName");
 
       const item = this.actor.talentList.find((talent) => {
-        return talent.itemId === itemId;
+        if (itemId) return talent.itemId === itemId;
+        return talent.name === itemName;
       });
 
       const title = `${game.i18n.localize("SWFFG.TalentSource")} ${item.name}`;
