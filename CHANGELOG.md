@@ -19,6 +19,7 @@
   * The edit button is no longer shown for talents from specializations (which cannot be edited) ([#2143](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2143))
   * Correct opening Talent information for custom Specializations ([#2144](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2144))
   * Update Mod value for Career Skills to be a checkbox ([#2146](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2146))
+  * Obligation/Motiviation headers are no longer smushed ([#2192](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2192))
 
 `2.0.2`
 * Fixes:
