@@ -20,6 +20,7 @@
   * Correct opening Talent information for custom Specializations ([#2144](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2144))
   * Update Mod value for Career Skills to be a checkbox ([#2146](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2146))
   * Obligation/Motiviation headers are no longer smushed ([#2192](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2192))
+  * Unscoped CSS in the system is now properly scoped to only impact system assets ([#2190](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2190))
 
 `2.0.2`
 * Fixes:
