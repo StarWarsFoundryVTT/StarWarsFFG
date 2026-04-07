@@ -446,6 +446,10 @@ img {
   background: #919191;
 }
 
+.starwarsffg.sheet.actor .character .sheet-body .general .resource.full table th, .starwarsffg.sheet.actor .character .sheet-body .obligation .resource.full table th {
+  text-align: center;
+}
+
 .starwarsffg.sheet.actor .character .sheet-body .general .resource.full table .motivation.description, .starwarsffg.sheet.actor .character .sheet-body .obligation .resource.full table .motivation.description {
   width: 66%;
 }
@@ -5353,4 +5357,5 @@ img {
   background-color: #1a6600;
   color: white;
 }
+
 
