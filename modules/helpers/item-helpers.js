@@ -337,14 +337,14 @@ export default class ItemHelpers {
     let existingAttrs = Object.keys(parentItem.system.attributes) || [];
     if (Object.keys(parentItem.system).includes("itemmodifier")) {
       for (const modifier of parentItem.system.itemmodifier) {
-        existingAttrs = [...existingAttrs, ...Object.keys(modifier.system.attributes)];
+        existingAttrs = [...existingAttrs, ...Object.keys(modifier.system.attributes || {})];
       }
     }
     if (Object.keys(parentItem.system).includes("itemattachment")) {
       for (const attachment of parentItem.system.itemattachment) {
-        existingAttrs = [...existingAttrs, ...Object.keys(attachment.system.attributes)];
+        existingAttrs = [...existingAttrs, ...Object.keys(attachment.system.attributes || {})];
         for (const modification of attachment.system.itemmodifier) {
-          existingAttrs = [...existingAttrs, ...Object.keys(modification.system.attributes)];
+          existingAttrs = [...existingAttrs, ...Object.keys(modification.system.attributes || {})];
         }
       }
     }
