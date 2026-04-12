@@ -263,15 +263,15 @@ export class RollFFG extends Roll {
       if (this.data.flags?.starwarsffg?.uuid) {
         const item = await fromUuid(this.data.flags.starwarsffg.uuid);
         if (item) {
-          this.data = item;
-          this.data.system = await item.getItemDetails();
+          const details = await item.getItemDetails();
+          this.data = Object.assign(item.toObject(false), { system: details, flags: item.flags });
         }
       }
       else if (this.data.flags?.starwarsffg?.ffgUuid) {
         const item = await fromUuid(this.data.flags.starwarsffg.ffgUuid);
         if (item) {
-          this.data = item;
-          this.data.system = await item.getItemDetails();
+          const details = await item.getItemDetails();
+          this.data = Object.assign(item.toObject(false), { system: details, flags: item.flags });
         }
       }
       this.data.additionalFlavorText = this.flavorText;
