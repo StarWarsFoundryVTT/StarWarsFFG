@@ -1,3 +1,27 @@
+`2.0.3`
+* Enhancements:
+  * Strain, Hull Trauma, and System Strain can now be set above the threshold on tokens ([#2177](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2177))
+* Fixes:
+  * Fixes an issue where edit mode can get stuck on and require a reload to fix ([#2202](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2202))
+  * "Rival" and "Nemesis" default images are now swapped (to their appropriate setting!)
+  * The PC Wizard no longer spams a trillion temporary actors ([#2183](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2183))
+  * The PC Wizard now properly sets starting/total XP and generates entries in the XP log ([#2178](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2178))
+  * Fix for Talents granting their modifier when dropped onto a Specialization regardless of learned status ([#2203](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2203))
+  * Encumbrance threshold now updates when manual edits to Brawn are applied ([#2197](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2197))
+  * Re-importing data without also loading skills no longer automatically fails ([#2196](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2196))
+  * Vehicle and Force Power sheet content heights have been corrected - they now use all available space instead of including a large amount of deadspace at the bottom ([#2194](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2194))
+  * Character sheets have had their main details block slightly rearranged and had the styling slightly improved ([#2187](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2187))
+  * Characteristic mods are now properly created when importing items (requires a re-import to apply) ([#2193](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2193))
+  * Characteristic-based weapons now get their base damage correct without having to open/close the item sheet ([#2180](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2180))
+  * Fix for Armor Soak mods not applying correctly (note that the mods will need to be re-created for the fix to apply) ([#2191](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2191))
+  * Fix for weapons not receiving dice modifiers from Modifiers installed on Attachments ([#2179](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2179))
+  * Hide tabs on sheets when a player has a limited view to it ([#2161](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2161))
+  * The edit button is no longer shown for talents from specializations (which cannot be edited) ([#2143](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2143))
+  * Correct opening Talent information for custom Specializations ([#2144](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2144))
+  * Update Mod value for Career Skills to be a checkbox ([#2146](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2146))
+  * Obligation/Motiviation headers are no longer smushed ([#2192](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2192))
+  * Unscoped CSS in the system is now properly scoped to only impact system assets ([#2190](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2190))
+
 `2.0.2`
 * Fixes:
   * the PC wizard now works for non-GMs ([#2165](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2165))

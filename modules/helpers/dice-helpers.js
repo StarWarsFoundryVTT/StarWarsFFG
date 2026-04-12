@@ -280,9 +280,11 @@ export default class DiceHelpers {
       if (item?.system?.itemattachment) {
         await ImportHelpers.asyncForEach(item.system.itemattachment, async (attachment) => {
           //get base mods and additional mods totals
+          dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, attachment, []);
           const activeModifiers = attachment.system.itemmodifier.filter((i) => i.system?.active);
-
-          dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, attachment, activeModifiers);
+          await ImportHelpers.asyncForEach(activeModifiers, async (modifier) => {
+            dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, modifier, []);
+          });
         });
       }
       if (item?.system?.itemmodifier) {

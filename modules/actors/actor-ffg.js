@@ -161,6 +161,19 @@ export class ActorFFG extends Actor {
             }
           }
         );
+        // repeat the above process, but for encumbrance threshold
+        const originalEncumbrance = this.system.stats?.encumbrance.max;
+        const originalEncumbranceWithoutBrawn = originalEncumbrance - originalBrawn;
+        const updatedEncumbrance = originalEncumbranceWithoutBrawn + parseInt(updatedBrawn);
+        CONFIG.logger.debug(`The character sheet showed ${originalEncumbrance} encumbrance max, while that value without Brawn was ${originalEncumbranceWithoutBrawn}. Updating to be ${updatedEncumbrance}`);
+        changes.system.stats = foundry.utils.mergeObject(
+          changes.system.stats,
+          {
+            encumbrance: {
+              max: updatedEncumbrance,
+            }
+          }
+        );
       }
       const originalWillpower = this.system.characteristics.Willpower.value;
       const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
@@ -455,8 +468,10 @@ export class ActorFFG extends Actor {
       });
 
       if (index < 0 || !item.isRanked) {
+        item.isDirectlyAdded = true;
         globalTalentList.push(item);
       } else {
+        globalTalentList[index].isDirectlyAdded = true;
         globalTalentList[index].source.push({
           type: element?.flags?.starwarsffg?.fromSpecies ? "species" : "talent",
           typeLabel: element?.flags?.starwarsffg?.fromSpecies ? "SWFFG.Species" : "SWFFG.Talent",
@@ -693,7 +708,7 @@ export class ActorFFG extends Actor {
 
     // Determine the updates to make to the actor data
     let updates;
-    if (isBar && attribute === "stats.wounds") {
+    if (isBar && ["stats.wounds", "stats.strain", "stats.hullTrauma", "stats.systemStrain"].includes(attribute)) {
       updates = {[`system.${attribute}.value`]: Math.max(update, 0)};
     } else if (isBar) {
       updates = {[`system.${attribute}.value`]: Math.clamp(update, 0, attr.max)};

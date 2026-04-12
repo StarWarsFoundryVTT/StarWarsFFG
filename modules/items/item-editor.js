@@ -290,6 +290,15 @@ export class itemEditor extends FormApplication  {
         new_html += `<option value="${chosen_config[choice]['value']}">${game.i18n.localize(chosen_config[choice]['label'])}</option>`
       });
       $(event.currentTarget).parent().find(".flat_editor.dropdown.mod").html(new_html);
+
+      // swap the value input between checkbox and number based on modtype
+      const valueName = event.currentTarget.name.replace(/\.modtype$/, '.value');
+      const $valueInput = $(event.currentTarget).parent().find(".modvalue");
+      if (new_value === "Career Skill") {
+        $valueInput.replaceWith(`<input name="${valueName}" type="checkbox" class="modvalue" data-attr-id="${$valueInput.data('attr-id')}">`);
+      } else if ($valueInput.attr('type') === 'checkbox') {
+        $valueInput.replaceWith(`<input name="${valueName}" type="number" class="modvalue" value="0" data-attr-id="${$valueInput.data('attr-id')}">`);
+      }
     }
   }
 

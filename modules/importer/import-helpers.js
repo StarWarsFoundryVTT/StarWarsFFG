@@ -2573,11 +2573,12 @@ export default class ImportHelpers {
   }
 
   static processCharacteristicMod(mod) {
+    const nk = new Date().getTime();
     const modtype = "Characteristic";
     const type = ImportHelpers.convertOGCharacteristic(mod.Key);
 
     return {
-      type,
+      type: `attr${nk}`,
       value: {
         mod: type,
         modtype,
