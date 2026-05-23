@@ -1379,18 +1379,30 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     let cost;
     let availableXP;
     let totalXP;
+    let AEState;
     try {
       const basic_data = await this._buyHandleClick(li, "specialization");
       owner = basic_data.owner;
       cost = basic_data.cost;
       availableXP = basic_data.availableXP;
       totalXP = basic_data.totalXP;
+      AEState = basic_data.AEState;
     } catch (e) {
       return;
     }
     const baseName = $(li).data("base-item-name");
     const talent = $(".talent-name", li).data("name");
-    const dialog = new Dialog(
+    // _buyHandleClick already entered Edit Mode (persisted disabled=true on every AE on the actor).
+    // Both dialog outcomes (done / cancel / dismiss) MUST run endEditMode, otherwise the actor's
+    // Active Effects stay disabled in the database -- which silently drops characteristic bonuses
+    // from species, talents, gear and tanks Brawn-derived stats (wounds, soak, encumbrance).
+    let editModeExited = false;
+    const safeEndEditMode = async () => {
+      if (editModeExited) return;
+      editModeExited = true;
+      await ActorHelpers.endEditMode(owner, AEState, true);
+    };
+    new Dialog(
       {
         title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmTitle"),
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmText", {cost: cost, talent: talent}),
@@ -1399,20 +1411,26 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
-              // update the form because the fields are read when an update is performed
-              const talentId = $(li).attr("id");
-              const input = $(`[name="data.talents.${talentId}.islearned"]`, this.element)[0];
-              input.checked = true;
-              await this.object.sheet.submit();
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost, availableXP - cost, totalXP);
+              try {
+                // update the form because the fields are read when an update is performed
+                const talentId = $(li).attr("id");
+                const input = $(`[name="data.talents.${talentId}.islearned"]`, this.element)[0];
+                input.checked = true;
+                await this.object.sheet.submit();
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost, availableXP - cost, totalXP);
+              } finally {
+                await safeEndEditMode();
+              }
             },
           },
           cancel: {
             icon: '<i class="fas fa-cancel"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+            callback: safeEndEditMode,
           },
         },
+        close: safeEndEditMode,
       },
       {
         classes: ["dialog", "starwarsffg"],
@@ -1545,13 +1563,19 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               } catch (e) {
                 return;
               }
-              // update the form because the fields are read when an update is performed
-              const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
-              input.checked = true;
-              await this.object.sheet.submit({preventClose: true});
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `force power ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
-              await ActorHelpers.endEditMode(owner, AEState, true);
+              // Edit Mode is now active and persisted (every AE disabled in DB).
+              // Wrap the remaining steps in try/finally so a thrown await never
+              // leaks the actor in a permanently-disabled state.
+              try {
+                // update the form because the fields are read when an update is performed
+                const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
+                input.checked = true;
+                await this.object.sheet.submit({preventClose: true});
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `force power ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
+              } finally {
+                await ActorHelpers.endEditMode(owner, AEState, true);
+              }
             },
           },
           cancel: {
@@ -1599,13 +1623,19 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
                 return;
               }
 
-              // update the form because the fields are read when an update is performed
-              const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
-              input.checked = true;
-              await this.object.sheet.submit({preventClose: true});
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
-              await ActorHelpers.endEditMode(owner, AEState, true);
+              // Edit Mode is now active and persisted (every AE disabled in DB).
+              // Wrap the remaining steps in try/finally so a thrown await never
+              // leaks the actor in a permanently-disabled state.
+              try {
+                // update the form because the fields are read when an update is performed
+                const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
+                input.checked = true;
+                await this.object.sheet.submit({preventClose: true});
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
+              } finally {
+                await ActorHelpers.endEditMode(owner, AEState, true);
+              }
             },
           },
           cancel: {
@@ -1651,9 +1681,17 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               } catch (e) {
                 return;
               }
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `specialization ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
-              await ActorHelpers.endEditMode(owner, AEState, true);
+              // Edit Mode is now active and persisted (every AE disabled in DB).
+              // Wrap the remaining steps in try/finally so a thrown await never
+              // leaks the actor in a permanently-disabled state -- a leak here
+              // is what causes characteristics to fall to 0 and wounds/strain/
+              // soak/encumbrance to collapse on the actor sheet.
+              try {
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `specialization ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
+              } finally {
+                await ActorHelpers.endEditMode(owner, AEState, true);
+              }
               // update the form because the fields are read when an update is performed
               const input = $(`[name="data.talents.${upgradeId}.islearned"]`, this.element)[0];
               input.checked = true;
