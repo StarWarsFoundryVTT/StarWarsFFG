@@ -114,6 +114,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       data.isTemp = true;
     }
     data.isOwned = this.object.flags?.starwarsffg?.ffgIsOwned;
+    data.isGM = game.user.isGM;
     data.modTypeSelected = "all";
 
     const setInitialSize = !this._sizeInitialized;

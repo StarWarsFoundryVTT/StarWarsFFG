@@ -70,7 +70,7 @@
       <div class="talent-block talent-upgrade talent-{{#if upgrade.size}}{{upgrade.size}}{{else}}single{{/if}} {{#if upgrade.visible}}{{else}}talent-hidden{{/if}} signature-ability" id="{{key}}" data-cost="{{calculateSignatureAbilityCost key}}" data-base-item-name="{{../item.name}}">
         <div class="talent-background">
           <div class="talent-header">
-            <div><input type="checkbox" name="data.upgrades.{{key}}.islearned" data-dtype="Boolean" {{#if upgrade.islearned }}checked{{else}} {{/if}}></div>
+            <div><input type="checkbox" name="data.upgrades.{{key}}.islearned" data-dtype="Boolean" {{#if upgrade.islearned }}checked{{else}} {{/if}} {{#unless ../isGM}}onclick="return false" style="opacity:0.6;cursor:not-allowed"{{/unless}}></div>
             <div class="talent-name" data-name="{{upgrade.name}}"><input name="data.upgrades.{{key}}.name" type="text" value="{{upgrade.name}}" placeholder="{{localize 'SWFFG.SignatureAbilityUpgradeName'}}" /></div>
           </div>
           <div class="talent-body">
@@ -86,7 +86,9 @@
         <div class="talent-modifiers">
           <a class="talent-action" data-itemid="{{key}}">
             {{#if ../item.isOwned }}
+            {{#unless upgrade.islearned}}
             <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="signatureability-upgrade" data-cost="{{upgrade.cost}}" data-base-item-name="{{../item.name}}" data-upgrade-name="{{ upgrade.name }}" data-upgrade-id="{{ key }}"></i>
+            {{/unless}}
             {{/if}}
           </a>
           <a class="talent-action" data-itemid="{{key}}">
