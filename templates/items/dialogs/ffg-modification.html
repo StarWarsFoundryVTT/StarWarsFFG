@@ -1,5 +1,5 @@
 <div class="modification_title">
-  <h2>{{ localize "SWFFG.Items.Popout.Label.Modification" }} #{{ number }}&nbsp;<a class="flat_editor add-modification" title="Delete Modification" data-action="delete" data-id="{{ id }}"><i class="fas fa-trash"></i></a></h2>
+  <h2 {{#if mod.system.broken}}style="text-decoration: line-through;"{{/if}}>{{ localize "SWFFG.Items.Popout.Label.Modification" }} #{{ number }}&nbsp;<a class="flat_editor add-modification" title="Delete Modification" data-action="delete" data-id="{{ id }}"><i class="fas fa-trash"></i></a></h2>
   <div class="modification_header">
     <div class="form-group">
       <label for="system.itemmodifier[{{number}}].name">{{ localize "SWFFG.Name" }}</label>
@@ -11,7 +11,12 @@
     </div>
     <div class="form-group">
       <label for="system.itemmodifier[{{number}}].system.active">{{ localize "SWFFG.Items.Popout.Label.Installed" }}</label>
-      <input name="system.itemmodifier[{{number}}].system.active" type="checkbox" {{ checked mod.system.active }}>
+      {{#if mod.system.broken}}<input name="system.itemmodifier[{{number}}].system.active" type="hidden" value="{{ mod.system.active }}">{{/if}}
+      <input name="system.itemmodifier[{{number}}].system.active" type="checkbox" {{ checked mod.system.active }} {{#if mod.system.broken}}disabled{{/if}}>
+    </div>
+    <div class="form-group">
+      <label for="system.itemmodifier[{{number}}].system.broken">{{ localize "SWFFG.Items.Popout.Label.Broken" }}</label>
+      <input name="system.itemmodifier[{{number}}].system.broken" type="checkbox" {{ checked mod.system.broken }}>
     </div>
     <div class="form-group">
       <label for="system.itemmodifier[{{number}}].system.rank">{{ localize "SWFFG.Items.Popout.Label.Ranks" }}</label>

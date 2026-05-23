@@ -711,10 +711,22 @@ img {
 
 .starwarsffg.sheet .item-sheet-modifiers .sheet-body {
   height: calc(100% - 12.7rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.starwarsffg.sheet .item-sheet-modifiers .sheet-body > .tab.active {
+  flex: 1;
   overflow: auto;
 }
 .starwarsffg.sheet.v2 .item-sheet-modifiers .sheet-body {
   height: calc(100% - 12.7rem);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.starwarsffg.sheet.v2 .item-sheet-modifiers .sheet-body > .tab.active {
+  flex: 1;
   overflow: auto;
 }
 
@@ -756,9 +768,21 @@ img {
 
 .starwarsffg.sheet .sheet-body.itemattachment {
   height: calc(100% - 18rem);
+  display: flex;
+  flex-direction: column;
+}
+.starwarsffg.sheet .sheet-body.itemattachment > .tab.active {
+  flex: 1;
+  overflow: auto;
 }
 .starwarsffg.sheet.v2 .sheet-body.itemattachment {
   height: calc(100% - 15.5rem);
+  display: flex;
+  flex-direction: column;
+}
+.starwarsffg.sheet.v2 .sheet-body.itemattachment > .tab.active {
+  flex: 1;
+  overflow: auto;
 }
 
 .starwarsffg.sheet .sheet-body.itemmodifier .editor {
@@ -4576,10 +4600,8 @@ img {
   color: #781428;
 }
 
-/* TODO: this is a fixed height scroll, which it should not be. but I couldn't get "calc" to work */
 .starwarsffg .tab.flat_editor.modifications {
   overflow-y: auto;
-  max-height: 340px;
 }
 
 .starwarsffg.flat_editor .form-group .tox-editor-container {
@@ -4589,6 +4611,22 @@ img {
 .starwarsffg.flat_editor {
   min-height: 300px;
 }
+.starwarsffg.flat_editor form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.starwarsffg.flat_editor .content {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.starwarsffg.flat_editor .content > .tab.active {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
 
 .starwarsffg.flat_editor .modification_header {
   border-left: 2px solid var(--color-underline-header);
@@ -4597,6 +4635,7 @@ img {
 
 .starwarsffg .flat_editor.modifications.active {
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .starwarsffg .popout-modifiers-window {

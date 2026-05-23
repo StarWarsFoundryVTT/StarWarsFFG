@@ -348,7 +348,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemattachment) {
           data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.system?.itemmodifier?.filter((i) => i?.system?.active) || [];
+            const activeModifiers = attachment.system?.itemmodifier?.filter((i) => i?.system?.active && !i?.system?.broken) || [];
             data.damage.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "damage", "Weapon Stat");
             data.crit.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "critical", "Weapon Stat");
             if (data.crit.adjusted < 1) data.crit.adjusted = 1;
@@ -365,7 +365,7 @@ export class ItemFFG extends ItemBaseFFG {
             data.range.adjusted = Object.values(rangeSetting)[newRange].value;
 
             if (attachment?.system?.itemmodifier) {
-              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
+              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active && !i?.system?.broken);
 
               activeMods.forEach((am) => {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
@@ -443,7 +443,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (data?.itemattachment) {
           data.itemattachment.forEach((attachment) => {
-            const activeModifiers = attachment.system?.itemmodifier?.filter((i) => i?.system?.active) || [];
+            const activeModifiers = attachment.system?.itemmodifier?.filter((i) => i?.system?.active && !i?.system?.broken) || [];
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "soak", "Armor Stat");
             data.soak.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "Soak", "Stat");
             data.defence.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "defence", "Armor Stat");
@@ -453,7 +453,7 @@ export class ItemFFG extends ItemBaseFFG {
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Armor Stat");
 
             if (attachment?.system?.itemmodifier) {
-              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
+              const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active && !i?.system?.broken);
 
               activeMods.forEach((am) => {
                 const foundItem = data.adjusteditemmodifier.find((i) => i.name === am.name);
@@ -668,6 +668,20 @@ export class ItemFFG extends ItemBaseFFG {
    */
   async getItemDetails() {
     const data = foundry.utils.duplicate(this.system);
+
+    // duplicate() serializes the DataModel using source data, which may not include
+    // computed adjusted values from prepareData(). Copy them from the live system.
+    const liveSystem = this.system;
+    if (data.damage && liveSystem.damage) data.damage.adjusted = liveSystem.damage.adjusted;
+    if (data.crit && liveSystem.crit) data.crit.adjusted = liveSystem.crit.adjusted;
+    if (data.encumbrance && liveSystem.encumbrance) data.encumbrance.adjusted = liveSystem.encumbrance.adjusted;
+    if (data.price && liveSystem.price) data.price.adjusted = liveSystem.price.adjusted;
+    if (data.rarity && liveSystem.rarity) data.rarity.adjusted = liveSystem.rarity.adjusted;
+    if (data.hardpoints && liveSystem.hardpoints) data.hardpoints.adjusted = liveSystem.hardpoints.adjusted;
+    if (data.range && liveSystem.range) data.range.adjusted = liveSystem.range.adjusted;
+    if (data.soak && liveSystem.soak) data.soak.adjusted = liveSystem.soak.adjusted;
+    if (data.defence && liveSystem.defence) data.defence.adjusted = liveSystem.defence.adjusted;
+    if (data.adjusteditemmodifier === undefined && liveSystem.adjusteditemmodifier) data.adjusteditemmodifier = liveSystem.adjusteditemmodifier;
 
     // Item type specific properties
     const props = [];

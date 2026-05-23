@@ -813,6 +813,7 @@
   "SWFFG.Items.Popout.Tabs.Modifications": "Modifications",
   "SWFFG.Items.Popout.Label.Modification": "Modification",
   "SWFFG.Items.Popout.Label.Installed": "Installed?",
+  "SWFFG.Items.Popout.Label.Broken": "Broken?",
   "SWFFG.Items.Popout.Label.Ranks": "Ranks",
   "SWFFG.Items.Popout.Label.NotRanked": "Not Ranked",
   "SWFFG.Items.Popout.Info.DragDrop": "(drag-and-drop mods or qualities to add them)",

@@ -225,12 +225,13 @@ export default class SettingsHelpers {
       hint: game.i18n.localize("SWFFG.SettingsUIThemeHint"),
       scope: "world",
       config: false,
-      default: "mandar",
+      default: "mandarBeskarAstromech",
       type: String,
       onChange: this.debouncedReload,
       choices: {
         default: "Default (retired; expect issues)",
         mandar: "Mandar",
+        mandarBeskarAstromech: "Mandar Beskar Astromech",
       },
     });
 

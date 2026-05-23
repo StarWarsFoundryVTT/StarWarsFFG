@@ -1,0 +1,23 @@
+/* Import mandar.css and override only what we need to */
+@import url("mandar.css");
+
+.starwarsffg .item-rollable {
+  height: 60px;
+  width: 90px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 5px;
+  border: none;
+}
+
+.starwarsffg.item-medical {
+  height: 60px;
+  width: 90px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  margin-right: 5px;
+  border: none;
+  position: relative;
+}

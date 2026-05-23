@@ -129,51 +129,58 @@ export class ActorFFG extends Actor {
       const updatedBrawn = changes?.system?.characteristics?.Brawn?.value;
       if (originalBrawn !== undefined && updatedBrawn !== undefined && originalBrawn !== updatedBrawn) {
         CONFIG.logger.debug(`Detected modified Brawn (${originalBrawn} -> ${updatedBrawn}, updating derived values`);
-        // get the wounds without brawn modifying it, then add the new brawn value in
-        const originalWounds = this.system.stats?.wounds.max;
-        const originalWoundsWithoutBrawn = originalWounds - originalBrawn;
-        const updatedWounds = originalWoundsWithoutBrawn + parseInt(updatedBrawn);
         if (!Object.keys(changes.system).includes("stats")) {
           changes.system.stats = {};
         }
         if (changes.system.characteristics?.Brawn?.value) {
           changes.system.stats.Brawn = changes.system.characteristics.Brawn;
         }
-        CONFIG.logger.debug(`The character sheet showed ${originalWounds} wounds, while that value without Brawn was ${originalWoundsWithoutBrawn}. Updating to be ${updatedWounds}`);
-        changes.system.stats = foundry.utils.mergeObject(
-          changes.system.stats,
-          {
-            wounds: {
-              max: updatedWounds,
+        // Only recalculate wounds from Brawn if the update doesn't already include an explicit wounds value
+        // (e.g. during JSON import, the correct wounds value is already provided)
+        if (changes.system.stats?.wounds?.max === undefined) {
+          const originalWounds = this.system.stats?.wounds.max;
+          const originalWoundsWithoutBrawn = originalWounds - originalBrawn;
+          const updatedWounds = originalWoundsWithoutBrawn + parseInt(updatedBrawn);
+          CONFIG.logger.debug(`The character sheet showed ${originalWounds} wounds, while that value without Brawn was ${originalWoundsWithoutBrawn}. Updating to be ${updatedWounds}`);
+          changes.system.stats = foundry.utils.mergeObject(
+            changes.system.stats,
+            {
+              wounds: {
+                max: updatedWounds,
+              }
             }
-          }
-        );
-        // repeat the above process, but for soak
-        const originalSoak = this.system.stats?.soak.value;
-        const originalSoakWithoutBrawn = originalSoak - originalBrawn;
-        const updatedSoak = originalSoakWithoutBrawn + updatedBrawn;
-        CONFIG.logger.debug(`The character sheet showed ${originalSoak} soak, while that value without Brawn was ${originalSoakWithoutBrawn}. Updating to be ${updatedSoak}`);
-        changes.system.stats = foundry.utils.mergeObject(
-          changes.system.stats,
-          {
-            soak: {
-              value: updatedSoak,
+          );
+        }
+        // Only recalculate soak from Brawn if the update doesn't already include an explicit soak value
+        if (changes.system.stats?.soak?.value === undefined) {
+          const originalSoak = this.system.stats?.soak.value;
+          const originalSoakWithoutBrawn = originalSoak - originalBrawn;
+          const updatedSoak = originalSoakWithoutBrawn + updatedBrawn;
+          CONFIG.logger.debug(`The character sheet showed ${originalSoak} soak, while that value without Brawn was ${originalSoakWithoutBrawn}. Updating to be ${updatedSoak}`);
+          changes.system.stats = foundry.utils.mergeObject(
+            changes.system.stats,
+            {
+              soak: {
+                value: updatedSoak,
+              }
             }
-          }
-        );
+          );
+        }
         // repeat the above process, but for encumbrance threshold
-        const originalEncumbrance = this.system.stats?.encumbrance.max;
-        const originalEncumbranceWithoutBrawn = originalEncumbrance - originalBrawn;
-        const updatedEncumbrance = originalEncumbranceWithoutBrawn + parseInt(updatedBrawn);
-        CONFIG.logger.debug(`The character sheet showed ${originalEncumbrance} encumbrance max, while that value without Brawn was ${originalEncumbranceWithoutBrawn}. Updating to be ${updatedEncumbrance}`);
-        changes.system.stats = foundry.utils.mergeObject(
-          changes.system.stats,
-          {
-            encumbrance: {
-              max: updatedEncumbrance,
+        if (changes.system.stats?.encumbrance?.max === undefined) {
+          const originalEncumbrance = this.system.stats?.encumbrance.max;
+          const originalEncumbranceWithoutBrawn = originalEncumbrance - originalBrawn;
+          const updatedEncumbrance = originalEncumbranceWithoutBrawn + parseInt(updatedBrawn);
+          CONFIG.logger.debug(`The character sheet showed ${originalEncumbrance} encumbrance max, while that value without Brawn was ${originalEncumbranceWithoutBrawn}. Updating to be ${updatedEncumbrance}`);
+          changes.system.stats = foundry.utils.mergeObject(
+            changes.system.stats,
+            {
+              encumbrance: {
+                max: updatedEncumbrance,
+              }
             }
-          }
-        );
+          );
+        }
       }
       const originalWillpower = this.system.characteristics.Willpower.value;
       const updatedWillpower = changes.system?.characteristics?.Willpower?.value;
@@ -185,8 +192,8 @@ export class ActorFFG extends Actor {
         if (changes.system.characteristics?.Willpower?.value) {
           changes.system.stats.Willpower = changes.system.characteristics.Willpower;
         }
-        if (this.system.stats?.strain) {
-          // get the soak without willpower modifying it, then add the new willpower value in
+        // Only recalculate strain from Willpower if the update doesn't already include an explicit strain value
+        if (this.system.stats?.strain && changes.system.stats?.strain?.max === undefined) {
           const originalStrain = this.system.stats?.strain.max;
           const originalStrainWithoutWillpower = originalStrain - originalWillpower;
           const updatedStrain = originalStrainWithoutWillpower + updatedWillpower;

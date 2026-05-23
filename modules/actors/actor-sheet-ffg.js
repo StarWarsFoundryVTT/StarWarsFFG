@@ -2618,23 +2618,33 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           label: game.i18n.localize("SWFFG.XP.Adjust.Confirm"),
           callback: async () => {
             const availableXPToLog = foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
-            const adjustAmount = parseInt($("#adjustAmount").val());
+            // Empty input -> parseInt("") -> NaN. Writing NaN to system.experience.available
+            // / total corrupts the actor (every later XP read becomes NaN and propagates).
+            // Default to 0 (effective no-op) so the dialog can never poison the XP fields.
+            const rawAdjust = parseInt($("#adjustAmount").val());
+            const adjustAmount = Number.isFinite(rawAdjust) ? rawAdjust : 0;
             const adjustReason = foundry.utils.deepClone($("#adjustReason").val());
             const AEState = await ActorHelpers.beginEditMode(this.actor, true);
-            const startingAvailableXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
-            const totalXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.total));
-            const updatedAvailableXP = startingAvailableXP + adjustAmount;
-            const updatedTotalXP = totalXP + adjustAmount;
-            await this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
-            await xpLogEarn(
-              this.object,
-              adjustAmount,
-              availableXPToLog + adjustAmount,
-              updatedTotalXP,
-              adjustReason,
-              "Self"
-            );
-            await ActorHelpers.endEditMode(this.actor, AEState, true);
+            // beginEditMode persisted disabled=true on every AE on the actor;
+            // endEditMode MUST run even if the update or log step throws, otherwise
+            // the actor is left with all AEs disabled (characteristics fall to 0).
+            try {
+              const startingAvailableXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
+              const totalXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.total));
+              const updatedAvailableXP = startingAvailableXP + adjustAmount;
+              const updatedTotalXP = totalXP + adjustAmount;
+              await this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
+              await xpLogEarn(
+                this.object,
+                adjustAmount,
+                availableXPToLog + adjustAmount,
+                updatedTotalXP,
+                adjustReason,
+                "Self"
+              );
+            } finally {
+              await ActorHelpers.endEditMode(this.actor, AEState, true);
+            }
           },
         },
         two: {

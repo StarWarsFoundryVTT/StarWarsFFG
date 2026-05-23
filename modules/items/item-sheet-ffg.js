@@ -116,60 +116,91 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     data.isOwned = this.object.flags?.starwarsffg?.ffgIsOwned;
     data.modTypeSelected = "all";
 
+    const setInitialSize = !this._sizeInitialized;
+    this._sizeInitialized = true;
+
     switch (this.object.type) {
       case "weapon":
-        this.position.width = 550;
-        this.position.height = 750;
+        if (setInitialSize) {
+          this.position.width = 550;
+          this.position.height = 750;
+        }
         data.data.enrichedSpecial = await PopoutEditor.renderDiceImages(data?.data?.special?.value, this.actor ? this.actor : {});
         data.modTypeSelected = "weapon";
         break;
       case "shipweapon":
-        this.position.width = 550;
-        this.position.height = 750;
+        if (setInitialSize) {
+          this.position.width = 550;
+          this.position.height = 750;
+        }
         data.data.enrichedSpecial = await PopoutEditor.renderDiceImages(data?.data?.special?.value, this.actor ? this.actor : {});
         data.modTypeSelected = "vehicle";
         break;
       case "itemattachment":
-        this.position.width = 500;
-        this.position.height = 450;
+        if (setInitialSize) {
+          this.position.width = 500;
+          this.position.height = 550;
+        }
         data.modTypeSelected = this.object.system.type;
+        // enrich modification descriptions for display
+        if (data.data.itemmodifier) {
+          for (let modification of data.data.itemmodifier) {
+            modification.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(modification.system.description);
+          }
+        }
         break;
       case "itemmodifier":
-        this.position.width = 450;
-        this.position.height = 350;
+        if (setInitialSize) {
+          this.position.width = 450;
+          this.position.height = 350;
+        }
         data.modTypeSelected = this.object.system.type;
         break;
       case "armour":
-        this.position.width = 385;
-        this.position.height = 750;
+        if (setInitialSize) {
+          this.position.width = 385;
+          this.position.height = 750;
+        }
         data.modTypeSelected = "armor";
         break;
       case "gear":
-        this.position.width = 385;
-        this.position.height = 750;
+        if (setInitialSize) {
+          this.position.width = 385;
+          this.position.height = 750;
+        }
         break;
       case "shipattachment":
-        this.position.width = 385;
-        this.position.height = 615;
+        if (setInitialSize) {
+          this.position.width = 385;
+          this.position.height = 615;
+        }
         data.modTypeSelected = "vehicle";
         break;
       case "ability":
       case "homesteadupgrade":
-        this.position.width = 385;
-        this.position.height = 615;
+        if (setInitialSize) {
+          this.position.width = 385;
+          this.position.height = 615;
+        }
         break;
       case "talent":
-        this.position.width = 405;
-        this.position.height = 535;
+        if (setInitialSize) {
+          this.position.width = 405;
+          this.position.height = 535;
+        }
         break;
       case "criticalinjury":
       case "criticaldamage":
-        this.position.width = 320;
-        this.position.height = 500;
+        if (setInitialSize) {
+          this.position.width = 320;
+          this.position.height = 500;
+        }
         break;
       case "forcepower":
-        this.position.width = 720;
-        this.position.height = 840;
+        if (setInitialSize) {
+          this.position.width = 720;
+          this.position.height = 840;
+        }
         data.isReadOnly = false;
         if (!this.options.editable) {
           data.isEditing = false;
@@ -206,8 +237,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         break;
       case "specialization":
-        this.position.width = 850;
-        this.position.height = 1005;
+        if (setInitialSize) {
+          this.position.width = 850;
+          this.position.height = 1005;
+        }
         data.isReadOnly = false;
         if (!this.options.editable) {
           data.isEditing = false;
@@ -239,8 +272,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         break;
       case "species":
-        this.position.width = 550;
-        this.position.height = 650;
+        if (setInitialSize) {
+          this.position.width = 550;
+          this.position.height = 650;
+        }
 
         const attributesForCharacteristics = Object.keys(data.data.attributes).filter((key) => {
           return Object.keys(CONFIG.FFG.characteristics).includes(key);
@@ -298,8 +333,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
         break;
       case "career":
-        this.position.width = 500;
-        this.position.height = 600;
+        if (setInitialSize) {
+          this.position.width = 500;
+          this.position.height = 600;
+        }
         if (Object.keys(this.object.system.specializations).length === 0) {
           // handlebars sucks
           data.data.specializations = false;
@@ -324,8 +361,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         break;
       case "signatureability": {
-        this.position.width = 720;
-        this.position.height = 545;
+        if (setInitialSize) {
+          this.position.width = 720;
+          this.position.height = 545;
+        }
         data.data.isReadOnly = false;
         if (!this.options.editable) {
           data.data.isEditing = false;
@@ -363,18 +402,18 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         break;
       }
       case "background": {
-        this.position.height = 545;
+        if (setInitialSize) this.position.height = 545;
         data.data.backgroundTypes = CONFIG.FFG.characterCreator.backgroundTypes;
         break;
       }
       case "obligation": {
-        this.position.height = 545;
+        if (setInitialSize) this.position.height = 545;
         data.data.obligationTypes = CONFIG.FFG.characterCreator.obligationTypes;
         data.data.subtypes = CONFIG.FFG.characterCreator.obligationSubTypes;
         break;
       }
       case "motivation": {
-        this.position.height = 545;
+        if (setInitialSize) this.position.height = 545;
         data.data.motivationTypes = CONFIG.FFG.characterCreator.motivationTypes;
         break;
       }
@@ -516,6 +555,103 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   }
 
   /* -------------------------------------------- */
+
+  /**
+   * Handle adding/deleting modifications on a standalone itemattachment sheet
+   */
+  async _onStandaloneModificationControl(event) {
+    event.preventDefault();
+    const action = event.currentTarget.getAttribute('data-action');
+    if (action === 'create') {
+      const itemmodifier = foundry.utils.deepClone(this.object.system.itemmodifier || []);
+      itemmodifier.push({
+        name: "New Modification",
+        type: "itemmodifier",
+        img: "icons/svg/item-bag.svg",
+        system: {
+          description: "Placeholder description",
+          active: false,
+          rank: 0,
+          attributes: {},
+        },
+      });
+      await this.object.update({ "system.itemmodifier": itemmodifier });
+    } else if (action === 'delete') {
+      const modIndex = $(event.currentTarget).closest(".modification_title").index();
+      const itemmodifier = foundry.utils.deepClone(this.object.system.itemmodifier || []);
+      itemmodifier.splice(modIndex, 1);
+      await this.object.update({ "system.itemmodifier": itemmodifier });
+    }
+  }
+
+  /**
+   * Handle adding/deleting mods (modifiers) within modifications on a standalone itemattachment sheet
+   */
+  async _onStandaloneModControl(event) {
+    event.preventDefault();
+    const action = event.currentTarget.getAttribute('data-action');
+    const modificationId = $(event.currentTarget).data("modification-id");
+
+    if (action === 'create') {
+      const isDirectBaseMod = modificationId === undefined;
+
+      if (isDirectBaseMod) {
+        // This is for base mods, not modifications - let the existing handler deal with it
+        return;
+      }
+
+      const nk = new Date().getTime();
+      const modifierTypes = CONFIG.FFG.allowableModifierTypes;
+      const modifierChoices = CONFIG.FFG.allowableModifierChoices;
+
+      let rendered = await foundry.applications.handlebars.renderTemplate(
+        'systems/starwarsffg/templates/items/dialogs/ffg-mod.html',
+        {
+          modifierTypes: modifierTypes,
+          modifierChoices: modifierChoices,
+          direct: false,
+          number: modificationId,
+          attachmentType: this.object.system.type,
+          id: `attr${nk}`,
+          attr: {
+            modtype: Object.keys(CONFIG.FFG.allowableModifierTypes)[0],
+            mod: Object.keys(CONFIG.FFG.allowableModifierChoices[Object.keys(CONFIG.FFG.allowableModifierTypes)[0]])[0],
+            value: 1,
+          },
+        }
+      );
+
+      $(event.currentTarget).parent().parent().children(".attributes-list").append(rendered);
+      // re-bind listeners on the new elements
+      this.activateListeners($(event.currentTarget).parent().parent().children(".attributes-list"));
+      // submit the form to persist the change
+      this.submit();
+    } else if (action === 'delete') {
+      // check if this is a mod within a modification (has a parent .modification_title)
+      const inModification = $(event.currentTarget).closest(".modification_title").length > 0;
+      if (inModification) {
+        $(event.currentTarget).parent().remove();
+        this.submit();
+      }
+    }
+  }
+
+  /**
+   * Handle dropdown changes for modifier type selectors on standalone itemattachment modifications
+   */
+  async _onStandaloneDropdownChange(event) {
+    const newValue = event.currentTarget.value;
+    const dropdown = event.currentTarget.getAttribute('data-type');
+
+    if (dropdown === 'modtype') {
+      let newHtml = '';
+      const chosenConfig = CONFIG.FFG.allowableModifierChoices[newValue];
+      Object.keys(chosenConfig).forEach(function (choice) {
+        newHtml += `<option value="${chosenConfig[choice]['value']}">${game.i18n.localize(chosenConfig[choice]['label'])}</option>`;
+      });
+      $(event.currentTarget).parent().find(".flat_editor.dropdown.mod").html(newHtml);
+    }
+  }
 
   /** @override */
   activateListeners(html) {
@@ -704,6 +840,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     // Everything below here is only needed if the sheet is editable
     if (this.object.flags.readonly) this.options.editable = false;
     if (!this.options.editable) return;
+
+    // Standalone itemattachment modification controls
+    if (this.object.type === "itemattachment") {
+      html.find(".flat_editor.add-modification").on("click", this._onStandaloneModificationControl.bind(this));
+      html.find(".flat_editor.add-mod").on("click", this._onStandaloneModControl.bind(this));
+      html.find(".flat_editor.dropdown").on("change", this._onStandaloneDropdownChange.bind(this));
+    }
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
@@ -1236,18 +1379,30 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     let cost;
     let availableXP;
     let totalXP;
+    let AEState;
     try {
       const basic_data = await this._buyHandleClick(li, "specialization");
       owner = basic_data.owner;
       cost = basic_data.cost;
       availableXP = basic_data.availableXP;
       totalXP = basic_data.totalXP;
+      AEState = basic_data.AEState;
     } catch (e) {
       return;
     }
     const baseName = $(li).data("base-item-name");
     const talent = $(".talent-name", li).data("name");
-    const dialog = new Dialog(
+    // _buyHandleClick already entered Edit Mode (persisted disabled=true on every AE on the actor).
+    // Both dialog outcomes (done / cancel / dismiss) MUST run endEditMode, otherwise the actor's
+    // Active Effects stay disabled in the database -- which silently drops characteristic bonuses
+    // from species, talents, gear and tanks Brawn-derived stats (wounds, soak, encumbrance).
+    let editModeExited = false;
+    const safeEndEditMode = async () => {
+      if (editModeExited) return;
+      editModeExited = true;
+      await ActorHelpers.endEditMode(owner, AEState, true);
+    };
+    new Dialog(
       {
         title: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmTitle"),
         content: game.i18n.format("SWFFG.Actors.Sheets.Purchase.Talent.ConfirmText", {cost: cost, talent: talent}),
@@ -1256,20 +1411,26 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
             icon: '<i class="fa-regular fa-circle-up"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.ConfirmPurchase"),
             callback: async (that) => {
-              // update the form because the fields are read when an update is performed
-              const talentId = $(li).attr("id");
-              const input = $(`[name="data.talents.${talentId}.islearned"]`, this.element)[0];
-              input.checked = true;
-              await this.object.sheet.submit();
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost, availableXP - cost, totalXP);
+              try {
+                // update the form because the fields are read when an update is performed
+                const talentId = $(li).attr("id");
+                const input = $(`[name="data.talents.${talentId}.islearned"]`, this.element)[0];
+                input.checked = true;
+                await this.object.sheet.submit();
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `specialization ${baseName} talent ${talent}`, cost, availableXP - cost, totalXP);
+              } finally {
+                await safeEndEditMode();
+              }
             },
           },
           cancel: {
             icon: '<i class="fas fa-cancel"></i>',
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
+            callback: safeEndEditMode,
           },
         },
+        close: safeEndEditMode,
       },
       {
         classes: ["dialog", "starwarsffg"],
@@ -1402,13 +1563,19 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               } catch (e) {
                 return;
               }
-              // update the form because the fields are read when an update is performed
-              const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
-              input.checked = true;
-              await this.object.sheet.submit({preventClose: true});
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `force power ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
-              await ActorHelpers.endEditMode(owner, AEState, true);
+              // Edit Mode is now active and persisted (every AE disabled in DB).
+              // Wrap the remaining steps in try/finally so a thrown await never
+              // leaks the actor in a permanently-disabled state.
+              try {
+                // update the form because the fields are read when an update is performed
+                const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
+                input.checked = true;
+                await this.object.sheet.submit({preventClose: true});
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `force power ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
+              } finally {
+                await ActorHelpers.endEditMode(owner, AEState, true);
+              }
             },
           },
           cancel: {
@@ -1456,13 +1623,19 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
                 return;
               }
 
-              // update the form because the fields are read when an update is performed
-              const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
-              input.checked = true;
-              await this.object.sheet.submit({preventClose: true});
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
-              await ActorHelpers.endEditMode(owner, AEState, true);
+              // Edit Mode is now active and persisted (every AE disabled in DB).
+              // Wrap the remaining steps in try/finally so a thrown await never
+              // leaks the actor in a permanently-disabled state.
+              try {
+                // update the form because the fields are read when an update is performed
+                const input = $(`[name="data.upgrades.${upgradeId}.islearned"]`, this.element)[0];
+                input.checked = true;
+                await this.object.sheet.submit({preventClose: true});
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `signature ability ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
+              } finally {
+                await ActorHelpers.endEditMode(owner, AEState, true);
+              }
             },
           },
           cancel: {
@@ -1508,9 +1681,17 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               } catch (e) {
                 return;
               }
-              owner.update({system: {experience: {available: availableXP - cost}}});
-              await xpLogSpend(owner, `specialization ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
-              await ActorHelpers.endEditMode(owner, AEState, true);
+              // Edit Mode is now active and persisted (every AE disabled in DB).
+              // Wrap the remaining steps in try/finally so a thrown await never
+              // leaks the actor in a permanently-disabled state -- a leak here
+              // is what causes characteristics to fall to 0 and wounds/strain/
+              // soak/encumbrance to collapse on the actor sheet.
+              try {
+                owner.update({system: {experience: {available: availableXP - cost}}});
+                await xpLogSpend(owner, `specialization ${baseName} upgrade ${upgradeName}`, cost, availableXPToLog - cost, totalXP);
+              } finally {
+                await ActorHelpers.endEditMode(owner, AEState, true);
+              }
               // update the form because the fields are read when an update is performed
               const input = $(`[name="data.talents.${upgradeId}.islearned"]`, this.element)[0];
               input.checked = true;
@@ -1534,6 +1715,25 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   /** @override */
   _updateObject(event, formData) {
     if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
+
+    // For standalone itemattachments, process the itemmodifier array notation from the modifications tab
+    if (this.object.type === "itemattachment") {
+      const expanded = foundry.utils.expandObject(formData);
+      const systemKeys = Object.keys(expanded?.system || {});
+      const arrayKeys = systemKeys.filter(k => k.includes("[") && k.includes("]"));
+      if (arrayKeys.length > 0) {
+        for (const arrayKey of arrayKeys) {
+          const cleanKey = arrayKey.replace(/\[.*\]/, "");
+          if (!Object.keys(expanded.system).includes(cleanKey)) {
+            expanded.system[cleanKey] = [];
+          }
+          expanded.system[cleanKey].push(expanded.system[arrayKey]);
+          delete expanded.system[arrayKey];
+        }
+        // flatten back to dot notation for the standard update path
+        formData = foundry.utils.flattenObject(expanded);
+      }
+    }
 
     const itemUpdate = ItemHelpers.itemUpdate.bind(this);
     itemUpdate(event, formData);
@@ -1950,10 +2150,6 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         }
         case "itemattachment": {
           if (this.object.system.hardpoints.adjusted - itemObject.system.hardpoints.value >= 0) {
-            for (const mod of itemObject.system.itemmodifier) {
-              // mark the mods as active so they transfer to the parent item
-              mod.system.active = true;
-            }
             itemObject = await ItemHelpers.uniqueAttrs(itemObject, this.object);
             items.push(itemObject);
           } else {

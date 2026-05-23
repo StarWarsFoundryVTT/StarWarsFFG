@@ -51,6 +51,7 @@
   {{> "systems/starwarsffg/templates/parts/shared/ffg-tabs.html" displayLimited=true limited=limited items=(array
     (object tab="description" label="SWFFG.TabDescription" icon="far fa-file-alt" cls=classType)
     (object tab="attributes" label="SWFFG.TabBaseModifiers" icon="fas fa-cog" cls=classType)
+    (object tab="modifications" label="SWFFG.Items.Popout.Tabs.Modifications" icon="fas fa-wrench" cls=classType)
     (object tab="configuration" label="SWFFG.TabConfiguration" icon="fa-solid fa-wrench" isHidden=isTemp cls=classType)
     (object tab="sources" label="SWFFG.TabSources" icon="fa-light fa-book-open-cover" cls=classType)
     (object tab="tags" label="SWFFG.TabTags" icon="fa-sharp fa-regular fa-tags" cls=classType)
@@ -68,6 +69,16 @@
         {{> "systems/starwarsffg/templates/parts/ffg-mods.html"}}
       </div>
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
+    </div>
+
+    {{!-- Modifications Tab --}}
+    <div class="tab flat_editor modifications" data-group="primary" data-tab="modifications">
+      <div class="modification_container">
+      {{#each data.itemmodifier as |mod id|}}
+        {{> "systems/starwarsffg/templates/items/dialogs/ffg-modification.html" (object mod=mod id=id number=@index modifierTypes=../modifierTypes modifierChoices=../modifierChoices direct=false attachmentType=../data.type) }}
+      {{/each }}
+      </div>
+      <button type="button" class="flat_editor add-modification" data-action="create">{{ localize "SWFFG.Items.Popout.Buttons.Modification.Add" }}</button>
     </div>
 
     <div class="tab configuration" data-group="primary" data-tab="configuration">

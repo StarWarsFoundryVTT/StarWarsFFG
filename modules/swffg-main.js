@@ -264,6 +264,11 @@ Hooks.once("init", async function () {
       $("head").append('<link href="systems/starwarsffg/styles/mandar.css" rel="stylesheet" type="text/css" media="all">');
       break;
     }
+    case "mandarBeskarAstromech": {
+      $('link[href*="styles/starwarsffg.css"]').prop("disabled", true);
+      $("head").append('<link href="systems/starwarsffg/styles/mandarBeskarAstromech.css" rel="stylesheet" type="text/css" media="all">');
+      break;
+    }
     default: {
       $('link[href*="styles/starwarsffg.css"]').prop("disabled", false);
     }
