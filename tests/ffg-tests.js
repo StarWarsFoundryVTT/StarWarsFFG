@@ -3,6 +3,7 @@ import "../node_modules/chai/chai.js";
 
 import { HelpersTests } from "./common.test.js";
 import { ModifiersTests } from "./modifiers.test.js";
+import { TalentTreeTests } from "./talent-tree.test.js";
 
 export default class FFGFunctionalTests extends FormApplication {
   /** @override */
@@ -28,6 +29,7 @@ export default class FFGFunctionalTests extends FormApplication {
     // Define Test Suites Here
     HelpersTests(suite, suiteInstance, Test, chai);
     ModifiersTests(suite, suiteInstance, Test, chai);
+    TalentTreeTests(suite, suiteInstance, Test, chai);
 
     // Run Tests
     const mochaRun = () => {
