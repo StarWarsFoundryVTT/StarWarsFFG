@@ -26,6 +26,27 @@
  * @param {boolean} opts.sizeAware   True if nodes may span multiple columns.
  * @returns {boolean}
  */
+// Mirrors ItemSheetFFG.SIZE_TO_INT. Kept inline so the helper has no Foundry
+// deps and can resolve `sizeInt` from the persistent `.size` field on raw
+// stored data (used by the click-time guard, where `getData`'s pre-pass has
+// not run).
+const SIZE_TO_INT = { single: 1, double: 2, triple: 3, full: 4 };
+
+function resolveSize(node) {
+  if (!node) return 0;
+  // Placeholders for the inner cells of a multi-column upgrade are stored
+  // by the OGGDUDE importer with `visible: false` AND `size: "single"`
+  // (sizeInt=1 after pre-pass). That makes them look like a real single
+  // cell if we only consult sizeInt/size — so anchor on `visible` instead.
+  // (Specialization talents have no `visible` field, so the check passes.)
+  if (node.visible === false) return 0;
+  const explicit = Number(node.sizeInt);
+  if (Number.isFinite(explicit) && explicit >= 1) return explicit;
+  if (Number.isFinite(explicit) && explicit === 0) return 0;
+  const fromString = SIZE_TO_INT[node.size];
+  return Number.isFinite(fromString) && fromString >= 1 ? fromString : 0;
+}
+
 export function canPurchaseNode(tree, key, opts) {
   if (!tree || !key || !opts) return false;
   const { prefix, width, total, sizeAware } = opts;
@@ -41,12 +62,11 @@ export function canPurchaseNode(tree, key, opts) {
 
   const col = index % width;
   const row = Math.floor(index / width);
-  const size = sizeAware ? (Number(node.sizeInt) >= 1 ? node.sizeInt : 1) : 1;
-  const neighborSize = (n) => {
-    if (!sizeAware) return n ? 1 : 0;
-    const s = Number(n?.sizeInt);
-    return Number.isFinite(s) && s >= 1 ? s : 0;
-  };
+  // The candidate is always a real (non-placeholder) renderable node; default
+  // to size 1 if neither sizeInt nor a recognised `.size` is set.
+  const candidateSize = sizeAware ? resolveSize(node) : 1;
+  const size = candidateSize >= 1 ? candidateSize : 1;
+  const neighborSize = (n) => (sizeAware ? resolveSize(n) : (n ? 1 : 0));
 
   // Up neighbors: for each top-link slot n in 1..size
   for (let n = 1; n <= size; n++) {
@@ -64,14 +84,25 @@ export function canPurchaseNode(tree, key, opts) {
     }
   }
 
-  // Down neighbors: child slot n at row+1, col + n - 1
+  // Down neighbors: for each column slot in the candidate's span (1..size),
+  // walk the row below to find the owning child for that column, then check
+  // the child's OWN links-top slot covering that column. The link is stored
+  // on the child, indexed by the child's own column offset from its left
+  // edge — NOT by the candidate's slot.
   for (let n = 1; n <= size; n++) {
-    const childCol = col + n - 1;
-    if (childCol >= width) break;
-    const childIndex = (row + 1) * width + childCol;
-    if (childIndex >= total) continue;
-    const child = tree[`${prefix}${childIndex}`];
-    if (child && child[`links-top-${n}`] && child.islearned) return true;
+    const targetCol = col + n - 1;
+    if (targetCol >= width) break;
+    const nextRowStart = (row + 1) * width;
+    for (let z = 0; z <= targetCol; z++) {
+      const childIndex = nextRowStart + targetCol - z;
+      if (childIndex < nextRowStart || childIndex >= total) break;
+      const child = tree[`${prefix}${childIndex}`];
+      if (child && neighborSize(child) > z) {
+        const childSlot = z + 1;
+        if (child[`links-top-${childSlot}`] && child.islearned) return true;
+        break;
+      }
+    }
   }
 
   // Right neighbor: at column (col + size), same row

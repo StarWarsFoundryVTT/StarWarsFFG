@@ -14,7 +14,19 @@ function spec(overrides = {}) {
 
 function fp(overrides = {}) {
   const tree = {};
-  for (let i = 0; i < 16; i++) tree[`upgrade${i}`] = { islearned: false, sizeInt: 1 };
+  for (let i = 0; i < 16; i++) tree[`upgrade${i}`] = { islearned: false, sizeInt: 1, visible: true };
+  for (const [k, v] of Object.entries(overrides)) {
+    tree[k] = { ...tree[k], ...v };
+  }
+  return tree;
+}
+
+// Variant where nodes only have the persistent `.size` string (no `sizeInt`),
+// mirroring what the click-time guard sees in raw `this.object.system.upgrades`
+// before getData's pre-pass runs.
+function fpRaw(overrides = {}) {
+  const tree = {};
+  for (let i = 0; i < 16; i++) tree[`upgrade${i}`] = { islearned: false, size: "single", visible: true };
   for (const [k, v] of Object.entries(overrides)) {
     tree[k] = { ...tree[k], ...v };
   }
@@ -126,5 +138,80 @@ export const TalentTreeTests = (suite, suiteInstance, Test, chai) => {
       upgrade8: { sizeInt: 2, "links-top-2": true },
     });
     chai.expect(canPurchaseNode(t, "upgrade8", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Raw data: double-wide candidate resolves size from .size string (up-slot-2)", function () {
+    const t = fpRaw({
+      upgrade11: { islearned: true },
+      upgrade14: { size: "double", "links-top-2": true },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade14", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Raw data: double-wide candidate resolves size from .size string (up-slot-1)", function () {
+    const t = fpRaw({
+      upgrade10: { islearned: true },
+      upgrade14: { size: "double", "links-top-1": true },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade14", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Raw data: up-walk past placeholder finds owning multi-column parent", function () {
+    // Placeholder slot 3 has no recognised .size, so resolveSize() returns 0
+    // and the walk steps past it to the double-wide owner at slot 2.
+    const t = fpRaw({
+      upgrade2: { size: "double", islearned: true },
+      upgrade3: { size: "" },
+      upgrade7: { "links-top-1": true },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade7", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Down-edge: double-wide parent finds learned single child via child's own slot-1 link", function () {
+    // Increase Hull Trauma (upgrade8, sizeInt=2) checks its slot 2 (column 1).
+    // The owning child below at col 1 is upgrade13 (single-width Range). The
+    // link from upgrade13 to its parent above col 1 is stored as upgrade13's
+    // OWN links-top-1 — not links-top-2 — because the index is the child's
+    // own column offset from its left edge.
+    const t = fp({
+      upgrade8: { sizeInt: 2 },
+      upgrade9: { sizeInt: 0 },
+      upgrade13: { islearned: true, "links-top-1": true },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade8", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Down-edge: same scenario with raw .size strings (click-guard path)", function () {
+    const t = fpRaw({
+      upgrade8: { size: "double" },
+      upgrade9: { size: "single", visible: false },
+      upgrade13: { islearned: true, "links-top-1": true },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade8", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Down-walk steps PAST invisible placeholder to find multi-col owner", function () {
+    // Single-width candidate Range (upgrade5, col 1) looking down to a
+    // learned double-wide ICH (upgrade8, sizeInt=2 at col 0-1) that owns
+    // col 1. The invisible placeholder upgrade9 (size:"single",
+    // visible:false) must be treated as a non-cell so the walk continues
+    // leftward and finds ICH. This is the user-reported asymmetry where
+    // Mechanics (col 0, no placeholder in path) became purchasable but the
+    // structurally-symmetric Range (col 1) did not.
+    const t = fp({
+      upgrade5: {},
+      upgrade8: { sizeInt: 2, islearned: true, "links-top-1": true, "links-top-2": true },
+      upgrade9: { sizeInt: 1, visible: false },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade5", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Down-walk past invisible placeholder (raw click-guard path)", function () {
+    const t = fpRaw({
+      upgrade5: {},
+      upgrade8: { size: "double", islearned: true, "links-top-1": true, "links-top-2": true },
+      upgrade9: { size: "single", visible: false },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade5", fpOpts)).to.equal(true);
   }));
 };
