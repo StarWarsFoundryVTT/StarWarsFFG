@@ -103,8 +103,11 @@ export const TalentTreeTests = (suite, suiteInstance, Test, chai) => {
     chai.expect(canPurchaseNode(t, "talent7", specOpts)).to.equal(false);
   }));
 
-  _suite.addTest(new Test("Force power row 0 (root) is purchasable when unlearned", function () {
-    chai.expect(canPurchaseNode(fp(), "upgrade2", fpOpts)).to.equal(true);
+  _suite.addTest(new Test("Force power row 0 needs an up-link to count as rooted", function () {
+    // Without any links-top-N to the implicit basic power, a row-0 upgrade
+    // is NOT automatically purchasable (the deeper "row 0 with links-top-1
+    // is purchasable" case is covered below).
+    chai.expect(canPurchaseNode(fp(), "upgrade2", fpOpts)).to.equal(false);
   }));
 
   _suite.addTest(new Test("Force power double-wide right neighbor lookup uses sizeInt", function () {
