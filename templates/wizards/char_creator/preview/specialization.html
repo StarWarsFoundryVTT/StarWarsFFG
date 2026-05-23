@@ -26,8 +26,9 @@
               {{{talent.name}}}
               <a class="talent-action" data-itemid="{{key}}">
                 {{#if ../item.isOwned }}
-                <!-- TODO: add a buy button here -->
+                {{#if talent.canPurchase}}
                 <i class="fa-regular fa-circle-up ffg-purchase" data-buy-action="specialization-upgrade" data-cost="{{talent.cost}}" data-base-item-name="{{../item.name}}" data-upgrade-name="{{ talent.name }}" data-upgrade-id="{{ key }}"></i>
+                {{/if}}
                 {{/if}}
               </a>
             </div>

@@ -9,6 +9,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import ActorHelpers, {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemOptions from "./item-ffg-options.js";
 import {forcePowerEditor, itemEditor, talentEditor} from "./item-editor.js";
+import { canPurchaseNode } from "../helpers/talent-tree.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -255,6 +256,17 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               return;
           }
           this.item.flags.starwarsffg.loaded = true;
+        }
+        // Compute canPurchase first so it's always populated even if a later
+        // `await` (e.g. enrichHTML on a restricted embedded reference) throws
+        // mid-loop for non-GM viewers.
+        for (let x = 0; x < 20; x++) {
+          if (!data.data.talents[`talent${x}`]) continue;
+          data.data.talents[`talent${x}`].canPurchase = canPurchaseNode(
+            data.data.talents,
+            `talent${x}`,
+            { prefix: "talent", width: 4, total: 20, sizeAware: false }
+          );
         }
         for (let x = 0; x < 20; x++) {
           data.data.talents[`talent${x}`].enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(data.data.talents[`talent${x}`].description);
@@ -1657,6 +1669,16 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     const baseName = element.data("base-item-name");
     const upgradeName = element.data("upgrade-name");
     const upgradeId = element.data("upgrade-id");
+
+    if (!canPurchaseNode(
+      this.object.system.talents,
+      upgradeId,
+      { prefix: "talent", width: 4, total: 20, sizeAware: false }
+    )) {
+      ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotConnected"));
+      return;
+    }
+
     let owner;
     let availableXP;
     let totalXP;
