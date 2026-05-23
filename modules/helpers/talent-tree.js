@@ -24,6 +24,13 @@
  * @param {number} opts.width        Grid width (4 today).
  * @param {number} opts.total        Total node count.
  * @param {boolean} opts.sizeAware   True if nodes may span multiple columns.
+ * @param {boolean} [opts.rootHasImplicitParent=false]
+ *   True when the row above row 0 is an implicit always-learned ancestor
+ *   (force power's "basic power", signature ability's base ability). In that
+ *   case row-0 candidates are NOT unconditional roots — they count as
+ *   connected only if they have a `links-top-N` set (i.e. the visible
+ *   connector goes up to that implicit parent). When false (specializations),
+ *   row 0 is unconditionally purchasable.
  * @returns {boolean}
  */
 // Mirrors ItemSheetFFG.SIZE_TO_INT. Kept inline so the helper has no Foundry
@@ -49,7 +56,7 @@ function resolveSize(node) {
 
 export function canPurchaseNode(tree, key, opts) {
   if (!tree || !key || !opts) return false;
-  const { prefix, width, total, sizeAware } = opts;
+  const { prefix, width, total, sizeAware, rootHasImplicitParent } = opts;
 
   const node = tree[key];
   if (!node) return false;
@@ -58,8 +65,6 @@ export function canPurchaseNode(tree, key, opts) {
   const index = parseInt(key.slice(prefix.length), 10);
   if (Number.isNaN(index) || index < 0 || index >= total) return false;
 
-  if (index < width) return true; // root row
-
   const col = index % width;
   const row = Math.floor(index / width);
   // The candidate is always a real (non-placeholder) renderable node; default
@@ -67,6 +72,18 @@ export function canPurchaseNode(tree, key, opts) {
   const candidateSize = sizeAware ? resolveSize(node) : 1;
   const size = candidateSize >= 1 ? candidateSize : 1;
   const neighborSize = (n) => (sizeAware ? resolveSize(n) : (n ? 1 : 0));
+
+  // Row 0 handling
+  if (index < width) {
+    if (!rootHasImplicitParent) return true; // spec: row 0 always purchasable
+    // Force / sig: only counts as connected when an up-link to the implicit
+    // (basic / base) parent is set. Otherwise must connect via side/down.
+    for (let n = 1; n <= size; n++) {
+      if (node[`links-top-${n}`]) return true;
+    }
+    // Fall through to side/down checks. The up-walk below is a no-op for
+    // row 0 (no row -1), but the right/left/down walks may still succeed.
+  }
 
   // Up neighbors: for each top-link slot n in 1..size
   for (let n = 1; n <= size; n++) {

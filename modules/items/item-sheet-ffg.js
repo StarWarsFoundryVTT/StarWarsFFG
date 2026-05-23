@@ -220,7 +220,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           data.data.upgrades[`upgrade${x}`].canPurchase = canPurchaseNode(
             data.data.upgrades,
             `upgrade${x}`,
-            { prefix: "upgrade", width: 4, total: 16, sizeAware: true }
+            { prefix: "upgrade", width: 4, total: 16, sizeAware: true, rootHasImplicitParent: true }
           );
         }
         for (let x = 0; x < 16; x++) {
@@ -1570,7 +1570,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     if (!canPurchaseNode(
       this.object.system.upgrades,
       upgradeId,
-      { prefix: "upgrade", width: 4, total: 16, sizeAware: true }
+      { prefix: "upgrade", width: 4, total: 16, sizeAware: true, rootHasImplicitParent: true }
     )) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Actors.Sheets.Purchase.NotConnected"));
       return;

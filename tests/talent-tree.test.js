@@ -1,7 +1,7 @@
 import { canPurchaseNode } from "../modules/helpers/talent-tree.js";
 
 const specOpts = { prefix: "talent", width: 4, total: 20, sizeAware: false };
-const fpOpts   = { prefix: "upgrade", width: 4, total: 16, sizeAware: true };
+const fpOpts   = { prefix: "upgrade", width: 4, total: 16, sizeAware: true, rootHasImplicitParent: true };
 
 function spec(overrides = {}) {
   const tree = {};
@@ -213,5 +213,38 @@ export const TalentTreeTests = (suite, suiteInstance, Test, chai) => {
       upgrade9: { size: "single", visible: false },
     });
     chai.expect(canPurchaseNode(t, "upgrade5", fpOpts)).to.equal(true);
+  }));
+
+  // Force-power-specific row-0 rule: an implicit basic-power parent sits
+  // above row 0. A row-0 upgrade is "rooted" only when it has a links-top-N
+  // set; otherwise it has to connect via side or down like any other node.
+  _suite.addTest(new Test("Force power row 0 with links-top-1 is purchasable", function () {
+    const t = fp({ upgrade0: { "links-top-1": true } });
+    chai.expect(canPurchaseNode(t, "upgrade0", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Force power row 0 without any top-link and no side connection is NOT purchasable", function () {
+    chai.expect(canPurchaseNode(fp(), "upgrade1", fpOpts)).to.equal(false);
+  }));
+
+  _suite.addTest(new Test("Force power row 0 without top-link connects via learned left neighbour's links-right", function () {
+    const t = fp({
+      upgrade0: { islearned: true, "links-right": true },
+      upgrade1: {},
+    });
+    chai.expect(canPurchaseNode(t, "upgrade1", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Force power row 0 multi-col with only links-top-2 set is purchasable", function () {
+    const t = fp({
+      upgrade2: { sizeInt: 2, "links-top-2": true },
+      upgrade3: { sizeInt: 1, visible: false },
+    });
+    chai.expect(canPurchaseNode(t, "upgrade2", fpOpts)).to.equal(true);
+  }));
+
+  _suite.addTest(new Test("Specialization row 0 stays unconditional (no implicit parent)", function () {
+    // No links, no learned neighbours — spec row 0 is still buyable.
+    chai.expect(canPurchaseNode(spec(), "talent2", specOpts)).to.equal(true);
   }));
 };
