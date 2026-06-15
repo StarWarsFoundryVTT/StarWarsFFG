@@ -61,7 +61,7 @@ export default class Talents {
             data.data = {
               attributes: {},
               description: item.Description,
-              longDesc: "",
+              longDesc: item.Description,
               ranks: {
                 ranked: item.Ranked === "true" ? true : false,
               },
