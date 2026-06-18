@@ -1,3 +1,7 @@
+`2.0.4`
+* Fixes:
+  * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))
+
 `2.0.3`
 * Enhancements:
   * Strain, Hull Trauma, and System Strain can now be set above the threshold on tokens ([#2177](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2177))
