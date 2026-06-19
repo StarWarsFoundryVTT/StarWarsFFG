@@ -62,16 +62,21 @@ export class GroupManager extends FormApplication {
    * @return {Object}   The data provided to the template when rendering the form
    */
   getData() {
-    const players = game.users.contents.filter((u) => (!u.isGM || game.settings.get("starwarsffg", "GMCharactersInGroupManager")) && u.active);
+    const pcListMode = game.settings.get("starwarsffg", "pcListMode");
+    const players = game.users.contents.filter((u) => {
+    const isValidUser = !u.isGM || game.settings.get("starwarsffg", "GMCharactersInGroupManager");
+    //if active mode is selected, only return users actively playing a character, otherwise return all valid users
+    if (pcListMode === "active") {
+      return isValidUser && u.active;
+    }
+    return isValidUser;
+    });
     if (players.length > 0) {
       players.connected = true;
     }
-
-    const pcListMode = game.settings.get("starwarsffg", "pcListMode");
     const characters = [];
     let obligationRangeStart = 0;
     let dutyRangeStart = 0;
-
     if (pcListMode === "active") {
       players.forEach((player) => {
         if (player.character) {
@@ -88,14 +93,18 @@ export class GroupManager extends FormApplication {
       });
     } else if (pcListMode === "owned") {
       game.actors.filter((actor) => {
-        for (let player of players) {
-          if (actor.testUserPermission(player, "OWNER")) {
-            // use actor if any active player has ownership
-            return true;
-          }
-        }
-        return false;
-      })
+      // filter to characters only
+  if (actor.type !== "character") {
+    return false;
+  }
+  for (let player of players) {
+    if (actor.testUserPermission(player, "OWNER")) {
+      // use actor if any player has ownership
+      return true;
+    }
+  }
+  return false;
+})
       .forEach((c) => {
         try {
           obligationRangeStart = this._addCharacterObligationDuty(c, obligationRangeStart, c.system.obligationlist, "obligations");
@@ -330,6 +339,9 @@ export class GroupManager extends FormApplication {
   }
 
   async _grantXP(character) {
+    if (character?.type !== "character") {
+      return;
+    }
     const id = foundry.utils.randomID();
     const description = game.i18n.localize("SWFFG.GrantXPTo") + ` ${character.name}...`;
     const content = await foundry.applications.handlebars.renderTemplate("systems/starwarsffg/templates/grant-xp.html", {
@@ -385,6 +397,9 @@ export class GroupManager extends FormApplication {
             const note = container.querySelector('input[name="note"]').value;
             for (const c of characters) {
               const character = game.actors.get(c);
+              if (character?.type !== "character") {
+                continue;
+              }
               const state = await ActorHelpers.beginEditMode(character, true);
               const available = +character.system.experience.available + +amount.value;
               const total = +character.system.experience.total + +amount.value;
