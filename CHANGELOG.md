@@ -1,6 +1,8 @@
 `2.0.4`
 * Fixes:
+  * Fix for send to chat card displaying long description over short description ([#2231](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2231))
   * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))
+
 
 `2.0.3`
 * Enhancements:
