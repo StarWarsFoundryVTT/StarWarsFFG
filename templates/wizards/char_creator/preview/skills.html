@@ -42,7 +42,7 @@
           <div class="pure-u-12-24">
             <div class="skill-name">
               {{skill.label}}
-              {{#if (lookup ../../purchases skill.label) }}
+              {{#if (lookup ../../purchases skill.name) }}
                 * <!-- TODO: probably make it more obvious what this represents -->
               {{/if }}
 
@@ -53,9 +53,9 @@
               {{#if (and
                 (gt skill.rank 0)
                 (eq ../../mode "purchase")
-                (gt skill.rank (lookup ../../combinedPurchases skill.label))
+                (gt skill.rank (lookup ../../combinedPurchases skill.name))
               )}}
-                <i class="far fa-minus-square" data-action="skill-control" data-direction="decrease" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
+                <i class="far fa-minus-square" data-action="skill-control" data-direction="decrease" data-target="{{ skill.name }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}
               <!--
               remove rank button for career/specialization mode
@@ -67,9 +67,9 @@
                   (eq ../../mode "career")
                   (eq ../../mode "specialization")
                 )
-                (lookup ../../purchases skill.label)
+                (lookup ../../purchases skill.name)
               )}}
-                <i class="far fa-minus-square" data-action="skill-control" data-direction="decrease" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
+                <i class="far fa-minus-square" data-action="skill-control" data-direction="decrease" data-target="{{ skill.name }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}
 
               <!--
@@ -80,7 +80,7 @@
                 (lt skill.rank 2)
                 (eq ../../mode "purchase")
               )}}
-                <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
+                <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.name }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}
               <!--
                 add rank button for career mode
@@ -89,11 +89,11 @@
               {{#if (and
                 (lt skill.rank 2)
                 (eq ../../mode "career")
-                (eq (lookup ../../purchases skill.label) undefined)
+                (eq (lookup ../../purchases skill.name) undefined)
                 (lt (keylen ../../purchases) 4)
                 (in skill.name ../../keys)
               )}}
-                <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
+                <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.name }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}
               <!--
                 add rank button for specialization mode
@@ -102,11 +102,11 @@
               {{#if (and
                 (lt skill.rank 2)
                 (eq ../../mode "specialization")
-                (eq (lookup ../../purchases skill.label) undefined)
+                (eq (lookup ../../purchases skill.name) undefined)
                 (lt (keylen ../../purchases) 2)
                 (in skill.name ../../keys)
               )}}
-                <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.label }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
+                <i class="far fa-plus-square" data-action="skill-control" data-direction="increase" data-target="{{ skill.name }}" data-value="{{ skill.rank }}" data-mode="{{ ../../mode }}"></i>
               {{/if}}
 
               {{#with (lookup ../../actor.system.characteristics [characteristic])~}}

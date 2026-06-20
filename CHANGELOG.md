@@ -1,5 +1,6 @@
 `2.0.4`
 * Fixes:
+  * Fixes an issue where knowledge skills are consumed but ranks are not added ([#2239](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2239))
   * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))
 
 `2.0.3`
