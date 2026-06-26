@@ -1,0 +1,12 @@
+<nav class="cb-tabs-nav">
+  {{#each tabs}}
+  <a class="cb-tab {{#if active}}active{{/if}}" data-action="changeTab" data-tab="{{id}}"
+     data-tooltip aria-label="{{label}}">
+    {{#if img}}
+    <img class="cb-tab-img" src="{{img}}" alt="{{label}}" />
+    {{else}}
+    <i class="{{icon}}"></i>
+    {{/if}}
+  </a>
+  {{/each}}
+</nav>

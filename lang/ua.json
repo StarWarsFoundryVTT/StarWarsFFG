@@ -1,4 +1,4 @@
-﻿{
+{
   "TYPES.Actor.character": "Персонаж гравця",
   "TYPES.Actor.nemesis": "Запеклий Ворог",
   "TYPES.Actor.rival": "Супротивник",
@@ -835,5 +835,29 @@
   "SWFFG.Status.Staggered": "Збитий з ніг",
   "SWFFG.Status.Defeated": "Переможений",
   "SWFFG.Roll.ForcePowers.NoDice": "Не може зробити кидок, всі Кістки Сили зарезервовані!",
-  "SWFFG.CareerSkills.None": "(відсутні)"
+  "SWFFG.CareerSkills.None": "(відсутні)",
+  "SWFFG.CompendiumBrowser.Open": "Відкрити оглядач компендіумів",
+  "SWFFG.CompendiumBrowser.Title": "Оглядач компендіумів",
+  "SWFFG.CompendiumBrowser.SearchPlaceholder": "Пошук за назвою...",
+  "SWFFG.CompendiumBrowser.ClearSearch": "Очистити пошук",
+  "SWFFG.CompendiumBrowser.Loading": "Завантаження...",
+  "SWFFG.CompendiumBrowser.ResultsCount": "{count} результатів",
+  "SWFFG.CompendiumBrowser.TagsSelected": "фільтрів активовано",
+  "SWFFG.CompendiumBrowser.FilterByType": "Фільтр за типом",
+  "SWFFG.CompendiumBrowser.ClearTags": "Очистити",
+  "SWFFG.CompendiumBrowser.NoResults": "Результатів не знайдено.",
+  "SWFFG.CompendiumBrowser.Errors.LoadFailed": "Не вдалося завантажити дані компендіуму.",
+  "SWFFG.CompendiumBrowser.Tabs.Weapons": "Зброя",
+  "SWFFG.CompendiumBrowser.Tabs.Gear": "Спорядження",
+  "SWFFG.CompendiumBrowser.Tabs.Attachments": "Насадки",
+  "SWFFG.CompendiumBrowser.Tabs.Mods": "Моди",
+  "SWFFG.CompendiumBrowser.Tabs.Talents": "Таланти",
+  "SWFFG.CompendiumBrowser.Tabs.Specializations": "Спеціалізації",
+  "SWFFG.CompendiumBrowser.Tabs.Species": "Види",
+  "SWFFG.CompendiumBrowser.Tabs.Careers": "Карʼєри",
+  "SWFFG.CompendiumBrowser.Tabs.ForcePowers": "Сили",
+  "SWFFG.CompendiumBrowser.Tabs.SignatureAbilities": "Фірмові здібності",
+  "SWFFG.CompendiumBrowser.Tabs.Vehicles": "Транспорт",
+  "SWFFG.CompendiumBrowser.Tabs.Adversaries": "Противники",
+  "SWFFG.CompendiumBrowser.Tabs.Other": "Інше"
 }

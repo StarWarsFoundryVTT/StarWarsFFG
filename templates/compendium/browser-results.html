@@ -1,0 +1,31 @@
+<section class="cb-results">
+  {{#if empty}}
+    <p class="cb-empty-note">{{localize 'SWFFG.CompendiumBrowser.NoResults'}}</p>
+  {{else}}
+  <ol class="cb-list">
+    {{#each results}}
+    <li class="cb-entry" data-uuid="{{uuid}}">
+      <div class="cb-entry-row" data-action="openEntry" draggable="true">
+        {{#if img}}
+        <img class="cb-entry-img" loading="lazy" src="{{img}}" alt="{{name}}" draggable="false" />
+        {{/if}}
+        <div class="cb-entry-name">
+          <span class="cb-entry-title">{{name}}</span>
+          <span class="cb-entry-subtitle">{{packLabel}}</span>
+        </div>
+        {{#if tags.length}}
+        <div class="cb-entry-tags">
+          {{#each tags}}
+            <span class="cb-entry-tag">{{this}}</span>
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+    </li>
+    {{/each}}
+  </ol>
+  {{#if hasMore}}
+  <div class="cb-load-more"><i class="fas fa-spinner fa-spin-pulse"></i></div>
+  {{/if}}
+  {{/if}}
+</section>
