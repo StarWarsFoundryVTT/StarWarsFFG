@@ -1074,7 +1074,7 @@
   "SWFFG.Migrate.Unsupported.Text": "Worlds created before v2 are not supported in v2+.<br>Please create a new world.",
   "SWFFG.CompendiumBrowser.Open": "Open Compendium Browser",
   "SWFFG.CompendiumBrowser.Title": "Compendium Browser",
-  "SWFFG.CompendiumBrowser.SearchPlaceholder": "Search by name...",
+  "SWFFG.CompendiumBrowser.SearchPlaceholder": "Search by name or tag...",
   "SWFFG.CompendiumBrowser.ClearSearch": "Clear search",
   "SWFFG.CompendiumBrowser.Loading": "Loading...",
   "SWFFG.CompendiumBrowser.ResultsCount": "{count} results",

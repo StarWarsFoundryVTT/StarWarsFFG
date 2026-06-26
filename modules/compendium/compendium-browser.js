@@ -139,6 +139,16 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     await this.render({ parts: ["sidebar", "results"] });
   }
 
+  _refreshCount() {
+    const el = this.element?.querySelector(".cb-count");
+    if (!el) return;
+    const count = game.i18n.format("SWFFG.CompendiumBrowser.ResultsCount", { count: this._filtered.length });
+    const note = this._selectedTags.size
+      ? `<span class="cb-filtered-note">(${this._selectedTags.size} ${game.i18n.localize("SWFFG.CompendiumBrowser.TagsSelected")})</span>`
+      : "";
+    el.innerHTML = `<span>${count}</span>${note}`;
+  }
+
   static async _fetchIndex(tabDef) {
     const types = new Set(tabDef.types);
     const typeName = tabDef.documentClass === "Item" ? "Item" : "Actor";
@@ -198,7 +208,9 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
       filtered = filtered.filter((r) => r.tags.some((t) => selected.has(t)));
     }
     if (term.length > 0) {
-      filtered = filtered.filter((r) => r.name.toLowerCase().includes(term));
+      filtered = filtered.filter(
+        (r) => r.name.toLowerCase().includes(term) || r.tags.some((t) => t.toLowerCase().includes(term))
+      );
     }
     this._filtered = filtered;
     this._renderedCount = Math.min(PAGE_SIZE, this._filtered.length);
@@ -206,7 +218,10 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
 
   async _onSearchInput(value) {
     this._search = value || "";
-    await this._refresh();
+    this._applyFilters();
+
+    await this.render({ parts: ["results"] });
+    this._refreshCount();
   }
 
   async _onScrollResults(event) {

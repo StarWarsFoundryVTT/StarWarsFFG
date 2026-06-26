@@ -838,7 +838,7 @@
   "SWFFG.CareerSkills.None": "(відсутні)",
   "SWFFG.CompendiumBrowser.Open": "Відкрити оглядач компендіумів",
   "SWFFG.CompendiumBrowser.Title": "Оглядач компендіумів",
-  "SWFFG.CompendiumBrowser.SearchPlaceholder": "Пошук за назвою...",
+  "SWFFG.CompendiumBrowser.SearchPlaceholder": "Пошук за назвою або тегом...",
   "SWFFG.CompendiumBrowser.ClearSearch": "Очистити пошук",
   "SWFFG.CompendiumBrowser.Loading": "Завантаження...",
   "SWFFG.CompendiumBrowser.ResultsCount": "{count} результатів",

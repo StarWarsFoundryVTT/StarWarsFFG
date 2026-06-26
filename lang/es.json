@@ -766,7 +766,7 @@
   "SWFFG.Settings.actor.RivalTokenPrepend.Hint": "Los tokens de los rivales sin enlazar estarán precedidos de un adjetivo por defecto.",
   "SWFFG.CompendiumBrowser.Open": "Open Compendium Browser",
   "SWFFG.CompendiumBrowser.Title": "Compendium Browser",
-  "SWFFG.CompendiumBrowser.SearchPlaceholder": "Search by name...",
+  "SWFFG.CompendiumBrowser.SearchPlaceholder": "Search by name or tag...",
   "SWFFG.CompendiumBrowser.ClearSearch": "Clear search",
   "SWFFG.CompendiumBrowser.Loading": "Loading...",
   "SWFFG.CompendiumBrowser.ResultsCount": "{count} results",
