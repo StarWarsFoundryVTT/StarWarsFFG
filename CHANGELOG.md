@@ -1,4 +1,11 @@
 `2.0.4`
+* Features:
+  * Added a compendium browser to search and filter items across all world compendiums! ([#2267](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/2267), [@KamiliaBlow](https://github.com/KamiliaBlow))
+    * Accessible via a button in the compendiums directory for all users (not just GMs)
+    * Browse items by category (weapons, armor, gear, attachments, mods, talents, specializations, species, careers, force powers, signature abilities, vehicles, adversaries, and more)
+    * Search items by name/tags with
+    * Filter items by type, with the filter list built dynamically from item tags (works with translated OggDude datasets)
+    * Scroll through paginated results, drag-and-drop items onto sheets/scenes, or click to open them
 * Fixes:
   * Fixes an issue where knowledge skills are consumed but ranks are not added ([#2239](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2239))
   * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))

@@ -41,6 +41,7 @@ import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, Proficienc
 import { createFFGMacro, updateMacro } from "./helpers/macros.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
+import CompendiumBrowser from "./compendium/compendium-browser.js";
 import PauseFFG from "./apps/pause-ffg.js";
 import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
 import RollBuilderFFG from "./dice/roll-builder.js";
@@ -1058,7 +1059,7 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
     div.className = "og-character-import";
     div.innerHTML = `<hr><h4>Importers</h4>
     <button class="og-character" style="width:100%;margin-bottom:4px;">OggDude Dataset Importer</button>
-    <button class="swa-character" style="width:100%;">Adversaries Dataset Importer</button>`;
+    <button class="swa-character" style="width:100%;margin-bottom:4px;">Adversaries Dataset Importer</button>`;
     html.querySelector(".directory-footer")?.appendChild(div);
     // add event handlers with addEventListener()
     div.querySelector(".og-character")?.addEventListener("click", (event) => {
@@ -1070,6 +1071,17 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
       new SWAImporter().render(true);
     });
   }
+
+  const browserBtn = document.createElement("button");
+  browserBtn.type = "button";
+  browserBtn.className = "swffg-open-browser";
+  browserBtn.style.width = "100%";
+  browserBtn.innerHTML = `<i class="fas fa-book-open-reader"></i> ${game.i18n.localize("SWFFG.CompendiumBrowser.Open")}`;
+  browserBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    new CompendiumBrowser().render(true);
+  });
+  html.querySelector(".directory-footer")?.prepend(browserBtn);
 });
 
 // Update chat messages with dice images

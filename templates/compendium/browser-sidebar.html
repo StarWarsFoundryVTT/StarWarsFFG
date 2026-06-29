@@ -1,0 +1,45 @@
+<aside class="cb-sidebar">
+
+  <div class="cb-search">
+    <div class="cb-search-input">
+      <i class="fas fa-magnifying-glass"></i>
+      <input type="text" name="swffg-cb-search" value="{{search}}"
+             placeholder="{{localize 'SWFFG.CompendiumBrowser.SearchPlaceholder'}}" />
+      {{#if search}}
+      <button type="button" class="cb-clear-search" data-action="clearSearch"
+              data-tooltip aria-label="{{localize 'SWFFG.CompendiumBrowser.ClearSearch'}}">
+        <i class="fas fa-xmark"></i>
+      </button>
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="cb-count">
+    {{#if loading}}
+      <span><i class="fas fa-spinner fa-spin-pulse"></i> {{localize 'SWFFG.CompendiumBrowser.Loading'}}</span>
+    {{else}}
+      <span>{{localize 'SWFFG.CompendiumBrowser.ResultsCount' count=totalCount}}</span>
+      {{#if selectedCount}}<span class="cb-filtered-note">({{selectedCount}} {{localize 'SWFFG.CompendiumBrowser.TagsSelected'}})</span>{{/if}}
+    {{/if}}
+  </div>
+
+  {{#if hasTagsFilter}}
+  <div class="cb-filters">
+    <div class="cb-filters-header">
+      <span>{{localize 'SWFFG.CompendiumBrowser.FilterByType'}}</span>
+      {{#if selectedCount}}
+      <button type="button" class="cb-clear-tags" data-action="clearTags">{{localize 'SWFFG.CompendiumBrowser.ClearTags'}}</button>
+      {{/if}}
+    </div>
+    <div class="cb-tag-list">
+      {{#each availableTags}}
+      <label class="cb-tag-choice {{#if selected}}selected{{/if}}">
+        <input type="checkbox" data-action="toggleTag" data-tag="{{tag}}" {{#if selected}}checked{{/if}} />
+        <span>{{tag}}</span>
+      </label>
+      {{/each}}
+    </div>
+  </div>
+  {{/if}}
+
+</aside>
