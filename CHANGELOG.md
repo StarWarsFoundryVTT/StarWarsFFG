@@ -7,8 +7,10 @@
     * Filter items by type, with the filter list built dynamically from item tags (works with translated OggDude datasets)
     * Scroll through paginated results, drag-and-drop items onto sheets/scenes, or click to open them
 * Fixes:
+  * Fix for send to chat card displaying long description over short description ([#2231](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2231))
   * Fixes an issue where knowledge skills are consumed but ranks are not added ([#2239](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2239))
   * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))
+
 
 `2.0.3`
 * Enhancements:

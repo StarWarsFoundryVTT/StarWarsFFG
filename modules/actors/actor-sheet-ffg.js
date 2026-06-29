@@ -1612,7 +1612,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     }
 
     if (item.type === "talent") {
-      itemDetails.prettyDesc = item.system.longDesc;
+      itemDetails.prettyDesc = item.system.description;
     }
 
     const template = "systems/starwarsffg/templates/chat/item-card.html";
