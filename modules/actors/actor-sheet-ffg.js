@@ -97,7 +97,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       if (this.actor.type === "character" && ["talent", "specialization", "signatureability", "forcepower"].includes(itemData.type)) {
         const cost = await this.calcPurchasePrice(itemData);
         const availableXP = this.actor.system.experience.available;
-          let d = new Dialog(
+          new Dialog(
             {
               title: game.i18n.format("SWFFG.DragDrop.Title", {cost: cost, talent: itemData.name, test: "test"}),
               buttons: {
