@@ -99,7 +99,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         const availableXP = this.actor.system.experience.available;
           new Dialog(
             {
-              title: game.i18n.format("SWFFG.DragDrop.Title", {cost: cost, talent: itemData.name, test: "test"}),
+              title: game.i18n.format("SWFFG.DragDrop.Title", {cost: cost, talent: itemData.name}),
               buttons: {
                 purchase: {
                   icon: '<i class="fas fa-hourglass"></i>',
