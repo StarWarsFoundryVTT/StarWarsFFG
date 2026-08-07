@@ -855,6 +855,7 @@
   "SWFFG.Settings.Tokens.Bar.StaminaOver.Hint": "Color to use when stamina threshold has been exceeded",
   "SWFFG.DragDrop.Title": "Purchase item, or grant for 0 xp?",
   "SWFFG.DragDrop.PurchaseItem": "Purchase",
+  "SWFFG.DragDrop.UnableToPurchase": "Unable to Purchase",
   "SWFFG.DragDrop.GrantItem": "Grant",
   "SWFFG.DragDrop.XPLog": "drag-and-drop",
   "SWFFG.Settings.actor.RivalTokenPrepend.Name": "Prepend Adjective to rival tokens",
