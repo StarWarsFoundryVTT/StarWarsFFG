@@ -97,48 +97,64 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       if (this.actor.type === "character" && ["talent", "specialization", "signatureability", "forcepower"].includes(itemData.type)) {
         const cost = await this.calcPurchasePrice(itemData);
         const availableXP = this.actor.system.experience.available;
-        if (cost > 0 && cost < availableXP) {
           new Dialog(
-          {
-            title: game.i18n.localize("SWFFG.DragDrop.Title"),
-            buttons: {
-              purchase: {
-                icon: '<i class="fas fa-hourglass"></i>',
-                label: game.i18n.localize("SWFFG.DragDrop.PurchaseItem"),
-                callback: async (that) => {
-                  if(!this.actor.verifyEditModeIsNotEnabled()) return false;
-
-                  if (cost > 0) {
-                    const AEState = await ActorHelpers.beginEditMode(this.actor, true);
-                    const updatedAvailableXP = this.actor.system.experience.available;
-                    await this.object.update({
-                      system: {
-                        experience: {
-                          available: updatedAvailableXP - cost,
-                        }
+            {
+              title: game.i18n.format("SWFFG.DragDrop.Title", {cost: cost, talent: itemData.name}),
+              buttons: {
+                purchase: {
+                  icon: '<i class="fas fa-hourglass"></i>',
+                  label: (cost <= availableXP) ? game.i18n.localize("SWFFG.DragDrop.PurchaseItem") : game.i18n.localize("SWFFG.DragDrop.UnableToPurchase"),
+                  disabled: (cost <= availableXP) ? false : true,
+                  callback: async (that) => {
+                    if (!this.actor.verifyEditModeIsNotEnabled()) return false;
+                    if (cost >= 0 && cost <= availableXP) {
+                      if (cost >= 0) {
+                        const AEState = await ActorHelpers.beginEditMode(this.actor, true);
+                        const updatedAvailableXP = this.actor.system.experience.available;
+                        await this.object.update({
+                          system: {
+                            experience: {
+                              available: updatedAvailableXP - cost,
+                            }
+                          }
+                        });
+                        await xpLogSpend(
+                          this.actor, `${game.i18n.localize("SWFFG.DragDrop.XPLog")} ${itemData.type} ${itemData.name}`,
+                          cost,
+                          this.actor.system.experience.available,
+                          this.actor.system.experience.total
+                        );
+                        await ActorHelpers.endEditMode(this.actor, AEState, true);
+                        return this._onDropItemCreate(itemData);
                       }
-                    });
-                    await xpLogSpend(
-                        this.actor, `${game.i18n.localize("SWFFG.DragDrop.XPLog")} ${itemData.type} ${itemData.name}`,
-                        cost,
-                        this.actor.system.experience.available,
-                        this.actor.system.experience.total
-                    );
-                    await ActorHelpers.endEditMode(this.actor, AEState, true);
+                    } else {
+                      ui.notifications.warn(game.i18n.localize("SWFFG.DragDrop.NotEnoughXP"));
+                      return false;
+                    }
+                  },
+                },
+                grant: {
+                  icon: '<i class="fas fa-recycle"></i>',
+                  label: game.i18n.localize("SWFFG.DragDrop.GrantItem"),
+                  callback: async (that) => {
+                    const messageData = {
+                      speaker: `${this.actor.name}`,
+                      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
+                      content: `${this.actor.name} granted ${itemData.type} ${itemData.name} for free`,
+                      whisper: ChatMessage.getWhisperRecipients("GM"),
+                    }
+
+                    ChatMessage.create(messageData);
+                    return this._onDropItemCreate(itemData);
                   }
                 },
               },
-              grant: {
-                icon: '<i class="fas fa-recycle"></i>',
-                label: game.i18n.localize("SWFFG.DragDrop.GrantItem"),
-              },
             },
-          },
           {
             classes: ["dialog", "starwarsffg"],
           }
         ).render(true);
-        }
+        return false;
       }
 
       if (Object.keys(itemData).includes("effects") && ["armour", "weapon"].includes(itemData.type)) {
@@ -181,7 +197,11 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         return -1;
       }
     } else if (itemData.type === "talent" && game.settings.get("starwarsffg", "dicetheme") === "genesys") {
-      return itemData.system.tier * 5;
+      const talents = this.actor.talentList.filter(i => i.name === itemData.name);
+        if (talents.length > 0) {
+          cost = Math.min((talents[0].tier + 1), 5) * 5;
+        } else cost = itemData.system.tier * 5;
+      return cost;
     } else if (itemData.type === "signatureability") {
       return itemData.system.base_cost;
     } else if (itemData.type === "forcepower") {
