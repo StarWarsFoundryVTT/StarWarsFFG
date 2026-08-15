@@ -1,6 +1,6 @@
 import ItemHelpers from "../helpers/item-helpers.js";
 
-export default class ItemBaseFFG extends Item {
+export default class ItemBaseFFG extends foundry.documents.Item {
   async update(data, options = {}) {
     if (!Object.keys(data).includes("flags")) {
       data.flags = {};

@@ -1,10 +1,29 @@
 import ModifierHelpers from "./helpers/modifiers.js";
+import {
+  ACTIVE_EFFECT_MIGRATION_VERSION,
+  migrateActiveEffectsV14,
+} from "./migration/active-effects-v14.js";
+import { foundryGeneration } from "./compatibility/foundry-version.js";
 
 /**
  * Handles all logic related to migrating the system to a new version, including sending notifications
  * @returns {Promise<void>}
  */
 export async function handleUpdate() {
+  if (foundryGeneration() >= 14 && game.user?.isGM && game.users?.activeGM?.id === game.user.id) {
+    const effectVersion = game.settings.get("starwarsffg", "activeEffectMigrationVersion");
+    if (effectVersion < ACTIVE_EFFECT_MIGRATION_VERSION) {
+      ui.notifications.warn("Back up this world before continuing: Star Wars FFG is migrating Active Effects for Foundry VTT 14.", {permanent: true});
+      const report = await migrateActiveEffectsV14();
+      CONFIG.logger.log("Foundry VTT 14 Active Effect migration report", report);
+      if (report.failed.length) {
+        ui.notifications.error(`Active Effect migration stopped with ${report.failed.length} failure(s). Check the console report; the migration will retry next launch.`, {permanent: true});
+        return;
+      }
+      await game.settings.set("starwarsffg", "activeEffectMigrationVersion", ACTIVE_EFFECT_MIGRATION_VERSION);
+      if (report.lockedPacks.length) CONFIG.logger.warn("Locked or external compendiums were not modified", report.lockedPacks);
+    }
+  }
   const registeredVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
   const runningVersion = game.system.version;
   if (registeredVersion !== runningVersion) {
@@ -49,10 +68,10 @@ async function sendChanges(newVersion) {
   const html = await foundry.applications.handlebars.renderTemplate(template, { version: newVersion });
   const messageData = {
     user: game.user.id,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     content: html,
   };
-  ChatMessage.create(messageData);
+  foundry.documents.ChatMessage.create(messageData);
 }
 
 /**
@@ -63,10 +82,10 @@ async function warnTheme() {
   if (game.settings.get("starwarsffg", "ui-uitheme") === "default") {
     const messageData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: "You are using an unsupported theme. Expected issues, or swap to the Mandar theme.<br>(This message will only show once.)",
     };
-    ChatMessage.create(messageData);
+    foundry.documents.ChatMessage.create(messageData);
   }
 }
 
@@ -287,7 +306,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      type: "add",
                       value: item.system.talents[`talent${i}`].attributes[nk].value,
                     });
                   }
@@ -328,7 +347,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      type: "add",
                       value: item.system.upgrades[`upgrade${i}`].attributes[nk].value,
                     });
                   }
@@ -371,7 +390,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      type: "add",
                       value: item.system.upgrades[`upgrade${i}`].attributes[nk].value,
                     });
                   }

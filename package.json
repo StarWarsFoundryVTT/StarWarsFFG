@@ -3,23 +3,34 @@
   "version": "1.0.0",
   "description": "( PLEASE NOTE: This is a custom fork based on [Jaxxa's implementation](https://github.com/jaxxa/StarWarsFFG/tree/master). )",
   "main": "index.js",
+  "engines": {
+    "node": ">=24 <25",
+    "npm": ">=11 <12"
+  },
   "scripts": {
     "compile": "gulp css",
-    "lint": "npx eslint modules",
+    "lint": "eslint modules tests/compatibility",
+    "test": "npm run test:syntax && npm run test:compat",
+    "test:syntax": "node scripts/check-module-syntax.mjs",
+    "test:compat": "node --test tests/compatibility/*.test.mjs",
+    "test:e2e": "playwright test",
+    "test:e2e:v13": "FOUNDRY_GENERATION=13 playwright test",
+    "test:e2e:v14": "FOUNDRY_GENERATION=14 playwright test",
     "watch": "gulp"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
-    "@types/node": "^24.0.0",
-    "cypress": "^15.18.0",
-    "eslint": "^9.10.0",
-    "eslint-plugin-import-x": "^4.2.1",
-    "gulp": "^4.0.2",
-    "gulp-autoprefixer": "^8.0.0",
-    "gulp-sass": "^5.1.0",
-    "gulp-sourcemaps": "^3.0.0",
-    "sass": "^1.49.0"
+    "@playwright/test": "1.56.1",
+    "@types/node": "24.0.0",
+    "cypress": "15.18.0",
+    "eslint": "9.10.0",
+    "eslint-plugin-import-x": "4.2.1",
+    "globals": "14.0.0",
+    "gulp": "4.0.2",
+    "gulp-autoprefixer": "8.0.0",
+    "gulp-sass": "5.1.0",
+    "gulp-sourcemaps": "3.0.0",
+    "sass": "1.49.0"
   }
 }

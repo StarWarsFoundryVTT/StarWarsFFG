@@ -2,8 +2,18 @@ import eslintImportX from "eslint-plugin-import-x";
 import globals from "globals";
 import js from "@eslint/js";
 
+const legacyRecommendedRules = Object.fromEntries(
+  Object.entries(js.configs.recommended.rules).map(([rule, severity]) => [
+    rule,
+    severity === "off" || severity === 0 ? "off" : "warn",
+  ]),
+);
+
 export default [
-  js.configs.recommended,
+  {
+    ...js.configs.recommended,
+    rules: legacyRecommendedRules,
+  },
   eslintImportX.flatConfigs.recommended,
   {
     settings: {

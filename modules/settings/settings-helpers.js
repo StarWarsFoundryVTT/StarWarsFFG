@@ -19,6 +19,13 @@ export default class SettingsHelpers {
       config: false,
       type: String,
     });
+    game.settings.register("starwarsffg", "activeEffectMigrationVersion", {
+      name: "Active Effect Migration Version",
+      scope: "world",
+      default: 0,
+      config: false,
+      type: Number,
+    });
 
     game.settings.registerMenu("starwarsffg", "rulesetSettings", {
       name: game.i18n.localize("SWFFG.Settings.ruleset.Name"),

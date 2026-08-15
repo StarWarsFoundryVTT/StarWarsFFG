@@ -137,7 +137,7 @@ class EditModeTour extends foundry.nue.Tour {
     const AEData = {
       changes: [{
         key: "system.characteristics.Brawn.value",
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: 3,
       }],
       name: "example",
@@ -184,7 +184,7 @@ async function createActor() {
     name: "Tutorial Character",
     type: "character",
   };
-  const tempActor = await Actor.create(tempActorData);
+  const tempActor = await CONFIG.Actor.documentClass.create(tempActorData);
 
   await tempActor.sheet.render(true);
   // wait for the rendering to actually finish

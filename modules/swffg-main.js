@@ -53,6 +53,8 @@ import SWAImporter from "./importer/swa-importer.js";
 import {CharacterCreator} from "./helpers/character-creator.js";
 import {xpLogUndo} from "./helpers/actor-helpers.js";
 import {register_system_tours} from "./helpers/tours.js";
+import { activeEffectChangesUpdate, getActiveEffectChanges } from "./compatibility/active-effects.js";
+import { bindChatAction, registerChatMessageRender } from "./helpers/chat-message.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -685,22 +687,22 @@ Hooks.once("init", async function () {
     for (const skill of Object.keys(CONFIG.FFG.skills)) {
       allSkillChanges['boost'].push({
         key: `system.skills.${skill}.boost`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
       allSkillChanges['setback'].push({
         key: `system.skills.${skill}.setback`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
       allSkillChanges['upgrade'].push({
         key: `system.skills.${skill}.upgrades`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
       allSkillChanges['success'].push({
         key: `system.skills.${skill}.success`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
     }
@@ -758,12 +760,12 @@ Hooks.once("init", async function () {
       changes: [
         {
           key: "system.stats.defence.melee",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: "2",
         },
         {
           key: "system.stats.defence.ranged",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: "2",
         },
       ],
@@ -1008,8 +1010,8 @@ Hooks.on("renderChatInput", (app, html, data) => {
       rollButton.type = "button";
       rollButton.classList.add("ui-control", "icon", "fa-light", "fa-dice-d20");
 
-      const rollPrivacyElement = document.querySelector("#roll-privacy");
-      rollPrivacyElement.appendChild(rollButton);
+      const rollPrivacyElement = document.querySelector("#roll-privacy, #message-modes");
+      rollPrivacyElement?.appendChild(rollButton);
 
       rollButton.onclick = async function () {
         const dicePool = new DicePoolFFG();
@@ -1084,13 +1086,14 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
   html.querySelector(".directory-footer")?.prepend(browserBtn);
 });
 
-// Update chat messages with dice images
-Hooks.on("renderChatMessage", async (app, html, messageData) => {
-  const content = html.find(".message-content");
-  content[0].innerHTML = await PopoutEditor.renderDiceImages(content[0].innerHTML);
+// Update chat messages with dice images and native, single-render listeners.
+registerChatMessageRender(async (message, html) => {
+  const content = html.querySelector(".message-content");
+  if (!content) return;
+  content.innerHTML = await PopoutEditor.renderDiceImages(content.innerHTML);
 
-  html.on("click", ".ffg-pool-to-player", () => {
-    const poolData = messageData.message.flags.starwarsffg;
+  bindChatAction(html, "click", ".ffg-pool-to-player", () => {
+    const poolData = message.flags.starwarsffg;
 
     const dicePool = new DicePoolFFG(poolData.dicePool);
 
@@ -1098,25 +1101,18 @@ Hooks.on("renderChatMessage", async (app, html, messageData) => {
   });
 
   // collapse / expand item details
-  html.find(".starwarsffg.item-card .summary").on("click", async (event) => {
+  bindChatAction(html, "click", ".starwarsffg.item-card .summary", (event, summary) => {
     event.preventDefault();
-    const li = $(event.currentTarget);
-    const details = li.parent().children(".collapsible-content");
-    const collapseButton = li.children(".collapse-toggle");
-    // Toggle summary
-    if (li.hasClass("expanded")) {
-      details.slideUp(200, () => details.hide());
-    } else {
-      details.show();
-      details.slideDown(200);
-    }
-    li.toggleClass("expanded");
-    collapseButton.toggleClass("fa-chevron-down");
-    collapseButton.toggleClass("fa-chevron-left");
+    const details = summary.parentElement?.querySelector(".collapsible-content");
+    const collapseButton = summary.querySelector(".collapse-toggle");
+    const expanded = summary.classList.toggle("expanded");
+    if (details) details.hidden = !expanded;
+    collapseButton?.classList.toggle("fa-chevron-down", expanded);
+    collapseButton?.classList.toggle("fa-chevron-left", !expanded);
   });
 
   // item card tooltips
-  html.find(".starwarsffg.item-card .item-pill, .starwarsffg .specials .hover-tooltip").on("mouseover", (event) => {
+  bindChatAction(html, "mouseover", ".starwarsffg.item-card .item-pill, .starwarsffg .specials .hover-tooltip", (event) => {
     itemPillHover(event);
   });
 });
@@ -1419,7 +1415,7 @@ Hooks.once("ready", async () => {
         // abilities
         for(const abilityId of Object.keys(item.system.abilities)) {
           const abilityData = item.system.abilities[abilityId];
-          const abilityItem = await new Item(
+          const abilityItem = await new CONFIG.Item.documentClass(
             {
               name: abilityData.name,
               type: "ability",
@@ -1508,7 +1504,7 @@ Hooks.once("ready", async () => {
 
         CONFIG.FFG.DestinyGM = game.user.id;
 
-        ChatMessage.create({
+        CONFIG.ChatMessage.documentClass.create({
           user: game.user.id,
           content: messageText,
         });
@@ -1565,11 +1561,12 @@ Hooks.once("ready", async () => {
     Hooks.on("updateActiveEffect", function(effect, changes) {
         const counterValue = foundry.utils.getProperty(changes, "flags.statuscounter.counter.value");
         if (counterValue) {
-          for (const change of effect.changes) {
+          const effectChanges = foundry.utils.deepClone(getActiveEffectChanges(effect));
+          for (const change of effectChanges) {
             change['value'] = counterValue;
           }
+          effect.update(activeEffectChangesUpdate(effectChanges));
         }
-        effect.update({changes: effect.changes});
     });
   }
 
@@ -1599,7 +1596,7 @@ Hooks.once("ready", async () => {
 
           CONFIG.logger.debug("creating new temporary copy...");
           // create a new temporary actor
-          const tempActor = await Actor.create(
+          const tempActor = await CONFIG.Actor.documentClass.create(
             {
               name: actorName,
               type: "character",
@@ -1635,7 +1632,7 @@ Hooks.once("ready", async () => {
         } else if (args[0]?.event === "createFinalActorRequest") {
           CONFIG.logger.debug("Processing final actor request from player");
           // create a new temporary actor
-          const newActor = await Actor.create(
+          const newActor = await CONFIG.Actor.documentClass.create(
             {
               name: `${requestorName}'s new PC!`,
               type: "character",

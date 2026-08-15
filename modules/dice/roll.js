@@ -2,11 +2,16 @@ import PopoutEditor from "../popout-editor.js";
 import { ForceDie } from "./dietype/ForceDie.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
 import {ItemFFG} from "../items/item-ffg.js";
+import {
+  applyMessageMode,
+  configuredMessageMode,
+  normalizeMessageMode,
+} from "../compatibility/chat.js";
 
 /**
  * New extension of the core DicePool class for evaluating rolls with the FFG DiceTerms
  */
-export class RollFFG extends Roll {
+export class RollFFG extends foundry.dice.Roll {
   constructor(...args) {
     super(...args);
     this.ffg = { success: 0, failure: 0, advantage: 0, threat: 0, triumph: 0, despair: 0, light: 0, dark: 0 };
@@ -164,7 +169,7 @@ export class RollFFG extends Roll {
     }
 
     // Step 4 - safely evaluate the final total
-    const total = Roll.safeEval(this.results.join(" "));
+    const total = foundry.dice.Roll.safeEval(this.results.join(" "));
     if (!Number.isNumeric(total)) {
       throw new Error(game.i18n.format("DICE.ErrorNonNumeric", { formula: this.formula }));
     }
@@ -342,17 +347,12 @@ export class RollFFG extends Roll {
 
   /* -------------------------------------------- */
   /** @override */
-  async toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
+  async toMessage(messageData = {}, { messageMode = null, rollMode = null, create = true } = {}) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate();
 
-    const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
-
-    if (["gmroll", "blindroll"].includes(rMode)) {
-      messageData.whisper = ChatMessage.getWhisperRecipients("GM");
-    }
-    if (rMode === "blindroll") messageData.blind = true;
-    if (rMode === "selfroll") messageData.whisper = [game.user.id];
+    const mode = normalizeMessageMode(messageMode || rollMode || messageData.messageMode || messageData.rollMode)
+      || configuredMessageMode();
 
     // Prepare chat data
     messageData = foundry.utils.mergeObject(
@@ -368,9 +368,9 @@ export class RollFFG extends Roll {
     Hooks.call("ffgDiceMessage", this);
 
     // Either create the message or just return the chat data
-    const cls = getDocumentClass("ChatMessage");
+    const cls = CONFIG.ChatMessage.documentClass;
     const msg = new cls(messageData);
-    if (rMode) msg.applyRollMode(rMode);
+    applyMessageMode(msg, mode);
 
     // Either create or return the data
     return create ? await cls.create(msg) : msg;

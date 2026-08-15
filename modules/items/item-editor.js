@@ -360,7 +360,7 @@ export class itemEditor extends FormApplication  {
               for (const curMod of explodedMods) {
                 changes.push({
                   key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                  mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                  type: "add",
                   value: formData.system.attributes[modKey].value,
                 });
               }
@@ -414,7 +414,7 @@ export class itemEditor extends FormApplication  {
                 for (const curMod of explodedMods) {
                   changes.push({
                     key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                    type: "add",
                     value: modifier.system.attributes[modKey].value,
                   });
                 }
@@ -506,7 +506,7 @@ export class itemEditor extends FormApplication  {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: formData.system.attributes[modKey].value,
           });
         }
@@ -707,7 +707,7 @@ export class talentEditor extends itemEditor {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: formData.attributes[modKey].value,
           });
         }
@@ -921,7 +921,7 @@ export class forcePowerEditor extends itemEditor {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: formData.attributes[modKey].value,
           });
         }

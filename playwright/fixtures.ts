@@ -1,6 +1,62 @@
 import type { Page, Locator } from '@playwright/test';
 import {expect} from "@playwright/test";
 
+/**
+ * Each client session starts with the sidebar collapsed, which leaves the directory controls
+ * either zero-sized or parked outside the viewport until the expand transition settles. Clicking a
+ * tab alone does not expand it, so expand through the supported API and wait for the sidebar to
+ * come to rest before any directory control is used.
+ */
+export async function expandSidebar(page: Page) {
+  await page.evaluate(async () => {
+    const sidebar = (globalThis as any).ui?.sidebar;
+    if (sidebar && !sidebar.expanded) await sidebar.toggleExpanded(true);
+  });
+  await page.waitForFunction(() => {
+    const rect = document.querySelector('#sidebar')?.getBoundingClientRect();
+    return Boolean(rect) && rect.width > 0 && rect.right <= window.innerWidth + 1;
+  });
+}
+
+/**
+ * Navigate to the game view, re-joining first when the saved session is no longer valid.
+ *
+ * globalSetup authenticates once and every test reuses that stored session. Foundry can drop it
+ * mid-run — deleting a user that has connected is one observed trigger — and once it is gone every
+ * later navigation lands on /join, where `game.ready` never resolves and the test times out. Re-join
+ * on demand so one suite cannot cascade into the ones that follow it.
+ */
+export async function openGame(page: Page, userName = process.env.FOUNDRY_USER_NAME || 'Gamemaster') {
+  await page.goto('/game/');
+  if (/\/join\/?$/.test(new URL(page.url()).pathname)) {
+    const userControl = page.locator('select[name="userid"], input[name="username"]').first();
+    await userControl.waitFor({state: 'visible'});
+    if (await userControl.evaluate(element => element.tagName === 'SELECT')) {
+      await userControl.selectOption({label: userName});
+    } else {
+      await userControl.fill(userName);
+    }
+    const password = process.env.FOUNDRY_USER_PASSWORD;
+    if (password) {
+      const passwordField = page.locator('input[type="password"]').first();
+      if (await passwordField.isVisible()) await passwordField.fill(password);
+    }
+    await page.getByRole('button', {name: 'Join Game'}).click();
+    await page.waitForURL(/\/game\/?$/);
+  }
+  await page.waitForFunction(() => Boolean(globalThis.game?.ready));
+}
+
+/**
+ * Foundry stacks notifications over the sheet and directory UI. A headless run always raises the
+ * "no hardware acceleration" warning, and that banner then swallows pointer events aimed at the
+ * controls beneath it, so clicks time out instead of reaching their target. Keep the notifications
+ * visible for diagnostics but let pointer events pass through them.
+ */
+export async function letNotificationsPassClicks(page: Page) {
+  await page.addStyleTag({content: '#notifications, #notifications * { pointer-events: none !important; }'});
+}
+
 export class Actors {
   private readonly actorName: string;
   private readonly actorType: string;
@@ -26,10 +82,10 @@ export class Actors {
     this.actorName = actorName;
     this.actorType = actorType;
     this.actorTab = this.page.getByRole('tab', { name: 'Actors' });
-    this.createActorButton = this.page.getByRole('button', { name: 'Create Actor' });
-    this.createActorNameField = this.page.getByRole('textbox', { name: 'Character' });
-    this.createActorTypeField = this.page.getByRole('combobox');
-    this.createActorCreateField = this.page.getByRole('button', { name: 'Create New Actor' });
+    this.createActorButton = this.page.getByRole('button', { name: /Create Actor$/ });
+    this.createActorNameField = this.page.getByRole('dialog').getByRole('textbox', { name: 'Character' });
+    this.createActorTypeField = this.page.getByRole('dialog').getByRole('combobox');
+    this.createActorCreateField = this.page.getByRole('dialog').getByRole('button', { name: /Create Actor$/ });
     this.sheetLocator = this.page.locator(
       '.sheet',
       {has: this.page.locator(`text=${this.actorName}`)}
@@ -47,6 +103,7 @@ export class Actors {
   }
 
   async goToTab() {
+    await expandSidebar(this.page);
     await this.actorTab.click();
   }
 
@@ -178,10 +235,10 @@ export class Items {
     this.itemName = itemName;
     this.itemType = itemType;
     this.itemTab = this.page.getByRole('tab', { name: 'Items' });
-    this.createItemButton = this.page.getByRole('button', { name: ' Create Item' });
-    this.createItemNameField = this.page.getByRole('textbox', { name: 'Ability' });
-    this.createItemTypeField = this.page.locator('select[name="type"]');
-    this.createItemCreateField = this.page.getByRole('button', { name: 'Create New Item' });
+    this.createItemButton = this.page.getByRole('button', { name: /Create Item$/ });
+    this.createItemNameField = this.page.getByRole('dialog').getByRole('textbox', { name: 'Ability' });
+    this.createItemTypeField = this.page.getByRole('dialog').locator('select[name="type"]');
+    this.createItemCreateField = this.page.getByRole('dialog').getByRole('button', { name: /Create Item$/ });
     this.sheetLocator = this.page.locator(
       '.sheet',
       {has: this.page.locator(`input[value="${this.itemName}"]`)}
@@ -199,6 +256,7 @@ export class Items {
   }
 
   async goToTab() {
+    await expandSidebar(this.page);
     await this.itemTab.click();
   }
 
@@ -293,8 +351,10 @@ export class Items {
       await popoutPage.locator('.close').click();
       await expect(popoutPage).not.toBeVisible();
     } else {
-      await expect(this.sheetLocator.locator('.fas.fa-plus')).toBeEnabled();
-      await this.sheetLocator.locator('.fas.fa-plus').click();
+      // Source and tag rows carry their own fa-plus controls, so scope this to the modifier one.
+      const addModifier = this.sheetLocator.locator('.attribute-control[data-action="create"] .fas.fa-plus');
+      await expect(addModifier).toBeEnabled();
+      await addModifier.click();
       await this.sheetLocator.locator('.modtype').selectOption(modifierType);
       await this.sheetLocator.locator('.mod').selectOption(modifier);
       await this.sheetLocator.locator('.modvalue').fill(modifierValue);

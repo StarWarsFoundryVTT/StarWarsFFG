@@ -1,5 +1,12 @@
 `2.0.4`
+* Enhancements:
+  * Adds support for Foundry VTT 14 build 366 while retaining Foundry VTT 13 support.
+  * Migrates legacy Active Effects on world documents, unlinked token actors, embedded items, and writable world compendiums to the Version 14 Active Effects V2 schema.
+  * Adds local Version 13/14 browser validation for documents, chat visibility, dice, combat, importers, macros, migration, and multi-client synchronization.
 * Fixes:
+  * Updates chat rendering, message visibility, combat helpers, drag-and-drop, and generated macros to supported Foundry VTT 14 APIs.
+  * Preserves direct, transferred, disabled, status, duration, and inherent Item effect behavior after a Version 14 world migration.
+  * Prevents cyclic Version 14 sheet context data from overflowing recursive Item-sheet helpers.
   * Fixed some issues with the importer code, [@KamiliaBlow](https://github.com/KamiliaBlow))
     * Fixed a formatting error during import that caused the description block for careers to be empty
     * Fixed an import issue that could corrupt the entire dataset import when modifying Skills.xml; this occurred if the ```<Name>``` element contained a translation into another language. ([#2170](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2170))

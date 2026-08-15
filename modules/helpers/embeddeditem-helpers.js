@@ -273,7 +273,7 @@ export default class EmbeddedItemHelpers {
 
     delete temp._id;
     delete temp.id;
-    let tempItem = await new Item(temp, { temporary: true });
+    let tempItem = await new CONFIG.Item.documentClass(temp, { temporary: true });
     tempItem.sheet.render(true);
   }
 
@@ -292,7 +292,7 @@ export default class EmbeddedItemHelpers {
       data,
     };
 
-    let tempItem = await new Item(temp, { temporary: true });
+    let tempItem = await new CONFIG.Item.documentClass(temp, { temporary: true });
 
     tempItem.data._id = temp.id;
     if (!temp.id) {
@@ -303,29 +303,29 @@ export default class EmbeddedItemHelpers {
   }
 
   // totally not ripped from phind telling me how to do this
-  static removeKeyFromObject(obj, keyToRemove) {
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (key === keyToRemove) {
-          delete obj[key];
-        } else if (typeof obj[key] === 'object') {
-          EmbeddedItemHelpers.removeKeyFromObject(obj[key], keyToRemove);
-        }
+  static removeKeyFromObject(obj, keyToRemove, seen = new WeakSet()) {
+    if (!obj || typeof obj !== "object" || seen.has(obj)) return;
+    seen.add(obj);
+    for (const key of Object.keys(obj)) {
+      if (key === keyToRemove) {
+        delete obj[key];
+      } else if (typeof obj[key] === "object") {
+        EmbeddedItemHelpers.removeKeyFromObject(obj[key], keyToRemove, seen);
       }
     }
   }
 
   // totally not ripped from phind telling me how to do this
-  static findKeysIncludingStringRecursively(obj, str) {
+  static findKeysIncludingStringRecursively(obj, str, seen = new WeakSet()) {
+    if (!obj || typeof obj !== "object" || seen.has(obj)) return [];
+    seen.add(obj);
     let keys = [];
-    for (let key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        if (key.includes(str)) {
-          keys.push(key);
-        }
-        if (typeof obj[key] === 'object') {
-          keys = keys.concat(EmbeddedItemHelpers.findKeysIncludingStringRecursively(obj[key], str));
-        }
+    for (const key of Object.keys(obj)) {
+      if (key.includes(str)) {
+        keys.push(key);
+      }
+      if (typeof obj[key] === "object") {
+        keys = keys.concat(EmbeddedItemHelpers.findKeysIncludingStringRecursively(obj[key], str, seen));
       }
     }
     return keys;

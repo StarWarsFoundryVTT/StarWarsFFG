@@ -1,11 +1,13 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import {Actors, Items} from "../playwright/fixtures";
+import {Actors, Items, letNotificationsPassClicks} from "../playwright/fixtures";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://overlord.wrycu.com:12121/game/');
+  test.setTimeout(90_000);
+  await page.goto('/game/');
   await expect(page.getByText('Loading')).toBeVisible();
   await expect(page.getByText('Loading')).not.toBeVisible();
+  await letNotificationsPassClicks(page);
 });
 
 // TODO: most of these tests should be extended to confirm that they still work if they're done while the item is on an actor
@@ -524,4 +526,3 @@ test('embedded ship weapon applies correctly', async ({ page }) => {
   await shipweapon.remove();
   await shipweaponattachment.remove();
 });
-
