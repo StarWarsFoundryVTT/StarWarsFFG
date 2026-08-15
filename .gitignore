@@ -11,8 +11,4 @@ cypress/screenshots/
 /playwright/.cache/
 /playwright/.auth/
 state.json
-
-.agents/
-.claude/
-AGENTS.md
 .foundry-data/
