@@ -9,4 +9,6 @@ cypress/screenshots/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+/playwright/.auth/
 state.json
+.foundry-data/

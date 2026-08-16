@@ -1,4 +1,5 @@
 import ModifierHelpers from "./modifiers.js";
+import { activeEffectChangesUpdate, getActiveEffectChanges } from "../compatibility/active-effects.js";
 
 export default class ItemHelpers {
   static async itemUpdate(event, formData) {
@@ -97,12 +98,12 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: true,
         });
       }
       if (itemEffect) {
-        await itemEffect.update({changes: changes});
+        await itemEffect.update(activeEffectChangesUpdate(changes));
       }
     } else if (this.object.type === "specialization") {
       // apply career skills from Careers
@@ -119,12 +120,12 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: true,
         });
       }
       if (itemEffect) {
-        await itemEffect.update({changes: changes});
+        await itemEffect.update(activeEffectChangesUpdate(changes));
       }
     }
   }
@@ -280,8 +281,8 @@ export default class ItemHelpers {
             CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
             await matchingEffect.update({
               "changes": [{
-                key: matchingEffect.changes[0].key,
-                mode: matchingEffect.changes[0].mode,
+                key: getActiveEffectChanges(matchingEffect)[0].key,
+                type: getActiveEffectChanges(matchingEffect)[0].type,
                 value: newValue,
               }],
             });
@@ -313,13 +314,14 @@ export default class ItemHelpers {
         updatedEncumbrance = realEncumbrance;
       }
       CONFIG.logger.debug(`Original encumbrance: ${realEncumbrance}, new encumbrance: ${updatedEncumbrance}`);
-      for (const change of activeEffect.changes) {
+      const changes = foundry.utils.deepClone(getActiveEffectChanges(activeEffect));
+      for (const change of changes) {
         if (change.key === encumbranceModPath) {
           change.value = updatedEncumbrance;
           break;
         }
       }
-      await activeEffect.update({changes: activeEffect.changes});
+      await activeEffect.update(activeEffectChangesUpdate(changes));
     }
   }
 

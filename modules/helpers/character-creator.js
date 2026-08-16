@@ -1057,7 +1057,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         await existingActor.delete();
       }
       // temporary: create a new actor to add stuff to
-      const tempActor = await Actor.create(
+      const tempActor = await CONFIG.Actor.documentClass.create(
         {
           name: `temp actor - ${game.user.name}`,
           type: "character",
@@ -1159,7 +1159,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: 1,
           }],
         };
@@ -1184,7 +1184,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: 1,
           }],
         };
@@ -1671,7 +1671,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     if (game.user.isGM) {
       // temporary: create a new actor to add stuff to
       CONFIG.logger.debug("creating final actor...");
-      const finalActor = await Actor.create(
+      const finalActor = await CONFIG.Actor.documentClass.create(
         {
           name: `${game.user.name}'s new PC!`,
           type: "character",
@@ -1798,7 +1798,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: 1,
           }],
         };
@@ -1823,7 +1823,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: 1,
           }],
         };

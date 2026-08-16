@@ -1,4 +1,5 @@
 import PopoutModifiers from "../popout-modifiers.js";
+import { activeEffectChangesUpdate, getActiveEffectChanges } from "../compatibility/active-effects.js";
 
 export default class ModifierHelpers {
   /**
@@ -608,6 +609,7 @@ export default class ModifierHelpers {
     // first update anything inherent to the item type (such as "brawn" on "species")
     const inherentEffectName = `(inherent)`;
     const inherentEffect = existing.find(e => e.name === inherentEffectName);
+    const inherentChanges = inherentEffect ? foundry.utils.deepClone(getActiveEffectChanges(inherentEffect)) : [];
     if (inherentEffect && Object.keys(formData.data).includes("attributes")) {
       for (let k of Object.keys(formData.data.attributes)) {
         if (k.startsWith("attr")) {
@@ -625,13 +627,12 @@ export default class ModifierHelpers {
             curMod['modType'],
             curMod['mod']
           );
-          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
-            inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.attributes[k].value;
+            inherentChanges[inherentEffectChangeIndex].value = formData.data.attributes[k].value;
           }
         }
       }
-      await inherentEffect.update({changes: inherentEffect.changes});
     }
     // some inherent effects are not in the `attribute` keyspace; make sure to get them as well
     if (inherentEffect && ["gear", "weapon", "armour"].includes(item.type)) {
@@ -645,9 +646,9 @@ export default class ModifierHelpers {
           curMod['modType'],
           curMod['mod']
         );
-        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
         if (inherentEffectChangeIndex >= 0) {
-          inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.encumbrance.value;
+          inherentChanges[inherentEffectChangeIndex].value = formData.data.encumbrance.value;
         }
       }
 
@@ -662,9 +663,9 @@ export default class ModifierHelpers {
             curMod['modType'],
             curMod['mod']
           );
-          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
-            inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.defence.value;
+            inherentChanges[inherentEffectChangeIndex].value = formData.data.defence.value;
           }
         }
 
@@ -678,13 +679,12 @@ export default class ModifierHelpers {
             curMod['modType'],
             curMod['mod']
           );
-          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
-            inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.soak.value;
+            inherentChanges[inherentEffectChangeIndex].value = formData.data.soak.value;
           }
         }
       }
-      await inherentEffect.update({changes: inherentEffect.changes});
     } else if (inherentEffect && ["shipattachment"].includes(item.type)) {
       const explodedMods = ModifierHelpers.explodeMod(
         "Vehicle Stat",
@@ -696,13 +696,15 @@ export default class ModifierHelpers {
           curMod['modType'],
           curMod['mod']
         );
-        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
         if (inherentEffectChangeIndex >= 0) {
           // hardpoints are _spent_, not _gained_
-          inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.hardpoints.value * -1;
+          inherentChanges[inherentEffectChangeIndex].value = formData.data.hardpoints.value * -1;
         }
       }
-      await inherentEffect.update({changes: inherentEffect.changes});
+    }
+    if (inherentEffect) {
+      await inherentEffect.update(activeEffectChangesUpdate(inherentChanges));
     }
 
 
@@ -734,16 +736,14 @@ export default class ModifierHelpers {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: formData.data.attributes[k].value,
           });
         }
 
         // check if an active effect exists - create it if not, update it if it does
         if (match) {
-          await match.update({
-            changes: changes,
-          });
+          await match.update(activeEffectChangesUpdate(changes));
         } else if (k.startsWith("attr")) {
           // user-created active effects only - skip inherent effects like "brawn" on "species"
           // new entry
@@ -759,7 +759,7 @@ export default class ModifierHelpers {
     const itemEffect = existingEffects.find(i => i.name === `(inherent)`);
     if (itemEffect && item.type === "species") {
       // update the wound and strain changes to match
-      const newChanges = foundry.utils.deepClone(itemEffect.changes);
+      const newChanges = foundry.utils.deepClone(getActiveEffectChanges(itemEffect));
       const newBrawn = newChanges.find(ae => ae.key === "system.characteristics.Brawn.value").value;
       const newWillpower = newChanges.find(ae => ae.key === "system.characteristics.Willpower.value").value;
       // read the values from the form, if available, otherwise from the object
@@ -775,7 +775,7 @@ export default class ModifierHelpers {
           change.value = parseInt(newBrawn) + 5;
         }
       }
-      await itemEffect.update({changes: newChanges});
+      await itemEffect.update(activeEffectChangesUpdate(newChanges));
     }
 
     if (toCreate.length) {

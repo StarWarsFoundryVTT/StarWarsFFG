@@ -22,6 +22,7 @@ import {
 import {DicePoolFFG} from "../dice/pool.js";
 import {get_dice_pool} from "../helpers/dice-helpers.js";
 import {itemPillHover} from "../swffg-main.js";
+import {activeEffectCreateData} from "../compatibility/active-effects.js";
 
 export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   constructor(...args) {
@@ -64,12 +65,14 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     if (data?.type === "Item") {
       // this is the stock implementation, except that we do not pass "true" to item.toObject
       if ( !this.actor.isOwner ) return false;
-      const item = await Item.implementation.fromDropData(data);
+      const item = await CONFIG.Item.documentClass.fromDropData(data);
       // do not Draw values from the underlying data source rather than transformed values - we want to use adjusted values
       const itemData = item.toObject(false);
 
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
+      for (const key of ["_id", "folder", "ownership", "_stats"]) delete itemData[key];
+      itemData.effects = itemData.effects?.map(effect => activeEffectCreateData(effect)) ?? [];
 
       if (["character", "minion", "rival"].includes(this.actor.type) && ["itemmodifier", "itemattachment"].includes(itemData.type)) {
         ui.notifications.warn("You cannot add Item Modifiers or Attachments directly to actors.");
@@ -125,7 +128,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
                           this.actor.system.experience.total
                         );
                         await ActorHelpers.endEditMode(this.actor, AEState, true);
-                        return this._onDropItemCreate(itemData);
+                        return this.actor.createEmbeddedDocuments("Item", [itemData]);
                       }
                     } else {
                       ui.notifications.warn(game.i18n.localize("SWFFG.DragDrop.NotEnoughXP"));
@@ -141,11 +144,11 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
                       speaker: `${this.actor.name}`,
                       style: CONST.CHAT_MESSAGE_STYLES.OTHER,
                       content: `${this.actor.name} granted ${itemData.type} ${itemData.name} for free`,
-                      whisper: ChatMessage.getWhisperRecipients("GM"),
+                      whisper: CONFIG.ChatMessage.documentClass.getWhisperRecipients("GM"),
                     }
 
-                    ChatMessage.create(messageData);
-                    return this._onDropItemCreate(itemData);
+                    CONFIG.ChatMessage.documentClass.create(messageData);
+                    return this.actor.createEmbeddedDocuments("Item", [itemData]);
                   }
                 },
               },
@@ -167,7 +170,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       }
 
       // Create the owned item
-      return this._onDropItemCreate(itemData);
+      return this.actor.createEmbeddedDocuments("Item", [itemData]);
     } else {
       return super._onDropItem(event, data);
     }
@@ -720,7 +723,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         msg_content = `<i>${game.i18n.localize("SWFFG.MedicalItemUnUse")} ${item_name} #${prevUses}</i>`;
       }
 
-      ChatMessage.create({
+      CONFIG.ChatMessage.documentClass.create({
         speaker: { alias: this.object.name },
         content: msg_content,
       });
@@ -748,7 +751,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
                               foundry.utils.setProperty(updateData, `system.stats.strain.value`, 0);
                               foundry.utils.setProperty(updateData, `system.stats.wounds.value`, Math.max(0, this.object.system.stats.wounds.value - 1));
                               this.object.update(updateData);
-                              ChatMessage.create({
+                              CONFIG.ChatMessage.documentClass.create({
                                 speaker: { alias: this.object.name },
                                 content: `<i>${game.i18n.localize("SWFFG.MedicalItemRest")}</i>`,
                               });
@@ -763,7 +766,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
                               foundry.utils.setProperty(updateData, `system.stats.medical.uses`, 0);
                               this.object.update(updateData);
                               const item_name = this.object?.flags?.starwarsffg?.config?.medicalItemName || game.i18n.localize("SWFFG.DefaultMedicalItemName");
-                              ChatMessage.create({
+                              CONFIG.ChatMessage.documentClass.create({
                                 speaker: { alias: this.object.name },
                                 content: `<i>${game.i18n.localize("SWFFG.MedicalItemResetStart")} ${item_name} ${game.i18n.localize("SWFFG.MedicalItemResetEnd")}</i>`,
                               });
@@ -851,7 +854,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
                 default: CONST.DOCUMENT_OWNERSHIP_LEVELS.OBSERVER,
               }
             };
-            const tempItem = await new Item(itemData, { temporary: true });
+            const tempItem = await new CONFIG.Item.documentClass(itemData, { temporary: true });
             tempItem.sheet.render(true);
           } else {
             CONFIG.logger.debug(`Unknown item type: ${itemType}, or lacking new embed system`);
@@ -1174,7 +1177,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             ["system.stats.wounds.value"]: newWounds,
           });
           const itemName = this.actor?.flags?.starwarsffg?.config?.medicalItemName || game.i18n.localize("SWFFG.DefaultMedicalItemName");
-          ChatMessage.create({
+          CONFIG.ChatMessage.documentClass.create({
             speaker: { alias: this.actor.name },
             content: `<i>${game.i18n.localize("SWFFG.MedicalItemUse")} ${itemName} #${newUses}</i>`,
           });
@@ -1463,7 +1466,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const a = event.currentTarget;
       const form = this.form;
 
-      const nk = randomID();
+      const nk = foundry.utils.randomID();
       let newKey = document.createElement("div");
       newKey.innerHTML = `<input type="text" name="data.dutylist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.dutylist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
       form.appendChild(newKey);
@@ -1648,7 +1651,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         alias: this.actor.name,
       },
     };
-    ChatMessage.create(messageData);
+    CONFIG.ChatMessage.documentClass.create(messageData);
   }
 
   /**
@@ -1678,7 +1681,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         alias: this.actor.name,
       },
     };
-    ChatMessage.create(messageData);
+    CONFIG.ChatMessage.documentClass.create(messageData);
   }
 
   /**
@@ -1711,7 +1714,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
               let updateData = {};
-              setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
+              foundry.utils.setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
 
               this.object.update(updateData);
             },
@@ -1845,12 +1848,12 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       changes: [
         {
           key: boughtPath,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: boughtValue,
         },
         {
           key: "system.experience.available",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: spentXP * -1,
         }
       ],
@@ -1860,7 +1863,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     if (boughtPath === "system.characteristics.Brawn.value") {
       effects.changes.push({
         key: "system.stats.soak.value",
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: 1,
       });
     }

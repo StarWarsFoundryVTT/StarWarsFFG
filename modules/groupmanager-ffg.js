@@ -1,5 +1,6 @@
 import {xpLogEarn} from "./helpers/actor-helpers.js";
 import ActorHelpers from "./helpers/actor-helpers.js";
+import { messageModeOptions } from "./compatibility/chat.js";
 
 const CanvasLayerClass = foundry?.canvas?.layers?.CanvasLayer || CanvasLayer;
 export class GroupManagerLayer extends CanvasLayerClass {
@@ -8,7 +9,7 @@ export class GroupManagerLayer extends CanvasLayerClass {
   }
 
   static get layerOptions() {
-    return mergeObject(super.layerOptions, {
+    return foundry.utils.mergeObject(super.layerOptions, {
       canDragCreate: false,
     });
   }
@@ -273,9 +274,9 @@ export class GroupManager extends FormApplication {
   }
 
   async _rollTable(table, type) {
-    let r = new Roll("1d100");
+    let r = new foundry.dice.Roll("1d100");
     await r.evaluate();
-    let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? { rollMode: "gmroll" } : {};
+    let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? messageModeOptions("gm") : {};
     r.toMessage(
       {
         flavor: `${game.i18n.localize("SWFFG.Rolling")} ${type}...`,
@@ -289,9 +290,9 @@ export class GroupManager extends FormApplication {
       content: tableResult,
     };
     if (game.settings.get("starwarsffg", "privateTriggers")) {
-      messageOptions.whisper = ChatMessage.getWhisperRecipients("GM");
+      messageOptions.whisper = CONFIG.ChatMessage.documentClass.getWhisperRecipients("GM");
     }
-    ChatMessage.create(messageOptions);
+    CONFIG.ChatMessage.documentClass.create(messageOptions);
   }
 
   async _addGroupToCombat(characters, targets, cbt) {
@@ -334,7 +335,7 @@ export class GroupManager extends FormApplication {
   async _setupCombat(cbt) {
     // If no combat encounter is active, create one.
     if (!cbt) {
-      cbt = await Combat.create({scene: canvas.scene.id, active: true});
+      cbt = await CONFIG.Combat.documentClass.create({scene: canvas.scene.id, active: true});
     }
   }
 

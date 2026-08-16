@@ -1,27 +1,35 @@
 
-import {chromium, expect, type FullConfig} from '@playwright/test';
+import {chromium, type FullConfig} from '@playwright/test';
+import {mkdir} from 'node:fs/promises';
+import {dirname} from 'node:path';
 
 async function globalSetup(config: FullConfig) {
-  // TODO: this should probably be done before each test instead of globally
-  // this will allow us to use specific accounts for each test, and in turn run tests in parallel
   const { baseURL, storageState } = config.projects[0].use;
-  const browser = await chromium.launch();
+  if (!baseURL) {
+    throw new Error('FOUNDRY_BASE_URL is required (for example http://127.0.0.1:30014). See playwright/README.md.');
+  }
+
+  const userName = process.env.FOUNDRY_USER_NAME || 'Gamemaster';
+  const userPassword = process.env.FOUNDRY_USER_PASSWORD;
+  const browser = await chromium.launch({channel: process.env.FOUNDRY_BROWSER_CHANNEL || 'chrome'});
   const page = await browser.newPage();
-  /*
-  await page.goto(baseURL!);
-  await page.getByLabel('User Name').fill('user');
-  await page.getByLabel('Password').fill('password');
-  await page.getByText('Sign in').click();
-  await page.context().storageState({ path: storageState as string });
-  await browser.close();
-
-  */
-  await page.goto('http://overlord.wrycu.com:12121/join');
-  await page.getByRole('combobox').selectOption('Gamemaster');
+  await page.goto(new URL('/join', baseURL as string).toString());
+  const userControl = page.locator('select[name="userid"], input[name="username"]').first();
+  await userControl.waitFor({state: 'visible'});
+  if (await userControl.evaluate(element => element.tagName === 'SELECT')) {
+    await userControl.selectOption({label: userName});
+  } else {
+    await userControl.fill(userName);
+  }
+  if (userPassword) {
+    const password = page.locator('input[type="password"]');
+    if (await password.isVisible()) await password.fill(userPassword);
+  }
   await page.getByRole('button', { name: 'Join Game' }).click();
-  await expect(page.getByRole('textbox', { name: 'Chat' })).toBeVisible();
-  await expect(page.getByText('1Dark')).toBeVisible();
+  await page.waitForURL(/\/game\/?$/);
+  await page.waitForFunction(() => Boolean(globalThis.game?.ready));
 
+  await mkdir(dirname(storageState as string), {recursive: true});
   await page.context().storageState({ path: storageState as string });
   await browser.close();
 }

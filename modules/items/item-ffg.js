@@ -5,6 +5,7 @@ import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import Helpers from "../helpers/common.js";
 import ItemHelpers from "../helpers/item-helpers.js";
+import { activeEffectChangesUpdate, getActiveEffectChanges } from "../compatibility/active-effects.js";
 
 /**
  * Extend the basic Item with some very simple modifications.
@@ -98,7 +99,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                type: "add",
                 value: this.system.attributes[attribute].value,
               });
             }
@@ -115,7 +116,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              type: "add",
               value: 0,
             });
           }
@@ -132,7 +133,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                type: "add",
                 value: 0,
               });
             }
@@ -149,7 +150,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              type: "add",
               value: 0,
             });
           }
@@ -157,7 +158,7 @@ export class ItemFFG extends ItemBaseFFG {
           for (let i = 0; i < 8; i++) {
             effects.changes.push({
               key: "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              type: "add",
               value: true,
             });
           }
@@ -165,7 +166,7 @@ export class ItemFFG extends ItemBaseFFG {
           for (let i = 0; i < 5; i++) {
             effects.changes.push({
               key: "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              type: "add",
               value: true,
             });
           }
@@ -203,14 +204,14 @@ export class ItemFFG extends ItemBaseFFG {
       CONFIG.logger.debug("Unable to locate any inherent effect. This may be expected.");
     }
     if (itemEffect && Object.keys(changed).includes("system") && Object.keys(changed.system).includes("attributes")) {
-      const newChanges = foundry.utils.deepClone(itemEffect.changes);
+      const newChanges = foundry.utils.deepClone(getActiveEffectChanges(itemEffect));
       for (const updateKey of Object.keys(changed.system.attributes)) {
         const existingChange = newChanges.find(c => c.key.startsWith(`system.attributes.${updateKey}`));
         if (existingChange) {
           existingChange.value = parseInt(changed.system.attributes[updateKey].value);
         }
       }
-      await itemEffect.update({changes: newChanges});
+      await itemEffect.update(activeEffectChangesUpdate(newChanges));
     }
 
     // iterate over the changed data to look for any changes to attributes
@@ -228,7 +229,7 @@ export class ItemFFG extends ItemBaseFFG {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: attr?.value,
           });
         }

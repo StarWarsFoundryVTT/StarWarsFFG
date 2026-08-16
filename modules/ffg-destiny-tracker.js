@@ -1,4 +1,5 @@
 import { GroupManager } from "./groupmanager-ffg.js";
+import { bindChatAction, registerChatMessageRender } from "./helpers/chat-message.js";
 
 /**
  * A specialized form used to pop out the editor.
@@ -159,18 +160,15 @@ export default class DestinyTracker extends FormApplication {
         messageText = "Removed a " + typeName + " point.";
       }
 
-      ChatMessage.create({
+      CONFIG.ChatMessage.documentClass.create({
         user: game.user.id,
         content: messageText,
       });
     });
 
-    // handle previously created roll destiny chat messages
-    $(".ffg-destiny-roll").on("click", this.OnClickRollDestiny.bind(this));
-
     // setup chat hook for destiny roll
-    Hooks.on("renderChatMessage", (app, html, messageData) => {
-      html.on("click", ".ffg-destiny-roll", this.OnClickRollDestiny.bind(this));
+    registerChatMessageRender((message, html) => {
+      bindChatAction(html, "click", ".ffg-destiny-roll", this.OnClickRollDestiny.bind(this));
     });
 
     // setup socket handler for checking destiny roll

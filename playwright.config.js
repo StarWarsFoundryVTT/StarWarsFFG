@@ -1,13 +1,9 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
 
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+const generation = process.env.FOUNDRY_GENERATION || '14';
+const baseURL = process.env.FOUNDRY_BASE_URL;
+const browserChannel = process.env.FOUNDRY_BROWSER_CHANNEL || 'chrome';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -21,14 +17,15 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  /* Foundry suites mutate one world and must run serially. */
+  workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    storageState: 'state.json',
+    storageState: `playwright/.auth/foundry-v${generation}.json`,
     trace: 'on-first-retry',
   },
 
@@ -38,6 +35,14 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
+        channel: browserChannel,
+        /*
+         * devices['Desktop Chrome'] pins the user agent to the Chromium build Playwright bundles,
+         * which currently reports Chrome 141. Foundry VTT 14 requires Chromium 146 or newer and
+         * reads navigator.userAgent, so the pinned string makes a supported browser look
+         * unsupported. Fall back to the real user agent of the installed channel.
+         */
+        userAgent: undefined,
         viewport: {
           width: 1440,
           height: 900
@@ -70,4 +75,3 @@ export default defineConfig({
     timeout: 5_000,
   },
 });
-

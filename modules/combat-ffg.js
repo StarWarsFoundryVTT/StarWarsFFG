@@ -1,5 +1,6 @@
 import {DicePoolFFG, RollFFG} from "./dice-pool-ffg.js";
 import PopoutEditor from "./popout-editor.js";
+import { configuredMessageMode, messageModeOptions, normalizeMessageMode } from "./compatibility/chat.js";
 
 /**
  * Extend the base Combat entity.
@@ -22,7 +23,7 @@ import PopoutEditor from "./popout-editor.js";
  * }
  * and the UI would show "hello" as the sole claimant for this round (the other slot would say "claim this slot")
  */
-export class CombatFFG extends Combat {
+export class CombatFFG extends foundry.documents.Combat {
   /**
    * Adds a generic slot to the combat (via a flag)
    * @param round - INT - the round to add the slot to
@@ -185,10 +186,10 @@ export class CombatFFG extends Combat {
       } else {
         // Make sure we are dealing with an array of ids
         ids = typeof ids === "string" ? [ids] : ids;
-        const c = initiative.getCombatantByToken(
+        const c = initiative.getCombatantsByToken(
             initiative.combatants.map(combatant => combatant)
             .filter(combatantData => combatantData._id == ids[0])[0]
-            .tokenId);
+            .tokenId)?.[0];
         //const data = c.actor.system;
         const data = _findActorForInitiative(c);
         whosInitiative = c.actor.name;
@@ -255,10 +256,10 @@ export class CombatFFG extends Combat {
                 async (results, id, i) => {
                   let [updates, messages] = await results;
                   // Get Combatant data
-                  const c = initiative.getCombatantByToken(
+                  const c = initiative.getCombatantsByToken(
                     initiative.combatants.map(combatant => combatant)
                     .filter(combatantData => combatantData._id == id)[0]
-                    .tokenId);
+                    .tokenId)?.[0];
                   if (!c || !c.isOwner) return resolve(results);
 
                   // Detemine Formula
@@ -285,8 +286,9 @@ export class CombatFFG extends Combat {
                   updates.push({ _id: id, initiative: roll.total });
 
                   // Determine the roll mode
-                  let rollMode = messageOptions.rollMode || game.settings.get("core", "rollMode");
-                  if ((c.token.hidden || c.hidden) && rollMode === "roll") rollMode = "gmroll";
+                  let messageMode = normalizeMessageMode(messageOptions.messageMode || messageOptions.rollMode)
+                    || configuredMessageMode();
+                  if ((c.token.hidden || c.hidden) && messageMode === "public") messageMode = "gm";
 
                   // Construct chat message data
                   let messageData = foundry.utils.mergeObject(
@@ -302,7 +304,7 @@ export class CombatFFG extends Combat {
                     },
                     messageOptions
                   );
-                  const chatData = await roll.toMessage(messageData, { create: false, rollMode });
+                  const chatData = await roll.toMessage(messageData, {create: false, ...messageModeOptions(messageMode)});
 
                   // Play 1 sound for the whole rolled set
                   if (i > 0) chatData.sound = null;
