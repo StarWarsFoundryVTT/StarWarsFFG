@@ -37,6 +37,22 @@ test("uses generation-native read and update paths", () => {
   });
 });
 
+test("reads Version 14 changes from source, without the parent back-reference", () => {
+  // Prepared Version 14 change entries point back at their parent effect. Returning those makes
+  // any clone, serialization, or document update of the result blow up on the cycle.
+  const effect = {
+    _source: {system: {changes: [{key: "system.stats.encumbrance.value", type: "add", value: 0}]}},
+    system: {changes: [{key: "system.stats.encumbrance.value", type: "add", value: 0, priority: 20}]},
+  };
+  effect.system.changes[0].effect = effect;
+
+  const changes = getActiveEffectChanges(effect, 14);
+  assert.deepEqual(changes, [{key: "system.stats.encumbrance.value", type: "add", value: 0}]);
+  assert.equal(changes[0].effect, undefined);
+  assert.doesNotThrow(() => JSON.stringify(changes));
+  assert.doesNotThrow(() => JSON.stringify(activeEffectChangesUpdate(changes, 14)));
+});
+
 test("normalizes Version 13 and Version 14 durations", () => {
   assert.deepEqual(getActiveEffectDuration({duration: {rounds: 2, combat: "abc"}}, 13), {value: 2, units: "rounds", combat: "abc"});
   assert.deepEqual(getActiveEffectDuration({duration: {value: 2, units: "rounds"}, start: {combat: "abc"}}, 14), {value: 2, units: "rounds", combat: "abc"});

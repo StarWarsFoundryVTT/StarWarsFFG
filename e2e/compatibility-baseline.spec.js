@@ -142,6 +142,52 @@ test("constructs and renders every registered system sheet", async ({page}) => {
   expect(result.rendered.length).toBeGreaterThan(0);
 });
 
+test("persists sheet field edits through the form submission path", async ({page}) => {
+  test.setTimeout(120_000);
+  // The document tests above write through the document API. Editing through a rendered sheet
+  // goes through _updateObject and the effect helpers instead, which can fail independently.
+  const result = await page.evaluate(async () => {
+    const settle = ms => new Promise(resolve => setTimeout(resolve, ms));
+    const cases = [
+      {type: "gear", field: "data.encumbrance.value", path: "system.encumbrance.value", value: 7},
+      {type: "gear", field: "data.price.value", path: "system.price.value", value: 42},
+      {type: "weapon", field: "data.damage.value", path: "system.damage.value", value: 9},
+    ];
+    const results = [];
+
+    for (const testCase of cases) {
+      const item = await CONFIG.Item.documentClass.create({name: `persist-${testCase.type}`, type: testCase.type});
+      try {
+        const sheet = item.sheet;
+        await sheet.render(true);
+        for (let attempt = 0; attempt < 40 && !sheet.rendered; attempt += 1) await settle(100);
+        const root = sheet.element?.[0] ?? sheet.element;
+        const input = root?.querySelector(`input[name="${testCase.field}"]`);
+        if (!input) {
+          results.push({...testCase, error: "field not rendered"});
+          await sheet.close();
+          continue;
+        }
+        input.value = String(testCase.value);
+        input.dispatchEvent(new Event("change", {bubbles: true}));
+        await settle(2000);
+        await sheet.close();
+        await settle(1000);
+        const persisted = foundry.utils.getProperty(game.items.get(item.id), testCase.path);
+        results.push({...testCase, persisted});
+      } finally {
+        await item.delete();
+      }
+    }
+    return results;
+  });
+
+  for (const entry of result) {
+    expect(entry.error, `${entry.type}.${entry.field}`).toBeUndefined();
+    expect(entry.persisted, `${entry.type}.${entry.field} did not persist`).toBe(entry.value);
+  }
+});
+
 test("matches the recorded Version 13 migration mechanics baseline", async ({page}) => {
   test.skip(process.env.FOUNDRY_GENERATION !== "13" || process.env.FOUNDRY_MIGRATION_FIXTURE !== "1", "Version 13 migration fixture only");
 

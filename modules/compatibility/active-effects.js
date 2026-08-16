@@ -49,8 +49,12 @@ export function activeEffectChangeMode(change = {}) {
  * @returns {object[]}
  */
 export function getActiveEffectChanges(effect, generation = foundryGeneration()) {
+  // Prefer source data on both generations. On Version 14 the prepared entries in
+  // `system.changes` carry an `effect` back-reference to their parent ActiveEffect, so cloning,
+  // serializing, or submitting them raises "Maximum depth exceeded" / circular-structure errors.
+  // Source data holds the same persisted change definitions without the back-reference.
   const changes = generation >= 14
-    ? effect?.system?.changes
+    ? (effect?._source?.system?.changes ?? effect?.system?.changes)
     : (effect?._source?.changes ?? effect?.changes);
   return Array.isArray(changes) ? changes : [];
 }
