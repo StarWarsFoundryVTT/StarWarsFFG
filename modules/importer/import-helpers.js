@@ -1085,7 +1085,7 @@ export default class ImportHelpers {
           if (weaponItems.length > 0) {
             for (let i = 0; i < adversary.items.length; i += 1) {
               if (adversary.items[i].type === "weapon" && adversary.items[i].flags.starwarsffg.ffgimportid === weapon.flags.starwarsffg.ffgimportid) {
-                adversary.items[i] = mergeObject(weapon, adversary.items[i]);
+                adversary.items[i] = foundry.utils.mergeObject(weapon, adversary.items[i]);
               }
             }
           } else {
@@ -1132,7 +1132,7 @@ export default class ImportHelpers {
           if (talentItems.length > 0) {
             for (let i = 0; i < adversary.items.length; i += 1) {
               if (adversary.items[i].type === "talent" && adversary.items[i].flags.starwarsffg.ffgimportid === talent.flags.starwarsffg.ffgimportid) {
-                adversary.items[i] = mergeObject(talent, adversary.items[i]);
+                adversary.items[i] = foundry.utils.mergeObject(talent, adversary.items[i]);
               }
             }
           } else {
@@ -1171,7 +1171,7 @@ export default class ImportHelpers {
             if (armorItems.length > 0) {
               for (let i = 0; i < adversary.items.length; i += 1) {
                 if (adversary.items[i].type === "armor" && adversary.items[i].flags.starwarsffg.ffgimportid === armor.flags.starwarsffg.ffgimportid) {
-                  adversary.items[i] = mergeObject(armor, adversary.items[i]);
+                  adversary.items[i] = foundry.utils.mergeObject(armor, adversary.items[i]);
                 }
               }
             } else {
@@ -1218,7 +1218,7 @@ export default class ImportHelpers {
             }
 
             if (gearItem) {
-              gearItem = mergeObject(gear, gearItem);
+              gearItem = foundry.utils.mergeObject(gear, gearItem);
               gear.data.quantity.value = gearCount;
             } else {
               adversary.items.push(gear);
@@ -1261,7 +1261,7 @@ export default class ImportHelpers {
 
         let forceItem = adversary.items.find((s) => s.flags.starwarsffg.ffgimportid === force.flags.starwarsffg.ffgimportid);
         if (forceItem) {
-          forceItem = mergeObject(force, forceItem);
+          forceItem = foundry.utils.mergeObject(force, forceItem);
         } else {
           adversary.items.push(force);
         }
@@ -1697,7 +1697,7 @@ export default class ImportHelpers {
         let obligation = 0;
         if (Array.isArray(characterData.Character.Obligations.CharObligation)) {
           characterData.Character.Obligations.CharObligation.forEach((CharObligation) => {
-            const nk = randomID();
+            const nk = foundry.utils.randomID();
             const charobligation = {
               key: nk,
               type: CharObligation.Name,
@@ -1710,7 +1710,7 @@ export default class ImportHelpers {
             }
           });
         } else {
-          const nk = randomID();
+          const nk = foundry.utils.randomID();
           const charobligation = {
             key: nk,
             type: characterData.Character.Obligations.CharObligation.Name,
@@ -1729,7 +1729,7 @@ export default class ImportHelpers {
         let duty = 0;
         if (Array.isArray(characterData.Character.Duties.CharDuty)) {
           characterData.Character.Duties.CharDuty.forEach((CharDuty) => {
-            const nk = randomID();
+            const nk = foundry.utils.randomID();
             const charduty = {
               key: nk,
               type: CharDuty.Name,
@@ -1741,7 +1741,7 @@ export default class ImportHelpers {
             }
           });
         } else {
-          const nk = randomID();
+          const nk = foundry.utils.randomID();
           const charduty = {
             key: nk,
             type: characterData.Character.Duties.CharDuty.Name,

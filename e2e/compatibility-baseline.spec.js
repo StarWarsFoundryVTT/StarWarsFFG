@@ -88,6 +88,60 @@ test("creates, renders, updates, embeds, and deletes every core document subtype
   expect(result.itemTypes.length).toBeGreaterThan(0);
 });
 
+test("constructs and renders every registered system sheet", async ({page}) => {
+  test.setTimeout(120_000);
+  // The subtype lifecycle test above only exercises each document's default sheet, so a
+  // non-default registration can break without failing anything. Construct every one.
+  const result = await page.evaluate(async () => {
+    const failures = [];
+    const rendered = [];
+    const documents = {Actor: [], Item: []};
+    const waitForRender = async sheet => {
+      for (let attempt = 0; attempt < 30 && !sheet.rendered; attempt += 1) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+    };
+
+    try {
+      for (const [documentName, fallbackType] of [["Actor", "character"], ["Item", "gear"]]) {
+        const registry = CONFIG[documentName].sheetClasses ?? {};
+        const byType = new Map();
+
+        for (const [subtype, entries] of Object.entries(registry)) {
+          for (const [id, entry] of Object.entries(entries)) {
+            if (!id.startsWith("ffg.") || !entry?.cls) continue;
+            const type = subtype && subtype !== "base" ? subtype : fallbackType;
+            if (!byType.has(type)) {
+              byType.set(type, await CONFIG[documentName].documentClass.create({name: `sheet-probe-${type}`, type}));
+              documents[documentName].push(byType.get(type).id);
+            }
+            const document = byType.get(type);
+            try {
+              const sheet = new entry.cls(document);
+              await sheet.render(true);
+              await waitForRender(sheet);
+              if (!sheet.rendered) throw new Error("sheet did not reach the rendered state");
+              rendered.push(`${id}@${type}`);
+              await sheet.close();
+            } catch (error) {
+              failures.push(`${id}@${type}: ${error?.message ?? error}`);
+            }
+          }
+        }
+      }
+    } finally {
+      for (const [documentName, ids] of Object.entries(documents)) {
+        if (ids.length) await CONFIG[documentName].documentClass.deleteDocuments(ids);
+      }
+    }
+
+    return {failures, rendered};
+  });
+
+  expect(result.failures).toEqual([]);
+  expect(result.rendered.length).toBeGreaterThan(0);
+});
+
 test("matches the recorded Version 13 migration mechanics baseline", async ({page}) => {
   test.skip(process.env.FOUNDRY_GENERATION !== "13" || process.env.FOUNDRY_MIGRATION_FIXTURE !== "1", "Version 13 migration fixture only");
 

@@ -1466,7 +1466,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const a = event.currentTarget;
       const form = this.form;
 
-      const nk = randomID();
+      const nk = foundry.utils.randomID();
       let newKey = document.createElement("div");
       newKey.innerHTML = `<input type="text" name="data.dutylist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.dutylist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
       form.appendChild(newKey);
@@ -1714,7 +1714,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
               let updateData = {};
-              setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
+              foundry.utils.setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
 
               this.object.update(updateData);
             },
