@@ -16,11 +16,17 @@ async function globalSetup(config: FullConfig) {
   await browser.close();
 
   */
-  await page.goto('http://overlord.wrycu.com:12121/join');
-  await page.getByRole('combobox').selectOption('Gamemaster');
-  await page.getByRole('button', { name: 'Join Game' }).click();
+  // globalSetup drives its own browser, so it does not get the config's baseURL applied
+  // automatically the way tests do - build the absolute URL from it here.
+  await page.goto(new URL('/join', baseURL).href);
+  // v13 renders the join screen as an ApplicationV2 into #join-game-form. The user <select> holds
+  // user IDs as option values, so the user has to be picked by its visible label.
+  await page.locator('#join-game-form select[name="userid"]').selectOption({ label: 'Gamemaster' });
+  await page.locator('#join-game-form button[name="join"]').click();
   await expect(page.getByRole('textbox', { name: 'Chat' })).toBeVisible();
-  await expect(page.getByText('1Dark')).toBeVisible();
+  // the destiny tracker only exists once the system itself has booted, so it doubles as a "world is
+  // ready" signal. Assert on the element rather than its text, which changes with the destiny pool.
+  await expect(page.locator('#destinyDark')).toBeVisible({ timeout: 30_000 });
 
   await page.context().storageState({ path: storageState as string });
   await browser.close();

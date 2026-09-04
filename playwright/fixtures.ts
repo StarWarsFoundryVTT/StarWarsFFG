@@ -1,6 +1,82 @@
 import type { Page, Locator } from '@playwright/test';
 import {expect} from "@playwright/test";
 
+/**
+ * Match a sidebar directory entry on its full name.
+ * v13 renders entries as `<a class="entry-name">`, so a substring match would also hit entries which
+ * merely start with the same text (e.g. "qa armor" vs "qa armorItem").
+ */
+function exactName(name: string): RegExp {
+  return new RegExp(`^\\s*${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*$`);
+}
+
+/**
+ * The "Delete" entry of the context menu that was most recently opened.
+ *
+ * v13 gives directory context menus `fixed: true`, so each one is a popover appended to <body> and
+ * they all share `id="context-menu"`. Clicking an entry calls `close()` without awaiting it, and
+ * `close()` animates before removing the element - and a menu whose instance is no longer
+ * `ui.context` is never closed by the global click handler at all. So more than one can be in the
+ * DOM at once. Taking the last one is exact rather than a guess: `_setFixedPosition` appends to
+ * <body>, so the newest menu is always last in document order.
+ *
+ * Targeting `.context-item` rather than the label also avoids matching both the <li> and its <span>.
+ */
+function deleteMenuItem(page: Page): Locator {
+  return page.locator('#context-menu').last().locator('.context-item', { hasText: /^Delete$/ });
+}
+
+/**
+ * Bring a sidebar directory into view.
+ *
+ * v13's `Sidebar#_onClickTab` treats a click on the already-active tab as a collapse:
+ *
+ *     const wasActive = target?.ariaPressed === "true";
+ *     super._onClickTab(event);
+ *     if ( this.expanded && wasActive ) this.collapse();
+ *     else if ( !this.expanded ) this.expand();
+ *
+ * so clicking unconditionally hides the directory on every second visit. Click only when the tab is
+ * not already showing - that click then either switches tabs or expands a collapsed sidebar, and
+ * never collapses one.
+ */
+async function showSidebarTab(page: Page, tab: Locator) {
+  const isActive = await tab.getAttribute('aria-pressed') === 'true';
+  const isExpanded = await page.locator('#sidebar-content').evaluate(el => el.classList.contains('expanded'));
+  if (!isActive || !isExpanded) {
+    await tab.click();
+  }
+  await expect(tab).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('#sidebar-content')).toHaveClass(/\bexpanded\b/);
+}
+
+/**
+ * Right-click a sidebar directory entry, choose Delete, and confirm.
+ *
+ * The right-click and the menu click are retried as a unit. Deleting a document re-renders the
+ * directory, which rebuilds its ContextMenu and detaches an open menu mid-click - Playwright reports
+ * that as "element is not stable" followed by "element was detached from the DOM". Re-opening the
+ * menu is the only reliable recovery, since the element the click was aimed at no longer exists.
+ *
+ * Waiting for the entry count to drop at the end is what keeps the *next* removal from racing the
+ * re-render: without it, remove() returns as soon as the confirm dialog closes, while the delete and
+ * the re-render it triggers are still in flight.
+ */
+async function deleteDirectoryEntry(page: Page, entries: Locator) {
+  const before = await entries.count();
+  const confirm = page.getByRole('button', { name: 'Yes' });
+  await expect(async () => {
+    await entries.first().click({ button: 'right' });
+    const item = deleteMenuItem(page);
+    await expect(item).toBeVisible();
+    await item.click({ timeout: 5_000 });
+    await expect(confirm).toBeEnabled({ timeout: 5_000 });
+  }).toPass({ timeout: 20_000 });
+  await confirm.click();
+  await expect(confirm).not.toBeVisible();
+  await expect(entries).toHaveCount(before - 1);
+}
+
 export class Actors {
   private readonly actorName: string;
   private readonly actorType: string;
@@ -26,10 +102,19 @@ export class Actors {
     this.actorName = actorName;
     this.actorType = actorType;
     this.actorTab = this.page.getByRole('tab', { name: 'Actors' });
-    this.createActorButton = this.page.getByRole('button', { name: 'Create Actor' });
-    this.createActorNameField = this.page.getByRole('textbox', { name: 'Character' });
-    this.createActorTypeField = this.page.getByRole('combobox');
-    this.createActorCreateField = this.page.getByRole('button', { name: 'Create New Actor' });
+    // the directory's own create button, scoped so it does not collide with the create dialog's
+    // submit button - in v13 both are labelled "Create Actor"
+    this.createActorButton = this.page.locator('#actors button[data-action="createEntry"]');
+    // v13 renders the creation form from templates/sidebar/document-create.html inside a DialogV2.
+    // Note that template's own <form id="document-create"> is not in the DOM to scope to: DialogV2
+    // injects it into its own <form class="dialog-form">, and the HTML parser drops the nested
+    // <form> element while keeping its children.
+    // Scope to the most recently opened dialog. ApplicationV2 appends each new window to the DOM,
+    // so a create dialog left open by an earlier step can only ever precede the current one.
+    const createDialog = this.page.locator('.dialog-form').last();
+    this.createActorNameField = createDialog.locator('input[name="name"]');
+    this.createActorTypeField = createDialog.locator('select[name="type"]');
+    this.createActorCreateField = createDialog.locator('button[data-action="ok"]');
     this.sheetLocator = this.page.locator(
       '.sheet',
       {has: this.page.locator(`text=${this.actorName}`)}
@@ -47,12 +132,17 @@ export class Actors {
   }
 
   async goToTab() {
-    await this.actorTab.click();
+    await showSidebarTab(this.page, this.actorTab);
   }
 
   async create() {
     await this.goToTab();
+    // Track our own dialog by count rather than by visibility: a create dialog left open by an
+    // earlier step would make a plain "the ok button is gone" check match the wrong window.
+    const dialogs = this.page.locator('.dialog-form');
+    const openDialogs = await dialogs.count();
     await this.createActorButton.click();
+    await expect(dialogs).toHaveCount(openDialogs + 1);
     await this.createActorNameField.fill(this.actorName);
     await this.createActorTypeField.selectOption(this.actorType)
     await this.createActorCreateField.click();
@@ -62,7 +152,7 @@ export class Actors {
       await expect(this.tabWeapons).toBeVisible();
     }
     // wait for the create window to close
-    await expect(this.createActorCreateField).not.toBeVisible();
+    await expect(dialogs).toHaveCount(openDialogs);
   }
 
   async closeSheet() {
@@ -76,10 +166,8 @@ export class Actors {
   async remove() {
     // ensure we are on the correct tab
     await this.goToTab();
-    await this.page.locator('#actors').getByRole('heading', { name: this.actorName }).click({button: 'right'});
-    await this.page.getByText('Delete').click();
-    await this.page.getByRole('button', { name: 'Yes' }).click();
-    await expect(this.page.getByRole('button', { name: 'Yes' })).not.toBeVisible();
+    const entries = this.page.locator('#actors .entry-name').filter({ hasText: exactName(this.actorName) });
+    await deleteDirectoryEntry(this.page, entries);
   }
 
   async switchTab(tabName: string) {
@@ -178,10 +266,15 @@ export class Items {
     this.itemName = itemName;
     this.itemType = itemType;
     this.itemTab = this.page.getByRole('tab', { name: 'Items' });
-    this.createItemButton = this.page.getByRole('button', { name: ' Create Item' });
-    this.createItemNameField = this.page.getByRole('textbox', { name: 'Ability' });
-    this.createItemTypeField = this.page.locator('select[name="type"]');
-    this.createItemCreateField = this.page.getByRole('button', { name: 'Create New Item' });
+    // see the Actors equivalents above - v13 labels both the directory button and the dialog's
+    // submit button "Create Item", and the creation form now lives in a DialogV2
+    this.createItemButton = this.page.locator('#items button[data-action="createEntry"]');
+    // Scope to the most recently opened dialog. ApplicationV2 appends each new window to the DOM,
+    // so a create dialog left open by an earlier step can only ever precede the current one.
+    const createDialog = this.page.locator('.dialog-form').last();
+    this.createItemNameField = createDialog.locator('input[name="name"]');
+    this.createItemTypeField = createDialog.locator('select[name="type"]');
+    this.createItemCreateField = createDialog.locator('button[data-action="ok"]');
     this.sheetLocator = this.page.locator(
       '.sheet',
       {has: this.page.locator(`input[value="${this.itemName}"]`)}
@@ -199,18 +292,22 @@ export class Items {
   }
 
   async goToTab() {
-    await this.itemTab.click();
+    await showSidebarTab(this.page, this.itemTab);
   }
 
   async create() {
     await this.goToTab();
+    // Track our own dialog by count rather than by visibility: a create dialog left open by an
+    // earlier step would make a plain "the ok button is gone" check match the wrong window.
+    const dialogs = this.page.locator('.dialog-form');
+    const openDialogs = await dialogs.count();
     await this.createItemButton.click();
-    await expect(this.page.locator('input[placeholder="Ability"]')).toBeVisible();
+    await expect(dialogs).toHaveCount(openDialogs + 1);
     await this.createItemNameField.fill(this.itemName);
     await this.createItemTypeField.selectOption(this.itemType)
     await this.createItemCreateField.click();
     // wait for the creation window to close
-    await expect(this.createItemCreateField).not.toBeVisible();
+    await expect(dialogs).toHaveCount(openDialogs);
   }
 
   async closeSheet() {
@@ -222,12 +319,8 @@ export class Items {
   async remove() {
     // ensure we are on the correct tab
     await this.goToTab();
-    await this.page.locator('#items').getByRole('heading', { name: this.itemName }).click({button: 'right'});
-    await expect(this.page.getByText('Delete')).toBeEnabled();
-    await this.page.getByText('Delete').click();
-    await expect(this.page.getByRole('button', { name: 'Yes' })).toBeEnabled();
-    await this.page.getByRole('button', { name: 'Yes' }).click();
-    await expect(this.page.getByRole('button', { name: 'Yes' })).not.toBeVisible();
+    const entries = this.page.locator('#items .entry-name').filter({ hasText: exactName(this.itemName) });
+    await deleteDirectoryEntry(this.page, entries);
   }
 
   async switchTab(tabName: string) {
@@ -259,10 +352,32 @@ export class Items {
     }
 
     if (['defence', 'soak', 'encumbrance', 'hardpoints', 'rarity'].includes(statName)) {
-      await this.sheetLocator.locator(`input[name="data.${statName}.value"]`).fill(statValue);
+      await this.setField(this.sheetLocator.locator(`input[name="data.${statName}.value"]`), statValue);
     } else if (['Wounds', 'Strain', 'Brawn', 'Agility', 'Intellect', 'Cunning', 'Willpower', 'Presence'].includes(statName)) {
-      await this.sheetLocator.locator(`input[name="data.attributes.${statName}.value"]`).fill(statValue);
+      await this.setField(this.sheetLocator.locator(`input[name="data.attributes.${statName}.value"]`), statValue);
     }
+  }
+
+  /**
+   * Fill a field on an ApplicationV1 sheet and make sure the value survives.
+   * Under v13 the re-render from a previous edit can land on top of the next
+   * one and revert it, which silently loses whichever value was written last,
+   * so re-apply until it sticks.
+   */
+  private async setField(field: Locator, value: string) {
+    await expect(async () => {
+      // Clear explicitly rather than relying on fill() to replace the contents: Foundry can end up
+      // with the old and the new value concatenated, so the field has to be empty before the value
+      // goes in. Selecting and deleting also makes a retry converge instead of compounding.
+      await field.click();
+      await field.press('ControlOrMeta+a');
+      await field.press('Delete');
+      await field.fill(value);
+      await field.blur();
+      // give any in-flight re-render a chance to clobber the value before we trust it
+      await this.page.waitForTimeout(300);
+      await expect(field).toHaveValue(value, { timeout: 2_000 });
+    }).toPass({ timeout: 20_000 });
   }
 
   async checkStat(statName: string, statValue: string) {
@@ -280,6 +395,7 @@ export class Items {
   }
 
   async addDirectModifier(modifierType: string, modifier: string, modifierValue: string) {
+    const modifierElement = '.tab.attributes.active > .attributes-header > .attribute-control';
     // this function fails if there's >1 mod on the same item, so be aware of this
     if (this.itemType === "forcepower") {
       await expect(this.sheetLocator.locator('.talent-action.hover').locator('.fa-cog')).toBeEnabled();
@@ -289,15 +405,15 @@ export class Items {
       await popoutPage.locator('.fas.fa-plus').click();
       await popoutPage.locator('.modtype').selectOption(modifierType);
       await popoutPage.locator('.mod').selectOption(modifier);
-      await popoutPage.locator('.modvalue').fill(modifierValue);
+      await this.setField(popoutPage.locator('.modvalue'), modifierValue);
       await popoutPage.locator('.close').click();
       await expect(popoutPage).not.toBeVisible();
     } else {
-      await expect(this.sheetLocator.locator('.fas.fa-plus')).toBeEnabled();
-      await this.sheetLocator.locator('.fas.fa-plus').click();
+      await expect(this.sheetLocator.locator(modifierElement)).toBeEnabled();
+      await this.sheetLocator.locator(modifierElement).click();
       await this.sheetLocator.locator('.modtype').selectOption(modifierType);
       await this.sheetLocator.locator('.mod').selectOption(modifier);
-      await this.sheetLocator.locator('.modvalue').fill(modifierValue);
+      await this.setField(this.sheetLocator.locator('.modvalue'), modifierValue);
     }
   }
 
@@ -310,7 +426,7 @@ export class Items {
     await popoutPage.locator('.fas.fa-plus').click();
     await popoutPage.locator('.modtype').selectOption(modifierType);
     await popoutPage.locator('.mod').selectOption(modifier);
-    await popoutPage.locator('.modvalue').fill(modifierValue);
+    await this.setField(popoutPage.locator('.modvalue'), modifierValue);
 
     await new Promise(resolve => setTimeout(resolve, 505));
     await popoutPage.locator('.close').click();
@@ -328,7 +444,7 @@ export class Items {
 
   async setRank(rank: string) {
     await this.switchTab('configuration');
-    await this.sheetLocator.locator('input[name="data.rank"]').fill(rank);
+    await this.setField(this.sheetLocator.locator('input[name="data.rank"]'), rank);
     await this.switchTab('modifiers');
   }
 

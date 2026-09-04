@@ -21,5 +21,8 @@
     "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^3.0.0",
     "sass": "^1.49.0"
+  },
+  "dependencies": {
+    "playwright": "^1.62.1"
   }
 }

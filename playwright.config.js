@@ -1,13 +1,27 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
+ * Read environment variables from a local .env file, which is not checked in.
+ * Copy .env.example to .env and point FOUNDRY_URL at your own Foundry server.
+ *
+ * Parsed here rather than via dotenv so that a fresh clone needs no extra install step.
  */
-// import dotenv from 'dotenv';
-// import path from 'path';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
+const envPath = path.resolve(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+    const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
+    // a real environment variable wins over the file, so one-off runs can override it
+    if (match && !(match[1] in process.env)) {
+      process.env[match[1]] = match[2].replace(/^(['"])(.*)\1$/, '$2');
+    }
+  }
+}
+
+/* Base URL of the Foundry server under test - scheme, host and port, with no trailing path. */
+const baseURL = process.env.FOUNDRY_URL ?? 'http://localhost:30000';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -27,6 +41,8 @@ export default defineConfig({
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
+    /* Tests navigate with paths only ('/game/'), which resolve against this. */
+    baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     storageState: 'state.json',
     trace: 'on-first-retry',
