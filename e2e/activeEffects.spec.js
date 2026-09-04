@@ -3,9 +3,12 @@ import { test, expect } from '@playwright/test';
 import {Actors, Items} from "../playwright/fixtures";
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('http://overlord.wrycu.com:12121/game/');
-  await expect(page.getByText('Loading')).toBeVisible();
-  await expect(page.getByText('Loading')).not.toBeVisible();
+  await page.goto('/game/');
+  // v13 shows scene loading as a transient progress notification rather than a persistent "Loading"
+  // bar, so wait for the UI to actually be up instead of watching that text come and go. The destiny
+  // tracker is rendered by the system on ready, so it also proves the system finished booting.
+  await expect(page.locator('#sidebar')).toBeVisible();
+  await expect(page.locator('#destinyDark')).toBeVisible({ timeout: 30_000 });
 });
 
 // TODO: most of these tests should be extended to confirm that they still work if they're done while the item is on an actor
@@ -45,6 +48,13 @@ test('armor applies correctly', async ({ page }) => {
   await armorActor.checkStat('defense.ranged', '1');
   await armorActor.checkStat('defense.melee', '1');
   await armorActor.checkStat('soak', '2');
+
+  // unequip and validate stats are reduced
+  await armorActor.equipItem(armorName);
+  await armorActor.checkStat('encumbranceCurrent', '5');
+  await armorActor.checkStat('defense.ranged', '0');
+  await armorActor.checkStat('defense.melee', '0');
+  await armorActor.checkStat('soak', '0');
 
   // clean up
   await armorActor.remove();
@@ -293,7 +303,7 @@ test('weapon applies correctly', async ({ page }) => {
 test('embedded armor applies correctly', async ({ page }) => {
   const actorName = "qa embeddedArmorActor";
   const baseItemName = "qa armorItem";
-  const attachmentName = "qa embeddedAttachment";
+  const attachmentName = "qa embeddedArmorAttachment";
   const modName = "qa embeddedMod";
   const embeddedActor = new Actors(page, actorName, "character");
   await embeddedActor.create();
@@ -311,7 +321,7 @@ test('embedded armor applies correctly', async ({ page }) => {
   await embeddedActor.checkStat('soak', '0');
   await page.getByRole('listitem').filter({ hasText: baseItemName }).dragTo(page.locator('.tab.items.active'));
   // TODO: this should probably be 0, because the AE should not apply until equipped
-  await embeddedActor.checkStat('soak', '1');
+  await embeddedActor.checkStat('soak', '0');
 
   // okay, add the mod
   const weaponMod = new Items(page, modName, "itemmodifier");
@@ -324,7 +334,7 @@ test('embedded armor applies correctly', async ({ page }) => {
   await armor.closeSheet();
   await embeddedActor.checkStat('defense.melee', '1');
   await embeddedActor.checkStat('defence.ranged', '0');
-  await embeddedActor.checkStat('soak', '1');
+  await embeddedActor.checkStat('soak', '0');
 
   // okay, now add the mod to the attachment
   await embeddedActor.editItem(baseItemName);
@@ -358,7 +368,7 @@ test('embedded armor applies correctly', async ({ page }) => {
 test('embedded weapons applies correctly', async ({ page }) => {
   const actorName = "qa embeddedWeaponActor";
   const baseItemName = "qa embeddedWeaponItem";
-  const attachmentName = "qa embeddedAttachment";
+  const attachmentName = "qa embeddedWeaponAttachment";
   const modName = "qa embeddedMod";
   const embeddedActor = new Actors(page, actorName, "character");
   await embeddedActor.create();

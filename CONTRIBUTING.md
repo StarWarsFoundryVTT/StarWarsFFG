@@ -33,5 +33,7 @@ same branch and the PR will be updated.
 # E2E Tests
 
 Uses Playwright. Steps to run:
-1. `npm install playwright`
-2. `npx playwright test --trace on`
+1. Copy `.env.example` to `.env` and populate
+2. `npm install playwright`
+3. `npx playwright install --with-deps`
+4. `npx playwright test --trace on`
