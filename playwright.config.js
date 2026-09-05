@@ -43,8 +43,9 @@ if (!baseURL) {
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './tests/e2e',
-  globalSetup: require.resolve('./tests/playwright/setup.ts'),
+  testDir: './tests',
+  testMatch: '**/*.spec.js',
+  globalSetup: require.resolve('./tests/support/global-setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: false, // TODO: investigate if we can figure out a way to do this
   /* Fail the build on CI if you accidentally left test.only in the source code. */

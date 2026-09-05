@@ -1,6 +1,6 @@
 // @ts-check
 import { test, expect } from '@playwright/test';
-import {Actors, Items} from "../playwright/fixtures";
+import {Actors, Items} from "../support/pages/legacy-fixtures";
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/game/');
