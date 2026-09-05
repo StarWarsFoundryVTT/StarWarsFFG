@@ -1,5 +1,7 @@
 
 import {chromium, expect, type FullConfig} from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
 
 async function globalSetup(config: FullConfig) {
   // TODO: this should probably be done before each test instead of globally
@@ -28,6 +30,8 @@ async function globalSetup(config: FullConfig) {
   // ready" signal. Assert on the element rather than its text, which changes with the destiny pool.
   await expect(page.locator('#destinyDark')).toBeVisible({ timeout: 30_000 });
 
+  // storageState now lives in a gitignored directory that may not exist on a fresh clone
+  fs.mkdirSync(path.dirname(storageState as string), { recursive: true });
   await page.context().storageState({ path: storageState as string });
   await browser.close();
 }

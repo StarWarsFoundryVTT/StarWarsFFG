@@ -1,13 +1,9 @@
 .idea
 node_modules
-cypress/audio/
-cypress/videos/
-cypress/screenshots/
 
 # Playwright
 /test-results/
 /playwright-report/
 /blob-report/
-/playwright/.cache/
-state.json
+/tests/.auth/
 .env

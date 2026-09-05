@@ -10,7 +10,8 @@ import path from 'node:path';
  * Parsed here rather than via dotenv so that a fresh clone needs no extra install step.
  */
 const envPath = path.resolve(__dirname, '.env');
-if (fs.existsSync(envPath)) {
+const envFound = fs.existsSync(envPath);
+if (envFound) {
   for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
     const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
     // a real environment variable wins over the file, so one-off runs can override it
@@ -20,15 +21,30 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-/* Base URL of the Foundry server under test - scheme, host and port, with no trailing path. */
-const baseURL = process.env.FOUNDRY_URL ?? 'http://localhost:30000';
+/*
+ * Base URL of the Foundry server under test - scheme, host and port, with no trailing path.
+ *
+ * Deliberately has no default. A fallback such as http://localhost:30000 turns a misconfigured
+ * FOUNDRY_URL into a connection timeout thirty seconds into globalSetup, which reads as a broken
+ * test rather than a broken config. Failing here instead names the cause immediately.
+ */
+const baseURL = process.env.FOUNDRY_URL;
+if (!baseURL) {
+  throw new Error(
+    'FOUNDRY_URL is not set.\n' +
+    `  .env path : ${envPath} (${envFound ? 'found' : 'MISSING'})\n` +
+    `  __dirname : ${__dirname}\n` +
+    `  cwd       : ${process.cwd()}\n` +
+    '  Copy .env.example to .env and set FOUNDRY_URL to your Foundry server.'
+  );
+}
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './e2e',
-  globalSetup: require.resolve('./playwright/setup.ts'),
+  testDir: './tests/e2e',
+  globalSetup: require.resolve('./tests/playwright/setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: false, // TODO: investigate if we can figure out a way to do this
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -43,8 +59,12 @@ export default defineConfig({
   use: {
     /* Tests navigate with paths only ('/game/'), which resolve against this. */
     baseURL,
+    /*
+     * Saved auth state, written by globalSetup. Resolved against this config rather than the
+     * working directory so that `npx playwright test` behaves the same from any subdirectory.
+     */
+    storageState: path.resolve(__dirname, 'tests/.auth/state.json'),
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    storageState: 'state.json',
     trace: 'on-first-retry',
   },
 
