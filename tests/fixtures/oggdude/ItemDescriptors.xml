@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trimmed from a full OggDude export by trim.py. Do not hand-edit. -->
+<ItemDescriptors>
+  <ItemDescriptor>
+    <Key>ACCURATE</Key>
+    <Name>Accurate Quality</Name>
+    <Description />
+    <Sources>
+      <Source>Edge of the Empire Core Rulebook</Source>
+      <Source>Age of Rebellion Core Rulebook</Source>
+      <Source>Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <Type>Weapon</Type>
+    <ModDesc>Accurate {0}</ModDesc>
+    <QualDesc>Accurate {0}</QualDesc>
+    <IsQuality>true</IsQuality>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>CORTOSIS</Key>
+    <Name>Cortosis Quality</Name>
+    <Description />
+    <ModDesc>Cortosis</ModDesc>
+    <QualDesc>Cortosis</QualDesc>
+    <IsBoolean>true</IsBoolean>
+    <IsQuality>true</IsQuality>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>CUMBERSOME</Key>
+    <Name>Cumbersome Quality</Name>
+    <Description />
+    <Type>Weapon</Type>
+    <ModDesc>Cumbersome {0}</ModDesc>
+    <QualDesc>Cumbersome {0}</QualDesc>
+    <IsQuality>true</IsQuality>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>DAMADD</Key>
+    <Name>Additional Damage Mod</Name>
+    <Description />
+    <Type>Weapon</Type>
+    <ModDesc>Damage +1</ModDesc>
+    <QualDesc>Damage +{0}</QualDesc>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>DEFADD</Key>
+    <Name>Increase Defense Mod</Name>
+    <Description>
+      Increases Defense value by 1
+    </Description>
+    <Type>Armor</Type>
+    <ModDesc>Increases Defense value by 1</ModDesc>
+    <QualDesc>Increases Defense value by {0}</QualDesc>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>DEFSET</Key>
+    <Name>Set Defense Mod</Name>
+    <Description>
+      Set Defense value
+    </Description>
+    <Type>Armor</Type>
+    <ModDesc>Set Defense value</ModDesc>
+    <QualDesc>Set Defense value to {0}</QualDesc>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>ENCSUB</Key>
+    <Name>Decreases Encumbrance Mod</Name>
+    <Description />
+    <ModDesc>Decrease Encumbrance by 1</ModDesc>
+    <QualDesc>Decrease Encumbrance by {0}</QualDesc>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>PIERCE</Key>
+    <Name>Pierce Quality</Name>
+    <Description />
+    <Type>Weapon</Type>
+    <ModDesc>Pierce {0}</ModDesc>
+    <QualDesc>Pierce {0}</QualDesc>
+    <IsQuality>true</IsQuality>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>RANGEADD</Key>
+    <Name>Additional Range Mod</Name>
+    <Description />
+    <Type>Weapon</Type>
+    <ModDesc>Increases weapon's range by one Range Band</ModDesc>
+    <QualDesc>Increases weapon's range by {0} Range Band(s)</QualDesc>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>SOAKADD</Key>
+    <Name>Increase Soak Mod</Name>
+    <Description>
+      Increases Soak value by 1
+    </Description>
+    <Type>Armor</Type>
+    <ModDesc>Increases Soak value by 1</ModDesc>
+    <QualDesc>Increases Soak value by {0}</QualDesc>
+  </ItemDescriptor>
+  <ItemDescriptor>
+    <Key>SOAKSET</Key>
+    <Name>Set Soak Mod</Name>
+    <Description>
+      Set Soak value
+    </Description>
+    <Type>Armor</Type>
+    <ModDesc>Set Soak value</ModDesc>
+    <QualDesc>Set Soak value {0}</QualDesc>
+  </ItemDescriptor>
+</ItemDescriptors>

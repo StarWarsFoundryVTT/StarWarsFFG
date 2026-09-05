@@ -54,6 +54,34 @@ const ITEM_PATH: Record<string, string> = {
 export class Consumers {
   constructor(private readonly page: Page) {}
 
+  /**
+   * Compare a world-created item against its imported twin.
+   *
+   * Returns only unexpected differences
+   */
+  async compareOrigins(
+    created: Ctx,
+    imported: Ctx,
+    { includeExpected = false } = {},
+  ): Promise<string[]> {
+    if (!created.item || !imported.item) throw new Error('Both contexts need an item.');
+
+    const [a, b] = await Promise.all([
+      api.flatten(this.page, created.item),
+      api.flatten(this.page, imported.item),
+    ]);
+
+    const diffs: string[] = [];
+    for (const path of [...new Set([...Object.keys(a), ...Object.keys(b)])].sort()) {
+      if (JSON.stringify(a[path]) === JSON.stringify(b[path])) continue;
+      const why = expectedDifference(path);
+      if (why && !includeExpected) continue;
+      const tag = why ? ` [expected: ${why}]` : '';
+      diffs.push(`${path}: created=${JSON.stringify(a[path])} imported=${JSON.stringify(b[path])}${tag}`);
+    }
+    return diffs;
+  }
+
   /** Read every consumer for one modifier key. Missing readers return null, not zero. */
   async read(ctx: Ctx, key: string): Promise<Reading> {
     return {
@@ -127,6 +155,30 @@ export class Consumers {
       }
     }, { itemUuid: ctx.item, needle });
   }
+}
+
+/**
+ * Paths that legitimately differ between a world-created item and its imported twin.
+ */
+const EXPECTED_DIFFERENCES: { pattern: RegExp; why: string }[] = [
+  // Foundry document identity. Different documents, so of course these differ.
+  { pattern: /^(_id|name|sort|folder|_stats|ownership|effects)(\.|$)/, why: 'document identity' },
+
+  // `prepareBaseObject` stamps ffgimportid; Foundry stamps core.sourceId on compendium import.
+  { pattern: /^flags\./, why: 'import provenance' },
+
+  // Importers set an image per type, or pull one out of the dataset zip.
+  { pattern: /^img$/, why: 'importer sets a type-specific image' },
+
+  // `cleanDescription` rewrites the dataset's [H3]/[B] markup and appends the BaseMods summary.
+  { pattern: /^system\.(description|renderedDesc)$/, why: 'description is rebuilt from XML' },
+
+  // Tags come from the entry's <Categories> and <Type>; sources come from <Sources>.
+  { pattern: /^system\.metadata\./, why: 'metadata is derived from the dataset' },
+];
+
+function expectedDifference(path: string): string | null {
+  return EXPECTED_DIFFERENCES.find((e) => e.pattern.test(path))?.why ?? null;
 }
 
 /**

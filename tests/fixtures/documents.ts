@@ -4,6 +4,10 @@
 
 export interface ItemFixture {
   type: string;
+  /** OggDude key, for finding the imported twin of this item. */
+  importId: string;
+  /** Compendium the importer files it under - see SEED_PACKS. */
+  pack: string;
   /** Baselines a test can assert against without re-deriving them. */
   baseline: Record<string, number | string>;
   system: Record<string, unknown>;
@@ -26,53 +30,65 @@ const gearBase = (what: string, tags: string[]) => ({
 });
 
 export const ITEMS: Record<string, ItemFixture> = {
+  /** Mirrors ARMROBE (Armored Robes) */
   armour: {
     type: 'armour',
-    baseline: { soak: 1, defence: 3, encumbrance: 4, hardpoints: 2 },
+    importId: 'ARMROBE',
+    pack: 'oggdude.Armor',
+    baseline: { soak: 2, defence: 1, encumbrance: 5, hardpoints: 2 },
     system: {
       ...gearBase('armour', ['armor']),
-      soak: { value: 1, adjusted: 1 },
-      defence: { value: 3, adjusted: 3 },
-      encumbrance: { value: 4, adjusted: 4 },
+      soak: { value: 2, adjusted: 2 },
+      defence: { value: 1, adjusted: 1 },
+      encumbrance: { value: 5, adjusted: 5 },
       hardpoints: { value: 2, adjusted: 2 },
-      price: { value: 500, adjusted: 500 },
-      rarity: { value: 4, isrestricted: false },
+      price: { value: 4500, adjusted: 4500 },
+      rarity: { value: 8, isrestricted: true },
     },
   },
 
+  /** Mirrors BLASTPIS (Blaster Pistol). */
   weapon: {
     type: 'weapon',
-    baseline: { damage: 5, crit: 2, encumbrance: 6, hardpoints: 4, range: 'Medium' },
+    importId: 'BLASTPIS',
+    pack: 'oggdude.Weapons',
+    baseline: { damage: 6, crit: 3, encumbrance: 1, hardpoints: 3, range: 'Medium' },
     system: {
       ...gearBase('weapon', ['weapon']),
       // must name a skill the actor actually has, or rollItem throws on
       // actor.system.skills[itemData.skill.value]
       skill: { value: 'Ranged: Light' },
-      damage: { value: 5, adjusted: 5 },
-      crit: { value: 2, adjusted: 2 },
+      damage: { value: 6, adjusted: 6 },
+      crit: { value: 3, adjusted: 3 },
       range: { value: 'Medium', adjusted: 'Medium' },
-      encumbrance: { value: 6, adjusted: 6 },
-      hardpoints: { value: 4, adjusted: 4 },
-      price: { value: 700, adjusted: 700 },
-      rarity: { value: 5, isrestricted: false },
+      encumbrance: { value: 1, adjusted: 1 },
+      hardpoints: { value: 3, adjusted: 3 },
+      price: { value: 400, adjusted: 400 },
+      rarity: { value: 4, isrestricted: false },
       special: { value: '' },
       ammo: { value: 10, max: 10 },
     },
   },
 
+  /** Mirrors MEDPAC. Non-zero encumbrance, so it shows up in the actor's carried total. */
   gear: {
     type: 'gear',
-    baseline: { encumbrance: 7 },
+    importId: 'MEDPAC',
+    pack: 'oggdude.Gear',
+    baseline: { encumbrance: 2 },
     system: {
       ...gearBase('gear', ['gear']),
-      encumbrance: { value: 7, adjusted: 7 },
-      price: { value: 100, adjusted: 100 },
+      encumbrance: { value: 2, adjusted: 2 },
+      price: { value: 400, adjusted: 400 },
       rarity: { value: 2, isrestricted: false },
     },
   },
 
+  /** No imported twin - the trimmed dataset has no vehicle weapons yet. */
   shipweapon: {
     type: 'shipweapon',
+    importId: '',
+    pack: '',
     baseline: { damage: 6, crit: 4, hardpoints: 3 },
     system: {
       ...gearBase('ship weapon', ['weapon']),

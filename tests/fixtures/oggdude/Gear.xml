@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trimmed from a full OggDude export by trim.py. Do not hand-edit. -->
+<Gears>
+  <Gear>
+    <Key>STIMPACK</Key>
+    <Name>Stimpack</Name>
+    <Description>
+      [H3]Stimpack[h3]
+      Please see page 177 of the Edge of the Empire Core Rulebook, page 193 of the Age of Rebellion Core Rulebook, or page 186 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="177">Edge of the Empire Core Rulebook</Source>
+      <Source Page="193">Age of Rebellion Core Rulebook</Source>
+      <Source Page="186">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <Price>25</Price>
+    <Encumbrance>0</Encumbrance>
+    <Rarity>1</Rarity>
+    <Type>Medical</Type>
+    <BaseMods>
+      <Mod>
+        <MiscDesc>Heals 5 wounds.</MiscDesc>
+        <Count>1</Count>
+      </Mod>
+    </BaseMods>
+  </Gear>
+  <Gear>
+    <Key>MEDPAC</Key>
+    <Name>Medpac</Name>
+    <Description>
+      [H3]Medpac[h3]
+      Please see page 177 of the Edge of the Empire Core Rulebook, or page 192 of the Age of Rebellion Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="177">Edge of the Empire Core Rulebook</Source>
+      <Source Page="192">Age of Rebellion Core Rulebook</Source>
+    </Sources>
+    <Short>
+    </Short>
+    <Price>400</Price>
+    <Encumbrance>2</Encumbrance>
+    <Rarity>2</Rarity>
+    <Type>Medical</Type>
+    <BaseMods>
+      <Mod>
+        <MiscDesc>Grants [BOOST] to all Medicine skill checks</MiscDesc>
+        <Count>1</Count>
+        <DieModifiers>
+          <DieModifier>
+            <SkillKey>MED</SkillKey>
+            <BoostCount>1</BoostCount>
+          </DieModifier>
+        </DieModifiers>
+      </Mod>
+    </BaseMods>
+  </Gear>
+</Gears>

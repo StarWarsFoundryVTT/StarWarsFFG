@@ -167,17 +167,24 @@ export class World {
       }
 
       case 'import': {
-        // Seeded content, not created here. Resolving it is deliberately left to the seed world so
-        // that importer runtime never lands inside a test.
-        throw new Error(
-          "origin 'import' must resolve against the seeded world; " +
-          'look the fixture up by name in tests/fixtures/world-seed rather than building it.',
-        );
+        if (!fixture.importId) {
+          throw new Error(`Fixture "${key}" has no imported twin; use a different origin.`);
+        }
+        const imported = await api.findImported(this.page, fixture.pack, fixture.importId);
+        if (!imported) {
+          throw new Error(
+            `${fixture.importId} is not in ${fixture.pack}. Is the world seeded? ` +
+            'globalSetup seeds it unless SKIP_SEED is set.',
+          );
+        }
+        return api.embedItem(this.page, actor, imported);
       }
 
       case 'sidebar':
       default: {
         const world = this.track(await api.createItem(this.page, spec));
+        // wait for inherent effects to be created
+        await api.waitForInherentEffect(this.page, world);
         return api.embedItem(this.page, actor, world);
       }
     }
@@ -206,6 +213,16 @@ export class World {
     await this.page.reload();
     await this.page.waitForFunction(() => game?.ready === true, undefined, { timeout: 60_000 });
     await this.assertReady();
+  }
+
+  /**
+   * The same fixture built both ways (in Foundry and imported), for comparing them.
+   */
+  async buildBothWays(spec: BuildSpec): Promise<{ created: Ctx; imported: Ctx }> {
+    return {
+      created: await this.build({ ...spec, origin: 'sidebar', label: `${spec.label ?? 'qa'}-made` }),
+      imported: await this.build({ ...spec, origin: 'import', label: `${spec.label ?? 'qa'}-imported` }),
+    };
   }
 
   /** Remove everything this test created. Safe to call twice. */

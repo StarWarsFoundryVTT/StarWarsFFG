@@ -69,6 +69,28 @@ export async function createItemOnActor(page: Page, actorUuid: Uuid, spec: DocSp
 }
 
 /**
+ * Wait for an item's inherent Active Effect to exist.
+ *
+ * `ItemFFG._onCreate` creates it, and Foundry does not await `_onCreate` - so `Item.create`
+ * resolves before the effect lands. Copying the item in between gets a document without it,
+ * which then silently contributes nothing.
+ *
+ * Only items with no parent get one: `_onCreateAEs` is gated on `!options.parent`, so an item
+ * created directly on an actor never has one.
+ */
+export async function waitForInherentEffect(page: Page, uuid: Uuid, timeout = 5000): Promise<boolean> {
+  return page.evaluate(async ({ uuid, timeout }) => {
+    const deadline = Date.now() + timeout;
+    for (;;) {
+      const doc = await fromUuid(uuid);
+      if (doc?.effects?.find((e: any) => e.name === '(inherent)')) return true;
+      if (Date.now() > deadline) return false;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }, { uuid, timeout });
+}
+
+/**
  * Copy an existing Item onto an Actor, as a drag-and-drop would.
  * Uses the document API, so it skips the sheet's `_onDropItemCreate`.
  */
@@ -102,6 +124,21 @@ export async function ensurePack(page: Page, name: string, documentName: 'Item' 
     }
     return pack.collection;
   }, { name, documentName });
+}
+
+/**
+ * Find an imported document by its OggDude key.
+ * `getCompendiumPack` lowercases the name and strips dots, so "oggdude.Armor" is
+ * "world.oggdudearmor".
+ */
+export async function findImported(page: Page, packName: string, importId: string): Promise<Uuid | null> {
+  return page.evaluate(async ({ packName, importId }) => {
+    const pack = game.packs.get(`world.${packName.replaceAll('.', '').toLowerCase()}`);
+    if (!pack) return null;
+    const docs = await pack.getDocuments();
+    const found = docs.find((d: any) => d.flags?.starwarsffg?.ffgimportid === importId);
+    return found?.uuid ?? null;
+  }, { packName, importId });
 }
 
 /** Put a document into a compendium pack and return its Compendium UUID. */
@@ -175,6 +212,35 @@ export async function read(page: Page, uuid: Uuid, path: string): Promise<unknow
     if (!doc) throw new Error(`No document at ${uuid}`);
     return foundry.utils.getProperty(doc, path) ?? null;
   }, { uuid, path });
+}
+
+/**
+ * A document flattened to dotted paths, for diffing two of them.
+ *
+ * Reads transformed values, not source. `toObject()` defaults to source, where the importer's
+ * items have `adjusted: 0` on soak, defence, hardpoints and price - it only writes `adjusted`
+ * for encumbrance, and the rest fall back to the schema default. Those are recomputed in
+ * prepareData anyway, so comparing source reports four differences that don't exist at runtime,
+ * while comparing transformed values actually checks that derivation works for both origins.
+ *
+ * Arrays are compared whole rather than per index, since reordering isn't worth reporting
+ * element by element.
+ */
+export async function flatten(page: Page, uuid: Uuid): Promise<Record<string, unknown>> {
+  return page.evaluate(async (uuid) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new Error(`No document at ${uuid}`);
+    const out: Record<string, unknown> = {};
+    const walk = (value: any, prefix: string) => {
+      if (value === null || typeof value !== 'object' || Array.isArray(value)) {
+        out[prefix] = value;
+        return;
+      }
+      for (const [k, v] of Object.entries(value)) walk(v, prefix ? `${prefix}.${k}` : k);
+    };
+    walk(doc.toObject(false), '');
+    return out;
+  }, uuid);
 }
 
 /** Apply an update to any document. */

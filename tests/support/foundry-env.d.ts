@@ -18,6 +18,10 @@ declare global {
   /** e.g. CONST.USER_ROLES */
   const CONST: any;
 
+  /** Loaded by the system as a plain script - see system.json "scripts". */
+  const JSZip: any;
+  const JXON: any;
+
   const Actor: any;
   const Item: any;
   const ChatMessage: any;

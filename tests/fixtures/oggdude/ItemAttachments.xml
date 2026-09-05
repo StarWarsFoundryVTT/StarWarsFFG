@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trimmed from a full OggDude export by trim.py. Do not hand-edit. -->
+<ItemAttachments>
+  <ItemAttachment>
+    <Key>ARMINS</Key>
+    <Name>Armor Insert</Name>
+    <Description>
+      [H4]Armor Insert[h4]
+      Please see page 57 of the Cyphers and Masks Sourcebook for details.
+    </Description>
+    <Source Page="57">Cyphers and Masks</Source>
+    <Type>Armor</Type>
+    <Price>450</Price>
+    <Rarity>3</Rarity>
+    <CategoryLimit>
+      <Category>Light</Category>
+    </CategoryLimit>
+    <BaseMods>
+      <Mod>
+        <Key>SOAKSET</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Key>DEFSET</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Count>1</Count>
+        <MiscDesc>Armor inserts can be noticed by making an [B]Average ([DI][DI]) Perception check[b].</MiscDesc>
+      </Mod>
+    </BaseMods>
+    <AddedMods>
+      <Mod>
+        <Key>SOAKADD</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Key>DEFADD</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Count>1</Count>
+        <MiscDesc>Perception check difficulty increased to [B]Hard ([DI][DI][DI])[b].</MiscDesc>
+      </Mod>
+    </AddedMods>
+    <MaxSoak>1</MaxSoak>
+    <ForceMinDefense>true</ForceMinDefense>
+    <ForceMaxDefense>true</ForceMaxDefense>
+  </ItemAttachment>
+  <ItemAttachment>
+    <Key>SES</Key>
+    <Name>Strength Enhancing System</Name>
+    <Description>
+      [H3]Strength Enhancing System[h3]
+      Please see page 194 of the Edge of the Empire Core Rulebook, or page 206 of the Age of Rebellion Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="194">Edge of the Empire Core Rulebook</Source>
+      <Source Page="206">Age of Rebellion Core Rulebook</Source>
+    </Sources>
+    <Type>Armor</Type>
+    <ItemLimit>
+    </ItemLimit>
+    <CategoryLimit>
+      <Category>Hard Full Body</Category>
+    </CategoryLimit>
+    <Price>5500</Price>
+    <Rarity>4</Rarity>
+    <HP>2</HP>
+    <BaseMods>
+      <Mod>
+        <Key>BR</Key>
+        <Count>1</Count>
+      </Mod>
+    </BaseMods>
+    <AddedMods>
+      <Mod>
+        <Key>ATHL</Key>
+        <Count>2</Count>
+      </Mod>
+      <Mod>
+        <Key>BRA</Key>
+        <Count>2</Count>
+      </Mod>
+    </AddedMods>
+  </ItemAttachment>
+  <ItemAttachment>
+    <Key>CW</Key>
+    <Name>Cortosis Weave</Name>
+    <Description>
+      [H3]Cortosis Weave[h3]
+      Please see page 194 of the Edge of the Empire Core Rulebook, or page 205 of the Age of Rebellion Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="194">Edge of the Empire Core Rulebook</Source>
+      <Source Page="205">Age of Rebellion Core Rulebook</Source>
+    </Sources>
+    <Type>Armor</Type>
+    <Price>10000</Price>
+    <Rarity>8</Rarity>
+    <HP>2</HP>
+    <ItemLimit>
+    </ItemLimit>
+    <BaseMods>
+      <Mod>
+        <Key>CORTOSIS</Key>
+      </Mod>
+    </BaseMods>
+  </ItemAttachment>
+  <ItemAttachment>
+    <Key>BALHILT</Key>
+    <Name>Balanced Hilt</Name>
+    <Description>
+      [H3]Balanced Hilt[h3]
+      Please see page 188 of the Edge of the Empire Core Rulebook, or page 200 of the Age of Rebellion Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="188">Edge of the Empire Core Rulebook</Source>
+      <Source Page="200">Age of Rebellion Core Rulebook</Source>
+    </Sources>
+    <Type>Weapon</Type>
+    <TypeLimit>
+      <Type>Melee</Type>
+    </TypeLimit>
+    <Price>1500</Price>
+    <Rarity>5</Rarity>
+    <HP>2</HP>
+    <BaseMods>
+      <Mod>
+        <Key>ACCURATE</Key>
+        <Count>1</Count>
+      </Mod>
+    </BaseMods>
+    <AddedMods>
+      <Mod>
+        <Key>ENCSUB</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Key>ACCURATE</Key>
+        <Count>1</Count>
+      </Mod>
+    </AddedMods>
+  </ItemAttachment>
+  <ItemAttachment>
+    <Key>AUGSPIN</Key>
+    <Name>Augmented Spin Barrel</Name>
+    <Description>
+      [H3]Augmented Spin Barrel[h3]
+      Please see page 188 of the Edge of the Empire Core Rulebook, or page 200 of the Age of Rebellion Core Rulebook, for details.
+    </Description>
+    <Type>Weapon</Type>
+    <Sources>
+      <Source Page="188">Edge of the Empire Core Rulebook</Source>
+      <Source Page="200">Age of Rebellion Core Rulebook</Source>
+    </Sources>
+    <CategoryLimit>
+      <Category>Blaster Rifle</Category>
+      <Category>Heavy Blaster Rifle</Category>
+    </CategoryLimit>
+    <Price>1750</Price>
+    <Rarity>4</Rarity>
+    <HP>2</HP>
+    <BaseMods>
+      <Mod>
+        <Key>DAMADD</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <MiscDesc>
+          Add [SETBACK] to all Mechanics checks when performing
+          maintenance on this weapon.
+        </MiscDesc>
+        <Count>1</Count>
+      </Mod>
+    </BaseMods>
+    <AddedMods>
+      <Mod>
+        <Key>DAMADD</Key>
+        <Count>2</Count>
+      </Mod>
+      <Mod>
+        <Key>ACCURATE</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Key>PIERCE</Key>
+        <Count>1</Count>
+      </Mod>
+    </AddedMods>
+  </ItemAttachment>
+  <ItemAttachment>
+    <Key>MB</Key>
+    <Name>Marksman Barrel</Name>
+    <Description>
+      [H3]Marksman Barrel[h3]
+      Please see page 190 of the Edge of the Empire Core Rulebook, or page 202 of the Age of Rebellion Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="190">Edge of the Empire Core Rulebook</Source>
+      <Source Page="202">Age of Rebellion Core Rulebook</Source>
+    </Sources>
+    <Type>Weapon</Type>
+    <CategoryLimit>
+      <Category>Blaster Rifle</Category>
+    </CategoryLimit>
+    <Price>1200</Price>
+    <Rarity>4</Rarity>
+    <HP>2</HP>
+    <BaseMods>
+      <Mod>
+        <Key>RANGEADD</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Key>CUMBERSOME</Key>
+        <Count>2</Count>
+      </Mod>
+    </BaseMods>
+    <AddedMods>
+      <Mod>
+        <Key>SNIPSHOT</Key>
+        <Count>1</Count>
+      </Mod>
+      <Mod>
+        <Key>ACCURATE</Key>
+        <Count>2</Count>
+      </Mod>
+    </AddedMods>
+  </ItemAttachment>
+</ItemAttachments>

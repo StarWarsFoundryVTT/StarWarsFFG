@@ -26,6 +26,28 @@ export const expect = base.extend({
     };
   },
 
+  /**
+   * A world-created item and its imported twin carry the same values.
+   * Takes the diff list from `consumers.compareOrigins`.
+   */
+  toMatchAcrossOrigins(diffs: string[]) {
+    return {
+      pass: diffs.length === 0,
+      message: () =>
+        diffs.length === 0
+          ? 'Expected the two origins to differ, but they matched.'
+          : [
+              'A world-created item and its imported twin disagree:',
+              ...diffs.map((d) => `  ${d}`),
+              '',
+              'Either the importer is dropping a field, or tests/fixtures/documents.ts has',
+              'drifted from tests/fixtures/oggdude/. Check the importer first.',
+              'If a difference is legitimate, add it to EXPECTED_DIFFERENCES in consumers.ts',
+              'with a note on which importer behaviour causes it.',
+            ].join('\n'),
+    };
+  },
+
   /** Nothing moved between two readings. */
   toBeStable(readings: { before: Reading; after: Reading }) {
     const problems = divergence(readings.before, readings.after, 0);

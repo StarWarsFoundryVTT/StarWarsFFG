@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trimmed from a full OggDude export by trim.py. Do not hand-edit. -->
+<Weapons>
+  <Weapon>
+    <Key>BLASTPIS</Key>
+    <Name>Blaster Pistol</Name>
+    <Description>
+      [H3]Blaster Pistol[h3]
+      Please see page 161 of the Edge of the Empire Core Rulebook, page 174 of the Age of Rebellion Core Rulebook, or page 167 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="161">Edge of the Empire Core Rulebook</Source>
+      <Source Page="174">Age of Rebellion Core Rulebook</Source>
+      <Source Page="167">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <SkillKey>RANGLT</SkillKey>
+    <Damage>6</Damage>
+    <Crit>3</Crit>
+    <RangeValue>wrMedium</RangeValue>
+    <Encumbrance>1</Encumbrance>
+    <HP>3</HP>
+    <Price>400</Price>
+    <Rarity>4</Rarity>
+    <Type>Energy Weapon</Type>
+    <Categories>
+      <Category>Blaster Pistol</Category>
+      <Category>Blaster</Category>
+      <Category>Pistol</Category>
+      <Category>Ranged</Category>
+    </Categories>
+    <Qualities>
+      <Quality>
+        <Key>STUNSETTING</Key>
+      </Quality>
+    </Qualities>
+  </Weapon>
+  <Weapon>
+    <Key>BRASS</Key>
+    <Name>Brass Knuckles</Name>
+    <Description>
+      [H3]Brass Knuckles[h3]
+      Please see page 166 of the Edge of the Empire Core Rulebook, page 180 of the Age of Rebellion Core Rulebook, or page 171 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="166">Edge of the Empire Core Rulebook</Source>
+      <Source Page="180">Age of Rebellion Core Rulebook</Source>
+      <Source Page="171">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <SkillKey>BRAWL</SkillKey>
+    <Damage>0</Damage>
+    <DamageAdd>1</DamageAdd>
+    <Crit>4</Crit>
+    <RangeValue>wrEngaged</RangeValue>
+    <Encumbrance>1</Encumbrance>
+    <HP>0</HP>
+    <Price>25</Price>
+    <Rarity>0</Rarity>
+    <Type>Brawling</Type>
+    <Categories>
+      <Category>Bludgeoning Brawl</Category>
+    </Categories>
+    <Qualities>
+      <Quality>
+        <Key>DISORIENT</Key>
+        <Count>3</Count>
+      </Quality>
+      <Quality>
+        <Key>PIERCE</Key>
+        <Count>1</Count>
+      </Quality>
+    </Qualities>
+    <BaseMods>
+      <Mod>
+        <MiscDesc>Add [SETBACK] to Perception checks to find brass knuckles on a person's body.</MiscDesc>
+      </Mod>
+    </BaseMods>
+  </Weapon>
+  <Weapon>
+    <Key>MONCALSPBLASTSP</Key>
+    <Name>Mon Calamari Spear Blaster (Spear)</Name>
+    <Description>
+      [H3]Mon Calamari Spear Blaster[h3]
+      Please see page 106 of the Strongholds of Resistance Sourcebook for details.[P]
+      [I]For blaster profile, add the "Mon Calamari Spear Blaster (Blaster) weapon.[i]
+    </Description>
+    <Source Page="106">Strongholds of Resistance</Source>
+    <SkillKey>MELEE</SkillKey>
+    <DamageAdd>2</DamageAdd>
+    <Crit>3</Crit>
+    <RangeValue>wrEngaged</RangeValue>
+    <Encumbrance>5</Encumbrance>
+    <HP>4</HP>
+    <Price>1350</Price>
+    <Rarity>5</Rarity>
+    <Type>Energy Weapon</Type>
+    <Categories>
+      <Category>Cutting Edge Melee</Category>
+    </Categories>
+    <Qualities>
+      <Quality>
+        <Key>PIERCE</Key>
+        <Count>1</Count>
+      </Quality>
+    </Qualities>
+  </Weapon>
+</Weapons>

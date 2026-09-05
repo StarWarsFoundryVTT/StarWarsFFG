@@ -2,6 +2,7 @@
 import {chromium, expect, type FullConfig} from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
+import { isSeeded, seed } from './seed';
 
 async function globalSetup(config: FullConfig) {
   // TODO: this should probably be done before each test instead of globally
@@ -33,6 +34,18 @@ async function globalSetup(config: FullConfig) {
   // storageState now lives in a gitignored directory that may not exist on a fresh clone
   fs.mkdirSync(path.dirname(storageState as string), { recursive: true });
   await page.context().storageState({ path: storageState as string });
+
+  // Seed once per run, and only if the world doesn't already have the current fixtures. The
+  // `import` origin and everything in ui/import/ read from what this creates.
+  if (process.env.SKIP_SEED) {
+    console.log('[setup] SKIP_SEED set, leaving the world as-is');
+  } else if (await isSeeded(page)) {
+    console.log('[setup] world already seeded, skipping');
+  } else {
+    console.log('[setup] seeding the world with the trimmed OggDude dataset');
+    for (const line of await seed(page)) console.log(`[seed] ${line}`);
+  }
+
   await browser.close();
 }
 

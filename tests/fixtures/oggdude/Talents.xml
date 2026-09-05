@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trimmed from a full OggDude export by trim.py. Do not hand-edit. -->
+<Talents>
+  <Talent>
+    <Key>GRIT</Key>
+    <Name>Grit</Name>
+    <Description>Each rank of Grit increases a character's strain threshold by one.</Description>
+    <Sources>
+      <Source Page="136">Edge of the Empire Core Rulebook</Source>
+      <Source Page="148">Age of Rebellion Core Rulebook</Source>
+      <Source Page="144">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <Ranked>true</Ranked>
+    <ActivationValue>taPassive</ActivationValue>
+    <Attributes>
+      <StrainThreshold>1</StrainThreshold>
+    </Attributes>
+  </Talent>
+  <Talent>
+    <Key>TOUGH</Key>
+    <Name>Toughened</Name>
+    <Description>The character increases [their] wound threshold by two per rank of Toughened.</Description>
+    <Sources>
+      <Source Page="145">Edge of the Empire Core Rulebook</Source>
+      <Source Page="158">Age of Rebellion Core Rulebook</Source>
+      <Source Page="153">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <Ranked>true</Ranked>
+    <ActivationValue>taPassive</ActivationValue>
+    <Attributes>
+      <WoundThreshold>2</WoundThreshold>
+    </Attributes>
+  </Talent>
+  <Talent>
+    <Key>DODGE</Key>
+    <Name>Dodge</Name>
+    <Description>When targeted by a combat check (ranged or melee) the character may choose to immediately perform a Dodge incidental to suffer a number of strain, then upgrade the difficulty of the combat check by that number. The number of strain suffered cannot exceed [their] ranks in Dodge.</Description>
+    <Sources>
+      <Source Page="135">Edge of the Empire Core Rulebook</Source>
+      <Source Page="146">Age of Rebellion Core Rulebook</Source>
+      <Source Page="142">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <Ranked>true</Ranked>
+    <ActivationValue>taIncidentalOOT</ActivationValue>
+  </Talent>
+  <Talent>
+    <Key>FORCERAT</Key>
+    <Name>Force Rating</Name>
+    <Description>Force Talent. Each rank permanently increases the character's Force Rating by one.</Description>
+    <Sources>
+      <Source Page="135">Edge of the Empire Core Rulebook</Source>
+      <Source Page="147">Age of Rebellion Core Rulebook</Source>
+      <Source Page="143">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <Ranked>true</Ranked>
+    <ActivationValue>taPassive</ActivationValue>
+    <Attributes>
+      <ForceRating>1</ForceRating>
+    </Attributes>
+    <ForceTalent>true</ForceTalent>
+  </Talent>
+</Talents>
