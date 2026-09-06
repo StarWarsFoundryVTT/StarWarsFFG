@@ -58,6 +58,9 @@ export async function seed(page: Page, { skillsFile = 'Skills.xml' } = {}): Prom
   return page.evaluate(async ({ files, version }) => {
     const log: string[] = [];
 
+    // The importers use CONFIG.temporary as a scratch space
+    CONFIG.temporary = {};
+
     const zip = new JSZip();
     for (const f of files) zip.file(`Data/${f.name}`, f.xml);
 
@@ -80,6 +83,7 @@ export async function seed(page: Page, { skillsFile = 'Skills.xml' } = {}): Prom
     }
 
     await game.settings.storage.get('world')?.setItem?.('qa.seedVersion', String(version));
+    CONFIG.temporary = {};
     return log;
   }, { files, version: SEED_VERSION });
 }

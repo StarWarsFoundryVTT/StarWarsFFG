@@ -13,6 +13,10 @@ export interface DocSpec {
   type: string;
   name: string;
   system?: Record<string, unknown>;
+  /** Render the sheet as part of creation, which is what the sidebar dialog does */
+  renderSheet?: boolean;
+  /** Pin the document to a registered sheet at creation, so renderSheet opens that one. */
+  sheetClass?: string;
 }
 
 /* -------------------------------------------- */
@@ -41,7 +45,11 @@ export async function status(page: Page) {
 /** Create a world-level Actor. Returns its UUID. */
 export async function createActor(page: Page, spec: DocSpec): Promise<Uuid> {
   return page.evaluate(async (s) => {
-    const actor = await Actor.create({ name: s.name, type: s.type, system: s.system ?? {} });
+    // `system` is omitted rather than passed as {} so the payload matches what the create dialog sends
+    const data: Record<string, unknown> = { name: s.name, type: s.type };
+    if (s.system && Object.keys(s.system).length) data.system = s.system;
+    if (s.sheetClass) data.flags = { core: { sheetClass: s.sheetClass } };
+    const actor = await Actor.create(data, { renderSheet: s.renderSheet ?? false });
     if (!actor) throw new Error(`Actor.create returned nothing for type "${s.type}"`);
     return actor.uuid;
   }, spec);
@@ -50,7 +58,10 @@ export async function createActor(page: Page, spec: DocSpec): Promise<Uuid> {
 /** Create a world-level (sidebar) Item. Returns its UUID. */
 export async function createItem(page: Page, spec: DocSpec): Promise<Uuid> {
   return page.evaluate(async (s) => {
-    const item = await Item.create({ name: s.name, type: s.type, system: s.system ?? {} });
+    const data: Record<string, unknown> = { name: s.name, type: s.type };
+    if (s.system && Object.keys(s.system).length) data.system = s.system;
+    if (s.sheetClass) data.flags = { core: { sheetClass: s.sheetClass } };
+    const item = await Item.create(data, { renderSheet: s.renderSheet ?? false });
     if (!item) throw new Error(`Item.create returned nothing for type "${s.type}"`);
     return item.uuid;
   }, spec);
@@ -69,25 +80,30 @@ export async function createItemOnActor(page: Page, actorUuid: Uuid, spec: DocSp
 }
 
 /**
+ * Some items never get an AE, so waiting for it would just burn the timeout.
+ */
+export const TYPES_WITH_INHERENT_EFFECT = [
+  'species', 'gear', 'weapon', 'armour', 'shipattachment', 'career', 'specialization',
+];
+
+/**
  * Wait for an item's inherent Active Effect to exist.
  *
- * `ItemFFG._onCreate` creates it, and Foundry does not await `_onCreate` - so `Item.create`
- * resolves before the effect lands. Copying the item in between gets a document without it,
- * which then silently contributes nothing.
- *
- * Only items with no parent get one: `_onCreateAEs` is gated on `!options.parent`, so an item
- * created directly on an actor never has one.
+ * Returns true for types that never get one, so callers can call it unconditionally.
+ * Only unparented items get one: `_onCreateAEs` is gated on `!options.parent`.
  */
 export async function waitForInherentEffect(page: Page, uuid: Uuid, timeout = 5000): Promise<boolean> {
-  return page.evaluate(async ({ uuid, timeout }) => {
+  return page.evaluate(async ({ uuid, timeout, types }) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new Error(`No document at ${uuid}`);
+    if (!types.includes(doc.type)) return true;
     const deadline = Date.now() + timeout;
     for (;;) {
-      const doc = await fromUuid(uuid);
-      if (doc?.effects?.find((e: any) => e.name === '(inherent)')) return true;
+      if (doc.effects?.find((e: any) => e.name === '(inherent)')) return true;
       if (Date.now() > deadline) return false;
       await new Promise((r) => setTimeout(r, 50));
     }
-  }, { uuid, timeout });
+  }, { uuid, timeout, types: TYPES_WITH_INHERENT_EFFECT });
 }
 
 /**
@@ -204,6 +220,52 @@ export async function pushNestedDeep(
 /* -------------------------------------------- */
 /*  Reading and mutation                        */
 /* -------------------------------------------- */
+
+/**
+ * Render a document's sheet and return the id of the window element.
+ */
+export async function openSheet(page: Page, uuid: Uuid): Promise<string> {
+  return page.evaluate(async (uuid) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new Error(`No document at ${uuid}`);
+    await doc.sheet.render(true);
+    // render(true) resolves before the element is in the DOM for AppV1
+    for (let i = 0; i < 200; i++) {
+      const el = doc.sheet.element?.[0] ?? doc.sheet.element;
+      if (el?.id && document.getElementById(el.id)) return el.id;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    throw new Error(`Sheet for ${uuid} never appeared in the DOM`);
+  }, uuid);
+}
+
+/** Close a document's sheet. */
+export async function closeSheet(page: Page, uuid: Uuid): Promise<void> {
+  await page.evaluate(async (uuid) => {
+    const doc = await fromUuid(uuid);
+    await doc?.sheet?.close();
+  }, uuid);
+}
+
+/**
+ * Pin a document to a specific registered sheet.
+ * Ids are `${scope}.${className}`, e.g. "ffg.ActorSheetFFGV2".
+ */
+export async function setSheetClass(page: Page, uuid: Uuid, sheetId: string): Promise<void> {
+  await page.evaluate(async ({ uuid, sheetId }) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new Error(`No document at ${uuid}`);
+    await doc.setFlag('core', 'sheetClass', sheetId);
+  }, { uuid, sheetId });
+}
+
+/** Sheet classes registered for a document type, so the matrix can assert it covers them all. */
+export async function registeredSheets(page: Page, documentName: 'Actor' | 'Item', type: string): Promise<string[]> {
+  return page.evaluate(({ documentName, type }) => {
+    const config = CONFIG[documentName].sheetClasses?.[type] ?? {};
+    return Object.keys(config);
+  }, { documentName, type });
+}
 
 /** Read a dotted property off any document. */
 export async function read(page: Page, uuid: Uuid, path: string): Promise<unknown> {

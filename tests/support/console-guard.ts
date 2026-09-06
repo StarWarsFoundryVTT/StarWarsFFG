@@ -1,4 +1,4 @@
-import type { Page, TestInfo } from '@playwright/test';
+import type { ConsoleMessage, Page, TestInfo } from '@playwright/test';
 
 /**
  * Fails any test whose page logged an error.
@@ -23,6 +23,8 @@ export interface ConsoleGuard {
   assertClean(): void;
   /** Allow an error the test expects. */
   allow(pattern: string | RegExp): void;
+  /** Stop listening. The page outlives the test, so listeners would otherwise pile up. */
+  detach(): void;
 }
 
 export function installConsoleGuard(page: Page, testInfo: TestInfo): ConsoleGuard {
@@ -32,23 +34,37 @@ export function installConsoleGuard(page: Page, testInfo: TestInfo): ConsoleGuar
   const permitted = (text: string) =>
     allowed.some((p) => (typeof p === 'string' ? text.includes(p) : p.test(text)));
 
-  page.on('console', (msg) => {
+  const onConsole = (msg: ConsoleMessage) => {
     if (msg.type() !== 'error') return;
     const text = msg.text();
     if (ignored(text) || permitted(text)) return;
     errors.push(`console.error: ${text}`);
-  });
+  };
+  page.on('console', onConsole);
 
   // uncaught exceptions don't arrive as console messages
-  page.on('pageerror', (err) => {
+  const onPageError = (err: Error) => {
     const text = `${err.name}: ${err.message}`;
     if (ignored(text) || permitted(text)) return;
-    errors.push(`pageerror: ${text}`);
-  });
+    // Keep the top frames. Without them a pageerror says what broke but not where, and finding
+    // that out means reading the system's source until something plausible turns up.
+    const frames = (err.stack ?? '')
+      .split('\n')
+      .filter((l) => /^\s*at /.test(l))
+      .slice(0, 6)
+      .map((l) => `      ${l.trim()}`)
+      .join('\n');
+    errors.push(`pageerror: ${text}${frames ? `\n${frames}` : ''}`);
+  };
+  page.on('pageerror', onPageError);
 
   return {
     get errors() { return errors; },
     allow(pattern) { allowed.push(pattern); },
+    detach() {
+      page.off('console', onConsole);
+      page.off('pageerror', onPageError);
+    },
     assertClean() {
       // don't pile on a test that already failed for its own reason
       if (testInfo.status !== testInfo.expectedStatus) return;
