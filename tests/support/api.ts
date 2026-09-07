@@ -172,52 +172,6 @@ export async function createInPack(page: Page, packId: string, spec: DocSpec): P
 }
 
 /* -------------------------------------------- */
-/*  Nested (synthetic) containment              */
-/* -------------------------------------------- */
-
-/**
- * Append an entry to one of the system's nested arrays.
- * Rewrites the whole array, which is what the system itself does.
- */
-export async function pushNested(
-  page: Page,
-  ownerUuid: Uuid,
-  path: 'system.itemattachment' | 'system.itemmodifier',
-  entry: Record<string, unknown>,
-): Promise<void> {
-  await page.evaluate(async ({ ownerUuid, path, entry }) => {
-    const owner = await fromUuid(ownerUuid);
-    if (!owner) throw new Error(`No document at ${ownerUuid}`);
-    const current = foundry.utils.getProperty(owner, path) ?? [];
-    await owner.update({ [path]: [...current, entry] });
-  }, { ownerUuid, path, entry });
-}
-
-/**
- * Append a modifier inside an attachment (D3).
- * Addressed by array index because these entries have no id.
- */
-export async function pushNestedDeep(
-  page: Page,
-  ownerUuid: Uuid,
-  outerPath: 'system.itemattachment',
-  outerIndex: number,
-  innerPath: 'system.itemmodifier',
-  entry: Record<string, unknown>,
-): Promise<void> {
-  await page.evaluate(async ({ ownerUuid, outerPath, outerIndex, innerPath, entry }) => {
-    const owner = await fromUuid(ownerUuid);
-    if (!owner) throw new Error(`No document at ${ownerUuid}`);
-    const outer = foundry.utils.deepClone(foundry.utils.getProperty(owner, outerPath) ?? []);
-    const target = outer[outerIndex];
-    if (!target) throw new Error(`No entry at ${outerPath}[${outerIndex}] of ${ownerUuid}`);
-    const inner = foundry.utils.getProperty(target, innerPath) ?? [];
-    foundry.utils.setProperty(target, innerPath, [...inner, entry]);
-    await owner.update({ [outerPath]: outer });
-  }, { ownerUuid, outerPath, outerIndex, innerPath, entry });
-}
-
-/* -------------------------------------------- */
 /*  Reading and mutation                        */
 /* -------------------------------------------- */
 
@@ -265,6 +219,109 @@ export async function registeredSheets(page: Page, documentName: 'Actor' | 'Item
     const config = CONFIG[documentName].sheetClasses?.[type] ?? {};
     return Object.keys(config);
   }, { documentName, type });
+}
+
+/**
+ * Build Active Effects from item's modifiers.
+ */
+export async function rebuildActiveEffects(page: Page, uuid: Uuid): Promise<void> {
+  await page.evaluate(async (uuid) => {
+    const item = await fromUuid(uuid);
+    if (!item) throw new Error(`No item at ${uuid}`);
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const ModifierHelpers = (await load('helpers/modifiers.js')).default;
+    // The sheet submits every field, not just the modifier rows - applyActiveEffectOnUpdate
+    // reaches for `formData.data.hardpoints.value` on ship attachments, for instance.
+    await ModifierHelpers.applyActiveEffectOnUpdate(item, {
+      data: foundry.utils.deepClone(item.system ?? {}),
+    });
+  }, uuid);
+}
+
+/**
+ * Find an item embedded on an actor by name, waiting for it to appear.
+ */
+export async function findEmbeddedByName(
+  page: Page, actorUuid: Uuid, name: string, timeout = 5000,
+): Promise<Uuid | null> {
+  return page.evaluate(async ({ actorUuid, name, timeout }) => {
+    const deadline = Date.now() + timeout;
+    for (;;) {
+      const actor = await fromUuid(actorUuid);
+      const found = actor?.items?.find((i: any) => i.name === name)?.uuid;
+      if (found) return found;
+      if (Date.now() > deadline) return null;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }, { actorUuid, name, timeout });
+}
+
+/**
+ * Check modifier names against the system's own option lists.
+ */
+export async function assertModifiersValid(
+  page: Page, mods: { modtype: string; mod: string }[],
+): Promise<void> {
+  const problems = await page.evaluate((mods) => {
+    // swffg-config.js exposes the option lists as FFG.allowableModifierChoices
+    const map = CONFIG.FFG?.allowableModifierChoices;
+    // Fail open. This is a lint, not an assertion
+    if (!map || !Object.keys(map).length) return [];
+    const out: string[] = [];
+    for (const { modtype, mod } of mods) {
+      const options = map[modtype];
+      if (!options) {
+        out.push(`unknown modtype "${modtype}"; known: ${Object.keys(map).sort().join(', ')}`);
+        continue;
+      }
+      const values = Object.values(options).map((o: any) => o.value);
+      if (values.includes(mod)) continue;
+      // a label was probably used where a value is needed
+      const byLabel = Object.values(options).find(
+        (o: any) => game.i18n.localize(o.label) === mod,
+      ) as any;
+      out.push(byLabel
+        ? `"${mod}" is the label for "${modtype}"; the value is "${byLabel.value}"`
+        : `"${mod}" is not valid for "${modtype}"; valid: ${values.sort().join(', ')}`);
+    }
+    return out;
+  }, mods);
+
+  if (problems.length) {
+    throw new Error(`Invalid modifier(s):\n  ${problems.join('\n  ')}`);
+  }
+}
+
+/**
+ * Drop one item onto another, through the sheet's own drop handler.
+ */
+export async function dropOntoItem(page: Page, parentUuid: Uuid, droppedUuid: Uuid): Promise<void> {
+  const problem = await page.evaluate(async ({ parentUuid, droppedUuid }) => {
+    const parent = await fromUuid(parentUuid);
+    if (!parent) return `No item at ${parentUuid}`;
+    const before = (parent.system?.itemattachment?.length ?? 0) + (parent.system?.itemmodifier?.length ?? 0);
+
+    await parent.sheet._onDropItem({
+      currentTarget: null,
+      dataTransfer: { getData: () => JSON.stringify({ type: 'Item', uuid: droppedUuid }) },
+    });
+
+    const after = await fromUuid(parentUuid);
+    const now = (after.system?.itemattachment?.length ?? 0) + (after.system?.itemmodifier?.length ?? 0);
+    // The handler declines silently - wrong item type for this parent, or not enough hardpoints.
+    return now > before ? null : 'the sheet declined the drop (type mismatch or no free hardpoints?)';
+  }, { parentUuid, droppedUuid });
+
+  if (problem) throw new Error(`Dropping ${droppedUuid} onto ${parentUuid} failed: ${problem}`);
+}
+
+/** A document's full source object, including its Active Effects. */
+export async function toObject(page: Page, uuid: Uuid): Promise<Record<string, unknown>> {
+  return page.evaluate(async (uuid) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new Error(`No document at ${uuid}`);
+    return doc.toObject();
+  }, uuid);
 }
 
 /** Read a dotted property off any document. */

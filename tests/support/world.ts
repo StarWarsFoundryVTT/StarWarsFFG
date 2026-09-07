@@ -1,9 +1,10 @@
 import type { Page } from '@playwright/test';
 import * as api from './api';
 import type { Uuid } from './api';
-import { ITEMS, ACTORS, attachmentFixture, modifierFixture, type ModifierSpec } from '../fixtures/documents';
+import { ITEMS, ACTORS, attributeMap, talentMap,
+         type ModifierSpec, type AttributeSpec, type TalentSpec } from '../fixtures/documents';
 
-export type { ModifierSpec };
+export type { ModifierSpec, AttributeSpec, TalentSpec };
 
 /**
  * Builds nested content, repeats actions, reloads, and cleans up.
@@ -30,6 +31,12 @@ export interface BuildSpec {
   equipped?: boolean;
   /** Name prefix, for readability in traces. A unique suffix is always appended. */
   label?: string;
+  /** Modifiers on the item itself, as the sheet's modifier rows write them. */
+  attributes?: AttributeSpec[];
+  /** Modifiers on the attachment itself, rather than nested inside it. */
+  attachmentAttributes?: AttributeSpec[];
+  /** Talents in a specialization, or upgrades in a force power / signature ability. */
+  talents?: TalentSpec[];
   /** Per-test tweaks merged over the item fixture's system data. */
   itemOverrides?: Record<string, unknown>;
   /** Per-test tweaks merged over the actor fixture's system data. */
@@ -39,10 +46,32 @@ export interface BuildSpec {
 export interface Ctx {
   actor: Uuid;
   item?: Uuid;
+  /** Names are kept because the drag path has to find the documents in the UI by name. */
+  actorName: string;
+  itemName?: string;
   /** Index of the attachment within `item.system.itemattachment`, since it has no id. */
   attachmentIndex?: number;
   spec: BuildSpec;
   depth: Depth;
+}
+
+/**
+ * Merge overrides into fixture data without losing sibling keys.
+ */
+function deepMerge(
+  base: Record<string, unknown>, overrides: Record<string, unknown>,
+): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...base };
+  for (const [k, v] of Object.entries(overrides)) {
+    const existing = out[k];
+    const bothPlainObjects =
+      v && typeof v === 'object' && !Array.isArray(v) &&
+      existing && typeof existing === 'object' && !Array.isArray(existing);
+    out[k] = bothPlainObjects
+      ? deepMerge(existing as Record<string, unknown>, v as Record<string, unknown>)
+      : v;
+  }
+  return out;
 }
 
 /** Unique per build, so a failed test can't collide with the next one. */
@@ -50,7 +79,7 @@ let seq = 0;
 const unique = (base: string) => `${base}-${process.pid.toString(36)}-${(seq++).toString(36)}`;
 
 export class World {
-  constructor(private readonly page: Page) {}
+  constructor(readonly page: Page) {}
 
   /** Documents to remove after the test, newest first. */
   private readonly created: Uuid[] = [];
@@ -100,70 +129,102 @@ export class World {
         'a document with every characteristic at zero cannot tell a working modifier from a broken one.',
       );
     }
+    const actorName = unique(`${label}-actor`);
     const actor = this.track(
       await api.createActor(this.page, {
         type: actorFixture.type,
-        name: unique(`${label}-actor`),
-        system: { ...actorFixture.system, ...(spec.actorOverrides ?? {}) },
+        name: actorName,
+        system: deepMerge(actorFixture.system, spec.actorOverrides ?? {}),
       }),
     );
 
-    const ctx: Ctx = { actor, spec, depth: 1 };
+    const ctx: Ctx = { actor, spec, depth: 1, actorName };
     if (!spec.item) return (this.last = ctx);
 
+    const fixture = ITEMS[spec.item];
+    if (!fixture) {
+      throw new Error(
+        `No item fixture "${spec.item}". Known: ${Object.keys(ITEMS).join(', ')}. ` +
+        'Add one to tests/fixtures/documents.ts rather than creating a bare item - ' +
+        "schema defaults are all zero, so nothing distinguishes the item's own contribution " +
+        'from the modifier under test.',
+      );
+    }
     const itemName = unique(`${label}-${spec.item}`);
-    ctx.item = await this.placeItem(actor, spec.item, itemName, origin, spec.itemOverrides);
+    ctx.itemName = itemName;
+    // Catch a bad modifier name here rather than as an unexplained zero three assertions later.
+    await api.assertModifiersValid(this.page, [
+      ...(spec.attributes ?? []),
+      ...(spec.attachmentAttributes ?? []),
+      ...(spec.talents ?? []).flatMap((t) => t.attributes),
+      ...(spec.modifier ? [{ modtype: spec.modifier.modtype ?? 'Stat', mod: spec.modifier.key }] : []),
+    ]);
+
+    const system: Record<string, unknown> = deepMerge(fixture.system, spec.itemOverrides ?? {});
+    if (spec.attributes?.length) system.attributes = attributeMap(spec.attributes);
+    if (spec.talents?.length) {
+      // force powers and signature abilities call the same structure "upgrades"
+      const field = ['forcepower', 'signatureability'].includes(fixture.type) ? 'upgrades' : 'talents';
+      system[field] = talentMap(spec.talents);
+    }
+
+    const source = await this.createSource(spec.item, itemName, origin, system);
+
+    let attachment: Uuid | undefined;
+    if (spec.attachment) {
+      attachment = await this.createNested(
+        'itemattachment', unique(`${label}-${spec.attachment}`), spec.attachmentAttributes);
+    }
+
+    if (spec.modifier) {
+      const m = spec.modifier;
+      const modifier = await this.createNested('itemmodifier', m.name,
+        [{ modtype: m.modtype ?? 'Stat', mod: m.key, value: m.value }]);
+      await api.dropOntoItem(this.page, attachment ?? source, modifier);
+      await api.deleteDoc(this.page, modifier);
+      ctx.depth = attachment ? 3 : 2;
+    }
+
+    if (attachment) {
+      await api.dropOntoItem(this.page, source, attachment);
+      await api.deleteDoc(this.page, attachment);
+      ctx.attachmentIndex = 0;
+      if (ctx.depth < 2) ctx.depth = 2;
+    }
+
+    // the inherent effect arrives asynchronously; the submit path builds the rest
+    await api.waitForInherentEffect(this.page, source);
+    await api.rebuildActiveEffects(this.page, source);
+
+    ctx.item = await this.placeOnActor(actor, source, {
+      itemName,
+      actorName,
+      actorType: actorFixture.type,
+      itemType: fixture.type,
+      origin,
+    });
 
     if (spec.equipped ?? true) {
       await api.setEquipped(this.page, ctx.item, true);
     }
 
-    if (spec.attachment) {
-      await api.pushNested(this.page, ctx.item, 'system.itemattachment',
-        attachmentFixture(unique(`${label}-${spec.attachment}`)));
-      ctx.attachmentIndex = 0;
-      ctx.depth = 2;
-    }
-
-    if (spec.modifier) {
-      if (ctx.attachmentIndex === undefined) {
-        // modifier directly on the item
-        await api.pushNested(this.page, ctx.item, 'system.itemmodifier', modifierFixture(spec.modifier));
-        ctx.depth = 2;
-      } else {
-        // modifier inside the attachment - the deepest level anything traverses
-        await api.pushNestedDeep(this.page, ctx.item, 'system.itemattachment', ctx.attachmentIndex,
-          'system.itemmodifier', modifierFixture(spec.modifier));
-        ctx.depth = 3;
-      }
-    }
-
     return (this.last = ctx);
   }
 
-  /** Create the item by the requested route and return its UUID on the actor. */
-  private async placeItem(actor: Uuid, key: string, name: string, origin: Origin,
-                          overrides?: Record<string, unknown>): Promise<Uuid> {
+  /**
+   * Create the item wherever this origin says it comes from, without putting it on the actor yet.
+   * Each branch is a genuinely different code path in the system, not a stylistic choice.
+   */
+  private async createSource(key: string, name: string, origin: Origin,
+                             system: Record<string, unknown>): Promise<Uuid> {
     const fixture = ITEMS[key];
-    if (!fixture) {
-      throw new Error(
-        `No item fixture "${key}". Known: ${Object.keys(ITEMS).join(', ')}. ` +
-        'Add one to tests/fixtures/documents.ts rather than creating a bare item - ' +
-        'schema defaults are all zero, so nothing distinguishes the item\'s own contribution ' +
-        'from the modifier under test.',
-      );
-    }
-    const spec = { type: fixture.type, name, system: { ...fixture.system, ...(overrides ?? {}) } };
+    const spec = { type: fixture.type, name, system };
 
     switch (origin) {
-      case 'in-sheet':
-        return api.createItemOnActor(this.page, actor, spec);
-
       case 'compendium': {
         const pack = await api.ensurePack(this.page, 'qa-fixtures');
         if (!this.packs.includes(pack)) this.packs.push(pack);
-        const inPack = await api.createInPack(this.page, pack, spec);
-        return api.embedItem(this.page, actor, inPack);
+        return api.createInPack(this.page, pack, spec);
       }
 
       case 'import': {
@@ -177,32 +238,76 @@ export class World {
             'globalSetup seeds it unless SKIP_SEED is set.',
           );
         }
-        return api.embedItem(this.page, actor, imported);
+        return imported;
       }
 
+      case 'in-sheet':
       case 'sidebar':
-      default: {
-        const world = this.track(await api.createItem(this.page, spec));
-        // wait for inherent effects to be created
-        await api.waitForInherentEffect(this.page, world);
-        return api.embedItem(this.page, actor, world);
-      }
+      default:
+        return this.track(await api.createItem(this.page, spec));
     }
   }
 
-  /** Repeat the last build's innermost placement against the same target. */
+  /**
+   * Create nested content as a real world document, so the system builds its Active Effects.
+   */
+  private async createNested(
+    type: string, name: string, attributes: AttributeSpec[] | undefined,
+  ): Promise<Uuid> {
+    const fixture = ITEMS[type];
+    const system: Record<string, unknown> = { ...(fixture?.system ?? {}) };
+    if (attributes?.length) system.attributes = attributeMap(attributes);
+
+    const uuid = this.track(await api.createItem(this.page, { type, name, system }));
+    await api.waitForInherentEffect(this.page, uuid);
+    await api.rebuildActiveEffects(this.page, uuid);
+    return uuid;
+  }
+
+  /** Put the prepared item onto the actor. */
+  private async placeOnActor(actor: Uuid, source: Uuid,
+    { itemName, actorName, actorType, itemType, origin }:
+    { itemName: string; actorName: string; actorType: string; itemType: string;
+      origin: Origin }): Promise<Uuid> {
+    if (origin === 'in-sheet') {
+      // Created straight onto the actor, which is a different path again: _onCreateAEs is gated
+      // on !options.parent, so an item made this way never gets an inherent effect at all.
+      const data = await api.read(this.page, source, 'system');
+      await api.deleteDoc(this.page, source);
+      return api.createItemOnActor(this.page, actor, {
+        type: itemType, name: itemName, system: data as Record<string, unknown>,
+      });
+    }
+
+    return api.embedItem(this.page, actor, source);
+  }
+
+  /** Equip or unequip the built item. */
+  async equip(ctx: Ctx, equipped: boolean): Promise<void> {
+    if (!ctx.item) throw new Error('Nothing to equip - the build had no item.');
+    await api.setEquipped(this.page, ctx.item, equipped);
+  }
+
+  /**
+   * Repeat the last build's innermost placement against the same target.
+   *
+   * Goes through the drop handler like the original placement did, so a second application is
+   * the same operation the system saw the first time.
+   */
   async applyAgain(ctx: Ctx = this.last!): Promise<void> {
     if (!ctx?.item) throw new Error('applyAgain() needs a build that reached at least an item.');
-    const { modifier, attachment, label = 'qa' } = ctx.spec;
+    const { modifier, attachment, attachmentAttributes, label = 'qa' } = ctx.spec;
 
-    if (modifier && ctx.attachmentIndex !== undefined) {
-      await api.pushNestedDeep(this.page, ctx.item, 'system.itemattachment', ctx.attachmentIndex,
-        'system.itemmodifier', modifierFixture(modifier));
-    } else if (modifier) {
-      await api.pushNested(this.page, ctx.item, 'system.itemmodifier', modifierFixture(modifier));
+    if (modifier) {
+      const again = await this.createNested('itemmodifier', modifier.name,
+        [{ modtype: modifier.modtype ?? 'Stat', mod: modifier.key, value: modifier.value }]);
+      await api.dropOntoItem(this.page, ctx.item, again);
+      await api.deleteDoc(this.page, again);
     } else if (attachment) {
-      await api.pushNested(this.page, ctx.item, 'system.itemattachment',
-        attachmentFixture(unique(`${label}-${attachment}`)));
+      const again = await this.createNested(
+        'itemattachment', unique(`${label}-${attachment}`), attachmentAttributes);
+      await api.dropOntoItem(this.page, ctx.item, again);
+      await api.deleteDoc(this.page, again);
     } else {
       throw new Error('Nothing to re-apply: the build had neither an attachment nor a modifier.');
     }

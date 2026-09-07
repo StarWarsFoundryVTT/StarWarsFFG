@@ -29,6 +29,12 @@ const gearBase = (what: string, tags: string[]) => ({
   metadata: { tags, sources: ['QA'] },
 });
 
+/**
+ * The eight career-skill slots a career or specialization carries.
+ */
+const emptyCareerSkills = () =>
+  Object.fromEntries(Array.from({ length: 8 }, (_, i) => [`careerSkill${i}`, '(none)']));
+
 export const ITEMS: Record<string, ItemFixture> = {
   /** Mirrors ARMROBE (Armored Robes) */
   armour: {
@@ -84,6 +90,106 @@ export const ITEMS: Record<string, ItemFixture> = {
     },
   },
 
+  /**
+   * Types below carry only the `core` template
+   */
+  career: {
+    type: 'career', importId: '', pack: '',
+    baseline: {},
+    system: { description: describe('career'), attributes: {}, metadata: { tags: ['career'], sources: ['QA'] },
+              specializations: {}, signatureabilities: {}, careerSkills: emptyCareerSkills() },
+  },
+
+  talent: {
+    type: 'talent', importId: 'GRIT', pack: 'oggdude.Talents',
+    baseline: { tier: 1 },
+    system: { description: describe('talent'), attributes: {}, metadata: { tags: ['talent'], sources: ['QA'] },
+              activation: { value: 'Passive' }, ranks: { ranked: false, current: 1 },
+              isForceTalent: false, isConflictTalent: false, tier: 1, trees: '', longDesc: '' },
+  },
+
+  criticalinjury: {
+    type: 'criticalinjury', importId: '', pack: '',
+    baseline: { severity: 1 },
+    system: { description: describe('critical injury'), attributes: {},
+              metadata: { tags: ['criticalinjury'], sources: ['QA'] },
+              min: 1, max: 20, severity: 1 },
+  },
+
+  criticaldamage: {
+    type: 'criticaldamage', importId: '', pack: '',
+    baseline: { severity: 1 },
+    system: { description: describe('critical damage'), attributes: {},
+              metadata: { tags: ['criticaldamage'], sources: ['QA'] },
+              min: 1, max: 20, severity: 1 },
+  },
+
+  species: {
+    type: 'species', importId: '', pack: '',
+    baseline: { startingXP: 100 },
+    system: { description: describe('species'), attributes: {},
+              metadata: { tags: ['species'], sources: ['QA'] },
+              talents: {}, abilities: {}, species: {}, startingXP: 100 },
+  },
+
+  specialization: {
+    type: 'specialization', importId: '', pack: '',
+    baseline: {},
+    system: { description: describe('specialization'), attributes: {},
+              metadata: { tags: ['specialization'], sources: ['QA'] },
+              talents: {}, careerSkills: emptyCareerSkills(), universal: false },
+  },
+
+  /** Mirrors ARMINS (Armor Insert) - the attachment used for depth tests. */
+  itemattachment: {
+    type: 'itemattachment', importId: 'ARMINS', pack: 'oggdude.ArmorAttachments',
+    baseline: { hardpoints: 1 },
+    system: {
+      ...gearBase('attachment', ['attachment']),
+      hardpoints: { value: 1, adjusted: 1 },
+      price: { value: 450, adjusted: 450 },
+      rarity: { value: 3, isrestricted: false },
+      type: 'all',
+    },
+  },
+
+  itemmodifier: {
+    type: 'itemmodifier', importId: '', pack: '',
+    baseline: { rank: 1 },
+    system: { description: describe('modifier'), attributes: {},
+              metadata: { tags: ['modifier'], sources: ['QA'] },
+              active: true, rank: 1, rank_current: 1, itemmodifier: [], adjusteditemmodifer: [] },
+  },
+
+  shipattachment: {
+    type: 'shipattachment', importId: '', pack: '',
+    baseline: { encumbrance: 5, hardpoints: 3 },
+    system: {
+      ...gearBase('ship attachment', ['attachment']),
+      hardpoints: { value: 3, adjusted: 3 },
+      encumbrance: { value: 5, adjusted: 5 },
+      price: { value: 800, adjusted: 800 },
+      rarity: { value: 4, isrestricted: false },
+      label: 'QA Ship Attachment',
+    },
+  },
+
+  forcepower: {
+    type: 'forcepower', importId: '', pack: '',
+    baseline: { base_cost: 10 },
+    system: { description: describe('force power'), attributes: {},
+              metadata: { tags: ['forcepower'], sources: ['QA'] },
+              upgrades: {}, required_force_rating: 1, base_cost: 10 },
+  },
+
+  signatureability: {
+    type: 'signatureability', importId: '', pack: '',
+    baseline: { base_cost: 25 },
+    system: { description: describe('signature ability'), attributes: {},
+              metadata: { tags: ['signatureability'], sources: ['QA'] },
+              upgrades: {}, base_cost: 25, uplink_nodes: {} },
+  },
+
   /** No imported twin - the trimmed dataset has no vehicle weapons yet. */
   shipweapon: {
     type: 'shipweapon',
@@ -126,6 +232,56 @@ export function attachmentFixture(name: string) {
       metadata: { tags: ['attachment'], sources: ['QA'] },
     },
   };
+}
+
+/**
+ * A modifier written straight onto an item's own `system.attributes`, which is what the sheet's
+ * modifier rows produce.
+ */
+export interface AttributeSpec {
+  /** "Stat", "Characteristic", "Skill Add Advantage", "Vehicle Stat", "Skill Boost", … */
+  modtype: string;
+  /** What it modifies: "Soak", "Strain", "Gunnery", "Armor", "Brawn", … */
+  mod: string;
+  value: number | string;
+  /** Storage key. Defaults to attr1, attr2, … Pass the mod name for intrinsic species values. */
+  key?: string;
+}
+
+/** Turn a list of attribute specs into the numerically-keyed map the system expects. */
+export function attributeMap(attrs: AttributeSpec[]): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  attrs.forEach((a, i) => {
+    out[a.key ?? `attr${i + 1}`] = { modtype: a.modtype, mod: a.mod, value: a.value };
+  });
+  return out;
+}
+
+/**
+ * A learned talent inside a specialization, or an upgrade inside a force power or signature
+ * ability
+ */
+export interface TalentSpec {
+  name: string;
+  attributes: AttributeSpec[];
+  /** Defaults to true; set false to check that an unpurchased talent stays inert. */
+  islearned?: boolean;
+  isRanked?: boolean;
+}
+
+/** Build the numerically-keyed talents/upgrades map a specialization or force power holds. */
+export function talentMap(talents: TalentSpec[]): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  talents.forEach((t, i) => {
+    out[String(i)] = {
+      name: t.name,
+      description: describe(`talent ${t.name}`),
+      islearned: t.islearned ?? true,
+      isRanked: t.isRanked ?? false,
+      attributes: attributeMap(t.attributes),
+    };
+  });
+  return out;
 }
 
 export interface ModifierSpec {

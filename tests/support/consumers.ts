@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 import * as api from './api';
 import type { Ctx } from './world';
+import { sheetStat } from './pages/actor-sheet';
 
 /**
  * Reads the four places a modifier is supposed to show up.
@@ -30,6 +31,7 @@ export interface PoolSummary {
  * `ModifierHelpers.getModKeyPath`, so the probe doesn't depend on the code it's testing.
  */
 const ACTOR_PATH: Record<string, string> = {
+  // character stats
   'Soak': 'system.stats.soak.value',
   'Defence-Ranged': 'system.stats.defence.ranged',
   'Defence-Melee': 'system.stats.defence.melee',
@@ -38,6 +40,39 @@ const ACTOR_PATH: Record<string, string> = {
   'Wounds': 'system.stats.wounds.max',
   'Strain': 'system.stats.strain.max',
   'ForcePool': 'system.stats.forcePool.max',
+  // characteristics
+  'Brawn': 'system.characteristics.Brawn.value',
+  'Agility': 'system.characteristics.Agility.value',
+  'Intellect': 'system.characteristics.Intellect.value',
+  'Cunning': 'system.characteristics.Cunning.value',
+  'Willpower': 'system.characteristics.Willpower.value',
+  'Presence': 'system.characteristics.Presence.value',
+  // vehicles
+  'Armor': 'system.stats.armour.value',
+  'Armour': 'system.stats.armour.value',
+  'Speed': 'system.stats.speed.max',
+  'Handling': 'system.stats.handling.value',
+  'Hulltrauma': 'system.stats.hullTrauma.max',
+  'Systemstrain': 'system.stats.systemStrain.max',
+  'CustomizationHardPoints': 'system.stats.customizationHardPoints.value',
+  'VehicleEncumbrance': 'system.stats.encumbrance.value',
+};
+
+/**
+ * Where a skill modifier lands.
+ */
+const SKILL_MOD_PATH: Record<string, string> = {
+  'Advantage': 'advantage',
+  'Success': 'success',
+  'Threat': 'threat',
+  'Failure': 'failure',
+  'Triumph': 'triumph',
+  'Despair': 'despair',
+  'Boost': 'boost',
+  'Setback': 'setback',
+  'Remove Setback': 'remsetback',
+  'Upgrade': 'upgrades',
+  'Rank': 'rank',
 };
 
 const ITEM_PATH: Record<string, string> = {
@@ -90,6 +125,29 @@ export class Consumers {
       poolDice: await this.poolDice(ctx),
       chatCard: await this.chatCard(ctx, key),
     };
+  }
+
+  /** A skill's rank, or one of the dice modifiers stacked onto it. */
+  async skillModifier(ctx: Ctx, skill: string, kind: string): Promise<number | null> {
+    const field = SKILL_MOD_PATH[kind];
+    if (!field) throw new Error(`Unknown skill modifier "${kind}". Known: ${Object.keys(SKILL_MOD_PATH).join(', ')}.`);
+    const raw = await api.read(this.page, ctx.actor, `system.skills.${skill}.${field}`);
+    return raw === null ? null : Number(raw);
+  }
+
+  /**
+   * An actor stat as the sheet shows it.
+   *
+   * Reads the rendered sheet rather than actor data
+   */
+  async stat(ctx: Ctx, key: string): Promise<number | null> {
+    await api.openSheet(this.page, ctx.actor);
+    return sheetStat(this.page, ctx.actorName, key);
+  }
+
+  /** The same stat as stored on the document, for comparing against what the sheet shows. */
+  async storedStat(ctx: Ctx, key: string): Promise<number | null> {
+    return this.actorStat(ctx, key);
   }
 
   /** The recursive path, via `helpers/modifiers.js`. */

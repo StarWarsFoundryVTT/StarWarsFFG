@@ -22,13 +22,20 @@ async function globalSetup(config: FullConfig) {
   // globalSetup drives its own browser, so it does not get the config's baseURL applied
   // automatically the way tests do - build the absolute URL from it here.
   await page.goto(new URL('/join', baseURL).href);
-  // v13 renders the join screen as an ApplicationV2 into #join-game-form. The user <select> holds
-  // user IDs as option values, so the user has to be picked by its visible label.
-  await page.locator('#join-game-form select[name="userid"]').selectOption({ label: 'Gamemaster' });
-  await page.locator('#join-game-form button[name="join"]').click();
+
+  // An already-authenticated session is sent straight to /game and never sees the join form
+  if (new URL(page.url()).pathname.startsWith('/join')) {
+    // v13 renders the join screen as an ApplicationV2 into #join-game-form. The user <select>
+    // holds user IDs as option values, so the user has to be picked by its visible label.
+    await page.locator('#join-game-form select[name="userid"]').selectOption({ label: 'Gamemaster' });
+    await page.locator('#join-game-form button[name="join"]').click();
+  } else {
+    console.log('[setup] already joined, skipping the join form');
+  }
+
   await expect(page.getByRole('textbox', { name: 'Chat' })).toBeVisible();
-  // the destiny tracker only exists once the system itself has booted, so it doubles as a "world is
-  // ready" signal. Assert on the element rather than its text, which changes with the destiny pool.
+  // the destiny tracker only exists once the system itself has booted, so it doubles as a "world
+  // is ready" signal. Assert on the element rather than its text, which changes with the pool.
   await expect(page.locator('#destinyDark')).toBeVisible({ timeout: 30_000 });
 
   // storageState now lives in a gitignored directory that may not exist on a fresh clone
