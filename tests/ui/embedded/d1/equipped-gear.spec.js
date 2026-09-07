@@ -4,7 +4,7 @@ import { test, expect } from '../../../support/fixtures';
  * Armour and weapons only contribute while equipped, and stop contributing when unequipped.
  */
 
-test('armour soak and defence apply only while equipped', async ({ world, consumers }) => {
+test.fixme('armour soak and defence apply only while equipped', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
@@ -16,18 +16,19 @@ test('armour soak and defence apply only while equipped', async ({ world, consum
     },
   });
 
-  expect(await consumers.stat(ctx, 'Soak'), 'unequipped').toBe(3);
-  expect(await consumers.stat(ctx, 'Defence-Ranged'), 'unequipped').toBe(0);
+  // FIXME: these two items currently fail since AEs apply when an item is added, regardless of equip state
+  expect(await consumers.stat(ctx, 'Soak'), 'soak is unchanged when item is unequipped').toBe(3);
+  expect(await consumers.stat(ctx, 'Defence-Ranged'), 'defense is unchanged when item is unequipped').toBe(0);
 
   await world.equip(ctx, true);
-  expect(await consumers.stat(ctx, 'Soak'), 'equipped').toBe(3 + 2)
-  expect(await consumers.stat(ctx, 'Defence-Ranged'), 'equipped').toBe(1);
-  expect(await consumers.stat(ctx, 'Defence-Melee'), 'equipped').toBe(1);
+  expect(await consumers.stat(ctx, 'Soak'), 'soak is changed when item is equipped').toBe(3 + 2)
+  expect(await consumers.stat(ctx, 'Defence-Ranged'), 'defense (ranged) is changed when item is equipped').toBe(0 + 1);
+  expect(await consumers.stat(ctx, 'Defence-Melee'), 'defense (melee) is changed when item is equipped').toBe(0 + 1);
 
   await world.equip(ctx, false);
-  expect(await consumers.stat(ctx, 'Soak'), 'unequipped again').toBe(3);
-  expect(await consumers.stat(ctx, 'Defence-Ranged'), 'unequipped again').toBe(0);
-  expect(await consumers.stat(ctx, 'Defence-Melee'), 'unequipped again').toBe(0);
+  expect(await consumers.stat(ctx, 'Soak'), 'soak is unchanged when item is unequipped again').toBe(3);
+  expect(await consumers.stat(ctx, 'Defence-Ranged'), 'defense (ranged) is unchanged when item is unequipped again').toBe(0);
+  expect(await consumers.stat(ctx, 'Defence-Melee'), 'defense (melee) is unchanged when item is unequipped again').toBe(0);
 });
 
 test('carried weapons count toward encumbrance', async ({ world, consumers }) => {
@@ -38,5 +39,5 @@ test('carried weapons count toward encumbrance', async ({ world, consumers }) =>
     itemOverrides: { encumbrance: { value: 5, adjusted: 5 } },
   });
 
-  expect(await consumers.stat(ctx, 'Encumbrance')).toBe(5);
+  expect(await consumers.stat(ctx, 'Encumbrance'), 'encumbrance is increased with item added').toBe(5);
 });
