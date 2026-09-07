@@ -374,6 +374,29 @@ export async function update(page: Page, uuid: Uuid, changes: Record<string, unk
 /** Toggle an embedded item's equipped flag. */
 export async function setEquipped(page: Page, itemUuid: Uuid, equipped: boolean): Promise<void> {
   await update(page, itemUuid, { 'system.equippable.equipped': equipped });
+
+  /*
+   * Wait for the effects to follow.
+   *
+   * `ItemFFG._onUpdate` suspends or restores the item's Active Effects when the equipped flag
+   * changes, and it is `async` - but Foundry does not await `_onUpdate`, any more than it awaits
+   * `_onCreate`. So `update()` resolves while `effect.update({disabled: …})` is still in flight,
+   * and anything reading straight afterwards sees the old state.
+   *
+   * Only effects the system would actually toggle are waited on: `(inherent)` on an unequipped
+   * item is left alone in some cases, so this waits for *any* change rather than insisting every
+   * effect matches.
+   */
+  await page.evaluate(async ({ itemUuid, equipped }) => {
+    const deadline = Date.now() + 5000;
+    for (;;) {
+      const item = await fromUuid(itemUuid);
+      const effects = item?.effects?.contents ?? [];
+      if (!effects.length || effects.every((e: any) => e.disabled === !equipped)) return;
+      if (Date.now() > deadline) return;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }, { itemUuid, equipped });
 }
 
 /** Delete a document. Ignores one that's already gone. */

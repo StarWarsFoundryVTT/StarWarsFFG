@@ -136,11 +136,22 @@ export class Consumers {
   }
 
   /**
-   * An actor stat as the sheet shows it.
+   * An actor stat, read from the document where it exists and from the sheet where it does not.
    *
-   * Reads the rendered sheet rather than actor data
+   * The document is preferred because it is never stale. A rendered sheet lags: Foundry re-renders
+   * asynchronously after an item's effects change, so a one-shot DOM read can catch the previous
+   * render and report a value that was correct a moment ago. Unequipping armour shows this
+   * clearly - the document reports 0 while the sheet still shows 1.
+   *
+   * The sheet remains the fallback because some values never reach the document at all. Talent-tree
+   * modifiers are computed by `getCalculatedValueFromItems` during render and stored nowhere, so
+   * for those the sheet is the only surface - and `actorStat` correctly returns null rather than 0,
+   * which is what makes the fallback safe.
    */
   async stat(ctx: Ctx, key: string): Promise<number | null> {
+    const stored = await this.actorStat(ctx, key);
+    if (stored !== null) return stored;
+
     await api.openSheet(this.page, ctx.actor);
     return sheetStat(this.page, ctx.actorName, key);
   }
@@ -189,30 +200,50 @@ export class Consumers {
   }
 
   /**
-   * Whether the modifier makes it into a rendered chat card.
-   * Creates, renders and deletes the message, so nothing leaks into the next test.
+   * Whether a named modifier appears on the item's send-to-chat card.
+   *
+   * Drives the system's own entry point - `ActorSheetFFG._itemDetailsToChat(itemId)` - rather than
+   * assembling a message. That builds the card through `getItemDetails()`, which renders qualities
+   * as pills carrying `data-item-embed-name="<modifier name>"`, so the modifier's name is the
+   * thing to look for.
+   *
+   * Only meaningful for a *named* nested modifier. Attributes written straight onto an item or an
+   * attachment are not qualities and never appear as pills, so this returns null for them - which
+   * the coherence check reads as "not applicable" rather than a disagreement.
+   *
+   * The message is deleted afterwards, so nothing leaks into the next test.
    */
-  async chatCard(ctx: Ctx, key: string): Promise<boolean | null> {
-    if (!ctx.item) return null;
-    const needle = ctx.spec.modifier?.name ?? key;
-    return this.page.evaluate(async ({ itemUuid, needle }) => {
+  async chatCard(ctx: Ctx, _key: string): Promise<boolean | null> {
+    const needle = ctx.spec.modifier?.name;
+    if (!ctx.item || !needle) return null;
+
+    return this.page.evaluate(async ({ actorUuid, itemUuid, needle }) => {
+      const actor = await fromUuid(actorUuid);
       const item = await fromUuid(itemUuid);
-      if (!item) return null;
-      const message = await ChatMessage.create({
-        content: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          item.system?.description ?? item.name ?? '',
-        ),
-        flavor: item.name,
-      });
-      if (!message) return null;
-      try {
-        const html = await message.renderHTML();
-        return (html?.outerHTML ?? '').includes(needle);
-      } finally {
-        await message.delete();
+      if (!actor || !item) return null;
+
+      const before = new Set(game.messages.contents.map((m: any) => m.id));
+      await actor.sheet._itemDetailsToChat(item.id);
+
+      // the card is created asynchronously by the handler
+      let created: any = null;
+      for (let i = 0; i < 60 && !created; i++) {
+        created = game.messages.contents.find((m: any) => !before.has(m.id));
+        if (!created) await new Promise((r) => setTimeout(r, 25));
       }
-    }, { itemUuid: ctx.item, needle });
+      if (!created) return null;
+
+      try {
+        return (created.content ?? '').includes(needle);
+      } finally {
+        await created.delete();
+      }
+    }, { actorUuid: ctx.actor, itemUuid: ctx.item, needle });
   }
+
+
+
+
 }
 
 /**

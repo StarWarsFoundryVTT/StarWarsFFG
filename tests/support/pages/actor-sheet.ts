@@ -58,6 +58,10 @@ const STAT_TAB: Record<string, string> = {
 
 /**
  * Read a stat off the rendered actor sheet.
+ *
+ * One-shot read of a surface that updates asynchronously - Foundry re-renders after an item's
+ * effects change, and this can catch the previous render. Prefer `consumers.stat()`, which reads
+ * the document first and only falls back here for values the document does not hold.
  */
 export async function sheetStat(
   page: Page, actorName: string, stat: string,

@@ -192,9 +192,14 @@ export class World {
       if (ctx.depth < 2) ctx.depth = 2;
     }
 
-    // the inherent effect arrives asynchronously; the submit path builds the rest
+    // The inherent effect arrives asynchronously. The submit path is only needed when there are
+    // attributes for it to turn into effects - running it on an item with none is both wasted
+    // work and a way to trip over unguarded code: applyActiveEffectOnUpdate reads
+    // `.find(...).value` off a species' inherent changes without checking (modifiers.js:763).
     await api.waitForInherentEffect(this.page, source);
-    await api.rebuildActiveEffects(this.page, source);
+    if (spec.attributes?.length) {
+      await api.rebuildActiveEffects(this.page, source);
+    }
 
     ctx.item = await this.placeOnActor(actor, source, {
       itemName,
@@ -260,7 +265,9 @@ export class World {
 
     const uuid = this.track(await api.createItem(this.page, { type, name, system }));
     await api.waitForInherentEffect(this.page, uuid);
-    await api.rebuildActiveEffects(this.page, uuid);
+    if (attributes?.length) {
+      await api.rebuildActiveEffects(this.page, uuid);
+    }
     return uuid;
   }
 
@@ -308,8 +315,17 @@ export class World {
         'itemattachment', unique(`${label}-${attachment}`), attachmentAttributes);
       await api.dropOntoItem(this.page, ctx.item, again);
       await api.deleteDoc(this.page, again);
+    } else if (ctx.spec.attributes?.length) {
+      // D1: nothing is nested, so the repeat is re-submitting the item's own modifier rows -
+      // which is what #1976 describes, soak climbing on every edit of an unrelated field.
+      await api.update(this.page, ctx.item, {
+        'system.attributes': attributeMap(ctx.spec.attributes),
+      });
+      await api.rebuildActiveEffects(this.page, ctx.item);
     } else {
-      throw new Error('Nothing to re-apply: the build had neither an attachment nor a modifier.');
+      throw new Error(
+        'Nothing to re-apply: the build had no attributes, attachment or modifier.',
+      );
     }
   }
 

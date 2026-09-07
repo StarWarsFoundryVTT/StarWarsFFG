@@ -331,13 +331,28 @@ export function modifierFixture(m: ModifierSpec) {
  * Brawn 3 gives soak and the wound threshold a non-zero base.
  */
 export const ACTORS: Record<string, { type: string; baseline: Record<string, number>; system: Record<string, unknown> }> = {
+  /**
+   * A plausible starting character: characteristics in the 1-4 range, and thresholds derived
+   * from them the way a species grants them - wounds are a species base plus Brawn, strain a
+   * species base plus Willpower.
+   *
+   * The thresholds are set rather than left at the schema default of 0, because 0 is a state no
+   * played character is ever in and it changes behaviour: an actor at 0 wounds is already at its
+   * threshold, so anything gating on being wounded misbehaves. It also makes a modifier's effect
+   * ambiguous - with a zero base you cannot tell "added to nothing" from "base ignored".
+   *
+   * Wounds and strain differ (12 vs 13) on purpose, so a test reading the wrong one is visible.
+   */
   character: {
     type: 'character',
-    baseline: { Brawn: 3, Agility: 2, Intellect: 4, Cunning: 1, Willpower: 2, Presence: 1 },
+    baseline: {
+      Brawn: 3, Agility: 2, Intellect: 4, Cunning: 2, Willpower: 3, Presence: 1,
+      Wounds: 12, Strain: 13, Soak: 3,
+    },
     system: {
       characteristics: {
         Brawn: { value: 3 }, Agility: { value: 2 }, Intellect: { value: 4 },
-        Cunning: { value: 1 }, Willpower: { value: 2 }, Presence: { value: 1 },
+        Cunning: { value: 2 }, Willpower: { value: 3 }, Presence: { value: 1 },
       },
       // ranks so weapon rolls produce a real pool rather than an empty one
       skills: {
@@ -345,7 +360,15 @@ export const ACTORS: Record<string, { type: string; baseline: Record<string, num
         'Gunnery': { rank: 1 },
         'Piloting: Space': { rank: 1 },
       },
-      stats: { credits: { value: 500 } },
+      stats: {
+        credits: { value: 500 },
+        wounds: { value: 0, min: 0, max: 12 },   // species base 9 + Brawn 3
+        strain: { value: 0, min: 0, max: 13 },   // species base 10 + Willpower 3
+        // Soak is a stored base too, not a live derivation - _preUpdate only adjusts it when a
+        // characteristic is edited, and _calculateDerivedValues computes encumbrance, not soak.
+        // So an unarmoured character sits at Brawn, and armour adds on top through effects.
+        soak: { value: 3, adjusted: 3 }
+      },
     },
   },
 
@@ -358,6 +381,8 @@ export const ACTORS: Record<string, { type: string; baseline: Record<string, num
         Cunning: { value: 1 }, Willpower: { value: 1 }, Presence: { value: 1 },
       },
       quantity: { value: 3 },
+      // minions use a shared wound pool and have no strain track
+      stats: { wounds: { value: 0, min: 0, max: 5 } },
     },
   },
 

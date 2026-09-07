@@ -21,7 +21,7 @@ export const expect = base.extend({
               '  actorStat    helpers/modifiers.js    recurses, gates on equippable.equipped',
               '  itemAdjusted items/item-ffg.js       flat pass, gates on system.active',
               '  poolDice     helpers/dice-helpers.js consumes adjusteditemmodifier',
-              '  chatCard     dice/roll.js            consumes adjusteditemmodifier',
+              '  chatCard     _itemDetailsToChat      named modifiers only; null otherwise',
             ].join('\n'),
     };
   },
