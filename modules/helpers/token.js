@@ -52,9 +52,9 @@ export function drawMinionCount(token) {
   }
 
   const tokenWidth = token.w;
-  const markerWidth = 7;
-  const markerHeight = 15;
-  const insideGap = 5;
+  const markerWidth = Math.floor(tokenWidth / 8);
+  const markerHeight = markerWidth * 2;
+  const insideGap = 3;
   const availableSpace = tokenWidth - ((markerWidth * maxCount) + (insideGap * (maxCount - 1)));
   const outsideGap = availableSpace / 2;
 
@@ -79,7 +79,7 @@ export function drawMinionCount(token) {
     for (let i = 0; i < curCount; i++) {
       const element = new PIXI.Graphics();
       // add the border
-      element.lineStyle(borderWidth, "0x000000", 1);
+      element.lineStyle(borderWidth, "0x000000", markerWidth / 4);
       // draw the rectangle
       element.beginFill(friendlyColor);
       element.drawRoundedRect(0, 0, markerWidth, markerHeight, 2);
@@ -95,7 +95,7 @@ export function drawMinionCount(token) {
     for (let i = 0; i < maxCount - curCount; i++) {
       const element = new PIXI.Graphics();
       // add the border
-      element.lineStyle(borderWidth, "0x000000", 1);
+      element.lineStyle(borderWidth, "0x000000", markerWidth / 4);
       // draw the rectangle
       element.beginFill(enemyColor);
       element.drawRoundedRect(0, 0, markerWidth, markerHeight, 2);
@@ -118,7 +118,7 @@ export function drawAdversaryCount(token) {
   const adversaryItems = token?.actor?.items?.filter(i => i.name === itemName) || [];
   let adversaryLevel = 0;
   adversaryItems.forEach(function (item) {
-    adversaryLevel += item?.system?.ranks?.current || 0;
+    adversaryLevel += Math.min(item?.system?.ranks?.current || 0, 6);
   });
   if (adversaryLevel > 0) {
     // attempt to draw it on the token directly
@@ -131,9 +131,10 @@ export function drawAdversaryCount(token) {
       token.adversaryLevel.removeChildren().forEach(i => i.destroy());
     }
     const sprite = PIXI.Sprite.from(`systems/starwarsffg/images/adversary/adversary-${adversaryLevel}.png`);
-    sprite.scale.set(0.15, 0.15);
-    sprite.x = (token.w / 2) - 20;
-    sprite.y = token.h / 2 + 15;
+    sprite.width = token.w / 1.5;
+    sprite.height = token.h / 2;
+    sprite.x = (token.w / 2) - (sprite.width / 2);
+    sprite.y = (token.h / 1.25) - (sprite.height / 2);
     if (adversaryLevel > 5) {
       sprite.tint = overflowColor;
       adversaryLevel = 6;
