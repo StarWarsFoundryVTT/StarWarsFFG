@@ -1,3 +1,4 @@
+import EffectHelpers from "./effects.js";
 import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
@@ -97,7 +98,7 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
@@ -119,7 +120,7 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
@@ -280,8 +281,7 @@ export default class ItemHelpers {
             CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
             await matchingEffect.update({
               "changes": [{
-                key: matchingEffect.changes[0].key,
-                mode: matchingEffect.changes[0].mode,
+                ...matchingEffect.changes[0],
                 value: newValue,
               }],
             });

@@ -1,7 +1,7 @@
 ﻿
-function disablePushOnItem(options){
+function disablePushOnItem(effect, options){
   // don't show push/animation if that's an effect from item
-  if(options.parent.parentCollection === "items")
+  if(effect.parent?.documentName === "Item")
   {
     options.animate = false;
   }
@@ -14,19 +14,19 @@ function disablePushOnItem(options){
 export class ActiveEffectFFG extends ActiveEffect {
   /** @override */
   async _onCreate(changed, options, userId) {
-    disablePushOnItem(options);
+    disablePushOnItem(this, options);
     await super._onCreate(changed, options, userId);
   }
 
   /** @override */
   async _onUpdate(changed, options, userId) {
-    disablePushOnItem(options);
+    disablePushOnItem(this, options);
     await super._onUpdate(changed, options, userId);
   }
 
   /** @override */
   async _onDelete(options, userId) {
-    disablePushOnItem(options);
+    disablePushOnItem(this, options);
     await super._onDelete(options, userId);
   }
 }

@@ -1,3 +1,12 @@
+`Unreleased — Foundry V14 migration in progress`
+* Adapt chat authors, message styles, render hooks and dice audio to current APIs.
+* Route roll visibility through the v14 message-mode API, retaining v13 and legacy macro options.
+* Return plain chat data for deferred initiative messages and keep hidden combatants' public initiative rolls private.
+* Generate typed Active Effect changes on v14; preserve effect metadata when updating ranks and forward the effect application phase.
+* Remove obsolete token effect access from the combat tracker and use current effect images and duration labels.
+* Add isolated compatibility tests and require an explicitly identified disposable world for browser tests.
+* Allow v14 development testing; compatibility remains verified at v13 until the v14 runtime checks in `docs/foundry-v14.md` are complete.
+
 `2.0.4`
 * Fixes:
   * Fixed some issues with the importer code, [@KamiliaBlow](https://github.com/KamiliaBlow))

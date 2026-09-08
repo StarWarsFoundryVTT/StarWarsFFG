@@ -1,3 +1,4 @@
+import EffectHelpers from "../helpers/effects.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 
@@ -360,7 +361,7 @@ export class itemEditor extends FormApplication  {
               for (const curMod of explodedMods) {
                 changes.push({
                   key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                  mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                  ...EffectHelpers.changeType(),
                   value: formData.system.attributes[modKey].value,
                 });
               }
@@ -414,7 +415,7 @@ export class itemEditor extends FormApplication  {
                 for (const curMod of explodedMods) {
                   changes.push({
                     key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                    ...EffectHelpers.changeType(),
                     value: modifier.system.attributes[modKey].value,
                   });
                 }
@@ -506,7 +507,7 @@ export class itemEditor extends FormApplication  {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.system.attributes[modKey].value,
           });
         }
@@ -707,7 +708,7 @@ export class talentEditor extends itemEditor {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.attributes[modKey].value,
           });
         }
@@ -921,7 +922,7 @@ export class forcePowerEditor extends itemEditor {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.attributes[modKey].value,
           });
         }

@@ -1,3 +1,4 @@
+import { getMessageMode } from "./helpers/chat.js";
 import {DicePoolFFG, RollFFG} from "./dice-pool-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 
@@ -285,8 +286,8 @@ export class CombatFFG extends Combat {
                   updates.push({ _id: id, initiative: roll.total });
 
                   // Determine the roll mode
-                  let rollMode = messageOptions.rollMode || game.settings.get("core", "rollMode");
-                  if ((c.token.hidden || c.hidden) && rollMode === "roll") rollMode = "gmroll";
+                  let messageMode = getMessageMode(messageOptions);
+                  if ((c.token.hidden || c.hidden) && ["roll", "ic", "ooc"].includes(messageMode)) messageMode = "gm";
 
                   // Construct chat message data
                   let messageData = foundry.utils.mergeObject(
@@ -302,7 +303,7 @@ export class CombatFFG extends Combat {
                     },
                     messageOptions
                   );
-                  const chatData = await roll.toMessage(messageData, { create: false, rollMode });
+                  const chatData = await roll.toMessage(messageData, { create: false, messageMode });
 
                   // Play 1 sound for the whole rolled set
                   if (i > 0) chatData.sound = null;
@@ -821,20 +822,13 @@ export class CombatFFG extends Combat {
         let defeated = claimant.isDefeated;
 
         const effects = new Set();
-        if (claimant.token) {
-          claimant.token.effects.forEach((e) => effects.add(e))
-          if (claimant.token.overlayEffect) {
-            effects.add(claimant.token.overlayEffect);
-          }
-        }
-
         if (claimant.actor) {
           if (claimant.isDefeated) {
             defeated = true;
           }
           for (const effect of claimant.actor.temporaryEffects) {
-            if (effect?.icon) {
-              effects.add(effect.icon);
+            if (effect?.img) {
+              effects.add(effect.img);
             }
           }
         }

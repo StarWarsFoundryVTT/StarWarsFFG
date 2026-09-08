@@ -4,6 +4,8 @@
   "description": "( PLEASE NOTE: This is a custom fork based on [Jaxxa's implementation](https://github.com/jaxxa/StarWarsFFG/tree/master). )",
   "main": "index.js",
   "scripts": {
+    "test:compat": "node --experimental-vm-modules --test tests/compatibility.test.mjs",
+    "test:e2e": "node node_modules/@playwright/test/cli.js test",
     "compile": "gulp css",
     "lint": "npx eslint modules",
     "watch": "gulp"

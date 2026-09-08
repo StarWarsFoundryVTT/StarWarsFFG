@@ -722,7 +722,7 @@ export class ActorFFG extends Actor {
   }
 
   /** @override **/
-  applyActiveEffects() {
+  applyActiveEffects(phase) {
     // collect force pool modifications since it appears the stat value is without AEs active
     let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
     for (const effect of this.allApplicableEffects()) {
@@ -740,6 +740,6 @@ export class ActorFFG extends Actor {
         }
       }
     }
-    return super.applyActiveEffects();
+    return super.applyActiveEffects(phase);
   }
 }

@@ -1,3 +1,4 @@
+import EffectHelpers from "./helpers/effects.js";
 /**
  * A systems implementation of the Star Wars RPG by Fantasy Flight Games.
  * Author: Esrin
@@ -107,7 +108,7 @@ Hooks.once("init", async function () {
 
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee
-  CONFIG.ActiveEffect.legacyTransferral = false;
+  if (game.release.generation < 14) CONFIG.ActiveEffect.legacyTransferral = false;
 
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
@@ -685,22 +686,22 @@ Hooks.once("init", async function () {
     for (const skill of Object.keys(CONFIG.FFG.skills)) {
       allSkillChanges['boost'].push({
         key: `system.skills.${skill}.boost`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
       allSkillChanges['setback'].push({
         key: `system.skills.${skill}.setback`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
       allSkillChanges['upgrade'].push({
         key: `system.skills.${skill}.upgrades`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
       allSkillChanges['success'].push({
         key: `system.skills.${skill}.success`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
     }
@@ -758,12 +759,12 @@ Hooks.once("init", async function () {
       changes: [
         {
           key: "system.stats.defence.melee",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: "2",
         },
         {
           key: "system.stats.defence.ranged",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: "2",
         },
       ],
@@ -1085,12 +1086,13 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
 });
 
 // Update chat messages with dice images
-Hooks.on("renderChatMessage", async (app, html, messageData) => {
+Hooks.on("renderChatMessageHTML", async (message, element) => {
+  const html = $(element);
   const content = html.find(".message-content");
-  content[0].innerHTML = await PopoutEditor.renderDiceImages(content[0].innerHTML);
+  if (content.length) content[0].innerHTML = await PopoutEditor.renderDiceImages(content[0].innerHTML);
 
   html.on("click", ".ffg-pool-to-player", () => {
-    const poolData = messageData.message.flags.starwarsffg;
+    const poolData = message.flags.starwarsffg;
 
     const dicePool = new DicePoolFFG(poolData.dicePool);
 
@@ -1509,7 +1511,7 @@ Hooks.once("ready", async () => {
         CONFIG.FFG.DestinyGM = game.user.id;
 
         ChatMessage.create({
-          user: game.user.id,
+          author: game.user.id,
           content: messageText,
         });
       },

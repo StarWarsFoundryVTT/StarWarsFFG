@@ -1639,8 +1639,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      author: game.user.id,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.actor.id,
@@ -1669,8 +1669,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      author: game.user.id,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.actor.id,
@@ -1845,12 +1845,12 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       changes: [
         {
           key: boughtPath,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: boughtValue,
         },
         {
           key: "system.experience.available",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: spentXP * -1,
         }
       ],
@@ -1860,7 +1860,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     if (boughtPath === "system.characteristics.Brawn.value") {
       effects.changes.push({
         key: "system.stats.soak.value",
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: 1,
       });
     }

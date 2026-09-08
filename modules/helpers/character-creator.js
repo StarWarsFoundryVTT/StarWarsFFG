@@ -1,3 +1,4 @@
+import EffectHelpers from "./effects.js";
 import ActorHelpers, {xpLogEarn, xpLogSpend} from "./actor-helpers.js";
 import DiceHelpers from "./dice-helpers.js";
 import {sortDataBy, addIfNotExist} from "../actors/actor-sheet-ffg.js";
@@ -1159,7 +1160,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };
@@ -1184,7 +1185,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };
@@ -1798,7 +1799,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };
@@ -1823,7 +1824,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };

@@ -21,7 +21,7 @@ if (fs.existsSync(envPath)) {
 }
 
 /* Base URL of the Foundry server under test - scheme, host and port, with no trailing path. */
-const baseURL = process.env.FOUNDRY_URL ?? 'http://localhost:30000';
+const baseURL = process.env.FOUNDRY_URL ?? 'http://localhost:30001';
 
 /**
  * @see https://playwright.dev/docs/test-configuration

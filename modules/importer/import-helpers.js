@@ -1,3 +1,4 @@
+import EffectHelpers from "../helpers/effects.js";
 import Helpers from "../helpers/common.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
 import {ItemFFG} from "../items/item-ffg.js";
@@ -3056,7 +3057,7 @@ export default class ImportHelpers {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: item.system.attributes[attribute].value,
               });
             }
@@ -3073,7 +3074,7 @@ export default class ImportHelpers {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -3090,7 +3091,7 @@ export default class ImportHelpers {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: 0,
               });
             }
@@ -3107,7 +3108,7 @@ export default class ImportHelpers {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -3231,7 +3232,7 @@ export default class ImportHelpers {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.system.attributes[k].value,
           });
         }
@@ -3269,7 +3270,7 @@ export default class ImportHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
@@ -3286,7 +3287,7 @@ export default class ImportHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
@@ -3335,7 +3336,7 @@ export default class ImportHelpers {
             if (changeKey) {
               changes.push({
                 key: changeKey,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: attribute.value,
               });
             }

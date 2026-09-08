@@ -1,3 +1,4 @@
+import EffectHelpers from "./helpers/effects.js";
 import ModifierHelpers from "./helpers/modifiers.js";
 
 /**
@@ -48,8 +49,8 @@ async function sendChanges(newVersion) {
   const template = "systems/starwarsffg/templates/notifications/new_version.html";
   const html = await foundry.applications.handlebars.renderTemplate(template, { version: newVersion });
   const messageData = {
-    user: game.user.id,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+    author: game.user.id,
+    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     content: html,
   };
   ChatMessage.create(messageData);
@@ -62,8 +63,8 @@ async function sendChanges(newVersion) {
 async function warnTheme() {
   if (game.settings.get("starwarsffg", "ui-uitheme") === "default") {
     const messageData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      author: game.user.id,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: "You are using an unsupported theme. Expected issues, or swap to the Mandar theme.<br>(This message will only show once.)",
     };
     ChatMessage.create(messageData);
@@ -287,7 +288,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      ...EffectHelpers.changeType(),
                       value: item.system.talents[`talent${i}`].attributes[nk].value,
                     });
                   }
@@ -328,7 +329,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      ...EffectHelpers.changeType(),
                       value: item.system.upgrades[`upgrade${i}`].attributes[nk].value,
                     });
                   }
@@ -371,7 +372,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      ...EffectHelpers.changeType(),
                       value: item.system.upgrades[`upgrade${i}`].attributes[nk].value,
                     });
                   }

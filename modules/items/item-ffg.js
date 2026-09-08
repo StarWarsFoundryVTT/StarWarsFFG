@@ -1,3 +1,4 @@
+import EffectHelpers from "../helpers/effects.js";
 import ItemBaseFFG from "./itembase-ffg.js";
 import PopoutEditor from "../popout-editor.js";
 import ActorOptions from "../actors/actor-ffg-options.js";
@@ -98,7 +99,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: this.system.attributes[attribute].value,
               });
             }
@@ -115,7 +116,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -132,7 +133,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: 0,
               });
             }
@@ -149,7 +150,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -157,7 +158,7 @@ export class ItemFFG extends ItemBaseFFG {
           for (let i = 0; i < 8; i++) {
             effects.changes.push({
               key: "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: true,
             });
           }
@@ -165,7 +166,7 @@ export class ItemFFG extends ItemBaseFFG {
           for (let i = 0; i < 5; i++) {
             effects.changes.push({
               key: "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: true,
             });
           }
@@ -228,7 +229,7 @@ export class ItemFFG extends ItemBaseFFG {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: attr?.value,
           });
         }

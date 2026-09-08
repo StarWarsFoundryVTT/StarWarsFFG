@@ -1,3 +1,4 @@
+import { getRollMessageOptions } from "./helpers/chat.js";
 import {xpLogEarn} from "./helpers/actor-helpers.js";
 import ActorHelpers from "./helpers/actor-helpers.js";
 
@@ -275,7 +276,7 @@ export class GroupManager extends FormApplication {
   async _rollTable(table, type) {
     let r = new Roll("1d100");
     await r.evaluate();
-    let rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? { rollMode: "gmroll" } : {};
+    const rollOptions = game.settings.get("starwarsffg", "privateTriggers") ? getRollMessageOptions("gm") : {};
     r.toMessage(
       {
         flavor: `${game.i18n.localize("SWFFG.Rolling")} ${type}...`,
@@ -285,7 +286,7 @@ export class GroupManager extends FormApplication {
     let filteredTable = table.filter((entry) => entry.rangeStart <= r.total && r.total <= entry.rangeEnd);
     let tableResult = filteredTable?.length ? `${filteredTable[0].type} ${type} ${game.i18n.localize("SWFFG.Triggered")} ${game.i18n.localize("SWFFG.For")} @Actor[${filteredTable[0].playerId}]{${filteredTable[0].name}}` : `${game.i18n.localize("SWFFG.OptionValueNo")} ${type} ${game.i18n.localize("SWFFG.Triggered")}`;
     let messageOptions = {
-      user: game.user.id,
+      author: game.user.id,
       content: tableResult,
     };
     if (game.settings.get("starwarsffg", "privateTriggers")) {
