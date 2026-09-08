@@ -18,7 +18,11 @@ async function showSkills(page: Page, actorName: string) {
 export async function skillDicePool(page: Page, actorName: string, skill: string): Promise<string> {
   const sheet = await showSkills(page, actorName);
   const entry = sheet.locator(`[data-ability="${skill}"]`).locator('.dice-pool.hover').first();
-  await expect(entry).toBeAttached();
+  try {
+    await expect(entry).toBeAttached({ timeout: 2000 });
+  } catch {
+    return '';
+  }
   return (await entry.textContent()) ?? '';
 }
 

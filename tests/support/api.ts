@@ -296,23 +296,96 @@ export async function assertModifiersValid(
  * Drop one item onto another, through the sheet's own drop handler.
  */
 export async function dropOntoItem(page: Page, parentUuid: Uuid, droppedUuid: Uuid): Promise<void> {
-  const problem = await page.evaluate(async ({ parentUuid, droppedUuid }) => {
+  const problem = await tryDropOntoItem(page, parentUuid, droppedUuid);
+  if (problem) throw new Error(`Dropping ${droppedUuid} onto ${parentUuid} failed: ${problem}`);
+}
+
+/**
+ * The same drop, for cases where being refused is the point.
+ */
+export async function tryDropOntoItem(
+  page: Page, parentUuid: Uuid, droppedUuid: Uuid,
+): Promise<string | null> {
+  return page.evaluate(async ({ parentUuid, droppedUuid }) => {
     const parent = await fromUuid(parentUuid);
     if (!parent) return `No item at ${parentUuid}`;
-    const before = (parent.system?.itemattachment?.length ?? 0) + (parent.system?.itemmodifier?.length ?? 0);
+    const dropped = await fromUuid(droppedUuid);
+    if (!dropped) return `No item at ${droppedUuid}`;
+    const signature = (doc: any) => {
+      const modifiers = doc?.system?.itemmodifier ?? [];
+      return {
+        count: (doc?.system?.itemattachment?.length ?? 0) + modifiers.length,
+        ranks: modifiers.reduce(
+          (sum: number, m: any) => sum + (parseInt(m?.system?.rank, 10) || 0), 0),
+      };
+    };
+    const before = signature(parent);
 
     await parent.sheet._onDropItem({
       currentTarget: null,
+      preventDefault: () => {},
+      stopPropagation: () => {},
       dataTransfer: { getData: () => JSON.stringify({ type: 'Item', uuid: droppedUuid }) },
     });
 
-    const after = await fromUuid(parentUuid);
-    const now = (after.system?.itemattachment?.length ?? 0) + (after.system?.itemmodifier?.length ?? 0);
-    // The handler declines silently - wrong item type for this parent, or not enough hardpoints.
-    return now > before ? null : 'the sheet declined the drop (type mismatch or no free hardpoints?)';
-  }, { parentUuid, droppedUuid });
+    const now = signature(await fromUuid(parentUuid));
+    if (now.count > before.count || now.ranks > before.ranks) return null;
 
-  if (problem) throw new Error(`Dropping ${droppedUuid} onto ${parentUuid} failed: ${problem}`);
+    // Say which of the two gates turned it away
+    const carrier = parent.type;
+    const droppedType = dropped.system?.type;
+    const typeOk = (carrier === 'shipweapon' && droppedType === 'weapon') ||
+      carrier === droppedType || droppedType === 'all' || carrier === 'itemattachment';
+    if (!typeOk) {
+      return `type mismatch: a "${droppedType}" ${dropped.type} onto a "${carrier}"`;
+    }
+    if (dropped.type === 'itemattachment') {
+      const budget = parent.system?.hardpoints?.adjusted;
+      const cost = dropped.system?.hardpoints?.value;
+      if (budget - cost < 0) return `not enough hardpoints: ${budget} available, needs ${cost}`;
+    }
+    return 'the sheet declined the drop, but neither the type nor the hardpoint gate explains it';
+  }, { parentUuid, droppedUuid });
+}
+
+/**
+ * Remove an attachment - or a quality - from an item, through the sheet's own delete control.
+ */
+export async function removeEmbedded(
+  page: Page, itemUuid: Uuid, kind: 'itemattachment' | 'itemmodifier' = 'itemattachment',
+  index = 0,
+): Promise<void> {
+  await openSheet(page, itemUuid);
+
+  const problem = await page.evaluate(async ({ itemUuid, kind, index }) => {
+    const item = await fromUuid(itemUuid);
+    if (!item) return `No item at ${itemUuid}`;
+    const before = item.system?.[kind]?.length ?? 0;
+    if (index >= before) return `no ${kind} at index ${index} (the item has ${before})`;
+
+    const sheet = item.sheet;
+    sheet._tabs?.[0]?.activate?.('attributes');
+
+    const root = sheet.element?.[0] ?? sheet.element;
+    const row = root?.querySelector(
+      `li[data-item-type="${kind}"][data-item-index="${index}"]`);
+    if (!row) return `the sheet rendered no ${kind} row at index ${index}`;
+    const control = row.querySelector('.item-delete');
+    if (!control) return `the ${kind} row at index ${index} has no delete control`;
+
+    control.click();
+
+    const deadline = Date.now() + 5000;
+    for (;;) {
+      const now = (await fromUuid(itemUuid))?.system?.[kind]?.length ?? 0;
+      if (now < before) return null;
+      if (Date.now() > deadline) return `the ${kind} array never shrank below ${before}`;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }, { itemUuid, kind, index });
+
+  await closeSheet(page, itemUuid);
+  if (problem) throw new Error(`Removing ${kind}[${index}] from ${itemUuid} failed: ${problem}`);
 }
 
 /** A document's full source object, including its Active Effects. */
@@ -335,15 +408,6 @@ export async function read(page: Page, uuid: Uuid, path: string): Promise<unknow
 
 /**
  * A document flattened to dotted paths, for diffing two of them.
- *
- * Reads transformed values, not source. `toObject()` defaults to source, where the importer's
- * items have `adjusted: 0` on soak, defence, hardpoints and price - it only writes `adjusted`
- * for encumbrance, and the rest fall back to the schema default. Those are recomputed in
- * prepareData anyway, so comparing source reports four differences that don't exist at runtime,
- * while comparing transformed values actually checks that derivation works for both origins.
- *
- * Arrays are compared whole rather than per index, since reordering isn't worth reporting
- * element by element.
  */
 export async function flatten(page: Page, uuid: Uuid): Promise<Record<string, unknown>> {
   return page.evaluate(async (uuid) => {
@@ -377,15 +441,6 @@ export async function setEquipped(page: Page, itemUuid: Uuid, equipped: boolean)
 
   /*
    * Wait for the effects to follow.
-   *
-   * `ItemFFG._onUpdate` suspends or restores the item's Active Effects when the equipped flag
-   * changes, and it is `async` - but Foundry does not await `_onUpdate`, any more than it awaits
-   * `_onCreate`. So `update()` resolves while `effect.update({disabled: …})` is still in flight,
-   * and anything reading straight afterwards sees the old state.
-   *
-   * Only effects the system would actually toggle are waited on: `(inherent)` on an unequipped
-   * item is left alone in some cases, so this waits for *any* change rather than insisting every
-   * effect matches.
    */
   await page.evaluate(async ({ itemUuid, equipped }) => {
     const deadline = Date.now() + 5000;
@@ -397,6 +452,149 @@ export async function setEquipped(page: Page, itemUuid: Uuid, equipped: boolean)
       await new Promise((r) => setTimeout(r, 50));
     }
   }, { itemUuid, equipped });
+}
+
+/**
+ * Run the talent / upgrade editor over a specialization, force power or signature ability.
+ */
+export async function applyProgressionEditors(page: Page, uuid: Uuid): Promise<void> {
+  const problem = await page.evaluate(async (uuid) => {
+    const item = await fromUuid(uuid);
+    if (!item) return `No item at ${uuid}`;
+
+    const field = item.type === 'specialization' ? 'talents'
+      : ['forcepower', 'signatureability'].includes(item.type) ? 'upgrades'
+      : null;
+    if (!field) return null;
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const editors = await load('items/item-editor.js');
+    const Editor = field === 'talents' ? editors.talentEditor : editors.forcePowerEditor;
+
+    // Snapshot first
+    const nodes = Object.entries(
+      foundry.utils.deepClone(item.system?.[field] ?? {}) as Record<string, any>,
+    ).filter(([, node]) => Object.keys(node?.attributes ?? {}).length);
+
+    for (const [key, node] of nodes) {
+      const data: Record<string, unknown> = {
+        sourceObject: item,
+        clickedObject: node,
+        modifierTypes: CONFIG.FFG.itemmodifier_types,
+        modifierChoices: CONFIG.FFG.allowableModifierChoices,
+      };
+      data[field === 'talents' ? 'talentId' : 'upgradeId'] = key;
+
+      const form: Record<string, unknown> = { system: { attributes: node.attributes } };
+      // The talent editor reads the activation straight out of the form to build its label.
+      if (field === 'talents') form.activation = node.activation ?? 'Passive';
+
+      await new Editor(data)._updateObject(null, form);
+    }
+
+    const ItemHelpers = (await load('helpers/item-helpers.js')).default;
+    const reloaded = await fromUuid(uuid);
+    await ItemHelpers.syncAEStatus(reloaded, reloaded.getEmbeddedCollection('ActiveEffect'));
+    return null;
+  }, uuid);
+
+  if (problem) throw new Error(`Running the progression editor on ${uuid} failed: ${problem}`);
+}
+
+/**
+ * Drop a talent item onto one of a specialization's tree nodes, as dragging it there does.
+ */
+export async function dropTalentOntoSpecialization(
+  page: Page, specUuid: Uuid, talentUuid: Uuid, nodeKey: string,
+): Promise<void> {
+  await openSheet(page, specUuid);
+
+  const problem = await page.evaluate(async ({ specUuid, talentUuid, nodeKey }) => {
+    const spec = await fromUuid(specUuid);
+    if (!spec) return `No item at ${specUuid}`;
+    const sheet = spec.sheet;
+    const root = sheet.element?.[0] ?? sheet.element;
+    const node = root?.querySelector(`.specialization-talent[id="${nodeKey}"]`);
+    if (!node) return `the sheet rendered no talent node "${nodeKey}"`;
+
+    await sheet._onDropTalentToSpecialization({
+      currentTarget: node,
+      target: node,
+      preventDefault: () => {},
+      stopPropagation: () => {},
+      dataTransfer: { getData: () => JSON.stringify({ type: 'Item', uuid: talentUuid }) },
+    });
+    return null;
+  }, { specUuid, talentUuid, nodeKey });
+
+  await closeSheet(page, specUuid);
+  if (problem) throw new Error(`Dropping ${talentUuid} onto ${specUuid} node "${nodeKey}": ${problem}`);
+}
+
+/**
+ * Submit a talent / upgrade node's editor with no attributes, which is how the UI removes them.
+ */
+export async function clearProgressionNode(
+  page: Page, uuid: Uuid, nodeKey: string,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ uuid, nodeKey }) => {
+    const item = await fromUuid(uuid);
+    if (!item) return `No item at ${uuid}`;
+    const field = item.type === 'specialization' ? 'talents'
+      : ['forcepower', 'signatureability'].includes(item.type) ? 'upgrades'
+      : null;
+    if (!field) return `${item.type} has no talents or upgrades`;
+
+    const node = item.system?.[field]?.[nodeKey];
+    if (!node) return `no ${field} node "${nodeKey}" on ${item.name}`;
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const editors = await load('items/item-editor.js');
+    const Editor = field === 'talents' ? editors.talentEditor : editors.forcePowerEditor;
+
+    const data: Record<string, unknown> = {
+      sourceObject: item,
+      clickedObject: foundry.utils.deepClone(node),
+      modifierTypes: CONFIG.FFG.itemmodifier_types,
+      modifierChoices: CONFIG.FFG.allowableModifierChoices,
+    };
+    data[field === 'talents' ? 'talentId' : 'upgradeId'] = nodeKey;
+
+    const form: Record<string, unknown> = { system: { attributes: {} } };
+    if (field === 'talents') form.activation = node.activation ?? 'Passive';
+
+    await new Editor(data)._updateObject(null, form);
+    return null;
+  }, { uuid, nodeKey });
+
+  if (problem) throw new Error(`Clearing node "${nodeKey}" on ${uuid} failed: ${problem}`);
+}
+
+/**
+ * Learn or unlearn a talent / upgrade node, the way buying one from the sheet does.
+ */
+export async function setLearned(
+  page: Page, itemUuid: Uuid, nodeKey: string, learned: boolean,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ itemUuid, nodeKey, learned }) => {
+    const item = await fromUuid(itemUuid);
+    if (!item) return `No item at ${itemUuid}`;
+    const field = item.type === 'specialization' ? 'talents'
+      : ['forcepower', 'signatureability'].includes(item.type) ? 'upgrades'
+      : null;
+    if (!field) return `${item.type} has no talents or upgrades to learn`;
+    if (!item.system?.[field]?.[nodeKey]) return `no ${field} node "${nodeKey}" on ${item.name}`;
+
+    await item.update({ [`system.${field}.${nodeKey}.islearned`]: learned });
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const ItemHelpers = (await load('helpers/item-helpers.js')).default;
+    const reloaded = await fromUuid(itemUuid);
+    await ItemHelpers.syncAEStatus(reloaded, reloaded.getEmbeddedCollection('ActiveEffect'));
+    return null;
+  }, { itemUuid, nodeKey, learned });
+
+  if (problem) throw new Error(`Setting islearned on ${itemUuid} failed: ${problem}`);
 }
 
 /** Delete a document. Ignores one that's already gone. */

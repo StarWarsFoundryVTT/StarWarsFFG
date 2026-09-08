@@ -123,7 +123,7 @@ export class Consumers {
       actorStat: await this.actorStat(ctx, key),
       itemAdjusted: await this.itemAdjusted(ctx, key),
       poolDice: await this.poolDice(ctx),
-      chatCard: await this.chatCard(ctx, key),
+      chatCard: await this.chatCard(ctx),
     };
   }
 
@@ -177,6 +177,30 @@ export class Consumers {
     return raw === null ? null : Number(raw);
   }
 
+  /**
+   * The item's hardpoint budget, and what is actually fitted into it.
+   */
+  async hardpoints(ctx: Ctx): Promise<{
+    value: number; adjusted: number; current: number;
+    fitted: { name: string; hardpoints: number }[];
+  } | null> {
+    if (!ctx.item) return null;
+    return this.page.evaluate(async (itemUuid) => {
+      const item = await fromUuid(itemUuid);
+      const hp = item?.system?.hardpoints;
+      if (!hp) return null;
+      return {
+        value: Number(hp.value ?? 0),
+        adjusted: Number(hp.adjusted ?? 0),
+        current: Number(hp.current ?? 0),
+        fitted: (item.system.itemattachment ?? []).map((a: any) => ({
+          name: a.name,
+          hardpoints: Number(a.system?.hardpoints?.value ?? 0),
+        })),
+      };
+    }, ctx.item);
+  }
+
   /** The dice pool the system would assemble, stopping short of rolling it. */
   async poolDice(ctx: Ctx): Promise<PoolSummary | null> {
     if (!ctx.item) return null;
@@ -213,8 +237,7 @@ export class Consumers {
    *
    * The message is deleted afterwards, so nothing leaks into the next test.
    */
-  async chatCard(ctx: Ctx, _key: string): Promise<boolean | null> {
-    const needle = ctx.spec.modifier?.name;
+  async chatCard(ctx: Ctx, needle = ctx.spec.modifier?.name): Promise<boolean | null> {
     if (!ctx.item || !needle) return null;
 
     return this.page.evaluate(async ({ actorUuid, itemUuid, needle }) => {

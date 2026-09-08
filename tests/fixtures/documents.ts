@@ -127,7 +127,7 @@ export const ITEMS: Record<string, ItemFixture> = {
   species: {
     type: 'species', importId: '', pack: '',
     baseline: { startingXP: 100 },
-    system: { description: describe('species'), attributes: {},
+    system: { description: describe('species'), attributes: speciesIntrinsics(),
               metadata: { tags: ['species'], sources: ['QA'] },
               talents: {}, abilities: {}, species: {}, startingXP: 100 },
   },
@@ -248,6 +248,32 @@ export interface AttributeSpec {
   key?: string;
 }
 
+/**
+ * The eight attributes every real species carries, keyed by name rather than `attrN`.
+ *
+ * The importer writes these from StartingChars and StartingAttrs
+ * (importer/oggdude/importers/species.js:55-84), and a species made in the UI has the same eight,
+ * so a species without them is a shape the system never produces. It also crashes on contact:
+ * applyActiveEffectOnUpdate reaches into the inherent effect for the Brawn change and reads
+ * `.value` off the result without checking (modifiers.js:763), and there is no Brawn change to
+ * find unless a Brawn attribute created one.
+ *
+ * The values are zero deliberately. These changes apply with mode ADD, and the character fixture
+ * is already a finished character - Brawn 3, soak 3 - so a species carrying real numbers would
+ * move every stat it touches and make each expectation the sum of two fixtures rather than one.
+ * A test that wants a species to contribute should say so through `attributes`.
+ */
+export function speciesIntrinsics(): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const c of ['Brawn', 'Agility', 'Intellect', 'Cunning', 'Willpower', 'Presence']) {
+    out[c] = { modtype: 'Characteristic', mod: c, value: 0, exclude: true };
+  }
+  for (const stat of ['Wounds', 'Strain']) {
+    out[stat] = { modtype: 'Stat', mod: stat, value: 0, exclude: true };
+  }
+  return out;
+}
+
 /** Turn a list of attribute specs into the numerically-keyed map the system expects. */
 export function attributeMap(attrs: AttributeSpec[]): Record<string, unknown> {
   const out: Record<string, unknown> = {};
@@ -272,13 +298,21 @@ export interface TalentSpec {
 /** Build the numerically-keyed talents/upgrades map a specialization or force power holds. */
 export function talentMap(talents: TalentSpec[]): Record<string, unknown> {
   const out: Record<string, unknown> = {};
+  // Keys are unique across the whole item, not per node. The editor names each Active Effect
+  // after its attribute key, so two nodes both using "attr1" would share one effect - and the
+  // real keys are `attr<randomID>` (importers/careers.js:80), never per-node counters.
+  let n = 0;
   talents.forEach((t, i) => {
     out[String(i)] = {
       name: t.name,
       description: describe(`talent ${t.name}`),
       islearned: t.islearned ?? true,
       isRanked: t.isRanked ?? false,
-      attributes: attributeMap(t.attributes),
+      // A real node always carries one, and the talent editor indexes CONFIG.FFG.activations
+      // with it while building the label.
+      activation: 'Passive',
+      activationLabel: 'SWFFG.TalentActivationsPassive',
+      attributes: attributeMap(t.attributes.map((a) => ({ ...a, key: a.key ?? `attr${++n}` }))),
     };
   });
   return out;

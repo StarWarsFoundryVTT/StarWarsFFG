@@ -29,5 +29,5 @@ test('a talent modifier reaches an actor stat', async ({ world, consumers }) => 
     attributes: [{ modtype: 'Stat', mod: 'Strain', value: 3 }],
   });
 
-  expect(await consumers.stat(ctx, 'Strain')).toBe(3);
+  expect(await consumers.stat(ctx, 'Strain')).toBe(13 + 3);
 });

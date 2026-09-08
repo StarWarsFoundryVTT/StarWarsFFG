@@ -25,6 +25,10 @@ test('species characteristics and thresholds reach the actor', async ({ world, c
         Brawn: { value: 0 }, Agility: { value: 0 }, Intellect: { value: 0 },
         Cunning: { value: 0 }, Willpower: { value: 0 }, Presence: { value: 0 },
       },
+      stats: {
+        wounds: { value: 0, min: 0, max: 0 },
+        strain: { value: 0, min: 0, max: 0 },
+      },
     },
     attributes: SPECIES.map((s) => ({ modtype: s.modtype, mod: s.key, value: s.value, key: s.key })),
   });
@@ -45,5 +49,5 @@ test.fixme('soak picks up brawn from a species', async ({ world, consumers }) =>
     actorOverrides: { characteristics: { Brawn: { value: 0 } } },
     attributes: [{ modtype: 'Characteristic', mod: 'Brawn', value: 1, key: 'Brawn' }],
   });
-  expect(await consumers.stat(ctx, 'Soak')).toBe(1);
+  expect(await consumers.stat(ctx, 'Soak')).toBe(0 + 1);
 });
