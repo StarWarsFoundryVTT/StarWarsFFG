@@ -6,7 +6,7 @@
 - Starting commit: `a0a0b546e6171551bf37c55e2420eaafc0a04e56`.
 - Target runtime: Foundry VTT 14.367 (stable), checked 2026-09-09.
 - Existing Windows runtime: Foundry VTT 13.351, serving the live `Star Wars` world on port 30000.
-- Current status: **27/27 integration tests pass against the installed development archive**, and **18/18 isolated compatibility tests pass**. The representative v13 backup completed core migration to 14.367. Its client acceptance awaits a GM login; full compatibility is **not yet verified**.
+- Current status: **27/27 integration tests pass against the installed development archive**, and **18/18 isolated compatibility tests pass**. The representative v13 backup completed core migration to 14.367 and now opens in the GM client. Acceptance checks on existing documents remain in progress; full compatibility is **not yet verified**.
 - Manifest: minimum 13, verified 13, maximum 14. Maximum permits development testing; it is not a verification claim.
 
 ## Changes prepared
@@ -100,7 +100,9 @@ An existing Foundry backup dated 2026-06-11 was restored into the isolated v14 d
 
 On 2026-09-09, Foundry created an additional backup of the isolated copy and completed its core migration. The copied manifest now records 14.367. The server logged 1,457 migrated Actor records (including the adversary compendium), 91 ChatMessages, 5 FogExplorations and 14 Scenes across five migrated databases, without warnings or errors during that migration. Foundry automatically disabled modules and active scenes as part of the generation upgrade.
 
-The copy reaches the join screen. Its GM account **Grand Moff** requires the user's password, so client initialization, representative existing sheets and persistence after GM login remain unverified. The next step is to sign in to this copy at `http://localhost:30001` using that account. Do not send the password in chat. Assets outside the backed-up world directory are not included in this copy; missing external images must be distinguished from system errors. Optional modules and importers still require separate checks.
+The user signed in with the GM account and the migrated client initializes, displaying existing actors, scenes and historical chat rolls. The first view showed missing portraits, tokens and scene backgrounds because media outside the world backup had not been copied. The `assets/Star Wars`, `assets/Misc` and `worlds/star-wars/assets` media directories were copied from the Windows installation into the isolated data directory: 903 files (442,367,180 bytes) were added and verified by SHA-256, while 13 existing files were retained. The Windows source files were not modified. A fresh client view now renders the Mos Zandari background correctly.
+
+The world database remains the 2026-06-11 backup; copying current media does not update it to the latest live campaign state. The existing Dodge character sheet opens with its portrait, characteristics, skills, species, career and specializations. Broader existing-document checks and persistence of subsequent edits remain outstanding. Optional modules and importers require separate checks.
 
 ## Runtime acceptance checklist
 
@@ -114,7 +116,8 @@ The copy reaches the join screen. Its GM account **Grand Moff** requires the use
 - [x] Effects on actors/items apply correctly, preserve phases/priorities, display durations and expire as expected.
 - [x] Existing Playwright effect tests pass in the disposable world.
 - [x] A representative v13 backup completes core migration and persists the migrated databases; source world remains untouched.
-- [ ] The migrated world initializes in the GM client; existing sheets and subsequent edits persist correctly.
+- [x] The migrated world initializes in the GM client and an existing character sheet opens with its data and portrait.
+- [ ] Broader existing-document checks and persistence of subsequent edits pass in the migrated world.
 - [ ] Importers and supported optional module integrations are checked separately.
 - [x] A packaged archive installs and reproduces the verified behavior.
 
