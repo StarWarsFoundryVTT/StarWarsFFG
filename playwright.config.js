@@ -59,11 +59,12 @@ export default defineConfig({
           height: 900
         },
         launchOptions: {
-          // force GPU acceleration
+          // WSL/CI may have no usable GPU. Use Chromium's software WebGL renderer.
           args: [
             '--ignore-gpu-blocklist',
             '--use-gl=angle',
-            '--use-angle=gl-egl',
+            '--use-angle=swiftshader',
+            '--enable-unsafe-swiftshader',
           ]
         },
       },

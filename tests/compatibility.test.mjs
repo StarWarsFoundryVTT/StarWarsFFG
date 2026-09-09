@@ -12,13 +12,15 @@ async function loadSystem(generation = 14, defaultMode = "blind") {
     constructor(data) { this.data = { whisper: [], blind: false, ...data }; }
     applyMode(mode) {
       assert.equal(generation, 14, "v13 must use applyRollMode");
+      assert.ok(['public', 'ic', 'gm', 'blind', 'self'].includes(mode), 'must pass a registered v14 message mode');
       this.setVisibility(mode);
     }
     applyRollMode(mode) {
       assert.equal(generation, 13, "v14 must use applyMode");
-      this.setVisibility({ publicroll: "roll", gmroll: "gm", blindroll: "blind", selfroll: "self" }[mode]);
+      this.setVisibility({ publicroll: "public", gmroll: "gm", blindroll: "blind", selfroll: "self" }[mode]);
     }
     setVisibility(mode) {
+      if (mode === 'public') this.data.whisper = [];
       if (["gm", "blind"].includes(mode)) this.data.whisper = ["gm-id"];
       if (mode === "self") this.data.whisper = ["player-id"];
       this.data.blind = mode === "blind";
@@ -85,7 +87,8 @@ test('v14 uses the saved blind mode without reading the removed core.rollMode se
 });
 
 for (const [mode, recipients, blind] of [
-  ['gm', ['gm-id'], false], ['blind', ['gm-id'], true], ['self', ['player-id'], false], ['roll', [], false],
+  ['gm', ['gm-id'], false], ['blind', ['gm-id'], true], ['self', ['player-id'], false], ['public', [], false],
+  ['publicroll', [], false], ['roll', ['gm-id'], true],
   ['gmroll', ['gm-id'], false], ['blindroll', ['gm-id'], true], ['selfroll', ['player-id'], false],
 ]) {
   test(`v14 publishes ${mode} with the intended recipients`, async () => {
@@ -117,6 +120,23 @@ test('v13 still uses its saved private roll mode', async () => {
   assert.deepEqual(settingsRead, ['core.rollMode']);
 });
 
+test('explicit public rolls override a saved blind mode and existing whisper recipients', async () => {
+  for (const generation of [13, 14]) {
+    const { roll } = await loadSystem(generation, generation === 14 ? 'blind' : 'blindroll');
+    const data = await roll.toMessage({ whisper: ['gm-id'] }, { rollMode: 'publicroll', create: false });
+    assert.deepEqual(data.whisper, []);
+    assert.equal(data.blind, false);
+  }
+});
+
+test('the legacy roll sentinel respects the saved private mode in both generations', async () => {
+  for (const generation of [13, 14]) {
+    const { roll } = await loadSystem(generation, generation === 14 ? 'self' : 'selfroll');
+    const data = await roll.toMessage({}, { rollMode: 'roll', create: false });
+    assert.deepEqual(data.whisper, ['player-id']);
+  }
+});
+
 test('private obligation rolls supply the appropriate core Roll option in both generations', async () => {
   for (const generation of [13, 14]) {
     const { chat } = await loadSystem(generation);
@@ -136,15 +156,41 @@ test('new effects use the modern type field, with the legacy format retained on 
 test('v14 effect display uses prepared duration text without mutating the original change', async () => {
   const { effects } = await loadSystem();
   const source = { name: 'Defense', duration: { units: 'rounds', value: 2 },
-    changes: [{ key: 'system.stats.defence.ranged', type: 'add', phase: 'base', priority: 20, value: '1' }] };
+    system: { changes: [{ key: 'system.stats.defence.ranged', type: 'add', phase: 'initial', priority: 20, value: '1' }] } };
   const document = { id: 'effect-id', parent: { name: 'Armor' }, active: true,
     duration: { label: '2 rounds' }, toObject: () => structuredClone(source) };
   const display = effects.transformEffects(document);
   assert.equal(display.duration, '2 rounds');
   assert.equal(display.changes[0].mode, 'ADD');
   assert.equal(display.changes[0].key, 'stats.defence.ranged');
-  assert.equal(source.changes[0].key, 'system.stats.defence.ranged');
-  assert.equal(source.changes[0].mode, undefined);
-  assert.equal(display.changes[0].phase, 'base');
+  assert.equal(source.system.changes[0].key, 'system.stats.defence.ranged');
+  assert.equal(source.system.changes[0].mode, undefined);
+  assert.equal(display.changes[0].phase, 'initial');
   assert.equal(display.changes[0].priority, 20);
+});
+
+test('the final effect phase does not count initial Force Rating bonuses a second time', async () => {
+  class ActorStub {
+    applyActiveEffects(phase) { this.phases.push(phase); }
+  }
+  const context = vm.createContext({ Actor: ActorStub });
+  const module = new vm.SourceTextModule(await readFile(new URL('../modules/actors/actor-ffg.js', import.meta.url), 'utf8'), { context });
+  await module.link(() => new vm.SyntheticModule(['default'], function () {
+    this.setExport('default', class {});
+  }, { context }));
+  await module.evaluate();
+  const actor = new module.namespace.ActorFFG();
+  actor.phases = [];
+  actor.system = { stats: { forcePool: { max: 2, value: 1 } } };
+  const skillChange = { key: 'system.skills.Discipline.force', value: 0 };
+  actor.allApplicableEffects = () => [
+    { active: true, changes: [{ key: 'system.stats.forcePool.max', value: 1 }, skillChange] },
+    { active: false, changes: [{ key: 'system.stats.forcePool.max', value: 5 }] },
+  ];
+  actor.applyActiveEffects('initial');
+  assert.equal(skillChange.value, 2, 'only active bonuses, minus committed dice');
+  actor.system.stats.forcePool.max = 3; // Core has now applied the initial bonus.
+  actor.applyActiveEffects('final');
+  assert.equal(skillChange.value, 2, 'final preparation must not add the same bonus again');
+  assert.deepEqual(actor.phases, ['initial', 'final'], 'both phases still reach core');
 });

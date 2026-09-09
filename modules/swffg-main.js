@@ -106,6 +106,18 @@ Hooks.once("init", async function () {
   CONFIG.Item.documentClass = ItemFFG;
   CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
 
+  if (game.release.generation >= 14) {
+    // Keep FFG's once/combat expiry alongside the core v14 effect changes.
+    CONFIG.ActiveEffect.dataModels.base = class extends foundry.data.ActiveEffectTypeDataModel {
+      static defineSchema() {
+        return {
+          ...super.defineSchema(),
+          duration: new foundry.data.fields.StringField({ required: false, nullable: true, initial: null }),
+        };
+      }
+    };
+  }
+
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee
   if (game.release.generation < 14) CONFIG.ActiveEffect.legacyTransferral = false;
@@ -1009,8 +1021,12 @@ Hooks.on("renderChatInput", (app, html, data) => {
       rollButton.type = "button";
       rollButton.classList.add("ui-control", "icon", "fa-light", "fa-dice-d20");
 
-      const rollPrivacyElement = document.querySelector("#roll-privacy");
-      rollPrivacyElement.appendChild(rollButton);
+      rollButton.setAttribute("aria-label", game.i18n.localize("SWFFG.RollingDefaultTitle"));
+      const rollPrivacyElement = document.querySelector("#message-modes, #roll-privacy");
+      if (!rollPrivacyElement) return;
+      // v14's split-button controls message modes, so keep the dice button beside it.
+      if (game.release.generation >= 14) rollPrivacyElement.after(rollButton);
+      else rollPrivacyElement.appendChild(rollButton);
 
       rollButton.onclick = async function () {
         const dicePool = new DicePoolFFG();

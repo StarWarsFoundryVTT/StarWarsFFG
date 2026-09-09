@@ -73,11 +73,11 @@ export default class EmbeddedItemHelpers {
     deleted_keys.forEach(function (cur_key) {
       cur_key = cur_key.substring(2);
       EmbeddedItemHelpers.removeKeyFromObject(
-          temporaryItem,
+          temporaryItem.system,
           cur_key,
       );
       EmbeddedItemHelpers.removeKeyFromObject(
-          realItem,
+          realItem?.system,
           cur_key,
       );
     });

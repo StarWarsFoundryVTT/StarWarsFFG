@@ -610,6 +610,7 @@ export default class ModifierHelpers {
     const inherentEffectName = `(inherent)`;
     const inherentEffect = existing.find(e => e.name === inherentEffectName);
     if (inherentEffect && Object.keys(formData.data).includes("attributes")) {
+      const inherentChanges = foundry.utils.deepClone(inherentEffect.changes);
       for (let k of Object.keys(formData.data.attributes)) {
         if (k.startsWith("attr")) {
           // inherent effects like "brawn" on "species" only - skip user-created active effects only
@@ -626,13 +627,16 @@ export default class ModifierHelpers {
             curMod['modType'],
             curMod['mod']
           );
-          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
-            inherentEffect.changes[inherentEffectChangeIndex].value = formData.data.attributes[k].value;
+            inherentChanges[inherentEffectChangeIndex].value = formData.data.attributes[k].value;
+          } else {
+            // A newly created species starts with no attributes until its first sheet edit.
+            inherentChanges.push({ key: modPath, ...EffectHelpers.changeType(), value: formData.data.attributes[k].value });
           }
         }
       }
-      await inherentEffect.update({changes: inherentEffect.changes});
+      await inherentEffect.update({changes: inherentChanges});
     }
     // some inherent effects are not in the `attribute` keyspace; make sure to get them as well
     if (inherentEffect && ["gear", "weapon", "armour"].includes(item.type)) {
@@ -764,8 +768,8 @@ export default class ModifierHelpers {
       const newBrawn = newChanges.find(ae => ae.key === "system.characteristics.Brawn.value").value;
       const newWillpower = newChanges.find(ae => ae.key === "system.characteristics.Willpower.value").value;
       // read the values from the form, if available, otherwise from the object
-      const wounds = formData?.data?.attributes?.Wounds?.value || item.system.attributes.Wounds.value;
-      const strain = formData?.data?.attributes?.Strain?.value || item.system.attributes.Strain.value;
+      const wounds = formData?.data?.attributes?.Wounds?.value ?? item.system.attributes.Wounds.value;
+      const strain = formData?.data?.attributes?.Strain?.value ?? item.system.attributes.Strain.value;
 
       for (const change of newChanges) {
         if (change.key === "system.stats.wounds.max") {

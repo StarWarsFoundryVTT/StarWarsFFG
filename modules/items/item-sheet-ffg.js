@@ -45,24 +45,25 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   /** @override */
   async getData(options) {
     let data = super.getData(options);
+    // v14 exposes the live Item here. Enrich a copy so rendering does not
+    // mutate document data before update() can detect and persist edits.
+    data.item = this.item.toObject(false);
     // this code was mostly written by Phind
     // removing a key from a dict in Foundry requires submitting it with a new key of `-=key` and a value of null
     // without explicitly replacing values, we end up duplicating entries instead of removing the one
     // so instead, we go and manually remove any mods which have been deleted
 
-    // find any deleted attributes
+    // Search item data only: the v14 sheet context also contains live Documents
+    // whose parent/collection references are circular.
+    const itemSystem = data.item.system;
     const deleted_keys = EmbeddedItemHelpers.findKeysIncludingStringRecursively(
-        data,
+        itemSystem,
         '-=attr',
     );
     // remove matching attributes from the existing object
     deleted_keys.forEach(function (cur_key) {
       EmbeddedItemHelpers.removeKeyFromObject(
-        data,
-        cur_key,
-      );
-      EmbeddedItemHelpers.removeKeyFromObject(
-        data,
+        itemSystem,
         cur_key,
       );
     });
@@ -407,10 +408,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       );
     }
 
-    data.renderedDesc = PopoutEditor.renderDiceImages(data.description, this.actor ? this.actor : {});
-    if (!data.renderedDesc) {
-      data.data.renderedDesc = PopoutEditor.renderDiceImages(data?.item?.system?.description, this.actor ? this.actor : {});
-    }
+    data.data.renderedDesc = await PopoutEditor.renderDiceImages(data.item.system.description, this.actor ?? {});
+    data.renderedDesc = data.data.renderedDesc;
 
     // get summarized data for qualities (e.g. weapons)
     data = this._getSummarizedQualities(data);
@@ -2012,6 +2011,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       CONFIG.logger.debug(toCreate);
       const createdEffects = await this.object.createEmbeddedDocuments("ActiveEffect", toCreate);
       await ItemHelpers.syncAEStatus(this.object, createdEffects);
+      if (this.object.actor && this.object.system.equippable) await this.object._syncEquippedEffects();
     } else {
       CONFIG.logger.debug(`Rejected transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
     }

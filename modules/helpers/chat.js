@@ -1,15 +1,17 @@
 /** Normalize the v13 roll modes and the v14 message modes at the system boundary. */
-const LEGACY_MODES = { publicroll: "roll", gmroll: "gm", blindroll: "blind", selfroll: "self" };
-const ROLL_MODES = { roll: "publicroll", gm: "gmroll", blind: "blindroll", self: "selfroll", ic: "publicroll", ooc: "publicroll" };
+const LEGACY_MODES = { publicroll: "public", gmroll: "gm", blindroll: "blind", selfroll: "self", ooc: "public" };
+const ROLL_MODES = { public: "publicroll", gm: "gmroll", blind: "blindroll", self: "selfroll", ic: "publicroll" };
 
 export function getMessageMode(options = {}) {
   const key = game.release.generation >= 14 ? "messageMode" : "rollMode";
-  const mode = options.messageMode ?? options.rollMode ?? game.settings.get("core", key);
+  let mode = options.messageMode ?? options.rollMode;
+  // The legacy "roll" value means the user's selected mode, not a public roll.
+  if (!mode || mode === "roll") mode = game.settings.get("core", key);
   return LEGACY_MODES[mode] ?? mode;
 }
 
 export function getRollMessageOptions(mode) {
-  const normalized = LEGACY_MODES[mode] ?? mode;
+  const normalized = getMessageMode({ messageMode: mode });
   return game.release.generation >= 14
     ? { messageMode: normalized }
     : { rollMode: ROLL_MODES[normalized] ?? normalized };

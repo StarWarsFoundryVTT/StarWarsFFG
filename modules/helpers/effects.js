@@ -14,11 +14,13 @@ export default class EffectHelpers {
 
   // Map effects from EmbeddedCollection
   static transformEffects(originalEffect, _iterator, _effects) {
-    const effect = originalEffect.toObject();
+    const source = originalEffect.toObject();
+    // Make enumerable display fields instead of writing through v14's legacy shims.
+    const effect = { ...source, changes: source.system?.changes ?? source.changes ?? [] };
 
     // Copy properties we need from the prototype
     effect.id = originalEffect.id;
-    effect.parentName = originalEffect.parent.name;
+    effect.parentName = originalEffect.parent?.name;
     effect.active = originalEffect.active;
 
     // Convert duration to string
@@ -37,14 +39,13 @@ export default class EffectHelpers {
     }
 
     // Update each change from this effect
-    effect.changes.forEach((change, index) => {
+    effect.changes = effect.changes.map((change) => {
       // Convert mode to string
-      change.mode = change.type?.toUpperCase() ?? EffectHelpers.MODES[change.mode];
-
-      // LStrip 'system.' for shorter keys
-      if (change.key.startsWith("system.")) {
-        change.key = change.key.substring(7);
-      }
+      return {
+        ...change,
+        mode: change.type?.toUpperCase() ?? EffectHelpers.MODES[change.mode],
+        key: change.key?.startsWith("system.") ? change.key.substring(7) : change.key,
+      };
     });
 
     return effect;

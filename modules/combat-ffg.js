@@ -287,7 +287,7 @@ export class CombatFFG extends Combat {
 
                   // Determine the roll mode
                   let messageMode = getMessageMode(messageOptions);
-                  if ((c.token.hidden || c.hidden) && ["roll", "ic", "ooc"].includes(messageMode)) messageMode = "gm";
+                  if ((c.token.hidden || c.hidden) && ["public", "ic"].includes(messageMode)) messageMode = "gm";
 
                   // Construct chat message data
                   let messageData = foundry.utils.mergeObject(

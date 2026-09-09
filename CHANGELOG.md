@@ -4,7 +4,16 @@
 * Return plain chat data for deferred initiative messages and keep hidden combatants' public initiative rolls private.
 * Generate typed Active Effect changes on v14; preserve effect metadata when updating ranks and forward the effect application phase.
 * Remove obsolete token effect access from the combat tracker and use current effect images and duration labels.
+* Restore the chat dice button beside the v14 message-mode controls and correctly map public rolls and legacy default-mode arguments.
+* Avoid circular Document traversal when rendering item sheets or removing embedded item attributes.
+* Prevent initial Force bonuses from being counted again in the final effect phase; exclude inactive bonuses.
+* Render v14 effect changes as plain display data without writing through core compatibility accessors.
+* Preserve once-per-roll and combat effect durations in the v14 Active Effect data model.
+* Copy source effect durations during item drops, synchronize equipment/accessory effects, and keep installed vehicle components active.
+* Enrich item-sheet copies without mutating live documents and create missing inherent bonuses when editing a new species.
+* Prepare items synchronously so sheet snapshots include the complete talent tree and calculated values.
 * Add isolated compatibility tests and require an explicitly identified disposable world for browser tests.
+* Update the browser test runner to Playwright 1.62.1 and adapt v14 login and WSL rendering.
 * Allow v14 development testing; compatibility remains verified at v13 until the v14 runtime checks in `docs/foundry-v14.md` are complete.
 
 `2.0.4`

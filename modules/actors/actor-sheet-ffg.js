@@ -67,6 +67,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const item = await Item.implementation.fromDropData(data);
       // do not Draw values from the underlying data source rather than transformed values - we want to use adjusted values
       const itemData = item.toObject(false);
+      // Keep adjusted item values, but serialize effects from their source data:
+      // v14 prepares a permanent duration as Infinity, which cannot be persisted.
+      if (game.release.generation >= 14) itemData.effects = item.effects.map(effect => effect.toObject());
 
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
@@ -226,6 +229,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     data.token = this.token;
     data.items = this.actor.items;
+    await Promise.all(data.items.map(async item => {
+      item.system.renderedDesc = await PopoutEditor.renderDiceImages(item.system.description, this.actor);
+    }));
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = foundry.utils.mergeObject(data.actor, options.data);

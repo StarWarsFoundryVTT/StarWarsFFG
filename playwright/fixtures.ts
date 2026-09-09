@@ -387,10 +387,10 @@ export class Items {
       statName = 'defence';
     }
 
-    if (['defense', 'soak', 'encumbrance', 'hardpoints', 'rarity'].includes(statName)) {
+    if (['defence', 'soak', 'encumbrance', 'hardpoints', 'rarity'].includes(statName)) {
       await expect(this.sheetLocator.locator(`input[name="data.${statName}.value"]`)).toHaveValue(statValue);
     } else if (['Wounds', 'Strain', 'Brawn', 'Agility', 'Intellect', 'Cunning', 'Willpower', 'Presence'].includes(statName)) {
-      await this.sheetLocator.locator(`input[name="data.attributes.${statName}.value"]`).fill(statValue);
+      await expect(this.sheetLocator.locator(`input[name="data.attributes.${statName}.value"]`)).toHaveValue(statValue);
     }
   }
 

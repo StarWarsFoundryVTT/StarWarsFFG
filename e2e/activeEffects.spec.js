@@ -2,13 +2,46 @@
 import { test, expect } from '@playwright/test';
 import {Actors, Items} from "../playwright/fixtures";
 
+test.setTimeout(90_000);
+
+// A previous failed run may leave documents behind. Limit cleanup to names used
+// by this suite and require the explicitly configured disposable world.
+const testNames = [
+  'armorActor', 'qa armor', 'qa embeddedArmorActor', 'qa armorItem', 'qa embeddedArmorAttachment', 'qa embeddedMod',
+  'careerActor', 'qa career', 'qa criticalInjuryActor', 'qa criticalInjuryItem',
+  'qa forcePowerActor', 'qa forcePowerItem', 'qa gearActor', 'qa gearItem',
+  'qa signatureAbilityActor', 'qa signatureAbilityItem', 'qa specActor', 'qa specItem',
+  'qa speciesActor', 'qa speciesItem', 'qa talentActor', 'qa talentItem', 'qa weaponActor', 'qa weaponItem',
+  'qa embeddedWeaponActor', 'qa embeddedWeaponItem', 'qa embeddedWeaponAttachment',
+  'qa critActor', 'qa critItem', 'qa attachmentActor', 'qa shipAttachment', 'qa shipWeaponActor',
+  'qa shipWeaponItem', 'qa shipAttActor', 'qa shipAttWpn', 'qa shipAttAtt',
+];
 test.beforeEach(async ({ page }) => {
+  // SwiftShader is intentional in WSL/CI; dismiss this specific persistent notice when it covers a control.
+  await page.addLocatorHandler(page.locator('#notifications .notification').filter({
+    hasText: 'Your web browser does not have hardware acceleration enabled.',
+  }), notice => notice.click());
   await page.goto('/game/');
-  // v13 shows scene loading as a transient progress notification rather than a persistent "Loading"
-  // bar, so wait for the UI to actually be up instead of watching that text come and go. The destiny
-  // tracker is rendered by the system on ready, so it also proves the system finished booting.
   await expect(page.locator('#sidebar')).toBeVisible();
   await expect(page.locator('#destinyDark')).toBeVisible({ timeout: 30_000 });
+  await page.evaluate(async ({ world, names }) => {
+    if (!world || game.world.id !== world) throw new Error('Refusing cleanup outside the test world');
+    for (const [collection, cls] of [[game.actors, game.ffg.ActorFFG], [game.items, game.ffg.ItemFFG]]) {
+      const ids = collection.filter(doc => names.includes(doc.name)).map(doc => doc.id);
+      if (ids.length) await cls.deleteDocuments(ids);
+    }
+  }, { world: process.env.FOUNDRY_TEST_WORLD, names: testNames });
+});
+
+test.afterEach(async ({ page }, testInfo) => {
+  if (testInfo.status === testInfo.expectedStatus) return;
+  const documents = await page.evaluate(names => game.actors.filter(a => names.includes(a.name)).map(actor => ({
+    name: actor.name, skills: actor.system.skills, attributes: actor.system.characteristics, stats: actor.system.stats,
+    items: actor.items.map(item => ({ name: item.name, type: item.type, effects: item.effects.map(e => e.toObject()),
+      talents: item.system.talents, upgrades: item.system.upgrades, attributes: item.system.attributes,
+      equippable: item.system.equippable })),
+  })), testNames);
+  await testInfo.attach('effect-documents', { body: JSON.stringify(documents, null, 2), contentType: 'application/json' });
 });
 
 // TODO: most of these tests should be extended to confirm that they still work if they're done while the item is on an actor
@@ -127,6 +160,7 @@ test('force power applies correctly', async ({ page }) => {
 
   // drag and drop onto the character
   await page.getByRole('listitem').filter({ hasText: itemName }).dragTo(page.locator('.character-details-table'));
+  await page.getByRole('button', { name: 'Grant', exact: true }).click();
   await fpActor.switchTab('characteristics');
   await fpActor.checkSkillModifiers('Computers', 'Success', '2');
 
@@ -176,6 +210,7 @@ test('signature ability applies correctly', async ({ page }) => {
 
   // drag and drop onto the character
   await page.getByRole('listitem').filter({ hasText: itemName }).dragTo(page.locator('.character-details-table'));
+  await page.getByRole('button', { name: 'Grant', exact: true }).click();
   await saActor.switchTab('characteristics');
   await saActor.checkSkillModifiers('Medicine', 'Success', '1');
 
@@ -201,6 +236,7 @@ const actorName = "qa specActor";
 
   // drag and drop onto the character
   await page.getByRole('listitem').filter({ hasText: itemName }).dragTo(page.locator('.character-details-table'));
+  await page.getByRole('button', { name: 'Grant', exact: true }).click();
   await spActor.switchTab('characteristics');
   await spActor.checkSkillModifiers('Perception', 'boost', '3');
 
@@ -320,7 +356,6 @@ test('embedded armor applies correctly', async ({ page }) => {
   await embeddedActor.switchTab('gear');
   await embeddedActor.checkStat('soak', '0');
   await page.getByRole('listitem').filter({ hasText: baseItemName }).dragTo(page.locator('.tab.items.active'));
-  // TODO: this should probably be 0, because the AE should not apply until equipped
   await embeddedActor.checkStat('soak', '0');
 
   // okay, add the mod
@@ -332,8 +367,8 @@ test('embedded armor applies correctly', async ({ page }) => {
   await embeddedActor.editItem(baseItemName);
   await page.getByRole('listitem').filter({ hasText: modName }).dragTo(page.locator('.attachments.items'));
   await armor.closeSheet();
-  await embeddedActor.checkStat('defense.melee', '1');
-  await embeddedActor.checkStat('defence.ranged', '0');
+  await embeddedActor.checkStat('defense.melee', '0');
+  await embeddedActor.checkStat('defense.ranged', '0');
   await embeddedActor.checkStat('soak', '0');
 
   // okay, now add the mod to the attachment
@@ -356,7 +391,7 @@ test('embedded armor applies correctly', async ({ page }) => {
   await armor.closeSheet();
   await embeddedActor.equipItem(baseItemName);
   await embeddedActor.checkStat('defense.melee', '2');
-  await embeddedActor.checkStat('defence.ranged', '0');
+  await embeddedActor.checkStat('defense.ranged', '0');
 
   // clean up
   await embeddedActor.remove();
@@ -389,8 +424,8 @@ test('embedded weapons applies correctly', async ({ page }) => {
   await embeddedActor.switchTab('gear');
   await embeddedActor.checkStat('soak', '0');
   await page.getByRole('listitem').filter({ hasText: baseItemName }).dragTo(page.locator('.tab.items.active'));
-  // TODO: this should probably be 0, because the AE should not apply until equipped
-  await embeddedActor.checkStat('soak', '1');
+  // Attachment effects stay inactive until the weapon is equipped.
+  await embeddedActor.checkStat('soak', '0');
 
   // create the mod
   const weaponMod = new Items(page, modName, "itemmodifier");
@@ -404,9 +439,9 @@ test('embedded weapons applies correctly', async ({ page }) => {
   // add the mod to the weapon
   await page.getByRole('listitem').filter({ hasText: modName }).dragTo(page.locator('.attachments.items'));
   await weapon.closeSheet();
-  await embeddedActor.checkStat('defense.melee', '1');
-  await embeddedActor.checkStat('defence.ranged', '0');
-  await embeddedActor.checkStat('soak', '1');
+  await embeddedActor.checkStat('defense.melee', '0');
+  await embeddedActor.checkStat('defense.ranged', '0');
+  await embeddedActor.checkStat('soak', '0');
 
   // okay, now add the mod to the attachment
   await embeddedActor.editItem(baseItemName);
@@ -430,7 +465,7 @@ test('embedded weapons applies correctly', async ({ page }) => {
   await embeddedActor.equipItem(baseItemName);
   // validate tha the second mod instance is adding to the AE properly
   await embeddedActor.checkStat('defense.melee', '2');
-  await embeddedActor.checkStat('defence.ranged', '0');
+  await embeddedActor.checkStat('defense.ranged', '0');
 
   // clean up
   await embeddedActor.remove();

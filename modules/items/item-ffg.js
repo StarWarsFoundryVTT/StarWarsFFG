@@ -68,6 +68,9 @@ export class ItemFFG extends ItemBaseFFG {
     await super._onCreate(data, options, user);
 
     await this._onCreateAEs(options, force);
+    // Creation may not produce an equippable update when copied values are unchanged.
+    // Explicitly synchronize copied effects before the item is used by its Actor.
+    if (this.actor && this.system.equippable) await this._syncEquippedEffects();
   }
 
   async _onCreateAEs(options, force=false) {
@@ -245,16 +248,19 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     // handle equip / unequip by suspending / unsuspending AEs
-    const updatedExistingEffects = this.getEmbeddedCollection("ActiveEffect");
-    if (changed?.system?.equippable && updatedExistingEffects) {
-      const equipped = changed.system.equippable.equipped;
-      CONFIG.logger.debug("caught equip / unequip, checking if Active Effect state should be synced");
-      await ItemHelpers.syncAEStatus(this, updatedExistingEffects);
-      for (const effect of updatedExistingEffects) {
-        if (await ItemHelpers.shouldUpdateAEStatus(this, effect)) {
-          await ItemHelpers.updateEncumbranceOnEquip(this, effect, equipped);
-          await effect.update({disabled: !equipped});
-        }
+    if (changed?.system?.equippable) await this._syncEquippedEffects();
+  }
+
+  /** Keep copied and updated equipment effects aligned with the saved equip state. */
+  async _syncEquippedEffects() {
+    // Vehicle components are installed directly; their sheet has no equip toggle.
+    const equipped = this.actor?.type === "vehicle" || !!this.system.equippable.equipped;
+    const effects = this.getEmbeddedCollection("ActiveEffect");
+    await ItemHelpers.syncAEStatus(this, effects);
+    for (const effect of effects) {
+      if (await ItemHelpers.shouldUpdateAEStatus(this, effect)) {
+        await ItemHelpers.updateEncumbranceOnEquip(this, effect, equipped);
+        if (effect.disabled !== !equipped) await effect.update({disabled: !equipped});
       }
     }
   }
@@ -262,16 +268,17 @@ export class ItemFFG extends ItemBaseFFG {
   /**
    * Augment the basic Item data model with additional dynamic data.
    */
-  async prepareData() {
-    await super.prepareData();
+  prepareData() {
+    // Foundry prepares Documents synchronously, before taking sheet snapshots.
+    super.prepareData();
 
     // Get the Item's data
     const item = this;
-    const actor = this.actor ? this.actor : {};
+    const actor = this.actor ?? {};
     const data = item.system;
 
     if (!item.flags.starwarsffg) {
-      await item.updateSource({
+      item.updateSource({
         flags: {
           starwarsffg: {
             isCompendium: !!this.compendium,
@@ -299,7 +306,8 @@ export class ItemFFG extends ItemBaseFFG {
       }
     }
 
-    data.renderedDesc = await PopoutEditor.renderDiceImages(data.description, actor);
+    // Rich text enrichment is asynchronous and belongs in the sheet's getData.
+    data.renderedDesc = data.description;
 
     // perform localisation of dynamic values
     switch (this.type) {
