@@ -1,7 +1,7 @@
-import ItemBaseFFG from "../items/itembase-ffg.js";
+import { FormApplicationV2 } from "../applications/form-application-v2.js";
 import ImportHelpers from "./import-helpers.js";
 
-export default class SWAImporter extends FormApplication {
+export default class SWAImporter extends FormApplicationV2 {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -168,9 +168,9 @@ export default class SWAImporter extends FormApplication {
           let fileData;
           try {
             fileData = JSON.parse(file);
-          } catch (err) {
+          } catch {
             const newfile = file.replace(/[^ -~]+/, "");
-            const newFile1 = newfile.replace(/[\u0000-\u0019]+/g, "");
+            const newFile1 = [...newfile].filter((character) => character.charCodeAt(0) > 0x19).join("");
 
             fileData = JSON.parse(newFile1);
           }
@@ -469,7 +469,7 @@ export default class SWAImporter extends FormApplication {
                   let isMinion = Array.isArray(item.skills);
                   let adversarySkills = isMinion ? item.skills : Object.keys(item.skills);
                   adversarySkills.forEach((skillRaw) => {
-                    let skill = skillRaw.match(/^[^\(]*/)[0];
+                    let skill = skillRaw.match(/^[^()]*/)[0];
                     skill = $.trim(skill);
                     let alternateCharacteristic = skillRaw.match(/(?<=\()(.*?)(?=\))/)?.length ? skillRaw.match(/(?<=\()(.*?)(?=\))/)[0] : undefined;
 

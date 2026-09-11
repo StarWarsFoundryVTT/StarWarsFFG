@@ -16,11 +16,17 @@ export default [
           terms: ["TODO"],
         },
       ],
-      "import-x/no-cycle": ["warn"],
+      "import-x/no-cycle": ["warn", { allowUnsafeDynamicCyclicDependency: true }],
       "no-underscore-dangle": "off",
       "no-param-reassign": ["warn"],
-      "class-methods-use-this": ["warn"],
-      "no-unused-vars": ["warn"],
+      "class-methods-use-this": "off",
+      "no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
       "no-nested-ternary": "off",
       "no-restricted-syntax": [
         "warn",

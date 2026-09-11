@@ -2,7 +2,8 @@
  * Dice pool utility specializing in the FFG special dice
  */
 export class DicePoolFFG {
-  constructor(obj) {
+  constructor(initialObj) {
+    let obj = initialObj;
     if (obj === undefined) {
       obj = {};
     }
@@ -41,7 +42,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Rank") {
             return `${rank.name} (${rank.type}): ${rank.value} rank(s)`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.boost?.length) {
@@ -51,7 +52,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Boost") {
             return `${rank.name} (${rank.type}): +${rank.value} boost dice`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} boost dice`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): +${rank.value} boost dice`;
         });
     }
     if (obj?.source?.remsetback?.length) {
@@ -61,7 +62,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Remove Setback") {
             return `${rank.name} (${rank.type}): -${rank.value} setback dice`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): -${rank.value} setback dice`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): -${rank.value} setback dice`;
         });
     }
     if (obj?.source?.setback?.length) {
@@ -71,7 +72,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Setback") {
             return `${rank.name} (${rank.type}): +${rank.value} setback dice`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): +${rank.value} setback dice`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): +${rank.value} setback dice`;
         });
     }
     if (obj?.source?.upgrades?.length) {
@@ -81,7 +82,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Upgrade") {
             return `${rank.name} (${rank.type}): ${rank.value} upgrade(s)`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.success?.length) {
@@ -91,7 +92,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Success") {
             return `${rank.name} (${rank.type}): ${rank.value} Success`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.advantage?.length) {
@@ -101,7 +102,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Advantage") {
             return `${rank.name} (${rank.type}): ${rank.value} Advantage`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.light?.length) {
@@ -111,7 +112,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Light") {
             return `${rank.name} (${rank.type}): ${rank.value} Light`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.failure?.length) {
@@ -121,7 +122,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Failure") {
             return `${rank.name} (${rank.type}): ${rank.value} Failure`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.threat?.length) {
@@ -131,7 +132,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Threat") {
             return `${rank.name} (${rank.type}): ${rank.value} Threat`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
     if (obj?.source?.dark?.length) {
@@ -141,7 +142,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Dark") {
             return `${rank.name} (${rank.type}): ${rank.value} Dark`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
 
@@ -152,7 +153,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Despair") {
             return `${rank.name} (${rank.type}): ${rank.value} Despair`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
 
@@ -163,7 +164,7 @@ export class DicePoolFFG {
           if (rank.modtype === "Skill Add Triumph") {
             return `${rank.name} (${rank.type}): ${rank.value} Triumph`;
           }
-          return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
+          return `${rank.modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
   }
@@ -173,7 +174,8 @@ export class DicePoolFFG {
    * dice or adding an ability die if none remain.
    * @param times the number of times to perform this operation, defaults to 1
    */
-  upgrade(times) {
+  upgrade(initialTimes) {
+    let times = initialTimes;
     if (times === undefined) {
       times = 1;
     }
@@ -205,7 +207,8 @@ export class DicePoolFFG {
    * into challenge dice or adding an difficulty die if none remain.
    * @param times the number of times to perform this operation, defaults to 1
    */
-  upgradeDifficulty(times) {
+  upgradeDifficulty(initialTimes) {
+    let times = initialTimes;
     if (times === undefined) {
       times = 1;
     }
@@ -262,7 +265,8 @@ export class DicePoolFFG {
    * @param container {HTMLElement} where to place the preview. A container will be generated if this is undefined
    * @returns {HTMLElement}
    */
-  renderPreview(container) {
+  renderPreview(initialContainer) {
+    let container = initialContainer;
     if (container === undefined) {
       container = document.createElement("div");
       container.classList.add("dice-pool");

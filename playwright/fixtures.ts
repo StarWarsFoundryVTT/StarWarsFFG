@@ -77,6 +77,21 @@ async function deleteDirectoryEntry(page: Page, entries: Locator) {
   await expect(entries).toHaveCount(before - 1);
 }
 
+/** Open only the explicitly configured disposable world before any test writes. */
+export async function openGame(page: Page) {
+  await page.addLocatorHandler(page.locator('#notifications .notification').filter({
+    hasText: 'Your web browser does not have hardware acceleration enabled.',
+  }), notice => notice.click());
+  await page.goto('/game');
+  await expect(page.locator('#destinyDark')).toBeVisible({timeout: 30_000});
+  const identity = await page.evaluate(() => {
+    const game = (window as any).game;
+    return {world: game.world.id, system: game.system.id, generation: game.release.generation, isGM: game.user.isGM};
+  });
+  expect(identity).toEqual({world: process.env.FOUNDRY_TEST_WORLD, system: 'starwarsffg',
+    generation: Number(process.env.FOUNDRY_TEST_GENERATION), isGM: true});
+}
+
 export class Actors {
   private readonly actorName: string;
   private readonly actorType: string;
@@ -387,10 +402,10 @@ export class Items {
       statName = 'defence';
     }
 
-    if (['defense', 'soak', 'encumbrance', 'hardpoints', 'rarity'].includes(statName)) {
+    if (['defence', 'soak', 'encumbrance', 'hardpoints', 'rarity'].includes(statName)) {
       await expect(this.sheetLocator.locator(`input[name="data.${statName}.value"]`)).toHaveValue(statValue);
     } else if (['Wounds', 'Strain', 'Brawn', 'Agility', 'Intellect', 'Cunning', 'Willpower', 'Presence'].includes(statName)) {
-      await this.sheetLocator.locator(`input[name="data.attributes.${statName}.value"]`).fill(statValue);
+      await expect(this.sheetLocator.locator(`input[name="data.attributes.${statName}.value"]`)).toHaveValue(statValue);
     }
   }
 

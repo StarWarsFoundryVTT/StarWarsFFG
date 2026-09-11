@@ -1,106 +1,79 @@
 import ActorHelpers from "../helpers/actor-helpers.js";
 
+const { DialogV2 } = foundry.applications.api;
+
+async function renderOptionsContent(options) {
+  const content = document.createElement("div");
+  content.innerHTML = await foundry.applications.handlebars.renderTemplate(
+    "systems/starwarsffg/templates/dialogs/ffg-sheet-options.html",
+    {options},
+  );
+  return content;
+}
+
 export default class ActorOptions {
-  constructor(data, html) {
+  constructor(data) {
     this.data = data;
     this.options = {};
-    this.init(html);
     this.suspended = {};
   }
 
-  init(html) {
-      const options = $(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] .ffg-sheet-options`);
-      if (options.length === 0) {
-        const button = $(`<a class="ffg-sheet-options"><i class="fas fa-wrench"></i>${game.i18n.localize("SWFFG.SheetOptions")}</a>`);
-        button.insertBefore(`.starwarsffg.sheet.actor[data-appid='${this.data.appId}'] header a:first`);
-        button.on("click", this.handler.bind(this));
-      }
-  }
-
-  handler(event) {
+  async handler() {
     const title = `${game.i18n.localize("SWFFG.CharacterSheet")} ${game.i18n.localize("SWFFG.Options")}: ${this.data.actor.name}`;
+    await DialogV2.wait({
+      window: {title},
+      classes: ["starwarsffg"],
+      content: await renderOptionsContent(this.options),
+      buttons: [{
+        action: "accept",
+        icon: "fas fa-check",
+        label: game.i18n.localize("SWFFG.ButtonAccept"),
+        default: true,
+        callback: async (_event, _button, dialog) => {
+          const controls = $(dialog.element).find("input, select");
+          const updateObject = {};
 
-    new Dialog(
-      {
-        title,
-        content: {
-          options: this.options,
+          for (const control of controls) {
+            const value = control.dataset.dtype === "Boolean" ? control.checked : control.value;
+            updateObject[`flags.starwarsffg.${control.name}`] = value;
+            this.options[control.id].value = value;
+          }
+
+          const editMode = updateObject["flags.starwarsffg.config.enableEditMode"];
+          if (editMode && Object.keys(this.suspended).length === 0) {
+            this.suspended = await ActorHelpers.beginEditMode(this.data.object);
+            updateObject["flags.starwarsffg.config.editModeActor"] = game.user.id;
+          } else if (!editMode) {
+            if (Object.keys(this.suspended).length > 0) {
+              await ActorHelpers.endEditMode(this.data.object, this.suspended);
+              this.suspended = {};
+            }
+            updateObject["flags.starwarsffg.config.editModeActor"] = "";
+          }
+
+          await this.data.object.update(updateObject);
+          this.data.object.sheet.render(true);
         },
-        buttons: {
-          one: {
-            icon: '<i class="fas fa-check"></i>',
-            label: game.i18n.localize("SWFFG.ButtonAccept"),
-            callback: async (html) => {
-              const controls = html.find("input, select");
-
-              let updateObject = {};
-
-              for (let i = 0; i < controls.length; i += 1) {
-                const control = controls[i];
-                let value;
-                if (control.dataset["dtype"] === "Boolean") {
-                  value = control.checked;
-                } else {
-                  value = control.value;
-                }
-
-                updateObject[`flags.starwarsffg.${control.name}`] = value;
-                this.options[control.id].value = value;
-              }
-
-              // read the most recent version, not the registered flag version
-              const editMode = updateObject['flags.starwarsffg.config.enableEditMode'];
-              if (editMode) {
-                if (Object.keys(this.suspended).length === 0) {
-                  // suspend AEs
-                  this.suspended = await ActorHelpers.beginEditMode(this.data.object);
-                  updateObject[`flags.starwarsffg.config.editModeActor`] = game.user.id;
-                }
-              } else {
-                // unsuspend AEs
-                if (Object.keys(this.suspended).length > 0) {
-                  await ActorHelpers.endEditMode(this.data.object, this.suspended);
-                  this.suspended = {};
-                }
-                updateObject[`flags.starwarsffg.config.editModeActor`] = "";
-              }
-
-              this.data.object.update(updateObject);
-              this.data.object.sheet.render(true);
-            },
-          },
-          two: {
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize("SWFFG.Cancel"),
-          },
-        },
-      },
-      {
-        classes: ["dialog", "starwarsffg"],
-        template: "systems/starwarsffg/templates/dialogs/ffg-sheet-options.html",
-      }
-    ).render(true);
+      }, {
+        action: "cancel",
+        icon: "fas fa-times",
+        label: game.i18n.localize("SWFFG.Cancel"),
+        type: "button",
+      }],
+    });
   }
 
   async register(optionName, options) {
-    if (!this.options[optionName]) {
-      this.options[optionName] = { ...options };
-    }
-    if (typeof this.data.object.flags?.starwarsffg?.config == "undefined") {
+    if (!this.options[optionName]) this.options[optionName] = {...options};
+    if (typeof this.data.object.flags?.starwarsffg?.config === "undefined") {
       await this.data.object.setFlag("starwarsffg", "config", {});
     }
-
-    if (typeof this.data.object.flags?.starwarsffg?.config[optionName] !== "undefined") {
-      this.options[optionName].value = this.data.object.flags?.starwarsffg?.config[optionName];
-    } else {
-      this.options[optionName].value = this.options[optionName].default;
-    }
+    this.options[optionName].value = this.data.object.flags?.starwarsffg?.config[optionName]
+      ?? this.options[optionName].default;
   }
 
   registerMany(optionsArray) {
-    optionsArray.forEach((option) => {
-      this.register(option.name, option.options);
-    });
+    optionsArray.forEach(option => this.register(option.name, option.options));
   }
 
   unregister(optionName) {

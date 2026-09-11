@@ -63,7 +63,7 @@ export default class ForcePowers {
 
             try {
               data.data.base_cost = item.AbilityRows.AbilityRow[0].Costs.Cost[0];
-            } catch (err) {
+            } catch {
               data.data.base_cost = 0;
             }
 
@@ -171,7 +171,7 @@ export default class ForcePowers {
               } else {
                 data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
               }
-            } catch (err) {
+            } catch {
               CONFIG.logger.debug(`No categories found for item ${item.Key}`);
             }
             if (item?.Type) {

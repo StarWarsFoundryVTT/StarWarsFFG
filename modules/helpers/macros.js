@@ -1,103 +1,52 @@
+// Macro API updates adapted from salohcin714's PR #2280; owned weapons use their actual parent Actor.
 const createMacroItem = async (macro) => {
-  const macroExists = game.macros.find((m) => m.name === macro.name && m.command === macro.command);
-  if (!macroExists) {
-    return await Macro.create(macro);
-  }
-
-  return false;
+  const existing = game.macros.find(m => m.name === macro.name && m.command === macro.command);
+  return existing ?? CONFIG.Macro.documentClass.create(macro);
 };
 
-// Simple function for handling the creation of rollable weapon macros on hotbarDrop event.
+async function createSkillMacro(data) {
+  const actor = game.actors.get(data.actorId);
+  if (!actor) return null;
+  const command = `
+    const ffgactor = game.actors.get(${JSON.stringify(data.actorId)});
+    const skill = ffgactor.system.skills[${JSON.stringify(data.data.skill)}];
+    const characteristic = ffgactor.system.characteristics[${JSON.stringify(data.data.characteristic)}];
+    const actorSheet = await ffgactor.sheet.getData();
+    await game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, 2, actorSheet);`;
+  return createMacroItem({name: `${actor.name}-${data.data.skill}`, type: "script", command});
+}
+
 export async function createFFGMacro(bar, data, slot) {
   let macro;
-  if (["Item", "Actor"].includes(data.type)) {
-    const entity = await fromUuid(data.uuid);
-    if (!entity) {
-      return;
-    }
+  if (data?.data?.type === "skill") {
+    macro = await createSkillMacro(data);
+  } else if (["Item", "Actor"].includes(data.type)) {
+    const entity = await foundry.utils.fromUuid(data.uuid);
+    if (!entity) return false;
     if (entity.type === "weapon") {
-      let command;
-      if (!entity?.flags?.starwarsffg?.ffgIsOwned) {
-        command = `await Hotbar.toggleDocumentSheet("${data.uuid}");`;
-      } else {
-        command = `
-      game.ffg.DiceHelpers.rollItem(\"${item._id}\", \"${entity.actorId}\");
-      `;
-      }
-      macro = await createMacroItem({
-        name: entity.name,
-        type: "script",
-        img: entity.img,
-        command: command,
-      });
+      const actorId = entity.actor?.id;
+      const command = actorId
+        ? `await game.ffg.DiceHelpers.rollItem(${JSON.stringify(entity.id)}, ${JSON.stringify(actorId)});`
+        : `await ui.hotbar.constructor.toggleDocumentSheet(${JSON.stringify(data.uuid)});`;
+      macro = await createMacroItem({name: entity.name, type: "script", img: entity.img, command});
     } else if (entity.type === "skill") {
-      const actor = game.actors.get(data.actorId);
-      const command = `
-    const ffgactor = game.actors.get("${data.actorId}");
-    const skill = ffgactor.data.data.skills["${data.data.skill}"];
-    const characteristic = ffgactor.data.data.characteristics["${data.data.characteristic}"];
-    const actorSheet = ffgactor.sheet.getData();
-    game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, 2, actorSheet);`;
-      macro = await createMacroItem({
-        name: `${actor.name}-${data.data.skill}`,
-        type: "script",
-        command: command,
-      });
+      macro = await createSkillMacro(data);
     }
-
-
-  } else if (data.type === "Transfer") {
-    if (data.data.type !== "weapon" && data.data.type !== "skill") {
-      return;
-    }
-    if (data.data.type === "weapon") {
-      if (!("data" in data)) return ui.notifications.warn("You can only create macro buttons for owned weapon items.");
-      const item = data.data;
-      // Create the macro command
-      const command = `
-    game.ffg.DiceHelpers.rollItem(\"${item._id}\", \"${data.actorId}\");
-    `;
-      macro = await createMacroItem({
-        name: `Attack with ${item.name}`,
-        type: "script",
-        img: item.img,
-        command: command,
-      });
-    }
-  } else if (data?.data?.type === "skill") {
-      const actor = game.actors.get(data.actorId);
-      const command = `
-    // game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, difficulty, actorSheet, flavortext, sound);
-    const ffgactor = game.actors.get("${data.actorId}");
-    const skill = ffgactor.system.skills["${data.data.skill}"];
-    const characteristic = ffgactor.system.characteristics["${data.data.characteristic}"];
-    const actorSheet = ffgactor.sheet.getData();
-    game.ffg.DiceHelpers.rollSkillDirect(skill, characteristic, 2, actorSheet);`;
-      macro = await createMacroItem({
-        name: `${actor.name}-${data.data.skill}`,
-        type: "script",
-        command: command,
-      });
-    }
-  if (macro) {
-    game.user.assignHotbarMacro(macro, slot);
+  } else if (data.type === "Transfer" && data.data?.type === "weapon") {
+    const item = data.data;
+    const command = `await game.ffg.DiceHelpers.rollItem(${JSON.stringify(item._id)}, ${JSON.stringify(data.actorId)});`;
+    macro = await createMacroItem({name: `Attack with ${item.name}`, type: "script", img: item.img, command});
   }
+  if (macro) await game.user.assignHotbarMacro(macro, slot);
   return false;
 }
 
-/**
- * Update a macro with the image of the entity in the macro
- * @param macro
- * @returns {Promise<*>}
- */
+/** Update the image for macros opening a document sheet. */
 export async function updateMacro(macro) {
-  let uuid = macro.command.split("\"");
-  if (uuid.length >= 1) {
-    const document = await fromUuid(uuid[1]);
-    if (document?.img) {
-      macro.img = document?.img;
-      await macro.update({img: document.img});
-    }
+  const uuid = macro.command.split('"')[1];
+  if (uuid) {
+    const document = await foundry.utils.fromUuid(uuid);
+    if (document?.img) await macro.update({img: document.img});
   }
   return macro;
 }

@@ -114,14 +114,14 @@ export default class Weapons {
               } else {
                 data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
               }
-            } catch (err) {
+            } catch {
               CONFIG.logger.debug(`No categories found for item ${item.Key}`);
             }
             if (item?.Type) {
               // the "type" can be useful as a tag as well
               try {
                 data.data.metadata.tags.push(item.Type.toLowerCase());
-              } catch (err) {
+              } catch {
                 CONFIG.logger.warn(`Failed to parse type: ${item.Type}`);
               }
             }

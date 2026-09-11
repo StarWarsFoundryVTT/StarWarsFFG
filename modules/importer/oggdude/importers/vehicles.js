@@ -125,7 +125,6 @@ export default class Vehicles {
                   if (!Array.isArray(weaponData.system.itemmodifier)) {
                     weaponData.system.itemmodifier = [];
                   }
-                  const count = weapon.Count ? parseInt(weapon.Count, 10) : 1;
                   if (!weaponData.system?.firingarc) weaponData.system.firingarc = {};
                   ["Fore", "Aft", "Port", "Starboard", "Dorsal", "Ventral"].forEach((location) => {
                     weaponData.system.firingarc[location.toLowerCase()] = weapon?.FiringArcs?.[location] === "true" ? true : false;
@@ -154,7 +153,7 @@ export default class Vehicles {
               } else {
                 data.system.metadata.tags.push(item.Categories.Category.toLowerCase());
               }
-            } catch (err) {
+            } catch {
               CONFIG.logger.debug(`No categories found for item ${item.Key}`);
             }
             if (item?.Type) {

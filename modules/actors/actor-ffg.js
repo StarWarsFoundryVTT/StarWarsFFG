@@ -1,4 +1,4 @@
-import PopoutEditor from "../popout-editor.js";
+import { getPreparedActiveEffectChanges } from "../compatibility/active-effects.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 
 /**
@@ -211,7 +211,6 @@ export class ActorFFG extends Actor {
   prepareDerivedData() {
     const actor = this;
     const data = actor.system;
-    const flags = actor.flags;
 
     // if the actor has skills, add custom skills
     if (data.skills) {
@@ -547,8 +546,8 @@ export class ActorFFG extends Actor {
     // handle direct active effects - which only come from statuses
     const actorActiveEffects = actorData.getEmbeddedCollection("ActiveEffect");
     for (const effect of actorActiveEffects) {
-      for (const change of effect.changes) {
-        if (change.key.includes("system.skills")) {
+      for (const change of getPreparedActiveEffectChanges(effect)) {
+        if (change.key?.includes("system.skills")) {
           const skillName = change.key.split('.')[2].capitalize();
           const skillMod = change.key.split('.')[3];
           const modType = ModifierHelpers.getModTypeByModPath(change.key);
@@ -583,8 +582,8 @@ export class ActorFFG extends Actor {
       const itemActiveEffects = item.getEmbeddedCollection("ActiveEffect");
       for (const effect of itemActiveEffects) {
         if (!effect.disabled) {
-          for (const change of effect.changes) {
-            if (change.key.includes("system.skills")) {
+          for (const change of getPreparedActiveEffectChanges(effect)) {
+            if (change.key?.includes("system.skills")) {
               // system.skills.Astrogation.value
               const skillName = change.key.split('.')[2].capitalize();
               const skillMod = change.key.split('.')[3];
@@ -722,11 +721,14 @@ export class ActorFFG extends Actor {
   }
 
   /** @override **/
-  applyActiveEffects() {
+  applyActiveEffects(phase) {
+    // v14 calls this again after derived data. Do not count initial bonuses twice.
+    if (phase && phase !== "initial") return super.applyActiveEffects(phase);
     // collect force pool modifications since it appears the stat value is without AEs active
     let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
     for (const effect of this.allApplicableEffects()) {
-      for (const change of effect.changes) {
+      if (!effect.active) continue;
+      for (const change of getPreparedActiveEffectChanges(effect)) {
         if (change.key === "system.stats.forcePool.max") {
           maxForceRating += parseInt(change.value);
         }
@@ -734,12 +736,13 @@ export class ActorFFG extends Actor {
     }
     // apply the resulting value (minus any committed dice)
     for (const effect of this.allApplicableEffects()) {
-      for (const change of effect.changes) {
-        if (change.key.includes("system.skills") && change.key.includes(".force")) {
+      if (!effect.active) continue;
+      for (const change of getPreparedActiveEffectChanges(effect)) {
+        if (change.key?.includes("system.skills") && change.key.includes(".force")) {
           change.value = Math.max(maxForceRating - parseInt(this.system?.stats?.forcePool?.value), 0);
         }
       }
     }
-    return super.applyActiveEffects();
+    return super.applyActiveEffects(phase);
   }
 }

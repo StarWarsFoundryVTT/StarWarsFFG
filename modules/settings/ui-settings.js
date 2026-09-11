@@ -1,4 +1,5 @@
-class ffgSettings extends FormApplication {
+import { FormApplicationV2 } from "../applications/form-application-v2.js";
+class ffgSettings extends FormApplicationV2 {
   activateListeners(html) {
     super.activateListeners(html);
     html.find("button.filepicker").click(this._onFilePicker.bind(this));
@@ -72,7 +73,7 @@ export class rulesetSettings extends ffgSettings {
     });
   }
 
-  getData(options) {
+  getData(_options) {
     const includeSettingsNames = [
         "starwarsffg.dicetheme",
         "starwarsffg.vehicleRangeBand",
@@ -93,7 +94,7 @@ export class uiSettings extends ffgSettings {
     });
   }
 
-  getData(options) {
+  getData(_options) {
     const includeSettingsNames = [
       "starwarsffg.ui-uitheme",
       "starwarsffg.ui-pausedImage",
@@ -120,7 +121,7 @@ export class combatSettings extends ffgSettings {
     });
   }
 
-  getData(options) {
+  getData(_options) {
     const includeSettingsNames = [
       "starwarsffg.useGenericSlots",
       "starwarsffg.initiativeRule",
@@ -142,7 +143,7 @@ export class actorSettings extends ffgSettings {
     });
   }
 
-  getData(options) {
+  getData(_options) {
     const includeSettingsNames = [
       "starwarsffg.enableSoakCalc",
       "starwarsffg.talentSorting",
@@ -170,7 +171,7 @@ export class xpSpendingSettings extends ffgSettings {
     });
   }
 
-  getData(options) {
+  getData(_options) {
     const includeSettingsNames = [
       "starwarsffg.specializationCompendiums",
       "starwarsffg.signatureAbilityCompendiums",
@@ -204,7 +205,7 @@ export class localizationSettings extends ffgSettings {
     });
   }
 
-  getData(options) {
+  getData(_options) {
     const includeSettingsNames = [
       "starwarsffg.skillSorting",
       "starwarsffg.destiny-pool-light",
@@ -224,7 +225,7 @@ export class groupManagerSettings extends ffgSettings {
     });
   }
 
-  getData(options) {
+  getData(_options) {
     const includeSettingsNames = [
       "starwarsffg.pcListMode",
       "starwarsffg.privateTriggers",

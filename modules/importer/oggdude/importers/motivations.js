@@ -70,7 +70,3 @@ export default class Motivations {
     CONFIG.logger.debug(`Completed Oggdude Motivations Import`);
   }
 }
-
-const delay = (delayInMs) => {
-  return new Promise(resolve => setTimeout(resolve, delayInMs));
-};

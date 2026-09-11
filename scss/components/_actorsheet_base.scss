@@ -33,6 +33,12 @@
 
     &.v2 {
       .tabs {
+        // ApplicationV2 clips content at the window boundary. Keep the vertical
+        // tab rail inside the frame and restore its natural column height.
+        height: auto;
+        right: 24px;
+        z-index: 2;
+
         .item {
           line-height: normal;
           &.active {

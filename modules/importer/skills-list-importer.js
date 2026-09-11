@@ -1,7 +1,7 @@
-import Helpers from "../helpers/common.js";
+import { FormApplicationV2 } from "../applications/form-application-v2.js";
 import { defaultSkillList } from "../config/ffg-skillslist.js";
 
-export default class SkillListImporter extends FormApplication {
+export default class SkillListImporter extends FormApplicationV2 {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -73,7 +73,7 @@ export default class SkillListImporter extends FormApplication {
 
       // Trigger file save procedure
       const filename = `swffg-skilltheme-${skilltheme.replace(/\s/g, "_")}.json`;
-      saveDataToFile(JSON.stringify(data, null, 2), "text/json", filename);
+      foundry.utils.saveDataToFile(JSON.stringify(data, null, 2), "text/json", filename);
     });
 
     html.find(".dialog-button").on("click", async (event) => {
@@ -83,7 +83,7 @@ export default class SkillListImporter extends FormApplication {
 
         const form = html[0];
         if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
-        const text = await readTextFromFile(form.data.files[0]);
+        const text = await foundry.utils.readTextFromFile(form.data.files[0]);
 
         let currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
 

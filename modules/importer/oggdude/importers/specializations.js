@@ -133,7 +133,7 @@ export default class Specializations {
               } else {
                 data.system.metadata.tags.push(item.Categories.Category.toLowerCase());
               }
-            } catch (err) {
+            } catch {
               CONFIG.logger.debug(`No categories found for item ${item.Key}`);
             }
             if (item?.Type) {

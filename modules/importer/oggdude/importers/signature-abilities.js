@@ -65,7 +65,7 @@ export default class SignatureAbilities {
               if (i === 0) {
                 try {
                   data.data.base_cost = row.Costs.Cost[0];
-                } catch (err) {
+                } catch {
                   data.data.base_cost = 0;
                 }
               }
@@ -131,7 +131,7 @@ export default class SignatureAbilities {
                   data.data.upgrades[talentKey] = rowAbility;
                 });
               }
-            } catch (err) {
+            } catch {
               CONFIG.logger.error(`Error importing record : `, data.name);
             }
           });
@@ -145,7 +145,7 @@ export default class SignatureAbilities {
             } else {
               data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
             }
-          } catch (err) {
+          } catch {
             CONFIG.logger.debug(`No categories found for item ${item.Key}`);
           }
           if (item?.Type) {

@@ -54,7 +54,7 @@ export default class Helpers {
       return ui.notifications.error(game.i18n.localize("FILES.ErrorTooLarge"));
     }
 
-    const response = await request.json().catch((err) => {
+    const response = await request.json().catch((_err) => {
       return {};
     });
     if (response.error) {
@@ -65,7 +65,7 @@ export default class Helpers {
     }
   }
 
-  static async ForgeUploadFile(source, path, file, options) {
+  static async ForgeUploadFile(source, path, file, _options) {
     const fd = new FormData();
     fd.append("file", file);
     fd.append("path", `${path}/${file.name}`);
@@ -87,10 +87,10 @@ export default class Helpers {
    */
   static diff(obj1, obj2) {
     var result = {};
-    for (const key in obj1) {
+    for (const key of Object.keys(obj1)) {
       if (obj2[key] != obj1[key]) result[key] = obj2[key];
-      if (typeof obj2[key] == "array" && typeof obj1[key] == "array") result[key] = this.diff(obj1[key], obj2[key]);
-      if (typeof obj2[key] == "object" && typeof obj1[key] == "object") result[key] = this.diff(obj1[key], obj2[key]);
+      if (Array.isArray(obj2[key]) && Array.isArray(obj1[key])) result[key] = this.diff(obj1[key], obj2[key]);
+      else if (typeof obj2[key] == "object" && typeof obj1[key] == "object") result[key] = this.diff(obj1[key], obj2[key]);
     }
     return result;
   }

@@ -1,7 +1,10 @@
+import { FormApplicationV2 } from "../applications/form-application-v2.js";
+import { deleteDataField } from "../compatibility/data-operators.js";
+import EffectHelpers from "../helpers/effects.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 
-export class itemEditor extends FormApplication  {
+export class itemEditor extends FormApplicationV2  {
   /*
   Known issues:
     - The title of the editor doesn't get updated when you update the name
@@ -40,9 +43,9 @@ export class itemEditor extends FormApplication  {
   }
 
   /** @override */
-  async getData(options) {
+  async getData(_options) {
     // update the title since it isn't available when creating the application
-    this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
+    this._dynamicTitle = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
     const data = await this._enrichData();
     let modifierChoices = CONFIG.FFG.allowableModifierChoices;
 
@@ -104,14 +107,11 @@ export class itemEditor extends FormApplication  {
     }
 
     let data;
-    const specialization = this.object;
-    const li = event.currentTarget;
-    const talentId = $(li).attr("id");
 
     try {
       data = JSON.parse(event.dataTransfer.getData("text/plain"));
       if (data.type !== "Item") return;
-    } catch (err) {
+    } catch {
       return false;
     }
 
@@ -303,7 +303,8 @@ export class itemEditor extends FormApplication  {
   }
 
   /** @override */
-  async _updateObject(event, formData) {
+  async _updateObject(event, initialFormData) {
+    let formData = initialFormData;
     formData = ItemHelpers.explodeFormData(formData);
     const equipped = this.data.sourceObject.system?.equippable?.equipped;
 
@@ -331,7 +332,7 @@ export class itemEditor extends FormApplication  {
           for (let modKey of Object.keys(attachment.system.attributes)) {
             if (!Object.keys(formData.system.attributes).includes(modKey)) {
               CONFIG.logger.debug(`>> Detected key ${modKey} was removed, attempting to locate matching active effect`);
-              formData.system.attributes[`-=${modKey}`] = null;
+              formData.system.attributes[modKey] = deleteDataField();
               delete attachment.system.attributes[modKey];
               // delete the active effect
               const match = existingActiveEffects.find(i => i.name === modKey);
@@ -360,7 +361,7 @@ export class itemEditor extends FormApplication  {
               for (const curMod of explodedMods) {
                 changes.push({
                   key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                  mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                  ...EffectHelpers.changeType(),
                   value: formData.system.attributes[modKey].value,
                 });
               }
@@ -414,7 +415,7 @@ export class itemEditor extends FormApplication  {
                 for (const curMod of explodedMods) {
                   changes.push({
                     key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                    mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                    ...EffectHelpers.changeType(),
                     value: modifier.system.attributes[modKey].value,
                   });
                 }
@@ -470,7 +471,7 @@ export class itemEditor extends FormApplication  {
           // iterate over the mods on the existing item and remove them if they are not present in the new data
           for (let modKey of Object.keys(modifier.system.attributes)) {
             if (!Object.keys(formData.system.attributes).includes(modKey)) {
-              formData.system.attributes[`-=${modKey}`] = null;
+              formData.system.attributes[modKey] = deleteDataField();
               delete modifier.system.attributes[modKey];
               // delete the active effect
               const match = existingActiveEffects.find(i => i.name === modKey);
@@ -506,7 +507,7 @@ export class itemEditor extends FormApplication  {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.system.attributes[modKey].value,
           });
         }
@@ -567,9 +568,9 @@ export class talentEditor extends itemEditor {
   }
 
     /** @override */
-  async getData(options) {
+  async getData(_options) {
     // update the title since it isn't available when creating the application
-    this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
+    this._dynamicTitle = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
 
     let activations = CONFIG.FFG.activations;
     let data = await this._enrichData();
@@ -651,7 +652,8 @@ export class talentEditor extends itemEditor {
   }
 
   /** @override */
-  async _updateObject(event, formData) {
+  async _updateObject(event, initialFormData) {
+    let formData = initialFormData;
     if(this.actor && !this.data.sourceObject.parent?.verifyEditModeIsNotEnabled()) return;
 
     CONFIG.logger.debug("Updating talent");
@@ -674,7 +676,7 @@ export class talentEditor extends itemEditor {
     if (Object.keys(this.data.sourceObject.system.talents[this.data.talentId]).includes("attributes") && this.data.sourceObject.system.talents[this.data.talentId].attributes !== undefined) {
       for (const attrKey of Object.keys(this.data.sourceObject.system.talents[this.data.talentId].attributes)) {
         if (!Object.keys(formData.attributes).includes(attrKey)) {
-          formData.attributes[`-=${attrKey}`] = null;
+          formData.attributes[attrKey] = deleteDataField();
           delete this.data.sourceObject.system.attributes[attrKey];
           // delete the active effect
           const match = existingActiveEffects.find(i => i.name === attrKey);
@@ -707,7 +709,7 @@ export class talentEditor extends itemEditor {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.attributes[modKey].value,
           });
         }
@@ -781,9 +783,9 @@ export class forcePowerEditor extends itemEditor {
   }
 
     /** @override */
-  async getData(options) {
+  async getData(_options) {
     // update the title since it isn't available when creating the application
-    this.options.title = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
+    this._dynamicTitle = game.i18n.format("SWFFG.Items.Popout.Title", {currentItem: this.data.clickedObject.name, parentItem: this.data.sourceObject.name});
 
     // build out the mod type and mod choices
     let modTypeChoices = CONFIG.FFG.allowableModifierTypes;
@@ -870,7 +872,8 @@ export class forcePowerEditor extends itemEditor {
   }
 
   /** @override */
-  async _updateObject(event, formData) {
+  async _updateObject(event, initialFormData) {
+    let formData = initialFormData;
     CONFIG.logger.debug("Updating upgrade");
     formData = foundry.utils.expandObject(formData);
 
@@ -888,7 +891,7 @@ export class forcePowerEditor extends itemEditor {
     if (Object.keys(this.data.sourceObject.system.upgrades[this.data.upgradeId]).includes("attributes") && this.data.sourceObject.system.upgrades[this.data.upgradeId].attributes !== undefined) {
       for (const attrKey of Object.keys(this.data.sourceObject.system.upgrades[this.data.upgradeId].attributes)) {
         if (!Object.keys(formData.attributes).includes(attrKey)) {
-          formData.attributes[`-=${attrKey}`] = null;
+          formData.attributes[attrKey] = deleteDataField();
           delete this.data.sourceObject.system.attributes[attrKey];
           // delete the active effect
           const match = existingActiveEffects.find(i => i.name === attrKey);
@@ -921,7 +924,7 @@ export class forcePowerEditor extends itemEditor {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.attributes[modKey].value,
           });
         }

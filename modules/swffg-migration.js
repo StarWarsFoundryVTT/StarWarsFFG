@@ -1,10 +1,23 @@
+const { DialogV2 } = foundry.applications.api;
+import { deleteDataField } from "./compatibility/data-operators.js";
+import EffectHelpers from "./helpers/effects.js";
 import ModifierHelpers from "./helpers/modifiers.js";
+import { ensureActiveEffectsV14 } from "./migration/active-effects-v14.js";
 
 /**
  * Handles all logic related to migrating the system to a new version, including sending notifications
  * @returns {Promise<void>}
  */
 export async function handleUpdate() {
+  const effectReport = await ensureActiveEffectsV14();
+  if (effectReport) {
+    CONFIG.logger.log("Foundry v14 Active Effect migration", effectReport);
+    if (effectReport.failed.length) {
+      ui.notifications.error(game.i18n.format("SWFFG.Migration.ActiveEffectsFailed", {count: effectReport.failed.length}), {permanent: true});
+      return;
+    }
+    if (effectReport.lockedPacks.length) CONFIG.logger.warn("Skipped locked or external compendiums", effectReport.lockedPacks);
+  }
   const registeredVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
   const runningVersion = game.system.version;
   if (registeredVersion !== runningVersion) {
@@ -25,7 +38,7 @@ export async function handleUpdate() {
  * @param newVersion - version currently running (from game.system.version)
  * @returns {Promise<void>}
  */
-async function handleMigration(oldVersion, newVersion) {
+async function handleMigration(oldVersion, _newVersion) {
   // migration handlers should be added here going forward
   if (parseFloat(oldVersion) < 1.901) {
     await migrateTo1_901();
@@ -48,8 +61,8 @@ async function sendChanges(newVersion) {
   const template = "systems/starwarsffg/templates/notifications/new_version.html";
   const html = await foundry.applications.handlebars.renderTemplate(template, { version: newVersion });
   const messageData = {
-    user: game.user.id,
-    type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+    author: game.user.id,
+    style: CONST.CHAT_MESSAGE_STYLES.OTHER,
     content: html,
   };
   ChatMessage.create(messageData);
@@ -62,8 +75,8 @@ async function sendChanges(newVersion) {
 async function warnTheme() {
   if (game.settings.get("starwarsffg", "ui-uitheme") === "default") {
     const messageData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      author: game.user.id,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: "You are using an unsupported theme. Expected issues, or swap to the Mandar theme.<br>(This message will only show once.)",
     };
     ChatMessage.create(messageData);
@@ -192,7 +205,7 @@ async function migrateTo1907() {
       if (["character", "nemesis", "rival"].includes(actor.type)) {
         // characteristics
         inputStats.system.characteristics = {};
-        for (const characteristic in actor.system.characteristics) {
+        for (const characteristic of Object.keys(actor.system.characteristics)) {
           inputStats.system.characteristics[characteristic] = {
             value: actor.system.characteristics[characteristic].value,
           }
@@ -227,7 +240,7 @@ async function migrateTo1907() {
 
       if (["character", "nemesis", "rival"].includes(actor.type)) {
         // characteristics
-        for (const characteristic in actor.system.characteristics) {
+        for (const characteristic of Object.keys(actor.system.characteristics)) {
           finalStats.system.characteristics[characteristic].value = updatedStats.system.characteristics[characteristic].value - ((updatedStats.system.characteristics[characteristic].value - foundry.utils.deepClone(inputStats.system.characteristics[characteristic].value)) * 2);
         }
         // wounds
@@ -245,7 +258,7 @@ async function migrateTo1907() {
         finalStats.system.stats.encumbrance.max = updatedStats.system.stats.encumbrance.max - ((updatedStats.system.stats.encumbrance.max - inputStats.system.stats.encumbrance.max) * 2);
 
         // skills
-        for (const skill in actor.system.skills) {
+        for (const skill of Object.keys(actor.system.skills)) {
           finalStats.system.skills[skill].rank = updatedStats.system.skills[skill].rank - ((updatedStats.system.skills[skill].rank - foundry.utils.deepClone(inputStats.system.skills[skill].rank)) * 2);
         }
 
@@ -269,12 +282,12 @@ async function migrateTo1907() {
           for (let i = 0; i < 20; i++) {
             const attributes = item.system.talents[`talent${i}`].attributes;
             if (attributes && Object.keys(attributes).length > 0) {
-              for (const attribute in attributes) {
+              for (const attribute of Object.keys(attributes)) {
                 if (!attribute.startsWith("attr")) {
                   // the attribute is using an older form, update it to the new naming scheme
                   const nk = `attr${new Date().getTime()}`;
                   item.system.talents[`talent${i}`].attributes[nk] = attributes[attribute];
-                  item.system.talents[`talent${i}`].attributes[`-=${attribute}`] = null;
+                  item.system.talents[`talent${i}`].attributes[attribute] = deleteDataField();
                   delete item.system.talents[`talent${i}`].attributes[attribute];
                   // ensure further keys have a new entry
                   await new Promise(r => setTimeout(r, 1));
@@ -287,7 +300,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      ...EffectHelpers.changeType(),
                       value: item.system.talents[`talent${i}`].attributes[nk].value,
                     });
                   }
@@ -310,12 +323,12 @@ async function migrateTo1907() {
           for (let i = 0; i < 16; i++) {
             const attributes = item.system.upgrades[`upgrade${i}`].attributes;
             if (attributes && Object.keys(attributes).length > 0) {
-              for (const attribute in attributes) {
+              for (const attribute of Object.keys(attributes)) {
                 if (!attribute.startsWith("attr")) {
                   // the attribute is using an older form, update it to the new naming scheme
                   const nk = `attr${new Date().getTime()}`;
                   item.system.upgrades[`upgrade${i}`].attributes[nk] = attributes[attribute];
-                  item.system.upgrades[`upgrade${i}`].attributes[`-=${attribute}`] = null;
+                  item.system.upgrades[`upgrade${i}`].attributes[attribute] = deleteDataField();
                   delete item.system.upgrades[`upgrade${i}`].attributes[attribute];
                   // ensure further keys have a new entry
                   await new Promise(r => setTimeout(r, 1));
@@ -328,7 +341,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      ...EffectHelpers.changeType(),
                       value: item.system.upgrades[`upgrade${i}`].attributes[nk].value,
                     });
                   }
@@ -353,12 +366,12 @@ async function migrateTo1907() {
           for (let i = 0; i < 8; i++) {
             const attributes = item.system.upgrades[`upgrade${i}`].attributes;
             if (attributes && Object.keys(attributes).length > 0) {
-              for (const attribute in attributes) {
+              for (const attribute of Object.keys(attributes)) {
                 if (!attribute.startsWith("attr")) {
                   // the attribute is using an older form, update it to the new naming scheme
                   const nk = `attr${new Date().getTime()}`;
                   item.system.upgrades[`upgrade${i}`].attributes[nk] = attributes[attribute];
-                  item.system.upgrades[`upgrade${i}`].attributes[`-=${attribute}`] = null;
+                  item.system.upgrades[`upgrade${i}`].attributes[attribute] = deleteDataField();
                   delete item.system.upgrades[`upgrade${i}`].attributes[attribute];
                   // ensure further keys have a new entry
                   await new Promise(r => setTimeout(r, 1));
@@ -371,7 +384,7 @@ async function migrateTo1907() {
                   for (const curMod of explodedMods) {
                     changes.push({
                       key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-                      mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                      ...EffectHelpers.changeType(),
                       value: item.system.upgrades[`upgrade${i}`].attributes[nk].value,
                     });
                   }
@@ -403,7 +416,7 @@ async function migrateTo1907() {
       itemData.data = itemData.system;
       try {
         await ModifierHelpers.applyActiveEffectOnUpdate(item, itemData);
-      } catch (e) {
+      } catch {
         ui.notifications.warn(`Failed to migrate item ${item.name}, it may need to be recreated by hand`);
       }
     }
@@ -415,19 +428,13 @@ async function migrateTo1907() {
 
 async function warnUnsupportedWorld() {
   const content = game.i18n.localize("SWFFG.Migrate.Unsupported.Text");
-  new Dialog(
-    {
-      title: game.i18n.localize("SWFFG.Migrate.Unsupported.Title"),
-      content: content,
-      buttons: {
-        ok: {
-          icon: '<i class="fas fa-exclamation"></i>',
-          label: game.i18n.localize("SWFFG.Migrate.Unsupported.Button"),
-        },
-      },
+  await DialogV2.prompt({
+    window: {title: game.i18n.localize("SWFFG.Migrate.Unsupported.Title")},
+    classes: ["starwarsffg"],
+    content,
+    ok: {
+      icon: "fas fa-exclamation",
+      label: game.i18n.localize("SWFFG.Migrate.Unsupported.Button"),
     },
-    {
-      classes: ["dialog", "starwarsffg"],
-    }
-  ).render(true);
+  });
 }

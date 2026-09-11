@@ -21,7 +21,7 @@ export default class FlagMigrationHelpers {
   // and copy old flags into new scope
   static rescopeItemFlags() {
     for (let doc of game.items) {
-      for (let flag in doc.system.flags) {
+      for (const flag of Object.keys(doc.system.flags)) {
         this.rescopeFlag(doc, flag);
       }
     }
@@ -30,7 +30,7 @@ export default class FlagMigrationHelpers {
   // Actors
   static rescopeActorFlags() {
     for (let doc of game.actors) {
-      for (let flag in doc.system.flags) {
+      for (const flag of Object.keys(doc.system.flags)) {
         this.rescopeFlag(doc, flag);
       }
     }
@@ -67,7 +67,7 @@ export default class FlagMigrationHelpers {
         switch (documentName) {
           case "Actor":
           case "Item":
-            for (let flag in doc.system.flags) {
+            for (const flag of Object.keys(doc.system.flags)) {
               this.rescopeFlag(doc, flag);
             }
         }

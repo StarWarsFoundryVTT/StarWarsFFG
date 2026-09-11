@@ -1,3 +1,7 @@
+const { DialogV2 } = foundry.applications.api;
+import { deleteDataField } from "./compatibility/data-operators.js";
+import { getActiveEffectChanges, activeEffectChangesUpdate } from "./compatibility/active-effects.js";
+import EffectHelpers from "./helpers/effects.js";
 /**
  * A systems implementation of the Star Wars RPG by Fantasy Flight Games.
  * Author: Esrin
@@ -16,13 +20,10 @@ import CombatantFFG, {
 } from "./combat-ffg.js";
 import { ActiveEffectFFG} from "./active-effects/active-effect-ffg.js";
 import { ItemFFG } from "./items/item-ffg.js";
-import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
-import { ActorSheetFFG } from "./actors/actor-sheet-ffg.js";
 import { ActorSheetFFGV2 } from "./actors/actor-sheet-ffg-v2.js";
-import { AdversarySheetFFG } from "./actors/adversary-sheet-ffg.js";
 import { AdversarySheetFFGV2 } from "./actors/adversary-sheet-ffg-v2.js";
-import { DicePoolFFG, RollFFG } from "./dice-pool-ffg.js";
+import { AbilityDie, BoostDie, ChallengeDie, DicePoolFFG, DifficultyDie, ForceDie, ProficiencyDie, RollFFG, SetbackDie } from "./dice-pool-ffg.js";
 import { GroupManager } from "./groupmanager-ffg.js";
 import PopoutEditor from "./popout-editor.js";
 
@@ -37,9 +38,7 @@ import SettingsHelpers from "./settings/settings-helpers.js";
 import {register_crew} from "./helpers/crew.js";
 
 // Import Dice Types
-import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
 import { createFFGMacro, updateMacro } from "./helpers/macros.js";
-import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
 import CompendiumBrowser from "./compendium/compendium-browser.js";
 import PauseFFG from "./apps/pause-ffg.js";
@@ -47,12 +46,14 @@ import FlagMigrationHelpers from "./helpers/flag-migration-helpers.js";
 import RollBuilderFFG from "./dice/roll-builder.js";
 import CrewSettings from "./settings/crew-settings.js";
 import {register_dice_enricher, register_oggdude_tag_enricher, register_roll_tag_enricher} from "./helpers/journal.js";
+import { itemPillHover } from "./helpers/item-pill-hover.js";
 import {drawAdversaryCount, drawMinionCount, registerTokenControls} from "./helpers/token.js";
 import {handleUpdate} from "./swffg-migration.js";
 import SWAImporter from "./importer/swa-importer.js";
 import {CharacterCreator} from "./helpers/character-creator.js";
 import {xpLogUndo} from "./helpers/actor-helpers.js";
 import {register_system_tours} from "./helpers/tours.js";
+import { actorDataModels, itemDataModels } from "./data-models/system-data-models.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -61,7 +62,7 @@ import {register_system_tours} from "./helpers/tours.js";
 async function parseSkillList() {
   try {
     return JSON.parse(await game.settings.get("starwarsffg", "arraySkillList"));
-  } catch (e) {
+  } catch {
     CONFIG.logger.log("Could not parse custom skill list, returning raw setting");
     return await game.settings.get("starwarsffg", "arraySkillList");
   }
@@ -103,11 +104,19 @@ Hooks.once("init", async function () {
   // to instead use our extended version.
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
+  Object.assign(CONFIG.Actor.dataModels, actorDataModels);
+  Object.assign(CONFIG.Item.dataModels, itemDataModels);
   CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
 
-  // we do not want the legacy active effect transfer mode
-  // also, reeeeeeeeeeeeeeeee
-  CONFIG.ActiveEffect.legacyTransferral = false;
+  // Keep FFG's once/combat expiry alongside the core V14 effect changes.
+  CONFIG.ActiveEffect.dataModels.base = class extends foundry.data.ActiveEffectTypeDataModel {
+    static defineSchema() {
+      return {
+        ...super.defineSchema(),
+        duration: new foundry.data.fields.StringField({ required: false, nullable: true, initial: null }),
+      };
+    }
+  };
 
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
@@ -152,7 +161,7 @@ Hooks.once("init", async function () {
     config: false,
     default: "[]",
     type: String,
-    onChange: (rule) => window.location.reload()
+    onChange: (_rule) => window.location.reload()
   });
 
   // register turn marker reconfigurator
@@ -340,7 +349,7 @@ Hooks.once("init", async function () {
     config: false,
     default: true,
     type: Boolean,
-    onChange: (rule) => window.location.reload()
+    onChange: (_rule) => window.location.reload()
   });
 
   if (game.settings.get("starwarsffg", "useGenericSlots")) {
@@ -643,7 +652,7 @@ Hooks.once("init", async function () {
             let skills = JSON.parse(JSON.stringify(CONFIG.FFG.alternateskilllists.find((list) => list.id === skilllist)));
             CONFIG.logger.log(`Applying skill theme ${skilllist} to actor`);
 
-            if (!actor?.flags?.starwarsffg?.hasOwnProperty('ffgimportid') && JSON.stringify(Object.keys(skills.skills).sort()) !== JSON.stringify(Object.keys(actor.system.skills).sort())) {
+            if (!Object.hasOwn(actor?.flags?.starwarsffg ?? {}, 'ffgimportid') && JSON.stringify(Object.keys(skills.skills).sort()) !== JSON.stringify(Object.keys(actor.system.skills).sort())) {
               // only apply the skills if it wasn't an imported actor and the skills loaded are not the same
               actor.update({
                 system: {
@@ -658,7 +667,7 @@ Hooks.once("init", async function () {
       }
     });
 
-    Hooks.on("updateToken", async (tokenDocument, options, diffData, tokenId) => {
+    Hooks.on("updateToken", async (tokenDocument, options, _diffData, _tokenId) => {
       if (Object.keys(options).includes('hidden')) {
         updateCombatTracker();
       }
@@ -685,22 +694,22 @@ Hooks.once("init", async function () {
     for (const skill of Object.keys(CONFIG.FFG.skills)) {
       allSkillChanges['boost'].push({
         key: `system.skills.${skill}.boost`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
       allSkillChanges['setback'].push({
         key: `system.skills.${skill}.setback`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
       allSkillChanges['upgrade'].push({
         key: `system.skills.${skill}.upgrades`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
       allSkillChanges['success'].push({
         key: `system.skills.${skill}.success`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: "1",
       });
     }
@@ -758,12 +767,12 @@ Hooks.once("init", async function () {
       changes: [
         {
           key: "system.stats.defence.melee",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: "2",
         },
         {
           key: "system.stats.defence.ranged",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: "2",
         },
       ],
@@ -831,19 +840,26 @@ Hooks.once("init", async function () {
         CONFIG.statusEffects.push(status);
       }
 
-    } catch (e) {
+    } catch {
       ui.notifications.warn("Failed to load custom statuses, likely bad JSON");
     }
 
   // Register sheet application classes
-  foundry.documents.collections.Actors.unregisterSheet("core", foundry.appv1.sheets.ActorSheet);
-  foundry.documents.collections.Actors.registerSheet("ffg", ActorSheetFFG, { label: "Actor Sheet v1" });
-  foundry.documents.collections.Actors.registerSheet("ffg", ActorSheetFFGV2, { makeDefault: true, label: "Actor Sheet v2" });
-  foundry.documents.collections.Actors.registerSheet("ffg", AdversarySheetFFG, { types: ["character"], label: "Adversary Sheet v1" });
-  foundry.documents.collections.Actors.registerSheet("ffg", AdversarySheetFFGV2, { types: ["character"], label: "Adversary Sheet v2" });
-  foundry.documents.collections.Items.unregisterSheet("core", foundry.appv1.sheets.ItemSheet);
-  foundry.documents.collections.Items.registerSheet("ffg", ItemSheetFFG, { label: "Item Sheet v1" });
-  foundry.documents.collections.Items.registerSheet("ffg", ItemSheetFFGV2, { makeDefault: true, label: "Item Sheet v2" });
+  const { DocumentSheetConfig } = foundry.applications.apps;
+  DocumentSheetConfig.unregisterSheet(Actor, "core", foundry.appv1.sheets.ActorSheet);
+  DocumentSheetConfig.registerSheet(Actor, "ffg", ActorSheetFFGV2, {
+    makeDefault: true,
+    label: "Star Wars FFG Actor Sheet",
+  });
+  DocumentSheetConfig.registerSheet(Actor, "ffg", AdversarySheetFFGV2, {
+    types: ["character"],
+    label: "Star Wars FFG Adversary Sheet",
+  });
+  DocumentSheetConfig.unregisterSheet(Item, "core", foundry.appv1.sheets.ItemSheet);
+  DocumentSheetConfig.registerSheet(Item, "ffg", ItemSheetFFGV2, {
+    makeDefault: true,
+    label: "Star Wars FFG Item Sheet",
+  });
 
   // Add utilities to the global scope, this can be useful for macro makers
   window.DicePoolFFG = DicePoolFFG;
@@ -852,7 +868,7 @@ Hooks.once("init", async function () {
   Handlebars.registerHelper({
     selectFfg: function (selected, options) {
       const escapedValue = RegExp.escape(Handlebars.escapeExpression(selected));
-      const rgx = new RegExp(' value=[\"\']' + escapedValue + '[\"\']');
+      const rgx = new RegExp(` value=["']${escapedValue}["']`);
       const html = options.fn(this);
       return html.replace(rgx, "$& selected");
     }
@@ -920,7 +936,9 @@ Hooks.once("init", async function () {
     return cost;
   });
 
-  Handlebars.registerHelper("math", function (lvalue, operator, rvalue, options) {
+  Handlebars.registerHelper("math", function (initialLvalue, operator, initialRvalue, _options) {
+    let lvalue = initialLvalue;
+    let rvalue = initialRvalue;
     lvalue = parseFloat(lvalue);
     rvalue = parseFloat(rvalue);
 
@@ -955,7 +973,7 @@ Hooks.once("init", async function () {
   Handlebars.registerHelper("keylen", function (obj) {
     try {
       return Object.keys(obj).length;
-    } catch (e) {
+    } catch {
       return 0;
     }
   });
@@ -967,11 +985,8 @@ Hooks.once("init", async function () {
     return array.indexOf(value) >= 0;
   });
 
-  Handlebars.registerHelper("ffgDiceSymbols", function (text) {
-    //return PopoutEditor.renderDiceImages(text);
-    CONFIG.logger.warn("This function is no longer needed and should not be called. Please notify the devs if you see this message.");
-    return text;
-  });
+  // Retained as a semantic template helper; V14 content is enriched before rendering.
+  Handlebars.registerHelper("ffgDiceSymbols", text => text);
 
   Handlebars.registerHelper("object", function ({ hash }) {
     return hash;
@@ -997,7 +1012,7 @@ Hooks.once("init", async function () {
   await TemplateHelpers.preload();
 });
 
-Hooks.on("renderChatInput", (app, html, data) => {
+Hooks.on("renderChatInput", (app, _html, _data) => {
   if (app.id === "chat") {
     // add in the chat dice roller
     const rollButtonId = "ffgChatRoll";
@@ -1008,8 +1023,11 @@ Hooks.on("renderChatInput", (app, html, data) => {
       rollButton.type = "button";
       rollButton.classList.add("ui-control", "icon", "fa-light", "fa-dice-d20");
 
-      const rollPrivacyElement = document.querySelector("#roll-privacy");
-      rollPrivacyElement.appendChild(rollButton);
+      rollButton.setAttribute("aria-label", game.i18n.localize("SWFFG.RollingDefaultTitle"));
+      const rollPrivacyElement = document.querySelector("#message-modes, #roll-privacy");
+      if (!rollPrivacyElement) return;
+      // V14's split-button controls message modes, so keep the dice button beside it.
+      rollPrivacyElement.after(rollButton);
 
       rollButton.onclick = async function () {
         const dicePool = new DicePoolFFG();
@@ -1051,10 +1069,10 @@ Hooks.on("renderActorDirectory", (app, html) => {
   }
 });
 
-Hooks.on("renderCompendiumDirectory", (app, html, data) => {
+Hooks.on("renderCompendiumDirectory", (app, html, _data) => {
   if (game.user.isGM) {
     let div;
-    // Native DOM (V13+)
+    // Native DOM
     div = document.createElement("div");
     div.className = "og-character-import";
     div.innerHTML = `<hr><h4>Importers</h4>
@@ -1085,12 +1103,13 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
 });
 
 // Update chat messages with dice images
-Hooks.on("renderChatMessage", async (app, html, messageData) => {
+Hooks.on("renderChatMessageHTML", async (message, element) => {
+  const html = $(element);
   const content = html.find(".message-content");
-  content[0].innerHTML = await PopoutEditor.renderDiceImages(content[0].innerHTML);
+  if (content.length) content[0].innerHTML = await PopoutEditor.renderDiceImages(content[0].innerHTML);
 
   html.on("click", ".ffg-pool-to-player", () => {
-    const poolData = messageData.message.flags.starwarsffg;
+    const poolData = message.flags.starwarsffg;
 
     const dicePool = new DicePoolFFG(poolData.dicePool);
 
@@ -1130,8 +1149,41 @@ function isCurrentVersionNullOrBlank(currentVersion) {
   return currentVersion === "null" || currentVersion === '' || currentVersion === null;
 }
 
+// Migrate saved legacy sheet selections to their ApplicationV2 counterparts.
+// Foundry stores both a world default per Actor type and optional per-Actor overrides.
+async function migrateV14ActorSheets() {
+  if (!game.user.isGM) return;
+
+  const replacements = {
+    "ffg.ActorSheetFFG": "ffg.ActorSheetFFGV2",
+    "ffg.AdversarySheetFFG": "ffg.AdversarySheetFFGV2",
+  };
+
+  const defaults = foundry.utils.deepClone(game.settings.get("core", "sheetClasses"));
+  let defaultsChanged = false;
+  for (const [type, sheetId] of Object.entries(defaults.Actor ?? {})) {
+    const replacement = replacements[sheetId];
+    if (!replacement) continue;
+    defaults.Actor[type] = replacement;
+    defaultsChanged = true;
+  }
+  if (defaultsChanged) await game.settings.set("core", "sheetClasses", defaults);
+
+  const updates = game.actors.reduce((updates, actor) => {
+    const replacement = replacements[actor.getFlag("core", "sheetClass")];
+    if (replacement) updates.push({_id: actor.id, "flags.core.sheetClass": replacement});
+    return updates;
+  }, []);
+  if (updates.length) await CONFIG.Actor.documentClass.updateDocuments(updates, {render: false});
+
+  if (defaultsChanged || updates.length) {
+    CONFIG.logger.log(`Migrated ${updates.length} Actor sheet override(s) to ApplicationV2`);
+  }
+}
+
 // Handle migration duties
 Hooks.once("ready", async () => {
+  await migrateV14ActorSheets();
   SettingsHelpers.readyLevelSetting();
 
   // NOTE: the "currentVersion" will be updated in handleUpdate, preventing the code below from running in the future
@@ -1140,23 +1192,14 @@ Hooks.once("ready", async () => {
 
   const currentVersion = game.settings.get("starwarsffg", "systemMigrationVersion");
 
-  const version = game.system.version;
   const isAlpha = game.system.version.includes("alpha");
 
   if (isAlpha && game.user.isGM) {
-    let d = new Dialog({
-      title: "Warning",
-      content: "<p>This is an alpha release of the system.  It is not recommended for regular gameplay. <b>There will be bugs.</b> <br><br>Check Discord or the GitHub repo for the latest stable version.</p>",
-      buttons: {
-        one: {
-          icon: '<i class="fas fa-check"></i>',
-          label: "I understand",
-          callback: () => console.log("Chose One") // leaving in case I get feedback to update a game setting to not show this on every load
-        }
-      },
-      default: "one",
+    await DialogV2.prompt({
+      window: {title: "Warning"},
+      content: "<p>This is an alpha release of the system. It is not recommended for regular gameplay. <b>There will be bugs.</b><br><br>Check the project repository for the latest stable version.</p>",
+      ok: {label: "I understand"},
     });
-    d.render(true);
   }
 
   if ((isAlpha || isCurrentVersionNullOrBlank(currentVersion) || parseFloat(currentVersion) < parseFloat(game.system.version)) && game.user.isGM) {
@@ -1189,7 +1232,7 @@ Hooks.once("ready", async () => {
 
             Object.keys(actor.system.skills).forEach((skill) => {
               if (!skills.skills[skill] && !actor.system.skills?.[skill]?.nontheme) {
-                skills.skills[`-=${skill}`] = null;
+                skills.skills[skill] = deleteDataField();
               } else {
                 skills.skills[skill] = {
                   ...skills.skills[skill],
@@ -1272,14 +1315,14 @@ Hooks.once("ready", async () => {
           if (["weapon", "armour", "shipweapon"].includes(item.type)) {
             // iterate over attachments and modifiers on the item
             updated_item.system.itemmodifier.map((modifier) => {
-              if (modifier !== null && modifier?.hasOwnProperty('data')) {
+              if (modifier !== null && Object.hasOwn(modifier ?? {}, 'data')) {
                 modifier.system = modifier.data;
                 delete modifier.data;
               }
             });
 
             updated_item.system.itemattachment.map((attachment) => {
-              if (attachment !== null && attachment.hasOwnProperty('data')) {
+              if (attachment !== null && Object.hasOwn(attachment, 'data')) {
                 attachment.system = attachment.data;
                 delete attachment.data;
               }
@@ -1300,7 +1343,7 @@ Hooks.once("ready", async () => {
         if (["weapon", "armour", "shipweapon"].includes(item.type)) {
           // iterate over attachments and modifiers on the item
           updated_item.system.itemmodifier.map((modifier) => {
-            if (modifier?.hasOwnProperty('data')) {
+            if (Object.hasOwn(modifier ?? {}, 'data')) {
               updated = true;
               modifier.system = modifier.data;
               delete modifier.data;
@@ -1308,7 +1351,7 @@ Hooks.once("ready", async () => {
           });
 
           updated_item.system.itemattachment.map((attachment) => {
-            if (attachment.hasOwnProperty('data')) {
+            if (Object.hasOwn(attachment, 'data')) {
               updated = true;
               attachment.system = attachment.data;
               delete attachment.data;
@@ -1384,7 +1427,7 @@ Hooks.once("ready", async () => {
       command: command,
     };
 
-    const macroExists = game.macros.entities.find((m) => m.name === macro.name);
+    const macroExists = game.macros.find((m) => m.name === macro.name);
     if (!macroExists) {
       Macro.create(macro);
     }
@@ -1484,7 +1527,6 @@ Hooks.once("ready", async () => {
   });
 
   // Display Destiny Pool
-  let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
 
   // future functionality to allow multiple menu items to be passed to destiny pool
   const defaultDestinyMenu = [
@@ -1499,17 +1541,17 @@ Hooks.once("ready", async () => {
     {
       name: game.i18n.localize("SWFFG.RequestDestinyRoll"),
       icon: '<i class="fas fa-dice-d20"></i>',
-      callback: (li) => {
+      callback: (_li) => {
         const messageText = `<button class="ffg-destiny-roll">${game.i18n.localize("SWFFG.DestinyPoolRoll")}</button>`;
 
-        new Map([...game.settings.settings].filter(([k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
+        new Map([...game.settings.settings].filter(([_k, v]) => v.key.includes("destinyrollers"))).forEach((i) => {
           game.settings.set(i.namespace, i.key, undefined);
         });
 
         CONFIG.FFG.DestinyGM = game.user.id;
 
         ChatMessage.create({
-          user: game.user.id,
+          author: game.user.id,
           content: messageText,
         });
       },
@@ -1562,14 +1604,14 @@ Hooks.once("ready", async () => {
   // set up support for Status Icon Counters
   const counterApi = game.modules.get("statuscounter")?.active;
   if (counterApi) {
-    Hooks.on("updateActiveEffect", function(effect, changes) {
-        const counterValue = foundry.utils.getProperty(changes, "flags.statuscounter.counter.value");
-        if (counterValue) {
-          for (const change of effect.changes) {
-            change['value'] = counterValue;
-          }
-        }
-        effect.update({changes: effect.changes});
+    Hooks.on("updateActiveEffect", async function(effect, changed, options, userId) {
+      if (userId !== game.user.id) return;
+      const value = foundry.utils.getProperty(changed, "flags.statuscounter.counter.value");
+      if (value === undefined) return;
+      const changes = getActiveEffectChanges(effect);
+      if (changes.every(change => change.value === value)) return;
+      for (const change of changes) change.value = value;
+      await effect.update(activeEffectChangesUpdate(changes));
     });
   }
 
@@ -1928,91 +1970,4 @@ async function registerCrewRoles() {
     config: false,
     type: Object,
   });
-}
-
-/**
- * Check if all built-in compendiums are empty or not
- * @returns {Promise<boolean>}
- */
-async function compendiumsEmpty() {
-  const compendiums = game.packs.contents.filter(i => i.collection.includes("starwars"));
-  for (const compendium of compendiums) {
-    if ((await compendium.getDocuments()).length !== 0) {
-      return false;
-    }
-  }
-
-  return compendiums.length > 0;
-}
-
-/**
- * Give a custom, Star Wars FFG tooltip when qualities, attachments, upgrades, etc are hovered (after sending to chat)
- * @param event
- */
-export function itemPillHover(event) {
-  event.preventDefault();
-  const li = $(event.currentTarget);
-  const itemName = li.data("item-embed-name");
-  const itemImage = li.data("item-embed-img");
-  const itemType = li.data("item-type");
-  const itemRanks = li.data("item-ranks");
-  let desc = li.data("desc");
-  let descRanks = "";
-  if (itemType === "itemattachment") {
-    const rarity = li.data("rarity");
-    const price = li.data("price");
-    if (price) {
-      desc = `<span class="statt" title="Price"><i class="fa-solid fa-dollar-sign"></i>${price}</span>${desc}`
-    }
-    if (rarity) {
-      desc = `<span class="stat stat-right" title="Rarity"><i class="fa-solid fa-magnifying-glass"></i>${rarity}</span>${desc}`
-    }
-
-    // if the item has embedded mods, pull the data and add it to the description
-    let modNames = li.data("mod-names");
-    let modDescs = li.data("mod-descs");
-    let modActives = li.data("mod-actives");
-    if (modNames) {
-      modNames = modNames.split("~");
-      modDescs = modDescs.split("~");
-      modActives = modActives.split("~");
-      CONFIG.logger.debug(modNames);
-      CONFIG.logger.debug(modDescs);
-      CONFIG.logger.debug(modActives);
-      let newDesc = `<hr><b>Mods</b>:<br>`;
-      for (let i = 0; i < modNames.length - 1; i++) {
-        if (modActives[i] === "true") {
-          modNames[i] = `<i class="fa-solid fa-user-check" title="Installed"></i>&nbsp;${modNames[i]}`;
-        } else {
-          modNames[i] = `<i class="fa-duotone fa-solid fa-user-xmark" title="Not Installed"></i>&nbsp;${modNames[i]}`;
-        }
-        newDesc += `<u>${modNames[i]}</u>:&nbsp;${modDescs[i]}<br>`;
-      }
-      desc += newDesc;
-    }
-  }
-  if (itemRanks > 0) {
-    descRanks = `${itemRanks} ranks`;
-  } else {
-    if (!["specialization", "signatureAbility", "itemattachment"].includes(itemType)) {
-      descRanks = "Not ranked";
-    }
-  }
-  let embeddedContent = `
-    <section class="chat-msg-tooltip content">
-      <section class="header">
-        <img class="tooltip-img" src="${itemImage}"/>
-        <div class="title">${itemName}</div>
-      </section>
-      <section class="description">
-        ${desc}
-      </section>
-      <section class="ranks">
-        ${descRanks}
-      </section>
-    </section>
-  `;
-  if (itemType !== undefined) {
-    li.attr("data-tooltip", embeddedContent);
-  }
 }

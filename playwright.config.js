@@ -21,7 +21,7 @@ if (fs.existsSync(envPath)) {
 }
 
 /* Base URL of the Foundry server under test - scheme, host and port, with no trailing path. */
-const baseURL = process.env.FOUNDRY_URL ?? 'http://localhost:30000';
+const baseURL = process.env.FOUNDRY_URL ?? 'http://localhost:30001';
 
 /**
  * @see https://playwright.dev/docs/test-configuration
@@ -36,7 +36,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1, // The suites share world documents and GM/player sessions.
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -44,7 +44,7 @@ export default defineConfig({
     /* Tests navigate with paths only ('/game/'), which resolve against this. */
     baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    storageState: 'state.json',
+    storageState: `state-v${process.env.FOUNDRY_TEST_GENERATION ?? 14}.json`,
     trace: 'on-first-retry',
   },
 
@@ -59,11 +59,12 @@ export default defineConfig({
           height: 900
         },
         launchOptions: {
-          // force GPU acceleration
+          // WSL/CI may have no usable GPU. Use Chromium's software WebGL renderer.
           args: [
             '--ignore-gpu-blocklist',
             '--use-gl=angle',
-            '--use-angle=gl-egl',
+            '--use-angle=swiftshader',
+            '--enable-unsafe-swiftshader',
           ]
         },
       },

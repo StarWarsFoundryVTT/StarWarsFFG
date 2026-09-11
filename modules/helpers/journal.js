@@ -6,7 +6,7 @@ export function register_dice_enricher() {
   // ability die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(ability):|\[(AB)(ILITY)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add("starwars");
@@ -18,7 +18,7 @@ export function register_dice_enricher() {
     // advantage die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(advantage):|\[(AD)(VANTAGE)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -30,7 +30,7 @@ export function register_dice_enricher() {
   // difficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(average):/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -42,7 +42,7 @@ export function register_dice_enricher() {
   // boost die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(boost):|\[(BO)(OST)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add("starwars");
@@ -54,7 +54,7 @@ export function register_dice_enricher() {
   // challenge die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(challenge):|\[(CH)(ALLENGE)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add("starwars");
@@ -66,7 +66,7 @@ export function register_dice_enricher() {
   // dark die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(darkside):|\[(DA)(RK)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -78,7 +78,7 @@ export function register_dice_enricher() {
   // difficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(daunting):/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -90,7 +90,7 @@ export function register_dice_enricher() {
   // despair die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(despair):|\[(DE)(SPAIR)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -102,7 +102,7 @@ export function register_dice_enricher() {
   // difficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(difficulty):|\[(DI)(FFICULTY)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add("starwars");
@@ -114,7 +114,7 @@ export function register_dice_enricher() {
   // difficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(easy):/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -126,7 +126,7 @@ export function register_dice_enricher() {
   // challenge die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(easy-1):/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -138,7 +138,7 @@ export function register_dice_enricher() {
   // forcepoint die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(forcepip):|\[(FP|FORCEPOINT)\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -150,7 +150,7 @@ export function register_dice_enricher() {
   // difficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(formidable):/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -162,7 +162,7 @@ export function register_dice_enricher() {
   // failure die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(failure):|\[(FA)(ILURE)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -174,7 +174,7 @@ export function register_dice_enricher() {
   // force die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(force):|\[(FO)(RCE)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -186,7 +186,7 @@ export function register_dice_enricher() {
   // difficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(hard):/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -198,7 +198,7 @@ export function register_dice_enricher() {
   // light die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(lightside):|\[(LI)(GHT)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -210,7 +210,7 @@ export function register_dice_enricher() {
   // proficiency die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(proficiency):|\[(PR)(OFICIENCY)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add("starwars");
@@ -222,7 +222,7 @@ export function register_dice_enricher() {
   // remsetback die
   CONFIG.TextEditor.enrichers.push({
     pattern: /\[(RE)(STRICTED)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -234,7 +234,7 @@ export function register_dice_enricher() {
   // setback die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(setback):|\[(SE)(TBACK)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add("starwars");
@@ -246,7 +246,7 @@ export function register_dice_enricher() {
   // success die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(success):|\[(SU)(CCESS)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -258,7 +258,7 @@ export function register_dice_enricher() {
   // threat die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(threat):|\[(TH)(REAT)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -270,7 +270,7 @@ export function register_dice_enricher() {
   // triumph die
   CONFIG.TextEditor.enrichers.push({
     pattern: /:(triumph):|\[(TR)(IUMPH)?\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -282,7 +282,7 @@ export function register_dice_enricher() {
   // adddifficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /\[(DD|ADDDIFFICULTY)\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -294,7 +294,7 @@ export function register_dice_enricher() {
   // updifficulty die
   CONFIG.TextEditor.enrichers.push({
     pattern: /\[(UD|UPDIFFICULTY)\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -306,7 +306,7 @@ export function register_dice_enricher() {
   // cancelthreat die
   CONFIG.TextEditor.enrichers.push({
     pattern: /\[(CT|CANCELTHREAT)\]/gim,
-    enricher: async (match, options) => {
+    enricher: async () => {
         let element = document.createElement("span");
         element.classList.add("dietype");
         element.classList.add(dicetheme);
@@ -320,7 +320,7 @@ export function register_dice_enricher() {
 export function register_oggdude_tag_enricher() {
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[B\])(((?!\[b\]).)*)(\[b\])/gm,
-    enricher: async (match, options) => {
+    enricher: async (match) => {
         let element = document.createElement("span");
         element.classList.add("bold");
         element.textContent = match[2];
@@ -329,21 +329,21 @@ export function register_oggdude_tag_enricher() {
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[P\](?![p]))/gm,
-    enricher: async (match, options) => {
+    enricher: async (_match) => {
         let element = document.createElement("br");
         return element;
       }
   });
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[BR\])(.[^\[]*)/gm,
-    enricher: async (match, options) => {
+    pattern: /(\[BR\])(.[^[]*)/gm,
+    enricher: async (_match) => {
         let element = document.createElement("br");
         return element;
       }
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[I\])(((?!\[i\]).)*)\[i\]/gm,
-    enricher: async (match, options) => {
+    enricher: async (match) => {
         let element = document.createElement("span");
         element.classList.add("italic");
         element.textContent = match[2];
@@ -352,7 +352,7 @@ export function register_oggdude_tag_enricher() {
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[H1\])(((?!\[h1\]).)*)\[h1\]/gm,
-    enricher: async (match, options) => {
+    enricher: async (match) => {
         let element = document.createElement("h1");
         element.textContent = match[2];
         return element;
@@ -360,7 +360,7 @@ export function register_oggdude_tag_enricher() {
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[H2\])(((?!\[h2\]).)*)\[h2\]/gm,
-    enricher: async (match, options) => {
+    enricher: async (match) => {
         let element = document.createElement("h2");
         element.textContent = match[2];
         return element;
@@ -368,7 +368,7 @@ export function register_oggdude_tag_enricher() {
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[H3\])(((?!\[h3\]).)*)\[h3\]/gm,
-    enricher: async (match, options) => {
+    enricher: async (match) => {
       let element = document.createElement("h3");
       element.textContent = match[2];
       return element;
@@ -376,7 +376,7 @@ export function register_oggdude_tag_enricher() {
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /(\[H4\])(((?!\[h4\]).)*)\[h4\]/gim,
-    enricher: async (match, options) => {
+    enricher: async (match) => {
         let element = document.createElement("h3"); // h4 doesn't exist
         element.textContent = match[2];
         return element;
@@ -384,7 +384,7 @@ export function register_oggdude_tag_enricher() {
   });
   CONFIG.TextEditor.enrichers.push({
     pattern: /\[h3\]/gm,
-    enricher: async (match, options) => {
+    enricher: async (_match) => {
       let element = document.createElement("hr");
       return element;
     }
@@ -393,8 +393,8 @@ export function register_oggdude_tag_enricher() {
 
 export function register_roll_tag_enricher() {
   CONFIG.TextEditor.enrichers.push({
-    pattern: /(\[ROLL\])(.[^\[]*)\[\/ROLL\]/gim,
-    enricher: async (match, options) => {
+    pattern: /(\[ROLL\])(.[^[]*)\[\/ROLL\]/gim,
+    enricher: async (match) => {
         let element = document.createElement("span");
         const skill = match[2].trim().split(',')[0];
         const difficulty_num = match[2].trim().split(',')[1];

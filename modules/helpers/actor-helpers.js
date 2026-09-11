@@ -1,10 +1,10 @@
-import ModifierHelpers from "./modifiers.js";
+import { deleteDataField } from "../compatibility/data-operators.js";
 import {migrateDataToSystem} from "./migration.js";
 
 export default class ActorHelpers {
-  static async updateActor(event, formData) {
+  static async updateActor(event, initialFormData) {
+    let formData = initialFormData;
     formData = foundry.utils.expandObject(formData);
-    const ownedItems = this.actor.items;
 
     // as of Foundry v10, saving an editor only submits the single entry for that editor
     if (Object.keys(formData).length > 1) {
@@ -45,7 +45,7 @@ export default class ActorHelpers {
     // Remove attributes which are no longer used
     if (this.object.system?.attributes) {
       for (let k of Object.keys(this.object.system.attributes)) {
-        if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
+        if (!Object.hasOwn(attributes, k)) attributes[k] = deleteDataField();
       }
     }
 

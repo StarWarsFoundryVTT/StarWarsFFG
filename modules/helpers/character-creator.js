@@ -1,4 +1,6 @@
-import ActorHelpers, {xpLogEarn, xpLogSpend} from "./actor-helpers.js";
+import { LegacyDialogV2 } from "../applications/legacy-dialog-v2.js";
+import EffectHelpers from "./effects.js";
+import {xpLogEarn, xpLogSpend} from "./actor-helpers.js";
 import DiceHelpers from "./dice-helpers.js";
 import {sortDataBy, addIfNotExist} from "../actors/actor-sheet-ffg.js";
 
@@ -203,7 +205,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     CONFIG.logger.debug("Rendering Character Creator");
 
     // backgrounds
-    const cultureSelector = new SlimSelect({
+    const cultureSelector = new globalThis.SlimSelect({
       select: '#culture',
       events: {
         afterChange: async (newVal) => {
@@ -213,7 +215,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       }
     });
     cultureSelector.setSelected(this.data.selected.background.culture?.uuid, false);
-    const hookSelector = new SlimSelect({
+    const hookSelector = new globalThis.SlimSelect({
       select: '#hook',
       events: {
         afterChange: async (newVal) => {
@@ -224,7 +226,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     });
     hookSelector.setSelected(this.data.selected.background.hook?.uuid, false);
     if (this.data.selected.rules === "fad") {
-      const forceAttitudeSelector = new SlimSelect({
+      const forceAttitudeSelector = new globalThis.SlimSelect({
         select: '#force_attitude',
         events: {
           afterChange: async (newVal) => {
@@ -237,7 +239,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     }
 
     // starting bonuses
-    const startingBonusSelector = new SlimSelect({
+    const startingBonusSelector = new globalThis.SlimSelect({
         select: '#startingBonus',
         events: {
           afterChange: async (newVal) => {
@@ -249,7 +251,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       startingBonusSelector.setSelected(this.data.selected.startingBonus, false);
 
     // obligations
-    const obligationsTable = new DataTable(
+    const obligationsTable = new globalThis.DataTable(
       "#obligations",
     );
     obligationsTable.on("draw", () => {
@@ -265,7 +267,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     });
 
     // species
-    const speciesTable = new DataTable(
+    const speciesTable = new globalThis.DataTable(
       "#species",
     );
     speciesTable.on("draw", () => {
@@ -278,7 +280,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     });
 
     // careers
-    const careersTable = new DataTable(
+    const careersTable = new globalThis.DataTable(
       "#careers",
     );
     careersTable.on("draw", () => {
@@ -301,7 +303,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     $(`.${this._openCareerSection}`).next().show();
 
     // specializations
-    const specializationsTable = new DataTable(
+    new globalThis.DataTable(
       "#specializations",
     );
     $(".specialization-spend").on("click", async (event) => {
@@ -353,7 +355,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     });
 
     // credit spending
-    const gearTable = new DataTable(
+    const gearTable = new globalThis.DataTable(
       "#buy_gear",
       {
         columnDefs: [{
@@ -365,7 +367,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
             buttons: [
               {
                 text: 'Weapons',
-                action: async (e, dt, node, config) => {
+                action: async (e, dt, _node, _config) => {
                   dt.column(3).visible(true);
                   dt.column(4).visible(true);
                   dt.column(5).visible(true);
@@ -385,7 +387,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
               },
               {
                 text: 'Armor',
-                action: async (e, dt, node, config) => {
+                action: async (e, dt, _node, _config) => {
                   dt.column(3).visible(true);
                   dt.column(4).visible(false);
                   dt.column(5).visible(false);
@@ -405,7 +407,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
               },
               {
                 text: 'Gear',
-                action: async (e, dt, node, config) => {
+                action: async (e, dt, _node, _config) => {
                   dt.column(3).visible(true);
                   dt.column(4).visible(false);
                   dt.column(5).visible(false);
@@ -425,7 +427,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
               },
               {
                 text: 'Attachment',
-                action: async (e, dt, node, config) => {
+                action: async (e, dt, _node, _config) => {
                   dt.column(3).visible(true);
                   dt.column(4).visible(false);
                   dt.column(5).visible(false);
@@ -445,7 +447,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
               },
               {
                 text: 'Mod',
-                action: async (e, dt, node, config) => {
+                action: async (e, dt, _node, _config) => {
                   dt.column(3).visible(false);
                   dt.column(4).visible(false);
                   dt.column(5).visible(false);
@@ -474,10 +476,10 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     gearTable.buttons('.weapon').trigger();
 
     // motivations
-    const purchasedMotivationTable = new DataTable(
+    new globalThis.DataTable(
       "#selected_motivations",
     );
-    const availableMotivationTable = new DataTable(
+    const availableMotivationTable = new globalThis.DataTable(
       "#motivations",
     );
     availableMotivationTable.on("draw", async () => {
@@ -616,7 +618,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   /** @override */
-  async _preparePartContext(partId, context, options) {
+  async _preparePartContext(partId, context, _options) {
     // TODO: is this needed? valuable?
     switch (partId) {
       case 'rules':
@@ -1159,7 +1161,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };
@@ -1184,7 +1186,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };
@@ -1270,7 +1272,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     await this.showCharacterStatusShim();
   }
 
-  async handleSpecializationPurchase(event) {
+  async handleSpecializationPurchase(_event) {
     const availableXP = this.calcXp()['available'];
     const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
     const groups = [];
@@ -1324,7 +1326,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       await this.showPurchaseConfirmation("specializations", content)
   }
 
-  async handleForcePowerPurchase(event) {
+  async handleForcePowerPurchase(_event) {
     const groups = [];
     const template = "systems/starwarsffg/templates/dialogs/ffg-confirm-purchase.html";
     const sources = game.settings.get("starwarsffg", "forcePowerCompendiums").split(",");
@@ -1479,7 +1481,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
   }
 
   async showPurchaseConfirmation(itemType, content) {
-    const dialog = new Dialog(
+    new LegacyDialogV2(
       {
         title: game.i18n.format("SWFFG.Actors.Sheets.Purchase.DialogTitle", {itemType: itemType}),
         content: content,
@@ -1798,7 +1800,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };
@@ -1823,7 +1825,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
           name: `attr${nk}`,
           changes: [{
             key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: 1,
           }],
         };

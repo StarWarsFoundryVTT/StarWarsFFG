@@ -1,4 +1,5 @@
 {
+  "SWFFG.Migration.ActiveEffectsFailed": "La migration des effets actifs a rencontré {count} erreur(s). Consultez le rapport dans la console ; elle reprendra au prochain lancement.",
   "SWFFG.Name": "Nom",
   "SWFFG.Species": "Espèce",
   "SWFFG.Career": "Carrière",

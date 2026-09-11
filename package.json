@@ -4,6 +4,10 @@
   "description": "( PLEASE NOTE: This is a custom fork based on [Jaxxa's implementation](https://github.com/jaxxa/StarWarsFFG/tree/master). )",
   "main": "index.js",
   "scripts": {
+    "test": "npm run test:syntax && npm run test:compat",
+    "test:syntax": "node scripts/check-module-syntax.mjs",
+    "test:compat": "node --experimental-vm-modules --test tests/compatibility.test.mjs tests/compatibility/*.test.mjs",
+    "test:e2e": "node node_modules/@playwright/test/cli.js test",
     "compile": "gulp css",
     "lint": "npx eslint modules",
     "watch": "gulp"
@@ -11,7 +15,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "1.62.1",
     "@types/node": "^24.0.0",
     "cypress": "^15.18.0",
     "eslint": "^9.10.0",

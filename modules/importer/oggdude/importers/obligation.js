@@ -68,7 +68,9 @@ export default class Obligation {
 
           try {
             data.data.subtype = typeMap[item.Type];
-          } catch (e) {}
+          } catch (error) {
+            CONFIG.logger.debug(`Unknown obligation subtype: ${item.Type}`, error);
+          }
 
           let imgPath = await ImportHelpers.getImageFilename(zip, "Talent", "", data.flags.starwarsffg.ffgimportid);
           if (imgPath) {

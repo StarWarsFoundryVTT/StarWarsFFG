@@ -1,5 +1,4 @@
 import { ActorSheetFFG } from "./actor-sheet-ffg.js";
-import ActorOptions from "./actor-ffg-options.js";
 
 export class AdversarySheetFFG extends ActorSheetFFG {
   constructor(...args) {
@@ -14,7 +13,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor", "adversary"],
       template: "systems/starwarsffg/templates/actors/ffg-adversary-sheet.html",
       width: 710,
@@ -51,8 +50,12 @@ export class AdversarySheetFFG extends ActorSheetFFG {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    return this._activateAdversaryListeners(html);
+  }
 
-    if (!this.options.editable) return;
+  /** Bind the listeners specific to the adversary presentation. */
+  _activateAdversaryListeners(_html) {
+    if (!this.isEditable) return;
 
     if (this.actor.type === "character") {
       this.sheetoptions.clear();

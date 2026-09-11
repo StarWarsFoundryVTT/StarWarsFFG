@@ -1,7 +1,6 @@
-import PopoutEditor from "../popout-editor.js";
 import { ForceDie } from "./dietype/ForceDie.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
-import {ItemFFG} from "../items/item-ffg.js";
+import { applyMessageMode, getMessageMode } from "../helpers/chat.js";
 
 /**
  * New extension of the core DicePool class for evaluating rolls with the FFG DiceTerms
@@ -242,7 +241,8 @@ export class RollFFG extends Roll {
 
   /* -------------------------------------------- */
   /** @override */
-  async render(chatOptions = {}) {
+  async render(initialChatOptions = {}) {
+    let chatOptions = initialChatOptions;
     chatOptions = foundry.utils.mergeObject(
       {
         user: game.user.id,
@@ -309,10 +309,10 @@ export class RollFFG extends Roll {
       addedResults: this.addedResults,
       publicRoll: !chatOptions.isPrivate,
     };
-    if (chatData?.data?.flags?.starwarsffg.hasOwnProperty('crew')) {
+    if (Object.hasOwn(chatData?.data?.flags?.starwarsffg ?? {}, 'crew')) {
       chatData.data.crew = chatData.data.flags.starwarsffg.crew;
     }
-    if (chatData.data.hasOwnProperty('data') && (chatData.data.data.adjusteditemmodifier === undefined || chatData.data.data.adjusteditemmodifier.length === 0)) {
+    if (Object.hasOwn(chatData.data, 'data') && (chatData.data.data.adjusteditemmodifier === undefined || chatData.data.data.adjusteditemmodifier.length === 0)) {
       // extended metadata is missing, lookup the actor ID so we can embed it for future lookups
       let candidate_actors = game.actors.filter(actor => actor.items.filter(item => item.id === chatData.data._id).length > 0);
       if (candidate_actors.length > 0) {
@@ -325,7 +325,7 @@ export class RollFFG extends Roll {
               // there aren't any modifiers on the object, try copying the temp object to it so the link works
               test_item.data.data.itemmodifier = chatData.data.data.itemmodifier;
             }
-          } catch (exception) {
+          } catch {
             // required data was missing - best to just move along, citizen
           }
         }
@@ -342,27 +342,29 @@ export class RollFFG extends Roll {
 
   /* -------------------------------------------- */
   /** @override */
-  async toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
+  async toMessage(initialMessageData = {}, { messageMode, rollMode, create = true } = {}) {
+    let messageData = initialMessageData;
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate();
 
-    const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
-
-    if (["gmroll", "blindroll"].includes(rMode)) {
-      messageData.whisper = ChatMessage.getWhisperRecipients("GM");
-    }
-    if (rMode === "blindroll") messageData.blind = true;
-    if (rMode === "selfroll") messageData.whisper = [game.user.id];
+    const mode = getMessageMode({
+      messageMode: messageMode ?? rollMode ?? messageData.messageMode ?? messageData.rollMode,
+    });
 
     // Prepare chat data
     messageData = foundry.utils.mergeObject(
       {
-        user: game.user.id,
+        author: game.user.id,
         content: this.total,
         sound: CONFIG.sounds.dice,
       },
       messageData
     );
+    // Accept older macro data, but only pass current document fields to Foundry.
+    if (messageData.user) messageData.author = messageData.user;
+    delete messageData.user;
+    delete messageData.rollMode;
+    delete messageData.messageMode;
     messageData.rolls = [this];
 
     Hooks.call("ffgDiceMessage", this);
@@ -370,10 +372,11 @@ export class RollFFG extends Roll {
     // Either create the message or just return the chat data
     const cls = getDocumentClass("ChatMessage");
     const msg = new cls(messageData);
-    if (rMode) msg.applyRollMode(rMode);
+    if (mode) applyMessageMode(msg, mode);
 
     // Either create or return the data
-    return create ? await cls.create(msg) : msg;
+    const data = msg.toObject();
+    return create ? await cls.create(data) : data;
   }
 
   /** @override */

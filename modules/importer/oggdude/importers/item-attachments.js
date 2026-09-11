@@ -98,7 +98,7 @@ export default class ItemAttachments {
             } else {
               data.data.metadata.tags.push(item.CategoryLimit.Category.toLowerCase());
             }
-          } catch (err) {
+          } catch {
             CONFIG.logger.debug(`No categories found for item ${item.Key}`);
           }
           if (item?.Type) {

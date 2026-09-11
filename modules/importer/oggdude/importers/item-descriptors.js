@@ -77,7 +77,7 @@ export default class ItemDescriptors {
         try {
           // attempt to select the specific compendium for this type of mod
           pack = packMap[data.data.type];
-        } catch (err) {
+        } catch {
           // but fail back to the generic compendium
           pack = packMap["all"];
         }

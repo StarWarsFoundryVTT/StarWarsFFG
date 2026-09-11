@@ -1,6 +1,7 @@
+import { FormApplicationV2 } from "../applications/form-application-v2.js";
 import { MonteCarlo } from "../../lib/@swrpg-online/monte-carlo/dist/index.esm.js";
 
-export default class RollBuilderFFG extends FormApplication {
+export default class RollBuilderFFG extends FormApplicationV2 {
   constructor(rollData, rollDicePool, rollDescription, rollSkillName, rollItem, rollAdditionalFlavor, rollSound) {
     super();
     this.roll = {
@@ -46,7 +47,6 @@ export default class RollBuilderFFG extends FormApplication {
     };
 
     let canUserAddAudio = await game.settings.get("starwarsffg", "allowUsersAddRollAudio");
-    let canUserAddFlavor = game.user.isGM || !this?.roll?.flavor;
 
     if (game.user.isGM) {
       game.playlists.contents.forEach((playlist) => {
@@ -120,7 +120,7 @@ export default class RollBuilderFFG extends FormApplication {
     this._initializeInputs(html);
     this._activateInputs(html);
 
-    html.find(".btn").click(async (event) => {
+    html.find(".btn").click(async (_event) => {
       // if sound was not passed search for sound dropdown value
       if (!this.roll.sound) {
         const sound = html.find(".sound-selection")?.[0]?.value;
@@ -136,7 +136,7 @@ export default class RollBuilderFFG extends FormApplication {
               };
             } else {
               const parts = this.roll.item.flags.starwarsffg?.uuid.split(".");
-              const [sceneName, sceneId, entityName, entityId, embeddedName, embeddedId] = parts;
+              const [, , , entityId, , embeddedId] = parts;
               entity = game.actors.tokens[entityId].items.get(embeddedId);
               if (parts.length === 6) {
                 entityData = {
@@ -215,7 +215,7 @@ export default class RollBuilderFFG extends FormApplication {
         </div>`;
 
         let chatOptions = {
-          user: game.user.id,
+          author: game.user.id,
           content: messageText,
           flags: {
             starwarsffg: {
@@ -237,11 +237,11 @@ export default class RollBuilderFFG extends FormApplication {
         }
         const roll = new game.ffg.RollFFG(this.dicePool.renderDiceExpression(), this.roll.item, this.dicePool, this.roll.flavor);
         // check if this is a crew roll - and it's a roll for a weapon
-        if (this.roll.item && this.roll.item.hasOwnProperty('crew') && Object.keys(this.roll.item).length > 1) {
+        if (this.roll.item && Object.hasOwn(this.roll.item, 'crew') && Object.keys(this.roll.item).length > 1) {
           await this.roll.item.update({"flags": {"starwarsffg": {"crew": this.roll.item.crew}}})
         }
         await roll.toMessage({
-          user: game.user.id,
+          author: game.user.id,
           speaker: {
             actor: game.actors.get(this.roll.data?.actor?._id),
             alias: this.roll.data?.token?.name,
@@ -250,7 +250,7 @@ export default class RollBuilderFFG extends FormApplication {
           flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(this.roll.skillName)}...`,
         });
         if (this.roll?.sound) {
-          AudioHelper.play({ src: this.roll.sound }, true);
+          foundry.audio.AudioHelper.play({ src: this.roll.sound }, true);
         }
 
         return roll;
@@ -402,8 +402,8 @@ export default class RollBuilderFFG extends FormApplication {
       $("#success_chance").text(
         `${(simResults.successProbability * 100).toLocaleString(undefined, {maximumFractionDigits: 0})}%`
       ).removeClass("likely unlikely").addClass(newClass);
-    } catch (e) {
-
+    } catch (error) {
+      CONFIG.logger.debug("Unable to calculate roll probability", error);
     }
   }
 }

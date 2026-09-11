@@ -169,6 +169,11 @@ img {
 .starwarsffg.sheet.actor .characteristic-item .characteristic .characteristic-value input:focus {
   border-radius: 50%;
 }
+.starwarsffg.sheet.actor.v2 .tabs {
+  height: auto;
+  right: 24px;
+  z-index: 2;
+}
 .starwarsffg.sheet.actor.v2 .tabs .item {
   line-height: normal;
 }

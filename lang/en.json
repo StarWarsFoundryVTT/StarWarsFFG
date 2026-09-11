@@ -1,4 +1,5 @@
 {
+  "SWFFG.Migration.ActiveEffectsFailed": "Active Effect migration encountered {count} error(s). See the console report; migration will retry on the next launch.",
   "TYPES.Actor.character": "Character",
   "TYPES.Actor.nemesis": "Nemesis",
   "TYPES.Actor.rival": "Rival",

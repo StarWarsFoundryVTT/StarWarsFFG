@@ -1,13 +1,14 @@
+import { FormApplicationV2 } from "../modules/applications/form-application-v2.js";
 import "../node_modules/mocha/mocha.js";
 import "../node_modules/chai/chai.js";
 
 import { HelpersTests } from "./common.test.js";
 import { ModifiersTests } from "./modifiers.test.js";
 
-export default class FFGFunctionalTests extends FormApplication {
+export default class FFGFunctionalTests extends FormApplicationV2 {
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       id: "functional-test",
       classes: ["starwarsffg"],
       title: "Functional Tests",

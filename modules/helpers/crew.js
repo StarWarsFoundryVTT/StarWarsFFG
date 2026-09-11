@@ -1,6 +1,6 @@
-import {get_dice_pool} from "./dice-helpers.js";
+const { DialogV2 } = foundry.applications.api;
+import DiceHelpers, {get_dice_pool} from "./dice-helpers.js";
 import {DicePoolFFG} from "../dice/pool.js";
-import DiceHelpers from "../helpers/dice-helpers.js";
 
 /**
  * Capture a drag-and-drop event (used to capture adding crew members via a flag)
@@ -26,7 +26,7 @@ export async function register_crew(...args) {
         return args;
     }
     let drag_actor = null;
-    if (args[2].hasOwnProperty('uuid')) {
+    if (Object.hasOwn(args[2], 'uuid')) {
         drag_actor = game.actors.get(args[2].uuid.split('.').pop());
     } else {
         drag_actor = game.actors.get(args[2].id);
@@ -291,19 +291,17 @@ export async function selectRoles(vehicle, crew_member_id) {
     }
   );
 
-  new Dialog(
-    {
-      title: game.i18n.localize("SWFFG.Crew.Title"),
-      content: content,
-      buttons: {
-        confirm: {
-          label: 'Update Roles',
-          callback: async (html) => {
-            const newRoles = html.find('[name="select-many-things"]').val();
-            await updateRoles(vehicle, crew_member_id, newRoles);
-          }
-        }
-      }
+  const trustedContent = document.createElement("div");
+  trustedContent.innerHTML = content;
+  await DialogV2.prompt({
+    window: {title: game.i18n.localize("SWFFG.Crew.Title")},
+    content: trustedContent,
+    ok: {
+      label: "Update Roles",
+      callback: async (_event, _button, dialog) => {
+        const newRoles = $(dialog.element).find('[name="select-many-things"]').val();
+        await updateRoles(vehicle, crew_member_id, newRoles);
+      },
     },
-  ).render(true);
+  });
 }

@@ -1,25 +1,33 @@
+import { ActorSheetFFGV2 } from "./actor-sheet-ffg-v2.js";
 import { AdversarySheetFFG } from "./adversary-sheet-ffg.js";
 
-export class AdversarySheetFFGV2 extends AdversarySheetFFG {
-  constructor(...args) {
-    super(...args);
-  }
+/** ApplicationV2 version of the alternative adversary actor sheet. */
+export class AdversarySheetFFGV2 extends ActorSheetFFGV2 {
+  static DEFAULT_OPTIONS = {
+    classes: ["adversary"],
+    position: {
+      width: 595,
+      height: 783,
+    },
+  };
 
-  /** @override */
   get template() {
-    const path = "systems/starwarsffg/templates/actors";
-    return `${path}/ffg-adversary-sheet.html`;
+    return "systems/starwarsffg/templates/actors/ffg-adversary-sheet.html";
   }
 
-  /** @override */
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      classes: ["starwarsffg", "sheet", "actor", "adversary", "v2"],
-      template: "systems/starwarsffg/templates/actors/ffg-adversary-sheet.html",
-      width: 710,
-      height: 650,
-      tabs: [{ navSelector: ".sheet-tabs", contentSelector: ".sheet-body", initial: "characteristics" }],
-      scrollY: [".tableWithHeader", ".tab", ".skillsGrid", ".skillsTablesGrid"],
-    });
+  async _prepareContext(options) {
+    const data = await super._prepareContext(options);
+    if (this.actor.type === "character") {
+      this.position.width = 595;
+      this.position.height = data.limited ? 165 : 783;
+      if (!this.actor.flags.starwarsffg?.loaded) await this._updateSpecialization(data);
+    }
+    data.items = this.actor.items.map(item => item);
+    return data;
+  }
+
+  _activateLegacyListeners(html) {
+    super._activateLegacyListeners(html);
+    return AdversarySheetFFG.prototype._activateAdversaryListeners.call(this, html);
   }
 }

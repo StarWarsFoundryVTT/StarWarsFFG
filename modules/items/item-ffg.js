@@ -1,9 +1,8 @@
+import { getActiveEffectChanges, activeEffectChangesUpdate } from "../compatibility/active-effects.js";
+import EffectHelpers from "../helpers/effects.js";
 import ItemBaseFFG from "./itembase-ffg.js";
 import PopoutEditor from "../popout-editor.js";
-import ActorOptions from "../actors/actor-ffg-options.js";
-import ImportHelpers from "../importer/import-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
-import Helpers from "../helpers/common.js";
 import ItemHelpers from "../helpers/item-helpers.js";
 
 /**
@@ -67,6 +66,9 @@ export class ItemFFG extends ItemBaseFFG {
     await super._onCreate(data, options, user);
 
     await this._onCreateAEs(options, force);
+    // Creation may not produce an equippable update when copied values are unchanged.
+    // Explicitly synchronize copied effects before the item is used by its Actor.
+    if (this.actor && this.system.equippable) await this._syncEquippedEffects();
   }
 
   async _onCreateAEs(options, force=false) {
@@ -98,7 +100,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: this.system.attributes[attribute].value,
               });
             }
@@ -115,7 +117,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -132,7 +134,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: 0,
               });
             }
@@ -149,7 +151,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -157,7 +159,7 @@ export class ItemFFG extends ItemBaseFFG {
           for (let i = 0; i < 8; i++) {
             effects.changes.push({
               key: "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: true,
             });
           }
@@ -165,7 +167,7 @@ export class ItemFFG extends ItemBaseFFG {
           for (let i = 0; i < 5; i++) {
             effects.changes.push({
               key: "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: true,
             });
           }
@@ -203,14 +205,14 @@ export class ItemFFG extends ItemBaseFFG {
       CONFIG.logger.debug("Unable to locate any inherent effect. This may be expected.");
     }
     if (itemEffect && Object.keys(changed).includes("system") && Object.keys(changed.system).includes("attributes")) {
-      const newChanges = foundry.utils.deepClone(itemEffect.changes);
+      const newChanges = getActiveEffectChanges(itemEffect);
       for (const updateKey of Object.keys(changed.system.attributes)) {
         const existingChange = newChanges.find(c => c.key.startsWith(`system.attributes.${updateKey}`));
         if (existingChange) {
           existingChange.value = parseInt(changed.system.attributes[updateKey].value);
         }
       }
-      await itemEffect.update({changes: newChanges});
+      await itemEffect.update(activeEffectChangesUpdate(newChanges));
     }
 
     // iterate over the changed data to look for any changes to attributes
@@ -228,7 +230,7 @@ export class ItemFFG extends ItemBaseFFG {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: attr?.value,
           });
         }
@@ -236,24 +238,25 @@ export class ItemFFG extends ItemBaseFFG {
         if (existingEffect) {
           // existing entry
           CONFIG.logger.debug(`> Staged AE changes for update: ${JSON.stringify(changes)}`);
-          await existingEffect.update({
-            changes: changes,
-          });
+          await existingEffect.update(activeEffectChangesUpdate(changes));
         }
       }
     }
 
     // handle equip / unequip by suspending / unsuspending AEs
-    const updatedExistingEffects = this.getEmbeddedCollection("ActiveEffect");
-    if (changed?.system?.equippable && updatedExistingEffects) {
-      const equipped = changed.system.equippable.equipped;
-      CONFIG.logger.debug("caught equip / unequip, checking if Active Effect state should be synced");
-      await ItemHelpers.syncAEStatus(this, updatedExistingEffects);
-      for (const effect of updatedExistingEffects) {
-        if (await ItemHelpers.shouldUpdateAEStatus(this, effect)) {
-          await ItemHelpers.updateEncumbranceOnEquip(this, effect, equipped);
-          await effect.update({disabled: !equipped});
-        }
+    if (changed?.system?.equippable) await this._syncEquippedEffects();
+  }
+
+  /** Keep copied and updated equipment effects aligned with the saved equip state. */
+  async _syncEquippedEffects() {
+    // Vehicle components are installed directly; their sheet has no equip toggle.
+    const equipped = this.actor?.type === "vehicle" || !!this.system.equippable.equipped;
+    const effects = this.getEmbeddedCollection("ActiveEffect");
+    await ItemHelpers.syncAEStatus(this, effects);
+    for (const effect of effects) {
+      if (await ItemHelpers.shouldUpdateAEStatus(this, effect)) {
+        await ItemHelpers.updateEncumbranceOnEquip(this, effect, equipped);
+        if (effect.disabled !== !equipped) await effect.update({disabled: !equipped});
       }
     }
   }
@@ -261,16 +264,17 @@ export class ItemFFG extends ItemBaseFFG {
   /**
    * Augment the basic Item data model with additional dynamic data.
    */
-  async prepareData() {
-    await super.prepareData();
+  prepareData() {
+    // Foundry prepares Documents synchronously, before taking sheet snapshots.
+    super.prepareData();
 
     // Get the Item's data
     const item = this;
-    const actor = this.actor ? this.actor : {};
+    const actor = this.actor ?? {};
     const data = item.system;
 
     if (!item.flags.starwarsffg) {
-      await item.updateSource({
+      item.updateSource({
         flags: {
           starwarsffg: {
             isCompendium: !!this.compendium,
@@ -298,12 +302,13 @@ export class ItemFFG extends ItemBaseFFG {
       }
     }
 
-    data.renderedDesc = await PopoutEditor.renderDiceImages(data.description, actor);
+    // Rich text enrichment is asynchronous and belongs in the sheet's getData.
+    data.renderedDesc = data.description;
 
     // perform localisation of dynamic values
     switch (this.type) {
       case "weapon":
-      case "shipweapon":
+      case "shipweapon": {
         // Apply item attachments / modifiers
         data.damage.value = parseInt(data.damage.value, 10);
         data.crit.value = parseInt(data.crit.value, 10);
@@ -389,7 +394,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (this.isEmbedded && this.actor) {
           let damageAdd = 0;
-          for (let attr in data.attributes) {
+          for (const attr of Object.keys(data.attributes)) {
             if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
               damageAdd += parseInt(data.attributes[attr].value, 10);
             }
@@ -409,6 +414,7 @@ export class ItemFFG extends ItemBaseFFG {
         data.range.label = rangeLabel;
 
         break;
+      }
       case "armour":
         data.soak.value = parseInt(data.soak.value, 10);
         data.defence.value = parseInt(data.defence.value, 10);
@@ -477,7 +483,7 @@ export class ItemFFG extends ItemBaseFFG {
 
         if (this.isEmbedded && this.actor && this.actor.system) {
           let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
-          for (let attr in data.attributes) {
+          for (const attr of Object.keys(data.attributes)) {
             let modtype = data.attributes[attr].modtype;
             if (modtype === "Armor Stat" || modtype === "Stat" || modtype === "Stat All") {
               switch (data.attributes[attr].mod.toLocaleLowerCase()) {
@@ -505,11 +511,12 @@ export class ItemFFG extends ItemBaseFFG {
           }
         }
         break;
-      case "talent":
+      case "talent": {
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
         const activationId = `SWFFG.TalentActivations${this._capitalize(cleanedActivationName)}`;
         data.activation.label = activationId;
         break;
+      }
 
       case "gear":
         data.encumbrance.value = parseInt(data.encumbrance.value, 10);
@@ -552,7 +559,7 @@ export class ItemFFG extends ItemBaseFFG {
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
-  _prepareTalentTrees(collection, itemType, listProperty, hasGlobalList) {
+  _prepareTalentTrees(collection, itemType, listProperty, _hasGlobalList) {
     const item = this;
     const talents = item.system[collection];
     let rowcount = 0;
@@ -618,7 +625,6 @@ export class ItemFFG extends ItemBaseFFG {
           talents[upgrade].canLinkRight = false;
         }
 
-        const controlNumber = parseInt(upgrade.replace(itemType, ""), 10);
 
         if (rowcount < 4) {
           talents[upgrade].canCombine = true;
@@ -731,7 +737,7 @@ export class ItemFFG extends ItemBaseFFG {
     }
     // General equipment properties
     else if (this.type !== "talent") {
-      if (data.hasOwnProperty("doNotSubmit")) {
+      if (Object.hasOwn(data, "doNotSubmit")) {
         const modifiers = data.doNotSubmit.qualities;
         const qualities = [];
         for (const modifier of modifiers) {
@@ -745,16 +751,16 @@ export class ItemFFG extends ItemBaseFFG {
         props.push(`<div>${game.i18n.localize("SWFFG.ItemDescriptors")}: <ul>${qualities.join("")}<ul></div>`);
       }
 
-      if (data.hasOwnProperty("encumbrance")) {
+      if (Object.hasOwn(data, "encumbrance")) {
         props.push(`${game.i18n.localize("SWFFG.Encumbrance")}: ${data.encumbrance?.adjusted ? data.encumbrance.adjusted : data.encumbrance.value}`);
       }
-      if (data.hasOwnProperty("price")) {
+      if (Object.hasOwn(data, "price")) {
         props.push(`${game.i18n.localize("SWFFG.ItemsPrice")}: ${data.price?.adjusted ? data.price.adjusted : data.price.value}`);
       }
-      if (data.hasOwnProperty("rarity")) {
+      if (Object.hasOwn(data, "rarity")) {
         props.push(`${game.i18n.localize("SWFFG.ItemsRarity")}: ${data.rarity?.adjusted ? data.rarity.adjusted : data.rarity.value} ${data.rarity.isrestricted ? "<span class='restricted'>" + game.i18n.localize("SWFFG.IsRestricted") + "</span>" : ""}`);
       }
-      if (data.hasOwnProperty("talents")) {
+      if (Object.hasOwn(data, "talents")) {
         for (const talentKey of Object.keys(data.talents)) {
           const talent = data.talents[talentKey];
           if (talent?.islearned) {
@@ -766,7 +772,7 @@ export class ItemFFG extends ItemBaseFFG {
           }
         }
       }
-      if (data.hasOwnProperty("specializations")) {
+      if (Object.hasOwn(data, "specializations")) {
         for (const specializationKey of Object.keys(data.specializations)) {
           const specialization = data.specializations[specializationKey];
           const fullSpecialization = fromUuidSync(specialization.source);
@@ -778,7 +784,7 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
       }
-      if (data.hasOwnProperty("signatureabilities")) {
+      if (Object.hasOwn(data, "signatureabilities")) {
         for (const SAKey of Object.keys(data.signatureabilities)) {
           const signatureAbility = data.signatureabilities[SAKey];
           const fullSignatureAbility = fromUuidSync(signatureAbility.source);
@@ -794,7 +800,7 @@ export class ItemFFG extends ItemBaseFFG {
 
     // Weapon properties
     if (this.type === "weapon") {
-      if (data.hasOwnProperty("skill")) {
+      if (Object.hasOwn(data, "skill")) {
         const cleanedSkillName = data.skill.value.replace(/[\W_]+/g, "");
         const skillLabel = "SWFFG.SkillsName" + cleanedSkillName;
         props.push(`Skill: ${game.i18n.localize(skillLabel)}`);
@@ -802,10 +808,10 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     // Talent properties
-    if (data.hasOwnProperty("isForceTalent")) {
+    if (Object.hasOwn(data, "isForceTalent")) {
       if (data.isForceTalent) props.push(game.i18n.localize("SWFFG.ForceTalent"));
     }
-    if (data.hasOwnProperty("ranks")) {
+    if (Object.hasOwn(data, "ranks")) {
       if (data.ranks.ranked) props.push(game.i18n.localize("SWFFG.Ranked"));
     }
 

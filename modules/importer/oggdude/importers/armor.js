@@ -83,7 +83,7 @@ export default class Armor {
               } else {
                 data.data.metadata.tags.push(item.Categories.Category.toLowerCase());
               }
-            } catch (err) {
+            } catch {
               CONFIG.logger.debug(`No categories found for item ${item.Key}`);
             }
             if (item?.Type) {

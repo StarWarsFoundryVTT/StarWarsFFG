@@ -11,6 +11,10 @@ import {
 export default class SettingsHelpers {
   // Initialize System Settings after the Init Hook
   static initLevelSettings() {
+    game.settings.register("starwarsffg", "activeEffectMigrationVersion", {
+      name: "Active Effect Migration Version", scope: "world", config: false, type: Number, default: 0,
+    });
+
     // System Migration Version
     game.settings.register("starwarsffg", "systemMigrationVersion", {
       name: "Current Version",
@@ -176,7 +180,7 @@ export default class SettingsHelpers {
         active: game.i18n.localize("SWFFG.SettingsPCListModeActive"),
         owned: game.i18n.localize("SWFFG.SettingsPCListModeOwned"),
       },
-      onChange: (rule) => {
+      onChange: (_rule) => {
         const groupmanager = canvas?.groupmanager?.window;
         if (groupmanager) {
           groupmanager.render();
@@ -191,7 +195,7 @@ export default class SettingsHelpers {
       default: 0,
       config: false,
       type: Number,
-      onChange: (rule) => {
+      onChange: (_rule) => {
         const groupmanager = canvas?.groupmanager?.window;
         if (groupmanager) {
           groupmanager.render();
@@ -207,7 +211,7 @@ export default class SettingsHelpers {
       default: 0,
       config: false,
       type: Number,
-      onChange: (rule) => {
+      onChange: (_rule) => {
         const groupmanager = canvas?.groupmanager?.window;
         if (groupmanager) {
           groupmanager.render();

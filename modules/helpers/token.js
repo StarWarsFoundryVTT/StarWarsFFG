@@ -6,7 +6,7 @@ export function registerTokenControls() {
     config: false,
     default: true,
     type: Boolean,
-    onChange: (rule) => window.location.reload()
+    onChange: (_rule) => window.location.reload()
   });
   game.settings.register("starwarsffg", "showAdversaryCount", {
     name: game.i18n.localize("SWFFG.Settings.showAdversaryCount.Name"),
@@ -15,7 +15,7 @@ export function registerTokenControls() {
     config: false,
     default: true,
     type: Boolean,
-    onChange: (rule) => window.location.reload()
+    onChange: (_rule) => window.location.reload()
   });
     game.settings.register("starwarsffg", "adversaryItemName", {
     name: game.i18n.localize("SWFFG.Settings.AdversaryItemName.Name"),
@@ -24,7 +24,7 @@ export function registerTokenControls() {
     config: false,
     default: "Adversary",
     type: String,
-    onChange: (rule) => window.location.reload()
+    onChange: (_rule) => window.location.reload()
   });
 }
 

@@ -4,14 +4,41 @@
   "description": "A system for playing Star Wars FFG games.",
   "version": "2.0.3",
   "compatibility": {
-    "minimum": 13,
-    "verified": 13,
-    "maximum": 13
+    "minimum": 14,
+    "verified": 14,
+    "maximum": 14
   },
-  "authors": [{"name": "Esrin"}, {"name": "CStadther"}, {"name": "Wrycu"}, {"name": "Jaxxa"}],
-  "esmodules": ["modules/dice-pool-ffg.js", "modules/swffg-main.js", "lib/slimselect/slimselect.js", "lib/datatables/datatables.min.js"],
-  "styles": ["styles/starwarsffg.css", "lib/pure/grids-min.css", "lib/slimselect/slimselect.css", "lib/datatables/datatables.min.css"],
-  "scripts": ["lib/jszip/jszip.min.js", "lib/jxon/jxon.min.js", "lib/slimselect/slimselect.js"],
+  "authors": [
+    {
+      "name": "Esrin"
+    },
+    {
+      "name": "CStadther"
+    },
+    {
+      "name": "Wrycu"
+    },
+    {
+      "name": "Jaxxa"
+    }
+  ],
+  "esmodules": [
+    "modules/dice-pool-ffg.js",
+    "modules/swffg-main.js",
+    "lib/slimselect/slimselect.js",
+    "lib/datatables/datatables.min.js"
+  ],
+  "styles": [
+    "styles/starwarsffg.css",
+    "lib/pure/grids-min.css",
+    "lib/slimselect/slimselect.css",
+    "lib/datatables/datatables.min.css"
+  ],
+  "scripts": [
+    "lib/jszip/jszip.min.js",
+    "lib/jxon/jxon.min.js",
+    "lib/slimselect/slimselect.js"
+  ],
   "socket": true,
   "packs": [],
   "packFolders": [],
@@ -58,8 +85,144 @@
   },
   "primaryTokenAttribute": "wounds",
   "secondaryTokenAttribute": "strain",
-  "url": "https://github.com/StarWarsFoundryVTT/StarWarsFFG",
-  "manifest": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/latest/download/system.json",
-  "download": "https://github.com/StarWarsFoundryVTT/StarWarsFFG/releases/download/v2.0.3/system.zip",
-  "license": "LICENSE.txt"
+  "url": "https://github.com/misterWhite25/StarWarsFFG",
+  "manifest": "https://github.com/misterWhite25/StarWarsFFG/releases/latest/download/system.json",
+  "download": "https://github.com/misterWhite25/StarWarsFFG/releases/download/v2.0.3/system.zip",
+  "license": "LICENSE.txt",
+  "documentTypes": {
+    "Actor": {
+      "character": {
+        "htmlFields": [
+          "biography"
+        ]
+      },
+      "minion": {
+        "htmlFields": [
+          "biography"
+        ]
+      },
+      "vehicle": {
+        "htmlFields": [
+          "biography"
+        ]
+      },
+      "homestead": {
+        "htmlFields": [
+          "biography"
+        ]
+      },
+      "rival": {
+        "htmlFields": [
+          "biography"
+        ]
+      },
+      "nemesis": {
+        "htmlFields": [
+          "biography"
+        ]
+      }
+    },
+    "Item": {
+      "ability": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "armour": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "career": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "criticaldamage": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "criticalinjury": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "forcepower": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "gear": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "itemattachment": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "itemmodifier": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "talent": {
+        "htmlFields": [
+          "description",
+          "longDesc"
+        ]
+      },
+      "shipattachment": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "shipweapon": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "homesteadupgrade": {
+        "htmlFields": []
+      },
+      "signatureability": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "specialization": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "species": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "weapon": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "background": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "obligation": {
+        "htmlFields": [
+          "description"
+        ]
+      },
+      "motivation": {
+        "htmlFields": [
+          "description"
+        ]
+      }
+    }
+  },
+  "type": "system"
 }

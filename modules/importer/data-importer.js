@@ -72,7 +72,7 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
   }
 
   /** @override */
-  _onRender(context, options) {
+  _onRender(_context, _options) {
     // Add debug log option to window header
     const debugSpan = document.createElement("span");
     debugSpan.className = "debug";
@@ -100,7 +100,7 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
    * Enable all checkboxes for import rather than forcing the user to click them all one at a time
    * @private
    */
-  static _enableImportAll(event, target) {
+  static _enableImportAll(_event, _target) {
     document.querySelectorAll("input[type='checkbox'][name='imports']").forEach(el => el.checked = true);
   }
 
@@ -148,7 +148,7 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
       if (typeof zip === "undefined") return;
 
       const selectAll = document.querySelector("[data-action='selectAll']");
-      if (importAll !== null) selectAll.disabled = false;
+      if (selectAll !== null) selectAll.disabled = false;
 
       for (const importer of Object.values(this.importers)) {
         this.canImport[importer.itemName] = this._enableImportSelection(importer.displayName, importer.className, zip.files);
@@ -163,7 +163,7 @@ export default class DataImporter extends HandlebarsApplicationMixin(Application
     }
   }
 
-  static async _startImport(event, form, formData) {
+  static async _startImport(_event, _form, _formData) {
     CONFIG.logger.debug("Importing Data Files");
     this._importLogger(`Starting import`);
 

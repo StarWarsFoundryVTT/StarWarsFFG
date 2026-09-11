@@ -1,7 +1,7 @@
-import PopoutEditor from "../popout-editor.js";
 import RollBuilderFFG from "../dice/roll-builder.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ImportHelpers from "../importer/import-helpers.js";
+import { DicePoolFFG } from "../dice/pool.js";
 
 export default class DiceHelpers {
   static async rollSkill(obj, event, type, flavorText, sound) {
@@ -273,7 +273,8 @@ export default class DiceHelpers {
     return { setback, difficulty };
   }
 
-  static async getModifiers(dicePool, item) {
+  static async getModifiers(initialDicePool, item) {
+    let dicePool = initialDicePool;
     if (item.type === "weapon" || item.type === "shipweapon") {
       dicePool = await ModifierHelpers.getDicePoolModifiers(dicePool, item, []);
 
@@ -341,15 +342,15 @@ export function get_dice_pool(actor_id, skill_name, incoming_roll) {
 function convert_skill_name(pool_skill_name) {
   CONFIG.logger.debug(`Converting ${pool_skill_name} to skill name`);
   const skills = CONFIG.FFG.skills;
-  for (var skill in skills) {
-    if (game.i18n.localize(skills[skill]['label']) === pool_skill_name) {
+  for (const skill of Object.keys(skills)) {
+    if (game.i18n.localize(skills[skill].label) === pool_skill_name) {
       CONFIG.logger.debug(`Found mapping to ${skill}`);
       return skill;
     }
   }
   // it would appear that sometimes it's value instead of label
-  for (var skill in skills) {
-    if (skills[skill]['value'] === pool_skill_name) {
+  for (const skill of Object.keys(skills)) {
+    if (skills[skill].value === pool_skill_name) {
       CONFIG.logger.debug(`Found mapping to ${skill}`);
       return skill;
     }

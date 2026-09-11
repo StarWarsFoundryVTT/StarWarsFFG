@@ -1,10 +1,11 @@
+import { FormApplicationV2 } from "./applications/form-application-v2.js";
 import {migrateDataToSystem} from "./helpers/migration.js";
 
 /**
  * A specialized form used to pop out the editor.
  * @extends {FormApplication}
  */
-export default class PopoutEditor extends FormApplication {
+export default class PopoutEditor extends FormApplicationV2 {
   /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -286,42 +287,42 @@ export default class PopoutEditor extends FormApplication {
       {
         startTag: "<span class='bold'>",
         endTag: "</span>",
-        pattern: /(\[B\])(.[^\[]*)\[b\]/gm,
+        pattern: /(\[B\])(.[^[]*)\[b\]/gm,
       },
       {
         startTag: "<p>",
         endTag: "</p>",
-        pattern: /(\[P\])(.[^\[]*)/gm,
+        pattern: /(\[P\])(.[^[]*)/gm,
       },
       {
         startTag: "<br />",
         endTag: "",
-        pattern: /(\[BR\])(.[^\[]*)/gm,
+        pattern: /(\[BR\])(.[^[]*)/gm,
       },
       {
         startTag: "<span class='italic'>",
         endTag: "</span>",
-        pattern: /(\[I\])(.[^\[]*)\[i\]/gm,
+        pattern: /(\[I\])(.[^[]*)\[i\]/gm,
       },
       {
         startTag: "<h1>",
         endTag: "</h1>",
-        pattern: /(\[H1\])(.[^\[]*)\[h1\]/gm,
+        pattern: /(\[H1\])(.[^[]*)\[h1\]/gm,
       },
       {
         startTag: "<h2>",
         endTag: "</h2>",
-        pattern: /(\[H2\])(.[^\[]*)\[h2\]/gm,
+        pattern: /(\[H2\])(.[^[]*)\[h2\]/gm,
       },
       {
         startTag: "<h3>",
         endTag: "</h3>",
-        pattern: /(\[H3\])(.[^\[]*)\[h3\]/gm,
+        pattern: /(\[H3\])(.[^[]*)\[h3\]/gm,
       },
       {
         startTag: "<h4>",
         endTag: "</h4>",
-        pattern: /(\[H4\])(.[^\[]*)\[h4\]/gm,
+        pattern: /(\[H4\])(.[^[]*)\[h4\]/gm,
       },
     ];
 
@@ -333,8 +334,9 @@ export default class PopoutEditor extends FormApplication {
   }
 
   static replaceRollTags(html, actorData) {
-    const rollTag = /(\[ROLL\])(.[^\[]*)\[\/ROLL\]/gm;
-    const formula = html.toString().replace(rollTag, function (content) {
+    const rollTag = /(\[ROLL\])(.[^[]*)\[\/ROLL\]/gm;
+    const formula = html.toString().replace(rollTag, function (initialContent) {
+      let content = initialContent;
       content = content.replace(rollTag, `$2`);
       const args = content.split(",").map(function (arg) {
         return arg.trim();

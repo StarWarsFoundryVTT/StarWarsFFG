@@ -1,5 +1,8 @@
+import { LegacyDialogV2 } from "./applications/legacy-dialog-v2.js";
+
+const { DialogV2 } = foundry.applications.api;
+import { getMessageMode } from "./helpers/chat.js";
 import {DicePoolFFG, RollFFG} from "./dice-pool-ffg.js";
-import PopoutEditor from "./popout-editor.js";
 
 /**
  * Extend the base Combat entity.
@@ -85,7 +88,7 @@ export class CombatFFG extends Combat {
   async addInitiativeSlot() {
     // ask the user which disposition and initiative they would like, so we can add a generic slot
 
-    let slotDialog = new Dialog({
+    let slotDialog = new LegacyDialogV2({
       title: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Title"),
       content: `
         <p>${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Initiative")} :</p>
@@ -99,7 +102,7 @@ export class CombatFFG extends Combat {
         submit: {
           icon: '<i class="fas fa-check"></i>',
           label: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Submit"),
-          callback: async (obj, event) => {
+          callback: async (obj, _event) => {
             const jObj = $(obj);
             let disposition = undefined;
             if (jObj.find("#friendly")[0].checked) {
@@ -137,7 +140,8 @@ export class CombatFFG extends Combat {
   }, 200);
 
   /** @override */
-  async _getInitiativeRoll(combatant, formula) {
+  async _getInitiativeRoll(combatant, initialFormula) {
+    let formula = initialFormula;
     const cData = foundry.utils.duplicate(combatant.actor.system);
 
     if (combatant.actor.type === "vehicle") {
@@ -162,15 +166,15 @@ export class CombatFFG extends Combat {
   }
 
   /** @override */
-  _getInitiativeFormula(combatant) {
+  _getInitiativeFormula(_combatant) {
     return CONFIG.Combat.initiative.formula || game.system.initiative;
   }
 
   /** @override */
-  async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+  async rollInitiative(initialIds, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+    let ids = initialIds;
     let initiative = this;
 
-    let promise = new Promise(async function (resolve, reject) {
       const id = foundry.utils.randomID();
 
       let whosInitiative = initiative.combatant?.name;
@@ -237,7 +241,8 @@ export class CombatFFG extends Combat {
         diceSymbols,
       });
 
-      new Dialog({
+      return new Promise((resolve) => {
+        new LegacyDialogV2({
         title,
         content,
         buttons: {
@@ -285,8 +290,8 @@ export class CombatFFG extends Combat {
                   updates.push({ _id: id, initiative: roll.total });
 
                   // Determine the roll mode
-                  let rollMode = messageOptions.rollMode || game.settings.get("core", "rollMode");
-                  if ((c.token.hidden || c.hidden) && rollMode === "roll") rollMode = "gmroll";
+                  let messageMode = getMessageMode(messageOptions);
+                  if ((c.token.hidden || c.hidden) && ["public", "ic"].includes(messageMode)) messageMode = "gm";
 
                   // Construct chat message data
                   let messageData = foundry.utils.mergeObject(
@@ -302,7 +307,7 @@ export class CombatFFG extends Combat {
                     },
                     messageOptions
                   );
-                  const chatData = await roll.toMessage(messageData, { create: false, rollMode });
+                  const chatData = await roll.toMessage(messageData, { create: false, messageMode });
 
                   // Play 1 sound for the whole rolled set
                   if (i > 0) chatData.sound = null;
@@ -313,7 +318,7 @@ export class CombatFFG extends Combat {
                 },
                 [[], []]
               );
-              if (!updates.length) return initiative;
+              if (!updates.length) return resolve(initiative);
 
               // Update multiple combatants
               await initiative.updateEmbeddedDocuments("Combatant", updates);
@@ -334,10 +339,8 @@ export class CombatFFG extends Combat {
             label: game.i18n.localize("SWFFG.Cancel"),
           },
         },
-      }).render(true);
-    });
-
-    return await promise;
+        }).render(true);
+      });
   }
 
   /**
@@ -370,7 +373,7 @@ export class CombatFFG extends Combat {
     const roundClaims = claims[round];
     try {
       return Object.keys(roundClaims).find(key => roundClaims[key] === combatantId) || undefined;
-    } catch (error) {
+    } catch {
       // we get an exception if there have been no claims in the round yet
       return undefined;
     }
@@ -406,40 +409,33 @@ export class CombatFFG extends Combat {
     }
   }
 
-  async handleCombatantRemoval(combatant, options, userId) {
-    const claimedSlot = this.findSlotClaims(this.round, combatant.id);
+  async handleCombatantRemoval(combatant, _options, _userId) {
     if (!combatant.combat.started) {
       // the combat hasn't started, remove the actual initiative slot
       await this.removeCombatantOnly(combatant.id);
     }
 
-    let action = game.settings.get("starwarsffg", "removeCombatantAction")
+    let action = game.settings.get("starwarsffg", "removeCombatantAction");
     if (action === "prompt") {
-      new Dialog({
-        title: game.i18n.localize("SWFFG.CombatantRemoval.Title"),
+      action = await DialogV2.wait({
+        window: {title: game.i18n.localize("SWFFG.CombatantRemoval.Title")},
         content: game.i18n.localize("SWFFG.CombatantRemoval.Body"),
-        buttons: {
-          one: {
-            label: game.i18n.localize("SWFFG.CombatantRemoval.CombatantOnly"),
-            callback: async () => {
-              await this.doRemoval(combatant, "combatant_only");
-            },
-          },
-          two: {
-            label: game.i18n.localize("SWFFG.CombatantRemoval.LastSlot"),
-            callback: async () => {
-              await this.doRemoval(combatant, "last_slot");
-            },
-          },
-          three: {
-            icon: '<i class="fas fa-times"></i>',
-            label: game.i18n.localize("SWFFG.Cancel"),
-          },
-        },
-      }).render(true);
-    } else {
-      await this.doRemoval(combatant, action);
+        buttons: [{
+          action: "combatant_only",
+          label: game.i18n.localize("SWFFG.CombatantRemoval.CombatantOnly"),
+          default: true,
+        }, {
+          action: "last_slot",
+          label: game.i18n.localize("SWFFG.CombatantRemoval.LastSlot"),
+        }, {
+          action: "cancel",
+          icon: "fas fa-times",
+          label: game.i18n.localize("SWFFG.Cancel"),
+          type: "button",
+        }],
+      });
     }
+    if (["combatant_only", "last_slot"].includes(action)) await this.doRemoval(combatant, action);
   }
 
   async doRemoval(combatant, action) {
@@ -455,7 +451,7 @@ export class CombatFFG extends Combat {
     }
   }
 
-  async handleCombatantAddition(combatant, context, options, combatantI) {
+  async handleCombatantAddition(_combatant, _context, _options, _combatantI) {
     // there may be cases when this is needed, but for now, we don't need to do anything
     // (leaving as a placeholder until we know for sure)
   }
@@ -488,9 +484,10 @@ export class CombatFFG extends Combat {
       CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
     }
     // now create a new slot to replace it
+    let replacementTurnId;
     if (combatant.combat.started) {
       CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
-      const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
+      replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
     }
 
     // if there was a claim on the slot replaced, add it back
@@ -662,32 +659,25 @@ export class CombatFFG extends Combat {
   async updateCombatant(el) {
     const slotId = el.getAttribute("data-alt-id");
     const combatant = this.combatants.get(slotId);
-    const currentInitiative = combatant.initiative;
-    const updateDialog = new Dialog({
-      title: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Title"),
+    const result = await DialogV2.input({
+      window: {title: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Title")},
       content: `
         <p>${game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Initiative")} :</p>
-        <input type="number" id="initiative" name="initiative" value="${currentInitiative}">
+        <input type="number" name="initiative" value="${combatant.initiative}">
       `,
-      buttons: {
-        submit: {
-          icon: '<i class="fas fa-check"></i>',
-          label: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Submit"),
-          callback: async (obj, event) => {
-            const jObj = $(obj);
-            const initiative = +jObj.find("#initiative")[0].value;
-            if (initiative === "") {
-              ui.notifications.warn("You must provide an initiative value");
-              return;
-            }
-            await combatant.update({initiative: initiative});
-            game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: this.id});
-          }
-        }
+      ok: {
+        icon: "fas fa-check",
+        label: game.i18n.localize("SWFFG.Combats.Slots.Dialog.Labels.Submit"),
       },
-      default: "submit",
     });
-    updateDialog.render(true);
+    if (!result) return;
+    const initiative = Number(result.initiative);
+    if ((result.initiative === "") || !Number.isFinite(initiative)) {
+      ui.notifications.warn("You must provide an initiative value");
+      return;
+    }
+    await combatant.update({initiative});
+    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: this.id});
   }
 
   async removeCombatant(el) {
@@ -821,20 +811,13 @@ export class CombatFFG extends Combat {
         let defeated = claimant.isDefeated;
 
         const effects = new Set();
-        if (claimant.token) {
-          claimant.token.effects.forEach((e) => effects.add(e))
-          if (claimant.token.overlayEffect) {
-            effects.add(claimant.token.overlayEffect);
-          }
-        }
-
         if (claimant.actor) {
           if (claimant.isDefeated) {
             defeated = true;
           }
           for (const effect of claimant.actor.temporaryEffects) {
-            if (effect?.icon) {
-              effects.add(effect.icon);
+            if (effect?.img) {
+              effects.add(effect.img);
             }
           }
         }
@@ -911,7 +894,6 @@ export class CombatFFG extends Combat {
       }
 
       // determine if we should mark the slot as unneeded
-      const aliveCount = this._getCombatantStateCount(disposition);
       let unused = false;
       turnTracker[disposition]++;
 
@@ -1011,12 +993,11 @@ function _getInitiativeFormula(skill, ability) {
 
 function _findActorForInitiative(c) {
   let data = c.actor.system;
-  const initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
   CONFIG.logger.debug("Attempting to find initiative data for actor in combat");
   if (c.actor.type === "vehicle") {
     CONFIG.logger.debug("Actor is a vehicle, looking for initiative crew role.");
     const crew = c.actor.getFlag("starwarsffg", "crew");
-    if (crew !== undefined && crew !== []) {
+    if (crew?.length) {
       const initiativeCrew = crew.find((c) => c.role === "Pilot");
       if (initiativeCrew) {
         CONFIG.logger.debug("Found initiative crew role, swapping data to crew member");
@@ -1113,7 +1094,6 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
     }
 
     // create a copy of the turn data, then set hidden to false so non-GMs can view all turns, then set the data back
-    const tempData = foundry.utils.deepClone(this.viewed.turns);
     for (const turn of this.viewed.turns) {
       turn.hidden = false;
     }

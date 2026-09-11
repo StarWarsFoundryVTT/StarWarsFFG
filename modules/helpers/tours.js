@@ -1,3 +1,4 @@
+import EffectHelpers from "./effects.js";
 class CharacterTour extends foundry.nue.Tour {
   #originalDeactivate = null;
 
@@ -55,7 +56,7 @@ class CharacterTour extends foundry.nue.Tour {
 
   async createActor() {
     this.tempActor = await createActor();
-    this.tempActor.sheet.bringToTop();
+    this.tempActor.sheet.bringToFront();
     await delay(100);
   }
 
@@ -121,7 +122,7 @@ class EditModeTour extends foundry.nue.Tour {
 
   async createActor() {
     this.tempActor = await createActor();
-    this.tempActor.sheet.bringToTop();
+    this.tempActor.sheet.bringToFront();
     await delay(100);
   }
 
@@ -137,7 +138,7 @@ class EditModeTour extends foundry.nue.Tour {
     const AEData = {
       changes: [{
         key: "system.characteristics.Brawn.value",
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        ...EffectHelpers.changeType(),
         value: 3,
       }],
       name: "example",
@@ -188,11 +189,12 @@ async function createActor() {
 
   await tempActor.sheet.render(true);
   // wait for the rendering to actually finish
-  await new Promise(async resolve => {
-    while (!tempActor.sheet.rendered) {
-      await delay(5);
-    }
-    resolve();
+  await new Promise(resolve => {
+    const waitForRender = () => {
+      if (tempActor.sheet.rendered) resolve();
+      else setTimeout(waitForRender, 5);
+    };
+    waitForRender();
   });
   return tempActor;
 }

@@ -1,4 +1,5 @@
-import { GroupManager } from "./groupmanager-ffg.js";
+import { FormApplicationV2 } from "./applications/form-application-v2.js";
+import { DicePoolFFG } from "./dice/pool.js";
 
 /**
  * A specialized form used to pop out the editor.
@@ -8,7 +9,7 @@ import { GroupManager } from "./groupmanager-ffg.js";
  *
  *
  */
-export default class DestinyTracker extends FormApplication {
+export default class DestinyTracker extends FormApplicationV2 {
   constructor(object={}, options={}) {
     super(object, options);
 
@@ -60,10 +61,10 @@ export default class DestinyTracker extends FormApplication {
   /* -------------------------------------------- */
 
   /** @override */
-  _updateObject(event, formData) {};
+  _updateObject(_event, _formData) {};
 
   /** @override */
-  async close(options = {}) {};
+  async close(_options = {}) {};
 
   /** @override */
   activateListeners(html) {
@@ -104,7 +105,6 @@ export default class DestinyTracker extends FormApplication {
       const add = event.shiftKey;
       const remove = event.ctrlKey || event.metaKey;
       var flipType = null;
-      var actionType = null;
       if (pointType == "dPoolLight") {
         flipType = "dPoolDark";
         typeName = game.i18n.localize(game.settings.get("starwarsffg", "destiny-pool-light"));
@@ -146,7 +146,6 @@ export default class DestinyTracker extends FormApplication {
           ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
           return;
         }
-        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
         game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) + 1);
         messageText = "Added a " + typeName + " point.";
       } else if (remove) {
@@ -154,13 +153,12 @@ export default class DestinyTracker extends FormApplication {
           ui.notifications.warn("Only GMs can add or remove points from the Destiny Pool.");
           return;
         }
-        const setting = game.settings.settings.get(`starwarsffg.${pointType}`);
         game.settings.set("starwarsffg", pointType, game.settings.get("starwarsffg", pointType) - 1);
         messageText = "Removed a " + typeName + " point.";
       }
 
       ChatMessage.create({
-        user: game.user.id,
+        author: game.user.id,
         content: messageText,
       });
     });
@@ -169,8 +167,8 @@ export default class DestinyTracker extends FormApplication {
     $(".ffg-destiny-roll").on("click", this.OnClickRollDestiny.bind(this));
 
     // setup chat hook for destiny roll
-    Hooks.on("renderChatMessage", (app, html, messageData) => {
-      html.on("click", ".ffg-destiny-roll", this.OnClickRollDestiny.bind(this));
+    Hooks.on("renderChatMessageHTML", (message, html) => {
+      $(html).on("click", ".ffg-destiny-roll", this.OnClickRollDestiny.bind(this));
     });
 
     // setup socket handler for checking destiny roll
@@ -199,7 +197,7 @@ export default class DestinyTracker extends FormApplication {
 
           try {
             rolled = await game.settings.get("starwarsffg", `destinyrollers${args[0]?.canIRollDestiny}`);
-          } catch (err) {
+          } catch {
             game.settings.register("starwarsffg", `destinyrollers${args[0].canIRollDestiny}`, {
               name: "DestinyRoll",
               scope: "client",
@@ -307,7 +305,7 @@ export default class DestinyTracker extends FormApplication {
 
     const roll = new game.ffg.RollFFG(pool.renderDiceExpression());
     await roll.toMessage({
-      user: game.user.id,
+      author: game.user.id,
       flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.DestinyPool")}...`,
     });
 

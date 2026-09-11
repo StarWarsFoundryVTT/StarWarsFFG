@@ -1,7 +1,11 @@
+import { getActiveEffectChanges, activeEffectChangesUpdate } from "../compatibility/active-effects.js";
+import { deleteDataField } from "../compatibility/data-operators.js";
+import EffectHelpers from "./effects.js";
 import ModifierHelpers from "./modifiers.js";
 
 export default class ItemHelpers {
-  static async itemUpdate(event, formData) {
+  static async itemUpdate(event, initialFormData) {
+    let formData = initialFormData;
     formData = foundry.utils.expandObject(formData);
 
     if (this.object.isEmbedded && this.object.actor?.compendium?.metadata) {
@@ -21,7 +25,7 @@ export default class ItemHelpers {
     // Remove attributes which are no longer used
     if (this.object.system?.attributes) {
       for (let k of Object.keys(this.object.system.attributes)) {
-        if (!attributes.hasOwnProperty(k)) attributes[`-=${k}`] = null;
+        if (!Object.hasOwn(attributes, k)) attributes[k] = deleteDataField();
       }
     }
 
@@ -34,7 +38,6 @@ export default class ItemHelpers {
     }
 
     // migrate data to v10 structure
-    let updated_id = formData._id;
     delete formData._id;
 
     foundry.utils.setProperty(formData, `flags.starwarsffg.loaded`, false);
@@ -61,7 +64,7 @@ export default class ItemHelpers {
             // Remove attributes which are no longer used
             if (spec?.system?.talents?.[parent.talent]?.attributes) {
               for (let k of Object.keys(spec.system.talents[parent.talent].attributes)) {
-                if (!formData.data.attributes.hasOwnProperty(k)) formData.data.attributes[`-=${k}`] = null;
+                if (!formData.data.Object.hasOwn(attributes, k)) formData.data.attributes[k] = deleteDataField();
               }
             }
 
@@ -97,12 +100,12 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
       if (itemEffect) {
-        await itemEffect.update({changes: changes});
+        await itemEffect.update(activeEffectChangesUpdate(changes));
       }
     } else if (this.object.type === "specialization") {
       // apply career skills from Careers
@@ -119,12 +122,12 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
       if (itemEffect) {
-        await itemEffect.update({changes: changes});
+        await itemEffect.update(activeEffectChangesUpdate(changes));
       }
     }
   }
@@ -161,12 +164,13 @@ export default class ItemHelpers {
    *  a field named "itemmodifier" with a single entry in an array
    * @param formData
    */
-  static explodeFormData(formData) {
+  static explodeFormData(initialFormData) {
+    let formData = initialFormData;
     // convert the formdata into a dict
     formData = foundry.utils.expandObject(formData);
     // collapse the resulting entries with an index into an array
     const relevantEntries = Object.keys(formData?.system).filter(i => i.includes("[") && i.includes("]"));
-    for (const cur_entry in relevantEntries) {
+    for (const cur_entry of Object.keys(relevantEntries)) {
       const updatedKeyName =  relevantEntries[cur_entry].replace(/\[.*\]/, "");
       if (!Object.keys(formData.system).includes(updatedKeyName)) {
         formData.system[updatedKeyName] = [];
@@ -278,13 +282,10 @@ export default class ItemHelpers {
             // the mod should be applied once per rank
             const newValue = modifier.system.rank_current * modifier.system.attributes[attr].value;
             CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
-            await matchingEffect.update({
-              "changes": [{
-                key: matchingEffect.changes[0].key,
-                mode: matchingEffect.changes[0].mode,
+            await matchingEffect.update(activeEffectChangesUpdate([{
+                ...getActiveEffectChanges(matchingEffect)[0],
                 value: newValue,
-              }],
-            });
+              }]));
           }
         }
       }
@@ -313,13 +314,14 @@ export default class ItemHelpers {
         updatedEncumbrance = realEncumbrance;
       }
       CONFIG.logger.debug(`Original encumbrance: ${realEncumbrance}, new encumbrance: ${updatedEncumbrance}`);
-      for (const change of activeEffect.changes) {
+      const changes = getActiveEffectChanges(activeEffect);
+      for (const change of changes) {
         if (change.key === encumbranceModPath) {
           change.value = updatedEncumbrance;
           break;
         }
       }
-      await activeEffect.update({changes: activeEffect.changes});
+      await activeEffect.update(activeEffectChangesUpdate(changes));
     }
   }
 

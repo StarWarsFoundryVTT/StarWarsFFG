@@ -1,7 +1,10 @@
+import { getActiveEffectChanges, activeEffectChangesUpdate } from "../compatibility/active-effects.js";
+import { deleteDataField } from "../compatibility/data-operators.js";
+import EffectHelpers from "../helpers/effects.js";
 import Helpers from "../helpers/common.js";
 import {migrateDataToSystem} from "../helpers/migration.js";
-import {ItemFFG} from "../items/item-ffg.js";
 import ModifierHelpers from "../helpers/modifiers.js";
+import {getSystemDataDefaults} from "../data-models/system-data-models.js";
 
 export default class ImportHelpers {
   /**
@@ -26,7 +29,7 @@ export default class ImportHelpers {
           CONFIG.logger.debug(`Error verifying path ${startingSource}, ${path}`, err);
         }
       }
-    } catch (err) {
+    } catch {
       return false;
     }
 
@@ -44,7 +47,7 @@ export default class ImportHelpers {
   static async importImage(path, zip, pack) {
     if (path) {
       const serverPath = `worlds/${game.world.id}/images/packs/${pack.metadata.name}`;
-      const filename = path.replace(/^.*[\\\/]/, "");
+      const filename = path.replace(/^.*[\\/]/, "");
       if (!CONFIG.temporary.images) {
         CONFIG.temporary.images = [];
       }
@@ -65,7 +68,7 @@ export default class ImportHelpers {
         }
 
         return `${serverPath}/${filename}`;
-      } catch (err) {
+      } catch {
         CONFIG.logger.error(`Error Uploading File: ${path} to ${serverPath}`);
       }
     }
@@ -83,7 +86,7 @@ export default class ImportHelpers {
   static async importSilhouetteImage(path, zip, pack) {
     if (path) {
       const serverPath = `worlds/${game.world.id}/images/packs/${pack.metadata.name}Silhouettes`;
-      const filename = path.replace(/^.*[\\\/]/, "");
+      const filename = path.replace(/^.*[\\/]/, "");
       if (!CONFIG.temporary.images) {
         CONFIG.temporary.images = [];
       }
@@ -104,7 +107,7 @@ export default class ImportHelpers {
         }
 
         return `${serverPath}/${filename}`;
-      } catch (err) {
+      } catch {
         CONFIG.logger.error(`Error Uploading File: ${path} to ${serverPath}`);
       }
     }
@@ -143,13 +146,13 @@ export default class ImportHelpers {
       updateData.img = newItem.img;
     }
 
-    for (let key in newItem.data) {
+    for (const key of Object.keys(newItem.data)) {
       const recursiveObject = (itemkey, obj) => {
-        for (let objkey in obj) {
+        for (const objkey of Object.keys(obj)) {
           if (typeof obj[objkey] === "object") {
             recursiveObject(`${itemkey}.${objkey}`, obj[objkey]);
           } else {
-            if (typeof obj[objkey] !== undefined) {
+            if (typeof obj[objkey] !== "undefined") {
               const datakey = `data.${itemkey}.${objkey}`;
               updateData[datakey] = obj[objkey];
             }
@@ -381,7 +384,6 @@ export default class ImportHelpers {
     if (mod.Key === "ENCTADD") {
       modtype = "Stat";
       type = "Encumbrance";
-      value = value;
     }
 
     if (type) {
@@ -450,7 +452,8 @@ export default class ImportHelpers {
     return itemAttributes;
   }
 
-  static async getQualities(qualityList) {
+  static async getQualities(initialQualityList) {
+    let qualityList = initialQualityList;
     let qualities = [];
     let attributes = {};
 
@@ -469,7 +472,7 @@ export default class ImportHelpers {
         }
 
         if (quality.Key === "DEFENSIVE") {
-          const nk = randomId();
+          const nk = foundry.utils.randomID();
           const count = quality.Count ? parseInt(quality.Count) : 0;
 
           attributes[`attr${nk}`] = {
@@ -491,7 +494,7 @@ export default class ImportHelpers {
     }
   };
 
-  static characteristicKeyToName(key) {}
+  static characteristicKeyToName(_key) {}
 
   static minionTemplate = {
     name: "no name",
@@ -1388,7 +1391,7 @@ export default class ImportHelpers {
     updateDialog(100);
   }
 
-  static async minionImport(adversaryData, updateDialog, subType)
+  static async minionImport(adversaryData, updateDialog, _subType)
   {
     const npcName = adversaryData.Name;
     const npcKey = adversaryData.Key;
@@ -1691,9 +1694,7 @@ export default class ImportHelpers {
         CONFIG.logger.error(`Unable to add species ${characterData.Character.Species.SpeciesKey} to character.`, err);
       }
 
-      let obligationlist = [];
       if (characterData.Character.Obligations.CharObligation) {
-        let obligation = 0;
         if (Array.isArray(characterData.Character.Obligations.CharObligation)) {
           characterData.Character.Obligations.CharObligation.forEach((CharObligation) => {
             const nk = randomID();
@@ -1704,9 +1705,6 @@ export default class ImportHelpers {
               description: CharObligation.Notes,
             };
             character.data.obligationlist[charobligation.key] = charobligation;
-            if (parseInt(CharObligation.Size, 10)) {
-              obligation += parseInt(CharObligation.Size, 10);
-            }
           });
         } else {
           const nk = randomID();
@@ -1717,15 +1715,10 @@ export default class ImportHelpers {
             description: characterData.Character.Obligations.CharObligation.Notes,
           };
           character.data.obligationlist[charobligation.key] = charobligation;
-          if (parseInt(characterData.Character.Obligations.CharObligation.Size, 10)) {
-            obligation += parseInt(characterData.Character.Obligations.CharObligation.Size, 10);
-          }
         }
       }
 
-      let dutylist = [];
       if (characterData.Character.Duties.CharDuty) {
-        let duty = 0;
         if (Array.isArray(characterData.Character.Duties.CharDuty)) {
           characterData.Character.Duties.CharDuty.forEach((CharDuty) => {
             const nk = randomID();
@@ -1735,9 +1728,6 @@ export default class ImportHelpers {
               magnitude: CharDuty.Size,
             };
             character.data.dutylist[charduty.key] = charduty;
-            if (parseInt(CharDuty.Size, 10)) {
-              duty += parseInt(CharDuty.Size, 10);
-            }
           });
         } else {
           const nk = randomID();
@@ -1747,9 +1737,6 @@ export default class ImportHelpers {
             magnitude: characterData.Character.Duties.CharDuty.Size,
           };
           character.data.dutylist[charduty.key] = charduty;
-          if (parseInt(characterData.Character.Duties.CharDuty.Size, 10)) {
-            duty += parseInt(characterData.Character.Duties.CharDuty.Size, 10);
-          }
         }
       }
 
@@ -1949,7 +1936,7 @@ export default class ImportHelpers {
                   } else {
                     character.items.push(newspec);
                   }
-                } catch (err) {
+                } catch {
                   CONFIG.logger.error(`Unable to add specialization ${spec.Key} to character.`);
                 }
                 specCount += 1;
@@ -2129,7 +2116,9 @@ export default class ImportHelpers {
     CONFIG.temporary = {};
   }
 
-  static b64toBlob = (b64Data, contentType, sliceSize) => {
+  static b64toBlob = (b64Data, initialContentType, initialSliceSize) => {
+    let contentType = initialContentType;
+    let sliceSize = initialSliceSize;
     contentType = contentType || "";
     sliceSize = sliceSize || 512;
 
@@ -2169,10 +2158,10 @@ export default class ImportHelpers {
   static readBlobFromFile(file) {
     const reader = new FileReader();
     return new Promise((resolve, reject) => {
-      reader.onload = (ev) => {
+      reader.onload = (_ev) => {
         resolve(reader.result);
       };
-      reader.onerror = (ev) => {
+      reader.onerror = (_ev) => {
         reader.abort();
         reject();
       };
@@ -2347,18 +2336,16 @@ export default class ImportHelpers {
     };
   }
 
-  static async addImportItemToCompendium(type, data, pack, removeFirst) {
+  static async addImportItemToCompendium(type, initialData, pack, removeFirst) {
+    let data = initialData;
     let entry = await ImportHelpers.findCompendiumEntityByImportId(type, data.flags.starwarsffg.ffgimportid, pack.collection);
-    let objClass;
     let dataType;
     switch (type) {
       case "Item": {
-        objClass = Item;
         dataType = data.type;
         break;
       }
       case "JournalEntry": {
-        objClass = JournalEntry;
         if (!data.img) {
           data.img = `icons/sundries/scrolls/scroll-rolled-white.webp`;
         }
@@ -2366,7 +2353,6 @@ export default class ImportHelpers {
         break;
       }
       case "Actor": {
-        objClass = Actor;
         dataType = data.type;
         break;
       }
@@ -2435,7 +2421,7 @@ export default class ImportHelpers {
           // Remove and repopulate all modifiers
           if (entry.system?.attributes) {
             for (let k of Object.keys(entry.system.attributes)) {
-              if (!updateData.data.attributes.hasOwnProperty(k)) updateData.data.attributes[`-=${k}`] = null;
+              if (!Object.hasOwn(updateData.data.attributes, k)) updateData.data.attributes[k] = deleteDataField();
             }
           }
         }
@@ -2443,7 +2429,7 @@ export default class ImportHelpers {
           // Remove and repopulate all specializations
           if (entry.system?.specializations) {
             for (let k of Object.keys(entry.system.specializations)) {
-              if (!updateData.data.specializations.hasOwnProperty(k)) updateData.data.specializations[`-=${k}`] = null;
+              if (!Object.hasOwn(updateData.data.specializations, k)) updateData.data.specializations[k] = deleteDataField();
             }
           }
         }
@@ -2451,7 +2437,7 @@ export default class ImportHelpers {
           // Remove and repopulate all talents
           if (entry.system?.talents) {
             for (let k of Object.keys(entry.system.talents)) {
-              if (!updateData.data.talents.hasOwnProperty(k)) updateData.data.talents[`-=${k}`] = null;
+              if (!Object.hasOwn(updateData.data.talents, k)) updateData.data.talents[k] = deleteDataField();
             }
           }
         }
@@ -2459,7 +2445,7 @@ export default class ImportHelpers {
           // Remove and repopulate all abilities
           if (entry.system?.abilities) {
             for (let k of Object.keys(entry.system.abilities)) {
-              if (!updateData.data.abilities.hasOwnProperty(k)) updateData.data.abilities[`-=${k}`] = null;
+              if (!Object.hasOwn(updateData.data.abilities, k)) updateData.data.abilities[k] = deleteDataField();
             }
           }
         }
@@ -3014,21 +3000,7 @@ export default class ImportHelpers {
   }
 
   static async getTemplate(type) {
-    const response = await fetch("systems/starwarsffg/template.json");
-    const template = await response.json();
-
-    const obj = Object.values(template).find((i) => i.types.includes(type));
-
-    let item = obj[type];
-
-    if (item.templates) {
-      item.templates.forEach((i) => {
-        item = foundry.utils.mergeObject(item, obj.templates[i]);
-      });
-      delete item.templates;
-    }
-
-    return item;
+    return getSystemDataDefaults(type);
   }
 
   static async createActiveEffects(item) {
@@ -3056,7 +3028,7 @@ export default class ImportHelpers {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: item.system.attributes[attribute].value,
               });
             }
@@ -3073,7 +3045,7 @@ export default class ImportHelpers {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -3090,7 +3062,7 @@ export default class ImportHelpers {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: 0,
               });
             }
@@ -3107,7 +3079,7 @@ export default class ImportHelpers {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              ...EffectHelpers.changeType(),
               value: 0,
             });
           }
@@ -3135,6 +3107,7 @@ export default class ImportHelpers {
     // first update anything inherent to the item type (such as "brawn" on "species")
     const inherentEffectName = "(inherent)";
     const inherentEffect = existing.find(e => e.name === inherentEffectName);
+    const inherentChanges = inherentEffect ? getActiveEffectChanges(inherentEffect) : [];
     if (inherentEffect && Object.keys(formData.system).includes("attributes")) {
       for (let k of Object.keys(formData.system.attributes)) {
         if (k.startsWith("attr")) {
@@ -3149,21 +3122,21 @@ export default class ImportHelpers {
 
         for (const curMod of explodedMods) {
           let modPath = ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']);
-          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
             if (modPath === "system.stats.wounds.max" && item.type === "species") {
-              inherentEffect.changes[inherentEffectChangeIndex].value = parseInt(inherentEffect.changes[inherentEffectChangeIndex].value) + parseInt(item.system.attributes.Brawn.value);
+              inherentChanges[inherentEffectChangeIndex].value = parseInt(inherentChanges[inherentEffectChangeIndex].value) + parseInt(item.system.attributes.Brawn.value);
             } else if (modPath === "system.stats.strain.max" && item.type === "species") {
-              inherentEffect.changes[inherentEffectChangeIndex].value = parseInt(inherentEffect.changes[inherentEffectChangeIndex].value) + parseInt(item.system.attributes.Willpower.value);
+              inherentChanges[inherentEffectChangeIndex].value = parseInt(inherentChanges[inherentEffectChangeIndex].value) + parseInt(item.system.attributes.Willpower.value);
             } else if (modPath === "system.stats.encumbrance.max" && item.type === "species") {
-              inherentEffect.changes[inherentEffectChangeIndex].value = parseInt(inherentEffect.changes[inherentEffectChangeIndex].value) + 5;
+              inherentChanges[inherentEffectChangeIndex].value = parseInt(inherentChanges[inherentEffectChangeIndex].value) + 5;
             } else {
-              inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.attributes[k].value;
+              inherentChanges[inherentEffectChangeIndex].value = formData.system.attributes[k].value;
             }
           }
         }
       }
-      await inherentEffect.update({changes: inherentEffect.changes});
+      await inherentEffect.update(activeEffectChangesUpdate(inherentChanges));
     }
     // some inherent effects are not in the `attribute` keyspace; make sure to get them as well
     if (inherentEffect && ["gear", "weapon", "armour"].includes(item.type)) {
@@ -3177,9 +3150,9 @@ export default class ImportHelpers {
           curMod['modType'],
           curMod['mod'],
         );
-        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
         if (inherentEffectChangeIndex >= 0) {
-          inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.encumbrance.value;
+          inherentChanges[inherentEffectChangeIndex].value = formData.system.encumbrance.value;
         }
       }
 
@@ -3194,9 +3167,9 @@ export default class ImportHelpers {
             curMod['modType'],
             curMod['mod'],
           );
-          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
-            inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.defence.value;
+            inherentChanges[inherentEffectChangeIndex].value = formData.system.defence.value;
           }
         }
 
@@ -3209,13 +3182,13 @@ export default class ImportHelpers {
             curMod['modType'],
             curMod['mod'],
           );
-          const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+          const inherentEffectChangeIndex = inherentChanges.findIndex(c => c.key === modPath);
           if (inherentEffectChangeIndex >= 0) {
-            inherentEffect.changes[inherentEffectChangeIndex].value = formData.system.soak.value;
+            inherentChanges[inherentEffectChangeIndex].value = formData.system.soak.value;
           }
         }
       }
-      await inherentEffect.update({changes: inherentEffect.changes});
+      await inherentEffect.update(activeEffectChangesUpdate(inherentChanges));
     }
 
     // iterate over formdata attributes to add/update them if they were added
@@ -3231,7 +3204,7 @@ export default class ImportHelpers {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            ...EffectHelpers.changeType(),
             value: formData.system.attributes[k].value,
           });
         }
@@ -3239,9 +3212,7 @@ export default class ImportHelpers {
         if (match) {
           // existing entry
           CONFIG.logger.debug(`>>>> Staged AE changes for update: ${JSON.stringify(changes)}`);
-          await match.update({
-            changes: changes,
-          });
+          await match.update(activeEffectChangesUpdate(changes));
         } else if (k.startsWith("attr")) {
           // new entry
           const effect = {
@@ -3269,11 +3240,11 @@ export default class ImportHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
-      await inherentEffect.update({changes: changes});
+      await inherentEffect.update(activeEffectChangesUpdate(changes));
     } else if (item.type === "specialization" && inherentEffect) {
       const changes = [];
       for (let i = 0; i < 5; i++) {
@@ -3286,11 +3257,11 @@ export default class ImportHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          ...EffectHelpers.changeType(),
           value: true,
         });
       }
-      await inherentEffect.update({changes: changes});
+      await inherentEffect.update(activeEffectChangesUpdate(changes));
     }
 
     if (toCreate.length) {
@@ -3335,7 +3306,7 @@ export default class ImportHelpers {
             if (changeKey) {
               changes.push({
                 key: changeKey,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                ...EffectHelpers.changeType(),
                 value: attribute.value,
               });
             }
@@ -3367,7 +3338,7 @@ function prep_for_v10(actor) {
   actor.system = actor.data;
   // iterate over items so we can iterate over their modifiers
   actor.items.forEach(function (item) {
-    if (item.system.hasOwnProperty('itemmodifier')) {
+    if (Object.hasOwn(item.system, 'itemmodifier')) {
       item.system?.itemmodifier.forEach(function (modifier) {
         if (modifier) { // handle null modifiers (often from bad input)
           modifier.system = modifier.data;
