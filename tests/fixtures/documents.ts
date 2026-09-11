@@ -130,6 +130,14 @@ export const ITEMS: Record<string, ItemFixture> = {
               min: 1, max: 20, severity: 1 },
   },
 
+  /** A species ability. `core` only - no fields of its own beyond description and attributes. */
+  ability: {
+    type: 'ability', importId: '', pack: '',
+    baseline: {},
+    system: { description: describe('ability'), attributes: {},
+              metadata: { tags: ['ability'], sources: ['QA'] } },
+  },
+
   species: {
     type: 'species', importId: '', pack: '',
     baseline: { startingXP: 100 },

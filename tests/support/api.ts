@@ -778,6 +778,141 @@ export async function systemDefault(page: Page, type: string): Promise<{
   }, type);
 }
 
+/**
+ * Open a nested modifier the way the sheet does, then walk its parent chain back to a real item.
+ */
+export async function writeThroughParentChain(page: Page, opts: {
+  actorUuid: Uuid; itemUuid: Uuid; modifierType: string; modifierIndex: number;
+  data: Record<string, unknown>;
+}): Promise<void> {
+  const problem = await page.evaluate(async (o) => {
+    const actor = await fromUuid(o.actorUuid);
+    const item = await fromUuid(o.itemUuid);
+    if (!actor || !item) return 'no actor or item';
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const EmbeddedItemHelpers = (await load('helpers/embeddeditem-helpers.js')).default;
+
+    const before = new Set(Object.keys(ui.windows ?? {}));
+    await EmbeddedItemHelpers.loadItemModifierSheet(
+      item.id, o.modifierType, o.modifierIndex, actor.id);
+
+    let sheet: any = null;
+    for (let i = 0; i < 100 && !sheet; i++) {
+      sheet = Object.entries(ui.windows ?? {})
+        .filter(([id]) => !before.has(id))
+        .map(([, app]) => app)
+        .find((app: any) => app?.object?.flags?.starwarsffg?.ffgIsTemp);
+      if (!sheet) await new Promise((r) => setTimeout(r, 25));
+    }
+    if (!sheet) return 'the modifier editor never opened';
+
+    try {
+      await EmbeddedItemHelpers.updateRealObject(sheet.object, o.data);
+      return null;
+    } finally {
+      // Without `submit: false` the close submits the form, and this sheet belongs to a temporary
+      // item with no _id - the update is then unroutable and the server throws on a missing
+      // collection (`parseUuid(parentUuid)?.collection.db` is undefined, so `.semaphore` fails).
+      await sheet.close({ submit: false });
+    }
+  }, opts);
+
+  if (problem) throw new Error(`Writing through the chain on ${opts.itemUuid}: ${problem}`);
+}
+
+export async function resolveParentChain(page: Page, opts: {
+  /** Omit for a world item, which is the branch that falls back to game.items.get. */
+  actorUuid?: Uuid; itemUuid: Uuid; modifierType: string; modifierIndex: number;
+}): Promise<{ uuid: string | null; name: string | null; chain: string[]; hops: number }> {
+  const result = await page.evaluate(async ({ actorUuid, itemUuid, modifierType, modifierIndex }) => {
+    const actor = actorUuid ? await fromUuid(actorUuid) : null;
+    const item = await fromUuid(itemUuid);
+    if (!item || (actorUuid && !actor)) return { error: 'no actor or item' };
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const EmbeddedItemHelpers = (await load('helpers/embeddeditem-helpers.js')).default;
+
+    const before = new Set(Object.keys(ui.windows ?? {}));
+    await EmbeddedItemHelpers.loadItemModifierSheet(
+      item.id, modifierType, modifierIndex, actor?.id);
+
+    // the editor is rendered on a temporary Item, which is the thing carrying the chain
+    let sheet: any = null;
+    for (let i = 0; i < 100 && !sheet; i++) {
+      sheet = Object.entries(ui.windows ?? {})
+        .filter(([id]) => !before.has(id))
+        .map(([, app]) => app)
+        .find((app: any) => app?.object?.flags?.starwarsffg?.ffgIsTemp);
+      if (!sheet) await new Promise((r) => setTimeout(r, 25));
+    }
+    if (!sheet) return { error: 'the modifier editor never opened' };
+
+    // what the chain looks like on the way up, before it is resolved
+    const chain: string[] = [];
+    let flags = sheet.object.flags.starwarsffg;
+    while (flags) {
+      chain.push(flags.ffgUuid ? `uuid:${flags.ffgUuid}` : `temp:${flags.ffgTempItemType ?? '?'}`);
+      flags = flags.ffgParent?.starwarsffg;
+    }
+
+    try {
+      // _getRealItem hands back { realItem, flagHierarchy }, not the item itself
+      const { realItem, flagHierarchy } = await EmbeddedItemHelpers._getRealItem(sheet.object);
+      return {
+        uuid: realItem?.uuid ?? null,
+        name: realItem?.name ?? null,
+        chain,
+        hops: (flagHierarchy ?? []).length,
+      };
+    } finally {
+      await sheet.close({ submit: false });   // see the note in writeThroughParentChain
+    }
+  }, opts);
+
+  if ('error' in result && result.error) {
+    throw new Error(`Walking the parent chain on ${opts.itemUuid}: ${result.error}`);
+  }
+  return result as { uuid: string | null; name: string | null; chain: string[]; hops: number };
+}
+
+/**
+ * Drop a document onto a species or career sheet, which is how those two record a *link*.
+ */
+export async function dropOnReferenceSheet(
+  page: Page, holderUuid: Uuid, droppedUuid: Uuid,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ holderUuid, droppedUuid }) => {
+    const holder = await fromUuid(holderUuid);
+    if (!holder) return `No item at ${holderUuid}`;
+    const handler = holder.type === 'species' ? 'onDropItemToSpecies' : '_onDragItemCareer';
+    if (typeof holder.sheet[handler] !== 'function') {
+      return `${holder.type} sheets have no ${handler}`;
+    }
+    await holder.sheet[handler]({
+      preventDefault: () => {},
+      stopPropagation: () => {},
+      currentTarget: null,
+      dataTransfer: { getData: () => JSON.stringify({ type: 'Item', uuid: droppedUuid }) },
+    });
+    return null;
+  }, { holderUuid, droppedUuid });
+
+  if (problem) throw new Error(`Dropping ${droppedUuid} onto ${holderUuid}: ${problem}`);
+}
+
+/**
+ * Submit an item's own sheet, for the writes that only happen there.
+ */
+export async function submitSheet(page: Page, uuid: Uuid): Promise<void> {
+  await openSheet(page, uuid);
+  await page.evaluate(async (uuid) => {
+    const doc = await fromUuid(uuid);
+    await doc?.sheet?.submit();
+  }, uuid);
+  await closeSheet(page, uuid);
+}
+
 /** Delete a document. Ignores one that's already gone. */
 export async function deleteDoc(page: Page, uuid: Uuid): Promise<void> {
   await page.evaluate(async (uuid) => {

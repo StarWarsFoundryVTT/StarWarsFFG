@@ -364,8 +364,14 @@ export function divergence(before: Reading, after: Reading, delta: number): stri
   num('actorStat', before.actorStat, after.actorStat);
   num('itemAdjusted', before.itemAdjusted, after.itemAdjusted);
 
-  if (before.chatCard !== null && after.chatCard !== null && before.chatCard === after.chatCard) {
-    problems.push(`chatCard: modifier ${after.chatCard ? 'was already' : 'is still not'} present in the card`);
+  if (before.chatCard !== null && after.chatCard !== null) {
+    if (delta === 0 && before.chatCard !== after.chatCard) {
+      problems.push(
+        `chatCard: modifier ${after.chatCard ? 'appeared in' : 'vanished from'} the card`);
+    } else if (delta !== 0 && before.chatCard === after.chatCard) {
+      problems.push(
+        `chatCard: modifier ${after.chatCard ? 'was already' : 'is still not'} present in the card`);
+    }
   }
 
   return problems;
