@@ -2,16 +2,14 @@ import type { Page } from '@playwright/test';
 import * as api from './api';
 import type { Uuid } from './api';
 import { ITEMS, ACTORS, attributeMap, talentMap,
-         type ModifierSpec, type AttributeSpec, type TalentSpec } from '../fixtures/documents';
+         type ModifierSpec, type AttributeSpec, type TalentSpec,
+         type ItemFixture } from '../fixtures/documents';
 
 export type { ModifierSpec, AttributeSpec, TalentSpec };
 
 /**
  * Builds nested content, repeats actions, reloads, and cleans up.
  */
-
-/** How deep the built content goes. */
-export type Depth = 1 | 2 | 3;
 
 /**
  * How the content was created. Different paths initialize different fields.
@@ -33,14 +31,22 @@ export interface BuildSpec {
   label?: string;
   /** Modifiers on the item itself, as the sheet's modifier rows write them. */
   attributes?: AttributeSpec[];
-  /** Modifiers on the attachment itself, rather than nested inside it. */
-  attachmentAttributes?: AttributeSpec[];
+  /** The attachment's Base Mods tab - rows on the attachment itself. D2. */
+  baseMods?: AttributeSpec[];
   /** Talents in a specialization, or upgrades in a force power / signature ability. */
   talents?: TalentSpec[];
   /** Per-test tweaks merged over the item fixture's system data. */
   itemOverrides?: Record<string, unknown>;
   /** Per-test tweaks merged over the actor fixture's system data. */
   actorOverrides?: Record<string, unknown>;
+}
+
+/**
+ * A Modification: the same itemmodifier document as a quality on an item, seen from an attachment.
+ */
+export interface ModificationSpec extends Omit<ModifierSpec, 'active'> {
+  /** The editor's "Installed?" box. Stored as `system.active`. Defaults to the fixture's false. */
+  installed?: boolean;
 }
 
 /**
@@ -53,10 +59,10 @@ export interface AttachmentSpec {
   type?: string;
   /** Hardpoint cost. The carrier's budget is set with `itemOverrides.hardpoints`. */
   hardpoints?: number;
-  /** Modifiers on the attachment itself - D2. */
-  attributes?: AttributeSpec[];
-  /** Named modifiers nested inside the attachment - D3. */
-  modifiers?: ModifierSpec[];
+  /** The attachment's Base Mods tab - rows on the attachment itself. D2. */
+  baseMods?: AttributeSpec[];
+  /** Its Modifications tab - itemmodifier documents nested inside it. D3. */
+  modifications?: ModificationSpec[];
 }
 
 export interface Ctx {
@@ -67,8 +73,9 @@ export interface Ctx {
   itemName?: string;
   /** Index of the attachment within `item.system.itemattachment`, since it has no id. */
   attachmentIndex?: number;
+  /** The world item the owned copy was made from. Kept for tests that re-place the same source. */
+  source?: Uuid;
   spec: BuildSpec;
-  depth: Depth;
 }
 
 /**
@@ -113,6 +120,17 @@ export class World {
   /** Kept so `applyAgain()` can repeat what `build()` did. */
   private last?: Ctx;
 
+  /**
+   * The fields of a ModifierSpec that are stored on the modifier itself rather than as one of its
+   * attributes. Left off the payload entirely when unset, so the fixture's own values stand.
+   */
+  private static modifierSystem(m: ModifierSpec): Record<string, unknown> {
+    const system: Record<string, unknown> = {};
+    if (m.active !== undefined) system.active = m.active;
+    if (m.rank !== undefined) system.rank = m.rank;
+    return system;
+  }
+
   /** Register a UUID for teardown. */
   track(uuid: Uuid): Uuid {
     this.created.unshift(uuid);
@@ -140,10 +158,13 @@ export class World {
   }
 
   /**
-   * Build content to the requested depth in one call.
-   * Depth comes from which fields are set: item is D1, + attachment is D2, + modifier is D3.
+   * Build an actor, an item, and whatever the spec nests inside it, in one call.
    */
   async build(spec: BuildSpec): Promise<Ctx> {
+    World.assertKnownKeys(spec, [
+      'actor', 'item', 'attachment', 'modifier', 'origin', 'equipped', 'label',
+      'attributes', 'baseMods', 'talents', 'itemOverrides', 'actorOverrides',
+    ], 'build spec');
     const origin = spec.origin ?? 'sidebar';
     const label = spec.label ?? 'qa';
 
@@ -164,7 +185,7 @@ export class World {
       }),
     );
 
-    const ctx: Ctx = { actor, spec, depth: 1, actorName };
+    const ctx: Ctx = { actor, spec, actorName };
     if (!spec.item) return (this.last = ctx);
 
     await this.buildItem(ctx, spec, actorFixture.type);
@@ -198,7 +219,10 @@ export class World {
             'globalSetup seeds it unless SKIP_SEED is set.',
           );
         }
-        return imported;
+        // A copy, not the pack entry: dragging one out of a compendium is what a player does, and
+        // anything nested into the entry itself would stay in the seed for the rest of the run.
+        // The copy keeps the importer's own Active Effects, so what this origin tests is unchanged.
+        return this.track(await api.copyToWorld(this.page, imported, name));
       }
 
       case 'in-sheet':
@@ -229,6 +253,10 @@ export class World {
     if (attributes?.length) {
       await api.rebuildActiveEffects(this.page, uuid);
     }
+
+    if (system.active === false) {
+      await api.setEffectsDisabled(this.page, uuid, true);
+    }
     return uuid;
   }
 
@@ -254,8 +282,42 @@ export class World {
   /**
    * The item half of a build: create it, nest anything into it, put it on the actor
    */
+  async item(spec: Omit<BuildSpec, 'actor'>): Promise<Uuid> {
+    World.assertKnownKeys(spec, [
+      'item', 'attachment', 'modifier', 'origin', 'label',
+      'attributes', 'baseMods', 'talents', 'itemOverrides',
+    ], 'item spec');
+    const built = await this.prepareItem(spec as BuildSpec);
+    if (!built) throw new Error('item() needs an `item` in the spec.');
+    return built.source;
+  }
+
   private async buildItem(ctx: Ctx, spec: BuildSpec, actorType: string): Promise<void> {
-    if (!spec.item) return;
+    const built = await this.prepareItem(spec);
+    if (!built) return;
+    const { source, itemName, fixture, attached } = built;
+
+    ctx.itemName = itemName;
+    if (attached) ctx.attachmentIndex = 0;
+    ctx.source = source;
+    ctx.item = await this.placeOnActor(ctx.actor, source, {
+      itemName,
+      actorName: ctx.actorName,
+      actorType,
+      itemType: fixture.type,
+      origin: spec.origin ?? 'sidebar',
+    });
+
+    if ((spec.equipped ?? true) && EQUIPPABLE.has(fixture.type)) {
+      await api.setEquipped(this.page, ctx.item, true);
+    }
+  }
+
+  /** The item half, shared by build() and item(). */
+  private async prepareItem(spec: BuildSpec): Promise<
+    { source: Uuid; itemName: string; fixture: ItemFixture; attached: boolean } | null
+  > {
+    if (!spec.item) return null;
     const origin = spec.origin ?? 'sidebar';
     const label = spec.label ?? 'qa';
 
@@ -269,11 +331,10 @@ export class World {
       );
     }
     const itemName = unique(`${label}-${spec.item}`);
-    ctx.itemName = itemName;
     // Catch a bad modifier name here rather than as an unexplained zero three assertions later.
     await api.assertModifiersValid(this.page, [
       ...(spec.attributes ?? []),
-      ...(spec.attachmentAttributes ?? []),
+      ...(spec.baseMods ?? []),
       ...(spec.talents ?? []).flatMap((t) => t.attributes),
       ...(spec.modifier ? [{ modtype: spec.modifier.modtype ?? 'Stat', mod: spec.modifier.key }] : []),
     ]);
@@ -296,27 +357,25 @@ export class World {
     let attachment: Uuid | undefined;
     if (typeof spec.attachment === 'string') {
       attachment = await this.createNested(
-        'itemattachment', unique(`${label}-${spec.attachment}`), spec.attachmentAttributes);
+        'itemattachment', unique(`${label}-${spec.attachment}`), spec.baseMods);
     } else if (spec.attachment) {
       attachment = await this.createAttachment({
-        name: `${label}-attachment`, attributes: spec.attachmentAttributes, ...spec.attachment,
+        name: `${label}-attachment`, baseMods: spec.baseMods, ...spec.attachment,
       });
     }
 
     if (spec.modifier) {
       const m = spec.modifier;
       const modifier = await this.createNested('itemmodifier', m.name,
-        [{ modtype: m.modtype ?? 'Stat', mod: m.key, value: m.value }]);
+        [{ modtype: m.modtype ?? 'Stat', mod: m.key, value: m.value }],
+        World.modifierSystem(m));
       await api.dropOntoItem(this.page, attachment ?? source, modifier);
       await api.deleteDoc(this.page, modifier);
-      ctx.depth = attachment ? 3 : 2;
     }
 
     if (attachment) {
       await api.dropOntoItem(this.page, source, attachment);
       await api.deleteDoc(this.page, attachment);
-      ctx.attachmentIndex = 0;
-      if (ctx.depth < 2) ctx.depth = 2;
     }
 
     await api.waitForInherentEffect(this.page, source);
@@ -328,18 +387,7 @@ export class World {
       await api.applyProgressionEditors(this.page, source);
     }
 
-    ctx.item = await this.placeOnActor(ctx.actor, source, {
-      itemName,
-      actorName: ctx.actorName,
-      actorType,
-      itemType: fixture.type,
-      origin,
-    });
-
-    if ((spec.equipped ?? true) && EQUIPPABLE.has(fixture.type)) {
-      await api.setEquipped(this.page, ctx.item, true);
-    }
-
+    return { source, itemName, fixture, attached: Boolean(attachment) };
   }
 
   /**
@@ -351,10 +399,51 @@ export class World {
       actor: ctx.actor,
       actorName: ctx.actorName,
       spec: { ...spec, actor: ctx.spec.actor },
-      depth: 1,
     };
     await this.buildItem(next, next.spec, actorFixture.type);
     return next;
+  }
+
+  /**
+   * Put an already-built item on a fresh actor, and hand back a Ctx for the pair.
+   */
+  async place(itemUuid: Uuid, spec: {
+    actor: string;
+    equipped?: boolean;
+    drag?: boolean;
+    label?: string;
+    actorOverrides?: Record<string, unknown>;
+  }): Promise<Ctx> {
+    const actorFixture = ACTORS[spec.actor];
+    if (!actorFixture) {
+      throw new Error(`No actor fixture "${spec.actor}". Known: ${Object.keys(ACTORS).join(', ')}.`);
+    }
+    const actorName = unique(`${spec.label ?? 'qa'}-actor`);
+    const actor = this.track(await api.createActor(this.page, {
+      type: actorFixture.type,
+      name: actorName,
+      system: deepMerge(actorFixture.system, spec.actorOverrides ?? {}),
+    }));
+
+    const itemName = String(await api.read(this.page, itemUuid, 'name') ?? '');
+    const type = String(await api.read(this.page, itemUuid, 'type') ?? '');
+
+    const ctx: Ctx = {
+      actor,
+      actorName,
+      itemName,
+      source: itemUuid,
+      spec: { actor: spec.actor, equipped: spec.equipped },
+      item: spec.drag
+        ? await api.dropOnActorSheet(this.page, actor, itemUuid)
+        : await api.embedItem(this.page, actor, itemUuid),
+    };
+    if (await api.read(this.page, ctx.item!, 'system.itemattachment.0')) ctx.attachmentIndex = 0;
+
+    if ((spec.equipped ?? true) && EQUIPPABLE.has(type)) {
+      await api.setEquipped(this.page, ctx.item!, true);
+    }
+    return (this.last = ctx);
   }
 
   /** Equip or unequip the built item. */
@@ -380,7 +469,6 @@ export class World {
     const attachments = (await api.read(this.page, ctx.item!, 'system.itemattachment')) as unknown[] | null;
     const index = (attachments?.length ?? 0) - 1;
     ctx.attachmentIndex ??= index;
-    if (ctx.depth < 2) ctx.depth = 2;
     return index;
   }
 
@@ -402,14 +490,28 @@ export class World {
   async addModifier(ctx: Ctx, spec: ModifierSpec): Promise<void> {
     if (!ctx?.item) throw new Error('addModifier() needs a build that reached an item.');
     const modifier = await this.createNested('itemmodifier', spec.name,
-      [{ modtype: spec.modtype ?? 'Stat', mod: spec.key, value: spec.value }]);
+      [{ modtype: spec.modtype ?? 'Stat', mod: spec.key, value: spec.value }],
+      World.modifierSystem(spec));
     await api.dropOntoItem(this.page, ctx.item, modifier);
     await api.deleteDoc(this.page, modifier);
-    if (ctx.depth < 2) ctx.depth = 2;
+  }
+
+  /**
+   * Refuse a spec key we do not read.
+   */
+  private static assertKnownKeys(spec: object, known: string[], what: string): void {
+    const unknown = Object.keys(spec).filter((k) => !known.includes(k));
+    if (unknown.length) {
+      throw new Error(
+        `Unknown ${what} field(s): ${unknown.join(', ')}. Known: ${known.join(', ')}.`,
+      );
+    }
   }
 
   /** A standalone attachment document, with its own modifiers already nested inside it. */
   private async createAttachment(spec: AttachmentSpec): Promise<Uuid> {
+    World.assertKnownKeys(spec,
+      ['name', 'type', 'hardpoints', 'baseMods', 'modifications'], 'attachment spec');
     const overrides: Record<string, unknown> = {};
     if (spec.type) overrides.type = spec.type;
     if (spec.hardpoints !== undefined) {
@@ -417,11 +519,12 @@ export class World {
     }
 
     const attachment = await this.createNested(
-      'itemattachment', unique(spec.name ?? 'qa-attachment'), spec.attributes, overrides);
+      'itemattachment', unique(spec.name ?? 'qa-attachment'), spec.baseMods, overrides);
 
-    for (const m of spec.modifiers ?? []) {
+    for (const m of spec.modifications ?? []) {
       const modifier = await this.createNested('itemmodifier', m.name,
-        [{ modtype: m.modtype ?? 'Stat', mod: m.key, value: m.value }]);
+        [{ modtype: m.modtype ?? 'Stat', mod: m.key, value: m.value }],
+        World.modifierSystem({ ...m, active: m.installed }));
       await api.dropOntoItem(this.page, attachment, modifier);
       await api.deleteDoc(this.page, modifier);
     }
@@ -462,6 +565,18 @@ export class World {
     await api.clearProgressionNode(this.page, ctx.item, String(index));
   }
 
+  /**
+   * Install one of an attachment's Modifications, or uninstall it.
+   */
+  async setModificationInstalled(
+    ctx: Ctx, modificationIndex: number, installed: boolean,
+    attachmentIndex = ctx.attachmentIndex ?? 0,
+  ): Promise<void> {
+    if (!ctx?.item) throw new Error('setModificationInstalled() needs a build that reached an item.');
+    await api.setModificationInstalled(
+      this.page, ctx.item, attachmentIndex, modificationIndex, installed);
+  }
+
   /** Take a quality off the item. Only qualities added to the item itself can be removed. */
   async removeModifier(ctx: Ctx = this.last!, index = 0): Promise<void> {
     if (!ctx?.item) throw new Error('removeModifier() needs a build that reached an item.');
@@ -476,19 +591,20 @@ export class World {
    */
   async applyAgain(ctx: Ctx = this.last!): Promise<void> {
     if (!ctx?.item) throw new Error('applyAgain() needs a build that reached at least an item.');
-    const { modifier, attachment, attachmentAttributes, label = 'qa' } = ctx.spec;
+    const { modifier, attachment, baseMods, label = 'qa' } = ctx.spec;
 
     if (modifier) {
       const again = await this.createNested('itemmodifier', modifier.name,
-        [{ modtype: modifier.modtype ?? 'Stat', mod: modifier.key, value: modifier.value }]);
+        [{ modtype: modifier.modtype ?? 'Stat', mod: modifier.key, value: modifier.value }],
+        World.modifierSystem(modifier));
       await api.dropOntoItem(this.page, ctx.item, again);
       await api.deleteDoc(this.page, again);
     } else if (attachment) {
       const again = typeof attachment === 'string'
         ? await this.createNested(
-            'itemattachment', unique(`${label}-${attachment}`), attachmentAttributes)
+            'itemattachment', unique(`${label}-${attachment}`), baseMods)
         : await this.createAttachment({
-            name: `${label}-attachment`, attributes: attachmentAttributes, ...attachment,
+            name: `${label}-attachment`, baseMods, ...attachment,
           });
       await api.dropOntoItem(this.page, ctx.item, again);
       await api.deleteDoc(this.page, again);

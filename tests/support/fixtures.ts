@@ -46,9 +46,10 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
   consoleGuard: async ({ page }, use, testInfo) => {
     const guard = installConsoleGuard(page, testInfo);
     await use(guard);
+    const posted = await guard.notifications();
     // detach before asserting, so a failure here doesn't leave a listener on the shared page
     guard.detach();
-    guard.assertClean();
+    guard.assertClean(posted);
   },
 
   world: async ({ page, consoleGuard }, use) => {
@@ -65,5 +66,5 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
 });
 
 export { expect };
-export type { Ctx, BuildSpec, ModifierSpec, Origin, Depth } from './world';
+export type { Ctx, BuildSpec, ModifierSpec, Origin } from './world';
 export type { Reading, PoolSummary } from './consumers';

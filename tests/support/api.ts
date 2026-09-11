@@ -116,7 +116,26 @@ export async function embedItem(page: Page, actorUuid: Uuid, itemUuid: Uuid): Pr
     const source = await fromUuid(itemUuid);
     if (!actor) throw new Error(`No actor at ${actorUuid}`);
     if (!source) throw new Error(`No item at ${itemUuid}`);
-    const [item] = await actor.createEmbeddedDocuments('Item', [source.toObject()]);
+    const data = source.toObject();
+
+    /*
+     * What the actor sheet's drop handler does on the way in.
+     *
+     * `ActorSheetFFG._onDropItem` suspends every non-inherent effect on armour and weapons before
+     * creating them (actors/actor-sheet-ffg.js:159), because a carried item contributes nothing
+     * until it is equipped - equipping is what restores them. Creating the item without that step
+     * leaves an attachment's modifiers live on an unequipped item, which no drag can produce.
+     *
+     * Only this one transformation is mirrored, not the whole handler: dropping a talent or a
+     * specialization there opens a purchase dialog, which a test cannot answer.
+     */
+    if (['armour', 'weapon'].includes(data.type)) {
+      for (const effect of data.effects ?? []) {
+        if (effect.name !== '(inherent)') effect.disabled = true;
+      }
+    }
+
+    const [item] = await actor.createEmbeddedDocuments('Item', [data]);
     return item.uuid;
   }, { actorUuid, itemUuid });
 }
@@ -595,6 +614,168 @@ export async function setLearned(
   }, { itemUuid, nodeKey, learned });
 
   if (problem) throw new Error(`Setting islearned on ${itemUuid} failed: ${problem}`);
+}
+
+/**
+ * Copy a compendium document into the world, the way dragging one out of a pack does.
+ */
+export async function copyToWorld(page: Page, uuid: Uuid, name?: string): Promise<Uuid> {
+  return page.evaluate(async ({ uuid, name }) => {
+    const source = await fromUuid(uuid);
+    if (!source) throw new Error(`No document at ${uuid}`);
+    const data = source.toObject();
+    delete data._id;
+    if (name) data.name = name;
+    const copy = await Item.create(data);
+    if (!copy) throw new Error(`Copying ${uuid} into the world returned nothing`);
+    return copy.uuid;
+  }, { uuid, name });
+}
+
+/**
+ * Tick or untick a Modification's "Installed?" box in the attachment editor.
+ */
+export async function setModificationInstalled(
+  page: Page, itemUuid: Uuid, attachmentIndex: number, modifierIndex: number, installed: boolean,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ itemUuid, attachmentIndex, modifierIndex, installed }) => {
+    const item = await fromUuid(itemUuid);
+    if (!item) return `No item at ${itemUuid}`;
+    const attachment = item.system?.itemattachment?.[attachmentIndex];
+    if (!attachment) return `no attachment at index ${attachmentIndex}`;
+    if (!attachment.system?.itemmodifier?.[modifierIndex]) {
+      return `no modifier at index ${modifierIndex} inside that attachment`;
+    }
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const { itemEditor } = await load('items/item-editor.js');
+
+    // The same data the sheet's edit control passes (items/item-sheet-ffg.js:672).
+    const typeChoices: Record<string, string> = {};
+    for (const key of Object.keys(CONFIG.FFG.itemmodifier_types)) {
+      const entry = CONFIG.FFG.itemmodifier_types[key];
+      typeChoices[entry.value] = game.i18n.localize(entry.label);
+    }
+
+    const editor = new itemEditor({ sourceObject: item, clickedObject: attachment, typeChoices });
+    await editor.render(true);
+
+    let root: any = null;
+    for (let i = 0; i < 200 && !root; i++) {
+      const el = editor.element?.[0] ?? editor.element;
+      if (el?.id && document.getElementById(el.id)) root = el;
+      else await new Promise((r) => setTimeout(r, 25));
+    }
+    if (!root) return 'the attachment editor never appeared';
+
+    const box = root.querySelector(
+      `input[name="system.itemmodifier[${modifierIndex}].system.active"]`);
+    if (!box) return `the editor rendered no Installed checkbox for modifier ${modifierIndex}`;
+    box.checked = installed;
+
+    await editor.submit();
+    await editor.close();
+    return null;
+  }, { itemUuid, attachmentIndex, modifierIndex, installed });
+
+  if (problem) throw new Error(`Setting Installed? on ${itemUuid}: ${problem}`);
+}
+
+/** Suspend or restore every Active Effect on a document. */
+export async function setEffectsDisabled(
+  page: Page, uuid: Uuid, disabled: boolean,
+): Promise<void> {
+  await page.evaluate(async ({ uuid, disabled }) => {
+    const doc = await fromUuid(uuid);
+    const effects = doc?.effects?.contents ?? [];
+    for (const effect of effects) {
+      if (effect.disabled !== disabled) await effect.update({ disabled });
+    }
+  }, { uuid, disabled });
+}
+
+/**
+ * Put an item on an actor through the actor sheet's own drop handler.
+ */
+export async function dropOnActorSheet(
+  page: Page, actorUuid: Uuid, itemUuid: Uuid,
+): Promise<Uuid> {
+  const result = await page.evaluate(async ({ actorUuid, itemUuid }) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) return { error: `No actor at ${actorUuid}` };
+    if (actor.getFlag('starwarsffg', 'config.enableEditMode')) {
+      return { error: 'the actor is in edit mode, which refuses every drop' };
+    }
+    const before = new Set(actor.items.map((i: any) => i.id));
+
+    await actor.sheet._onDropItem(
+      { preventDefault: () => {}, stopPropagation: () => {}, currentTarget: null, target: null },
+      { type: 'Item', uuid: itemUuid },
+    );
+
+    // _onDropItemCreate resolves before the item is in the collection in some paths
+    for (let i = 0; i < 100; i++) {
+      const landed = actor.items.find((item: any) => !before.has(item.id));
+      if (landed) return { uuid: landed.uuid };
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return { error: 'the sheet accepted the drop but no item appeared on the actor' };
+  }, { actorUuid, itemUuid });
+
+  if (result.error) throw new Error(`Dropping ${itemUuid} on ${actorUuid}: ${result.error}`);
+  return result.uuid as Uuid;
+}
+
+/** A document's stored state, with the fields that differ between any two copies removed. */
+export async function comparable(page: Page, uuid: Uuid): Promise<Record<string, unknown>> {
+  return page.evaluate(async (uuid) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new Error(`No document at ${uuid}`);
+    const data = doc.toObject();
+    return {
+      system: data.system,
+      effects: (data.effects ?? []).map((e: any) => ({
+        name: e.name,
+        disabled: e.disabled ?? false,
+        transfer: e.transfer ?? true,
+        changes: (e.changes ?? []).map((c: any) => `${c.key} ${c.mode} ${c.value}`),
+      })).sort((a: any, b: any) => a.name.localeCompare(b.name)),
+    };
+  }, uuid);
+}
+
+/**
+ * The system's own idea of a document of this type: created bare, then submitted through its sheet.
+ */
+export async function systemDefault(page: Page, type: string): Promise<{
+  /** Straight from the schema, before any sheet has touched it. */
+  bare?: Record<string, unknown>;
+  /** After a sheet submit - what a user gets by making one and closing the window. */
+  system?: Record<string, unknown>;
+  error?: string;
+}> {
+  return page.evaluate(async (type) => {
+    let item: any;
+    try {
+      item = await Item.create({ name: `qa reference ${type}`, type });
+      if (!item) return { error: 'Item.create returned nothing' };
+      await item.sheet.render(true);
+      for (let i = 0; i < 200; i++) {
+        const el = item.sheet.element?.[0] ?? item.sheet.element;
+        if (el?.id && document.getElementById(el.id)) break;
+        await new Promise((r) => setTimeout(r, 25));
+      }
+      const bare = item.toObject().system;
+      await item.sheet.submit();
+      await item.sheet.close();
+      const fresh = await fromUuid(item.uuid);
+      return { bare, system: fresh.toObject().system };
+    } catch (err: any) {
+      return { error: `${err?.name ?? 'Error'}: ${err?.message ?? err}` };
+    } finally {
+      try { await item?.delete(); } catch { /* already gone */ }
+    }
+  }, type);
 }
 
 /** Delete a document. Ignores one that's already gone. */

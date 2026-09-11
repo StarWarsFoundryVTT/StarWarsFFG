@@ -6,7 +6,7 @@ test.fixme('an attachment on an unequipped item contributes nothing', async ({ w
     item: 'armour',
     equipped: false,
     attachment: 'insert',
-    attachmentAttributes: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
+    baseMods: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
     itemOverrides: { soak: { value: 0, adjusted: 0 }, defence: { value: 0, adjusted: 0 } },
   });
 
@@ -20,7 +20,7 @@ test('equipping the item activates its attachment modifiers', async ({ world, co
     item: 'armour',
     equipped: false,
     attachment: 'insert',
-    attachmentAttributes: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
+    baseMods: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
     itemOverrides: { soak: { value: 0, adjusted: 0 }, defence: { value: 0, adjusted: 0 } },
   });
 
@@ -34,7 +34,7 @@ test('unequipping the item suspends its attachment modifiers', async ({ world, c
     item: 'armour',
     equipped: false,
     attachment: 'insert',
-    attachmentAttributes: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
+    baseMods: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
     itemOverrides: { soak: { value: 0, adjusted: 0 }, defence: { value: 0, adjusted: 0 } },
   });
 
@@ -49,7 +49,7 @@ test('removing an attachment removes its contribution', async ({ world, consumer
     item: 'armour',
     equipped: false,
     attachment: 'insert',
-    attachmentAttributes: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
+    baseMods: [{ modtype: 'Stat', mod: 'Defence-Melee', value: 1 }],
     itemOverrides: { soak: { value: 0, adjusted: 0 }, defence: { value: 0, adjusted: 0 } },
   });
 

@@ -201,6 +201,44 @@ export class Consumers {
     }, ctx.item);
   }
 
+  /**
+   * An `adjusted` value that is a name rather than a count - range is a rung on a ladder
+   * ("Short", "Medium"), not a number, so itemAdjusted's Number() would make it NaN.
+   */
+  async itemAdjustedName(ctx: Ctx, key: string): Promise<string | null> {
+    const path = ITEM_PATH[key];
+    if (!path || !ctx.item) return null;
+    const raw = await api.read(this.page, ctx.item, path);
+    return raw === null || raw === undefined ? null : String(raw);
+  }
+
+  /**
+   * Every quality the item ends up with, after its own and its attachments' have been merged.
+   */
+  async qualities(ctx: Ctx): Promise<{ name: string; rank: number | null }[]> {
+    if (!ctx.item) return [];
+    const merged = await api.read(this.page, ctx.item, 'system.adjusteditemmodifier');
+    return ((merged ?? []) as { name?: string; system?: { rank_current?: unknown } }[])
+      .map((q) => ({
+        name: String(q?.name ?? ''),
+        rank: q?.system?.rank_current === null || q?.system?.rank_current === undefined
+          ? null : Number(q.system.rank_current),
+      }));
+  }
+
+  /**
+   * The current rank of a quality on the item, after everything has been merged into it.
+   */
+  async qualityRank(ctx: Ctx, name: string): Promise<number | null> {
+    if (!ctx.item) return null;
+    const merged = await api.read(this.page, ctx.item, 'system.adjusteditemmodifier');
+    const found = (merged as { name?: string; system?: { rank_current?: unknown } }[] | null)
+      ?.find((q) => q?.name === name);
+    if (!found) return null;
+    const rank = found.system?.rank_current;
+    return rank === null || rank === undefined ? null : Number(rank);
+  }
+
   /** The dice pool the system would assemble, stopping short of rolling it. */
   async poolDice(ctx: Ctx): Promise<PoolSummary | null> {
     if (!ctx.item) return null;
@@ -259,6 +297,15 @@ export class Consumers {
       try {
         return (created.content ?? '').includes(needle);
       } finally {
+        /*
+         * Let the chat log finish rendering it before taking it away.
+         */
+        for (let i = 0; i < 40; i++) {
+          const rendered = document.querySelector<HTMLElement>(
+            `.message[data-message-id="${created.id}"]`);
+          if (rendered && !rendered.hidden) break;
+          await new Promise((r) => setTimeout(r, 25));
+        }
         await created.delete();
       }
     }, { actorUuid: ctx.actor, itemUuid: ctx.item, needle });

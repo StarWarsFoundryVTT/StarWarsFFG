@@ -25,9 +25,10 @@ const gearBase = (what: string, tags: string[]) => ({
   itemmodifier: [],
   itemattachment: [],
   adjusteditemmodifer: [],
-  equippable: { value: true, equipped: false },
   metadata: { tags, sources: ['QA'] },
 });
+
+const equippable = { equippable: { value: true, equipped: false } };
 
 /**
  * The eight career-skill slots a career or specialization carries.
@@ -44,6 +45,7 @@ export const ITEMS: Record<string, ItemFixture> = {
     baseline: { soak: 2, defence: 1, encumbrance: 5, hardpoints: 2 },
     system: {
       ...gearBase('armour', ['armor']),
+      ...equippable,
       soak: { value: 2, adjusted: 2 },
       defence: { value: 1, adjusted: 1 },
       encumbrance: { value: 5, adjusted: 5 },
@@ -61,6 +63,10 @@ export const ITEMS: Record<string, ItemFixture> = {
     baseline: { damage: 6, crit: 3, encumbrance: 1, hardpoints: 3, range: 'Medium' },
     system: {
       ...gearBase('weapon', ['weapon']),
+      ...equippable,
+      // both are dropdowns on the weapon sheet, so any submit writes them
+      status: '',
+      characteristic: { value: '' },
       // must name a skill the actor actually has, or rollItem throws on
       // actor.system.skills[itemData.skill.value]
       skill: { value: 'Ranged: Light' },
@@ -105,7 +111,7 @@ export const ITEMS: Record<string, ItemFixture> = {
     baseline: { tier: 1 },
     system: { description: describe('talent'), attributes: {}, metadata: { tags: ['talent'], sources: ['QA'] },
               activation: { value: 'Passive' }, ranks: { ranked: false, current: 1 },
-              isForceTalent: false, isConflictTalent: false, tier: 1, trees: '', longDesc: '' },
+              isForceTalent: false, isConflictTalent: false, tier: 1, trees: [], longDesc: '' },
   },
 
   criticalinjury: {
@@ -135,7 +141,7 @@ export const ITEMS: Record<string, ItemFixture> = {
   specialization: {
     type: 'specialization', importId: '', pack: '',
     baseline: {},
-    system: { description: describe('specialization'), attributes: {},
+    system: { isEditing: false,  description: describe('specialization'), attributes: {},
               metadata: { tags: ['specialization'], sources: ['QA'] },
               talents: {}, careerSkills: emptyCareerSkills(), universal: false },
   },
@@ -158,7 +164,7 @@ export const ITEMS: Record<string, ItemFixture> = {
     baseline: { rank: 1 },
     system: { description: describe('modifier'), attributes: {},
               metadata: { tags: ['modifier'], sources: ['QA'] },
-              active: true, rank: 1, rank_current: 1, itemmodifier: [], adjusteditemmodifer: [] },
+              active: false, rank: 1, rank_current: 1, itemmodifier: [], adjusteditemmodifer: [] },
   },
 
   shipattachment: {
@@ -166,6 +172,7 @@ export const ITEMS: Record<string, ItemFixture> = {
     baseline: { encumbrance: 5, hardpoints: 3 },
     system: {
       ...gearBase('ship attachment', ['attachment']),
+      ...equippable,
       hardpoints: { value: 3, adjusted: 3 },
       encumbrance: { value: 5, adjusted: 5 },
       price: { value: 800, adjusted: 800 },
@@ -177,7 +184,7 @@ export const ITEMS: Record<string, ItemFixture> = {
   forcepower: {
     type: 'forcepower', importId: '', pack: '',
     baseline: { base_cost: 10 },
-    system: { description: describe('force power'), attributes: {},
+    system: { isEditing: false,  description: describe('force power'), attributes: {},
               metadata: { tags: ['forcepower'], sources: ['QA'] },
               upgrades: {}, required_force_rating: 1, base_cost: 10 },
   },
@@ -185,7 +192,7 @@ export const ITEMS: Record<string, ItemFixture> = {
   signatureability: {
     type: 'signatureability', importId: '', pack: '',
     baseline: { base_cost: 25 },
-    system: { description: describe('signature ability'), attributes: {},
+    system: { isEditing: false,  description: describe('signature ability'), attributes: {},
               metadata: { tags: ['signatureability'], sources: ['QA'] },
               upgrades: {}, base_cost: 25, uplink_nodes: {} },
   },
@@ -198,6 +205,8 @@ export const ITEMS: Record<string, ItemFixture> = {
     baseline: { damage: 6, crit: 4, hardpoints: 3 },
     system: {
       ...gearBase('ship weapon', ['weapon']),
+      ...equippable,
+      // not in the shipweapon schema, but its sheet writes one on every submit
       skill: { value: 'Gunnery' },
       damage: { value: 6, adjusted: 6 },
       crit: { value: 4, adjusted: 4 },
