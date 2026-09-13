@@ -46,6 +46,8 @@ export class FormApplicationV2 extends HandlebarsApplicationMixin(ApplicationV2)
     }
     const converted = {
       ...legacy,
+      // Apply after legacy options because subclasses replace the classes array.
+      classes: [...new Set([...(legacy.classes ?? []).filter(c => c !== "theme-dark"), "themed", "theme-light"])],
       tag: "form",
       position,
       window: {

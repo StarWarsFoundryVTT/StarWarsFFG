@@ -442,7 +442,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     };
 
     if (Object.keys(data.data).includes("itemmodifier")) {
-      for (const mod of data.data.itemmodifier) {
+      for (const mod of data.data.itemmodifier ?? []) {
+        if (!mod?.system) continue;
         const modName = mod.name;
         const rank = mod.system.rank;
         const description = mod.system.description;
@@ -471,11 +472,12 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
     CONFIG.logger.debug("Pulling qualities from attachments");
     if (Object.keys(data.data).includes("itemattachment")) {
-      for (const attachment of data.data.itemattachment) {
+      for (const attachment of data.data.itemattachment ?? []) {
+        if (!attachment?.system) continue;
         const source = attachment.name;
         if (Object.keys(attachment.system).includes("itemmodifier")) {
-          for (const mod of attachment.system.itemmodifier) {
-            if (!mod.system.active) {
+          for (const mod of attachment.system.itemmodifier ?? []) {
+            if (!mod?.system?.active) {
               // this modifier isn't active, skip processing
               continue;
             }

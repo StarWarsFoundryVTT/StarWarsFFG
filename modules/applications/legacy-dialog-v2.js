@@ -18,6 +18,7 @@ export class LegacyDialogV2 extends DialogV2 {
 
     super({
       ...options,
+      classes: [...new Set([...(options.classes ?? []).filter(c => c !== "theme-dark"), "themed", "theme-light"])],
       window: {
         ...(options.window ?? {}),
         title: config.title ?? options.title ?? "",

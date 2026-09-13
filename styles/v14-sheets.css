@@ -1,0 +1,126 @@
+/* Make editable fields distinct from derived and locked values in both themes. */
+.application.starwarsffg.sheet.v2 :is(input[type="text"], input[type="number"], input:not([type]), select, textarea):not(:disabled):not([readonly]) {
+  background: #fff;
+  color: #20252a;
+  border: 1px solid #7b8793;
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 8%);
+}
+
+.application.starwarsffg.sheet.v2 :is(input[type="text"], input[type="number"], input:not([type]), select, textarea):not(:disabled):not([readonly]):hover {
+  border-color: #445d72;
+}
+
+.application.starwarsffg.sheet.v2 :is(input[type="text"], input[type="number"], input:not([type]), select, textarea):not(:disabled):not([readonly]):focus {
+  border-color: #236d94;
+  outline: 2px solid #236d94;
+  outline-offset: 1px;
+}
+
+/* Price gets its own row rather than overflowing a narrow sixth stat column. */
+.application.starwarsffg.sheet.item.v2 .weapon-primary-stats {
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.application.starwarsffg.sheet.item.v2 .weapon-price {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.application.starwarsffg.sheet.item.v2 .weapon-price > .resource {
+  width: 100%;
+  min-width: 0;
+}
+
+.application.starwarsffg.sheet.item.v2 .weapon-price input {
+  width: 100%;
+}
+
+/* Shared by the default and Mandar themes. Reserve space inside the v14 frame
+   for the vertical tabs instead of letting the window clip them. */
+.application.starwarsffg.sheet.actor.v2 {
+  min-width: min(710px, calc(100vw - 20px));
+}
+
+.application.starwarsffg.sheet.v2 .sheet-header .header-fields,
+.application.starwarsffg.sheet.v2 .sheet-header .container {
+  min-width: 0;
+}
+
+.application.starwarsffg.sheet.v2 .sheet-header .header-fields {
+  width: 100%;
+}
+
+.application.starwarsffg.sheet.v2 .character-details-table {
+  table-layout: fixed;
+  overflow-wrap: anywhere;
+}
+
+.application.starwarsffg.sheet.v2 > .window-content {
+  position: relative;
+  padding-right: 64px;
+}
+
+.application.starwarsffg.sheet.v2 > .window-content > .sheet-tabs {
+  top: 8px;
+  right: 6px;
+  left: auto;
+  width: 44px;
+  height: auto;
+  max-height: calc(100% - 16px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-wrap: nowrap;
+  gap: 0;
+  padding: 0;
+  z-index: 2;
+}
+
+.application.starwarsffg.sheet.v2 > .window-content > .sheet-tabs .item {
+  box-sizing: border-box;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  margin: 2px 0;
+  line-height: 40px;
+  font-size: 18px;
+}
+
+.application.starwarsffg.sheet.v2 > .window-content > .sheet-header {
+  flex: 0 0 auto;
+}
+
+.application.starwarsffg.sheet.v2 > .window-content > .sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+/* Keep the native resize interaction, with a larger, visible three-line grip. */
+.application > .window-resize-handle {
+  width: 18px;
+  height: 18px;
+  inset: auto 2px 2px auto;
+  z-index: 5;
+  background: none;
+  filter: none;
+  opacity: 1;
+}
+
+.application > .window-resize-handle::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  pointer-events: none;
+  background: linear-gradient(135deg,
+    transparent 0 43%, #65727c 43% 49%, #fff 49% 53%,
+    transparent 53% 63%, #65727c 63% 69%, #fff 69% 73%,
+    transparent 73% 83%, #65727c 83% 89%, #fff 89% 93%,
+    transparent 93%);
+}
+
+.application > .window-resize-handle:hover {
+  background-color: rgb(100 140 165 / 25%);
+  border-radius: 3px;
+}

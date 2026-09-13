@@ -194,8 +194,8 @@ export default class ItemHelpers {
   static async shouldUpdateAEStatus(item, activeEffect) {
     CONFIG.logger.debug(`Checking if ${activeEffect.name} from ${item.name} should be applied`);
     if (["armour", "weapon", "shipweapon"].includes(item.type)) {
-      for (const attachment of item.system.itemattachment) {
-        for (const modification of attachment.system.itemmodifier) {
+      for (const attachment of item.system.itemattachment ?? []) {
+        for (const modification of attachment?.system?.itemmodifier ?? []) {
           try {
             const foundMod = modification.system.attributes[activeEffect.name];
             CONFIG.logger.debug(`Located mod ${activeEffect.name}, checking if it's active or not`);
@@ -275,8 +275,8 @@ export default class ItemHelpers {
       CONFIG.logger.debug("armor and weapon, checking modifiers to sync value to rank");
       // sync AEs to the rank value - that is, if we have a mod which adds 1 to max wounds with 4 ranks, the AE should have a value of 4, not 1
       const existingEffects = item.getEmbeddedCollection("ActiveEffect");
-      for (const modifier of item.system.itemmodifier) {
-        for (const attr of Object.keys(modifier.system.attributes)) {
+      for (const modifier of item.system.itemmodifier ?? []) {
+        for (const attr of Object.keys(modifier?.system?.attributes ?? {})) {
           const matchingEffect = existingEffects.find(effect => effect.name === attr);
           if (matchingEffect) {
             // the mod should be applied once per rank
@@ -304,6 +304,25 @@ export default class ItemHelpers {
    */
   static async updateEncumbranceOnEquip(item, activeEffect, equipped) {
     CONFIG.logger.debug("Updating encumbrance Active Effect on equip state change");
+    // Imported armour can have stale inherent bonuses despite correct item values.
+    // Only refresh the built-in effect; custom effects keep their own values.
+    if (item.type === "armour" && activeEffect.name === "(inherent)") {
+      const changes = getActiveEffectChanges(activeEffect);
+      const values = {
+        "system.stats.soak.value": item.system.soak?.value,
+        "system.stats.defence.melee": item.system.defence?.value,
+        "system.stats.defence.ranged": item.system.defence?.value,
+      };
+      let changed = false;
+      for (const change of changes) {
+        const value = values[change.key];
+        if (value !== undefined && Number.isFinite(Number(value)) && Number(change.value) !== Number(value)) {
+          change.value = Number(value);
+          changed = true;
+        }
+      }
+      if (changed) await activeEffect.update(activeEffectChangesUpdate(changes));
+    }
     const realEncumbrance = item?.system?.encumbrance?.value;
     if (item.type === "armour" && realEncumbrance) {
       const encumbranceModPath = ModifierHelpers.getModKeyPath("Stat", "Encumbrance");

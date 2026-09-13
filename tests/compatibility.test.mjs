@@ -29,6 +29,7 @@ async function loadSystem(defaultMode = "blind") {
   }
   const context = vm.createContext({
     game: {
+      i18n: { localize: key => key === 'SWFFG.Effect.Duration.Permanent' ? 'Permanent' : key },
       release: { generation: 14 },
       user: { id: "player-id" },
       settings: { get(scope, key) {
@@ -133,7 +134,7 @@ test('v14 effect display uses prepared duration text without mutating the origin
   const { effects } = await loadSystem();
   const source = { name: 'Defense', duration: { units: 'rounds', value: 2 },
     system: { changes: [{ key: 'system.stats.defence.ranged', type: 'add', phase: 'initial', priority: 20, value: '1' }] } };
-  const document = { id: 'effect-id', parent: { name: 'Armor' }, active: true,
+  const document = { id: 'effect-id', parent: { name: 'Armor' }, active: true, isTemporary: true,
     duration: { label: '2 rounds' }, toObject: () => structuredClone(source) };
   const display = effects.transformEffects(document);
   assert.equal(display.duration, '2 rounds');
@@ -143,6 +144,10 @@ test('v14 effect display uses prepared duration text without mutating the origin
   assert.equal(source.system.changes[0].mode, undefined);
   assert.equal(display.changes[0].phase, 'initial');
   assert.equal(display.changes[0].priority, 20);
+  document.isTemporary = false;
+  document.duration = { label: 'None', value: Infinity };
+  assert.equal(effects.transformEffects(document).duration, 'Permanent');
+  assert.equal(document.duration.label, 'None');
 });
 
 test('the final effect phase does not count initial Force Rating bonuses a second time', async () => {

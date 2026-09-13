@@ -6,7 +6,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 /** ApplicationV2 and Handlebars host for the Star Wars FFG item sheet. */
 export class ItemSheetFFGV2 extends HandlebarsApplicationMixin(ItemSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: ["starwarsffg", "sheet", "item", "v2"],
+    classes: ["starwarsffg", "sheet", "item", "v2", "themed", "theme-light"],
     editable: true,
     position: { width: 550, height: 650 },
     window: { resizable: true },

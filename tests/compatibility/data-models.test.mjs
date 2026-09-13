@@ -97,3 +97,15 @@ test("manifest and importer use DataModels instead of template.json", async () =
   assert.doesNotMatch(importer, /fetch\(["']systems\/starwarsffg\/template\.json/);
   await assert.rejects(readFile(new URL("template.json", root), "utf8"), { code: "ENOENT" });
 });
+
+test("gear keeps an independent persisted equipped state", () => {
+  const field = models.itemDataModels.gear.defineSchema().equippable;
+  assert.ok(field instanceof ObjectField);
+  assert.equal(field.required, true);
+  assert.notEqual(field.persisted, false);
+  const value = field.initial();
+  assert.deepEqual(value, {equipped: false});
+  value.equipped = true;
+  assert.deepEqual(field.initial(), {equipped: false});
+  assert.deepEqual(models.getSystemDataDefaults("gear").equippable, {equipped: false});
+});

@@ -26,6 +26,8 @@ export default class DestinyTracker extends FormApplicationV2 {
       id: "destiny-tracker",
       classes: ["starwarsffg"],
       title: "Destiny Tracker",
+      // This HUD is anchored by CSS, independently of ApplicationV2 window positioning.
+      window: { frame: false, positioned: false },
       template: "systems/starwarsffg/templates/ffg-destiny-tracker.html",
     });
   }
@@ -35,14 +37,6 @@ export default class DestinyTracker extends FormApplicationV2 {
     // Get current value
     let destinyPool = { light: game.settings.get("starwarsffg", "dPoolLight"), dark: game.settings.get("starwarsffg", "dPoolDark") };
     let destinyPoolLabel = { light: game.settings.get("starwarsffg", "destiny-pool-light"), dark: game.settings.get("starwarsffg", "destiny-pool-dark") };
-
-    const x = $(window).width();
-    const y = $(window).height();
-
-    this.position.left = x - window.screen.width;
-    this.position.top = y - 250;
-    //this.position.width = 150;
-    //this.position.height = 105;
 
     // filter menu based on role.
 
@@ -68,10 +62,7 @@ export default class DestinyTracker extends FormApplicationV2 {
 
   /** @override */
   activateListeners(html) {
-    const d = html.find("swffg-destiny-container")[0];
-    new foundry.applications.ux.Draggable(this, html, d, this.options.resizable);
-
-    $("#destiny-tracker").css({ bottom: "0px", right: "305px" });
+    this._activatePositionHandle();
 
     // future functionality to allow multiple menu items to be passed in
 
@@ -248,6 +239,56 @@ export default class DestinyTracker extends FormApplicationV2 {
         }
       });
     }
+  }
+
+  /** Keep this HUD movable without using the standard window frame. */
+  _activatePositionHandle() {
+    this._positionEvents?.abort();
+    this._positionEvents = new AbortController();
+    const { signal } = this._positionEvents;
+    const element = this.element;
+    const handle = element.querySelector(".destiny-drag-handle");
+    const key = `starwarsffg.destiny-position.${game.world.id}.${game.user.id}`;
+    const place = ({ left, top }) => {
+      const bounds = element.getBoundingClientRect();
+      left = Math.max(0, Math.min(left, window.innerWidth - bounds.width));
+      top = Math.max(0, Math.min(top, window.innerHeight - bounds.height));
+      Object.assign(element.style, { left: `${left}px`, top: `${top}px`, bottom: "auto", right: "auto" });
+      return { left, top };
+    };
+    try {
+      const saved = JSON.parse(window.localStorage.getItem(key));
+      if (Number.isFinite(saved?.left) && Number.isFinite(saved?.top)) place(saved);
+    } catch { /* Storage can be unavailable in private browser sessions. */ }
+    let drag;
+    handle.addEventListener("pointerdown", event => {
+      if (event.button !== 0 || drag) return;
+      event.preventDefault();
+      event.stopPropagation();
+      const bounds = element.getBoundingClientRect();
+      drag = { id: event.pointerId, x: event.clientX - bounds.left, y: event.clientY - bounds.top };
+      handle.setPointerCapture(event.pointerId);
+    }, { signal });
+    handle.addEventListener("pointermove", event => {
+      if (drag?.id !== event.pointerId) return;
+      place({ left: event.clientX - drag.x, top: event.clientY - drag.y });
+    }, { signal });
+    const finish = event => {
+      if (drag?.id !== event.pointerId) return;
+      drag = null;
+      if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+      const bounds = element.getBoundingClientRect();
+      try {
+        window.localStorage.setItem(key, JSON.stringify({ left: bounds.left, top: bounds.top }));
+      } catch { /* Moving the HUD still works without persistent storage. */ }
+    };
+    for (const type of ["pointerup", "pointercancel", "lostpointercapture"]) {
+      handle.addEventListener(type, finish, { signal });
+    }
+    window.addEventListener("resize", () => {
+      const bounds = element.getBoundingClientRect();
+      place({ left: bounds.left, top: bounds.top });
+    }, { signal });
   }
 
   // Click event for Roll Destiny Chat Message

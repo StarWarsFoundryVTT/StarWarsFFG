@@ -316,6 +316,7 @@ export default class EmbeddedItemHelpers {
 
   // totally not ripped from phind telling me how to do this
   static findKeysIncludingStringRecursively(obj, str) {
+    if (obj === null || typeof obj !== "object") return [];
     let keys = [];
     for (const key of Object.keys(obj)) {
       if (Object.hasOwn(obj, key)) {

@@ -21,8 +21,10 @@ export default class EffectHelpers {
     effect.parentName = originalEffect.parent?.name;
     effect.active = originalEffect.active;
 
-    // Foundry V14 prepares the localized duration label.
-    effect.duration = originalEffect.duration.label;
+    // Keep Foundry's timed/expiry labels, but describe unlimited effects explicitly.
+    effect.duration = originalEffect.isTemporary
+      ? originalEffect.duration.label
+      : game.i18n.localize("SWFFG.Effect.Duration.Permanent");
 
     // Update each change from this effect
     effect.changes = effect.changes.map((change) => {

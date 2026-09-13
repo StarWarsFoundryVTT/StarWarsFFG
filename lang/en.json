@@ -1,4 +1,13 @@
 {
+  "SWFFG.CriticalTable.VehicleTitle": "Starship Critical Hit roll",
+  "SWFFG.CriticalTable.VehicleHint": "Roll 1d100 plus the modifier below. The total can exceed 100; the final range is 154+.",
+  "SWFFG.CriticalTable.Title": "Critical injury roll",
+  "SWFFG.CriticalTable.Hint": "Roll 1d100 plus the modifier below. The total can exceed 100, including results of 151+.",
+  "SWFFG.CriticalTable.Modifier": "Modifier (+)",
+  "SWFFG.CriticalTable.Roll": "Roll critical injury",
+  "SWFFG.CriticalTable.Invalid": "Enter a non-negative integer modifier.",
+  "SWFFG.CriticalTable.NoResult": "No entry in this table covers the rolled total.",
+  "SWFFG.DestinyTrackerMove": "Drag to move the Destiny pool",
   "SWFFG.Migration.ActiveEffectsFailed": "Active Effect migration encountered {count} error(s). See the console report; migration will retry on the next launch.",
   "TYPES.Actor.character": "Character",
   "TYPES.Actor.nemesis": "Nemesis",

@@ -252,6 +252,12 @@ export class ActorFFG extends Actor {
       this._prepareCharacterData(actor);
       this._prepareSources(actor);
     }
+
+    // Embedded weapons prepare before initial actor effects in V14. Rebuild
+    // their derived damage from source after species/implant characteristics apply.
+    for (const item of this.items) {
+      if (item.type === "weapon" && item.system.characteristic?.value) item.prepareData();
+    }
   }
 
   _prepareSharedData(actorData) {

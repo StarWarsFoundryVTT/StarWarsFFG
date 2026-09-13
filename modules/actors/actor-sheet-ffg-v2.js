@@ -6,7 +6,7 @@ const { HandlebarsApplicationMixin } = foundry.applications.api;
 /** ApplicationV2 and Handlebars host for the Star Wars FFG actor sheet. */
 export class ActorSheetFFGV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   static DEFAULT_OPTIONS = {
-    classes: ["starwarsffg", "sheet", "actor", "v2"],
+    classes: ["starwarsffg", "sheet", "actor", "v2", "themed", "theme-light"],
     editable: true,
     position: { width: 710, height: 650 },
     window: { resizable: true },
@@ -26,14 +26,42 @@ export class ActorSheetFFGV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
   };
 
   constructor(options, ...args) {
-    super(options, ...args);
+    // Comfortable default dimensions, capped to fit smaller viewports.
+    const width = Math.min(1000, Math.floor(window.innerWidth * 0.9));
+    const height = Math.min(1150, Math.floor(window.innerHeight * 0.9));
+    super({
+      ...options,
+      position: { width, height, ...options?.position },
+    }, ...args);
+    // The legacy context builder reads these values on every render.
+    this.sheetWidth = this.position.width;
+    this.sheetHeight = this.position.height;
     this._filters = { skills: new Set() };
     this._sheetTab = "characteristics";
     this._tabs = [];
     this.pools = new Map();
   }
 
+  // V2 supplies an Item document; the FFG handler still consumes drag data.
+  async _onDropItem(event, item) {
+    if (!this.isEditable || !this.actor.isOwner) return false;
+    const data = item?.documentName === "Item" ? item.toDragData() : item;
+    return ActorSheetFFG.prototype._onDropItem.call(this, event, data);
+  }
+
+  async _onDropItemCreate(data) {
+    if (!this.isEditable || !this.actor.isOwner) return [];
+    return this.actor.createEmbeddedDocuments("Item", Array.isArray(data) ? data : [data]);
+  }
+
   get object() { return this.document; }
+
+  _onPosition(position) {
+    super._onPosition(position);
+    if (this.minimized) return;
+    this.sheetWidth = position.width;
+    this.sheetHeight = position.height;
+  }
 
   get title() {
     if (!this.actor.isToken) return this.actor.name;
@@ -73,6 +101,10 @@ export class ActorSheetFFGV2 extends HandlebarsApplicationMixin(ActorSheetV2) {
     const actorClasses = ["character", "nemesis", "rival", "minion", "vehicle", "homestead", "editable", "locked"];
     this.element.classList.remove(...actorClasses);
     this.element.classList.add(this.actor.type, this.isEditable ? "editable" : "locked");
+    // Legacy styles expect the actor type on the content inside the sheet host.
+    const content = this.element.querySelector(".window-content");
+    content.classList.remove(...actorClasses);
+    content.classList.add(this.actor.type);
     this._activateLegacyListeners($(this.element));
   }
 

@@ -1,3 +1,4 @@
+import { registerCriticalTableRolls } from "./helpers/critical-table-roll.js";
 const { DialogV2 } = foundry.applications.api;
 import { deleteDataField } from "./compatibility/data-operators.js";
 import { getActiveEffectChanges, activeEffectChangesUpdate } from "./compatibility/active-effects.js";
@@ -77,6 +78,7 @@ Hooks.on("setup", function (){
 });
 
 Hooks.once("init", async function () {
+  registerCriticalTableRolls();
   console.log(`Initializing SWFFG System`);
   // Place our classes in their own namespace for later reference.
   game.ffg = {
@@ -266,6 +268,8 @@ Hooks.once("init", async function () {
 
   SettingsHelpers.initLevelSettings();
 
+  // Shared v14 sheet layout stays enabled when an alternate theme replaces the main CSS.
+  $("head").append('<link href="systems/starwarsffg/styles/v14-sheets.css" rel="stylesheet" type="text/css" media="all">');
   const uitheme = game.settings.get("starwarsffg", "ui-uitheme");
 
   switch (uitheme) {

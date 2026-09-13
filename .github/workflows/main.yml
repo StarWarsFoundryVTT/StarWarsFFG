@@ -32,6 +32,9 @@
 #
 name: Create Release
 
+permissions:
+    contents: write
+
 env:
     # The URL used for the module's "Project URL" link on FoundryVTT's website.
     project_url: "https://github.com/${{github.repository}}"
@@ -66,33 +69,22 @@ jobs:
             - name: Checkout Repository
               uses: actions/checkout@v3
 
-            # Extract version embedded in the tag.
-            # This step expects the tag to be one of the following formats:
-            #   - "v<major>.<minor>.<patch>" (e.g., "v1.2.3")
-            #   - "<major>.<minor>.<patch>"  (e.g., "1.2.3")
-            #
-            # The version will be used by later steps to fill in the value for the
-            # "version" key required for a valid module manifest.
-            - name: Extract Version From Tag
-              id: get_version
-              uses: battila7/get-version-action@v2
-
-            # Modify "module.json" with values specific to the release.
-            # Since the values for the "version" and "url" keys aren't known ahead of
-            # time, the manifest file in the repository is updated with these values.
-            #
-            # While this does modify the manifest file in-place, the changes are not
-            # commited to the repository, and only exist in the action's filesystem.
-            - name: Modify Module Manifest With Release-Specific Values
-              id: sub_manifest_link_version
-              uses: cschleiden/replace-tokens@v1
-              with:
-                  files: "system.json"
+            # Update actual JSON fields; this manifest contains no token placeholders.
+            - name: Prepare system manifest
               env:
-                  VERSION: ${{steps.get_version.outputs.version-without-v}}
-                  URL: ${{ env.project_url }}
-                  MANIFEST: ${{ env.latest_manifest_url }}
-                  DOWNLOAD: ${{ env.release_module_url }}
+                  RELEASE_TAG: ${{ github.event.release.tag_name }}
+              run: |
+                  python3 - <<'PY'
+                  import json, os, pathlib, re
+                  tag = os.environ["RELEASE_TAG"]
+                  if not re.fullmatch(r"v?\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?", tag):
+                      raise SystemExit("Expected a semantic-version release tag")
+                  path = pathlib.Path("system.json")
+                  manifest = json.loads(path.read_text())
+                  manifest.update(version=tag.removeprefix("v"), url=os.environ["project_url"],
+                                  manifest=os.environ["latest_manifest_url"], download=os.environ["release_module_url"])
+                  path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n")
+                  PY
 
             # Create a "module.zip" archive containing all the module's required files.
             # If you have other directories or files that will need to be added to
@@ -118,6 +110,7 @@ jobs:
                     CONTRIBUTING.md                      \
                     LICENSE.txt                          \
                     README.md                            \
+                    CONTENU.md                           \
                     package.json                         \
                     system.json
                   # Don't forget to add a backslash at the end of the line for any
@@ -129,18 +122,11 @@ jobs:
               uses: ncipollo/release-action@v1
               with:
                   allowUpdates: true
+                  removeArtifacts: false
                   name: ${{ github.event.release.name }}
-                  draft: ${{ github.event.release.unpublished }}
+                  draft: ${{ github.event.release.draft }}
                   prerelease: ${{ github.event.release.prerelease }}
                   token: ${{ secrets.GITHUB_TOKEN }}
                   artifacts: "./system.json, ./system.zip"
                   tag: ${{ github.event.release.tag_name }}
                   body: ${{ github.event.release.body }}
-            - name: Publish System to FoundryVTT Website
-              id: publish-to-foundry-website
-              uses: cs96and/FoundryVTT-release-package@v1
-              with:
-                  package-token: ${{ secrets.PACKAGE_TOKEN }}
-                  manifest-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/system.json
-                  notes-url: https://github.com/${{github.repository}}/releases/tag/${{github.event.release.tag_name}}
-                  dry-run: false

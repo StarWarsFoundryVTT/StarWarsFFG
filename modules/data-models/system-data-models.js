@@ -1785,6 +1785,7 @@ const LEGACY_DEFAULTS = {
       "base_cost": 0
     },
     "gear": {
+      "equippable": { "equipped": false },
       "description": "",
       "attributes": {},
       "metadata": {
