@@ -616,6 +616,346 @@ export async function setLearned(
   if (problem) throw new Error(`Setting islearned on ${itemUuid} failed: ${problem}`);
 }
 
+export interface ProgressionNode {
+  name?: string;
+  /** The system's spelling, lower case throughout. */
+  islearned?: boolean;
+  isRanked?: boolean;
+  cost?: number;
+  attributes?: Record<string, unknown>;
+}
+
+/**
+ * Which field holds a type's progression nodes, or null for a type that has none.
+ */
+export function progressionField(type: string): 'talents' | 'upgrades' | null {
+  if (type === 'specialization') return 'talents';
+  return ['forcepower', 'signatureability'].includes(type) ? 'upgrades' : null;
+}
+
+/**
+ * One talent / upgrade node as it is stored, or null when the item has no such node.
+ */
+export async function readProgressionNode(
+  page: Page, itemUuid: Uuid, nodeKey: string,
+): Promise<ProgressionNode | null> {
+  const type = String(await read(page, itemUuid, 'type') ?? '');
+  const field = progressionField(type);
+  if (!field) throw new Error(`${type} has no talents or upgrades to read.`);
+  const node = await read(page, itemUuid, `system.${field}.${nodeKey}`);
+  return (node ?? null) as ProgressionNode | null;
+}
+
+/* -------------------------------------------- */
+/*  Dialogs                                     */
+/* -------------------------------------------- */
+
+/**
+ * Titles of the dialogs currently open, for tests whose point is that one appeared.
+ */
+export async function openDialogs(page: Page): Promise<string[]> {
+  return page.evaluate(() =>
+    Object.values(ui.windows ?? {})
+      .filter((app: any) => app?.data?.buttons)
+      .map((app: any) => String(app.title ?? '')));
+}
+
+/**
+ * Wait for a dialog to open and return its title.
+ */
+export async function waitForDialog(
+  page: Page, { title, timeout = 10_000 }: { title?: string | RegExp; timeout?: number } = {},
+): Promise<string> {
+  const pattern = title === undefined ? null : typeof title === 'string' ? title : title.source;
+
+  const found = await page.evaluate(async ({ pattern, timeout }) => {
+    const deadline = Date.now() + timeout;
+    for (;;) {
+      const dialog = (Object.values(ui.windows ?? {}) as any[]).find(
+        (app) => app?.data?.buttons && (!pattern || new RegExp(pattern).test(String(app.title ?? ''))));
+      if (dialog) return String(dialog.title ?? '');
+      if (Date.now() > deadline) return null;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+  }, { pattern, timeout });
+
+  if (found === null) {
+    throw new Error(`No dialog${pattern ? ` titled /${pattern}/` : ''} opened within ${timeout}ms.`);
+  }
+  return found;
+}
+
+/**
+ * Close every open dialog without answering it.
+ */
+export async function closeDialogs(page: Page): Promise<void> {
+  await page.evaluate(async () => {
+    for (const app of Object.values(ui.windows ?? {}) as any[]) {
+      if (app?.data?.buttons) await app.close();
+    }
+  });
+}
+
+/**
+ * Wait for a dialog to open, press one of its buttons, and wait for what it does to finish.
+ */
+export async function answerDialog(
+  page: Page, button: string,
+  { title, timeout = 10_000 }: { title?: string | RegExp; timeout?: number } = {},
+): Promise<void> {
+  const pattern = title === undefined ? null : typeof title === 'string' ? title : title.source;
+
+  const problem = await page.evaluate(async ({ button, pattern, timeout }) => {
+    const deadline = Date.now() + timeout;
+    const matches = (app: any) =>
+      app?.data?.buttons && (!pattern || new RegExp(pattern).test(String(app.title ?? '')));
+
+    let dialog: any = null;
+    for (;;) {
+      dialog = Object.values(ui.windows ?? {}).find(matches);
+      if (dialog) break;
+      if (Date.now() > deadline) {
+        const open = Object.values(ui.windows ?? {})
+          .map((app: any) => String(app.title ?? '')).join(', ') || 'none';
+        return `no dialog${pattern ? ` titled /${pattern}/` : ''} opened. Open windows: ${open}`;
+      }
+      await new Promise((r) => setTimeout(r, 25));
+    }
+
+    const spec = dialog.data.buttons[button];
+    if (!spec) {
+      return `the dialog has no "${button}" button; it offers ${Object.keys(dialog.data.buttons).join(', ')}`;
+    }
+    // A disabled button is how the drop dialog says the actor cannot afford the item, so it is a
+    // refusal to report rather than a failure to click through.
+    if (spec.disabled) return `the "${button}" button is disabled`;
+
+    // Held on an object rather than in two locals: the only writer is the wrapper below, and a
+    // local assigned solely from inside a closure reads as never-reassigned.
+    const state: { settled: boolean; failure: string | null } = { settled: false, failure: null };
+    const original = spec.callback;
+    spec.callback = async (...args: unknown[]) => {
+      try {
+        if (original) await original(...args);
+      } catch (err: any) {
+        state.failure = err?.message ?? String(err);
+      } finally {
+        state.settled = true;
+      }
+    };
+
+    const root = dialog.element?.[0] ?? dialog.element;
+    const control = root?.querySelector(`button[data-button="${button}"]`);
+    if (!control) return `the dialog rendered no "${button}" button`;
+    control.click();
+
+    while (!state.settled) {
+      if (Date.now() > deadline) return `the "${button}" callback never finished`;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    if (state.failure) return `the "${button}" callback threw: ${state.failure}`;
+
+    // Foundry closes the dialog only after the callback resolves, so returning the moment the
+    // callback settles leaves it in ui.windows for a tick or two. The next answerDialog matches on
+    // "any window with buttons", so it would find this one still standing and press its button a
+    // second time - running the previous purchase again, at the cost its closure captured, and
+    // never touching the one the test asked for.
+    while ((ui.windows ?? {})[dialog.appId]) {
+      if (Date.now() > deadline) return `the dialog did not close after the "${button}" callback`;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return null;
+  }, { button, pattern, timeout });
+
+  if (problem) throw new Error(`Answering a dialog failed: ${problem}`);
+}
+
+/* -------------------------------------------- */
+/*  Purchases                                   */
+/* -------------------------------------------- */
+
+/** The two buttons every purchase dialog carries, per the handlers that build them. */
+const CONFIRM = 'done';
+const CANCEL = 'cancel';
+
+/**
+ * Confirm or cancel a purchase dialog, leaving nothing standing if the answer goes wrong.
+ */
+async function answerPurchase(page: Page, confirm: boolean): Promise<void> {
+  try {
+    await answerDialog(page, confirm ? CONFIRM : CANCEL);
+  } catch (err) {
+    await closeDialogs(page);
+    throw err;
+  }
+}
+
+/**
+ * Buy a talent in a specialization, or an upgrade in a force power or signature ability.
+ */
+export async function buyProgressionNode(
+  page: Page, itemUuid: Uuid, nodeKey: string, { confirm = true } = {},
+): Promise<void> {
+  await openSheet(page, itemUuid);
+
+  const problem = await page.evaluate(async ({ itemUuid, nodeKey }) => {
+    const item = await fromUuid(itemUuid);
+    if (!item) return `No item at ${itemUuid}`;
+    if (!item.isEmbedded) {
+      return `${item.name} is not on an actor, so the purchase control is not rendered`;
+    }
+    const root = item.sheet.element?.[0] ?? item.sheet.element;
+    const control = root?.querySelector(`.ffg-purchase[data-upgrade-id="${nodeKey}"]`);
+    if (!control) {
+      const offered = [...(root?.querySelectorAll('.ffg-purchase[data-upgrade-id]') ?? [])]
+        .map((el: any) => el.dataset.upgradeId).join(', ') || 'none';
+      return `the sheet rendered no purchase control for node "${nodeKey}". It offers: ${offered}`;
+    }
+    control.click();
+    return null;
+  }, { itemUuid, nodeKey });
+
+  if (problem) {
+    await closeSheet(page, itemUuid);
+    throw new Error(`Buying node "${nodeKey}" on ${itemUuid} failed: ${problem}`);
+  }
+
+  try {
+    await answerPurchase(page, confirm);
+  } finally {
+    // The callback writes through `this.element`, so the sheet stays open until it has finished.
+    await closeSheet(page, itemUuid);
+  }
+}
+
+/**
+ * Buy a rank in a skill, from the actor sheet's own control.
+ */
+export async function buySkillRank(
+  page: Page, actorUuid: Uuid, skill: string, { confirm = true } = {},
+): Promise<void> {
+  await clickActorPurchase(page, actorUuid, `[data-ability="${skill}"] .ffg-purchase[data-buy-action="skill"]`,
+    `the sheet rendered no purchase control for the skill "${skill}"`);
+  await answerPurchase(page, confirm);
+}
+
+/**
+ * Buy a rank in a characteristic. Costs `(current + 1) * 10`, read live off the actor, so a
+ * characteristic already raised by an item is dearer than its printed value suggests.
+ */
+export async function buyCharacteristicRank(
+  page: Page, actorUuid: Uuid, characteristic: string, { confirm = true } = {},
+): Promise<void> {
+  await clickActorPurchase(page, actorUuid,
+    `.ffg-purchase[data-buy-characteristic="${characteristic}"]`,
+    `the sheet rendered no purchase control for the characteristic "${characteristic}"`);
+  await answerPurchase(page, confirm);
+}
+
+/**
+ * Click one of the actor sheet's "buy one of these" arrows - specialization, signature ability,
+ * force power or talent - which opens a dialog listing what the character can buy.
+ */
+export async function browsePurchases(
+  page: Page, actorUuid: Uuid, action: 'specialization' | 'signatureability' | 'forcepower' | 'talent',
+): Promise<void> {
+  await clickActorPurchase(page, actorUuid, `.ffg-purchase[data-buy-action="${action}"]`,
+    `the sheet rendered no purchase control for ${action}`);
+}
+
+/** Open an actor's sheet and click one of its purchase controls. */
+async function clickActorPurchase(
+  page: Page, actorUuid: Uuid, selector: string, missing: string,
+): Promise<void> {
+  await openSheet(page, actorUuid);
+
+  const problem = await page.evaluate(async ({ actorUuid, selector, missing }) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) return `No actor at ${actorUuid}`;
+    if (actor.getFlag('starwarsffg', 'config.enableEditMode')) {
+      return 'the actor is in edit mode, which refuses every purchase';
+    }
+    const root = actor.sheet.element?.[0] ?? actor.sheet.element;
+    const control = root?.querySelector(selector);
+    if (!control) return missing;
+    // Deliberately not scrolled into view or checked for visibility: these controls live on tabs
+    // that may not be showing, and the handlers do not care which tab is open.
+    control.click();
+    return null;
+  }, { actorUuid, selector, missing });
+
+  if (problem) throw new Error(`Clicking a purchase control on ${actorUuid} failed: ${problem}`);
+}
+
+/**
+ * Drop a talent, specialization, force power or signature ability on an actor sheet and answer the
+ * dialog it raises.
+ */
+export async function dropForPurchase(
+  page: Page, actorUuid: Uuid, itemUuid: Uuid,
+  choice: 'purchase' | 'grant' | 'dismiss' = 'purchase',
+): Promise<Uuid | null> {
+  await openSheet(page, actorUuid);
+
+  const started = await page.evaluate(async ({ actorUuid, itemUuid }) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) return `No actor at ${actorUuid}`;
+    const w = window as any;
+    w.__qaDropBefore = new Set(actor.items.map((i: any) => i.id));
+    // Not awaited: for these types the call returns once the dialog is on screen, and for every
+    // other type it resolves normally - either way the answer has to come from outside this call.
+    w.__qaDrop = Promise.resolve(actor.sheet._onDropItem(
+      { preventDefault: () => {}, stopPropagation: () => {}, currentTarget: null, target: null },
+      { type: 'Item', uuid: itemUuid },
+    )).catch((err: any) => { w.__qaDropError = err?.message ?? String(err); });
+    return null;
+  }, { actorUuid, itemUuid });
+
+  if (started) throw new Error(`Dropping ${itemUuid} on ${actorUuid} for purchase: ${started}`);
+
+  try {
+    if (choice === 'dismiss') {
+      // The dialog is rendered several awaits into _onDropItem, so closing without waiting for it
+      // would race past and leave it standing on a page the next test inherits.
+      await waitForDialog(page);
+      await closeDialogs(page);
+    } else {
+      await answerDialog(page, choice);
+    }
+  } catch (err) {
+    await closeDialogs(page);
+    throw err;
+  }
+
+  const result = await page.evaluate(async ({ actorUuid, expectItem }) => {
+    const outcome: { error: string | null; uuid: string | null } = { error: null, uuid: null };
+    const w = window as any;
+    await w.__qaDrop;
+    outcome.error = w.__qaDropError ?? null;
+    const before = w.__qaDropBefore ?? new Set();
+    delete w.__qaDrop;
+    delete w.__qaDropError;
+    delete w.__qaDropBefore;
+    if (outcome.error) return outcome;
+
+    const actor = await fromUuid(actorUuid);
+    for (let i = 0; i < 100; i++) {
+      const landed = actor.items.find((item: any) => !before.has(item.id));
+      if (landed) {
+        outcome.uuid = landed.uuid;
+        return outcome;
+      }
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    // Dismissing is supposed to leave nothing behind, so an empty result is the expected outcome
+    if (expectItem) outcome.error = 'the dialog was answered but no item appeared on the actor';
+    return outcome;
+  }, { actorUuid, expectItem: choice !== 'dismiss' });
+
+  if (result.error) throw new Error(`Dropping ${itemUuid} on ${actorUuid}: ${result.error}`);
+  return result.uuid;
+}
+
 /**
  * Copy a compendium document into the world, the way dragging one out of a pack does.
  */

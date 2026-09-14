@@ -66,5 +66,5 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
 });
 
 export { expect };
-export type { Ctx, BuildSpec, ModifierSpec, Origin } from './world';
+export type { Ctx, BuildSpec, ModifierSpec, AttributeSpec, TalentSpec, Origin } from './world';
 export type { Reading, PoolSummary } from './consumers';

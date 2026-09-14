@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 import * as api from './api';
-import type { Ctx } from './world';
+import { nodeKeyFor, type Ctx } from './world';
 import { sheetStat } from './pages/actor-sheet';
 
 /**
@@ -125,6 +125,28 @@ export class Consumers {
       poolDice: await this.poolDice(ctx),
       chatCard: await this.chatCard(ctx),
     };
+  }
+
+  /**
+   * A talent / upgrade node of the built item, by its position in the spec's `talents`.
+   */
+  async talent(ctx: Ctx, index = 0): Promise<api.ProgressionNode | null> {
+    if (!ctx?.item) throw new Error('talent() needs a build that reached an item.');
+    return api.readProgressionNode(this.page, ctx.item, await nodeKeyFor(this.page, ctx, index));
+  }
+
+  /**
+   * The Talents tab's list: every learned talent the actor has, from every source, aggregated.
+   */
+  async talentList(ctx: Ctx): Promise<{ name: string; rank: number | 'N/A'; sources: string[] }[]> {
+    const list = await api.read(this.page, ctx.actor, 'talentList');
+    return ((list ?? []) as any[]).map((talent) => ({
+      name: String(talent?.name ?? ''),
+      // Unranked talents carry the literal string, not a number, and it is worth seeing when a
+      // test expected a rank and the talent turned out not to be ranked at all.
+      rank: talent?.rank === 'N/A' ? 'N/A' : Number(talent?.rank ?? 0),
+      sources: ((talent?.source ?? []) as any[]).map((s) => String(s?.name ?? '')),
+    }));
   }
 
   /** A skill's rank, or one of the dice modifiers stacked onto it. */
@@ -311,9 +333,37 @@ export class Consumers {
     }, { actorUuid: ctx.actor, itemUuid: ctx.item, needle });
   }
 
+  /**
+   * What the character has to spend, and what it has earned.
+   */
+  async xp(ctx: Ctx): Promise<{ available: number; total: number; stored: number } | null> {
+    return this.page.evaluate(async (actorUuid) => {
+      const actor = await fromUuid(actorUuid);
+      const experience = actor?.system?.experience;
+      if (!experience) return null;
+      return {
+        available: Number(experience.available ?? 0),
+        total: Number(experience.total ?? 0),
+        stored: Number(actor.toObject().system?.experience?.available ?? 0),
+      };
+    }, ctx.actor);
+  }
 
-
-
+  /**
+   * The XP ledger, newest first - which is the order `xpLogSpend` writes it in.
+   */
+  async xpLog(ctx: Ctx): Promise<{
+    action: string; description: string; cost: number; available: number; total: number;
+  }[]> {
+    const entries = await api.read(this.page, ctx.actor, 'flags.starwarsffg.xpLog');
+    return ((entries ?? []) as any[]).map((e) => ({
+      action: String(e?.action ?? ''),
+      description: String(e?.description ?? ''),
+      cost: Number(e?.xp?.cost ?? 0),
+      available: Number(e?.xp?.available ?? 0),
+      total: Number(e?.xp?.total ?? 0),
+    }));
+  }
 }
 
 /**

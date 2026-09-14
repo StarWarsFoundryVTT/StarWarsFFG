@@ -310,17 +310,42 @@ export interface TalentSpec {
   /** Defaults to true; set false to check that an unpurchased talent stays inert. */
   islearned?: boolean;
   isRanked?: boolean;
+  /**
+   * Which node of the tree this sits in, defaulting to its position in the list.
+   */
+  node?: number;
+  /**
+   * Connectors drawn from this node, as the tree's own link controls store them.
+   */
+  linkRight?: boolean;
+  linkTop?: number[];
+  /**
+   * What the node costs, for force powers and signature abilities only.
+   */
+  cost?: number;
 }
 
-/** Build the numerically-keyed talents/upgrades map a specialization or force power holds. */
-export function talentMap(talents: TalentSpec[]): Record<string, unknown> {
+/**
+ * Which key prefix an item type uses for its progression nodes.
+ */
+export function nodePrefix(itemType: string): 'talent' | 'upgrade' {
+  return ['forcepower', 'signatureability'].includes(itemType) ? 'upgrade' : 'talent';
+}
+
+/** The key of the nth progression node on an item of this type. */
+export function nodeKey(itemType: string, index: number): string {
+  return `${nodePrefix(itemType)}${index}`;
+}
+
+/** Build the keyed talents/upgrades map a specialization or force power holds. */
+export function talentMap(talents: TalentSpec[], itemType: string): Record<string, unknown> {
   const out: Record<string, unknown> = {};
-  // Keys are unique across the whole item, not per node. The editor names each Active Effect
-  // after its attribute key, so two nodes both using "attr1" would share one effect - and the
-  // real keys are `attr<randomID>` (importers/careers.js:80), never per-node counters.
+  // Attribute keys are unique across the whole item, not per node. The editor names each Active
+  // Effect after its attribute key, so two nodes both using "attr1" would share one effect - and
+  // the real keys are `attr<randomID>` (importers/careers.js:80), never per-node counters.
   let n = 0;
   talents.forEach((t, i) => {
-    out[String(i)] = {
+    const node: Record<string, unknown> = {
       name: t.name,
       description: describe(`talent ${t.name}`),
       islearned: t.islearned ?? true,
@@ -331,6 +356,12 @@ export function talentMap(talents: TalentSpec[]): Record<string, unknown> {
       activationLabel: 'SWFFG.TalentActivationsPassive',
       attributes: attributeMap(t.attributes.map((a) => ({ ...a, key: a.key ?? `attr${++n}` }))),
     };
+    if (t.linkRight) node['links-right'] = true;
+    for (const n of t.linkTop ?? []) node[`links-top-${n}`] = true;
+    // Left off unless asked for, so the specialization branch - which derives its price from the
+    // key instead - does not carry a number the system never reads.
+    if (t.cost !== undefined) node.cost = t.cost;
+    out[nodeKey(itemType, t.node ?? i)] = node;
   });
   return out;
 }
@@ -399,16 +430,22 @@ export const ACTORS: Record<string, { type: string; baseline: Record<string, num
     baseline: {
       Brawn: 3, Agility: 2, Intellect: 4, Cunning: 2, Willpower: 3, Presence: 1,
       Wounds: 12, Strain: 13, Soak: 3,
+      XPAvailable: 100, XPTotal: 250,
     },
     system: {
       characteristics: {
         Brawn: { value: 3 }, Agility: { value: 2 }, Intellect: { value: 4 },
         Cunning: { value: 2 }, Willpower: { value: 3 }, Presence: { value: 1 },
       },
-      // ranks so weapon rolls produce a real pool rather than an empty one
+      // ranks so weapon rolls produce a real pool rather than an empty one.
+      //
+      // `careerskill` is set explicitly, and differently, because it is a price: _buySkillRank
+      // charges (rank + 1) * 5 for a career skill and five more for anything else
+      // (actors/actor-sheet-ffg.js:1800). With every skill on the same side of that branch, half
+      // the pricing code is unreachable, so one of each is spelled out here.
       skills: {
-        'Ranged: Light': { rank: 2 },
-        'Gunnery': { rank: 1 },
+        'Ranged: Light': { rank: 2, careerskill: true },
+        'Gunnery': { rank: 1, careerskill: false },
         'Piloting: Space': { rank: 1 },
       },
       stats: {
@@ -420,6 +457,7 @@ export const ACTORS: Record<string, { type: string; baseline: Record<string, num
         // So an unarmoured character sits at Brawn, and armour adds on top through effects.
         soak: { value: 3, adjusted: 3 }
       },
+      experience: { available: 100, total: 250 },
     },
   },
 

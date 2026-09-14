@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import * as api from './api';
 import type { Uuid } from './api';
-import { ITEMS, ACTORS, attributeMap, talentMap,
+import { ITEMS, ACTORS, attributeMap, talentMap, nodeKey,
          type ModifierSpec, type AttributeSpec, type TalentSpec,
          type ItemFixture } from '../fixtures/documents';
 
@@ -110,6 +110,21 @@ const EQUIPPABLE = new Set(['weapon', 'armour', 'shipweapon', 'shipattachment'])
 /** Unique per build, so a failed test can't collide with the next one. */
 let seq = 0;
 const unique = (base: string) => `${base}-${process.pid.toString(36)}-${(seq++).toString(36)}`;
+
+/**
+ * The key of the node holding the nth talent a build spec declared.
+ */
+export async function nodeKeyFor(page: Page, ctx: Ctx, index: number): Promise<string> {
+  const type = String(await api.read(page, ctx.item!, 'type') ?? '');
+  const declared = ctx.spec.talents?.[index];
+  if (ctx.spec.talents && !declared) {
+    throw new Error(
+      `No talent at index ${index}: the build declared ${ctx.spec.talents.length}. ` +
+      'The index is a position in the spec\'s `talents` list, not a node key.',
+    );
+  }
+  return nodeKey(type, declared?.node ?? index);
+}
 
 export class World {
   constructor(readonly page: Page) {}
@@ -349,7 +364,7 @@ export class World {
     if (spec.talents?.length) {
       // force powers and signature abilities call the same structure "upgrades"
       const field = ['forcepower', 'signatureability'].includes(fixture.type) ? 'upgrades' : 'talents';
-      system[field] = talentMap(spec.talents);
+      system[field] = talentMap(spec.talents, fixture.type);
     }
 
     const source = await this.createSource(spec.item, itemName, origin, system);
@@ -457,7 +472,35 @@ export class World {
    */
   async learn(ctx: Ctx, index: number, learned = true): Promise<void> {
     if (!ctx?.item) throw new Error('learn() needs a build that reached an item.');
-    await api.setLearned(this.page, ctx.item, String(index), learned);
+    await api.setLearned(this.page, ctx.item, await this.nodeKeyFor(ctx, index), learned);
+  }
+
+  /**
+   * Buy one of the built item's talent / upgrade nodes, by its position in `talents`.
+   */
+  async buy(ctx: Ctx, index: number, { confirm = true } = {}): Promise<void> {
+    if (!ctx?.item) throw new Error('buy() needs a build that reached an item.');
+    await api.buyProgressionNode(
+      this.page, ctx.item, await this.nodeKeyFor(ctx, index), { confirm });
+  }
+
+  /**
+   * Buy a rank in one of the actor's skills, through the control on its sheet.
+   */
+  async buySkill(ctx: Ctx, skill: string, { confirm = true } = {}): Promise<void> {
+    await api.buySkillRank(this.page, ctx.actor, skill, { confirm });
+  }
+
+  /**
+   * Buy a rank in one of the actor's characteristics, through the control on its sheet.
+   */
+  async buyCharacteristic(ctx: Ctx, characteristic: string, { confirm = true } = {}): Promise<void> {
+    await api.buyCharacteristicRank(this.page, ctx.actor, characteristic, { confirm });
+  }
+
+  /** The key of the node holding the nth talent the spec declared. */
+  private async nodeKeyFor(ctx: Ctx, index: number): Promise<string> {
+    return nodeKeyFor(this.page, ctx, index);
   }
 
   /**
@@ -562,7 +605,7 @@ export class World {
    */
   async clearTalent(ctx: Ctx, index: number): Promise<void> {
     if (!ctx?.item) throw new Error('clearTalent() needs a build that reached an item.');
-    await api.clearProgressionNode(this.page, ctx.item, String(index));
+    await api.clearProgressionNode(this.page, ctx.item, await this.nodeKeyFor(ctx, index));
   }
 
   /**
