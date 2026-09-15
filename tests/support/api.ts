@@ -1613,6 +1613,141 @@ export async function readLastChatFlavor(page: Page): Promise<string> {
   });
 }
 
+/**
+ * Roll a weapon the way its owner does, and answer the dialog that opens.
+ */
+export async function rollWeapon(
+  page: Page, actorUuid: Uuid, itemUuid: Uuid,
+  { faces = {} as Record<string, number>, add = {} as Record<string, number> } = {},
+): Promise<void> {
+  const problem = await page.evaluate(async ({ actorUuid, itemUuid, faces, add, sides }) => {
+    const actor = await fromUuid(actorUuid);
+    const item = await fromUuid(itemUuid);
+    if (!actor || !item) return 'the actor or the weapon is gone';
+
+    const before = game.messages.contents.length;
+
+    // By die rather than in sequence: the pool is built from the actor's skill and the item's
+    // modifiers, so a test would have to know how many dice of each kind it was about to roll.
+    const patched: [any, any][] = [];
+    for (const [type, face] of Object.entries(faces)) {
+      const denomination = sides[type]?.denomination;
+      const Die = game.ffg.diceterms.find((term: any) => term.DENOMINATION === denomination);
+      if (!Die) return `no die called "${type}"`;
+      patched.push([Die, Die.prototype.mapRandomFace]);
+      Die.prototype.mapRandomFace = () => face;
+    }
+
+    try {
+      // not awaited: it resolves once the dialog is up, and the roll happens when it is answered
+      game.ffg.DiceHelpers.rollItem(item.id, actor.id);
+
+      const dialog = await (async () => {
+        for (let i = 0; i < 200; i++) {
+          const found = (Object.values(ui.windows ?? {}) as any[])
+            .find((app) => app?.constructor?.name === 'RollBuilderFFG');
+          const root = found?.element?.[0] ?? found?.element;
+          if (root?.querySelector('.btn')) return root;
+          await new Promise((r) => setTimeout(r, 25));
+        }
+        return null;
+      })();
+      if (!dialog) return 'the roll dialog never opened';
+
+      // A die is added by clicking the block around its count, which is what a player does; the
+      // input itself is a button and carries no handler of its own (dice/roll-builder.js:325).
+      for (const [type, times] of Object.entries(add)) {
+        const block = [...dialog.querySelectorAll('.pool-container')]
+          .find((el: any) => el.querySelector(`input[name="${type}"]`));
+        if (!block) {
+          const offered = [...dialog.querySelectorAll('.pool-value input')]
+            .map((el: any) => el.name).join(', ');
+          return `the dialog has no ${type} dice to add. It offers: ${offered || 'none'}`;
+        }
+        for (let i = 0; i < (times as number); i++) block.click();
+      }
+
+      dialog.querySelector('.btn').click();
+
+      for (let i = 0; i < 200; i++) {
+        if (game.messages.contents.length > before) return null;
+        await new Promise((r) => setTimeout(r, 25));
+      }
+      return 'the roll was made but no message reached the chat log';
+    } finally {
+      for (const [Die, original] of patched) Die.prototype.mapRandomFace = original;
+    }
+  }, { actorUuid, itemUuid, faces, add, sides: DICE });
+
+  if (problem) throw new Error(`Rolling ${itemUuid}: ${problem}`);
+}
+
+/**
+ * Send an owned item to chat, the way the sheet's context menu does.
+ */
+export async function sendItemToChat(page: Page, actorUuid: Uuid, itemUuid: Uuid): Promise<void> {
+  const problem = await page.evaluate(async ({ actorUuid, itemUuid }) => {
+    const actor = await fromUuid(actorUuid);
+    const item = await fromUuid(itemUuid);
+    if (!actor || !item) return 'the actor or the item is gone';
+
+    const before = game.messages.contents.length;
+    await actor.sheet._itemDetailsToChat(item.id);
+
+    for (let i = 0; i < 200; i++) {
+      if (game.messages.contents.length > before) return null;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return 'nothing reached the chat log';
+  }, { actorUuid, itemUuid });
+
+  if (problem) throw new Error(`Sending ${itemUuid} to chat: ${problem}`);
+}
+
+/** The last chat message's rendered content, for tests about what a card says. */
+export async function readLastChatCard(page: Page): Promise<string> {
+  return page.evaluate(async () => {
+    const message = game.messages.contents.at(-1);
+    if (!message) return '';
+    const html = await message.renderHTML?.() ?? null;
+    return String(html?.innerHTML ?? message.content ?? '');
+  });
+}
+
+/**
+ * The dice the last roll was actually made with, counted by kind.
+ */
+export async function readLastRollDice(page: Page): Promise<Record<string, number>> {
+  return page.evaluate(async ({ sides }) => {
+    const message = game.messages.contents.at(-1);
+    const roll = message?.rolls?.[0];
+    const counted: Record<string, number> = {};
+    for (const type of Object.keys(sides)) counted[type] = 0;
+    for (const term of roll?.terms ?? []) {
+      const entry = Object.entries(sides).find(
+        ([, die]: [string, any]) => die.denomination === (term as any)?.constructor?.DENOMINATION);
+      if (entry) counted[entry[0]] += Number((term as any).number) || 0;
+    }
+    return counted;
+  }, { sides: DICE });
+}
+
+/**
+ * What the last chat card says the damage is.
+ */
+export async function readCardDamage(page: Page): Promise<string | null> {
+  const content = await readLastChatCard(page);
+  return content.match(/class="damage-value"[^>]*value="([^"]*)"/)?.[1] ?? null;
+}
+
+/**
+ * The item qualities named on the last chat card.
+ */
+export async function readCardQualities(page: Page): Promise<string[]> {
+  const content = await readLastChatCard(page);
+  return [...content.matchAll(/data-item-embed-name="([^"]*)"/g)].map((match) => match[1]);
+}
+
 /** Read several paths off one document, for comparing two documents field by field. */
 export async function readMany(
   page: Page, uuid: Uuid, paths: string[],
@@ -2090,6 +2225,66 @@ async function collectRollErrors(page: Page): Promise<string[]> {
     delete w.__qaRollErrorSink;
     return errors;
   }).catch(() => []);
+}
+
+/** The system's dice, by the name a test uses for them. */
+const DICE: Record<string, { denomination: string; faces: number }> = {
+  ability: { denomination: 'a', faces: 8 },
+  proficiency: { denomination: 'p', faces: 12 },
+  boost: { denomination: 'b', faces: 6 },
+  setback: { denomination: 's', faces: 6 },
+  difficulty: { denomination: 'i', faces: 8 },
+  challenge: { denomination: 'c', faces: 12 },
+  force: { denomination: 'f', faces: 12 },
+};
+
+/**
+ * Roll named faces of the system's dice, and report what the roll made of them.
+ *
+ * Rolls are otherwise untestable: a test that rolls two ability dice and expects a success is
+ * asserting on luck. Each die is asked for a specific face by standing in for the PRNG - Foundry
+ * picks a face with `Math.ceil((1 - randomUniform()) * faces)` - and the faces themselves are
+ * named in CONFIG.FFG.<DIE>_RESULTS, so `{ type: 'ability', face: 4 }` is the two-success side.
+ *
+ * One die per term, in the order given, so the queue of faces lines up with the dice that draw
+ * from it. What comes back is `roll.ffg`: the symbols after the system has cancelled them off
+ * against each other (dice/roll.js:187).
+ */
+export async function rollDice(page: Page, dice: { type: string; face: number }[]): Promise<{
+  success: number; failure: number; advantage: number; threat: number;
+  triumph: number; despair: number; light: number; dark: number;
+}> {
+  const unknown = dice.find((die) => !DICE[die.type]);
+  if (unknown) {
+    throw new Error(`No die called "${unknown.type}". The system rolls: ${Object.keys(DICE).join(', ')}.`);
+  }
+
+  const result = await page.evaluate(async ({ dice, sides }) => {
+    const expression = dice.map((die: any) => `1d${sides[die.type].denomination}`).join('+');
+    // ceil((1 - u) * faces) === face, taking the middle of the band so rounding cannot reach past it
+    const queue = dice.map((die: any) => 1 - (die.face - 0.5) / sides[die.type].faces);
+
+    const original = CONFIG.Dice.randomUniform;
+    CONFIG.Dice.randomUniform = () => {
+      if (!queue.length) throw new Error('the roll asked for more dice than the test named faces for');
+      return queue.shift();
+    };
+
+    try {
+      const roll = await new game.ffg.RollFFG(expression).evaluate();
+      if (queue.length) {
+        return { error: `${queue.length} of the named faces were never rolled (${expression})` };
+      }
+      return { ffg: roll.ffg };
+    } catch (err: any) {
+      return { error: String(err?.message ?? err) };
+    } finally {
+      CONFIG.Dice.randomUniform = original;
+    }
+  }, { dice, sides: DICE });
+
+  if ('error' in result) throw new Error(`Rolling ${dice.length} dice: ${result.error}`);
+  return result.ffg as any;
 }
 
 /** Delete a document. Ignores one that's already gone. */

@@ -23,7 +23,10 @@ export interface Reading {
 
 export interface PoolSummary {
   ability: number; proficiency: number; boost: number;
-  setback: number; difficulty: number; challenge: number; force: number;
+  // `remsetback` is its own slot, not a subtraction: the roll cancels setback dice with it only
+  // at `renderDiceExpression`, and only when ApplyRemoveSetbackMods is on (dice/pool.js:240).
+  setback: number; remsetback: number;
+  difficulty: number; challenge: number; force: number;
 }
 
 /**
@@ -73,6 +76,7 @@ const SKILL_MOD_PATH: Record<string, string> = {
   'Remove Setback': 'remsetback',
   'Upgrade': 'upgrades',
   'Rank': 'rank',
+  'Force': 'force',
 };
 
 const ITEM_PATH: Record<string, string> = {
@@ -146,6 +150,23 @@ export class Consumers {
       // test expected a rank and the talent turned out not to be ranked at all.
       rank: talent?.rank === 'N/A' ? 'N/A' : Number(talent?.rank ?? 0),
       sources: ((talent?.source ?? []) as any[]).map((s) => String(s?.name ?? '')),
+    }));
+  }
+
+  /**
+   * What the actor says is responsible for a skill's dice of one kind.
+   */
+  async skillSources(ctx: Ctx, skill: string, kind: string): Promise<{
+    name: string; type: string; value: number; modtype: string;
+  }[]> {
+    const field = SKILL_MOD_PATH[kind];
+    if (!field) throw new Error(`Unknown skill modifier "${kind}". Known: ${Object.keys(SKILL_MOD_PATH).join(', ')}.`);
+    const raw = await api.read(this.page, ctx.actor, `system.skills.${skill}.${field}source`);
+    return ((raw ?? []) as any[]).map((entry) => ({
+      name: String(entry?.name ?? ''),
+      type: String(entry?.type ?? ''),
+      value: Number(entry?.value ?? 0),
+      modtype: String(entry?.modtype ?? ''),
     }));
   }
 
@@ -276,11 +297,116 @@ export class Consumers {
         proficiency: Number(p.proficiency) || 0,
         boost: Number(p.boost) || 0,
         setback: Number(p.setback) || 0,
+        remsetback: Number(p.remsetback) || 0,
         difficulty: Number(p.difficulty) || 0,
         challenge: Number(p.challenge) || 0,
         force: Number(p.force) || 0,
       };
     }, ctx.item);
+  }
+
+  /**
+   * Force dice available to roll: the force pool that is not already spent.
+   */
+  async forceDice(ctx: Ctx): Promise<number> {
+    return this.page.evaluate(async (actorUuid) => {
+      const actor = await fromUuid(actorUuid);
+      const pool = actor?.system?.stats?.forcePool;
+      if (!pool) return 0;
+      return Math.max(0, Number(pool.max ?? 0) - Number(pool.value ?? 0));
+    }, ctx.actor);
+  }
+
+  /**
+   * The pool for rolling the built weapon: the actor's dice for its skill, with the weapon's own
+   * modifiers applied on top.
+   */
+  async weaponPool(ctx: Ctx): Promise<PoolSummary> {
+    if (!ctx.item) throw new Error('weaponPool() needs a build that reached an item.');
+
+    const result = await this.page.evaluate(async ({ actorUuid, itemUuid }) => {
+      const actor = await fromUuid(actorUuid);
+      const item = await fromUuid(itemUuid);
+      if (!actor || !item) return { error: 'the actor or the weapon is gone' };
+
+      const skill = item.system?.skill?.value;
+      if (!skill) return { error: `${item.name} names no skill to roll` };
+
+      const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+      const { get_dice_pool } = await load('helpers/dice-helpers.js');
+      // it converts from the label the sheet shows, not the key the item stores
+      const label = game.i18n.localize(CONFIG.FFG.skills[skill]?.label ?? skill);
+
+      const base = get_dice_pool(actor.id, label, new window.DicePoolFFG({}));
+      const pool = new window.DicePoolFFG(await game.ffg.DiceHelpers.getModifiers(base, item));
+
+      return {
+        pool: {
+          ability: Number(pool.ability) || 0,
+          proficiency: Number(pool.proficiency) || 0,
+          boost: Number(pool.boost) || 0,
+          setback: Number(pool.setback) || 0,
+          remsetback: Number(pool.remsetback) || 0,
+          difficulty: Number(pool.difficulty) || 0,
+          challenge: Number(pool.challenge) || 0,
+          force: Number(pool.force) || 0,
+        },
+      };
+    }, { actorUuid: ctx.actor, itemUuid: ctx.item });
+
+    if ('error' in result) throw new Error(`Building a pool for ${ctx.itemName}: ${result.error}`);
+    return result.pool as PoolSummary;
+  }
+
+  /**
+   * The same item pool as `poolDice`, as the expression the roll is actually made from.
+   */
+  async poolExpression(ctx: Ctx): Promise<string | null> {
+    if (!ctx.item) return null;
+    return this.page.evaluate(async (itemUuid) => {
+      const item = await fromUuid(itemUuid);
+      if (!item) return null;
+      const merged = await game.ffg.DiceHelpers.getModifiers(new window.DicePoolFFG({}), item);
+      return new window.DicePoolFFG(merged).renderDiceExpression();
+    }, ctx.item);
+  }
+
+  /**
+   * The pool the system builds for a skill check, before any dice are thrown.
+   */
+  async skillPool(ctx: Ctx, skill: string): Promise<PoolSummary> {
+    const result = await this.page.evaluate(async ({ actorUuid, skill }) => {
+      const actor = await fromUuid(actorUuid);
+      if (!actor) return { error: `No actor at ${actorUuid}` };
+
+      const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+      const { get_dice_pool } = await load('helpers/dice-helpers.js');
+
+      let pool;
+      try {
+        pool = get_dice_pool(actor.id, skill, new window.DicePoolFFG({}));
+      } catch (err: any) {
+        const known = Object.values(CONFIG.FFG.skills)
+          .map((entry: any) => game.i18n.localize(entry.label)).join(', ');
+        return { error: `no skill labelled "${skill}" (${err?.message ?? err}). It knows: ${known}` };
+      }
+
+      return {
+        pool: {
+          ability: Number(pool.ability) || 0,
+          proficiency: Number(pool.proficiency) || 0,
+          boost: Number(pool.boost) || 0,
+          setback: Number(pool.setback) || 0,
+          remsetback: Number(pool.remsetback) || 0,
+          difficulty: Number(pool.difficulty) || 0,
+          challenge: Number(pool.challenge) || 0,
+          force: Number(pool.force) || 0,
+        },
+      };
+    }, { actorUuid: ctx.actor, skill });
+
+    if ('error' in result) throw new Error(`Building a ${skill} pool: ${result.error}`);
+    return result.pool as PoolSummary;
   }
 
   /**

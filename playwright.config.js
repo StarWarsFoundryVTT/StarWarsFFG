@@ -45,6 +45,8 @@ const NON_DEFAULT_SETTINGS = [
   '**/combat/removal-actions.spec.js',
   '**/combat/turn-marker.spec.js',
   '**/combat/initiative-rule.spec.js',
+  '**/rolling/remove-setback.spec.js',
+  '**/status/custom-statuses.spec.js',
 ];
 
 /**

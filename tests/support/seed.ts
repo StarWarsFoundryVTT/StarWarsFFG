@@ -9,7 +9,7 @@ import path from 'node:path';
  */
 
 /** Bump when the fixture XML changes, so existing worlds re-seed. */
-const SEED_VERSION = 3;
+const SEED_VERSION = 4;
 
 const FIXTURES = path.resolve(__dirname, '../fixtures/oggdude');
 
