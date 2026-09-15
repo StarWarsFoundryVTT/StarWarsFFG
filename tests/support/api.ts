@@ -181,6 +181,23 @@ export async function findImported(page: Page, packName: string, importId: strin
   }, { packName, importId });
 }
 
+/**
+ * What a seeded pack holds, by the id the import gave each document.
+ */
+export async function readPack(page: Page, packName: string): Promise<{
+  id: string; name: string; importId: string;
+}[]> {
+  return page.evaluate(async (packName) => {
+    const pack = game.packs.get(`world.${packName.replaceAll('.', '').toLowerCase()}`);
+    if (!pack) throw new Error(`No pack ${packName}`);
+    return (await pack.getDocuments()).map((doc: any) => ({
+      id: doc.id,
+      name: String(doc.name ?? ''),
+      importId: String(doc.flags?.starwarsffg?.ffgimportid ?? ''),
+    }));
+  }, packName);
+}
+
 /** Put a document into a compendium pack and return its Compendium UUID. */
 export async function createInPack(page: Page, packId: string, spec: DocSpec): Promise<Uuid> {
   return page.evaluate(async ({ packId, s }) => {
@@ -1745,6 +1762,28 @@ export async function setCharacteristic(
   }, { actorUuid, characteristic, value });
 
   if (problem) throw new Error(`Setting ${characteristic} on ${actorUuid}: ${problem}`);
+}
+
+/**
+ * One item's own Active Effects, with what each of them changes.
+ */
+export async function readItemEffects(page: Page, uuid: Uuid): Promise<{
+  name: string; disabled: boolean;
+  changes: { key: string; mode: number; value: string }[];
+}[]> {
+  return page.evaluate(async (uuid) => {
+    const item = await fromUuid(uuid);
+    if (!item) throw new Error(`No item at ${uuid}`);
+    return [...item.effects].map((effect: any) => ({
+      name: String(effect.name ?? ''),
+      disabled: Boolean(effect.disabled),
+      changes: (effect.changes ?? []).map((change: any) => ({
+        key: String(change.key ?? ''),
+        mode: Number(change.mode ?? 0),
+        value: String(change.value ?? ''),
+      })),
+    }));
+  }, uuid);
 }
 
 /**

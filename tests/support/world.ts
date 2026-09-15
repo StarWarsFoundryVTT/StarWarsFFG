@@ -546,6 +546,32 @@ export class World {
   }
 
   /**
+   * The seeded twin of a fixture item, for tests that judge the importer's work.
+   */
+  async imported(key: string, importId?: string): Promise<Uuid> {
+    const fixture = ITEMS[key];
+    if (!fixture) {
+      throw new Error(`No item fixture "${key}". Known: ${Object.keys(ITEMS).join(', ')}.`);
+    }
+    if (!fixture.importId) {
+      const twins = Object.entries(ITEMS).filter(([, f]) => f.importId).map(([name]) => name);
+      throw new Error(`Fixture "${key}" has no imported twin. These have one: ${twins.join(', ')}.`);
+    }
+
+    // The id can be overridden to reach a sibling in the same pack, for a test that needs a record
+    // the fixtures have no twin of.
+    const wanted = importId ?? fixture.importId;
+    const found = await api.findImported(this.page, fixture.pack, wanted);
+    if (!found) {
+      throw new Error(
+        `${wanted} is not in ${fixture.pack}. Is the world seeded? ` +
+        'globalSetup seeds it unless SKIP_SEED is set.',
+      );
+    }
+    return found;
+  }
+
+  /**
    * Put an already-built item on a fresh actor, and hand back a Ctx for the pair.
    */
   async place(itemUuid: Uuid, spec: {

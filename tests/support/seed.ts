@@ -9,7 +9,7 @@ import path from 'node:path';
  */
 
 /** Bump when the fixture XML changes, so existing worlds re-seed. */
-const SEED_VERSION = 1;
+const SEED_VERSION = 3;
 
 const FIXTURES = path.resolve(__dirname, '../fixtures/oggdude');
 
@@ -17,7 +17,7 @@ const FIXTURES = path.resolve(__dirname, '../fixtures/oggdude');
  * Files in the order the importers expect. Skills must land first - later importers resolve
  * skill keys through `CONFIG.temporary.skills`, which the skills import populates.
  */
-const PHASES: { className: string; file: string }[] = [
+export const PHASES: { className: string; file: string; dir?: boolean }[] = [
   { className: 'Skills', file: 'Skills.xml' },
   { className: 'ItemModifiers', file: 'ItemDescriptors.xml' },
   { className: 'Armor', file: 'Armor.xml' },
@@ -25,18 +25,30 @@ const PHASES: { className: string; file: string }[] = [
   { className: 'Gear', file: 'Gear.xml' },
   { className: 'ItemAttachments', file: 'ItemAttachments.xml' },
   { className: 'Talent', file: 'Talents.xml' },
+  // A directory, and a different call: `Species.Import` is handed the zip and finds its own files
+  // in it, one per species, rather than a document the seed parsed (importers/species.js:16).
+  { className: 'Species', file: 'Species', dir: true },
 ];
 
+/** The files one phase reads, as `Data/`-relative names and their text. */
+export function phaseFiles(
+  { file, dir }: { file: string; dir?: boolean },
+): { name: string; xml: string }[] {
+  const names = dir
+    ? fs.readdirSync(path.join(FIXTURES, file)).filter((n) => n.endsWith('.xml')).map((n) => `${file}/${n}`)
+    : [file];
+  return names.map((name) => ({ name, xml: fs.readFileSync(path.join(FIXTURES, name), 'utf8') }));
+}
+
 /** Read the fixture XML off disk in Node, to be passed into the page. */
-function loadFixtures(skillsFile = 'Skills.xml'): { className: string; name: string; xml: string }[] {
-  return PHASES.map(({ className, file }) => {
-    const name = className === 'Skills' ? skillsFile : file;
-    return {
-      className,
-      name,
-      xml: fs.readFileSync(path.join(FIXTURES, name), 'utf8'),
-    };
-  });
+function loadFixtures(skillsFile = 'Skills.xml'): {
+  className: string; dir: boolean; files: { name: string; xml: string }[];
+}[] {
+  return PHASES.map((phase) => ({
+    className: phase.className,
+    dir: Boolean(phase.dir),
+    files: phaseFiles(phase.className === 'Skills' ? { file: skillsFile } : phase),
+  }));
 }
 
 /** Has this world already been seeded at the current version? */
@@ -62,7 +74,9 @@ export async function seed(page: Page, { skillsFile = 'Skills.xml' } = {}): Prom
     CONFIG.temporary = {};
 
     const zip = new JSZip();
-    for (const f of files) zip.file(`Data/${f.name}`, f.xml);
+    for (const phase of files) {
+      for (const f of phase.files) zip.file(`Data/${f.name}`, f.xml);
+    }
 
     // resolved by the browser against the running server; the indirection stops TypeScript
     // trying to resolve a path that only exists at runtime
@@ -70,16 +84,22 @@ export async function seed(page: Page, { skillsFile = 'Skills.xml' } = {}): Prom
     const OggDude = (await load('importer/oggdude/oggdude.js')).default;
     const ImportHelpers = (await load('importer/import-helpers.js')).default;
 
-    for (const f of files) {
-      const importer = OggDude.Import[f.className];
+    for (const phase of files) {
+      const importer = OggDude.Import[phase.className];
       if (!importer) {
-        log.push(`SKIP ${f.className} - no such importer`);
+        log.push(`SKIP ${phase.className} - no such importer`);
         continue;
       }
-      const xmlDoc = ImportHelpers.stringToXml(f.xml);
-      // Skills takes a "create journal compendium" flag rather than the zip
-      await (f.className === 'Skills' ? importer(xmlDoc, false) : importer(xmlDoc, zip));
-      log.push(`OK   ${f.className} from ${f.name}`);
+      const names = phase.files.map((f: any) => f.name).join(', ');
+      if (phase.dir) {
+        // it reads the zip itself, so there is nothing to parse here
+        await importer(zip);
+      } else {
+        const xmlDoc = ImportHelpers.stringToXml(phase.files[0].xml);
+        // Skills takes a "create journal compendium" flag rather than the zip
+        await (phase.className === 'Skills' ? importer(xmlDoc, false) : importer(xmlDoc, zip));
+      }
+      log.push(`OK   ${phase.className} from ${names}`);
     }
 
     await game.settings.storage.get('world')?.setItem?.('qa.seedVersion', String(version));

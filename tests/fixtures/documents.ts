@@ -139,7 +139,7 @@ export const ITEMS: Record<string, ItemFixture> = {
   },
 
   species: {
-    type: 'species', importId: '', pack: '',
+    type: 'species', importId: 'KAMINOAN', pack: 'oggdude.Species',
     baseline: { startingXP: 100 },
     system: { description: describe('species'), attributes: speciesIntrinsics(),
               metadata: { tags: ['species'], sources: ['QA'] },
@@ -168,7 +168,7 @@ export const ITEMS: Record<string, ItemFixture> = {
   },
 
   itemmodifier: {
-    type: 'itemmodifier', importId: '', pack: '',
+    type: 'itemmodifier', importId: 'PIERCE', pack: 'oggdude.WeaponMods',
     baseline: { rank: 1 },
     system: { description: describe('modifier'), attributes: {},
               metadata: { tags: ['modifier'], sources: ['QA'] },
