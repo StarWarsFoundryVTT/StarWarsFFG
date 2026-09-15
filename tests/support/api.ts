@@ -855,12 +855,15 @@ export async function buySkillRank(
  * characteristic already raised by an item is dearer than its printed value suggests.
  */
 export async function buyCharacteristicRank(
-  page: Page, actorUuid: Uuid, characteristic: string, { confirm = true } = {},
+  page: Page, actorUuid: Uuid, characteristic: string,
+  { confirm = true, allowEditMode = false } = {},
 ): Promise<void> {
   await clickActorPurchase(page, actorUuid,
     `.ffg-purchase[data-buy-characteristic="${characteristic}"]`,
-    `the sheet rendered no purchase control for the characteristic "${characteristic}"`);
-  await answerPurchase(page, confirm);
+    `the sheet rendered no purchase control for the characteristic "${characteristic}"`,
+    { allowEditMode });
+  // The sheet refuses before it asks anything, so there is no dialog to answer.
+  if (!allowEditMode) await answerPurchase(page, confirm);
 }
 
 /**
@@ -877,13 +880,14 @@ export async function browsePurchases(
 /** Open an actor's sheet and click one of its purchase controls. */
 async function clickActorPurchase(
   page: Page, actorUuid: Uuid, selector: string, missing: string,
+  { allowEditMode = false } = {},
 ): Promise<void> {
   await openSheet(page, actorUuid);
 
-  const problem = await page.evaluate(async ({ actorUuid, selector, missing }) => {
+  const problem = await page.evaluate(async ({ actorUuid, selector, missing, allowEditMode }) => {
     const actor = await fromUuid(actorUuid);
     if (!actor) return `No actor at ${actorUuid}`;
-    if (actor.getFlag('starwarsffg', 'config.enableEditMode')) {
+    if (!allowEditMode && actor.getFlag('starwarsffg', 'config.enableEditMode')) {
       return 'the actor is in edit mode, which refuses every purchase';
     }
     const root = actor.sheet.element?.[0] ?? actor.sheet.element;
@@ -893,7 +897,7 @@ async function clickActorPurchase(
     // that may not be showing, and the handlers do not care which tab is open.
     control.click();
     return null;
-  }, { actorUuid, selector, missing });
+  }, { actorUuid, selector, missing, allowEditMode });
 
   if (problem) throw new Error(`Clicking a purchase control on ${actorUuid} failed: ${problem}`);
 }
@@ -1049,20 +1053,23 @@ export async function setEffectsDisabled(
  * Put an item on an actor through the actor sheet's own drop handler.
  */
 export async function dropOnActorSheet(
-  page: Page, actorUuid: Uuid, itemUuid: Uuid,
+  page: Page, actorUuid: Uuid, itemUuid: Uuid, { allowEditMode = false } = {},
 ): Promise<Uuid> {
-  const result = await page.evaluate(async ({ actorUuid, itemUuid }) => {
+  const result = await page.evaluate(async ({ actorUuid, itemUuid, allowEditMode }) => {
     const actor = await fromUuid(actorUuid);
     if (!actor) return { error: `No actor at ${actorUuid}` };
-    if (actor.getFlag('starwarsffg', 'config.enableEditMode')) {
+    if (!allowEditMode && actor.getFlag('starwarsffg', 'config.enableEditMode')) {
       return { error: 'the actor is in edit mode, which refuses every drop' };
     }
     const before = new Set(actor.items.map((i: any) => i.id));
 
-    await actor.sheet._onDropItem(
+    const accepted = await actor.sheet._onDropItem(
       { preventDefault: () => {}, stopPropagation: () => {}, currentTarget: null, target: null },
       { type: 'Item', uuid: itemUuid },
     );
+
+    // the handler answers `false` when it turns the drop away, before anything is created
+    if (accepted === false) return { error: 'the sheet refused the drop' };
 
     // _onDropItemCreate resolves before the item is in the collection in some paths
     for (let i = 0; i < 100; i++) {
@@ -1071,7 +1078,7 @@ export async function dropOnActorSheet(
       await new Promise((r) => setTimeout(r, 25));
     }
     return { error: 'the sheet accepted the drop but no item appeared on the actor' };
-  }, { actorUuid, itemUuid });
+  }, { actorUuid, itemUuid, allowEditMode });
 
   if (result.error) throw new Error(`Dropping ${itemUuid} on ${actorUuid}: ${result.error}`);
   return result.uuid as Uuid;
@@ -1624,6 +1631,144 @@ export async function readOwnedItems(page: Page, actorUuid: Uuid): Promise<{
       type: String(item.type ?? ''),
       uuid: item.uuid,
     }));
+  }, actorUuid);
+}
+
+/* -------------------------------------------- */
+/*  Edit mode                                   */
+/* -------------------------------------------- */
+
+/** Whether the actor is in edit mode. */
+export async function readEditMode(page: Page, actorUuid: Uuid): Promise<boolean> {
+  return page.evaluate(async (actorUuid) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) throw new Error(`No actor at ${actorUuid}`);
+    return Boolean(actor.getFlag('starwarsffg', 'config.enableEditMode'));
+  }, actorUuid);
+}
+
+/**
+ * Turn edit mode on or off through the sheet's own options.
+ */
+export async function setEditMode(page: Page, actorUuid: Uuid, enabled: boolean): Promise<void> {
+  await openSheet(page, actorUuid);
+
+  const problem = await page.evaluate(async (actorUuid) => {
+    const actor = await fromUuid(actorUuid);
+    const root = actor?.sheet?.element?.[0] ?? actor?.sheet?.element;
+    const wrench = root?.querySelector('.ffg-sheet-options');
+    if (!wrench) return 'the sheet has no options control';
+    wrench.click();
+    return null;
+  }, actorUuid);
+
+  if (problem) throw new Error(`Setting edit mode on ${actorUuid}: ${problem}`);
+
+  await waitForDialog(page);
+
+  const missing = await page.evaluate((enabled) => {
+    const box = document.querySelector(
+      '[name="config.enableEditMode"]') as HTMLInputElement | null;
+    if (!box) {
+      const offered = [...document.querySelectorAll('[name^="config."]')]
+        .map((el: any) => el.name).join(', ') || 'none';
+      return `the options dialog has no edit mode control. It offers: ${offered}`;
+    }
+    box.checked = enabled;
+    return null;
+  }, enabled);
+
+  if (missing) {
+    await closeDialogs(page);
+    throw new Error(`Setting edit mode on ${actorUuid}: ${missing}`);
+  }
+
+  await answerDialog(page, 'one');
+}
+
+/**
+ * Grant XP the way the group manager does, dialog and all.
+ */
+export async function grantXp(
+  page: Page, actorUuid: Uuid, amount: number, note = 'qa grant',
+): Promise<void> {
+  const problem = await page.evaluate(async (actorUuid) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) return `No actor at ${actorUuid}`;
+
+    const load = (path: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${path}`);
+    const module = await load('groupmanager-ffg.js');
+    if (!module?.GroupManager) return 'the group manager could not be loaded';
+
+    // Not awaited: the dialog is rendered and the work happens in its callback.
+    void new module.GroupManager()._grantXP(actor);
+    return null;
+  }, actorUuid);
+
+  if (problem) throw new Error(`Granting XP to ${actorUuid}: ${problem}`);
+
+  await waitForDialog(page);
+
+  const missing = await page.evaluate(({ amount, note }) => {
+    const box = document.querySelector('input[name="amount"]') as HTMLInputElement | null;
+    const reason = document.querySelector('input[name="note"]') as HTMLInputElement | null;
+    if (!box || !reason) return 'the grant dialog has no amount to fill in';
+    box.value = String(amount);
+    reason.value = note;
+    return null;
+  }, { amount, note });
+
+  if (missing) {
+    await closeDialogs(page);
+    throw new Error(`Granting XP to ${actorUuid}: ${missing}`);
+  }
+
+  await answerDialog(page, 'one');
+}
+
+/**
+ * Set a characteristic, the way editing the field on the sheet does.
+ */
+export async function setCharacteristic(
+  page: Page, actorUuid: Uuid, characteristic: string, value: number,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ actorUuid, characteristic, value }) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) return `No actor at ${actorUuid}`;
+    if (!actor.system?.characteristics?.[characteristic]) {
+      return `no characteristic called "${characteristic}"`;
+    }
+    await actor.update({ [`system.characteristics.${characteristic}.value`]: value });
+    return null;
+  }, { actorUuid, characteristic, value });
+
+  if (problem) throw new Error(`Setting ${characteristic} on ${actorUuid}: ${problem}`);
+}
+
+/**
+ * Every Active Effect on an actor and on its items, with whether it is switched off.
+ */
+export async function readEffects(page: Page, actorUuid: Uuid): Promise<{
+  id: string; name: string; disabled: boolean; on: string;
+}[]> {
+  return page.evaluate(async (actorUuid) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) throw new Error(`No actor at ${actorUuid}`);
+
+    const read = (effect: any, on: string) => ({
+      id: effect.id,
+      name: String(effect.name ?? ''),
+      disabled: Boolean(effect.disabled),
+      on,
+    });
+
+    // Spread first: these are Foundry Collections, which carry `map` and `filter` but not
+    // `flatMap`.
+    return [
+      ...[...actor.effects].map((effect: any) => read(effect, 'actor')),
+      ...[...actor.items].flatMap((item: any) =>
+        [...item.effects].map((effect: any) => read(effect, item.name))),
+    ];
   }, actorUuid);
 }
 
