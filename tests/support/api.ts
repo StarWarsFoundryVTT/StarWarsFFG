@@ -1587,6 +1587,46 @@ export async function readLastChatFlavor(page: Page): Promise<string> {
   });
 }
 
+/** Read several paths off one document, for comparing two documents field by field. */
+export async function readMany(
+  page: Page, uuid: Uuid, paths: string[],
+): Promise<Record<string, unknown>> {
+  return page.evaluate(async ({ uuid, paths }) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new Error(`No document at ${uuid}`);
+    return Object.fromEntries(
+      paths.map((path) => [path, foundry.utils.getProperty(doc, path) ?? null]));
+  }, { uuid, paths });
+}
+
+/** Every actor in the world, for telling what a test or a tool left behind. */
+export async function readActors(page: Page): Promise<{
+  id: string; name: string; type: string; uuid: Uuid;
+}[]> {
+  return page.evaluate(() => game.actors.map((actor: any) => ({
+    id: actor.id,
+    name: String(actor.name ?? ''),
+    type: String(actor.type ?? ''),
+    uuid: actor.uuid,
+  })));
+}
+
+/** The items on an actor, flattened to what a test needs to find one. */
+export async function readOwnedItems(page: Page, actorUuid: Uuid): Promise<{
+  id: string; name: string; type: string; uuid: Uuid;
+}[]> {
+  return page.evaluate(async (actorUuid) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) throw new Error(`No actor at ${actorUuid}`);
+    return actor.items.map((item: any) => ({
+      id: item.id,
+      name: String(item.name ?? ''),
+      type: String(item.type ?? ''),
+      uuid: item.uuid,
+    }));
+  }, actorUuid);
+}
+
 /** Whether an encounter is still there. Ending one deletes it. */
 export async function combatExists(page: Page, combatUuid: Uuid): Promise<boolean> {
   return page.evaluate(

@@ -205,6 +205,31 @@ export const ITEMS: Record<string, ItemFixture> = {
               upgrades: {}, base_cost: 25, uplink_nodes: {} },
   },
 
+  /*
+   * The three choices the character creator offers beside a species and a career. Each is a plain
+   * item whose `system.type` decides which list it lands in, so the type is spelled out rather
+   * than left to the schema default - a background defaults to "culture", and an obligation to
+   * "duty", which is the wrong list for two of the three rulesets.
+   */
+  obligation: {
+    type: 'obligation', importId: '', pack: '',
+    baseline: { magnitude: 10 },
+    system: { description: describe('obligation'), type: 'obligation', subtype: 'Debt', magnitude: 10 },
+  },
+
+  motivation: {
+    type: 'motivation', importId: '', pack: '',
+    baseline: {},
+    system: { description: describe('motivation'), type: 'ambition' },
+  },
+
+  /** A background's `system.type` is one of culture, hook or attitude. */
+  background: {
+    type: 'background', importId: '', pack: '',
+    baseline: {},
+    system: { description: describe('background'), type: 'culture' },
+  },
+
   /** No imported twin - the trimmed dataset has no vehicle weapons yet. */
   shipweapon: {
     type: 'shipweapon',

@@ -147,6 +147,23 @@ const PLACEHOLDER_INHERENT = new Set(['gear', 'weapon', 'armour', 'shipattachmen
  */
 const EQUIPPABLE = new Set(['weapon', 'armour', 'shipweapon', 'shipattachment']);
 
+/**
+ * Where the character creator looks for each kind of choice.
+ *
+ * The names are the defaults of the `<kind>Compendiums` settings (swffg-main.js:394 onwards), so a
+ * pack made under one of these is read without touching a setting.
+ */
+const CREATOR_PACKS: Record<string, string> = {
+  species: 'oggdudespecies',
+  career: 'oggdudecareers',
+  specialization: 'oggdudespecializations',
+  forcepower: 'oggdudeforcepowers',
+  gear: 'oggdudegear',
+  obligation: 'oggdudeobligations',
+  motivation: 'oggdudemotivations',
+  background: 'oggdudebackgrounds',
+};
+
 /** Unique per build, so a failed test can't collide with the next one. */
 let seq = 0;
 const unique = (base: string) => `${base}-${process.pid.toString(36)}-${(seq++).toString(36)}`;
@@ -335,6 +352,54 @@ export class World {
     return api.embedItem(this.page, actor, source);
   }
 
+
+  /**
+   * Put a fixture item where the character creator will find it.
+   *
+   * The creator reads each kind of choice from the compendiums its own settings name, so an item
+   * sitting in the world is not on offer. Species, motivations and backgrounds are also read from
+   * world items, but a career is not - `getAvailableCareers` filters on the type "careers", which
+   * no item has (helpers/character-creator.js:100) - so everything goes through a pack here and
+   * the tests read the same either way.
+   *
+   * The pack is torn down with the rest of the test's leavings.
+   */
+  async addCreatorChoice(spec: Omit<BuildSpec, 'actor'>): Promise<Uuid> {
+    if (!spec.item) throw new Error('addCreatorChoice() needs an `item` in the spec.');
+
+    const packName = CREATOR_PACKS[spec.item];
+    if (!packName) {
+      throw new Error(
+        `The creator does not offer "${spec.item}". It offers: ${Object.keys(CREATOR_PACKS).join(', ')}.`,
+      );
+    }
+
+    const fixture = ITEMS[spec.item];
+    if (!fixture) {
+      throw new Error(`No item fixture "${spec.item}". Known: ${Object.keys(ITEMS).join(', ')}.`);
+    }
+
+    const pack = await api.ensurePack(this.page, packName);
+    if (!this.packs.includes(pack)) this.packs.push(pack);
+
+    const system = deepMerge(fixture.system, spec.itemOverrides ?? {});
+    if (spec.attributes?.length) {
+      system.attributes = {
+        ...((system.attributes as Record<string, unknown>) ?? {}),
+        ...attributeMap(spec.attributes),
+      };
+    }
+    if (spec.talents?.length) {
+      const field = ['forcepower', 'signatureability'].includes(fixture.type) ? 'upgrades' : 'talents';
+      system[field] = talentMap(spec.talents, fixture.type);
+    }
+
+    return api.createInPack(this.page, pack, {
+      type: fixture.type,
+      name: unique(`${spec.label ?? 'qa'}-${spec.item}`),
+      system,
+    });
+  }
 
   /**
    * A fixture actor on its own, for what a test needs beside an encounter rather than in it.
