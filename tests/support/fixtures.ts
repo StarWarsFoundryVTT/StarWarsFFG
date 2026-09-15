@@ -33,7 +33,8 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
     });
     const page = await context.newPage();
     await page.goto('/game');
-    await page.waitForFunction(() => game?.ready === true, undefined, { timeout: 60_000 });
+    await page.waitForFunction(
+      () => (globalThis as any).game?.ready === true, undefined, { timeout: 60_000 });
     await use(page);
     await context.close();
   }, { scope: 'worker' }],
@@ -66,5 +67,6 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
 });
 
 export { expect };
-export type { Ctx, BuildSpec, ModifierSpec, AttributeSpec, TalentSpec, Origin } from './world';
+export type { Ctx, BuildSpec, ModifierSpec, AttributeSpec, TalentSpec, Origin,
+              EncounterSpec, Encounter } from './world';
 export type { Reading, PoolSummary } from './consumers';

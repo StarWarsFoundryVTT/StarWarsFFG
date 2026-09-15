@@ -39,6 +39,14 @@ if (!baseURL) {
   );
 }
 
+/** Suites that change a world setting, and so are kept out of the default run. */
+const NON_DEFAULT_SETTINGS = [
+  '**/combat/generic-slots-off.spec.js',
+  '**/combat/removal-actions.spec.js',
+  '**/combat/turn-marker.spec.js',
+  '**/combat/initiative-rule.spec.js',
+];
+
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -73,6 +81,12 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      /*
+       * Everything except the suites that change a world setting. Those reload the page and, if a
+       * run is cut short before teardown, leave the world changed for every run after it - so they
+       * are opted into rather than paid for by default.
+       */
+      testIgnore: NON_DEFAULT_SETTINGS,
       use: {
         ...devices['Desktop Chrome'],
         viewport: {
@@ -87,6 +101,15 @@ export default defineConfig({
             '--use-angle=gl-egl',
           ]
         },
+      },
+    },
+    {
+      // Opt in with `npx playwright test --project=non-default-settings`.
+      name: 'non-default-settings',
+      testMatch: NON_DEFAULT_SETTINGS,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
       },
     },
     // TODO: re-enable all browsers

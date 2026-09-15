@@ -447,6 +447,11 @@ export const ACTORS: Record<string, { type: string; baseline: Record<string, num
         'Ranged: Light': { rank: 2, careerskill: true },
         'Gunnery': { rank: 1, careerskill: false },
         'Piloting: Space': { rank: 1 },
+        // Initiative reads these two by name whatever is flagged `useForInitiative`, adding a pool
+        // for each when the flags name neither (combat-ffg.js:216). Ranked, so a pool built from
+        // one is distinguishable from the bare characteristic dice a rank-0 skill would give.
+        'Vigilance': { rank: 2, careerskill: true },
+        'Cool': { rank: 1 },
       },
       stats: {
         credits: { value: 500 },

@@ -27,6 +27,14 @@ declare global {
   const ChatMessage: any;
   const Macro: any;
   const Roll: any;
+  const Scene: any;
+  const Combat: any;
+
+  /** The canvas, and everything placed on it. Null until a scene is drawn. */
+  const canvas: any;
+
+  /** The configured class for a document type - a system's subclass where it registered one. */
+  function getDocumentClass(documentName: string): any;
 
   /** Resolve a document by UUID. Returns null if it's not there. */
   function fromUuid(uuid: string, options?: Record<string, unknown>): Promise<any>;

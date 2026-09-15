@@ -17,6 +17,8 @@ export interface DocSpec {
   renderSheet?: boolean;
   /** Pin the document to a registered sheet at creation, so renderSheet opens that one. */
   sheetClass?: string;
+  /** Flags to create the document with, for the state the system keeps outside `system`. */
+  flags?: Record<string, unknown>;
 }
 
 /* -------------------------------------------- */
@@ -28,7 +30,7 @@ export interface DocSpec {
  */
 export async function status(page: Page) {
   return page.evaluate(() => ({
-    ready: game?.ready === true,
+    ready: (globalThis as any).game?.ready === true,
     system: game?.system?.id ?? null,
     systemVersion: game?.system?.version ?? null,
     world: game?.world?.id ?? null,
@@ -48,7 +50,8 @@ export async function createActor(page: Page, spec: DocSpec): Promise<Uuid> {
     // `system` is omitted rather than passed as {} so the payload matches what the create dialog sends
     const data: Record<string, unknown> = { name: s.name, type: s.type };
     if (s.system && Object.keys(s.system).length) data.system = s.system;
-    if (s.sheetClass) data.flags = { core: { sheetClass: s.sheetClass } };
+    if (s.flags) data.flags = s.flags;
+    if (s.sheetClass) data.flags = { ...(data.flags ?? {}), core: { sheetClass: s.sheetClass } };
     const actor = await Actor.create(data, { renderSheet: s.renderSheet ?? false });
     if (!actor) throw new Error(`Actor.create returned nothing for type "${s.type}"`);
     return actor.uuid;
@@ -649,6 +652,14 @@ export async function readProgressionNode(
 /* -------------------------------------------- */
 /*  Dialogs                                     */
 /* -------------------------------------------- */
+
+/** The labels on the buttons of the dialog currently up. */
+export async function readDialogButtons(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const dialog = (Object.values(ui.windows ?? {}) as any[]).find((app) => app?.data?.buttons);
+    return Object.values(dialog?.data?.buttons ?? {}).map((button: any) => String(button.label ?? ''));
+  });
+}
 
 /**
  * Titles of the dialogs currently open, for tests whose point is that one appeared.
@@ -1251,6 +1262,608 @@ export async function submitSheet(page: Page, uuid: Uuid): Promise<void> {
     await doc?.sheet?.submit();
   }, uuid);
   await closeSheet(page, uuid);
+}
+
+/* -------------------------------------------- */
+/*  Settings                                    */
+/* -------------------------------------------- */
+
+/**
+ * Set a system setting, handing back what it was so a caller can put it back.
+ *
+ * Read and write are separate calls because some settings reload the page from their `onChange` -
+ * `useGenericSlots` swaps the combat classes out, so the world has to come back up around them
+ * (swffg-main.js:343). The reload tears down the context the write was evaluating in, which
+ * surfaces as an error after the write has already landed; the old value has to be in hand before
+ * that can happen. Waiting for the page to come back is `world.setSetting`'s job.
+ */
+/** Read a setting's current value. */
+export async function readSetting(
+  page: Page, key: string, namespace = 'starwarsffg',
+): Promise<any> {
+  return page.evaluate(
+    ({ key, namespace }) => game.settings.get(namespace, key) ?? null, { key, namespace });
+}
+
+export async function setSetting(
+  page: Page, key: string, value: unknown, namespace = 'starwarsffg',
+): Promise<unknown> {
+  const before = await page.evaluate(
+    ({ key, namespace }) => game.settings.get(namespace, key) ?? null, { key, namespace });
+
+  await page.evaluate(async ({ key, value, namespace }) => {
+    await game.settings.set(namespace, key, value);
+  }, { key, value, namespace }).catch((err: unknown) => {
+    if (!/context was destroyed|Execution context|navigation/i.test(String(err))) throw err;
+  });
+
+  return before;
+}
+
+/* -------------------------------------------- */
+/*  Scenes, tokens and combat                   */
+/* -------------------------------------------- */
+
+/**
+ * A scene, activated and viewed.
+ */
+export async function createScene(page: Page, name: string, timeout = 30_000): Promise<Uuid> {
+  return page.evaluate(async ({ name, timeout }) => {
+    const scene = await Scene.create({ name, width: 1000, height: 1000, grid: { type: 1, size: 100 } });
+    if (!scene) throw new Error(`Scene.create returned nothing for "${name}"`);
+
+    // `activate` both makes it the active scene and views it for the GM, and starts a canvas draw.
+    // Calling `view` on top of that is what earns "You cannot switch Scenes until resources finish
+    // loading for your current view" - the second switch is refused while the first is still
+    // drawing, and the scene is left un-viewed.
+    await scene.activate();
+
+    const drawn = async () => {
+      const deadline = Date.now() + timeout;
+      while (Date.now() < deadline) {
+        if (canvas?.ready && canvas.scene?.id === scene.id) return true;
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      return false;
+    };
+
+    if (!(await drawn())) {
+      // Activation did not carry this user to the scene - view it now that the canvas is quiet.
+      await scene.view();
+      if (!(await drawn())) {
+        throw new Error(`Scene "${name}" never became the viewed scene`);
+      }
+    }
+    return scene.uuid;
+  }, { name, timeout });
+}
+
+/**
+ * Put an actor's token on a scene. Returns the token id, which is what a combatant is keyed by.
+ */
+export async function addToken(
+  page: Page, sceneUuid: Uuid, actorUuid: Uuid,
+  { disposition = 1, hidden = false }: { disposition?: number; hidden?: boolean } = {},
+): Promise<string> {
+  const id = await page.evaluate(async ({ sceneUuid, actorUuid, disposition, hidden }) => {
+    const scene = await fromUuid(sceneUuid);
+    const actor = await fromUuid(actorUuid);
+    if (!scene || !actor) return null;
+    // Laid out in a grid rather than stacked. Tokens sharing a position are indistinguishable to
+    // anything that works through the canvas - a right-click for the HUD reaches whichever happens
+    // to be on top, not the one the test meant.
+    const placed = scene.tokens.size;
+    const [token] = await scene.createEmbeddedDocuments('Token', [{
+      name: actor.name,
+      actorId: actor.id,
+      actorLink: true,
+      disposition,
+      hidden,
+      x: 100 + (placed % 4) * 200,
+      y: 100 + Math.floor(placed / 4) * 200,
+    }]);
+    return token?.id ?? null;
+  }, { sceneUuid, actorUuid, disposition, hidden });
+
+  if (!id) throw new Error(`Could not put a token for ${actorUuid} on ${sceneUuid}`);
+  return id;
+}
+
+/**
+ * Select a token on the canvas.
+ */
+export async function controlToken(page: Page, sceneUuid: Uuid, tokenId: string): Promise<void> {
+  const problem = await page.evaluate(async ({ sceneUuid, tokenId }) => {
+    const scene = await fromUuid(sceneUuid);
+    if (!scene) return `no scene at ${sceneUuid}`;
+    if (scene.id !== canvas.scene?.id) return 'that scene is not the one being viewed';
+    const token = canvas.tokens.get(tokenId);
+    if (!token) return `no token ${tokenId} on the canvas`;
+    token.control({ releaseOthers: true });
+    return null;
+  }, { sceneUuid, tokenId });
+
+  if (problem) throw new Error(`Selecting a token: ${problem}`);
+}
+
+/**
+ * An encounter on a scene, with one combatant per token, activated and started.
+ */
+export async function createCombat(
+  page: Page, sceneUuid: Uuid, tokenIds: string[], { start = true } = {},
+): Promise<Uuid> {
+  return page.evaluate(async ({ sceneUuid, tokenIds, start }) => {
+    const scene = await fromUuid(sceneUuid);
+    if (!scene) throw new Error(`No scene at ${sceneUuid}`);
+
+    const CombatClass = getDocumentClass('Combat');
+    const combat = await CombatClass.create({ scene: scene.id });
+    if (!combat) throw new Error('Combat.create returned nothing');
+    await combat.createEmbeddedDocuments('Combatant',
+      tokenIds.map((tokenId) => ({ tokenId, sceneId: scene.id })));
+
+    // The tracker renders `ui.combat.viewed`, which is the active encounter and nothing else.
+    await combat.activate?.();
+    if (start) await combat.startCombat();
+    return combat.uuid;
+  }, { sceneUuid, tokenIds, start });
+}
+
+/** Read the encounter's combatants, flattened to what a test asserts on. */
+export async function readCombatants(page: Page, combatUuid: Uuid): Promise<{
+  id: string; name: string; tokenId: string;
+  initiative: number | null; hidden: boolean; generic: boolean; defeated: boolean;
+}[]> {
+  return page.evaluate(async (combatUuid) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) throw new Error(`No combat at ${combatUuid}`);
+    return combat.combatants.map((c: any) => ({
+      id: c.id,
+      name: String(c.name ?? ''),
+      tokenId: String(c.tokenId ?? ''),
+      initiative: c.initiative ?? null,
+      // `||`, not `??`: a combatant's own flag is false rather than absent when only its token is
+      // hidden, and the tracker treats either as hidden.
+      hidden: Boolean(c.hidden || c.token?.hidden),
+      // A slot with nobody behind it: `addExtraSlot` makes these to hold a side's place
+      // (combat-ffg.js:33), and they are combatants like any other apart from the flag.
+      generic: Boolean(c.getFlag?.('starwarsffg', 'fake')),
+      defeated: Boolean(c.isDefeated),
+    }));
+  }, combatUuid);
+}
+
+/**
+ * Toggle a token in or out of the active encounter from its own HUD.
+ */
+export async function toggleTokenCombat(page: Page, sceneUuid: Uuid, tokenId: string): Promise<void> {
+  const target = await page.evaluate(async ({ sceneUuid, tokenId }) => {
+    const scene = await fromUuid(sceneUuid);
+    if (scene?.id !== canvas.scene?.id) return { problem: 'that scene is not the one being viewed' };
+    const token = canvas.tokens.get(tokenId);
+    if (!token) return { problem: `no token ${tokenId} on the canvas` };
+
+    // Select it the way a user would before reaching for the HUD.
+    token.control({ releaseOthers: true });
+
+    // Where the token sits on screen: its centre is in world coordinates, which the stage
+    // transform turns into canvas ones, and the canvas element places on the page.
+    const centre = canvas.stage.toGlobal({ x: token.center.x, y: token.center.y });
+    const canvasRect = canvas.app.view.getBoundingClientRect();
+    return { x: canvasRect.left + centre.x, y: canvasRect.top + centre.y };
+  }, { sceneUuid, tokenId });
+
+  if ('problem' in target) throw new Error(`Toggling token ${tokenId}: ${target.problem}`);
+
+  // Right-click opens the token's HUD; nothing else does.
+  await page.mouse.click(target.x, target.y, { button: 'right' });
+
+  // `toggleCombat` in v13, `combat` before it - both accepted rather than pinning to a version.
+  const control = page.locator(
+    '#token-hud [data-action="toggleCombat"], #token-hud [data-action="combat"], #token-hud .control-icon.combat',
+  );
+  await control.click();
+
+  // Toggling out deletes a Combatant, which the system's hook cancels and re-does in the
+  // background, so the roster is still settling when the click returns. See `removeCombatant`.
+  await page.evaluate(async (timeout) => {
+    const deadline = Date.now() + timeout;
+    let previous = -1;
+    for (;;) {
+      const size = game.combat?.combatants.size ?? -1;
+      if (size === previous || Date.now() > deadline) return;
+      previous = size;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }, 10_000);
+}
+
+/** Put another token into an encounter already under way. Returns the combatant's id. */
+export async function addCombatant(page: Page, combatUuid: Uuid, tokenId: string): Promise<string> {
+  const id = await page.evaluate(async ({ combatUuid, tokenId }) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) throw new Error(`No combat at ${combatUuid}`);
+    const [combatant] = await combat.createEmbeddedDocuments('Combatant',
+      [{ tokenId, sceneId: combat.scene?.id }]);
+    return combatant?.id ?? null;
+  }, { combatUuid, tokenId });
+
+  if (!id) throw new Error(`Could not add token ${tokenId} to ${combatUuid}`);
+  return id;
+}
+
+/**
+ * Take a combatant out of an encounter.
+ */
+export async function removeCombatant(
+  page: Page, combatUuid: Uuid, combatantId: string,
+  { settle = true, timeout = 10_000 }: { settle?: boolean; timeout?: number } = {},
+): Promise<void> {
+  const problem = await page.evaluate(async ({ combatUuid, combatantId, settle, timeout }) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) return `No combat at ${combatUuid}`;
+    const combatant = combat.combatants.get(combatantId);
+    if (!combatant) return `no combatant ${combatantId} in this encounter`;
+
+    /*
+     * Awaiting the delete proves nothing. The system's `preDeleteCombatant` hook returns false,
+     * which cancels this delete, and then does the removal itself - unclaiming, deleting for real,
+     * and adding the replacement slot - in a promise nobody holds (combat-ffg.js:1413). So the
+     * call returns with the roster untouched and the work still to come.
+     *
+     * What is waited for instead is the roster settling: the combatant gone, and then the size
+     * holding still across two looks, since the replacement slot arrives a moment after.
+     */
+    await combatant.delete();
+    // `removeCombatantAction: prompt` stops to ask before touching anything, so there is nothing
+    // to settle until the question is answered.
+    if (!settle) return null;
+
+    const deadline = Date.now() + timeout;
+    let previous = -1;
+    for (;;) {
+      const gone = !combat.combatants.get(combatantId);
+      const size = combat.combatants.size;
+      if (gone && size === previous) return null;
+      if (Date.now() > deadline) {
+        return gone
+          ? 'the roster never stopped changing after the removal'
+          : 'the combatant was still in the encounter';
+      }
+      previous = gone ? size : -1;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }, { combatUuid, combatantId, settle, timeout });
+
+  if (problem) throw new Error(`Removing combatant ${combatantId}: ${problem}`);
+}
+
+/**
+ * Wait for an encounter's roster to stop changing.
+ */
+export async function settleRoster(page: Page, combatUuid: Uuid, timeout = 10_000): Promise<void> {
+  await page.evaluate(async ({ combatUuid, timeout }) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) throw new Error(`No combat at ${combatUuid}`);
+    const deadline = Date.now() + timeout;
+    let previous = -1;
+    for (;;) {
+      const size = combat.combatants.size;
+      if (size === previous || Date.now() > deadline) return;
+      previous = size;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+  }, { combatUuid, timeout });
+}
+
+/**
+ * The slots in the order the encounter runs them, as slot ids.
+ */
+export async function readTurnOrder(page: Page, combatUuid: Uuid): Promise<string[]> {
+  return page.evaluate(async (combatUuid) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) throw new Error(`No combat at ${combatUuid}`);
+    return combat.turns.map((turn: any) => turn.id);
+  }, combatUuid);
+}
+
+/**
+ * Which tokens are showing a turn marker.
+ */
+export async function readTurnMarkers(page: Page): Promise<string[]> {
+  return page.evaluate(() =>
+    canvas.tokens.placeables
+      .filter((token: any) => Boolean(token.turnMarker))
+      .map((token: any) => token.id));
+}
+
+/**
+ * The flavour line of the most recent chat message.
+ */
+export async function readLastChatFlavor(page: Page): Promise<string> {
+  return page.evaluate(() => {
+    const message = game.messages.contents.at(-1);
+    return String(message?.flavor ?? '');
+  });
+}
+
+/** Whether an encounter is still there. Ending one deletes it. */
+export async function combatExists(page: Page, combatUuid: Uuid): Promise<boolean> {
+  return page.evaluate(
+    async (uuid) => Boolean(await fromUuid(uuid).catch(() => null)), combatUuid);
+}
+
+/**
+ * Answer a yes/no confirmation, whichever generation of dialog raised it.
+ */
+export async function confirmDialog(page: Page, timeout = 5000): Promise<boolean> {
+  const button = page.locator(
+    'dialog button[data-action="yes"], .dialog button[data-button="yes"], dialog button.yes',
+  ).first();
+
+  try {
+    await button.waitFor({ state: 'visible', timeout });
+  } catch {
+    return false;
+  }
+  await button.click();
+  return true;
+}
+
+/** The slot whose turn it is, as a slot id, or null before the encounter has one. */
+export async function readCurrentSlot(page: Page, combatUuid: Uuid): Promise<string | null> {
+  return page.evaluate(async (combatUuid) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) throw new Error(`No combat at ${combatUuid}`);
+    return combat.turns[combat.turn]?.id ?? null;
+  }, combatUuid);
+}
+
+/**
+ * Make a given slot the current one, by its position in the turn order.
+ */
+export async function setTurn(page: Page, combatUuid: Uuid, index: number): Promise<void> {
+  const problem = await page.evaluate(async ({ combatUuid, index }) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) return `No combat at ${combatUuid}`;
+    if (index >= combat.turns.length) {
+      return `there is no turn ${index}; the encounter has ${combat.turns.length}`;
+    }
+    await combat.update({ turn: index });
+    return null;
+  }, { combatUuid, index });
+
+  if (problem) throw new Error(`Setting the turn: ${problem}`);
+}
+
+/** Mark a combatant defeated, as the tracker's skull does. */
+export async function setDefeated(
+  page: Page, combatUuid: Uuid, combatantId: string, defeated = true,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ combatUuid, combatantId, defeated }) => {
+    const combat = await fromUuid(combatUuid);
+    const combatant = combat?.combatants.get(combatantId);
+    if (!combatant) return `no combatant ${combatantId} in this encounter`;
+    await combatant.update({ defeated });
+    return null;
+  }, { combatUuid, combatantId, defeated });
+
+  if (problem) throw new Error(`Marking ${combatantId} defeated: ${problem}`);
+}
+
+/** Make an encounter the active one, which is the one the tracker draws. */
+export async function activateCombat(page: Page, combatUuid: Uuid): Promise<void> {
+  const problem = await page.evaluate(async (combatUuid) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) return `No combat at ${combatUuid}`;
+    await combat.activate();
+    return null;
+  }, combatUuid);
+
+  if (problem) throw new Error(`Activating ${combatUuid}: ${problem}`);
+}
+
+/** Advance the encounter to the next round, and hand back the round it reached. */
+export async function nextRound(page: Page, combatUuid: Uuid): Promise<number> {
+  return page.evaluate(async (combatUuid) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) throw new Error(`No combat at ${combatUuid}`);
+    await combat.nextRound();
+    return combat.round;
+  }, combatUuid);
+}
+
+/**
+ * Who has claimed what for a round, as `{ [slotId]: combatantId }`.
+ */
+export async function readSlotClaims(
+  page: Page, combatUuid: Uuid, round?: number,
+): Promise<Record<string, string>> {
+  return page.evaluate(async ({ combatUuid, round }) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) throw new Error(`No combat at ${combatUuid}`);
+    const claims = combat.getFlag('starwarsffg', 'combatClaims') ?? {};
+    return claims[round ?? combat.round] ?? {};
+  }, { combatUuid, round });
+}
+
+/**
+ * Give up a claimed slot, as the tracker's "Un-claim Initiative Slot" entry does.
+ */
+export async function unclaimSlot(page: Page, combatUuid: Uuid, slotId: string): Promise<void> {
+  const problem = await page.evaluate(async ({ combatUuid, slotId }) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) return `No combat at ${combatUuid}`;
+    if (typeof combat.unclaimSlot !== 'function') return 'this combat has no slots to un-claim';
+    await combat.unclaimSlot(combat.round, slotId);
+    return null;
+  }, { combatUuid, slotId });
+
+  if (problem) throw new Error(`Un-claiming slot ${slotId}: ${problem}`);
+}
+
+/**
+ * Render the combat tracker.
+ */
+export async function openCombatTracker(page: Page, timeout = 10_000): Promise<void> {
+  const problem = await page.evaluate(async (timeout) => {
+    const sidebar = (ui as any).sidebar;
+
+    // Rendering the tracker is not the same as showing it: it is a sidebar tab, and until the
+    // sidebar is expanded and switched to it nothing of it is in the DOM to assert on.
+    sidebar?.expand?.();
+    if (typeof sidebar?.changeTab === 'function') sidebar.changeTab('combat', 'primary');
+    else if (typeof sidebar?.activateTab === 'function') sidebar.activateTab('combat');
+
+    await ui.combat.render(true);
+
+    const deadline = Date.now() + timeout;
+    while (Date.now() < deadline) {
+      if (document.querySelector('#combat-tracker')) return null;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return `the tracker never reached the sidebar (tab is "${sidebar?.tabGroups?.primary ?? 'unknown'}")`;
+  }, timeout);
+
+  if (problem) throw new Error(`Opening the combat tracker: ${problem}`);
+}
+
+/**
+ * Roll initiative and answer the dialog it raises.
+ */
+export async function rollInitiative(
+  page: Page, combatUuid: Uuid,
+  { skill = 'Vigilance', ids, npcOnly = false }:
+    { skill?: string; ids?: string[]; npcOnly?: boolean } = {},
+): Promise<{ offered: string[]; checked: string | null }> {
+  /*
+   * The pool dialog belongs to CombatFFG, which the system only registers while `useGenericSlots`
+   * is set (swffg-main.js:346). With the setting off, Foundry's own `rollInitiative` runs instead:
+   * it rolls a formula and raises nothing, so there is no dialog to answer and no pools to report.
+   */
+  const usesSlots = await page.evaluate(
+    () => Boolean(game.settings.get('starwarsffg', 'useGenericSlots')));
+
+  if (!usesSlots) {
+    const problem = await page.evaluate(async ({ combatUuid, ids, npcOnly }) => {
+      const combat = await fromUuid(combatUuid);
+      if (!combat) return `No combat at ${combatUuid}`;
+      try {
+        await (npcOnly
+          ? combat.rollNPC()
+          : combat.rollInitiative(ids ?? combat.combatants.map((c: any) => c.id)));
+      } catch (err: any) {
+        return err?.message ?? String(err);
+      }
+      return null;
+    }, { combatUuid, ids, npcOnly });
+
+    if (problem) {
+      throw new Error(
+        `Rolling initiative on ${combatUuid}: ${problem}\n` +
+        "useGenericSlots is off, so Foundry's own roll ran rather than the system's. If the test " +
+        'did not ask for that, an earlier run left the setting behind.',
+      );
+    }
+    return { offered: [], checked: null };
+  }
+
+  const started = await page.evaluate(async ({ combatUuid, ids, npcOnly }) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) return `No combat at ${combatUuid}`;
+
+    const w = window as any;
+
+    /*
+     * `rollInitiative` is a `new Promise(async (resolve, reject) => ...)`, so anything thrown
+     * inside the executor rejects a promise nobody is holding: the outer promise never settles,
+     * no dialog opens, and the only symptom is a wait that expires. The errors are collected here
+     * so the failure can name what actually went wrong.
+     */
+    w.__qaRollErrors = [];
+    w.__qaRollErrorSink = (event: any) =>
+      w.__qaRollErrors.push(String(event?.reason?.message ?? event?.message ?? event?.reason ?? event));
+    window.addEventListener('unhandledrejection', w.__qaRollErrorSink);
+    window.addEventListener('error', w.__qaRollErrorSink);
+
+    // `rollNPC` picks the unrolled combatants nobody plays and hands them to the same roll, so it
+    // raises the same dialog and is answered the same way.
+    w.__qaInitiative = Promise.resolve(npcOnly
+      ? combat.rollNPC()
+      : combat.rollInitiative(ids ?? combat.combatants.map((c: any) => c.id)))
+      .catch((err: any) => { w.__qaInitiativeError = err?.message ?? String(err); });
+    return null;
+  }, { combatUuid, ids, npcOnly });
+
+  if (started) throw new Error(`Rolling initiative on ${combatUuid}: ${started}`);
+
+  try {
+    await waitForDialog(page);
+  } catch (err) {
+    const swallowed = await collectRollErrors(page);
+    throw new Error(
+      `Rolling initiative on ${combatUuid}: the pool dialog never opened. ${String(err)}` +
+      (swallowed.length ? `\nErrors raised while rolling: ${swallowed.join('; ')}` : ''),
+    );
+  }
+
+  // The pools on offer are worth having back: which ones the dialog built is the only visible
+  // result of an actor's `useForInitiative` flags.
+  const { offered, checked, problem } = await page.evaluate((skill) => {
+    const radios = [...document.querySelectorAll('input[name="skill"]')] as HTMLInputElement[];
+    const offered = radios.map((radio) => radio.value);
+    // Read before anything is selected: which pool the dialog starts on is what `initiativeRule`
+    // decides, and choosing one here would overwrite the answer.
+    const checked = radios.find((radio) => radio.checked)?.value ?? null;
+
+    const wanted = radios.find((radio) => radio.value === skill);
+    if (!wanted) {
+      return { offered, checked, problem: `no "${skill}" pool. It offers: ${offered.join(', ') || 'none'}` };
+    }
+    wanted.checked = true;
+    return { offered, checked, problem: null };
+  }, skill);
+
+  if (problem) {
+    await closeDialogs(page);
+    throw new Error(`Rolling initiative on ${combatUuid}: the dialog has ${problem}`);
+  }
+
+  await answerDialog(page, 'one');
+
+  const failure = await page.evaluate(async () => {
+    const w = window as any;
+    await w.__qaInitiative;
+    const error = w.__qaInitiativeError ?? null;
+    delete w.__qaInitiative;
+    delete w.__qaInitiativeError;
+    return error;
+  });
+
+  const swallowed = await collectRollErrors(page);
+  if (failure || swallowed.length) {
+    throw new Error(
+      `Rolling initiative on ${combatUuid}: ${failure ?? 'the roll reported no error'}` +
+      (swallowed.length ? `\nErrors raised while rolling: ${swallowed.join('; ')}` : ''),
+    );
+  }
+
+  return { offered, checked };
+}
+
+/** Take back whatever the roll threw where nothing was listening, and stop listening. */
+async function collectRollErrors(page: Page): Promise<string[]> {
+  return page.evaluate(() => {
+    const w = window as any;
+    const errors: string[] = w.__qaRollErrors ?? [];
+    if (w.__qaRollErrorSink) {
+      window.removeEventListener('unhandledrejection', w.__qaRollErrorSink);
+      window.removeEventListener('error', w.__qaRollErrorSink);
+    }
+    delete w.__qaRollErrors;
+    delete w.__qaRollErrorSink;
+    return errors;
+  }).catch(() => []);
 }
 
 /** Delete a document. Ignores one that's already gone. */

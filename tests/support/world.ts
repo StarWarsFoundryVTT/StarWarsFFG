@@ -65,6 +65,46 @@ export interface AttachmentSpec {
   modifications?: ModificationSpec[];
 }
 
+/**
+ * An encounter to build: a scene, a token per combatant, and a combat holding them.
+ */
+/** One side of the table: an actor fixture, and how its token sits on the scene. */
+export interface CombatantSpec {
+  /** Fixture key from ACTORS. */
+  actor: string;
+  disposition?: number;
+  hidden?: boolean;
+  label?: string;
+  /** Per-test tweaks merged over the actor fixture's system data. */
+  actorOverrides?: Record<string, unknown>;
+  /** Flags the actor is created with, for state the system keeps outside `system`. */
+  flags?: Record<string, unknown>;
+}
+
+export interface EncounterSpec {
+  combatants: CombatantSpec[];
+  /** Defaults to true. An unstarted encounter is round 0, where slots are not yet replaced. */
+  start?: boolean;
+  /**
+   * Roll initiative as part of building the encounter; a string names the skill to roll from.
+   *
+   * Off by default, because an encounter that has not rolled is a state worth testing rather than
+   * a half-built one: slots carry no values, nothing can be claimed, and the tracker still has to
+   * render. A test that wants dice asks for them.
+   */
+  roll?: boolean | string;
+}
+
+export interface Encounter {
+  scene: Uuid;
+  combat: Uuid;
+  /** Actor, token and combatant ids all run in the order the spec listed its combatants. */
+  actors: Uuid[];
+  tokens: string[];
+  /** Combatant ids, which is what `rollInitiative` and the claim flags are keyed by. */
+  combatants: string[];
+}
+
 export interface Ctx {
   actor: Uuid;
   item?: Uuid;
@@ -132,6 +172,8 @@ export class World {
   /** Documents to remove after the test, newest first. */
   private readonly created: Uuid[] = [];
   private readonly packs: string[] = [];
+  /** Settings changed by the test, with what they were, so teardown can put them back. */
+  private readonly settings: [string, unknown, string][] = [];
   /** Kept so `applyAgain()` can repeat what `build()` did. */
   private last?: Ctx;
 
@@ -293,6 +335,22 @@ export class World {
     return api.embedItem(this.page, actor, source);
   }
 
+
+  /**
+   * A fixture actor on its own, for what a test needs beside an encounter rather than in it.
+   */
+  async actor(spec: CombatantSpec): Promise<Uuid> {
+    const fixture = ACTORS[spec.actor];
+    if (!fixture) {
+      throw new Error(`No actor fixture "${spec.actor}". Known: ${Object.keys(ACTORS).join(', ')}.`);
+    }
+    return this.track(await api.createActor(this.page, {
+      type: fixture.type,
+      name: unique(`${spec.label ?? 'qa'}-actor`),
+      system: deepMerge(fixture.system, spec.actorOverrides ?? {}),
+      flags: spec.flags,
+    }));
+  }
 
   /**
    * The item half of a build: create it, nest anything into it, put it on the actor
@@ -666,9 +724,118 @@ export class World {
   }
 
   /** Reload the page and wait for the system to come back. */
+  /**
+   * Change a system setting for the length of the test. Teardown puts it back.
+   */
+  async setSetting(key: string, value: unknown, namespace = 'starwarsffg'): Promise<void> {
+    const before = await this.applySetting(key, value, namespace);
+    this.settings.push([key, before, namespace]);
+  }
+
+  /**
+   * Write a setting and wait out the page reload if it causes one.
+   */
+  private async applySetting(
+    key: string, value: unknown, namespace = 'starwarsffg', grace = 2000,
+  ): Promise<unknown> {
+    await this.page.evaluate(() => { (window as any).__qaSettingMark = true; });
+    const before = await api.setSetting(this.page, key, value, namespace);
+
+    const deadline = Date.now() + grace;
+    while (Date.now() < deadline) {
+      const intact = await this.page
+        .evaluate(() => (window as any).__qaSettingMark === true)
+        .catch(() => false);
+      if (!intact) {
+        await this.page.waitForFunction(
+      () => (globalThis as any).game?.ready === true, undefined, { timeout: 60_000 });
+        await this.assertReady();
+        return before;
+      }
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    }
+
+    await this.page.evaluate(() => { delete (window as any).__qaSettingMark; });
+    return before;
+  }
+
+  /**
+   * Build an encounter: a scene, an actor and token per combatant, and the combat holding them.
+   */
+  async encounter(spec: EncounterSpec): Promise<Encounter> {
+    const scene = this.track(await api.createScene(this.page, unique('qa-scene')));
+    const actors: Uuid[] = [];
+    const tokens: string[] = [];
+
+    for (const combatant of spec.combatants) {
+      const { actor, token } = await this.spawn(scene, combatant);
+      actors.push(actor);
+      tokens.push(token);
+    }
+
+    const combat = this.track(
+      await api.createCombat(this.page, scene, tokens, { start: spec.start ?? true }));
+
+    // Keyed back to the spec's order: a combatant's id is neither its actor's nor its token's, and
+    // it is what rolling and claiming both address.
+    const rows = await api.readCombatants(this.page, combat);
+    const combatants = tokens.map((tokenId) => rows.find((row) => row.tokenId === tokenId)!.id);
+
+    if (spec.roll) {
+      await api.rollInitiative(this.page, combat,
+        typeof spec.roll === 'string' ? { skill: spec.roll } : {});
+    }
+
+    return { scene, combat, actors, tokens, combatants };
+  }
+
+  /**
+   * Add a combatant to an encounter already under way, and fold it into the encounter's lists.
+   */
+  async addCombatant(encounter: Encounter, spec: CombatantSpec): Promise<string> {
+    const { actor, token } = await this.spawn(encounter.scene, spec);
+    const combatant = await api.addCombatant(this.page, encounter.combat, token);
+    encounter.actors.push(actor);
+    encounter.tokens.push(token);
+    encounter.combatants.push(combatant);
+    return combatant;
+  }
+
+  /**
+   * Put an actor's token on the encounter's scene without entering it into the combat.
+   *
+   * For the ways into an encounter that start from a token rather than from the tracker.
+   */
+  async addToken(encounter: Encounter, spec: CombatantSpec): Promise<string> {
+    const { actor, token } = await this.spawn(encounter.scene, spec);
+    encounter.actors.push(actor);
+    encounter.tokens.push(token);
+    return token;
+  }
+
+  /** An actor from a fixture, with a token for it on the scene. */
+  private async spawn(scene: Uuid, spec: CombatantSpec): Promise<{ actor: Uuid; token: string }> {
+    const fixture = ACTORS[spec.actor];
+    if (!fixture) {
+      throw new Error(`No actor fixture "${spec.actor}". Known: ${Object.keys(ACTORS).join(', ')}.`);
+    }
+    const actor = this.track(await api.createActor(this.page, {
+      type: fixture.type,
+      name: unique(`${spec.label ?? 'qa'}-actor`),
+      system: deepMerge(fixture.system, spec.actorOverrides ?? {}),
+      flags: spec.flags,
+    }));
+    const token = await api.addToken(this.page, scene, actor, {
+      disposition: spec.disposition,
+      hidden: spec.hidden,
+    });
+    return { actor, token };
+  }
+
   async reload(): Promise<void> {
     await this.page.reload();
-    await this.page.waitForFunction(() => game?.ready === true, undefined, { timeout: 60_000 });
+    await this.page.waitForFunction(
+      () => (globalThis as any).game?.ready === true, undefined, { timeout: 60_000 });
     await this.assertReady();
   }
 
@@ -688,6 +855,12 @@ export class World {
     this.created.length = 0;
     for (const pack of this.packs) await api.deletePack(this.page, pack);
     this.packs.length = 0;
+    // Last, and through the same wait: restoring one of these can reload the page, and the next
+    // test would otherwise start against a world that is still coming back up.
+    for (const [key, value, namespace] of this.settings.reverse()) {
+      await this.applySetting(key, value, namespace);
+    }
+    this.settings.length = 0;
     this.last = undefined;
   }
 }
