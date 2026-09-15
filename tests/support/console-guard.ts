@@ -32,15 +32,17 @@ export interface ConsoleGuard {
 /**
  * Record what `ui.notifications` was asked to say, and who asked.
  */
-async function recordNotifications(page: Page): Promise<void> {
+export async function recordNotifications(page: Page): Promise<void> {
   await page.evaluate(() => {
     const w = window as any;
-    if (w.__qaNotifications) return;
-    w.__qaNotifications = [];
     const queue = ui?.notifications;
-    if (!queue?.notify) return;
+    // Deliberately before the array is created: an armed recorder is what the array means, and
+    // one created without a wrapper would make every later call here think it had nothing to do.
+    if (!queue?.notify || queue.notify.__qaWrapped) return;
+
+    w.__qaNotifications ??= [];
     const original = queue.notify.bind(queue);
-    queue.notify = (message: string, type: string, options: unknown) => {
+    const wrapped = (message: string, type: string, options: unknown) => {
       const caller = (new Error().stack ?? '').split('\n').slice(2, 5).join(' | ');
       w.__qaNotifications.push(`${type ?? 'info'}: ${message}  <- ${caller}`);
       try {
@@ -51,13 +53,17 @@ async function recordNotifications(page: Page): Promise<void> {
         return null;
       }
     };
+    wrapped.__qaWrapped = true;
+    queue.notify = wrapped;
   });
 }
 
-export function installConsoleGuard(page: Page, testInfo: TestInfo): ConsoleGuard {
+export async function installConsoleGuard(page: Page, testInfo: TestInfo): Promise<ConsoleGuard> {
   const errors: string[] = [];
   const allowed: (string | RegExp)[] = [];
-  void recordNotifications(page);
+  // Awaited: a test that reads notifications is asserting on what this collects, and a recorder
+  // that was still being installed reads as "nothing was posted".
+  await recordNotifications(page);
 
   const permitted = (text: string) =>
     allowed.some((p) => (typeof p === 'string' ? text.includes(p) : p.test(text)));
@@ -94,12 +100,24 @@ export function installConsoleGuard(page: Page, testInfo: TestInfo): ConsoleGuar
       page.off('pageerror', onPageError);
     },
     async notifications() {
-      return page.evaluate(() => {
+      const read = await page.evaluate(() => {
         const w = window as any;
-        const seen = w.__qaNotifications ?? [];
+        const armed = Boolean((ui?.notifications?.notify as any)?.__qaWrapped);
+        const seen = (w.__qaNotifications ?? []) as string[];
         w.__qaNotifications = [];
-        return seen as string[];
-      }).catch(() => [] as string[]);
+        return { armed, seen };
+      }).catch(() => ({ armed: true, seen: [] as string[] }));
+
+      // An empty list from a page that was not recording is not an empty list of notifications,
+      // and a test that asserts on one deserves to be told the difference.
+      if (!read.armed) {
+        throw new Error(
+          'Notifications were not being recorded on this page, so nothing was collected. The ' +
+          'page reloaded after the guard was installed - call recordNotifications(page) again ' +
+          'after a reload that the harness does not do for you.',
+        );
+      }
+      return read.seen;
     },
     assertClean(notifications: string[] = []) {
       // don't pile on a test that already failed for its own reason

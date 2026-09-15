@@ -1,6 +1,7 @@
 import type { Page } from '@playwright/test';
 import * as api from './api';
 import type { Uuid } from './api';
+import { recordNotifications } from './console-guard';
 import { ITEMS, ACTORS, attributeMap, talentMap, nodeKey,
          type ModifierSpec, type AttributeSpec, type TalentSpec,
          type ItemFixture } from '../fixtures/documents';
@@ -277,9 +278,9 @@ export class World {
 
     switch (origin) {
       case 'compendium': {
-        const pack = await api.ensurePack(this.page, 'qa-fixtures');
-        if (!this.packs.includes(pack)) this.packs.push(pack);
-        return api.createInPack(this.page, pack, spec);
+        const { pack, created } = await api.ensurePack(this.page, 'qa-fixtures');
+        if (created && !this.packs.includes(pack)) this.packs.push(pack);
+        return this.track(await api.createInPack(this.page, pack, spec));
       }
 
       case 'import': {
@@ -379,8 +380,10 @@ export class World {
       throw new Error(`No item fixture "${spec.item}". Known: ${Object.keys(ITEMS).join(', ')}.`);
     }
 
-    const pack = await api.ensurePack(this.page, packName);
-    if (!this.packs.includes(pack)) this.packs.push(pack);
+    // Only a pack this test brought into being is torn down with it. These names are the ones the
+    // creator's own settings point at, and `oggdudegear` is where the seeded dataset lives.
+    const { pack, created } = await api.ensurePack(this.page, packName);
+    if (created && !this.packs.includes(pack)) this.packs.push(pack);
 
     const system = deepMerge(fixture.system, spec.itemOverrides ?? {});
     if (spec.attributes?.length) {
@@ -394,11 +397,11 @@ export class World {
       system[field] = talentMap(spec.talents, fixture.type);
     }
 
-    return api.createInPack(this.page, pack, {
+    return this.track(await api.createInPack(this.page, pack, {
       type: fixture.type,
       name: unique(`${spec.label ?? 'qa'}-${spec.item}`),
       system,
-    });
+    }));
   }
 
   /**
@@ -902,6 +905,9 @@ export class World {
     await this.page.waitForFunction(
       () => (globalThis as any).game?.ready === true, undefined, { timeout: 60_000 });
     await this.assertReady();
+    // The new page builds its own `ui.notifications`, which the guard installed for the old one
+    // knows nothing about.
+    await recordNotifications(this.page);
   }
 
   /**

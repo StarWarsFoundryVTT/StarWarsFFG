@@ -148,19 +148,21 @@ export async function embedItem(page: Page, actorUuid: Uuid, itemUuid: Uuid): Pr
 /* -------------------------------------------- */
 
 /** Get a world compendium by name, creating it if it doesn't exist. */
-export async function ensurePack(page: Page, name: string, documentName: 'Item' | 'Actor' = 'Item'): Promise<string> {
+export async function ensurePack(
+  page: Page, name: string, documentName: 'Item' | 'Actor' = 'Item',
+): Promise<{ pack: string; created: boolean }> {
   return page.evaluate(async ({ name, documentName }) => {
     const collection = `world.${name}`;
     let pack = game.packs.get(collection);
-    if (!pack) {
-      pack = await foundry.documents.collections.CompendiumCollection.createCompendium({
-        type: documentName,
-        label: name,
-        name,
-        packageType: 'world',
-      });
-    }
-    return pack.collection;
+    if (pack) return { pack: pack.collection, created: false };
+
+    pack = await foundry.documents.collections.CompendiumCollection.createCompendium({
+      type: documentName,
+      label: name,
+      name,
+      packageType: 'world',
+    });
+    return { pack: pack.collection, created: true };
   }, { name, documentName });
 }
 

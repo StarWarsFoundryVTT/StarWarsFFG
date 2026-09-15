@@ -45,7 +45,7 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
   },
 
   consoleGuard: async ({ page }, use, testInfo) => {
-    const guard = installConsoleGuard(page, testInfo);
+    const guard = await installConsoleGuard(page, testInfo);
     await use(guard);
     const posted = await guard.notifications();
     // detach before asserting, so a failure here doesn't leave a listener on the shared page
