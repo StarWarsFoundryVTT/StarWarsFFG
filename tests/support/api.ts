@@ -2512,6 +2512,10 @@ export async function rollInitiative(
     );
   }
 
+  // Waited for rather than queried: `waitForDialog` answers as soon as the application exists,
+  // and a dialog whose pools have not been drawn yet reads exactly like one that has none.
+  await page.waitForSelector('input[name="skill"]', { timeout: 5000 }).catch(() => {});
+
   // The pools on offer are worth having back: which ones the dialog built is the only visible
   // result of an actor's `useForInitiative` flags.
   const { offered, checked, problem } = await page.evaluate((skill) => {
