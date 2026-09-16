@@ -170,9 +170,11 @@ test('choosing a species grants its talents once, not twice', async ({ world, pa
   world.track(await creator.tempActor(page));
 
   const made = world.track(await creator.finish(page));
-  const items = await api.readOwnedItems(page, made);
+  const items = await api.settledOwnedItems(page, made);
+  const carried = items.map((item) => `${item.type}:${item.name}`).join(', ') || 'nothing';
 
-  expect(items.filter((item) => item.type === 'talent'), 'one copy of it').toHaveLength(1);
+  expect(items.filter((item) => item.type === 'talent'), `one copy of it, carrying ${carried}`)
+    .toHaveLength(1);
   expect(items.filter((item) => item.type === 'species'), 'and one species').toHaveLength(1);
 
   await creator.close(page);
