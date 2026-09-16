@@ -844,6 +844,8 @@ export class World {
         await this.page.waitForFunction(
       () => (globalThis as any).game?.ready === true, undefined, { timeout: 60_000 });
         await this.assertReady();
+        // the new page has its own `ui.notifications`, which the guard knows nothing about
+        await recordNotifications(this.page);
         return before;
       }
       await new Promise((resolve) => setTimeout(resolve, 50));
