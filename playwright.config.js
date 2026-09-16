@@ -47,6 +47,7 @@ const NON_DEFAULT_SETTINGS = [
   '**/combat/initiative-rule.spec.js',
   '**/rolling/remove-setback.spec.js',
   '**/status/custom-statuses.spec.js',
+  '**/vehicles/pilot-theme.spec.js',
 ];
 
 /**

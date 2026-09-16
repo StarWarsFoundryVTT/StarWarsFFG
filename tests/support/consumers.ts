@@ -318,6 +318,94 @@ export class Consumers {
   }
 
   /**
+   * The pool a crew member rolls in one of a vehicle's roles.
+   */
+  async crewPool(vehicleUuid: api.Uuid, crewUuid: api.Uuid, role: string): Promise<PoolSummary> {
+    const result = await this.page.evaluate(async ({ vehicleUuid, crewUuid, role }) => {
+      const vehicle = await fromUuid(vehicleUuid);
+      const crew = await fromUuid(crewUuid);
+      if (!vehicle || !crew) return { error: 'the vehicle or the crew member is gone' };
+
+      const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+      const { build_crew_roll } = await load('helpers/crew.js');
+
+      const original = window.DicePoolFFG.prototype.renderPreview;
+      let caught: any = null;
+      window.DicePoolFFG.prototype.renderPreview = function (...args: any[]) {
+        caught = this;
+        return original.apply(this, args);
+      };
+
+      let drawn;
+      try {
+        drawn = build_crew_roll(vehicle.id, crew.id, role);
+      } finally {
+        window.DicePoolFFG.prototype.renderPreview = original;
+      }
+
+      if (drawn === false) return { error: `the system refused to build a roll for the ${role}` };
+      if (!caught) return { error: 'the roll was built but never drawn, so there is nothing to read' };
+
+      return {
+        pool: {
+          ability: Number(caught.ability) || 0,
+          proficiency: Number(caught.proficiency) || 0,
+          boost: Number(caught.boost) || 0,
+          setback: Number(caught.setback) || 0,
+          remsetback: Number(caught.remsetback) || 0,
+          difficulty: Number(caught.difficulty) || 0,
+          challenge: Number(caught.challenge) || 0,
+          force: Number(caught.force) || 0,
+        },
+      };
+    }, { vehicleUuid, crewUuid, role });
+
+    if ('error' in result) throw new Error(`Building a ${role} roll: ${result.error}`);
+    return result.pool as PoolSummary;
+  }
+
+  /**
+   * The pool for the built-in piloting check, which picks its own skill.
+   */
+  async pilotPool(vehicleUuid: api.Uuid, pilotUuid: api.Uuid): Promise<PoolSummary> {
+    const result = await this.page.evaluate(async ({ vehicleUuid, pilotUuid }) => {
+      const vehicle = await fromUuid(vehicleUuid);
+      const pilot = await fromUuid(pilotUuid);
+      if (!vehicle || !pilot) return { error: 'the vehicle or the pilot is gone' };
+
+      const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+      const { buildPilotRoll } = await load('helpers/crew.js');
+
+      let pool;
+      try {
+        pool = await buildPilotRoll(vehicle.id, pilot.id);
+      } catch (err: any) {
+        const theme = game.settings.get('starwarsffg', 'skilltheme');
+        return {
+          error: `${err?.message ?? err} (the skill theme is "${theme}", and the pilot has: `
+            + `${Object.keys(pilot.system?.skills ?? {}).filter((s) => s.startsWith('Piloting')).join(', ')})`,
+        };
+      }
+
+      return {
+        pool: {
+          ability: Number(pool.ability) || 0,
+          proficiency: Number(pool.proficiency) || 0,
+          boost: Number(pool.boost) || 0,
+          setback: Number(pool.setback) || 0,
+          remsetback: Number(pool.remsetback) || 0,
+          difficulty: Number(pool.difficulty) || 0,
+          challenge: Number(pool.challenge) || 0,
+          force: Number(pool.force) || 0,
+        },
+      };
+    }, { vehicleUuid, pilotUuid });
+
+    if ('error' in result) throw new Error(`Building a pilot roll: ${result.error}`);
+    return result.pool as PoolSummary;
+  }
+
+  /**
    * The pool for rolling the built weapon: the actor's dice for its skill, with the weapon's own
    * modifiers applied on top.
    */

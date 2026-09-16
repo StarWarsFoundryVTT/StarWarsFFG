@@ -2466,6 +2466,171 @@ async function collectRollErrors(page: Page): Promise<string[]> {
 }
 
 /**
+ * The world's skill themes with one of them copied under a new id.
+ *
+ * Handed back rather than written, so the test can put it in place through `world.setSetting` and
+ * have it restored afterwards. Copying the standard list is what a GM does when they want to
+ * rename a skill or two, and it is the shape #2282 is about.
+ */
+export async function skillThemeCopy(page: Page, from: string, id: string): Promise<unknown[]> {
+  const result = await page.evaluate(({ from, id }) => {
+    const themes = game.settings.get('starwarsffg', 'arraySkillList') ?? [];
+    const original = themes.find((theme: any) => theme.id === from);
+    if (!original) {
+      return { error: `no skill theme "${from}". The world has: ${themes.map((t: any) => t.id).join(', ')}` };
+    }
+    return { themes: [...themes, { ...foundry.utils.deepClone(original), id }] };
+  }, { from, id });
+
+  if ('error' in result) throw new Error(`Copying the skill theme: ${result.error}`);
+  return result.themes as unknown[];
+}
+
+/**
+ * Ask the system to build a crew roll, and say whether it would.
+ */
+export async function buildCrewRoll(
+  page: Page, vehicleUuid: Uuid, crewUuid: Uuid, role: string,
+): Promise<boolean> {
+  const result = await page.evaluate(async ({ vehicleUuid, crewId, role }) => {
+    const vehicle = await fromUuid(vehicleUuid);
+    if (!vehicle) return { error: `No vehicle at ${vehicleUuid}` };
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const { build_crew_roll } = await load('helpers/crew.js');
+
+    try {
+      return { drawn: build_crew_roll(vehicle.id, crewId, role) !== false };
+    } catch (err: any) {
+      return { error: `it threw rather than declining: ${err?.message ?? err}` };
+    }
+  }, { vehicleUuid, crewId: String(crewUuid).split('.').pop(), role });
+
+  if ('error' in result) throw new Error(`Building a ${role} roll on ${vehicleUuid}: ${result.error}`);
+  return result.drawn as boolean;
+}
+
+/** The crew roles the world offers, as the settings list them. */
+export async function readCrewRoles(page: Page): Promise<{
+  name: string; skill: string; weapons: boolean; handling: boolean;
+}[]> {
+  return page.evaluate(() =>
+    (game.settings.get('starwarsffg', 'arrayCrewRoles') ?? []).map((role: any) => ({
+      name: String(role.role_name ?? ''),
+      skill: String(role.role_skill ?? ''),
+      weapons: Boolean(role.use_weapons),
+      handling: Boolean(role.use_handling),
+    })));
+}
+
+/** Who is aboard a vehicle, and in which role. */
+export async function readCrew(page: Page, vehicleUuid: Uuid): Promise<{
+  actorId: string; actorName: string; role: string;
+}[]> {
+  return page.evaluate(async (vehicleUuid) => {
+    const vehicle = await fromUuid(vehicleUuid);
+    if (!vehicle) throw new Error(`No vehicle at ${vehicleUuid}`);
+    return (vehicle.getFlag('starwarsffg', 'crew') ?? []).map((member: any) => ({
+      actorId: String(member.actor_id ?? ''),
+      actorName: String(member.actor_name ?? ''),
+      role: String(member.role ?? ''),
+    }));
+  }, vehicleUuid);
+}
+
+/**
+ * Put an actor aboard a vehicle in the given roles, replacing whatever roles it held before.
+ */
+export async function setCrewRoles(
+  page: Page, vehicleUuid: Uuid, crewUuid: Uuid, roles: string[],
+): Promise<void> {
+  const problem = await page.evaluate(async ({ vehicleUuid, crewUuid, roles }) => {
+    const vehicle = await fromUuid(vehicleUuid);
+    const crew = await fromUuid(crewUuid);
+    if (!vehicle || !crew) return 'the vehicle or the crew member is gone';
+    if (vehicle.type !== 'vehicle') return `${vehicle.name} is a ${vehicle.type}, not a vehicle`;
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const { updateRoles } = await load('helpers/crew.js');
+
+    await updateRoles(vehicle, crew.id, [...roles]);
+
+    for (let i = 0; i < 200; i++) {
+      const aboard = (vehicle.getFlag('starwarsffg', 'crew') ?? [])
+        .filter((member: any) => member.actor_id === crew.id)
+        .map((member: any) => member.role);
+      if (roles.every((role) => aboard.includes(role)) && aboard.length === roles.length) return null;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return `the roles were set but never reached the vehicle`;
+  }, { vehicleUuid, crewUuid, roles });
+
+  if (problem) throw new Error(`Crewing ${vehicleUuid}: ${problem}`);
+}
+
+/**
+ * Take one role off a crew member, leaving any others they hold.
+ */
+export async function removeCrewRole(
+  page: Page, vehicleUuid: Uuid, crewUuid: Uuid, role: string,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ vehicleUuid, crewUuid, role }) => {
+    const vehicle = await fromUuid(vehicleUuid);
+    const crew = await fromUuid(crewUuid);
+    if (!vehicle || !crew) return 'the vehicle or the crew member is gone';
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const { deregister_crew } = await load('helpers/crew.js');
+
+    const held = (vehicle.getFlag('starwarsffg', 'crew') ?? [])
+      .filter((member: any) => member.actor_id === crew.id).map((member: any) => member.role);
+    if (!held.includes(role)) {
+      return `${crew.name} is not the ${role}. They are: ${held.join(', ') || 'not aboard at all'}`;
+    }
+
+    deregister_crew(vehicle, crew.id, role);
+
+    for (let i = 0; i < 200; i++) {
+      const aboard = (vehicle.getFlag('starwarsffg', 'crew') ?? [])
+        .filter((member: any) => member.actor_id === crew.id).map((member: any) => member.role);
+      if (!aboard.includes(role)) return null;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return 'the role was removed but the vehicle still lists it';
+  }, { vehicleUuid, crewUuid, role });
+
+  if (problem) throw new Error(`Standing down the ${role} of ${vehicleUuid}: ${problem}`);
+}
+
+/**
+ * Move a crew member from one role to another.
+ */
+export async function changeCrewRole(
+  page: Page, vehicleUuid: Uuid, crewUuid: Uuid, from: string, to: string,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ vehicleUuid, crewUuid, from, to }) => {
+    const vehicle = await fromUuid(vehicleUuid);
+    const crew = await fromUuid(crewUuid);
+    if (!vehicle || !crew) return 'the vehicle or the crew member is gone';
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const { change_role } = await load('helpers/crew.js');
+
+    await change_role(vehicle, crew.id, from, to);
+
+    for (let i = 0; i < 200; i++) {
+      const aboard = (vehicle.getFlag('starwarsffg', 'crew') ?? [])
+        .filter((member: any) => member.actor_id === crew.id).map((member: any) => member.role);
+      if (aboard.includes(to) && !aboard.includes(from)) return null;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return `the change was made but the vehicle still reads ${from}`;
+  }, { vehicleUuid, crewUuid, from, to });
+
+  if (problem) throw new Error(`Reassigning the crew of ${vehicleUuid}: ${problem}`);
+}
+
+/**
  * Mark or unmark an actor with one of the configured statuses.
  *
  * `toggleStatusEffect` is what the token HUD calls when a GM clicks one of the little icons, so
