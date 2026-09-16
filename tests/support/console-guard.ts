@@ -14,6 +14,10 @@ const IGNORED = [
   /favicon\.ico/i,
   /createScrollingText/,
   /pixi\.min\.js/,
+  /*
+   * Audio in a headless browser.
+   */
+  /Failed to load audio buffer/,
 ];
 
 const ignored = (text: string) => IGNORED.some((re) => re.test(text));

@@ -467,7 +467,7 @@ export async function removeEmbedded(
     sheet._tabs?.[0]?.activate?.('attributes');
 
     const root = sheet.element?.[0] ?? sheet.element;
-    const row = root?.querySelector(
+    const row = root?.querySelector?.(
       `li[data-item-type="${kind}"][data-item-index="${index}"]`);
     if (!row) return `the sheet rendered no ${kind} row at index ${index}`;
     const control = row.querySelector('.item-delete');
@@ -614,7 +614,7 @@ export async function dropTalentOntoSpecialization(
     if (!spec) return `No item at ${specUuid}`;
     const sheet = spec.sheet;
     const root = sheet.element?.[0] ?? sheet.element;
-    const node = root?.querySelector(`.specialization-talent[id="${nodeKey}"]`);
+    const node = root?.querySelector?.(`.specialization-talent[id="${nodeKey}"]`);
     if (!node) return `the sheet rendered no talent node "${nodeKey}"`;
 
     await sheet._onDropTalentToSpecialization({
@@ -833,9 +833,18 @@ export async function answerDialog(
       }
     };
 
-    const root = dialog.element?.[0] ?? dialog.element;
-    const control = root?.querySelector(`button[data-button="${button}"]`);
-    if (!control) return `the dialog rendered no "${button}" button`;
+    let control: HTMLElement | null = null;
+    while (!control) {
+      const root = dialog.element?.[0] ?? dialog.element;
+      control = root?.querySelector?.(`button[data-button="${button}"]`) ?? null;
+      if (control) break;
+      if (Date.now() > deadline) {
+        const offered = [...(root?.querySelectorAll?.('button[data-button]') ?? [])]
+          .map((el: any) => el.dataset.button).join(', ') || 'none';
+        return `the dialog rendered no "${button}" button. It offers: ${offered}`;
+      }
+      await new Promise((r) => setTimeout(r, 25));
+    }
     control.click();
 
     while (!state.settled) {
@@ -894,9 +903,9 @@ export async function buyProgressionNode(
       return `${item.name} is not on an actor, so the purchase control is not rendered`;
     }
     const root = item.sheet.element?.[0] ?? item.sheet.element;
-    const control = root?.querySelector(`.ffg-purchase[data-upgrade-id="${nodeKey}"]`);
+    const control = root?.querySelector?.(`.ffg-purchase[data-upgrade-id="${nodeKey}"]`);
     if (!control) {
-      const offered = [...(root?.querySelectorAll('.ffg-purchase[data-upgrade-id]') ?? [])]
+      const offered = [...(root?.querySelectorAll?.('.ffg-purchase[data-upgrade-id]') ?? [])]
         .map((el: any) => el.dataset.upgradeId).join(', ') || 'none';
       return `the sheet rendered no purchase control for node "${nodeKey}". It offers: ${offered}`;
     }
@@ -969,7 +978,7 @@ async function clickActorPurchase(
       return 'the actor is in edit mode, which refuses every purchase';
     }
     const root = actor.sheet.element?.[0] ?? actor.sheet.element;
-    const control = root?.querySelector(selector);
+    const control = root?.querySelector?.(selector);
     if (!control) return missing;
     // Deliberately not scrolled into view or checked for visibility: these controls live on tabs
     // that may not be showing, and the handlers do not care which tab is open.
@@ -1464,7 +1473,7 @@ export async function dropOnSheetElement(
     const root = holder.sheet?.element?.[0] ?? holder.sheet?.element;
     if (!root) return `the sheet for ${holder.name} is not rendered`;
 
-    const target = root.querySelector(selector);
+    const target = root.querySelector?.(selector);
     if (!target) return `its sheet has no ${selector} to drop on`;
 
     const dataTransfer = new DataTransfer();
@@ -1682,13 +1691,27 @@ export async function toggleTokenCombat(page: Page, sceneUuid: Uuid, tokenId: st
 
   if ('problem' in target) throw new Error(`Toggling token ${tokenId}: ${target.problem}`);
 
-  // Right-click opens the token's HUD; nothing else does.
-  await page.mouse.click(target.x, target.y, { button: 'right' });
-
   // `toggleCombat` in v13, `combat` before it - both accepted rather than pinning to a version.
   const control = page.locator(
     '#token-hud [data-action="toggleCombat"], #token-hud [data-action="combat"], #token-hud .control-icon.combat',
-  );
+  ).first();
+
+  let opened = false;
+  for (let attempt = 0; attempt < 3 && !opened; attempt++) {
+    await page.mouse.click(target.x, target.y, { button: 'right' });
+    opened = await control.waitFor({ state: 'visible', timeout: 2000 })
+      .then(() => true).catch(() => false);
+  }
+
+  if (!opened) {
+    const offered = await page.evaluate(() =>
+      [...document.querySelectorAll('#token-hud [data-action]')]
+        .map((el: any) => el.dataset.action).join(', ') || 'nothing');
+    throw new Error(
+      `Toggling token ${tokenId}: its HUD offered no combat control. It offers: ${offered}`,
+    );
+  }
+
   await control.click();
 
   // Toggling out deletes a Combatant, which the system's hook cancels and re-does in the
@@ -2126,7 +2149,7 @@ export async function setEditMode(page: Page, actorUuid: Uuid, enabled: boolean)
   const problem = await page.evaluate(async (actorUuid) => {
     const actor = await fromUuid(actorUuid);
     const root = actor?.sheet?.element?.[0] ?? actor?.sheet?.element;
-    const wrench = root?.querySelector('.ffg-sheet-options');
+    const wrench = root?.querySelector?.('.ffg-sheet-options');
     if (!wrench) return 'the sheet has no options control';
     wrench.click();
     return null;
@@ -2136,22 +2159,27 @@ export async function setEditMode(page: Page, actorUuid: Uuid, enabled: boolean)
 
   await waitForDialog(page);
 
-  const missing = await page.evaluate((enabled) => {
-    const box = document.querySelector(
-      '[name="config.enableEditMode"]') as HTMLInputElement | null;
-    if (!box) {
-      const offered = [...document.querySelectorAll('[name^="config."]')]
-        .map((el: any) => el.name).join(', ') || 'none';
-      return `the options dialog has no edit mode control. It offers: ${offered}`;
-    }
-    box.checked = enabled;
-    return null;
-  }, enabled);
+  const control = '[name="config.enableEditMode"]';
+  const there = await page.waitForSelector(control, { timeout: 5000 })
+    .then(() => true).catch(() => false);
 
-  if (missing) {
+  if (!there) {
+    const offered = await page.evaluate(async (actorUuid) => {
+      const actor = await fromUuid(actorUuid);
+      const inputs = [...document.querySelectorAll('[name^="config."]')]
+        .map((el: any) => el.name).join(', ') || 'none';
+      const registered = Object.keys(actor?.sheet?.sheetoptions?.options ?? {}).join(', ') || 'none';
+      return `the dialog offers: ${inputs}; the sheet registered: ${registered}`;
+    }, actorUuid);
+
     await closeDialogs(page);
-    throw new Error(`Setting edit mode on ${actorUuid}: ${missing}`);
+    throw new Error(`Setting edit mode on ${actorUuid}: no edit mode control. ${offered}`);
   }
+
+  await page.evaluate(({ control, enabled }) => {
+    const box = document.querySelector(control) as HTMLInputElement | null;
+    if (box) box.checked = enabled;
+  }, { control, enabled });
 
   await answerDialog(page, 'one');
 }

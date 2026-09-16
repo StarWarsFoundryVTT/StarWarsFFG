@@ -147,6 +147,11 @@ export async function chooseSlotMenuEntry(page: Page, slot: Locator, label: stri
     // The right-click is a real one - only that opens the menu.
     await slot.click({ button: 'right' });
 
+    await page.waitForFunction(
+      (selector) => Boolean(document.querySelector(selector)?.querySelector('li, .context-item, button')),
+      MENU, { timeout: 2000 },
+    ).catch(() => {});
+
     /*
      * The entry is then chosen in the page. The tracker re-renders underneath while the menu is
      * up, which rebuilds it, and a locator click cannot survive its target being detached between

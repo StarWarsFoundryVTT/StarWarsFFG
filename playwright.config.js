@@ -78,6 +78,12 @@ export default defineConfig({
     storageState: path.resolve(__dirname, 'tests/.auth/state.json'),
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    /*
+     * A click or a fill waits for its target indefinitely by default, so a control that never
+     * appears consumes the whole test timeout and is reported as "target closed" - which says
+     * nothing about what was being waited for. Bounded, the same failure names the selector.
+     */
+    actionTimeout: 10_000,
   },
 
   /* Configure projects for major browsers */

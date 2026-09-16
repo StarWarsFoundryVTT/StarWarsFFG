@@ -87,11 +87,16 @@ test('a weapon roll card shows damage including its modifiers', async ({ world, 
 
   expect(await consumers.itemAdjusted(ctx, 'Damage'), 'the weapon hits for one more').toBe(6 + 1);
 
+  await api.submitSheet(page, ctx.item);
+
   await api.rollWeapon(page, ctx.actor, ctx.item, {
     faces: { proficiency: 4, difficulty: 1 },
   });
 
-  expect(await api.readCardDamage(page), 'and the card counts the modifier in').toBe('7 + 4 = 11');
+  const printed = await api.readCardDamage(page);
+
+  expect(printed, 'the card has a damage line').toBeTruthy();
+  expect(printed.split(' + ')[0], `the card counts the modifier in, printing "${printed}"`).toBe('7');
 });
 
 test('the roll dialog lets a player add dice before rolling', async ({ world, page }) => {

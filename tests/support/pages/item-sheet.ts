@@ -33,7 +33,11 @@ export function addSourceControl(page: Page, itemName: string) {
 
 /** A field's value on one particular sheet window, named as the form names it. */
 export async function fieldValue(page: Page, windowId: string, name: string): Promise<string> {
-  return page.locator(`#${windowId} [name="${name}"]`).first().inputValue();
+  const field = page.locator(`#${windowId} [name="${name}"]`).first();
+  const there = await field.waitFor({ state: 'attached', timeout: 5000 })
+    .then(() => true).catch(() => false);
+  if (!there) throw new Error(`That sheet has no "${name}" field to read.`);
+  return field.inputValue();
 }
 
 /**
@@ -43,6 +47,10 @@ export async function setFieldValue(
   page: Page, windowId: string, name: string, value: string,
 ): Promise<void> {
   const field = page.locator(`#${windowId} [name="${name}"]`).first();
+  const there = await field.waitFor({ state: 'visible', timeout: 5000 })
+    .then(() => true).catch(() => false);
+  if (!there) throw new Error(`That sheet has no "${name}" field to write to.`);
+
   await field.fill(value);
   await field.blur();
 }

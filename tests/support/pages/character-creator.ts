@@ -584,16 +584,41 @@ export async function finish(page: Page, timeout = 30_000): Promise<string> {
 
   // The button lives on the review tab, and only the active tab is visible.
   await showTab(page, 'review');
-  await page.locator('.create-actor').click();
+
+  const create = page.locator('.create-actor').first();
+  const ready = await create.waitFor({ state: 'visible', timeout: 5000 })
+    .then(() => true).catch(() => false);
+  if (!ready) throw new Error('The wizard shows no button to create the actor with.');
+
+  await create.click();
 
   const uuid = await page.evaluate(async ({ before, timeout }) => {
     const deadline = Date.now() + timeout;
-    for (;;) {
-      const made = game.actors.find((actor: any) => !before.includes(actor.id));
-      if (made) return made.uuid;
-      if (Date.now() > deadline) return null;
-      await new Promise((r) => setTimeout(r, 50));
+    let made: any = null;
+    while (!made) {
+      made = game.actors.find((actor: any) => !before.includes(actor.id));
+      if (!made && Date.now() > deadline) return null;
+      if (!made) await new Promise((r) => setTimeout(r, 50));
     }
+
+    /*
+     * The actor exists well before the wizard has finished with it: `createActor` goes on to add
+     * items and to write credits, obligation and career skills, each in its own update.
+     * Waiting for the document to stop changing is what makes reading it afterward mean anything.
+     */
+    let held = JSON.stringify(made.toObject());
+    let still = 0;
+    while (still < 400 && Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 50));
+      const now = JSON.stringify(made.toObject());
+      if (now === held) still += 50;
+      else {
+        held = now;
+        still = 0;
+      }
+    }
+
+    return made.uuid;
   }, { before, timeout });
 
   if (!uuid) throw new Error('The wizard made no actor.');

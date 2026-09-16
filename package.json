@@ -6,7 +6,8 @@
   "scripts": {
     "compile": "gulp css",
     "lint": "npx eslint modules",
-    "watch": "gulp"
+    "watch": "gulp",
+    "test:affected": "npx playwright test $(node scripts/affected.mjs)"
   },
   "author": "",
   "license": "MIT",

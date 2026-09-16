@@ -1,0 +1,120 @@
+{
+  "notes": [
+    "What to run when a file changes. Read by scripts/affected.mjs.",
+    "",
+    "`everything` and `ignored` are matched first, in that order. Anything else is looked up in",
+    "`rules`, and a file under modules/ or templates/ that matches no rule runs the whole suite -",
+    "a stale map must cost time, never coverage.",
+    "",
+    "Paths are globs from the repo root. `*` stops at a slash, `**` does not."
+  ],
+
+  "everything": [
+    "template.json",
+    "system.json",
+    "tests/support/**",
+    "tests/fixtures/**",
+    "modules/swffg-main.js",
+    "modules/swffg-config.js",
+    "modules/config/**",
+    "modules/settings/**",
+    "modules/helpers/common.js",
+    "modules/helpers/partial-templates.js"
+  ],
+
+  "ignored": [
+    "styles/**",
+    "lang/**",
+    "**/*.md",
+    ".github/**",
+    "modules/tours/**",
+    "modules/external/**",
+    "modules/apps/**",
+    "modules/swffg-migration.js",
+    "modules/helpers/migration.js",
+    "modules/helpers/flag-migration-helpers.js"
+  ],
+
+  "rules": {
+    "modules/dice/**": ["tests/ui/rolling/**", "tests/ui/chat/**"],
+    "modules/dice-pool-ffg.js": ["tests/ui/rolling/**"],
+    "modules/helpers/dice-helpers.js": [
+      "tests/ui/rolling/**", "tests/ui/vehicles/**", "tests/ui/combat/**"
+    ],
+    "modules/helpers/modifiers.js": [
+      "tests/ui/mods/**", "tests/ui/embedded/**", "tests/ui/rolling/**"
+    ],
+    "modules/helpers/crew.js": ["tests/ui/vehicles/**"],
+    "modules/helpers/character-creator.js": ["tests/ui/creator/**"],
+    "modules/helpers/actor-helpers.js": ["tests/ui/edit-mode/**", "tests/ui/advancement/**"],
+    "modules/helpers/item-helpers.js": ["tests/ui/embedded/**", "tests/ui/sheets/**"],
+    "modules/helpers/embeddeditem-helpers.js": ["tests/ui/embedded/**", "tests/ui/sheets/**"],
+    "modules/helpers/effects.js": [
+      "tests/ui/edit-mode/**", "tests/ui/status/**", "tests/ui/mods/**"
+    ],
+    "modules/helpers/token.js": ["tests/ui/combat/**", "tests/ui/status/**"],
+    "modules/helpers/journal.js": ["tests/ui/rolling/**"],
+    "modules/helpers/macros.js": ["tests/ui/rolling/**"],
+    "modules/helpers/tours.js": [],
+
+    "modules/active-effects/**": [
+      "tests/ui/mods/**", "tests/ui/edit-mode/**", "tests/ui/status/**", "tests/ui/embedded/**"
+    ],
+    "modules/combat-ffg.js": ["tests/ui/combat/**", "tests/ui/status/**"],
+    "modules/tokens/**": ["tests/ui/combat/**", "tests/ui/status/**"],
+    "modules/groupmanager-ffg.js": ["tests/ui/advancement/**", "tests/ui/edit-mode/**"],
+    "modules/ffg-destiny-tracker.js": ["tests/ui/smoke/**"],
+    "modules/compendium/**": ["tests/ui/import/**"],
+    "modules/importer/**": ["tests/ui/import/**", "tests/ui/embedded/d1/origins.spec.js"],
+
+    "modules/actors/actor-ffg.js": [
+      "tests/ui/mods/**", "tests/ui/edit-mode/**", "tests/ui/advancement/**",
+      "tests/ui/embedded/**", "tests/ui/vehicles/**"
+    ],
+    "modules/actors/actor-ffg-options.js": ["tests/ui/edit-mode/**"],
+    "modules/actors/actor-sheet-ffg*.js": [
+      "tests/ui/sheets/**", "tests/ui/smoke/**", "tests/ui/advancement/**",
+      "tests/ui/edit-mode/**", "tests/ui/chat/**"
+    ],
+    "modules/actors/adversary-sheet-ffg*.js": ["tests/ui/smoke/**"],
+
+    "modules/items/item-ffg.js": [
+      "tests/ui/embedded/**", "tests/ui/chat/**", "tests/ui/mods/**", "tests/ui/rolling/**"
+    ],
+    "modules/items/itembase-ffg.js": ["tests/ui/embedded/**"],
+    "modules/items/item-ffg-options.js": ["tests/ui/sheets/**"],
+    "modules/items/item-sheet-ffg*.js": [
+      "tests/ui/embedded/**", "tests/ui/sheets/**", "tests/ui/smoke/**"
+    ],
+    "modules/items/item-editor.js": ["tests/ui/embedded/**", "tests/ui/advancement/**"],
+    "modules/popout-editor.js": ["tests/ui/embedded/**", "tests/ui/sheets/**"],
+    "modules/popout-modifiers.js": ["tests/ui/embedded/**", "tests/ui/sheets/**"],
+
+    "templates/actors/**": [
+      "tests/ui/sheets/**", "tests/ui/smoke/**", "tests/ui/advancement/**", "tests/ui/edit-mode/**"
+    ],
+    "templates/items/**": [
+      "tests/ui/embedded/**", "tests/ui/sheets/**", "tests/ui/smoke/**", "tests/ui/chat/**"
+    ],
+    "templates/chat/**": ["tests/ui/chat/**", "tests/ui/rolling/**"],
+    "templates/dice/**": ["tests/ui/rolling/**"],
+    "templates/dice-pool.html": ["tests/ui/rolling/**"],
+    "templates/roll-options.html": ["tests/ui/rolling/**"],
+    "templates/combat/**": ["tests/ui/combat/**"],
+    "templates/wizards/**": ["tests/ui/creator/**"],
+    "templates/importer/**": ["tests/ui/import/**"],
+    "templates/compendium/**": ["tests/ui/import/**"],
+    "templates/grant-xp.html": ["tests/ui/advancement/**"],
+    "templates/group-manager.html": ["tests/ui/advancement/**"],
+    "templates/dialogs/**": [
+      "tests/ui/advancement/**", "tests/ui/combat/**", "tests/ui/vehicles/**",
+      "tests/ui/embedded/**", "tests/ui/sheets/**"
+    ],
+    "templates/parts/**": [
+      "tests/ui/sheets/**", "tests/ui/smoke/**", "tests/ui/chat/**", "tests/ui/embedded/**"
+    ],
+    "templates/notifications/**": [],
+    "templates/ffg-destiny-tracker.html": ["tests/ui/smoke/**"],
+    "templates/popout-editor.html": ["tests/ui/embedded/**", "tests/ui/sheets/**"]
+  }
+}
