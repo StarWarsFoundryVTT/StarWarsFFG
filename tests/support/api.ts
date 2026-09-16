@@ -1907,6 +1907,27 @@ export async function sendItemToChat(page: Page, actorUuid: Uuid, itemUuid: Uuid
   if (problem) throw new Error(`Sending ${itemUuid} to chat: ${problem}`);
 }
 
+/**
+ * Who the last chat message is attributed to.
+ *
+ * The actor comes back as a uuid rather than the bare id the speaker holds, so a test can compare
+ * it with the actor it built.
+ */
+export async function readLastChatSpeaker(page: Page): Promise<{ alias: string; actor: Uuid | null }> {
+  return page.evaluate(() => {
+    const speaker = game.messages.contents.at(-1)?.speaker ?? {};
+    return {
+      alias: String(speaker.alias ?? ''),
+      actor: game.actors.get(speaker.actor)?.uuid ?? null,
+    };
+  });
+}
+
+/** How many messages are in the chat log, for tests about how many a thing posts. */
+export async function countChatMessages(page: Page): Promise<number> {
+  return page.evaluate(() => game.messages.contents.length);
+}
+
 /** The last chat message's rendered content, for tests about what a card says. */
 export async function readLastChatCard(page: Page): Promise<string> {
   return page.evaluate(async () => {
@@ -1944,11 +1965,68 @@ export async function readCardDamage(page: Page): Promise<string | null> {
 }
 
 /**
- * The item qualities named on the last chat card.
+ * The headline numbers on the last chat card, in the order the card prints them.
  */
-export async function readCardQualities(page: Page): Promise<string[]> {
+export async function readCardStats(page: Page): Promise<{ title: string; value: string }[]> {
   const content = await readLastChatCard(page);
-  return [...content.matchAll(/data-item-embed-name="([^"]*)"/g)].map((match) => match[1]);
+  return page.evaluate((content) => {
+    const holder = document.createElement('div');
+    holder.innerHTML = content;
+    return [...holder.querySelectorAll('.basic-stats .stat')].map((stat) => ({
+      title: String(stat.getAttribute('title') ?? ''),
+      value: String(stat.textContent ?? '').trim(),
+    }));
+  }, content);
+}
+
+/**
+ * The headings of the blocks the last chat card drew, such as descriptors or attachments.
+ */
+export async function readCardSections(page: Page): Promise<string[]> {
+  const content = await readLastChatCard(page);
+  return page.evaluate((content) => {
+    const holder = document.createElement('div');
+    holder.innerHTML = content;
+    return [...holder.querySelectorAll('.properties .tag b')]
+      .map((label) => String(label.textContent ?? '').trim());
+  }, content);
+}
+
+/**
+ * The names on the last chat card's pills of one kind.
+ */
+async function readCardPills(page: Page, kind: string): Promise<{ name: string; ranks: string }[]> {
+  const content = await readLastChatCard(page);
+  return page.evaluate(({ content, kind }) => {
+    const holder = document.createElement('div');
+    holder.innerHTML = content;
+    return [...holder.querySelectorAll(`[data-item-type="${kind}"][data-item-embed-name]`)]
+      .map((pill) => ({
+        name: String(pill.getAttribute('data-item-embed-name') ?? ''),
+        ranks: String(pill.getAttribute('data-item-ranks') ?? ''),
+      }));
+  }, { content, kind });
+}
+
+/** The item qualities named on the last chat card. */
+export async function readCardQualities(page: Page): Promise<string[]> {
+  return (await readCardPills(page, 'itemmodifier')).map((pill) => pill.name);
+}
+
+/** The attachments named on the last chat card. */
+export async function readCardAttachments(page: Page): Promise<string[]> {
+  return (await readCardPills(page, 'itemattachment')).map((pill) => pill.name);
+}
+
+/**
+ * How many ranks of each quality the last card credits the item with.
+ *
+ * The pill carries a total rather than a rank: the sheet adds up every copy of a quality by name
+ * before the card is built (items/item-sheet-ffg.js:470).
+ */
+export async function readCardQualityRanks(page: Page): Promise<Record<string, string>> {
+  const pills = await readCardPills(page, 'itemmodifier');
+  return Object.fromEntries(pills.map((pill) => [pill.name, pill.ranks]));
 }
 
 /**
