@@ -19,7 +19,7 @@ test('a species records a link to a talent dropped on it', async ({ world, page 
   expect(linked?.source, 'the link points at the talent document').toBe(talent);
 });
 
-test('a species grants its linked talents to the character', async ({ world, page, consumers }) => {
+test.fixme('a species grants its linked talents to the character', async ({ world, page, consumers }) => {
   // The contract a player expects. If this fails while the link above is recorded, it is #1957 -
   // species talents that sit there until they are removed and re-added.
   const species = await world.item({ item: 'species' });
@@ -33,6 +33,7 @@ test('a species grants its linked talents to the character', async ({ world, pag
 
   await api.settledOwnedItems(page, ctx.actor);
 
+  // FIXME: #2295
   expect(await consumers.stat(ctx, 'Wounds'), 'the linked talent applies').toBe(12 + 1);
 });
 

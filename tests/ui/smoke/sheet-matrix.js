@@ -25,9 +25,15 @@ export const ITEM_TYPES = [
 export const ACTOR_SHEETS = [
   { id: 'ffg.ActorSheetFFG', label: 'Actor Sheet v1', types: ACTOR_TYPES },
   { id: 'ffg.ActorSheetFFGV2', label: 'Actor Sheet v2', types: ACTOR_TYPES },
-  { id: 'ffg.AdversarySheetFFG', label: 'Adversary Sheet v1', types: ['character'] },
-  { id: 'ffg.AdversarySheetFFGV2', label: 'Adversary Sheet v2', types: ['character'] },
 ];
+
+/**
+ * Sheets the system still registers but no longer uses.
+ *
+ * Listed rather than dropped, so the registry check below stays a check: an id here is knowingly
+ * untested, and anything else new is a gap.
+ */
+export const RETIRED_ACTOR_SHEETS = ['ffg.AdversarySheetFFG', 'ffg.AdversarySheetFFGV2'];
 
 export const ITEM_SHEETS = [
   { id: 'ffg.ItemSheetFFG', label: 'Item Sheet v1', types: ITEM_TYPES },

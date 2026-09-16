@@ -1,6 +1,6 @@
 import { test, expect } from '../../support/fixtures';
 import * as api from '../../support/api';
-import { ACTOR_CASES, ACTOR_TYPES } from './sheet-matrix';
+import { ACTOR_CASES, ACTOR_TYPES, RETIRED_ACTOR_SHEETS } from './sheet-matrix';
 
 /**
  * Every registered actor sheet opens for every type it claims to support.
@@ -11,7 +11,7 @@ import { ACTOR_CASES, ACTOR_TYPES } from './sheet-matrix';
 
 test('the matrix covers every actor type', () => {
   expect(ACTOR_TYPES).toHaveLength(6);
-  expect(ACTOR_CASES).toHaveLength(14);
+  expect(ACTOR_CASES).toHaveLength(12);
 });
 
 test('the matrix matches what the system actually registers', async ({ page, world }) => {
@@ -23,6 +23,7 @@ test('the matrix matches what the system actually registers', async ({ page, wor
     const registered = (await api.registeredSheets(page, 'Actor', type)).filter((id) => id.startsWith('ffg.'));
     const covered = ACTOR_CASES.filter((c) => c.type === type).map((c) => c.sheet.id);
     for (const id of registered) {
+      if (RETIRED_ACTOR_SHEETS.includes(id)) continue;
       if (!covered.includes(id)) missing.push(`${type}: ${id} is registered but not in the matrix`);
     }
   }
