@@ -234,6 +234,65 @@ export async function openSheet(page: Page, uuid: Uuid): Promise<string> {
   }, uuid);
 }
 
+/**
+ * Open a second window on the same document, using one of its other registered sheet classes.
+ *
+ * A document caches one sheet, so `openSheet` twice is one window. Two windows means two classes -
+ * the system registers a v1 and a v2 for both actors and items - which is also the only way a user
+ * ends up with two open at once.
+ */
+export async function openSheetAs(page: Page, uuid: Uuid, sheetId: string): Promise<string> {
+  const result = await page.evaluate(async ({ uuid, sheetId }) => {
+    const doc = await fromUuid(uuid);
+    if (!doc) return { error: `No document at ${uuid}` };
+
+    const registered = CONFIG[doc.documentName]?.sheetClasses?.[doc.type] ?? {};
+    const entry = registered[sheetId];
+    if (!entry) {
+      return { error: `no sheet "${sheetId}" for ${doc.type}. It has: ${Object.keys(registered).join(', ')}` };
+    }
+
+    const sheet = new entry.cls(doc, { editable: true });
+    await sheet.render(true);
+
+    for (let i = 0; i < 200; i++) {
+      const root = sheet.element?.[0] ?? sheet.element;
+      if (root?.id && document.getElementById(root.id)) return { id: root.id };
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return { error: 'the second sheet never appeared in the DOM' };
+  }, { uuid, sheetId });
+
+  if ('error' in result) throw new Error(`Opening ${uuid} as ${sheetId}: ${result.error}`);
+  return result.id as string;
+}
+
+/**
+ * Whether a particular window is still on screen, by the id `openSheet` handed back.
+ *
+ * Asked by id rather than by document, so it still answers once the document is gone - which is
+ * the only interesting moment for a window that should have closed with it.
+ */
+export async function isWindowOpen(page: Page, windowId: string): Promise<boolean> {
+  return page.evaluate((windowId) => Boolean(document.getElementById(windowId)), windowId);
+}
+
+/**
+ * Whether a document's sheet is on screen.
+ *
+ * Both halves matter: a sheet can believe it has closed while its window is still in the DOM, and
+ * that is what "it does not close until a refresh" looks like from the outside.
+ */
+export async function isSheetOpen(page: Page, uuid: Uuid): Promise<boolean> {
+  return page.evaluate(async (uuid) => {
+    const doc = await fromUuid(uuid);
+    const sheet = doc?._sheet;
+    if (!sheet) return false;
+    const root = sheet.element?.[0] ?? sheet.element;
+    return Boolean(sheet.rendered) || Boolean(root?.id && document.getElementById(root.id));
+  }, uuid);
+}
+
 /** Close a document's sheet. */
 export async function closeSheet(page: Page, uuid: Uuid): Promise<void> {
   await page.evaluate(async (uuid) => {
@@ -1156,6 +1215,109 @@ export async function systemDefault(page: Page, type: string): Promise<{
 }
 
 /**
+ * Open a nested modifier's own editor and leave it open, handing back its window id.
+ */
+export async function openModifierEditor(page: Page, opts: {
+  actorUuid?: Uuid; itemUuid: Uuid; modifierType: string; modifierIndex: number;
+}): Promise<string> {
+  const result = await page.evaluate(async (o) => {
+    const actor = o.actorUuid ? await fromUuid(o.actorUuid) : null;
+    const item = await fromUuid(o.itemUuid);
+    if (!item) return { error: `No item at ${o.itemUuid}` };
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const EmbeddedItemHelpers = (await load('helpers/embeddeditem-helpers.js')).default;
+
+    const before = new Set(Object.keys(ui.windows ?? {}));
+    await EmbeddedItemHelpers.loadItemModifierSheet(
+      item.id, o.modifierType, o.modifierIndex, actor?.id);
+
+    for (let i = 0; i < 200; i++) {
+      const sheet = Object.entries(ui.windows ?? {})
+        .filter(([id]) => !before.has(id))
+        .map(([, app]) => app)
+        .find((app: any) => app?.object?.flags?.starwarsffg?.ffgIsTemp) as any;
+      const root = sheet?.element?.[0] ?? sheet?.element;
+      if (root?.id && document.getElementById(root.id)) return { id: root.id };
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return { error: 'the modifier editor never opened' };
+  }, opts);
+
+  if ('error' in result) throw new Error(`Opening the editor on ${opts.itemUuid}: ${result.error}`);
+  return result.id as string;
+}
+
+/**
+ * Close a window by its own close control, as a user does.
+ *
+ * Says what it clicked when the window stays put, because a window that survives its own close
+ * button is the interesting case and "still open" on its own says nothing about why.
+ */
+export async function closeWindow(page: Page, windowId: string): Promise<void> {
+  // Foundry binds the header button listeners 500ms after the window renders, "to prevent
+  // immediate interaction" (foundry.mjs:37503), so the first click can land on nothing. Clicking
+  // again costs nothing once the window has gone.
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const clicked = await clickCloseControl(page, windowId);
+    if ('error' in clicked) throw new Error(`Closing ${windowId}: ${clicked.error}`);
+
+    const gone = await page.locator(`#${windowId}`)
+      .waitFor({ state: 'detached', timeout: 500 }).then(() => true).catch(() => false);
+    if (gone) return;
+  }
+
+  await reportStuckWindow(page, windowId);
+}
+
+/** Click a window's own close control, and say what was clicked. */
+async function clickCloseControl(
+  page: Page, windowId: string,
+): Promise<{ control: string } | { error: string }> {
+  return page.evaluate((windowId) => {
+    const root = document.getElementById(windowId);
+    if (!root) return { error: 'that window is not on screen' };
+
+    const header = root.querySelector('.window-header');
+    const controls = [...(header?.querySelectorAll('a, button') ?? [])];
+    const control = controls.find((el: any) =>
+      el.classList.contains('close') || el.dataset?.action === 'close'
+      || /close/i.test(el.getAttribute('aria-label') ?? ''));
+
+    if (!control) {
+      return { error: `no close control. The header holds: ${header?.innerHTML ?? '(no header)'}` };
+    }
+    (control as HTMLElement).click();
+    return { control: (control as HTMLElement).outerHTML };
+  }, windowId);
+}
+
+/**
+ * Say why a window is still there, having been asked to close several times.
+ */
+async function reportStuckWindow(page: Page, windowId: string): Promise<void> {
+  // Ask the application itself to close, to tell a refused close from an unwired button
+  const direct = await page.evaluate(async (windowId) => {
+    const app = (Object.values(ui.windows ?? {}) as any[]).find((candidate) => {
+      const root = candidate?.element?.[0] ?? candidate?.element;
+      return root?.id === windowId;
+    });
+    if (!app) return 'no application owns that window';
+    try {
+      await app.close();
+      return document.getElementById(windowId) ? 'close() left it on screen' : 'close() closed it';
+    } catch (err: any) {
+      return `close() threw: ${err?.message ?? err}`;
+    }
+  }, windowId);
+
+  throw new Error(
+    `Closing ${windowId}: it is still on screen after its close control was clicked several ` +
+    `times. Asked directly, ${direct}.`,
+  );
+}
+
+/**
  * Open a nested modifier the way the sheet does, then walk its parent chain back to a real item.
  */
 export async function writeThroughParentChain(page: Page, opts: {
@@ -1276,6 +1438,45 @@ export async function dropOnReferenceSheet(
   }, { holderUuid, droppedUuid });
 
   if (problem) throw new Error(`Dropping ${droppedUuid} onto ${holderUuid}: ${problem}`);
+}
+
+/** Where each sheet type accepts a drop, as its own `DragDrop` registration names it. */
+const DROP_TARGET: Record<string, string> = {
+  species: '.tab.talents',
+  career: '.tab.specializations',
+};
+
+/**
+ * Drop one item onto another's *rendered sheet*, as a real drag would.
+ */
+export async function dropOnSheetElement(
+  page: Page, holderUuid: Uuid, droppedUuid: Uuid,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ holderUuid, droppedUuid, targets }) => {
+    const holder = await fromUuid(holderUuid);
+    if (!holder) return `No item at ${holderUuid}`;
+
+    const selector = targets[holder.type];
+    if (!selector) {
+      return `${holder.type} sheets take no drops. These do: ${Object.keys(targets).join(', ')}`;
+    }
+
+    const root = holder.sheet?.element?.[0] ?? holder.sheet?.element;
+    if (!root) return `the sheet for ${holder.name} is not rendered`;
+
+    const target = root.querySelector(selector);
+    if (!target) return `its sheet has no ${selector} to drop on`;
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData('text/plain', JSON.stringify({ type: 'Item', uuid: droppedUuid }));
+    target.dispatchEvent(new DragEvent('drop', { dataTransfer, bubbles: true, cancelable: true }));
+
+    // the handler is async and nothing returns it, so let the write it makes land
+    await new Promise((r) => setTimeout(r, 250));
+    return null;
+  }, { holderUuid, droppedUuid, targets: DROP_TARGET });
+
+  if (problem) throw new Error(`Dropping ${droppedUuid} on the sheet for ${holderUuid}: ${problem}`);
 }
 
 /**
@@ -1746,6 +1947,41 @@ export async function readCardDamage(page: Page): Promise<string | null> {
 export async function readCardQualities(page: Page): Promise<string[]> {
   const content = await readLastChatCard(page);
   return [...content.matchAll(/data-item-embed-name="([^"]*)"/g)].map((match) => match[1]);
+}
+
+/**
+ * An actor's items, once they have stopped arriving.
+ */
+export async function settledOwnedItems(
+  page: Page, actorUuid: Uuid, { quiet = 400, timeout = 5000 } = {},
+): Promise<{ id: string; name: string; type: string; uuid: Uuid }[]> {
+  const settled = await page.evaluate(async ({ actorUuid, quiet, timeout }) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) throw new Error(`No actor at ${actorUuid}`);
+
+    const step = 50;
+    const deadline = Date.now() + timeout;
+    let held = actor.items.size;
+    let still = 0;
+
+    while (Date.now() < deadline && still < quiet) {
+      await new Promise((r) => setTimeout(r, step));
+      if (actor.items.size === held) still += step;
+      else {
+        held = actor.items.size;
+        still = 0;
+      }
+    }
+
+    return actor.items.map((item: any) => ({
+      id: item.id,
+      name: String(item.name ?? ''),
+      type: String(item.type ?? ''),
+      uuid: item.uuid,
+    }));
+  }, { actorUuid, quiet, timeout });
+
+  return settled;
 }
 
 /** Read several paths off one document, for comparing two documents field by field. */
