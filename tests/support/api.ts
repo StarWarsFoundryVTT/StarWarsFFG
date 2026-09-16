@@ -1847,8 +1847,10 @@ export async function rollWeapon(
         for (let i = 0; i < 200; i++) {
           const found = (Object.values(ui.windows ?? {}) as any[])
             .find((app) => app?.constructor?.name === 'RollBuilderFFG');
+          // `element` is a jQuery object that is empty until the dialog renders, so [0] is
+          // undefined for a moment and the wrapper itself is no use to ask for a button.
           const root = found?.element?.[0] ?? found?.element;
-          if (root?.querySelector('.btn')) return root;
+          if (root?.querySelector?.('.btn')) return root;
           await new Promise((r) => setTimeout(r, 25));
         }
         return null;
@@ -2461,6 +2463,46 @@ async function collectRollErrors(page: Page): Promise<string[]> {
     delete w.__qaRollErrorSink;
     return errors;
   }).catch(() => []);
+}
+
+/**
+ * Mark or unmark an actor with one of the configured statuses.
+ *
+ * `toggleStatusEffect` is what the token HUD calls when a GM clicks one of the little icons, so
+ * the effect that lands is the one a table would see.
+ */
+export async function toggleStatus(
+  page: Page, actorUuid: Uuid, statusId: string, active?: boolean,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ actorUuid, statusId, active }) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) return `No actor at ${actorUuid}`;
+
+    const known = (CONFIG.statusEffects ?? []).map((status: any) => status.id);
+    if (!known.includes(statusId)) {
+      return `no status called "${statusId}". The world offers: ${known.join(', ')}`;
+    }
+
+    await actor.toggleStatusEffect(statusId, active === undefined ? {} : { active });
+    return null;
+  }, { actorUuid, statusId, active });
+
+  if (problem) throw new Error(`Marking ${actorUuid} with ${statusId}: ${problem}`);
+}
+
+/**
+ * The statuses a token can be marked with, as the system configured them.
+ */
+export async function readStatusEffects(page: Page): Promise<{
+  id: string; name: string; changes: number; duration: string | null;
+}[]> {
+  return page.evaluate(() =>
+    (CONFIG.statusEffects ?? []).map((status: any) => ({
+      id: String(status.id ?? ''),
+      name: game.i18n.localize(status.name ?? ''),
+      changes: (status.changes ?? []).length,
+      duration: status.system?.duration ?? null,
+    })));
 }
 
 /** The system's dice, by the name a test uses for them. */

@@ -31,6 +31,8 @@ test('a species grants its linked talents to the character', async ({ world, pag
 
   const ctx = await world.place(species, { actor: 'character' });
 
+  await api.settledOwnedItems(page, ctx.actor);
+
   expect(await consumers.stat(ctx, 'Wounds'), 'the linked talent applies').toBe(12 + 1);
 });
 

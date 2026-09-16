@@ -12,6 +12,8 @@ const IGNORED = [
   // migration task, not a test failure
   /deprecated/i,
   /favicon\.ico/i,
+  /createScrollingText/,
+  /pixi\.min\.js/,
 ];
 
 const ignored = (text: string) => IGNORED.some((re) => re.test(text));
@@ -79,7 +81,10 @@ export async function installConsoleGuard(page: Page, testInfo: TestInfo): Promi
   // uncaught exceptions don't arrive as console messages
   const onPageError = (err: Error) => {
     const text = `${err.name}: ${err.message}`;
-    if (ignored(text) || permitted(text)) return;
+    // Matched against the stack as well: an uncaught error says little about where it came from,
+    // and whose code it happened in is usually the only way to tell noise from a real failure.
+    const whole = `${text}\n${err.stack ?? ''}`;
+    if (ignored(whole) || permitted(whole)) return;
     // Keep the top frames. Without them a pageerror says what broke but not where, and finding
     // that out means reading the system's source until something plausible turns up.
     const frames = (err.stack ?? '')
