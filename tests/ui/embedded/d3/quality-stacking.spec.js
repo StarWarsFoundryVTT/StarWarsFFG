@@ -1,4 +1,5 @@
 import { test, expect } from '../../../support/fixtures';
+import * as api from '../../../support/api';
 
 /**
  * Two sources granting the same quality must sum, not collide.
@@ -100,4 +101,41 @@ test('removing one of two stacked sources drops the rank back rather than to zer
   await world.removeAttachment(ctx, second);
 
   expect(await consumers.qualityRank(ctx, 'qa accurate'), 'one source left').toBe(1);
+});
+
+test.fixme('#2311 a quality granting Defence keeps both of its changes', async ({ world, page, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'armour',
+    equipped: true,
+    modifier: {
+      name: 'qa reinforced',
+      key: 'defence',
+      modtype: 'Armor Stat',
+      value: 1,
+      active: true,
+    },
+  });
+
+  // defense explodes into melee and ranged, so the quality's effect carries two changes and `syncAEStatus`
+  // rebuilds it from the first one alone
+  const granted = async () => {
+    const effects = await api.readItemEffects(page, ctx.item);
+    return effects
+      .filter((effect) => effect.name !== '(inherent)')
+      .flatMap((effect) => effect.changes.map((change) => change.key))
+      .filter((key) => key.startsWith('system.stats.defence.'))
+      .sort();
+  };
+  const both = ['system.stats.defence.melee', 'system.stats.defence.ranged'];
+
+  expect(await granted(), 'the quality grants both kinds of defence').toEqual(both);
+
+  await world.equip(ctx, false);
+  await world.equip(ctx, true);
+
+  // FIXME: #2311
+  expect(await granted(), 'and still does after being taken off and put back on').toEqual(both);
+  expect(await consumers.stat(ctx, 'Defence-Melee'), 'the armour and the quality, in melee').toBe(2);
+  expect(await consumers.stat(ctx, 'Defence-Ranged'), 'and the same at range').toBe(2);
 });
