@@ -20,7 +20,7 @@ concurrency:
 
 env:
   # Built and pushed by hand, one tag per Foundry version
-  FOUNDRY_IMAGE: ghcr.io/wrycu/foundry-ci:13.351@sha256:c58f1d7031ee932ceed669ed1d191e54d679e42feb1ffaa65be7743b13116d37
+  FOUNDRY_IMAGE: ghcr.io/wrycu/foundry-ci:13.351@sha256:0a4d43a805c16eaba2df6ecce32ef4ad0fd4ee3657d99c6f3d2fd508e80227eb
 
 jobs:
   # Decides whether the test job names an environment, which decides whether it waits for approval.
@@ -94,10 +94,13 @@ jobs:
       # in one, and a world claiming the wrong system version meets a migration prompt on launch.
       - name: Lay out the world
         run: |
-          mkdir -p "${RUNNER_TEMP}/foundry-worlds"
-          cp -r .github/foundry-world/qa "${RUNNER_TEMP}/foundry-worlds/qa"
+          # Foundry writes a README into /data/Data/systems as it builds its user data structure
+          mkdir -p "${RUNNER_TEMP}/foundry-data/worlds" "${RUNNER_TEMP}/foundry-data/systems/starwarsffg"
+          cp -r .github/foundry-world/qa "${RUNNER_TEMP}/foundry-data/worlds/qa"
+          # Foundry runs as uid 1000 in the container and the runner is uid 1001.
+          chmod -R 777 "${RUNNER_TEMP}/foundry-data"
 
-          world="${RUNNER_TEMP}/foundry-worlds/qa/world.json"
+          world="${RUNNER_TEMP}/foundry-data/worlds/qa/world.json"
           system="$(jq -r .version system.json)"
           # the image is pinned as tag@digest, so the tag is what is left after dropping the digest
           ref="${FOUNDRY_IMAGE%@*}"
@@ -129,8 +132,7 @@ jobs:
           fi
           mkdir -p "${RUNNER_TEMP}/foundry-config"
           printf '%s' "$FOUNDRY_LICENSE_JSON" > "${RUNNER_TEMP}/foundry-config/license.json"
-          # 644, not 600: Foundry reads this as its own user inside the container, and the file
-          # is written here as the runner's. The runner is ephemeral and nobody else is on it.
+          chmod 777 "${RUNNER_TEMP}/foundry-config"
           chmod 644 "${RUNNER_TEMP}/foundry-config/license.json"
 
       - name: Start Foundry
@@ -148,7 +150,7 @@ jobs:
             --hostname foundry-ci \
             --publish 127.0.0.1:30000:30000 \
             --volume "${RUNNER_TEMP}/foundry-system:/data/Data/systems/starwarsffg:ro" \
-            --volume "${RUNNER_TEMP}/foundry-worlds:/data/Data/worlds" \
+            --volume "${RUNNER_TEMP}/foundry-data:/data/Data" \
             --volume "${RUNNER_TEMP}/foundry-config:/data/Config" \
             --env FOUNDRY_LICENSE_KEY \
             --env FOUNDRY_WORLD=qa \

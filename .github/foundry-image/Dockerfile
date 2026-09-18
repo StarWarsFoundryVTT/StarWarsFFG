@@ -16,3 +16,7 @@ LABEL org.opencontainers.image.description="FoundryVTT ${FOUNDRY_VERSION} for th
 # foundryvtt.com for one when it does not. The filename is load-bearing: foundryvtt-<version>.zip.
 COPY foundryvtt-${FOUNDRY_VERSION}.zip /container_cache/foundryvtt-${FOUNDRY_VERSION}.zip
 ENV CONTAINER_CACHE=/container_cache
+
+USER root
+RUN chmod 0777 /container_cache
+USER node
