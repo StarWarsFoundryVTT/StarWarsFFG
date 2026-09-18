@@ -8,8 +8,7 @@ repository, and those things expire. This is the maintainer's runbook for all of
 
 | Thing | Where it lives | Why                                                                             |
 | ----- | -------------- |---------------------------------------------------------------------------------|
-| `ghcr.io/wrycu/foundry-ci:<version>` | GHCR, private | Foundry itself, baked into the image                                            |
-| `GHCR_TOKEN` | repository secret | pulls that image - a classic PAT with `read:packages` and nothing else          |
+| `ghcr.io/starwarsfoundryvtt/foundry-ci:<version>` | GHCR, private | Foundry itself, baked into the image. Pulled with the workflow's own `GITHUB_TOKEN` |
 | `FOUNDRY_LICENSE_JSON` | repository secret | `Config/license.json` from an instance where the licence agreement was accepted |
 | `FOUNDRY_LICENSE_KEY` | repository secret | the licence key from that same file                                             |
 | `untrusted` | repository environment | required reviewers, which is what makes a fork PR wait for approval             |
@@ -21,7 +20,6 @@ repository name no environment and run immediately.
 ## First-time setup
 
  1. Build and push the image - see *Rotating the Foundry version* below.
- 1. Create the `read:packages` token and add it as `GHCR_TOKEN` - see *Rotating `GHCR_TOKEN`*.
  1. Seed the license and add the two license secrets - see *Rotating the license*.
  1. Settings → Environments → New environment → `untrusted`. Tick **Required reviewers** and
     add the maintainers who should be able to release a fork run. Nothing else.
@@ -46,8 +44,8 @@ cp /path/to/StarWarsFFG/.github/foundry-image/Dockerfile .
 mv ~/Downloads/FoundryVTT-Node-14.367.zip ./foundryvtt-14.367.zip
 
 docker build --build-arg FOUNDRY_VERSION=14.367 \
-  --tag ghcr.io/wrycu/foundry-ci:14.367 .
-docker run --rm --entrypoint ls ghcr.io/wrycu/foundry-ci:14.367 -lh /container_cache
+  --tag ghcr.io/starwarsfoundryvtt/foundry-ci:14.367 .
+docker run --rm --entrypoint ls ghcr.io/starwarsfoundryvtt/foundry-ci:14.367 -lh /container_cache
 ```
 
 That last line is the check that matters: the zip should be listed at its download size. If it is
@@ -57,25 +55,25 @@ Push it with a classic PAT carrying `write:packages`, created for the occasion a
 afterward:
 
 ```console
-docker login ghcr.io --username wrycu     # paste the token at the prompt
-docker push ghcr.io/wrycu/foundry-ci:14.367
+docker login ghcr.io --username <your-github-username>     # paste the token at the prompt
+docker push ghcr.io/starwarsfoundryvtt/foundry-ci:14.367
 ```
 
 Keep the digest the push prints - the `sha256:...` on the last line. The workflow pins by digest
 as well as tag, because a tag can be moved by anything holding a `write:packages` token for the
-account and this image is pulled into a job that holds the license.
+organization and this image is pulled into a job that holds the license.
 
-First push only: the package lands private at github.com/users/wrycu/packages. Leave it that way -
-it contains licensed Foundry software.
+First push only: the package lands private at github.com/orgs/StarWarsFoundryVTT/packages. Leave
+it that way.
 
 Then set `FOUNDRY_IMAGE` in `.github/workflows/integration.yml` to the new tag *and* digest, and
 open a PR:
 
 ```yaml
-FOUNDRY_IMAGE: ghcr.io/wrycu/foundry-ci:14.367@sha256:<the digest from the push>
+FOUNDRY_IMAGE: ghcr.io/starwarsfoundryvtt/foundry-ci:14.367@sha256:<the digest from the push>
 ```
 
-If you lose the digest, `docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/wrycu/foundry-ci:14.367`
+If you lose the digest, `docker inspect --format='{{index .RepoDigests 0}}' ghcr.io/starwarsfoundryvtt/foundry-ci:14.367`
 prints it again. Leave the old tag in the registry; it is what a rollback pulls.
 
 Nothing else needs editing. `.github/foundry-world/qa/world.json` carries a `coreVersion` and a
@@ -97,7 +95,7 @@ docker run --rm --name foundry-seed --hostname foundry-ci \
   --publish 127.0.0.1:30000:30000 \
   --volume /tmp/foundry-seed:/data/Config \
   --env FOUNDRY_LICENSE_KEY='<your key>' \
-  ghcr.io/wrycu/foundry-ci:13.351
+  ghcr.io/starwarsfoundryvtt/foundry-ci:13.351
 ```
 
 Open <http://127.0.0.1:30000>, enter the key if asked, and accept the license agreement. Foundry
@@ -116,27 +114,3 @@ Then, under Settings → Secrets and variables → Actions:
  - `FOUNDRY_LICENSE_KEY`: the `license` value out of it
 
 Delete `/tmp/foundry-seed` afterward. The file carries the key in plaintext.
-
-## Rotating `GHCR_TOKEN`
-
-Needed when the token expires, which takes CI down with a `docker login` failure until it is
-replaced. Worth a calendar reminder a week before the expiry date.
-
- 1. Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new
-    token (classic).
- 1. Name it for the job, set the longest expiry you are comfortable with, and tick **`read:packages`
-    only**.
- 1. Repository → Settings → Secrets and variables → Actions → `GHCR_TOKEN` → Update secret.
- 1. Delete the old token.
-
-## Moving the package to the organization
-
-The image sits under a personal account because creating a package in `StarWarsFoundryVTT` needs
-an org owner, and repository admin is not enough. If an owner enables private package creation for
-members, moving it removes `GHCR_TOKEN` entirely:
-
- 1. Rebuild and push the image as `ghcr.io/starwarsfoundryvtt/foundry-ci:<version>`.
- 1. On the package: Package settings → Manage Actions access → add this repository with `Read`.
- 1. In the workflow, point `FOUNDRY_IMAGE` at the new name, change the login step to use
-    `secrets.GITHUB_TOKEN` with `${{ github.actor }}`, and add `packages: read` to `permissions`.
- 1. Delete the `GHCR_TOKEN` secret and revoke the token.

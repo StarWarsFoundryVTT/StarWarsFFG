@@ -15,6 +15,8 @@ on:
 
 permissions:
   contents: read
+  # to pull the Foundry image, which is private to the organization
+  packages: read
 
 concurrency:
   group: integration-${{ github.event.pull_request.number || github.ref }}
@@ -22,7 +24,7 @@ concurrency:
 
 env:
   # Built and pushed by hand, one tag per Foundry version
-  FOUNDRY_IMAGE: ghcr.io/wrycu/foundry-ci:13.351@sha256:0a4d43a805c16eaba2df6ecce32ef4ad0fd4ee3657d99c6f3d2fd508e80227eb
+  FOUNDRY_IMAGE: ghcr.io/starwarsfoundryvtt/foundry-ci:13.351@sha256:0a4d43a805c16eaba2df6ecce32ef4ad0fd4ee3657d99c6f3d2fd508e80227eb
 
 jobs:
   # Decides whether the test job names an environment, which decides whether it waits for approval.
@@ -58,11 +60,10 @@ jobs:
     needs: gate
     runs-on: ubuntu-latest
     environment: ${{ needs.gate.outputs.environment }}
-    timeout-minutes: 30
+    timeout-minutes: 60
 
     steps:
-      # downgraded to v3 since the org allowlists which actions can be taken
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           # `pull_request_target` checks out the base branch by default, which would test nothing
           ref: ${{ needs.gate.outputs.ref }}
@@ -70,22 +71,27 @@ jobs:
           # checkout otherwise leaves a token in .git/config, and .git travels with the tree
           persist-credentials: false
 
-      # First, and in one step: `docker login` leaves the token in ~/.docker/config.json, where
-      # anything the pull request runs later could read it. Pulled here, logged out immediately.
+      # First, and in one step: `docker login` leaves the credential in ~/.docker/config.json,
+      # where anything the pull request runs later could read it. Pulled here, logged out
+      # immediately. `GITHUB_TOKEN` is enough because the package belongs to this organization
+      # and grants this repository read access - no registry secret to leak to a fork PR.
       - name: Pull the Foundry image
         env:
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "$GHCR_TOKEN" | docker login ghcr.io --username wrycu --password-stdin
+          echo "$GITHUB_TOKEN" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
           docker pull "$FOUNDRY_IMAGE"
           docker logout ghcr.io
 
-      # temporarily swapped until we can get new actions added to the allowlist
-      # cache: ${{ github.event_name == 'push' && 'npm' || '' }}
-      - run: node --version
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # Under `pull_request_target` the cache scope is the base branch, so a pull request
+          # writing to it would be handing entries to main and to every other pull request.
+          cache: ${{ github.event_name == 'push' && 'npm' || '' }}
 
       # --ignore-scripts: package.json belongs to the pull request, and its lifecycle scripts
-      # would otherwise run on a runner that is about to hold the licence. Playwright's own
+      # would otherwise run on a runner that is about to hold the license. Playwright's own
       # postinstall is not needed - the browser download is the explicit step below.
       - run: npm ci --ignore-scripts
       - run: npx playwright install --with-deps chromium
@@ -205,13 +211,13 @@ jobs:
         # deliberately unquoted - the value is a list of arguments, checked in the step above
         run: npx playwright test $ARGS
 
-      # video upload disabled until we can get more actions allowed
-      #- uses: actions/upload-artifact@v4
-      #    if: always()
-      #    with:
-      #      name: playwright-report
-      #      path: playwright-report/
-      #      retention-days: 7
+      # Carries the HTML report, and with it the trace and video of anything that failed twice.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 
       - name: Foundry log
         if: failure()
