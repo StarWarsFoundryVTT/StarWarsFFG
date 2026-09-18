@@ -65,8 +65,14 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   /* Always use one worker due to how Foundry works */
   workers: 1,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /*
+   * Reporter to use. See https://playwright.dev/docs/test-reporters
+   *
+   * The report opens itself on a failed run, which is what you want when you are sitting in front
+   * of it and useless on a runner, where it would start a web server nobody can reach. Written
+   * either way - CI uploads the directory as an artifact.
+   */
+  reporter: [['html', { open: process.env.CI ? 'never' : 'on-failure' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Tests navigate with paths only ('/game/'), which resolve against this. */
@@ -78,6 +84,13 @@ export default defineConfig({
     storageState: path.resolve(__dirname, 'tests/.auth/state.json'),
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+    /*
+     * And a recording of the same retry. The trace is the better debugging tool - it carries the
+     * DOM rather than pixels - but a video shows what a sheet actually did, which is worth having
+     * for a failure nobody can reproduce locally. On the same condition so a green run costs
+     * nothing: both are written into the report, which CI uploads.
+     */
+    video: 'on-first-retry',
     /*
      * A click or a fill waits for its target indefinitely by default, so a control that never
      * appears consumes the whole test timeout and is reported as "target closed" - which says
