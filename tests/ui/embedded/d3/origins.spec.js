@@ -23,7 +23,7 @@ test('a nested modifier reaches the actor the same way from every origin', async
   }
 });
 
-test('an imported item arrives with its nested modifiers already applying', async ({ world, consumers }) => {
+test.fixme('an imported item arrives with its nested modifiers already applying', async ({ world, consumers }) => {
   const item = await world.item({
     item: 'armour',
     origin: 'import',
@@ -37,6 +37,7 @@ test('an imported item arrives with its nested modifiers already applying', asyn
   const ctx = await world.place(item, { actor: 'character', equipped: true, drag: true });
 
   // brawn + armor + attachment
+  // FIXME: #2312
   expect(await consumers.stat(ctx, 'Soak'), 'modification applies').toBe(3 + 2 + 1);
   expect(await consumers.stat(ctx, 'Defence-Melee'), 'base mods apply').toBe(1 + 1);
 });

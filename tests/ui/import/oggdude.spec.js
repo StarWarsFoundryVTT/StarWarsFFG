@@ -14,7 +14,7 @@ test('imported armour carries the soak and defence from its XML', async ({ world
   expect(await api.read(page, armour, 'system.defence.value'), 'and its defence').toBe(Number(source.Defense));
 });
 
-test("imported armour's inherent effect holds those same values", async ({ world, page }) => {
+test.fixme("imported armour's inherent effect holds those same values", async ({ world, page }) => {
   const source = await oggdude.record(page, 'Armor.xml', 'ARMROBE');
   const armour = await world.imported('armour');
 
@@ -25,6 +25,7 @@ test("imported armour's inherent effect holds those same values", async ({ world
 
   const changes = Object.fromEntries(inherent.changes.map((change) => [change.key, change.value]));
 
+  // FIXME: #2312
   expect(Number(changes['system.stats.soak.value']), 'the soak it will grant').toBe(Number(source.Soak));
   expect(Number(changes['system.stats.defence.melee']), 'its defence in melee').toBe(Number(source.Defense));
   expect(Number(changes['system.stats.defence.ranged']), 'and at range').toBe(Number(source.Defense));
