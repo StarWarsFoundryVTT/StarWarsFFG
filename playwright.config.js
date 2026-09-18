@@ -72,7 +72,9 @@ export default defineConfig({
    * of it and useless on a runner, where it would start a web server nobody can reach. Written
    * either way - CI uploads the directory as an artifact.
    */
-  reporter: [['html', { open: process.env.CI ? 'never' : 'on-failure' }]],
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }]]
+    : [['html', { open: 'on-failure' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Tests navigate with paths only ('/game/'), which resolve against this. */
