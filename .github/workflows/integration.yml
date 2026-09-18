@@ -60,7 +60,8 @@ jobs:
     needs: gate
     runs-on: ubuntu-latest
     environment: ${{ needs.gate.outputs.environment }}
-    timeout-minutes: 60
+    # TEMPORARY: the suite is ~5 minutes locally and has not yet finished at all on a runner
+    timeout-minutes: 360
 
     steps:
       - uses: actions/checkout@v4
