@@ -37,3 +37,5 @@ Uses Playwright. Steps to run:
 2. `npm install playwright`
 3. `npx playwright install --with-deps`
 4. `npx playwright test --trace on`
+
+The same suite runs on pull requests - you will be asked to make changes to account for failing tests.
