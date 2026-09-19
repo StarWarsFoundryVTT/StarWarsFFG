@@ -8,9 +8,7 @@ on:
     # run at all - the draft check below would skip it and nothing would fire when it was ready.
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-    # TEMPORARY: expanded-tests-1901 is here to prove the job before it reaches main, where
-    # `pull_request_target` would load it from. Drop it before merging.
-    branches: [main, expanded-tests-1901]
+    branches: [main]
   workflow_dispatch:
 
 permissions:
