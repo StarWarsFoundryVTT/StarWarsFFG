@@ -12,8 +12,9 @@
  *   - A changed file under modules/ or templates/ with no rule runs everything, and says so.
  *     Selection is allowed to cost time. It is not allowed to cost coverage.
  *
- * Output is a spec list plus the projects to run them under, because six suites live in the
- * `non-default-settings` project and are invisible to a default run however relevant they are.
+ * Output is a spec list plus the projects to run them under, because suites that live outside
+ * the default project - the opt-in settings ones, and the ones that need a canvas - are
+ * invisible to a default run however relevant they are.
  */
 
 import { execFileSync } from 'node:child_process';
@@ -51,12 +52,20 @@ function allSpecs() {
 /** Which project each spec belongs to, read from the config rather than repeated here. */
 function projectFor(specs) {
   const config = fs.readFileSync(path.join(root, 'playwright.config.js'), 'utf8');
-  const block = config.split('NON_DEFAULT_SETTINGS = [')[1]?.split('];')[0] ?? '';
-  const optIn = [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]);
+  const globs = (name) => {
+    const block = config.split(`${name} = [`)[1]?.split('];')[0] ?? '';
+    return [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]);
+  };
+  const optIn = globs('NON_DEFAULT_SETTINGS');
+  const canvas = globs('CANVAS');
+  const hits = (list, spec) => list.some((glob) => matches(glob, spec));
 
   const projects = new Set();
   for (const spec of specs) {
-    projects.add(optIn.some((glob) => matches(glob, spec)) ? 'non-default-settings' : 'chromium');
+    // Order matters: the opt-in suites draw scenes too, and they run in their own project.
+    if (hits(optIn, spec)) projects.add('non-default-settings');
+    else if (hits(canvas, spec)) projects.add('canvas');
+    else projects.add('chromium');
   }
   return [...projects].sort();
 }

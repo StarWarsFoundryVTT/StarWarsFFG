@@ -222,9 +222,10 @@ jobs:
           # Space-separated project names, or empty for the whole suite.
           SUBSET: ${{ vars.INTEGRATION_PROJECTS }}
         run: |
-          # A full run names both projects: the opt-in suites are in a project of their own and
-          # a default run cannot see them however relevant they are.
-          everything="--project=chromium --project=non-default-settings"
+          # A full run names every project: suites outside the default one - the opt-in settings
+          # ones, and the ones that need a canvas - cannot be seen by a default run however
+          # relevant they are.
+          everything="--project=chromium --project=canvas --project=non-default-settings"
 
           if [ -n "$SUBSET" ]; then
             # TEMPORARY, while the runner is being diagnosed: cuts the run down to a subset.

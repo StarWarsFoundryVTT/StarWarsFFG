@@ -50,6 +50,18 @@ const NON_DEFAULT_SETTINGS = [
   '**/vehicles/pilot-theme.spec.js',
 ];
 
+/**
+ * Suites that put a scene on the canvas.
+ */
+const CANVAS = [
+  '**/combat/combat.spec.js',
+  '**/combat/generic-slots-off.spec.js',
+  '**/combat/initiative-rule.spec.js',
+  '**/combat/removal-actions.spec.js',
+  '**/combat/turn-marker.spec.js',
+  '**/status/status-effects.spec.js',
+];
+
 /*
  * Force GPU locally, do not force in CI (which has no GPU)
  */
@@ -117,13 +129,28 @@ export default defineConfig({
        * run is cut short before teardown, leave the world changed for every run after it - so they
        * are opted into rather than paid for by default.
        */
-      testIgnore: NON_DEFAULT_SETTINGS,
+      testIgnore: [...NON_DEFAULT_SETTINGS, ...CANVAS],
       use: {
         ...devices['Desktop Chrome'],
         viewport: {
           width: 1440,
           height: 900
         },
+        launchOptions: { args: launchArgs },
+      },
+    },
+    {
+      /*
+       * The suites that need a scene drawn, and so pay for one. Kept as a project of their own
+       * because the canvas is a per-client setting: a page either has it or does not, and
+       * changing it costs a reload - once per project rather than once per spec.
+       */
+      name: 'canvas',
+      testMatch: CANVAS,
+      testIgnore: NON_DEFAULT_SETTINGS,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
         launchOptions: { args: launchArgs },
       },
     },
