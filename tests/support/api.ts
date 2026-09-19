@@ -1696,10 +1696,12 @@ export async function toggleTokenCombat(page: Page, sceneUuid: Uuid, tokenId: st
     '#token-hud [data-action="toggleCombat"], #token-hud [data-action="combat"], #token-hud .control-icon.combat',
   ).first();
 
+  // longer wait time for CI, which has no GPU
+  const appear = process.env.CI ? 8000 : 2000;
   let opened = false;
   for (let attempt = 0; attempt < 3 && !opened; attempt++) {
     await page.mouse.click(target.x, target.y, { button: 'right' });
-    opened = await control.waitFor({ state: 'visible', timeout: 2000 })
+    opened = await control.waitFor({ state: 'visible', timeout: appear })
       .then(() => true).catch(() => false);
   }
 

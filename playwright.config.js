@@ -85,6 +85,10 @@ export default defineConfig({
   /* Always use one worker due to how Foundry works */
   workers: 1,
   /*
+   * Extend timeout for CI, which has no GPU
+   */
+  timeout: process.env.CI ? 120_000 : 30_000,
+  /*
    * Reporter to use. See https://playwright.dev/docs/test-reporters
    *
    * The report opens itself on a failed run, which is what you want when you are sitting in front
@@ -117,7 +121,7 @@ export default defineConfig({
      * appears consumes the whole test timeout and is reported as "target closed" - which says
      * nothing about what was being waited for. Bounded, the same failure names the selector.
      */
-    actionTimeout: 10_000,
+    actionTimeout: process.env.CI ? 30_000 : 10_000,
   },
 
   /* Configure projects for major browsers */
@@ -179,7 +183,7 @@ export default defineConfig({
   ],
   // custom stuff added here
   expect: {
-    timeout: 5_000,
+    timeout: process.env.CI ? 15_000 : 5_000,
   },
 });
 
