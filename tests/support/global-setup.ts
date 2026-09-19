@@ -8,9 +8,12 @@ import { isSeeded, seed } from './seed';
  * World settings the suite depends on, and the values the system ships with. Anything a test
  * flips belongs here, so a run that never reached teardown cannot change what the next one tests.
  */
-const WORLD_DEFAULTS: Record<string, unknown> = {
-  useGenericSlots: true,
-};
+const WORLD_DEFAULTS: [namespace: string, key: string, value: unknown][] = [
+  ['starwarsffg', 'useGenericSlots', true],
+  // The suite runs most projects with the canvas off, and leaves it that way - see
+  // `useCanvas` in fixtures.ts. Put back here so a run always starts from the same world.
+  ['core', 'noCanvas', false],
+];
 
 async function globalSetup(config: FullConfig) {
   // TODO: this should probably be done before each test instead of globally
@@ -61,26 +64,28 @@ async function globalSetup(config: FullConfig) {
     await expect(page.locator('#destinyDark')).toBeVisible({ timeout: 30_000 });
   };
 
-  for (const [key, value] of Object.entries(WORLD_DEFAULTS)) {
-    const before = await page.evaluate((key) => game.settings.get('starwarsffg', key), key);
+  for (const [namespace, key, value] of WORLD_DEFAULTS) {
+    const before = await page.evaluate(
+      ({ namespace, key }) => game.settings.get(namespace, key), { namespace, key });
     if (before === value) continue;
 
-    console.log(`[setup] ${key} is ${before}, restoring the default ${value} (a run ended before its teardown)`);
+    console.log(`[setup] ${namespace}.${key} is ${before}, restoring the default ${value} (a run ended before its teardown)`);
     // One key per call, because the reload destroys the context this is evaluating in and anything
     // after it in a shared loop would never run.
-    await page.evaluate(async ({ key, value }) => {
-      await game.settings.set('starwarsffg', key, value);
-    }, { key, value }).catch((err: unknown) => {
+    await page.evaluate(async ({ namespace, key, value }) => {
+      await game.settings.set(namespace, key, value);
+    }, { namespace, key, value }).catch((err: unknown) => {
       if (!/context was destroyed|Execution context|navigation/i.test(String(err))) throw err;
     });
     await settled();
 
     // Verified rather than assumed: a restore that does not take leaves every test in the run
     // exercising something other than what it says it does, and says nothing about it.
-    const after = await page.evaluate((key) => game.settings.get('starwarsffg', key), key);
+    const after = await page.evaluate(
+      ({ namespace, key }) => game.settings.get(namespace, key), { namespace, key });
     if (after !== value) {
       throw new Error(
-        `Could not restore the world setting "${key}": it is ${after}, expected ${value}.\n` +
+        `Could not restore the world setting "${namespace}.${key}": it is ${after}, expected ${value}.\n` +
         'Set it in the world by hand before running the suite - until it is, the tests that ' +
         'depend on it are testing something else.',
       );

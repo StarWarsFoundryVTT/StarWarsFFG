@@ -66,7 +66,7 @@ const CANVAS = [
  * Force GPU locally, do not force in CI (which has no GPU)
  */
 const launchArgs = process.env.CI
-  ? ['--enable-unsafe-swiftshader']
+  ? []
   : ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl-egl'];
 
 /**

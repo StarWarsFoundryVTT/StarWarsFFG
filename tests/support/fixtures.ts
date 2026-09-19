@@ -35,9 +35,9 @@ async function settle(page: Page): Promise<void> {
 }
 
 /**
- * Put `core.noCanvas` where this project needs it, and say so if the world will remember
+ * Put `core.noCanvas` where this project needs it
  */
-async function useCanvas(page: Page, wanted: boolean): Promise<boolean | null> {
+async function useCanvas(page: Page, wanted: boolean, projectName: string): Promise<void> {
   const state = await page.evaluate(() => {
     try {
       return {
@@ -52,11 +52,14 @@ async function useCanvas(page: Page, wanted: boolean): Promise<boolean | null> {
   // Not a setting in this build - nothing to do, and the suite is no worse off than before.
   if (!state) {
     console.log('[canvas] core.noCanvas is not a setting in this build - leaving it alone');
-    return null;
+    return;
   }
 
   const noCanvas = !wanted;
-  if (state.value === noCanvas) return null;
+  if (state.value === noCanvas) {
+    console.log(`[canvas] ${wanted ? 'on' : 'off'} already, as this project wants it`);
+    return;
+  }
 
   // The set can reload the page out from under the call, which is the point - the canvas is
   // built during load and nothing short of a reload adds or removes it.
@@ -69,6 +72,7 @@ async function useCanvas(page: Page, wanted: boolean): Promise<boolean | null> {
   await settle(page);
 
   const after = await page.evaluate(() => game.settings.get('core', 'noCanvas'));
+  console.log(`[canvas] turned ${wanted ? 'on' : 'off'} for project "${projectName}" (was ${state.value ? 'off' : 'on'}, scope ${state.scope})`);
   if (after !== noCanvas) {
     throw new Error(
       `Could not set core.noCanvas to ${noCanvas}: it is ${after}.\n` +
@@ -77,14 +81,6 @@ async function useCanvas(page: Page, wanted: boolean): Promise<boolean | null> {
     );
   }
 
-  if (state.scope !== 'client') {
-    console.log(
-      `[canvas] core.noCanvas is scoped "${state.scope}", not "client" - it outlives this ` +
-      'browser, so it is restored at the end of the worker. A killed worker will leave it set.',
-    );
-    return state.value;
-  }
-  return null;
 }
 
 export const test = base.extend<Fixtures, WorkerFixtures>({
@@ -102,14 +98,9 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
     await page.goto('/game');
     await settle(page);
 
-    const restore = await useCanvas(page, CANVAS_PROJECTS.has(workerInfo.project.name));
+    await useCanvas(page, CANVAS_PROJECTS.has(workerInfo.project.name), workerInfo.project.name);
 
     await use(page);
-
-    if (restore !== null) {
-      await page.evaluate((v) => game.settings.set('core', 'noCanvas', v), restore)
-        .catch(() => { /* the set reloads, and the context is going away regardless */ });
-    }
     await context.close();
   }, { scope: 'worker' }],
 

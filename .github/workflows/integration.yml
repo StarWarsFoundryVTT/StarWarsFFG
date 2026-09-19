@@ -269,7 +269,8 @@ jobs:
         if: always()
         env:
           FOUNDRY_URL: http://127.0.0.1:30000
-        run: node scripts/probe.mjs || true
+        # Not `|| true`: that hid a probe that died in 12s and read as a fast one.
+        run: node scripts/probe.mjs || echo "PROBE FAILED (exit $?) - the numbers above are not a measurement" 
 
       - name: Resources
         if: always()
