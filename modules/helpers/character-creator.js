@@ -573,7 +573,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     let combinedPurchases = {};
     if (this.tempActor) {
       combinedPurchases = Object.fromEntries(
-        Object.keys(this.tempActor.system.skills).map(key => [key, 0])
+        Object.keys(this.tempActor.system.skills).map(key => [key.replace(" ", " "), 0])
       ); // default to 0 as 0 is not > undefined (for use in the template)
     }
     const careerPurchases = {};
@@ -1263,7 +1263,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
   async handleSkillModify(event) {
     const target = $(event.currentTarget);
-    const skill = target.data("target");
+    const skill = target.data("target").replace(" ", " ");
     const direction = target.data("direction");
     const curValue = target.data("value");
     const skillMode = target.data("mode");
