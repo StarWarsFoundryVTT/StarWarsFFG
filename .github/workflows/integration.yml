@@ -58,7 +58,13 @@ jobs:
 
   integration:
     needs: gate
-    runs-on: ubuntu-latest
+    # A larger runner, when one is set. `ubuntu-latest` is 4 vCPU / 16 GB, shared between
+    # Chromium, a software rasteriser and the Foundry server, and two runs now have failed in
+    # ways that read as contention between them. Set the `INTEGRATION_RUNNER` variable (repo or
+    # org) to a larger runner's label to move; unset it to come straight back. Note that
+    # `workers` is pinned at 1 in playwright.config.js because the world cannot be shared, so
+    # more cores buy elbow room between those three processes, not a shorter run by parallelism.
+    runs-on: ${{ vars.INTEGRATION_RUNNER || 'ubuntu-latest' }}
     environment: ${{ needs.gate.outputs.environment }}
     # TEMPORARY: the suite is ~5 minutes locally and has not yet finished at all on a runner
     timeout-minutes: 360
@@ -168,32 +174,78 @@ jobs:
       - name: Wait for Foundry
         run: ./scripts/wait-for-foundry.sh http://127.0.0.1:30000
 
+      # Two runs have now failed in ways that only make sense if the machine was starved -
+      # a five-property page.evaluate taking 1.6s, then the Foundry server losing documents it
+      # had just written. Neither the Playwright report nor the job log says what the box was
+      # doing, so measure it rather than guessing at another Chromium flag.
+      - name: Machine
+        run: |
+          echo "cpus: $(nproc)"
+          free -h
+          df -h /
+          docker stats --no-stream
+
+      - name: Start the resource sampler
+        run: |
+          cat > "${RUNNER_TEMP}/sample.sh" <<'SAMPLER'
+          #!/bin/bash
+          # `docker stats` on its own is a per-container view; the load average and MemAvailable
+          # are what say whether the runner as a whole ran out.
+          while true; do
+            printf '%s load=%s mem_avail=%skB %s\n' \
+              "$(date -u +%H:%M:%S)" \
+              "$(cut -d' ' -f1-3 /proc/loadavg)" \
+              "$(awk '/MemAvailable/{print $2}' /proc/meminfo)" \
+              "$(docker stats --no-stream --format '{{.Name}} cpu={{.CPUPerc}} mem={{.MemUsage}}' 2>/dev/null | tr '\n' ' ')"
+            sleep 10
+          done
+          SAMPLER
+          chmod +x "${RUNNER_TEMP}/sample.sh"
+          nohup "${RUNNER_TEMP}/sample.sh" > "${RUNNER_TEMP}/resources.log" 2>&1 &
+          echo "sampler pid $!"
+
+      # Before the suite has run a thing. If a no-op round trip already costs a second on an
+      # idle runner, the suite is not what makes it slow and nothing in the tests will fix it.
+      # If it is a few milliseconds here and slow later, the suite degrades something, and the
+      # pair of numbers says which.
+      - name: Probe (before)
+        env:
+          FOUNDRY_URL: http://127.0.0.1:30000
+        run: node scripts/probe.mjs
+
       # On a pull request, only what the change calls for; on main, the lot. `affected.mjs` fails
       # open, so an unmapped change still runs everything.
       - name: Choose the tests
         id: choose
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
+          # Space-separated project names, or empty for the whole suite.
+          SUBSET: ${{ vars.INTEGRATION_PROJECTS }}
         run: |
           # A full run names both projects: the opt-in suites are in a project of their own and
           # a default run cannot see them however relevant they are.
           everything="--project=chromium --project=non-default-settings"
 
-          if [ -z "$BASE" ]; then
-            echo "args=$everything" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
+          if [ -n "$SUBSET" ]; then
+            # TEMPORARY, while the runner is being diagnosed: cuts the run down to a subset.
+            # "non-default-settings" is the useful one - seven specs, about three minutes, and it
+            # holds three that draw a scene and two that do not, which is the comparison worth
+            # having. Unset the variable to go back to the lot.
+            echo "SUBSET is set - running only: $SUBSET" >&2
+            args=""
+            for project in $SUBSET; do args="$args --project=$project"; done
+          elif [ -z "$BASE" ]; then
+            args="$everything"
           # `affected.mjs` names the projects itself. If it cannot, that is a broken selector and
           # not a reason to test less, so the whole suite runs and the log says why.
-          if ! args="$(node scripts/affected.mjs "$BASE")"; then
+          elif ! args="$(node scripts/affected.mjs "$BASE")"; then
             echo "affected.mjs failed - running everything instead" >&2
             args="$everything"
           fi
 
           # The selection is built from filenames in the pull request, and filenames can contain
-          # anything. Nothing outside this set has any business in a spec path, and a newline
-          # would forge a step output.
+          # anything - and SUBSET is hand-typed into a repository variable. Nothing outside this
+          # set has any business in a spec path, and a newline would forge a step output.
           case "$args" in
             *[!A-Za-z0-9=./_' '-]*)
               echo "unexpected characters in the selection - running everything instead" >&2
@@ -212,6 +264,24 @@ jobs:
         # deliberately unquoted - the value is a list of arguments, checked in the step above
         run: npx playwright test $ARGS
 
+      - name: Probe (after)
+        if: always()
+        env:
+          FOUNDRY_URL: http://127.0.0.1:30000
+        run: node scripts/probe.mjs || true
+
+      - name: Resources
+        if: always()
+        run: |
+          echo "--- worst 20 samples by load ---"
+          sort -t= -k2 -rn "${RUNNER_TEMP}/resources.log" | head -20 || true
+          echo "--- last 20 samples ---"
+          tail -20 "${RUNNER_TEMP}/resources.log" || true
+          df -h /
+          # Into the report directory so it travels in the artifact that already gets downloaded
+          mkdir -p playwright-report
+          cp "${RUNNER_TEMP}/resources.log" playwright-report/ || true
+
       # Carries the HTML report, and with it the trace and video of anything that failed twice.
       - uses: actions/upload-artifact@v4
         if: always()
@@ -220,9 +290,11 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
+      # Always, not just on failure: the run that lost documents needs the server's side of it,
+      # and a green run is the baseline to compare that against.
       - name: Foundry log
-        if: failure()
-        run: docker logs foundry-ci 2>&1 | tail -100
+        if: always()
+        run: docker logs foundry-ci 2>&1 | tail -300
 
       - name: Stop Foundry
         if: always()
