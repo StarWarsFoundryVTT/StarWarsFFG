@@ -1,4 +1,5 @@
 import ActorHelpers, {xpLogEarn, xpLogSpend} from "./actor-helpers.js";
+import ItemHelpers from "./item-helpers.js";
 import DiceHelpers from "./dice-helpers.js";
 import {sortDataBy, addIfNotExist} from "../actors/actor-sheet-ffg.js";
 
@@ -572,7 +573,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
     let combinedPurchases = {};
     if (this.tempActor) {
       combinedPurchases = Object.fromEntries(
-        Object.keys(this.tempActor.system.skills).map(key => [key.replace(" ", " "), 0])
+        Object.keys(this.tempActor.system.skills).map(key => [key, 0])
       ); // default to 0 as 0 is not > undefined (for use in the template)
     }
     const careerPurchases = {};
@@ -1080,28 +1081,41 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return;
     }
 
-    CONFIG.logger.debug("updating XP for temp actor");
+    await this.applySelections(tempActor);
+
+    CONFIG.logger.debug("assigning to local actor record");
+    this.tempActor = tempActor;
+    CONFIG.logger.debug("re-rendering");
+    this.render();
+  }
+
+  /**
+   * Apply everything the wizard has recorded onto an actor: XP, items, the free skill ranks granted
+   * by the career and specialization, and the talents which were paid for.
+   * Used for both the preview and the finished character, so the two cannot drift apart
+   * @param actor - the actor to apply the selections to
+   * @returns {Promise<void>}
+   */
+  async applySelections(actor) {
+    CONFIG.logger.debug("updating XP for the actor");
     const { total: totalXp, available: availableXp } = this.calcXp();
-    if (this.data.selected.species?.uuid) {
-      await tempActor.update({
-        "system.experience": {
-          total: totalXp,
-          available: availableXp,
-        }
-      });
-    }
+    await actor.update({
+      "system.experience": {
+        total: totalXp,
+        available: availableXp,
+      }
+    });
 
     CONFIG.logger.debug("applying XP purchases");
-    // apply purchases
     for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
       const updateKey = `system.characteristics.${characteristicPurchase.key}.value`;
-      const newValue = tempActor.system.characteristics[characteristicPurchase.key].value + 1;
-      await tempActor.update({[updateKey]: newValue})
+      const newValue = actor.system.characteristics[characteristicPurchase.key].value + 1;
+      await actor.update({[updateKey]: newValue})
     }
     for (const skillPurchase of this.data.purchases.xp.skills) {
       const updateKey = `system.skills.${skillPurchase.key}.rank`;
-      const newValue = tempActor.system.skills[skillPurchase.key].rank + 1;
-      await tempActor.update({[updateKey]: newValue})
+      const newValue = actor.system.skills[skillPurchase.key].rank + 1;
+      await actor.update({[updateKey]: newValue})
     }
 
     // add items to the actor
@@ -1132,69 +1146,96 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       items.push(this.data.selected.specialization);
     }
     // motivations
-    for (const item of this.data.selected.motivations) {
-      if (item?.uuid) {
-        items.push(item);
+    for (const motivation of this.data.selected.motivations) {
+      if (motivation?.item?.uuid) {
+        items.push(motivation.item);
       }
     }
-    CONFIG.logger.debug("adding the following items to the temp actor");
+    // specializations and force powers bought with XP (learned talents are later)
+    for (const purchase of this.data.purchases.xp.specializations) {
+      if (purchase?.item?.uuid) {
+        items.push(purchase.item);
+      }
+    }
+    for (const purchase of this.data.purchases.xp.forcePowers) {
+      if (purchase?.item?.uuid) {
+        items.push(purchase.item);
+      }
+    }
+    CONFIG.logger.debug("adding the following items to the actor");
     CONFIG.logger.debug(items);
-    await tempActor.createEmbeddedDocuments("Item", items);
+    await actor.createEmbeddedDocuments("Item", items);
 
     // apply career skill ranks from career and specialization
-    const careerItem = tempActor.items.find(i => i.type === "career");
-    if (careerItem) {
-      for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
-        const nk = new Date().getTime();
-        await careerItem.update({
-          "system.attributes": {
-            [`attr${nk}`]: {
-              modtype: "Skill Rank",
-              mod: skillPurchase,
-              value: 1,
-            },
-          }
-        });
-        const AE = {
-          name: `attr${nk}`,
-          changes: [{
-            key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: 1,
-          }],
-        };
-        await careerItem.createEmbeddedDocuments("ActiveEffect", [AE]);
-      }
-    }
+    await this.grantFreeSkillRanks(
+      actor.items.find(i => i.type === "career"),
+      this.data.selected.careerCareerSkillRanks,
+    );
+    await this.grantFreeSkillRanks(
+      actor.items.find(i => i.type === "specialization" && i.name === this.data.selected.specialization?.name),
+      this.data.selected.specializationCareerSkillRanks,
+    );
 
-    const specializationItem = tempActor.items.find(i => i.type === "specialization" && i.name === this.data.selected.specialization?.name);
-    if (specializationItem) {
-      for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
-        const nk = new Date().getTime();
-        await specializationItem.update({
-          "system.attributes": {
-            [`attr${nk}`]: {
-              modtype: "Skill Rank",
-              mod: skillPurchase,
-              value: 1,
-            },
-          }
-        });
-        const AE = {
-          name: `attr${nk}`,
-          changes: [{
-            key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: 1,
-          }],
-        };
-        await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
-      }
+    await this.applyTalentPurchases(actor);
+  }
+
+  /**
+   * Grant the free skill ranks a career or specialization hands out, as an attribute on the item
+   * plus the Active Effect which actually moves the rank
+   * Note: the keys are random rather than the time - two ranks granted in the same millisecond used
+   * to share one, which left one skill with both ranks and the other with none
+   * @param item - the career or specialization item granting the ranks
+   * @param skills - array of skill names to grant a rank in
+   * @returns {Promise<void>}
+   */
+  async grantFreeSkillRanks(item, skills) {
+    if (!item) {
+      return;
     }
-    CONFIG.logger.debug("assigning to local actor record");
-    this.tempActor = tempActor;
-    CONFIG.logger.debug("re-rendering");
-    this.render();
+    for (const skillPurchase of skills) {
+      const nk = `attr${foundry.utils.randomID()}`;
+      await item.update({
+        "system.attributes": {
+          [nk]: {
+            modtype: "Skill Rank",
+            mod: skillPurchase,
+            value: 1,
+          },
+        }
+      });
+      const AE = {
+        name: nk,
+        changes: [{
+          key: `system.skills.${skillPurchase}.rank`,
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: 1,
+        }],
+      };
+      await item.createEmbeddedDocuments("ActiveEffect", [AE]);
+    }
+  }
+
+  /**
+   * Mark the talents and force power upgrades which were paid for as learned on the items the actor
+   * was given, and un-suspend the Active Effects behind them
+   * The purchases are recorded against the name of the specialization or force power they are in
+   * @param actor - the actor holding the specializations and force powers
+   * @returns {Promise<void>}
+   */
+  async applyTalentPurchases(actor) {
+    for (const talentPurchase of this.data.purchases.xp.talents) {
+      const parent = actor.items.find(
+        i => i.name === talentPurchase.specName && ["specialization", "forcepower"].includes(i.type)
+      );
+      if (!parent) {
+        CONFIG.logger.warn(`Unable to find ${talentPurchase.specName}, skipping talent ${talentPurchase.key}`);
+        continue;
+      }
+      const talentKey = parent.type === "forcepower" ? "upgrades" : "talents";
+      await parent.update({[`system.${talentKey}.${talentPurchase.key}.islearned`]: true});
+      // the Active Effects granting the talent are created suspended, so learning it has to wake them
+      await ItemHelpers.syncAEStatus(parent, parent.getEmbeddedCollection("ActiveEffect"));
+    }
   }
 
   async handleCharacteristicModify(event) {
@@ -1222,7 +1263,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
 
   async handleSkillModify(event) {
     const target = $(event.currentTarget);
-    const skill = target.data("target").replace(" ", " ");
+    const skill = target.data("target");
     const direction = target.data("direction");
     const curValue = target.data("value");
     const skillMode = target.data("mode");
@@ -1695,66 +1736,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       return;
     }
 
-    const xp = await this.calcXp();
+    const xp = this.calcXp();
     const totalXp = xp.total;
     const availableXp = xp.available;
 
-    // grant XP
-    await newActor.update({
-      "system.experience": {
-        total: totalXp,
-        available: availableXp,
-      }
-    });
-
-    // apply XP purchases
-    for (const characteristicPurchase of this.data.purchases.xp.characteristics) {
-      const updateKey = `system.characteristics.${characteristicPurchase.key}.value`;
-      const newValue = newActor.system.characteristics[characteristicPurchase.key].value + 1;
-      await newActor.update({[updateKey]: newValue})
-    }
-    for (const skillPurchase of this.data.purchases.xp.skills) {
-      const updateKey = `system.skills.${skillPurchase.key}.rank`;
-      const newValue = newActor.system.skills[skillPurchase.key].rank + 1;
-      await newActor.update({[updateKey]: newValue})
-    }
-
-    // add actor items to the actor
-    const items = [];
-    // the various item types are in slightly different formats, so let's add them explicitly
-    // backgrounds
-    for (const backKey of Object.keys(this.data.selected.background)) {
-      if (this.data.selected.background[backKey]?.uuid) {
-        items.push(this.data.selected.background[backKey]);
-      }
-    }
-    // obligations
-    for (const item of this.data.selected.obligations) {
-      if (item?.uuid) {
-        items.push(item);
-      }
-    }
-    // species
-    if (this.data.selected.species?.uuid) {
-      items.push(this.data.selected.species);
-    }
-    // career (skill ranks are later)
-    if (this.data.selected.career?.uuid) {
-      items.push(this.data.selected.career);
-    }
-    // specialization (skill ranks are later)
-    if (this.data.selected.specialization?.uuid) {
-      items.push(this.data.selected.specialization);
-    }
-    // motivations
-    for (const item of this.data.selected.motivations) {
-      if (item?.item?.uuid) {
-        items.push(item);
-      }
-    }
-
-    CONFIG.logger.debug(`Granting the following items: ${JSON.stringify(items)}`);
-    await newActor.createEmbeddedDocuments("Item", items);
+    await this.applySelections(newActor);
 
     // apply credit purchases
     const credits = await this.calcCredits();
@@ -1780,56 +1766,6 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         value: obligation.available,
       }
     }});
-
-    const careerItem = newActor.items.find(i => i.type === "career");
-    if (careerItem) {
-      for (const skillPurchase of this.data.selected.careerCareerSkillRanks) {
-        const nk = new Date().getTime();
-        await careerItem.update({
-          "system.attributes": {
-            [`attr${nk}`]: {
-              modtype: "Skill Rank",
-              mod: skillPurchase,
-              value: 1,
-            },
-          }
-        });
-        const AE = {
-          name: `attr${nk}`,
-          changes: [{
-            key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: 1,
-          }],
-        };
-        await careerItem.createEmbeddedDocuments("ActiveEffect", [AE]);
-      }
-    }
-
-    const specializationItem = newActor.items.find(i => i.type === "specialization" && i.name === this.data.selected.specialization?.name);
-    if (specializationItem) {
-      for (const skillPurchase of this.data.selected.specializationCareerSkillRanks) {
-        const nk = new Date().getTime();
-        await specializationItem.update({
-          "system.attributes": {
-            [`attr${nk}`]: {
-              modtype: "Skill Rank",
-              mod: skillPurchase,
-              value: 1,
-            },
-          }
-        });
-        const AE = {
-          name: `attr${nk}`,
-          changes: [{
-            key: `system.skills.${skillPurchase}.rank`,
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-            value: 1,
-          }],
-        };
-        await specializationItem.createEmbeddedDocuments("ActiveEffect", [AE]);
-      }
-    }
 
     await xpLogEarn(newActor, totalXp, totalXp, totalXp, "Initial State");
     await xpLogSpend(newActor, "Character Creation Changes", totalXp - availableXp, availableXp, totalXp);
