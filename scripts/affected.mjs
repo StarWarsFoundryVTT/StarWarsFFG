@@ -54,7 +54,11 @@ function projectFor(specs) {
   const config = fs.readFileSync(path.join(root, 'playwright.config.js'), 'utf8');
   const globs = (name) => {
     const block = config.split(`${name} = [`)[1]?.split('];')[0] ?? '';
-    return [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]);
+    const found = [...block.matchAll(/'([^']+)'/g)].map((m) => m[1]);
+    // Read out of the config as text, so a rename or a reformat would quietly return nothing -
+    // and a spec filed under the wrong project is ignored by it and runs nowhere at all.
+    if (!found.length) throw new Error(`${name} is not a list of globs in playwright.config.js`);
+    return found;
   };
   const optIn = globs('NON_DEFAULT_SETTINGS');
   const canvas = globs('CANVAS');
