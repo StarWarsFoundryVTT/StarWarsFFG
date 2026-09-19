@@ -18,6 +18,7 @@
   * Fixes calculation of talent costs for drag and drop talents for Genesys (Rysarian) ([#2175](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2175))
   * Fixes the scaling of the Adversary and minion count icons when the grid size is changed. (Rysarian) ([#1589](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1589))
   * Rival and Nemesis sheets now explain that their encumbrance threshold is not derived from Brawn ([#2234](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2234))
+  * Initiative can be rolled again when generic combat slots are turned off ([#2248](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2248))
 
 `2.0.3`
 * Enhancements:

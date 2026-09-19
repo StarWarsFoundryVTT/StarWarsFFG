@@ -754,6 +754,10 @@ export class CombatFFG extends Combat {
   /** @override */
   async prepareDerivedData() {
     super.prepareDerivedData();
+    if (!game.settings.get("starwarsffg", "useGenericSlots")) {
+      // the core tracker renders the combatants directly and never reads customTurns
+      return;
+    }
     CONFIG.logger.debug("Preparing combat data for custom tracker!");
 
     const newInitiatives = {
