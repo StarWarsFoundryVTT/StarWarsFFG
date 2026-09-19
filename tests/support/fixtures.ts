@@ -37,32 +37,14 @@ async function settle(page: Page): Promise<void> {
 /**
  * Put `core.noCanvas` where this project needs it
  */
-async function useCanvas(page: Page, wanted: boolean, projectName: string): Promise<void> {
-  const state = await page.evaluate(() => {
-    try {
-      return {
-        value: game.settings.get('core', 'noCanvas') as boolean,
-        scope: (game.settings.settings.get('core.noCanvas') as any)?.scope ?? 'unknown',
-      };
-    } catch {
-      return null;
-    }
-  });
-
-  // Not a setting in this build - nothing to do, and the suite is no worse off than before.
-  if (!state) {
-    console.log('[canvas] core.noCanvas is not a setting in this build - leaving it alone');
-    return;
-  }
-
+async function useCanvas(page: Page, wanted: boolean): Promise<void> {
   const noCanvas = !wanted;
-  if (state.value === noCanvas) {
-    console.log(`[canvas] ${wanted ? 'on' : 'off'} already, as this project wants it`);
-    return;
-  }
+  const current = await page.evaluate(() => {
+    try { return game.settings.get('core', 'noCanvas') as boolean; } catch { return null; }
+  });
+  if (current === null || current === noCanvas) return;
 
-  // The set can reload the page out from under the call, which is the point - the canvas is
-  // built during load and nothing short of a reload adds or removes it.
+  // The set reloads the page, which is the point - the canvas is built during load.
   await page.evaluate(
     (v) => game.settings.set('core', 'noCanvas', v), noCanvas,
   ).catch((err: unknown) => {
@@ -72,15 +54,9 @@ async function useCanvas(page: Page, wanted: boolean, projectName: string): Prom
   await settle(page);
 
   const after = await page.evaluate(() => game.settings.get('core', 'noCanvas'));
-  console.log(`[canvas] turned ${wanted ? 'on' : 'off'} for project "${projectName}" (was ${state.value ? 'off' : 'on'}, scope ${state.scope})`);
   if (after !== noCanvas) {
-    throw new Error(
-      `Could not set core.noCanvas to ${noCanvas}: it is ${after}.\n` +
-      'With the canvas on, a page.evaluate costs about 674ms on a runner with no GPU and the ' +
-      'suite takes hours; with it off, 0.6ms. Worth fixing rather than running around.',
-    );
+    throw new Error(`Could not set core.noCanvas to ${noCanvas}: it is ${after}.`);
   }
-
 }
 
 export const test = base.extend<Fixtures, WorkerFixtures>({
@@ -98,7 +74,7 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
     await page.goto('/game');
     await settle(page);
 
-    await useCanvas(page, CANVAS_PROJECTS.has(workerInfo.project.name), workerInfo.project.name);
+    await useCanvas(page, CANVAS_PROJECTS.has(workerInfo.project.name));
 
     await use(page);
     await context.close();

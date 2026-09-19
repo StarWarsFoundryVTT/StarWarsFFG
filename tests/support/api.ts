@@ -1695,34 +1695,7 @@ export async function toggleTokenCombat(page: Page, sceneUuid: Uuid, tokenId: st
     // transform turns into canvas ones, and the canvas element places on the page.
     const centre = canvas.stage.toGlobal({ x: token.center.x, y: token.center.y });
     const canvasRect = canvas.app.view.getBoundingClientRect();
-    const x = canvasRect.left + centre.x;
-    const y = canvasRect.top + centre.y;
-
-    /*
-     * Which token the canvas would hand this click to. `addToken` spaces them two grid squares
-     * apart so they cannot overlap, but a test that places its own tokens, or a scene that
-     * gained one another way, would silently toggle whichever is on top - and the failure would
-     * read as the wrong combatant joining rather than as a click that went to the wrong place.
-     */
-    const size = canvas.grid.size;
-    const under = canvas.tokens.placeables.filter((t: any) =>
-      token.center.x >= t.document.x && token.center.x < t.document.x + t.document.width * size &&
-      token.center.y >= t.document.y && token.center.y < t.document.y + t.document.height * size);
-    if (under.length > 1 && under[under.length - 1]?.id !== tokenId) {
-      return {
-        problem: `${under.length} tokens overlap where ${tokenId} is (` +
-          `${under.map((t: any) => t.id).join(', ')}), and ${under[under.length - 1]?.id} is on ` +
-          'top - a click there would toggle that one instead. Place them apart.',
-      };
-    }
-
-    // What is actually at that point. A right-click that reaches anything but the canvas will
-    // not open a HUD, and "the HUD offered nothing" says nothing about why.
-    const top = document.elementFromPoint(x, y) as HTMLElement | null;
-    const over = !top || top === canvas.app.view ? null
-      : `${top.tagName.toLowerCase()}${top.id ? `#${top.id}` : ''}${
-        typeof top.className === 'string' && top.className ? `.${top.className.trim().split(/\s+/).join('.')}` : ''}`;
-    return { x, y, over };
+    return { x: canvasRect.left + centre.x, y: canvasRect.top + centre.y };
   }, { sceneUuid, tokenId });
 
   if ('problem' in target) throw new Error(`Toggling token ${tokenId}: ${target.problem}`);
@@ -1746,13 +1719,7 @@ export async function toggleTokenCombat(page: Page, sceneUuid: Uuid, tokenId: st
       [...document.querySelectorAll('#token-hud [data-action]')]
         .map((el: any) => el.dataset.action).join(', ') || 'nothing');
     throw new Error(
-      `Toggling token ${tokenId}: its HUD offered no combat control. It offers: ${offered}.\n` +
-      `  right-clicked (${Math.round(target.x)}, ${Math.round(target.y)}), ` +
-      `which is over ${target.over ?? 'the canvas'}` +
-      (target.over
-        ? ' - Foundry lays its own chrome over the canvas, and a click that lands on it never '
-          + 'reaches the token'
-        : ', so the click reached the right place and the HUD did not open'),
+      `Toggling token ${tokenId}: its HUD offered no combat control. It offers: ${offered}`,
     );
   }
 

@@ -145,9 +145,8 @@ export default defineConfig({
     },
     {
       /*
-       * The suites that need a scene drawn, and so pay for one. Kept as a project of their own
-       * because the canvas is a per-client setting: a page either has it or does not, and
-       * changing it costs a reload - once per project rather than once per spec.
+       * The suites that need a scene drawn, and so pay for one. A project of their own because
+       * turning the canvas on or off costs a page reload - once per project, not once per spec.
        */
       name: 'canvas',
       testMatch: CANVAS,
