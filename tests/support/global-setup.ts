@@ -15,8 +15,10 @@ const WORLD_DEFAULTS: Record<string, unknown> = {
 async function globalSetup(config: FullConfig) {
   // TODO: this should probably be done before each test instead of globally
   // this will allow us to use specific accounts for each test, and in turn run tests in parallel
-  const { baseURL, storageState } = config.projects[0].use;
-  const browser = await chromium.launch();
+  const { baseURL, storageState, launchOptions } = config.projects[0].use;
+  // The same graphics flags the tests run under - seeding draws the same canvas they do, and a
+  // setup that booted Foundry differently would not be proving anything about the run that follows.
+  const browser = await chromium.launch({ args: launchOptions?.args });
   const page = await browser.newPage();
   /*
   await page.goto(baseURL!);

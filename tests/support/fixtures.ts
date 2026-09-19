@@ -35,6 +35,10 @@ export const test = base.extend<Fixtures, WorkerFixtures>({
     await page.goto('/game');
     await page.waitForFunction(
       () => (globalThis as any).game?.ready === true, undefined, { timeout: 60_000 });
+
+    // do not allow GPU warning to eat all clicks
+    await page.addStyleTag({ content: '#notifications { pointer-events: none !important; }' });
+
     await use(page);
     await context.close();
   }, { scope: 'worker' }],

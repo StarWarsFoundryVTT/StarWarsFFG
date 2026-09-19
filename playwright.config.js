@@ -50,6 +50,13 @@ const NON_DEFAULT_SETTINGS = [
   '**/vehicles/pilot-theme.spec.js',
 ];
 
+/*
+ * Force GPU locally, do not force in CI (which has no GPU)
+ */
+const launchArgs = process.env.CI
+  ? ['--enable-unsafe-swiftshader']
+  : ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl-egl'];
+
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
@@ -117,14 +124,7 @@ export default defineConfig({
           width: 1440,
           height: 900
         },
-        launchOptions: {
-          // force GPU acceleration
-          args: [
-            '--ignore-gpu-blocklist',
-            '--use-gl=angle',
-            '--use-angle=gl-egl',
-          ]
-        },
+        launchOptions: { args: launchArgs },
       },
     },
     {
@@ -134,6 +134,7 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         viewport: { width: 1440, height: 900 },
+        launchOptions: { args: launchArgs },
       },
     },
     // TODO: re-enable all browsers
