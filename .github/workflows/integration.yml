@@ -1,0 +1,227 @@
+# Browser tests against a real Foundry instance.
+name: Integration tests
+
+on:
+  pull_request_target:
+    branches: [main]
+    # `ready_for_review` is not a default type, and without it a PR opened as a draft would never
+    # run at all - the draft check below would skip it and nothing would fire when it was ready.
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  # to pull the Foundry image, which is private to the organization
+  packages: read
+
+concurrency:
+  group: integration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Built and pushed by hand, one tag per Foundry version
+  FOUNDRY_IMAGE: ghcr.io/starwarsfoundryvtt/foundry-ci:13.351@sha256:0a4d43a805c16eaba2df6ecce32ef4ad0fd4ee3657d99c6f3d2fd508e80227eb
+
+jobs:
+  # Decides whether the test job names an environment, which decides whether it waits for approval.
+  gate:
+    runs-on: ubuntu-latest
+    # A draft from a fork would queue an approval on every push to the branch
+    if: github.event_name != 'pull_request_target' || !github.event.pull_request.draft
+    outputs:
+      environment: ${{ steps.decide.outputs.environment }}
+      ref: ${{ steps.decide.outputs.ref }}
+    steps:
+      - id: decide
+        env:
+          IS_PR: ${{ github.event_name == 'pull_request_target' }}
+          # Empty on anything that is not a pull request, hence the IS_PR check first.
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+        run: |
+          if [ "$IS_PR" != "true" ]; then
+            echo "environment=" >> "$GITHUB_OUTPUT"
+            echo "ref=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if [ "$HEAD_REPO" = "${{ github.repository }}" ]; then
+            echo "environment=" >> "$GITHUB_OUTPUT"
+          else
+            echo "environment=untrusted" >> "$GITHUB_OUTPUT"
+          fi
+
+          echo "ref=${{ github.event.pull_request.head.sha }}" >> "$GITHUB_OUTPUT"
+
+  integration:
+    needs: gate
+    runs-on: ubuntu-latest
+    environment: ${{ needs.gate.outputs.environment }}
+    # A green run is ~45 minutes, most of it the combat suites, which need a canvas and so pay
+    # for software rendering. Enough headroom to absorb a slow runner, not enough to sit for
+    # hours on a hang.
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # `pull_request_target` checks out the base branch by default, which would test nothing
+          ref: ${{ needs.gate.outputs.ref }}
+          fetch-depth: 0
+          # checkout otherwise leaves a token in .git/config, and .git travels with the tree
+          persist-credentials: false
+
+      # First, and in one step: `docker login` leaves the credential in ~/.docker/config.json,
+      # where anything the pull request runs later could read it. Pulled here, logged out
+      # immediately. `GITHUB_TOKEN` is enough because the package belongs to this organization
+      # and grants this repository read access - no registry secret to leak to a fork PR.
+      - name: Pull the Foundry image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GITHUB_TOKEN" | docker login ghcr.io --username "${{ github.actor }}" --password-stdin
+          docker pull "$FOUNDRY_IMAGE"
+          docker logout ghcr.io
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          # Under `pull_request_target` the cache scope is the base branch, so a pull request
+          # writing to it would be handing entries to main and to every other pull request.
+          cache: ${{ github.event_name == 'push' && 'npm' || '' }}
+
+      # --ignore-scripts: package.json belongs to the pull request, and its lifecycle scripts
+      # would otherwise run on a runner that is about to hold the license. Playwright's own
+      # postinstall is not needed - the browser download is the explicit step below.
+      - run: npm ci --ignore-scripts
+      - run: npx playwright install --with-deps chromium
+
+      # The stub's versions are stamped rather than committed: kept in two places they go stale
+      # in one, and a world claiming the wrong system version meets a migration prompt on launch.
+      - name: Lay out the world
+        run: |
+          # Foundry writes a README into /data/Data/systems as it builds its user data structure
+          mkdir -p "${RUNNER_TEMP}/foundry-data/worlds" "${RUNNER_TEMP}/foundry-data/systems/starwarsffg"
+          cp -r .github/foundry-world/qa "${RUNNER_TEMP}/foundry-data/worlds/qa"
+          # Foundry runs as uid 1000 in the container and the runner is uid 1001.
+          chmod -R 777 "${RUNNER_TEMP}/foundry-data"
+
+          world="${RUNNER_TEMP}/foundry-data/worlds/qa/world.json"
+          system="$(jq -r .version system.json)"
+          # the image is pinned as tag@digest, so the tag is what is left after dropping the digest
+          ref="${FOUNDRY_IMAGE%@*}"
+          core="${ref##*:}"
+
+          jq --arg system "$system" --arg core "$core" \
+            '.systemVersion = $system | .coreVersion = $core' "$world" > "$world.tmp"
+          mv "$world.tmp" "$world"
+          echo "world: system $system on core $core"
+
+      # Foundry serves its system directory over HTTP
+      - name: Lay out the system under test
+        run: |
+          mkdir -p "${RUNNER_TEMP}/foundry-system"
+          rsync --archive --delete \
+            --exclude=.git --exclude=node_modules --exclude=test-results \
+            --exclude=playwright-report --exclude=tests/.auth \
+            ./ "${RUNNER_TEMP}/foundry-system/"
+          find "${RUNNER_TEMP}/foundry-system" -type l -delete
+
+      # Foundry asks a human to accept the licence agreement on first run
+      - name: Accept the licence
+        env:
+          FOUNDRY_LICENSE_JSON: ${{ secrets.FOUNDRY_LICENSE_JSON }}
+        run: |
+          if [ -z "$FOUNDRY_LICENSE_JSON" ]; then
+            echo "FOUNDRY_LICENSE_JSON is not set - Foundry will stop at the licence page." >&2
+            exit 1
+          fi
+          mkdir -p "${RUNNER_TEMP}/foundry-config"
+          printf '%s' "$FOUNDRY_LICENSE_JSON" > "${RUNNER_TEMP}/foundry-config/license.json"
+          chmod 777 "${RUNNER_TEMP}/foundry-config"
+          chmod 644 "${RUNNER_TEMP}/foundry-config/license.json"
+
+      - name: Start Foundry
+        env:
+          FOUNDRY_LICENSE_KEY: ${{ secrets.FOUNDRY_LICENSE_KEY }}
+        run: |
+          # The copy laid out above is mounted as the system itself, so the tests run against
+          # this PR's code.
+          # Fixed hostname: Foundry binds the licence to it, and a random one per container makes
+          # the seeded `license.json` fail verification on every run.
+          # No admin key is set: the setup page is reachable from this runner and nowhere else,
+          # and nothing in the suite authenticates as the server administrator.
+          docker run --detach \
+            --name foundry-ci \
+            --hostname foundry-ci \
+            --publish 127.0.0.1:30000:30000 \
+            --volume "${RUNNER_TEMP}/foundry-system:/data/Data/systems/starwarsffg:ro" \
+            --volume "${RUNNER_TEMP}/foundry-data:/data/Data" \
+            --volume "${RUNNER_TEMP}/foundry-config:/data/Config" \
+            --env FOUNDRY_LICENSE_KEY \
+            --env FOUNDRY_WORLD=qa \
+            --env FOUNDRY_MINIFY_STATIC_FILES=true \
+            --env FOUNDRY_TELEMETRY=false \
+            "${FOUNDRY_IMAGE}"
+
+      - name: Wait for Foundry
+        run: ./scripts/wait-for-foundry.sh http://127.0.0.1:30000
+
+      # On a pull request, only what the change calls for; on main, the lot. `affected.mjs` fails
+      # open, so an unmapped change still runs everything.
+      - name: Choose the tests
+        id: choose
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # A full run names every project: suites outside the default one - the opt-in settings
+          # ones, and the ones that need a canvas - cannot be seen by a default run however
+          # relevant they are.
+          everything="--project=chromium --project=canvas --project=non-default-settings"
+
+          if [ -z "$BASE" ]; then
+            args="$everything"
+          # `affected.mjs` names the projects itself. If it cannot, that is a broken selector and
+          # not a reason to test less, so the whole suite runs and the log says why.
+          elif ! args="$(node scripts/affected.mjs "$BASE")"; then
+            echo "affected.mjs failed - running everything instead" >&2
+            args="$everything"
+          fi
+
+          # The selection is built from filenames in the pull request, and filenames can contain
+          # anything. Nothing outside this set has any business in a spec path, and a newline
+          # would forge a step output.
+          case "$args" in
+            *[!A-Za-z0-9=./_' '-]*)
+              echo "unexpected characters in the selection - running everything instead" >&2
+              args="$everything"
+              ;;
+          esac
+
+          echo "args=$args" >> "$GITHUB_OUTPUT"
+
+      - name: Run the tests
+        env:
+          FOUNDRY_URL: http://127.0.0.1:30000
+          # Through the environment, not interpolated into the command: the selection is built
+          # from filenames the pull request controls, and `${{ }}` is textual substitution.
+          ARGS: ${{ steps.choose.outputs.args }}
+        # deliberately unquoted - the value is a list of arguments, checked in the step above
+        run: npx playwright test $ARGS
+
+      # Carries the HTML report, and with it the trace and video of anything that failed twice.
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Foundry log
+        if: failure()
+        run: docker logs foundry-ci 2>&1 | tail -300
+
+      - name: Stop Foundry
+        if: always()
+        run: docker rm --force foundry-ci

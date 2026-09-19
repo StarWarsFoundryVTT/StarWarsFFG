@@ -1,0 +1,12 @@
+{
+  "id": "qa",
+  "title": "QA",
+  "description": "An empty world for the integration suite. Foundry builds the databases on first launch; the tests create everything else and clean up after themselves. coreVersion and systemVersion below are placeholders - the workflow stamps the real ones from the image tag and from system.json when it lays this world out.",
+  "system": "starwarsffg",
+  "coreVersion": "0.0.0",
+  "systemVersion": "0.0.0",
+  "background": "",
+  "nextSession": null,
+  "playtime": 0,
+  "version": "1.0.0"
+}

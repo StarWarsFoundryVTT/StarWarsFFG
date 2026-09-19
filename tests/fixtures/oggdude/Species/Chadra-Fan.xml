@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copied whole from a full OggDude export. Do not hand-edit. -->
+<Species>
+  <Key>CHADRA</Key>
+  <Name>Chadra-Fan</Name>
+  <Description>
+    [H4]Chadra-Fan[h4]
+    Chadra-Fan are short, rodent-like humanoids, usually no more than one meter
+    tall, with bat-like faces. They hail from the watery planet Chad.
+    [P][B]Physiology:[b]
+    Chadra-Fan have seven different senses—sight, touch, taste, sound, smell, infrared
+    sight, and chemoreceptive smell—all of which were much more acute than Human senses.
+    They are usually no more than a meter tall, some depicted with plantigrade two-toed
+    feet, while others seemed to have four-toed digitigrade feet. The metabolism
+    of Chadra-Fan is amazingly fast, allowing them to work almost constantly. They only
+    sleep in two hour naps during the day. Because of their metabolism, the average Chadra-Fan
+    matures by age fifteen and rarely lives more than eighty years.
+    [P]Chadra-Fan are covered from head to foot in fur. Their species evolved from small,
+    arboreal rodents. The two different sexes of Chadra-Fan are indistinguishable to other
+    species, though the Chadra-Fan can readily tell the difference using their powerful
+    sense of smell. If a male and a female Chadra-Fan are interested in one another they
+    released special pheromones that relay their feelings. Chadra-Fan also have involuntary
+    pheromones that conveyed information about their family line and create an aura of
+    attractiveness. Other voluntary pheromones often convey a Chadra-Fan's state of emotion - anger,
+    fear, or joy. Chadra-Fan even create more complex messages using their pheromones, though
+    the pheromones when mixed sometimes cause confusion. They are unique in the fact that
+    they have clear blood.
+    [P][B]Society:[b]
+    The society of Chadra-Fan is divided into a clan structure in which every member is
+    responsible for parenting the clan's children and a fact of life is that every household
+    is open at any time. Leadership within the clan is a temporary role that is passed
+    from one individual to another as the situation calls for a particular expertise. Children
+    are the centerpiece of a Chadra-Fan community, and only left when wed.  However, the new Chadra-Fan
+    couple remain with the smaller clan so it is possible that a Chadra-Fan never
+    leaves his or her home.
+    [P]Chadra-Fan, if left alone, suffer from strong depression that will kill them in a
+    matter of weeks. Thus, Chadra-Fan are not very picky when it comes to friends and prefer
+    complete strangers to loneliness. Many Chadra-Fan are taken offworld as slaves, but they
+    take this positively by thinking of it as a big adventure. They are also a jovial race, who
+    almost always get on well with others. Only the most evil acts against them will make them
+    think otherwise. Chadra-Fan are generally excellent team members and are extremely
+    forgiving or so ignorant that they forget any failings within a group. Chadra-Fan, thus,
+    can be found with various criminals because they are so unobservant or accommodating.
+    [P]A deity called the Big Green Fish figures in Chadra-Fan religion.
+    [P][B]Homeworld:[b]
+    The planet Chad (also known as Chadra, or Chad III) is the homeworld of of the Chadra-Fan race.
+    It is in the Outer Rim Territories, more specifically in the Slice.
+    Chad is a watery planet, with extensive marshes and bayous. Chadra has nine moons, and has a
+    very elliptical orbit, giving rise to a complex tidal cycle. Due to its unusual orbit, it is
+    at different times either the third or fourth planet in the orbit of the blue-white star Chad.
+    It has no axial tilt, however, making the climate relatively stable.
+    [P]The native Chadra-Fan, an arboreal race, dwell in simple dwellings in the tops of the bayous'
+    cyperill trees. They do not bother to make elaborate homes, as they know their dwellings could
+    be destroyed at any time by the hurricanes and tsunamis which their planet os prone to.
+    [P]Chad is also home to a Human population. The Human colonists lived in oceanic ranches aboard large arks.
+    [P][B]Language:[b]
+    Chadra-Fan is the official language of the planet Chad, spoken mainly by the native Chadra-Fan species.
+    The Chadra-Fan language sounds quite different from Basic. This is noticed because Chadra-Fans who 
+    learned to speak Basic sound very nasal and squeaky.
+  </Description>
+  <Source Page="20">Stay on Target</Source>
+  <StartingChars>
+    <Brawn>1</Brawn>
+    <Agility>3</Agility>
+    <Intellect>3</Intellect>
+    <Cunning>2</Cunning>
+    <Willpower>1</Willpower>
+    <Presence>2</Presence>
+  </StartingChars>
+  <StartingAttrs>
+    <WoundThreshold>9</WoundThreshold>
+    <StrainThreshold>11</StrainThreshold>
+    <Experience>90</Experience>
+  </StartingAttrs>
+  <SkillModifiers>
+    <SkillModifier>
+      <Key>MECH</Key>
+      <RankStart>1</RankStart>
+      <RankLimit>2</RankLimit>
+    </SkillModifier>
+  </SkillModifiers>
+  <TalentModifiers>
+  </TalentModifiers>
+  <OptionChoices>
+    <OptionChoice>
+      <Key>CHADAB1</Key>
+      <Name>Perception</Name>
+      <Options>
+        <Option>
+          <Key>CHADAB1OP1</Key>
+          <Name>Acute Senses</Name>
+          <Description>
+            Chandra-Fan remove up to [REMSETBACK][REMSETBACK] from Perception checks due to superior senses.
+          </Description>
+          <DieModifiers>
+            <DieModifier>
+              <SkillKey>PERC</SkillKey>
+              <SetbackCount>2</SetbackCount>
+            </DieModifier>
+          </DieModifiers>
+        </Option>
+      </Options>
+    </OptionChoice>
+    <OptionChoice>
+      <Key>CHADAB2</Key>
+      <Name>Size</Name>
+      <Options>
+        <Option>
+          <Key>CHADAB1SIZ</Key>
+          <Name>Reduced Silouette</Name>
+          <Description>
+            Chadra-Fan have a Silhouette of 0.
+          </Description>
+        </Option>
+      </Options>
+    </OptionChoice>
+  </OptionChoices>
+</Species>

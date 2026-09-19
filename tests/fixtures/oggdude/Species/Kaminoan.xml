@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copied whole from a full OggDude export. Do not hand-edit. -->
+<Species>
+  <Key>KAMINOAN</Key>
+  <Name>Kaminoan</Name>
+  <Description>
+    [H4]Kaminoan[h4]
+    Please see page 20 of the Fully Operational Sourcebook, or page 14 of the Rise of the Separatists Sourcebook, for details.
+  </Description>
+  <Sources>
+    <Source Page="20">Fully Operational</Source>
+    <Source Page="14">Rise of the Separatists</Source>
+  </Sources>
+  <StartingChars>
+    <Brawn>1</Brawn>
+    <Agility>2</Agility>
+    <Intellect>3</Intellect>
+    <Cunning>2</Cunning>
+    <Willpower>2</Willpower>
+    <Presence>2</Presence>
+  </StartingChars>
+  <StartingAttrs>
+    <WoundThreshold>9</WoundThreshold>
+    <StrainThreshold>10</StrainThreshold>
+    <Experience>100</Experience>
+  </StartingAttrs>
+  <SkillModifiers>
+    <SkillModifier>
+      <Key>MED</Key>
+      <RankStart>1</RankStart>
+      <RankLimit>2</RankLimit>
+    </SkillModifier>
+  </SkillModifiers>
+  <TalentModifiers>
+    <TalentModifier>
+      <Key>RESEARCH</Key>
+      <RankAdd>1</RankAdd>
+    </TalentModifier>
+  </TalentModifiers>
+  <OptionChoices>
+    <OptionChoice>
+      <Key>KAMINOANOC1</Key>
+      <Name>Skills</Name>
+      <Description />
+      <Options>
+        <Option>
+          <Key>KAMINOANOC1OP1</Key>
+          <Name>Expressionless</Name>
+          <Description>Kaminoans add [SE] to all Charm checks they make.</Description>
+          <DieModifiers>
+            <DieModifier>
+              <SkillKey>CHARM</SkillKey>
+              <AddSetbackCount>1</AddSetbackCount>
+            </DieModifier>
+          </DieModifiers>
+        </Option>
+      </Options>
+    </OptionChoice>
+    <OptionChoice>
+      <Key>KAMINOANOC2</Key>
+      <Name>Opposing Skills</Name>
+      <Description />
+      <Options>
+        <Option>
+          <Key>KAMINOANOC2OP1</Key>
+          <Name>Expressionless</Name>
+          <Description>Other characters add [SE] to all social skill checks made against Kaminoans.</Description>
+        </Option>
+      </Options>
+    </OptionChoice>
+  </OptionChoices>
+</Species>

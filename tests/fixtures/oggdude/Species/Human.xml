@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copied whole from a full OggDude export. Do not hand-edit. -->
+<Species>
+  <Key>HUMAN</Key>
+  <Name>Human</Name>
+  <Description>
+    [H4]Humans[h4]
+    Please see page 48 of the Edge of the Empire Core Rulebook, page 57 of the Age of Rebellion Core Rulebook, or page 55 of the Force and Destiny Core Rulebook, for details.
+
+  </Description>
+  <Sources>
+    <Source Page="48">Edge of the Empire Core Rulebook</Source>
+    <Source Page="57">Age of Rebellion Core Rulebook</Source>
+    <Source Page="55">Force and Destiny Core Rulebook</Source>
+  </Sources>
+  <StartingChars>
+    <Brawn>2</Brawn>
+    <Agility>2</Agility>
+    <Intellect>2</Intellect>
+    <Cunning>2</Cunning>
+    <Willpower>2</Willpower>
+    <Presence>2</Presence>
+  </StartingChars>
+  <StartingAttrs>
+    <WoundThreshold>10</WoundThreshold>
+    <StrainThreshold>10</StrainThreshold>
+    <Experience>110</Experience>
+  </StartingAttrs>
+  <OptionChoices>
+    <OptionChoice>
+      <Key>HUMANAB</Key>
+      <Name>Skills</Name>
+      <Options>
+        <Option>
+          <Key>HUMANABSK</Key>
+          <Name>Additional Non-Career Skills</Name>
+          <Description>Humans start the game with one rank in two different non-career
+          skills of their choice.</Description>
+          <StartingSkillTraining>
+            <SkillTraining>
+              <SkillCount>2</SkillCount>
+              <Requirement>
+                <NonCareer>true</NonCareer>
+              </Requirement>
+            </SkillTraining>
+          </StartingSkillTraining>
+        </Option>
+      </Options>
+    </OptionChoice>
+  </OptionChoices>
+</Species>

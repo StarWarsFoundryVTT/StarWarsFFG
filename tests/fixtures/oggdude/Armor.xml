@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Trimmed from a full OggDude export by trim.py. Do not hand-edit. -->
+<Armors>
+  <Armor>
+    <Key>ARMROBE</Key>
+    <Name>Armored Robes</Name>
+    <Description>
+      [H3]Armored Robes[h3]
+      Please see page 179 of the Force and Destiny Core Rulebook for details.
+    </Description>
+    <Source Page="179">Force and Destiny Core Rulebook</Source>
+    <Defense>1</Defense>
+    <Soak>2</Soak>
+    <Price>4500</Price>
+    <Restricted>true</Restricted>
+    <Encumbrance>5</Encumbrance>
+    <HP>2</HP>
+    <Rarity>8</Rarity>
+    <Categories>
+      <Category>Full Body</Category>
+      <Category>Heavy</Category>
+      <Category>Resistant</Category>
+    </Categories>
+  </Armor>
+  <Armor>
+    <Key>HBA</Key>
+    <Name>Heavy Battle Armor</Name>
+    <Description>
+      [H3]Heavy Battle Armor[h3]
+      Please see page 170 of the Edge of the Empire Core Rulebook, page 184 of the Age of Rebellion Core Rulebook, or page 47 of the Keeping the Peace sourcebook for details.
+    </Description>
+    <Sources>
+      <Source Page="170">Edge of the Empire Core Rulebook</Source>
+      <Source Page="184">Age of Rebellion Core Rulebook</Source>
+      <Source Page="47">Keeping the Peace</Source>
+    </Sources>
+    <Categories>
+      <Category>Sealable</Category>
+      <Category>Full Body</Category>
+      <Category>Hard Full Body</Category>
+      <Category>Hard</Category>
+      <Category>Heavy</Category>
+      <Category>Resistant</Category>
+    </Categories>
+    <Defense>1</Defense>
+    <Soak>2</Soak>
+    <Price>5000</Price>
+    <Restricted>true</Restricted>
+    <Encumbrance>6</Encumbrance>
+    <HP>4</HP>
+    <Rarity>7</Rarity>
+  </Armor>
+  <Armor>
+    <Key>LAM</Key>
+    <Name>Laminate</Name>
+    <Description>
+      [H3]Laminate (Stormtrooper Armor)[h3]
+      Please see page 169 of the Edge of the Empire Core Rulebook, or page 185 of the Age of Rebellion Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="169">Edge of the Empire Core Rulebook</Source>
+      <Source Page="185">Age of Rebellion Core Rulebook</Source>
+    </Sources>
+    <Categories>
+      <Category>Sealable</Category>
+      <Category>Full Body</Category>
+      <Category>Hard Full Body</Category>
+      <Category>Hard</Category>
+      <Category>Heavy</Category>
+      <Category>Resistant</Category>
+    </Categories>
+    <Defense>0</Defense>
+    <Soak>2</Soak>
+    <Price>2500</Price>
+    <Encumbrance>4</Encumbrance>
+    <HP>3</HP>
+    <Rarity>5</Rarity>
+  </Armor>
+</Armors>

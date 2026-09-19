@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Skills>
+  <Skill>
+    <Key>ASTRO</Key>
+    <Name>Astrogation</Name>
+    <Description>
+      [H4]Astrogation (Intellect)[h4]
+      Please see page 104 of the Edge of the Empire Core Rulebook, page 116 of the Age of Rebellion Core Rulebook, or page 114 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="104">Edge of the Empire Core Rulebook</Source>
+      <Source Page="116">Age of Rebellion Core Rulebook</Source>
+      <Source Page="114">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>ATHL</Key>
+    <Name>Athletics</Name>
+    <Description>
+      [H4]Athletics (Brawn)[h4]
+      Please see page 105 of the Edge of the Empire Core Rulebook, page 117 of the Age of Rebellion Core Rulebook, or page 115 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="105">Edge of the Empire Core Rulebook</Source>
+      <Source Page="117">Age of Rebellion Core Rulebook</Source>
+      <Source Page="115">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>BR</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>BRAWL</Key>
+    <Name>Brawl</Name>
+    <Description>
+      [H4]Brawl (Brawn)[h4]
+      Please see page 120 of the Edge of the Empire Core Rulebook, page 131 of the Age of Rebellion Core Rulebook, or page 129 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="120">Edge of the Empire Core Rulebook</Source>
+      <Source Page="131">Age of Rebellion Core Rulebook</Source>
+      <Source Page="129">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>BR</CharKey>
+    <TypeValue>stCombat</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>CHARM</Key>
+    <Name>Charm</Name>
+    <Description>
+      [H4]Charm (Presence)[h4]
+      Please see page 105 of the Edge of the Empire Core Rulebook, page 117 of the Age of Rebellion Core Rulebook, or page 116 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="105">Edge of the Empire Core Rulebook</Source>
+      <Source Page="117">Age of Rebellion Core Rulebook</Source>
+      <Source Page="116">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>PR</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>COERC</Key>
+    <Name>Coercion</Name>
+    <Description>
+      [H4]Coercion (Willpower)[h4]
+      Please see page 106 of the Edge of the Empire Core Rulebook, page 118 of the Age of Rebellion Core Rulebook, or page 116 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="106">Edge of the Empire Core Rulebook</Source>
+      <Source Page="118">Age of Rebellion Core Rulebook</Source>
+      <Source Page="116">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>WIL</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>COMP</Key>
+    <Name>Computers</Name>
+    <Description>
+      [H4]Computers (Intellect)[h4]
+      Please see page 107 of the Edge of the Empire Core Rulebook, page 119 of the Age of Rebellion Core Rulebook, or page 118 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="107">Edge of the Empire Core Rulebook</Source>
+      <Source Page="119">Age of Rebellion Core Rulebook</Source>
+      <Source Page="118">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>COOL</Key>
+    <Name>Cool</Name>
+    <Description>
+      [H4]Cool (Presence)[h4]
+      Please see page 108 of the Edge of the Empire Core Rulebook, page 120 of the Age of Rebellion Core Rulebook, or page 118 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="108">Edge of the Empire Core Rulebook</Source>
+      <Source Page="120">Age of Rebellion Core Rulebook</Source>
+      <Source Page="118">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>PR</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>COORD</Key>
+    <Name>Coordination</Name>
+    <Description>
+      [H4]Coordination (Agility)[h4]
+      Please see page 109 of the Edge of the Empire Core Rulebook, page 121 of the Age of Rebellion Core Rulebook, or page 119 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="109">Edge of the Empire Core Rulebook</Source>
+      <Source Page="121">Age of Rebellion Core Rulebook</Source>
+      <Source Page="119">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>AG</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>CORE</Key>
+    <Name>Core Worlds</Name>
+    <Description>
+      [H4]Core Worlds (Intellect)[h4]
+      Please see page 123 of the Edge of the Empire Core Rulebook, page 134 of the Age of Rebellion Core Rulebook, or page 132 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="123">Edge of the Empire Core Rulebook</Source>
+      <Source Page="134">Age of Rebellion Core Rulebook</Source>
+      <Source Page="132">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stKnowledge</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>DECEP</Key>
+    <Name>Deception</Name>
+    <Description>
+      [H4]Deception (Cunning)[h4]
+      Please see page 109 of the Edge of the Empire Core Rulebook, page 121 of the Age of Rebellion Core Rulebook, or page 120 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="109">Edge of the Empire Core Rulebook</Source>
+      <Source Page="121">Age of Rebellion Core Rulebook</Source>
+      <Source Page="120">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>CUN</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>DISC</Key>
+    <Name>Discipline</Name>
+    <Description>
+      [H4]Discipline (Willpower)[h4]
+      Please see page 110 of the Edge of the Empire Core Rulebook, page 122 of the Age of Rebellion Core Rulebook, or page 120 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="110">Edge of the Empire Core Rulebook</Source>
+      <Source Page="122">Age of Rebellion Core Rulebook</Source>
+      <Source Page="120">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>WIL</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>EDU</Key>
+    <Name>Education</Name>
+    <Description>
+      [H4]Education (Intellect)[h4]
+      Please see page 123 of the Edge of the Empire Core Rulebook, page 135 of the Age of Rebellion Core Rulebook, or page 132 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="123">Edge of the Empire Core Rulebook</Source>
+      <Source Page="135">Age of Rebellion Core Rulebook</Source>
+      <Source Page="132">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stKnowledge</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>GUNN</Key>
+    <Name>Gunnery</Name>
+    <Description>
+      [H4]Gunnery (Agility)[h4]
+      Please see page 120 of the Edge of the Empire Core Rulebook, page 131 of the Age of Rebellion Core Rulebook, or page 130 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="120">Edge of the Empire Core Rulebook</Source>
+      <Source Page="131">Age of Rebellion Core Rulebook</Source>
+      <Source Page="130">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>AG</CharKey>
+    <TypeValue>stCombat</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>LEAD</Key>
+    <Name>Leadership</Name>
+    <Description>
+      [H4]Leadership (Presence)[h4]
+      Please see page 111 of the Edge of the Empire Core Rulebook, page 123 of the Age of Rebellion Core Rulebook, or page 121 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="111">Edge of the Empire Core Rulebook</Source>
+      <Source Page="123">Age of Rebellion Core Rulebook</Source>
+      <Source Page="121">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>PR</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>LTSABER</Key>
+    <Name>Lightsaber</Name>
+    <Description>
+      [H4]Lightsaber (Brawn*)[h4]
+      Please see page 130 of the Force and Destiny Core Rulebook for details.[BR]
+      [I]* Indicates that talents may change the base characteristic.[i]
+    </Description>
+    <Source Page="130">Force and Destiny Core Rulebook</Source>
+    <CharKey>BR</CharKey>
+    <TypeValue>stCombat</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>LORE</Key>
+    <Name>Lore</Name>
+    <Description>
+      [H4]Lore (Intellect)[h4]
+      Please see page 123 of the Edge of the Empire Core Rulebook, page 135 of the Age of Rebellion Core Rulebook, or page 132 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="123">Edge of the Empire Core Rulebook</Source>
+      <Source Page="135">Age of Rebellion Core Rulebook</Source>
+      <Source Page="132">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stKnowledge</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>MECH</Key>
+    <Name>Mechanics</Name>
+    <Description>
+      [H4]Mechanics (Intellect)[h4]
+      Please see page 111 of the Edge of the Empire Core Rulebook, page 124 of the Age of Rebellion Core Rulebook, or page 122 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="111">Edge of the Empire Core Rulebook</Source>
+      <Source Page="124">Age of Rebellion Core Rulebook</Source>
+      <Source Page="122">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>MED</Key>
+    <Name>Medicine</Name>
+    <Description>
+      [H4]Medicine (Intellect)[h4]
+      Please see page 112 of the Edge of the Empire Core Rulebook, page 125 of the Age of Rebellion Core Rulebook, or page 122 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="112">Edge of the Empire Core Rulebook</Source>
+      <Source Page="125">Age of Rebellion Core Rulebook</Source>
+      <Source Page="122">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>MELEE</Key>
+    <Name>Melee</Name>
+    <Description>
+      [H4]Melee (Brawn)[h4]
+      Please see page 121 of the Edge of the Empire Core Rulebook, page 133 of the Age of Rebellion Core Rulebook, or page 131 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="121">Edge of the Empire Core Rulebook</Source>
+      <Source Page="133">Age of Rebellion Core Rulebook</Source>
+      <Source Page="131">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>BR</CharKey>
+    <TypeValue>stCombat</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>NEG</Key>
+    <Name>Negotiation</Name>
+    <Description>
+      [H4]Negotiation (Presence)[h4]
+      Please see page 113 of the Edge of the Empire Core Rulebook, page 125 of the Age of Rebellion Core Rulebook, or page 123 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="113">Edge of the Empire Core Rulebook</Source>
+      <Source Page="125">Age of Rebellion Core Rulebook</Source>
+      <Source Page="123">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>PR</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>OUT</Key>
+    <Name>Outer Rim</Name>
+    <Description>
+      [H4]Outer Rim (Intellect)[h4]
+      Please see page 124 of the Edge of the Empire Core Rulebook, page 135 of the Age of Rebellion Core Rulebook, or page 133 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="124">Edge of the Empire Core Rulebook</Source>
+      <Source Page="135">Age of Rebellion Core Rulebook</Source>
+      <Source Page="133">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stKnowledge</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>PERC</Key>
+    <Name>Perception</Name>
+    <Description>
+      [H4]Perception (Cunning)[h4]
+      Please see page 114 of the Edge of the Empire Core Rulebook, page 126 of the Age of Rebellion Core Rulebook, or page 124 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="114">Edge of the Empire Core Rulebook</Source>
+      <Source Page="126">Age of Rebellion Core Rulebook</Source>
+      <Source Page="124">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>CUN</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>PILOTPL</Key>
+    <Name>Piloting - Planetary</Name>
+    <Description>
+      [H4]Piloting - Planetary (Agility)[h4]
+      Please see page 115 of the Edge of the Empire Core Rulebook, page 126 of the Age of Rebellion Core Rulebook, or page 124 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="115">Edge of the Empire Core Rulebook</Source>
+      <Source Page="126">Age of Rebellion Core Rulebook</Source>
+      <Source Page="124">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>AG</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>PILOTSP</Key>
+    <Name>Piloting - Space</Name>
+    <Description>
+      [H4]Piloting - Space (Agility)[h4]
+      Please see page 116 of the Edge of the Empire Core Rulebook, page 127 of the Age of Rebellion Core Rulebook, or page 125 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="116">Edge of the Empire Core Rulebook</Source>
+      <Source Page="127">Age of Rebellion Core Rulebook</Source>
+      <Source Page="125">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>AG</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>RANGHVY</Key>
+    <Name>Ranged - Heavy</Name>
+    <Description>
+      [H4]Ranged - Heavy (Agility)[h4]
+      Please see page 121 of the Edge of the Empire Core Rulebook, page 133 of the Age of Rebellion Core Rulebook, or page 131 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="121">Edge of the Empire Core Rulebook</Source>
+      <Source Page="133">Age of Rebellion Core Rulebook</Source>
+      <Source Page="131">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>AG</CharKey>
+    <TypeValue>stCombat</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>RANGLT</Key>
+    <Name>Ranged - Light</Name>
+    <Description>
+      [H4]Ranged - Light (Agility)[h4]
+      Please see page 122 of the Edge of the Empire Core Rulebook, page 133 of the Age of Rebellion Core Rulebook, or page 131 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="122">Edge of the Empire Core Rulebook</Source>
+      <Source Page="133">Age of Rebellion Core Rulebook</Source>
+      <Source Page="131">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>AG</CharKey>
+    <TypeValue>stCombat</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>RESIL</Key>
+    <Name>Resilience</Name>
+    <Description>
+      [H4]Resilience (Brawn)[h4]
+      Please see page 116 of the Edge of the Empire Core Rulebook, page 127 of the Age of Rebellion Core Rulebook, or page 125 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="116">Edge of the Empire Core Rulebook</Source>
+      <Source Page="127">Age of Rebellion Core Rulebook</Source>
+      <Source Page="125">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>BR</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>SKUL</Key>
+    <Name>Skulduggery</Name>
+    <Description>
+      [H4]Skulduggery (Cunning)[h4]
+      Please see page 116 of the Edge of the Empire Core Rulebook, page 128 of the Age of Rebellion Core Rulebook, or page 126 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="116">Edge of the Empire Core Rulebook</Source>
+      <Source Page="128">Age of Rebellion Core Rulebook</Source>
+      <Source Page="126">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>CUN</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>STEAL</Key>
+    <Name>Stealth</Name>
+    <Description>
+      [H4]Stealth (Agility)[h4]
+      Please see page 117 of the Edge of the Empire Core Rulebook, page 128 of the Age of Rebellion Core Rulebook, or page 126 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="117">Edge of the Empire Core Rulebook</Source>
+      <Source Page="128">Age of Rebellion Core Rulebook</Source>
+      <Source Page="126">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>AG</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>SW</Key>
+    <Name>Streetwise</Name>
+    <Description>
+      [H4]Streetwise (Cunning)[h4]
+      Please see page 118 of the Edge of the Empire Core Rulebook, page 130 of the Age of Rebellion Core Rulebook, or page 127 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="118">Edge of the Empire Core Rulebook</Source>
+      <Source Page="130">Age of Rebellion Core Rulebook</Source>
+      <Source Page="127">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>CUN</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>SURV</Key>
+    <Name>Survival</Name>
+    <Description>
+      [H4]Survival (Cunning)[h4]
+      Please see page 119 of the Edge of the Empire Core Rulebook, page 130 of the Age of Rebellion Core Rulebook, or page 128 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="119">Edge of the Empire Core Rulebook</Source>
+      <Source Page="130">Age of Rebellion Core Rulebook</Source>
+      <Source Page="128">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>CUN</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>UND</Key>
+    <Name>Underworld</Name>
+    <Description>
+      [H4]Underworld (Intellect)[h4]
+      Please see page 124 of the Edge of the Empire Core Rulebook, page 136 of the Age of Rebellion Core Rulebook, or page 133 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="124">Edge of the Empire Core Rulebook</Source>
+      <Source Page="136">Age of Rebellion Core Rulebook</Source>
+      <Source Page="133">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stKnowledge</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>VIGIL</Key>
+    <Name>Vigilance</Name>
+    <Description>
+      [H4]Vigilance (Willpower)[h4]
+      Please see page 119 of the Edge of the Empire Core Rulebook, page 130 of the Age of Rebellion Core Rulebook, or page 129 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="119">Edge of the Empire Core Rulebook</Source>
+      <Source Page="130">Age of Rebellion Core Rulebook</Source>
+      <Source Page="129">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>WIL</CharKey>
+    <TypeValue>stGeneral</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>XEN</Key>
+    <Name>Xenology</Name>
+    <Description>
+      [H4]Xenology (Intellect)[h4]
+      Please see page 125 of the Edge of the Empire Core Rulebook, page 137 of the Age of Rebellion Core Rulebook, or page 133 of the Force and Destiny Core Rulebook, for details.
+    </Description>
+    <Sources>
+      <Source Page="125">Edge of the Empire Core Rulebook</Source>
+      <Source Page="137">Age of Rebellion Core Rulebook</Source>
+      <Source Page="133">Force and Destiny Core Rulebook</Source>
+    </Sources>
+    <CharKey>INT</CharKey>
+    <TypeValue>stKnowledge</TypeValue>
+  </Skill>
+  <Skill>
+    <Key>WARF</Key>
+    <Name>Warfare</Name>
+    <Description>
+      [H4]Warfare (Intellect)[h4]
+      Please see page 136 of the Age of Rebellion Core Rulebook for details.
+    </Description>
+    <Source Page="136">Age of Rebellion Core Rulebook</Source>
+    <CharKey>INT</CharKey>
+    <TypeValue>stKnowledge</TypeValue>
+  </Skill>
+</Skills>

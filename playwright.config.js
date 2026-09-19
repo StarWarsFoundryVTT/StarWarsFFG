@@ -10,7 +10,8 @@ import path from 'node:path';
  * Parsed here rather than via dotenv so that a fresh clone needs no extra install step.
  */
 const envPath = path.resolve(__dirname, '.env');
-if (fs.existsSync(envPath)) {
+const envFound = fs.existsSync(envPath);
+if (envFound) {
   for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
     const match = line.match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*?)\s*$/);
     // a real environment variable wins over the file, so one-off runs can override it
@@ -20,52 +21,150 @@ if (fs.existsSync(envPath)) {
   }
 }
 
-/* Base URL of the Foundry server under test - scheme, host and port, with no trailing path. */
-const baseURL = process.env.FOUNDRY_URL ?? 'http://localhost:30000';
+/*
+ * Base URL of the Foundry server under test - scheme, host and port, with no trailing path.
+ *
+ * Deliberately has no default. A fallback such as http://localhost:30000 turns a misconfigured
+ * FOUNDRY_URL into a connection timeout thirty seconds into globalSetup, which reads as a broken
+ * test rather than a broken config. Failing here instead names the cause immediately.
+ */
+const baseURL = process.env.FOUNDRY_URL;
+if (!baseURL) {
+  throw new Error(
+    'FOUNDRY_URL is not set.\n' +
+    `  .env path : ${envPath} (${envFound ? 'found' : 'MISSING'})\n` +
+    `  __dirname : ${__dirname}\n` +
+    `  cwd       : ${process.cwd()}\n` +
+    '  Copy .env.example to .env and set FOUNDRY_URL to your Foundry server.'
+  );
+}
+
+/** Suites that change a world setting, and so are kept out of the default run. */
+const NON_DEFAULT_SETTINGS = [
+  '**/combat/generic-slots-off.spec.js',
+  '**/combat/removal-actions.spec.js',
+  '**/combat/turn-marker.spec.js',
+  '**/combat/initiative-rule.spec.js',
+  '**/rolling/remove-setback.spec.js',
+  '**/status/custom-statuses.spec.js',
+  '**/vehicles/pilot-theme.spec.js',
+];
+
+/**
+ * Suites that put a scene on the canvas.
+ */
+const CANVAS = [
+  '**/combat/combat.spec.js',
+  '**/combat/generic-slots-off.spec.js',
+  '**/combat/initiative-rule.spec.js',
+  '**/combat/removal-actions.spec.js',
+  '**/combat/turn-marker.spec.js',
+  '**/status/status-effects.spec.js',
+];
+
+/*
+ * Force GPU locally, do not force in CI (which has no GPU)
+ */
+const launchArgs = process.env.CI
+  ? []
+  : ['--ignore-gpu-blocklist', '--use-gl=angle', '--use-angle=gl-egl'];
 
 /**
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  testDir: './e2e',
-  globalSetup: require.resolve('./playwright/setup.ts'),
+  testDir: './tests',
+  testMatch: '**/*.spec.js',
+  globalSetup: require.resolve('./tests/support/global-setup.ts'),
   /* Run tests in files in parallel */
   fullyParallel: false, // TODO: investigate if we can figure out a way to do this
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
-  /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  /* Always use one worker due to how Foundry works */
+  workers: 1,
+  /*
+   * Extend timeout for CI, which has no GPU
+   */
+  timeout: process.env.CI ? 120_000 : 30_000,
+  /*
+   * Reporter to use. See https://playwright.dev/docs/test-reporters
+   *
+   * The report opens itself on a failed run, which is what you want when you are sitting in front
+   * of it and useless on a runner, where it would start a web server nobody can reach. Written
+   * either way - CI uploads the directory as an artifact.
+   */
+  reporter: process.env.CI
+    ? [['github'], ['html', { open: 'never' }]]
+    : [['html', { open: 'on-failure' }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Tests navigate with paths only ('/game/'), which resolve against this. */
     baseURL,
+    /*
+     * Saved auth state, written by globalSetup. Resolved against this config rather than the
+     * working directory so that `npx playwright test` behaves the same from any subdirectory.
+     */
+    storageState: path.resolve(__dirname, 'tests/.auth/state.json'),
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    storageState: 'state.json',
     trace: 'on-first-retry',
+    /*
+     * And a recording of the same retry. The trace is the better debugging tool - it carries the
+     * DOM rather than pixels - but a video shows what a sheet actually did, which is worth having
+     * for a failure nobody can reproduce locally. On the same condition so a green run costs
+     * nothing: both are written into the report, which CI uploads.
+     */
+    video: 'on-first-retry',
+    /*
+     * A click or a fill waits for its target indefinitely by default, so a control that never
+     * appears consumes the whole test timeout and is reported as "target closed" - which says
+     * nothing about what was being waited for. Bounded, the same failure names the selector.
+     */
+    actionTimeout: process.env.CI ? 30_000 : 10_000,
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
       name: 'chromium',
+      /*
+       * Everything except the suites that change a world setting. Those reload the page and, if a
+       * run is cut short before teardown, leave the world changed for every run after it - so they
+       * are opted into rather than paid for by default.
+       */
+      testIgnore: [...NON_DEFAULT_SETTINGS, ...CANVAS],
       use: {
         ...devices['Desktop Chrome'],
         viewport: {
           width: 1440,
           height: 900
         },
-        launchOptions: {
-          // force GPU acceleration
-          args: [
-            '--ignore-gpu-blocklist',
-            '--use-gl=angle',
-            '--use-angle=gl-egl',
-          ]
-        },
+        launchOptions: { args: launchArgs },
+      },
+    },
+    {
+      /*
+       * The suites that need a scene drawn, and so pay for one. A project of their own because
+       * turning the canvas on or off costs a page reload - once per project, not once per spec.
+       */
+      name: 'canvas',
+      testMatch: CANVAS,
+      testIgnore: NON_DEFAULT_SETTINGS,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        launchOptions: { args: launchArgs },
+      },
+    },
+    {
+      // Opt in with `npx playwright test --project=non-default-settings`.
+      name: 'non-default-settings',
+      testMatch: NON_DEFAULT_SETTINGS,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1440, height: 900 },
+        launchOptions: { args: launchArgs },
       },
     },
     // TODO: re-enable all browsers
@@ -83,7 +182,7 @@ export default defineConfig({
   ],
   // custom stuff added here
   expect: {
-    timeout: 5_000,
+    timeout: process.env.CI ? 15_000 : 5_000,
   },
 });
 
