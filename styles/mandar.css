@@ -4660,6 +4660,11 @@ img {
   display: flex;
 }
 
+.starwarsffg .attribute .block-title .block-title-tooltip {
+  margin-left: 0.25rem;
+  opacity: 0.7;
+}
+
 .starwarsffg .container .tag_tooltip {
   align-content: center;
 }

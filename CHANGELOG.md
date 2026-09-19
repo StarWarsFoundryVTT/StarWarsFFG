@@ -17,6 +17,7 @@
   * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))
   * Fixes calculation of talent costs for drag and drop talents for Genesys (Rysarian) ([#2175](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2175))
   * Fixes the scaling of the Adversary and minion count icons when the grid size is changed. (Rysarian) ([#1589](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1589))
+  * Rival and Nemesis sheets now explain that their encumbrance threshold is not derived from Brawn ([#2234](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2234))
 
 `2.0.3`
 * Enhancements:
