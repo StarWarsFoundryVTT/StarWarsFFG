@@ -11,7 +11,8 @@
  *   B  the Foundry page - the same round trip with the world loaded
  *   C  B + a console listener - the suite attaches one; CDP delivers every message over the
  *                              same channel the evaluate replies come back on
- *   D  a busy loop, timed inside the page and again here - which process is short of CPU
+ *   D  a fixed amount of arithmetic, run in the page and again here - how fast each process
+ *      computes, and what the trip between them adds on top
  *
  * Run it on both machines and compare. It needs a Foundry already serving the qa world:
  *
@@ -109,33 +110,82 @@ async function main() {
   console.log(fmt('C  /game + console listener', withListener));
   console.log(`   (${messages} console messages arrived during C)`);
 
-  /* D: 300ms of arithmetic, timed by the page itself and again from out here. The page's own
-   * figure is how fast that renderer computes; the gap is what the trip added. */
+  /* D: a fixed *amount* of work rather than a fixed duration - a loop bounded by the clock
+   * reports its own bound back however slow the machine is, and says nothing. A set number of
+   * iterations does not: how long they take is how fast that process computes. Run in the page
+   * and again here, so a starved renderer and a starved runner are told apart, and the gap
+   * between the page's own figure and the one seen from here is what the round trip added. */
+  const WORK = 20_000_000;
   const inPage = [];
   const outside = [];
   for (let i = 0; i < 10; i++) {
     const t = performance.now();
-    inPage.push(await page.evaluate(() => {
+    inPage.push(await page.evaluate((n) => {
       const started = performance.now();
       let x = 0;
-      while (performance.now() - started < 300) x += Math.sqrt(x + 1);
-      return performance.now() - started;
-    }));
+      for (let j = 0; j < n; j++) x += Math.sqrt(j);
+      // returned so the loop cannot be optimised away
+      return [performance.now() - started, x][0];
+    }, WORK));
     outside.push(performance.now() - t);
   }
   console.log();
-  console.log(fmt('D  300ms busy loop, page-side', stats(inPage)));
-  console.log(fmt('D  300ms busy loop, seen here', stats(outside)));
+  console.log(fmt(`D  ${WORK / 1e6}M iterations, page-side`, stats(inPage)));
+  console.log(fmt(`D  ${WORK / 1e6}M iterations, seen here`, stats(outside)));
 
   /* The same arithmetic in this process, for the runner's CPU rather than the renderer's. */
   const here = [];
   for (let i = 0; i < 10; i++) {
     const started = performance.now();
     let x = 0;
-    while (performance.now() - started < 300) x += Math.sqrt(x + 1);
-    here.push(performance.now() - started);
+    for (let j = 0; j < WORK; j++) x += Math.sqrt(j);
+    here.push([performance.now() - started, x][0]);
   }
-  console.log(fmt('D  300ms busy loop, in node', stats(here)));
+  console.log(fmt(`D  ${WORK / 1e6}M iterations, in node`, stats(here)));
+
+  /* E: what those long tasks actually are. A no-op round trip costing ~470ms on an idle page
+   * means the renderer's main thread is busy in repeating blocking tasks; `longtask` entries are
+   * the browser's own record of them, and the attribution says which frame they came from. */
+  console.log();
+  const long = await page.evaluate(async () => {
+    const seen = [];
+    const observer = new PerformanceObserver((list) => {
+      for (const e of list.getEntries()) seen.push(Math.round(e.duration));
+    });
+    try { observer.observe({ entryTypes: ['longtask'] }); } catch { return null; }
+    // Nothing is asked of the page for five seconds - whatever runs is the page's own doing.
+    await new Promise((r) => setTimeout(r, 5000));
+    observer.disconnect();
+    return seen;
+  });
+  if (long === null) {
+    console.log('E  longtask observer unavailable in this browser');
+  } else {
+    const total = long.reduce((a, b) => a + b, 0);
+    console.log(`E  long tasks in 5s idle   ${long.length}, ${total}ms total (${(total / 50).toFixed(0)}% of the wall clock)`);
+    console.log(`   durations              ${long.slice(0, 20).join(', ')}${long.length > 20 ? ' ...' : ''}`);
+  }
+
+  /* F: the canvas is the obvious suspect - Foundry keeps a PIXI ticker running with no scene
+   * loaded, and on this runner it rasterises in software. `noCanvas` is the core setting that
+   * turns the whole thing off, so if the tax is the canvas it goes away here and nowhere else. */
+  console.log();
+  const before = await page.evaluate(() => {
+    try { return game.settings.get('core', 'noCanvas'); } catch { return null; }
+  });
+  if (before === null) {
+    console.log('F  core.noCanvas is not a setting in this build - skipped');
+  } else {
+    await page.evaluate(() => game.settings.set('core', 'noCanvas', true))
+      .catch(() => { /* the set reloads the page out from under the call */ });
+    await page.goto(new URL('/game', baseURL).href);
+    await page.waitForFunction(() => globalThis.game?.ready === true, undefined, { timeout: 60_000 });
+    console.log(fmt('F  /game, canvas disabled', await roundTrip(page)));
+
+    // Put it back: it is a client setting and the world's data directory outlives this process.
+    await page.evaluate((v) => game.settings.set('core', 'noCanvas', v), before)
+      .catch(() => { /* same reload */ });
+  }
 
   console.log();
   console.log(`  load after      ${os.loadavg().map((n) => n.toFixed(2)).join(' ')}`);
