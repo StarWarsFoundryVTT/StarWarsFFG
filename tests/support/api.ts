@@ -1508,7 +1508,7 @@ export async function submitSheet(page: Page, uuid: Uuid): Promise<void> {
  * Set a system setting, handing back what it was so a caller can put it back.
  *
  * Read and write are separate calls because some settings reload the page from their `onChange` -
- * `useGenericSlots` swaps the combat classes out, so the world has to come back up around them
+ * `useGenericSlots` swaps the combat tracker out, so the world has to come back up around it
  * (swffg-main.js:343). The reload tears down the context the write was evaluating in, which
  * surfaces as an error after the write has already landed; the old value has to be in hand before
  * that can happen. Waiting for the page to come back is `world.setSetting`'s job.
@@ -2453,37 +2453,9 @@ export async function rollInitiative(
     { skill?: string; ids?: string[]; npcOnly?: boolean } = {},
 ): Promise<{ offered: string[]; checked: string | null }> {
   /*
-   * The pool dialog belongs to CombatFFG, which the system only registers while `useGenericSlots`
-   * is set (swffg-main.js:346). With the setting off, Foundry's own `rollInitiative` runs instead:
-   * it rolls a formula and raises nothing, so there is no dialog to answer and no pools to report.
+   * The pool dialog belongs to CombatFFG, which the system registers whichever kind of slots the
+   * tracker is showing (swffg-main.js:348) - so the roll is answered the same way either way.
    */
-  const usesSlots = await page.evaluate(
-    () => Boolean(game.settings.get('starwarsffg', 'useGenericSlots')));
-
-  if (!usesSlots) {
-    const problem = await page.evaluate(async ({ combatUuid, ids, npcOnly }) => {
-      const combat = await fromUuid(combatUuid);
-      if (!combat) return `No combat at ${combatUuid}`;
-      try {
-        await (npcOnly
-          ? combat.rollNPC()
-          : combat.rollInitiative(ids ?? combat.combatants.map((c: any) => c.id)));
-      } catch (err: any) {
-        return err?.message ?? String(err);
-      }
-      return null;
-    }, { combatUuid, ids, npcOnly });
-
-    if (problem) {
-      throw new Error(
-        `Rolling initiative on ${combatUuid}: ${problem}\n` +
-        "useGenericSlots is off, so Foundry's own roll ran rather than the system's. If the test " +
-        'did not ask for that, an earlier run left the setting behind.',
-      );
-    }
-    return { offered: [], checked: null };
-  }
-
   const started = await page.evaluate(async ({ combatUuid, ids, npcOnly }) => {
     const combat = await fromUuid(combatUuid);
     if (!combat) return `No combat at ${combatUuid}`;

@@ -151,7 +151,7 @@ const EQUIPPABLE = new Set(['weapon', 'armour', 'shipweapon', 'shipattachment'])
 /**
  * Where the character creator looks for each kind of choice.
  *
- * The names are the defaults of the `<kind>Compendiums` settings (swffg-main.js:394 onwards), so a
+ * The names are the defaults of the `<kind>Compendiums` settings (swffg-main.js:397 onwards), so a
  * pack made under one of these is read without touching a setting.
  */
 const CREATOR_PACKS: Record<string, string> = {

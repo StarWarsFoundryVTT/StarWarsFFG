@@ -343,10 +343,11 @@ Hooks.once("init", async function () {
     onChange: (rule) => window.location.reload()
   });
 
+  CONFIG.Combat.documentClass = CombatFFG;
+  CONFIG.Combatant.documentClass = CombatantFFG;
+
   if (game.settings.get("starwarsffg", "useGenericSlots")) {
     CONFIG.ui.combat = CombatTrackerFFG;
-    CONFIG.Combat.documentClass = CombatFFG;
-    CONFIG.Combatant.documentClass = CombatantFFG;
     // override the token placeable object so we can control turn indicators
     CONFIG.Token.objectClass = TokenFFG;
   }
@@ -664,10 +665,13 @@ Hooks.once("init", async function () {
       }
     });
 
-    Hooks.on("preCreateCombatant", async (combatant, context, options, combatantId) => {
-      await game.combat.handleCombatantAddition(combatant, context, options, combatantId);
-    });
-    CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    // slot bookkeeping only applies to generic slots; named slots are handled by the core tracker
+    if (game.settings.get("starwarsffg", "useGenericSlots")) {
+      Hooks.on("preCreateCombatant", async (combatant, context, options, combatantId) => {
+        await game.combat.handleCombatantAddition(combatant, context, options, combatantId);
+      });
+      CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
+    }
   }
 
   await gameSkillsList();
