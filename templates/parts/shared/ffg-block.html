@@ -5,6 +5,9 @@
         {{#if headerlink}}
         <a class="{{headerclass}}" {{{headerattributes}}}>{{localize title}}</a>
         {{else}} {{localize title}}{{/if}}
+        {{#if tooltip}}
+        <i class="fa-regular fa-circle-question block-title-tooltip" data-tooltip="{{localize tooltip}}" data-tooltip-direction="DOWN"></i>
+        {{/if}}
       </div>
       <div class="block-attribute">
         {{#if (eq blocktype "pills")}}

@@ -136,7 +136,7 @@
           }}
         {{!-- Encumbrance Box --}}
           {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
-            (object blocktype="split" title="SWFFG.Encumbrance" fields=(array
+            (object blocktype="split" title="SWFFG.Encumbrance" tooltip="SWFFG.Actors.Sheets.Encumbrance.Tooltip.Manual" fields=(array
               (object name="data.stats.encumbrance.max" value=data.stats.encumbrance.max type="Number" label="SWFFG.Threshold" disabled=disabled)
               (object name="data.stats.encumbrance.value" value=data.stats.encumbrance.value type="Number" label="SWFFG.Current")
             ))
