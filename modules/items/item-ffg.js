@@ -678,7 +678,9 @@ export class ItemFFG extends ItemBaseFFG {
     data.prettyDesc = await PopoutEditor.renderDiceImages(data.description, this.actor);
 
     if (["weapon", "armor", "armour", "shipweapon"].includes(this.type)) {
-      data.doNotSubmit = (await this.sheet.getData()).data.doNotSubmit;
+      const sheetData = (await this.sheet.getData()).data;
+      data.doNotSubmit = sheetData.doNotSubmit;
+      data.enrichedSpecial = sheetData.enrichedSpecial;
     }
 
     if (["talent"].includes(this.type) && data.longDesc) {

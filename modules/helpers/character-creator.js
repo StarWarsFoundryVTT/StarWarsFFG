@@ -552,6 +552,11 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
       context.skillsList = this.tempActor.sheet._createSkillColumns({data: skillData});
 
     }
+    // the force power preview displays the description, which has to be enriched first
+    for (const purchase of this.data.purchases.xp.forcePowers) {
+      purchase.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(purchase.item.system.description);
+    }
+
     const xp = this.calcXp();
     context.totalXp = xp.total;
     context.availableXp = xp.available;
