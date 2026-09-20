@@ -155,3 +155,34 @@ test('#2021 a combatant removed while the current slot is claimed takes a slot w
     'and the combatant is out of the encounter'
   ).not.toContain(encounter.combatants[1]);
 });
+
+test('#1602 a generic slot standing in for a removed combatant keeps its side', async ({ world, page }) => {
+  await world.setSetting('removeCombatantAction', 'last_slot');
+
+  const encounter = await world.encounter({
+    combatants: [
+      { actor: 'character' },
+      { actor: 'character' },
+    ],
+    roll: true,
+  });
+
+  await api.openCombatTracker(page);
+  // the spare sits at the bottom of the side, so it is the slot `last_slot` reaches for
+  await tracker.addSlot(page, { side: 'Friendly', initiative: 1 });
+  await expect(tracker.slots(page), 'three slots for two combatants').toHaveCount(3);
+
+  await api.removeCombatant(page, encounter.combat, encounter.combatants[1]);
+
+  const combatants = await api.readCombatants(page, encounter.combat);
+
+  expect(combatants, 'the side is one slot smaller').toHaveLength(2);
+  expect(
+    combatants.filter((c) => c.generic),
+    'and what replaced the generic slot is generic itself'
+  ).toHaveLength(1);
+  await expect(
+    tracker.slotsFor(page, 'Friendly'),
+    'so both slots still render as friendly ones'
+  ).toHaveCount(2);
+});
