@@ -3754,6 +3754,16 @@ img {
   color: #0e4400;
 }
 
+.starwarsffg .item-sheet-forcepower .sheet-body .talent-background > .talent-cost {
+  position: static;
+  width: fit-content;
+  margin-left: -5px;
+}
+
+.starwarsffg .item-sheet-forcepower .sheet-body .talent-background > .talent-body {
+  height: calc(100% - 2.75rem);
+}
+
 .starwarsffg .item-sheet-forcepower .talent-modifiers {
   position: absolute;
   right: 5px;
@@ -4123,6 +4133,16 @@ img {
   border: 0;
   background: rgba(0, 0, 0, 0);
   color: #630000;
+}
+
+.starwarsffg .item-sheet-signatureability .sheet-body .talent-background > .talent-cost {
+  position: static;
+  width: fit-content;
+  margin-left: -5px;
+}
+
+.starwarsffg .item-sheet-signatureability .sheet-body .talent-background > .talent-body {
+  height: calc(100% - 2.75rem);
 }
 
 .starwarsffg .item-sheet-signatureability .talent-modifiers {
