@@ -819,6 +819,35 @@ img {
   padding: 0 0.6rem 0.5rem 0;
 }
 
+.starwarsffg.sheet.actor form.character {
+  display: flex;
+  flex-direction: column;
+}
+
+.starwarsffg.sheet.actor form.character > .sheet-header {
+  flex: 0 0 auto;
+}
+
+.starwarsffg.sheet.actor form.character > .sheet-body {
+  height: auto;
+  flex: 1 1 auto;
+}
+
+.starwarsffg.sheet.actor form.character .tab.characteristics.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.starwarsffg.sheet.actor form.character .tab.characteristics > div.grid {
+  flex: 0 0 auto;
+}
+
+.starwarsffg.sheet.actor form.character .tab.characteristics > .skillsTablesGrid {
+  height: auto;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
 .starwarsffg.sheet .editor {
   width: 100%;
 }
