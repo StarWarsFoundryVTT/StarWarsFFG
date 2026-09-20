@@ -1782,11 +1782,16 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       return false;
     }
     // as of v10, "id" is not passed in - instead, "uuid" is. Let's use the Foundry API to get the item Document from the uuid.
-    let itemObject = await fromUuid(data.uuid);
+    const sourceItem = await fromUuid(data.uuid);
 
-    if (!itemObject) return;
+    if (!sourceItem) return;
 
-    if (itemObject.type === "talent") {
+    if (sourceItem.type === "talent") {
+      // work from a copy - unique-ing the attributes renames them, and renaming them on the live
+      //  document renames them on the talent which was dragged in
+      let itemObject = foundry.utils.duplicate(sourceItem);
+      itemObject.id = sourceItem.id;
+      itemObject.pack = sourceItem.pack;
       itemObject = await ItemHelpers.uniqueAttrs(itemObject, specialization);
       // we need to remove if this is the last instance of the talent in the specialization
       const previousItemId = $(li).find(`input[name='data.talents.${talentId}.itemId']`).val();
@@ -1873,8 +1878,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       const toDelete = [];
       for (const attr of Object.keys(existingAttrs)) {
         updateData.system.talents[talentId].attributes[`-=${attr}`] = null;
-        const matchingEffect = existingEffects.find(ae => ae.name === attr);
-        if (matchingEffect) {
+        for (const matchingEffect of existingEffects.filter(ae => ae.name === attr)) {
           toDelete.push(matchingEffect.id);
         }
       }

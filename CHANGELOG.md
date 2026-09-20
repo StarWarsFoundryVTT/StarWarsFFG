@@ -24,6 +24,7 @@
   * The combat tracker continues to work after an actor is removed from combat and the page is reloaded ([#1602](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1602))
   * The character sheet sizes its body to the header it actually has, so the skill list on the Characteristics tab no longer ends below the bottom of the window ([#1737](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1737))
   * Talent cards now include short and long descriptions when sent to chat ([#2231](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2231))
+  * Dropping a talent onto a specialization no longer edits the talent that was dragged in, and dropping the same talent again replaces the node instead of stacking another copy of its modifiers onto it ([#2263](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2263))
 
 `2.0.3`
 * Enhancements:

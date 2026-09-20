@@ -145,3 +145,31 @@ test('#1811 the ranked flag survives being dropped into a specialization', async
     'ranked survives the drop'
   ).toBe(true);
 });
+
+test('#2263 dropping the same talent twice replaces the node rather than stacking it', async ({ page, world }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'specialization',
+  });
+
+  const source = await world.dropTalent(ctx, 'talent0', {
+    name: 'qa restacked',
+    attributes: [{ modtype: 'Skill Boost', mod: 'Cool', value: 1 }],
+  });
+  const sourceAfterFirstDrop = await api.readModifierEffects(page, source);
+
+  await api.dropTalentOntoSpecialization(page, ctx.item, source, 'talent0');
+
+  expect(
+    Object.keys(await api.read(page, ctx.item, 'system.talents.talent0.attributes') ?? {}),
+    'the node carries one modifier, not one per drop'
+  ).toHaveLength(1);
+  const nodeEffects = (
+    await api.readModifierEffects(page, ctx.item)
+  ).effects.filter((effect) => effect.name.startsWith('attr'));
+  expect(nodeEffects, 'and one active effect to go with it').toHaveLength(1);
+  expect(
+    await api.readModifierEffects(page, source),
+    'the talent that was dragged is left alone'
+  ).toEqual(sourceAfterFirstDrop);
+});
