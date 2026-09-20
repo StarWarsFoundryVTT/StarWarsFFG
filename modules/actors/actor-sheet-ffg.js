@@ -511,7 +511,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         htmlElement,
         ".skillsGrid .skill",
         contextMenuOptions,
-      {jQuery: false},
+      {jQuery: false, fixed: true},
     );
 
     html.find(".skill-purchase").click(async (ev) => {
@@ -543,7 +543,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
           this._onCreateSkill(li);
         },
       },
-    ], {jQuery: false});
+    ], {jQuery: false, fixed: true});
 
     html.find(".ffg-purchase").click(async (ev) => {
       await this._buyCore(ev)
@@ -594,9 +594,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       },
     };
 
-    new foundry.applications.ux.ContextMenu(htmlElement, "li.item:not(.forcepower)", [sendToChatContextItem], {jQuery: false});
-    new foundry.applications.ux.ContextMenu(htmlElement, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem], {jQuery: false});
-    new foundry.applications.ux.ContextMenu(htmlElement, "div.item", [sendToChatContextItem], {jQuery: false});
+    new foundry.applications.ux.ContextMenu(htmlElement, "li.item:not(.forcepower)", [sendToChatContextItem], {jQuery: false, fixed: true});
+    new foundry.applications.ux.ContextMenu(htmlElement, "li.item.forcepower", [sendToChatContextItem, rollForceToChatContextItem], {jQuery: false, fixed: true});
+    new foundry.applications.ux.ContextMenu(htmlElement, "div.item", [sendToChatContextItem], {jQuery: false, fixed: true});
 
     if (["nemesis", "rival"].includes(this.actor.type)) {
       this.sheetoptions = new ActorOptions(this, html);
