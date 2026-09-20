@@ -22,6 +22,7 @@
   * The PC Wizard now grants what was paid for: specializations and force powers bought with XP, the talents learned in them, and one free career skill rank per skill taken ([#2244](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2244))
   * Imported species modifiers keep the Active Effect which carries them, rather than leaving one behind that applies with no modifier to show as its source ([#2201](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2201))
   * The combat tracker continues to work after an actor is removed from combat and the page is reloaded ([#1602](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1602))
+  * The character sheet sizes its body to the header it actually has, so the skill list on the Characteristics tab no longer ends below the bottom of the window ([#1737](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1737))
 
 `2.0.3`
 * Enhancements:
