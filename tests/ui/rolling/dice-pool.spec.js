@@ -283,14 +283,13 @@ test.fixme('#2198 every die in the pool names a source that can be found', async
     .toEqual([ctx.itemName]);
 });
 
-test.fixme('#2201 an imported species modifier appears in the pool with its source named', async ({ world, consumers }) => {
+test('#2201 an imported species modifier appears in the pool with its source named', async ({ world, consumers }) => {
   const species = await world.imported('species', 'CHADRA');
   const ctx = await world.place(species, { actor: 'character' });
 
   const removed = await consumers.skillModifier(ctx, 'Perception', 'Remove Setback');
   const sources = await consumers.skillSources(ctx, 'Perception', 'Remove Setback');
 
-  // FIXME: #2201
   expect(removed, 'the two setbacks the species removes').toBe(2);
   expect(sources, 'from one place, which the sheet can name').toHaveLength(1);
   expect(sources[0].type, 'and that place is the species').toBe(ctx.itemName);

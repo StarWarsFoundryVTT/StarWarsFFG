@@ -117,6 +117,22 @@ test('importing the same data twice does not duplicate the documents', async ({ 
   expect(ids(after), 'in the same documents').toEqual(ids(before));
 });
 
+test('#2201 a die modifier keeps the effect that carries it across a re-import', async ({ world, page }) => {
+  const species = await world.imported('species', 'CHADRA');
+
+  await oggdude.reimport(page, 'Species');
+
+  const again = await world.imported('species', 'CHADRA');
+  const carried = await api.readModifierEffects(page, again);
+
+  expect(again, 'the same document, not a second copy').toBe(species);
+  expect(carried.orphaned, 'no effect is left naming a modifier that is gone').toEqual([]);
+  expect(
+    carried.effects.filter((effect) => effect.keys.includes('system.skills.Perception.remsetback')),
+    'and the one that removes setbacks is applied once'
+  ).toHaveLength(1);
+});
+
 test.fixme('an item whose XML names an unknown skill is skipped, and says so', async ({ page, consoleGuard }) => {
   const xml = `<?xml version="1.0" encoding="utf-8"?>
 <Gears>

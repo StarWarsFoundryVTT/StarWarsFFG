@@ -2476,6 +2476,19 @@ export default class ImportHelpers {
           // update here does not return the UUID, so retrieve the item from the pack to get it
           const updatedItem = await pack.get(updateData._id);
           upd.uuid = updatedItem.uuid;
+          if (type === "Item") {
+            // the imported data is authoritative, so drop the Active Effects and build them again
+            await updatedItem.deleteEmbeddedDocuments(
+              "ActiveEffect",
+              updatedItem.effects.contents.map(effect => effect.id),
+            );
+            // the inherent effect first: applyActiveEffectOnUpdate updates that one, never creates it
+            await updatedItem._onCreateAEs({});
+            // the item's own data rather than the update, which carries "-=key" deletion markers the
+            // effect builder would read a modtype off
+            await ImportHelpers.applyActiveEffectOnUpdate(updatedItem, updatedItem.toObject());
+            await ImportHelpers.applyTalentActiveEffects(updatedItem);
+          }
         } catch (e) {
           CONFIG.logger.error(`Failed to update ${type} ${dataType} ${data.name} : ${e.toString()}`);
         }

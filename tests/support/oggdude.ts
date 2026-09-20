@@ -88,6 +88,15 @@ async function run(
     }
 
     CONFIG.temporary ??= {};
+    /*
+     * The importer caches a snapshot of a pack the first time it looks an id up in it, and decides
+     * from that snapshot which of an item's keys the new data no longer has. A real import starts
+     * from a fresh session, so the snapshots are dropped here - keeping `skills`, which the skill
+     * key mapping is read from.
+     */
+    for (const cached of Object.keys(CONFIG.temporary)) {
+      if (cached !== 'skills') delete CONFIG.temporary[cached];
+    }
     if (!CONFIG.temporary.skills && className !== 'Skills') {
       await OggDude.Import.Skills(ImportHelpers.stringToXml(skills), false);
     }

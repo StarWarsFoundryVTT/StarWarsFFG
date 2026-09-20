@@ -322,6 +322,36 @@ export async function registeredSheets(page: Page, documentName: 'Actor' | 'Item
 }
 
 /**
+ * An item's modifier-backed Active Effects, and any that no longer name a modifier.
+ */
+export async function readModifierEffects(page: Page, uuid: Uuid): Promise<{
+  effects: { name: string; disabled: boolean; keys: string[]; changes: Record<string, number> }[];
+  orphaned: string[];
+}> {
+  return page.evaluate(async (uuid) => {
+    const item = await fromUuid(uuid);
+    if (!item) throw new Error(`No item at ${uuid}`);
+    const attributes = Object.keys(item.system?.attributes ?? {});
+    const effects: {
+      name: string; disabled: boolean; keys: string[]; changes: Record<string, number>;
+    }[] = item.effects.contents.map((effect: any) => ({
+      name: String(effect.name ?? ''),
+      disabled: Boolean(effect.disabled),
+      keys: effect.changes.map((change: any) => String(change.key)),
+      changes: Object.fromEntries(
+        effect.changes.map((change: any) => [String(change.key), Number(change.value)])),
+    }));
+    return {
+      effects,
+      // "(inherent)" is the item's own, and is named for the item rather than for a modifier
+      orphaned: effects
+        .filter((effect) => effect.name.startsWith('attr') && !attributes.includes(effect.name))
+        .map((effect) => effect.name),
+    };
+  }, uuid);
+}
+
+/**
  * Build Active Effects from item's modifiers.
  */
 export async function rebuildActiveEffects(page: Page, uuid: Uuid): Promise<void> {
