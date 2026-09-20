@@ -19,6 +19,7 @@
   * Fixes the scaling of the Adversary and minion count icons when the grid size is changed. (Rysarian) ([#1589](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1589))
   * Rival and Nemesis sheets now explain that their encumbrance threshold is not derived from Brawn ([#2234](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2234))
   * Initiative can be rolled again when generic combat slots are turned off ([#2248](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2248))
+  * The PC Wizard now grants what was paid for: specializations and force powers bought with XP, the talents learned in them, and one free career skill rank per skill taken ([#2244](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2244))
 
 `2.0.3`
 * Enhancements:

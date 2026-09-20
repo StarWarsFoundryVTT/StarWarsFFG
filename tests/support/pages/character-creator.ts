@@ -480,16 +480,22 @@ export async function selectSpecialization(
 }
 
 /**
- * Buy a talent from the chosen specialization's tree.
+ * Buy a talent from a specialization's tree.
+ *
+ * Every tree on show numbers its nodes from `talent0`, so a wizard holding more than one
+ * specialization needs the name to say which of them the node belongs to.
  */
-export async function buyTalent(page: Page, node: string, timeout = 10_000): Promise<void> {
-  const problem = await page.evaluate(async ({ key, node, timeout }) => {
+export async function buyTalent(
+  page: Page, node: string, specialization: string | null = null, timeout = 10_000,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ key, node, specialization, timeout }) => {
     const app = (window as any)[key];
     if (!app) return 'the wizard is not open';
 
     const deadline = Date.now() + timeout;
-    const find = () => app.element?.querySelector(
-      `.specialization-talent-purchase[data-target="${node}"]`) as HTMLInputElement | null;
+    const selector = `.specialization-talent-purchase[data-target="${node}"]`
+      + (specialization ? `[data-specialization="${specialization}"]` : '');
+    const find = () => app.element?.querySelector(selector) as HTMLInputElement | null;
 
     // Waited for: choosing a specialization records the choice and then re-renders, so the tree
     // is drawn a moment after the choice is made.
@@ -497,7 +503,7 @@ export async function buyTalent(page: Page, node: string, timeout = 10_000): Pro
     while (!control) {
       if (Date.now() > deadline) {
         const offered = [...(app.element?.querySelectorAll('.specialization-talent-purchase') ?? [])]
-          .map((el: any) => el.dataset.target).join(', ') || 'none';
+          .map((el: any) => `${el.dataset.specialization}:${el.dataset.target}`).join(', ') || 'none';
         return `the tree never offered a node "${node}". It offers: ${offered}`;
       }
       await new Promise((r) => setTimeout(r, 25));
@@ -515,7 +521,7 @@ export async function buyTalent(page: Page, node: string, timeout = 10_000): Pro
       await new Promise((r) => setTimeout(r, 25));
     }
     return null;
-  }, { key: APP, node, timeout });
+  }, { key: APP, node, specialization, timeout });
 
   if (problem) throw new Error(`Buying a talent in the wizard failed: ${problem}`);
   await awaitRebuild(page);

@@ -26,7 +26,7 @@ test('the creator completes and produces an actor', async ({ world, page }) => {
   await creator.close(page);
 });
 
-test.fixme('#2244 a free career skill rank raises that skill on the character', async ({ world, page }) => {
+test('#2244 a free career skill rank raises that skill on the character', async ({ world, page }) => {
   const species = await world.addCreatorChoice({ item: 'species' });
   const career = await world.addCreatorChoice({
     item: 'career',
@@ -39,17 +39,20 @@ test.fixme('#2244 a free career skill rank raises that skill on the character', 
   await creator.selectSpecies(page, species);
   await creator.selectCareer(page, career);
   await creator.takeSkillRank(page, 'Gunnery');
-  world.track(await creator.tempActor(page));
+  const preview = world.track(await creator.tempActor(page));
 
   const made = world.track(await creator.finish(page));
 
-  // FIXME: #2244
+  expect(
+    await api.read(page, preview, 'system.skills.Gunnery.rank'),
+    'the preview shows the rank, not only the asterisk beside the name'
+  ).toBe(1);
   expect(await api.read(page, made, 'system.skills.Gunnery.rank'), 'the free rank landed').toBe(1);
 
   await creator.close(page);
 });
 
-test.fixme('#2244 a talent bought with XP reaches the finished character', async ({ world, page }) => {
+test('#2244 a talent bought with XP reaches the finished character', async ({ world, page }) => {
   const species = await world.addCreatorChoice({ item: 'species' });
   const specialization = await world.addCreatorChoice({
     item: 'specialization',
@@ -79,12 +82,49 @@ test.fixme('#2244 a talent bought with XP reaches the finished character', async
   const items = await api.readOwnedItems(page, made);
   const bought = items.find((item) => item.type === 'specialization');
 
-  // FIXME: #2244
   expect(bought, 'the specialization came along').toBeDefined();
   expect(
     await api.read(page, bought.uuid, 'system.talents.talent0.islearned'),
     'with the talent that was paid for learned'
   ).toBe(true);
+
+  await creator.close(page);
+});
+
+test('#2244 each free career rank lands on the skill it was taken for', async ({ world, page }) => {
+  const species = await world.addCreatorChoice({ item: 'species' });
+  const career = await world.addCreatorChoice({
+    item: 'career',
+    itemOverrides: {
+      careerSkills: {
+        careerSkill0: 'Gunnery',
+        careerSkill1: 'Astrogation',
+        careerSkill2: 'Brawl',
+        careerSkill3: 'Charm',
+      },
+    },
+  });
+  const taken = ['Gunnery', 'Astrogation', 'Brawl', 'Charm'];
+
+  await creator.open(page);
+  await creator.selectSpecies(page, species);
+  await creator.selectCareer(page, career);
+  for (const skill of taken) {
+    await creator.takeSkillRank(page, skill);
+  }
+  world.track(await creator.tempActor(page));
+
+  const made = world.track(await creator.finish(page));
+  const skills = await api.read(page, made, 'system.skills');
+  const ranked = Object.fromEntries(
+    Object.entries(skills).filter(([, skill]) => skill.rank > 0).map(([name, skill]) => [name, skill.rank])
+  );
+
+  // ranks granted within the same millisecond used to share a key, which piled two of them onto
+  // one skill and left another with none
+  expect(ranked, 'one rank each, and none anywhere else').toEqual(
+    Object.fromEntries(taken.map((skill) => [skill, 1]))
+  );
 
   await creator.close(page);
 });
