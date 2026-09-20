@@ -28,6 +28,7 @@
   * Dropping a talent onto a specialization no longer edits the talent that was dragged in, and dropping the same talent again replaces the node instead of stacking another copy of its modifiers onto it ([#2263](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2263))
   * Drops onto species, specialization, and career sheets now land on the sheet they were dropped on, instead of doing nothing (or landing on another sheet) when more than one sheet of that type is open ([#1708](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1708))
   * Right-click menus on the actor sheet (skills, items, talents) are drawn over the sheet rather than inside the list they belong to, so the ones near the bottom are no longer cut off unless the sheet happens to sit at the bottom of the canvas ([#1738](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1738))
+  * Buying a Signature Ability on a character with no career now explains that a career is required, instead of failing silently with a console error ([#1835](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1835))
 
 `2.0.3`
 * Enhancements:
