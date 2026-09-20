@@ -73,6 +73,7 @@
             <div><input type="checkbox" name="data.upgrades.{{key}}.islearned" data-dtype="Boolean" {{#if upgrade.islearned }}checked{{else}} {{/if}}></div>
             <div class="talent-name" data-name="{{upgrade.name}}"><input name="data.upgrades.{{key}}.name" type="text" value="{{upgrade.name}}" placeholder="{{localize 'SWFFG.SignatureAbilityUpgradeName'}}" /></div>
           </div>
+          <div class="talent-cost">{{ localize "SWFFG.Cost"}}<input name="data.upgrades.{{key}}.cost" type="text" value="{{calculateSignatureAbilityCost key}}" data-dtype="String" /></div>
           <div class="talent-body">
             <div class="popout-editor" data-target="data.upgrades.{{key}}.description" data-value="data.upgrades.{{key}}.enrichedDescription" data-label="{{upgrade.name}}">
               <div class="popout-editor-button"><i class="fas fa-edit"></i></div>
@@ -82,7 +83,6 @@
             <input class="talent-hidden" name="data.upgrades.{{key}}.visible" type="text" value="{{upgrade.visible}}" data-dtype="Boolean" />
           </div>
         </div>
-        <div class="talent-cost">{{ localize "SWFFG.Cost"}}<input name="data.upgrades.{{key}}.cost" type="text" value="{{calculateSignatureAbilityCost key}}" data-dtype="String" /></div>
         <div class="talent-modifiers">
           <a class="talent-action" data-itemid="{{key}}">
             {{#if ../item.isOwned }}

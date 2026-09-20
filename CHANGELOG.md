@@ -1,17 +1,18 @@
 `2.0.4`
 * Fixes:
   * Fixed some issues with the importer code, [@KamiliaBlow](https://github.com/KamiliaBlow))
-    * Fixed a formatting error during import that caused the description block for careers to be empty
-    * Fixed an import issue that could corrupt the entire dataset import when modifying Skills.xml; this occurred if the ```<Name>``` element contained a translation into another language. ([#2170](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2170))
-    * Fixed a bug in the Specializations import feature that did not account for the presence of tags has been fixed. Now, if a user wants to add tags to Specializations, the system will correctly read them from the Specializations file
-    * The import of sources has been updated; these sources could be of the following types: ```<Source>User Data</Source>``` and ```<Source/> <Source/>```. ([#2268](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2268))
+  * Fixed a formatting error during import that caused the description block for careers to be empty
+  * Fixed an import issue that could corrupt the entire dataset import when modifying Skills.xml; this occurred if the ```<Name>``` element contained a translation into another language. ([#2170](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2170))
+  * Fixed a bug in the Specializations import feature that did not account for the presence of tags has been fixed. Now, if a user wants to add tags to Specializations, the system will correctly read them from the Specializations file
+  * The import of sources has been updated; these sources could be of the following types: ```<Source>User Data</Source>``` and ```<Source/> <Source/>```. ([#2268](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2268))
 * Features:
   * Added a compendium browser to search and filter items across all world compendiums! ([#2267](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/2267), [@KamiliaBlow](https://github.com/KamiliaBlow))
-    * Accessible via a button in the compendiums directory for all users (not just GMs)
-    * Browse items by category (weapons, armor, gear, attachments, mods, talents, specializations, species, careers, force powers, signature abilities, vehicles, adversaries, and more)
-    * Search items by name/tags with
-    * Filter items by type, with the filter list built dynamically from item tags (works with translated OggDude datasets)
-    * Scroll through paginated results, drag-and-drop items onto sheets/scenes, or click to open them
+  * Accessible via a button in the compendiums directory for all users (not just GMs)
+  * Browse items by category (weapons, armor, gear, attachments, mods, talents, specializations, species, careers, force powers, signature abilities, vehicles, adversaries, and more)
+  * Search items by name/tags with
+  * Filter items by type, with the filter list built dynamically from item tags (works with translated OggDude datasets)
+  * Scroll through paginated results, drag-and-drop items onto sheets/scenes, or click to open them
+  * Upgrade costs for Force Powers and Signature Abilities are now displayed under the header instead of over the description ([#1467](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1467))
 * Fixes:
   * Fixes an issue where knowledge skills are consumed but ranks are not added ([#2239](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2239))
   * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))
