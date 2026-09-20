@@ -774,6 +774,7 @@
   "SWFFG.Actors.Sheets.Purchase.ConfirmPurchase": "Purchase",
   "SWFFG.Actors.Sheets.Purchase.CancelPurchase": "Cancel",
   "SWFFG.Actors.Sheets.Purchase.NotEnoughXP": "You do not have enough XP to buy this!",
+  "SWFFG.Actors.Sheets.Purchase.CareerNotSet": "You must add a career to this character before purchasing this!",
   "SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText": "Purchase Skill Rank",
   "SWFFG.Actors.Sheets.Purchase.SkillRank.ConfirmTitle": "Purchase Skill Rank",
   "SWFFG.Actors.Sheets.Purchase.SkillRank.Text": "Spend {cost} XP to purchase a rank in {skill}?",
