@@ -131,7 +131,7 @@ test('a card sent from an owned item speaks as its owner', async ({ world, page 
   expect(speaker.actor, 'and the message knows which one').toBe(ctx.actor);
 });
 
-test.fixme('#2231 a talent sent to chat includes its description', async ({ world, page }) => {
+test('#2231 a talent sent to chat includes its description', async ({ world, page }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'talent',
@@ -145,6 +145,5 @@ test.fixme('#2231 a talent sent to chat includes its description', async ({ worl
   const card = await api.readLastChatCard(page);
 
   expect(card, 'the talent is named on the card').toContain(ctx.itemName);
-  // FIXME: #2231
   expect(card, 'and its description came with it').toContain('qa talent description');
 });

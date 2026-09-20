@@ -65,6 +65,8 @@
   "SWFFG.TabXpLog": "XP log",
   "SWFFG.TabEffects": "Active Effects",
   "SWFFG.LongDescription": "Long Description",
+  "SWFFG.ShortDescription": "Short Description",
+  "SWFFG.DescriptionNotSet": "Not set",
   "SWFFG.Sources": "Source(s):",
   "SWFFG.CharacteristicBrawn": "Brawn",
   "SWFFG.CharacteristicBrawnAbbreviation": "Br",

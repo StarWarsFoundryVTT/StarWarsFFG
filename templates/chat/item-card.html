@@ -11,9 +11,20 @@
     </header>
     <section class="card-content details collapsible-content">
       <div class="wrapper">
+        {{#if (eq item.type "talent")}}
+        <p>
+          <b>{{ localize "SWFFG.ShortDescription" }}</b>
+          {{#if itemDetails.shortDesc}}{{{itemDetails.shortDesc}}}{{else}}<i class="fas fa-ban" title="{{ localize "SWFFG.DescriptionNotSet" }}"></i>{{/if}}
+        </p>
+        <p>
+          <b>{{ localize "SWFFG.LongDescription" }}</b>
+          {{#if itemDetails.longDesc}}{{{itemDetails.longDesc}}}{{else}}<i class="fas fa-ban" title="{{ localize "SWFFG.DescriptionNotSet" }}"></i>{{/if}}
+        </p>
+        {{else}}
         <p>
           {{{itemDetails.prettyDesc}}}
         </p>
+        {{/if}}
         {{#if itemDetails.doNotSubmit.qualities.length }}
         <div class="properties">
           <span class="tag">
