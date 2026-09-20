@@ -1482,7 +1482,8 @@ export async function dropOnReferenceSheet(
 /** Where each sheet type accepts a drop, as its own `DragDrop` registration names it. */
 const DROP_TARGET: Record<string, string> = {
   species: '.tab.talents',
-  career: '.tab.specializations',
+  career: '.tab.career',
+  specialization: '.specialization-talent',
 };
 
 /**

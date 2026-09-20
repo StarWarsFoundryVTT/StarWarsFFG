@@ -14,7 +14,7 @@ import * as itemSheet from '../../support/pages/item-sheet';
  * at the same time, or the document underneath changes.
  */
 
-test.fixme('#1708 with two species sheets open, a drop lands on the one it was dropped on', async ({ world, page }) => {
+test('#1708 with two species sheets open, a drop lands on the one it was dropped on', async ({ world, page }) => {
   const first = await world.item({ item: 'species', label: 'first' });
   const second = await world.item({ item: 'species', label: 'second' });
   const talent = await world.item({ item: 'talent' });
@@ -27,7 +27,6 @@ test.fixme('#1708 with two species sheets open, a drop lands on the one it was d
   const onSecond = await api.read(page, second, 'system.talents');
   const onFirst = await api.read(page, first, 'system.talents');
 
-  // FIXME: #1708
   expect(Object.keys(onSecond ?? {}), 'the talent is on the species it was dropped on').toHaveLength(1);
   expect(Object.keys(onFirst ?? {}), 'and not on the one that was opened first').toHaveLength(0);
 });
@@ -168,7 +167,7 @@ test('reopening a sheet after a reload shows the stored values', async ({ world,
     () => api.read(page, weapon, 'system.damage.value'),
     { message: 'the edit reached the weapon' }
   ).toBe(13);
-  
+
   await world.reload();
 
   const after = await api.openSheet(page, weapon);
