@@ -1610,14 +1610,14 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     if (!itemDetails) {
       // this is likely a talent from a specialization, which otherwise returns null
       const talentData = this.actor.talentList.find(i => i.itemId === itemId);
-      itemDetails = {
-        prettyDesc: talentData?.enrichedDescription,
-      };
+      itemDetails = {};
       item = {
         name: talentData.name,
         img: "icons/svg/mystery-man.svg",
         type: "talent",
         system: {
+          description: talentData.description,
+          longDesc: talentData.longDesc,
           activation: {
             value: talentData.activation,
           },
@@ -1632,7 +1632,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     }
 
     if (item.type === "talent") {
-      itemDetails.prettyDesc = item.system.longDesc;
+      const hasContent = (desc) => !!desc?.replace(/<(?!img|video)[^>]*>/gi, "").trim();
+      itemDetails.prettyDesc = null;
+      itemDetails.shortDesc = hasContent(item.system.description) ? await PopoutEditor.renderDiceImages(item.system.description, this.actor) : "";
+      itemDetails.longDesc = hasContent(item.system.longDesc) ? await PopoutEditor.renderDiceImages(item.system.longDesc, this.actor) : "";
     }
 
     const template = "systems/starwarsffg/templates/chat/item-card.html";

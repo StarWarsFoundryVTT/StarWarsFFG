@@ -23,6 +23,7 @@
   * Imported species modifiers keep the Active Effect which carries them, rather than leaving one behind that applies with no modifier to show as its source ([#2201](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2201))
   * The combat tracker continues to work after an actor is removed from combat and the page is reloaded ([#1602](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1602))
   * The character sheet sizes its body to the header it actually has, so the skill list on the Characteristics tab no longer ends below the bottom of the window ([#1737](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1737))
+  * Talent cards now include short and long descriptions when sent to chat ([#2231](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2231))
 
 `2.0.3`
 * Enhancements:
