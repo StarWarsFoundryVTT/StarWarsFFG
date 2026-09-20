@@ -21,6 +21,7 @@
   * Initiative can be rolled again when generic combat slots are turned off ([#2248](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2248))
   * The PC Wizard now grants what was paid for: specializations and force powers bought with XP, the talents learned in them, and one free career skill rank per skill taken ([#2244](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2244))
   * Imported species modifiers keep the Active Effect which carries them, rather than leaving one behind that applies with no modifier to show as its source ([#2201](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2201))
+  * The combat tracker continues to work after an actor is removed from combat and the page is reloaded ([#1602](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1602))
 
 `2.0.3`
 * Enhancements:

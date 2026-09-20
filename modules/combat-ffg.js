@@ -73,8 +73,10 @@ export class CombatFFG extends Combat {
       initiative: initiative,
     };
 
-    const createdSlotId = (await this.createEmbeddedDocuments("Combatant", [data]))[0].id;
-    return createdSlotId;
+    const createdSlot = (await this.createEmbeddedDocuments("Combatant", [data]))[0];
+    // the disposition passed in is not persisted by the create, so record it where the getter can find it again
+    await createdSlot.setFlag("starwarsffg", "disposition", disposition);
+    return createdSlot.id;
   }
 
   /**
@@ -488,13 +490,14 @@ export class CombatFFG extends Combat {
       CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
     }
     // now create a new slot to replace it
+    let replacementTurnId;
     if (combatant.combat.started) {
       CONFIG.logger.debug("Re-creating the slot with the same disposition and initiative");
-      const replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
+      replacementTurnId = await this.addExtraSlot(round, disposition, initiative);
     }
 
     // if there was a claim on the slot replaced, add it back
-    if (claimedSlot && claimedSlot !== combatantId) {
+    if (replacementTurnId && claimedSlot && claimedSlot !== combatantId) {
       CONFIG.logger.debug(`Since this slot was originally claimed by ${claimedSlot}, we are re-claiming it for them`);
       await this.claimSlot(round, replacementTurnId, claimedSlot);
     }
@@ -504,7 +507,7 @@ export class CombatFFG extends Combat {
     this.prepareDerivedData();
     this.setupTurns();
     // emit a socket event
-    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
+    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: this.id});
   }
 
   async removeLastSlot(combatantId) {
@@ -579,14 +582,17 @@ export class CombatFFG extends Combat {
       await this.combatants.get(removedCombatantId).delete();
 
       // Step 7 - Add a new slot with the last slot data (except Initiative, which is copied from the slot being removed)
-      const removedCombatantReplacementId = await this.addIDedExtraSlot(
-          removedDisposition,
-          removedInitiative,
-          lastSlotActorId,
-          lastSlotTokenId,
-          lastSlotSceneId,
-          lastSlotName,
-      );
+      // a generic last slot has no actor or token to copy, so the replacement has to be generic as well
+      const removedCombatantReplacementId = lastSlotActorId
+        ? await this.addIDedExtraSlot(
+            removedDisposition,
+            removedInitiative,
+            lastSlotActorId,
+            lastSlotTokenId,
+            lastSlotSceneId,
+            lastSlotName,
+          )
+        : await this.addExtraSlot(round, removedDisposition, removedInitiative);
 
       // Step 8 - Delete the last slot
       await this.combatants.get(lastSlotCombatantId).delete();
@@ -740,7 +746,7 @@ export class CombatFFG extends Combat {
     CONFIG.logger.debug("Re-rendering the tracker and emitting a socket event for other clients");
     this.setupTurns();
     // emit a socket event
-    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: combat.id});
+    game.socket.emit("system.starwarsffg", {event: "trackerRender", combatId: this.id});
   }
 
   /** @override */
@@ -802,18 +808,13 @@ export class CombatFFG extends Combat {
         return turn;
       }
       // track the disposition: the token, if it exists, then the actor, if it exists, then turn.defeated (which is where we stash extra slot initiative)
-      const disposition = combatant.disposition;
+      // a slot with nothing left to read a side from still has to render, so it falls in with the neutrals
+      const disposition = combatant.disposition ?? CONST.TOKEN_DISPOSITIONS.NEUTRAL;
       // can the user claim this slot?
       const canClaim = (disposition === CONST.TOKEN_DISPOSITIONS.FRIENDLY && !claimed) || game.user.isGM;
 
       // the highest possible initiative for this combatant
-      let slotInitiative;
-      try {
-        slotInitiative = newInitiatives[disposition].pop();
-      } catch (e) {
-        CONFIG.logger.warn(`caught disposition issue: ${e}, skipping processing turn (this is normal when removing combatants)`);
-        return turn;
-      }
+      const slotInitiative = newInitiatives[disposition].pop();
 
       let claim = {};
       let hasRolled = true;
@@ -1355,7 +1356,8 @@ export default class CombatantFFG extends Combatant {
     if (this.getFlag("starwarsffg", "fake")) {
       return this.getFlag("starwarsffg", "disposition");
     } else {
-      return this?.token ? this.token?.disposition : this?.actor?.prototypeToken?.disposition;
+      // the token and the actor can both be gone, so fall back to the side the slot was created with
+      return this?.token?.disposition ?? this?.actor?.prototypeToken?.disposition ?? this.getFlag("starwarsffg", "disposition");
     }
   }
 
