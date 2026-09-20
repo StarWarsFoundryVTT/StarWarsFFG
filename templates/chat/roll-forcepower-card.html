@@ -4,11 +4,11 @@
   {{/iff}}
   <h2 class="item-name">{{system.name}}</h2>
   <div class="item-details">
-    {{{ffgDiceSymbols system.system.description}}}
+    {{{system.system.prettyDesc}}}
     <div class="item-properties">
-      {{#each system.powerUpgrades}}
+      {{#each system.system.textProperties}}
       <span class="tag">
-        <div class="ffg-sendtochat hover-tooltip" data-tooltip="<section class=&quot;chat-msg-tooltip content&quot;><section class=&quot;description&quot;>{{{ffgDiceSymbols this.description}}}</section></section>">
+        <div class="ffg-sendtochat hover-tooltip" data-tooltip="<section class=&quot;chat-msg-tooltip content&quot;><section class=&quot;description&quot;>{{this.description}}</section></section>">
           {{{this.name}}} {{this.rank}}
         </div>
       </span>

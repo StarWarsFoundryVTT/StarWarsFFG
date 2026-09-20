@@ -99,7 +99,6 @@
     "templates/chat/**": ["tests/ui/chat/**", "tests/ui/rolling/**"],
     "templates/dice/**": ["tests/ui/rolling/**"],
     "templates/dice-pool.html": ["tests/ui/rolling/**"],
-    "templates/roll-options.html": ["tests/ui/rolling/**"],
     "templates/combat/**": ["tests/ui/combat/**"],
     "templates/wizards/**": ["tests/ui/creator/**"],
     "templates/importer/**": ["tests/ui/import/**"],

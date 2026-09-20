@@ -971,12 +971,6 @@ Hooks.once("init", async function () {
     return array.indexOf(value) >= 0;
   });
 
-  Handlebars.registerHelper("ffgDiceSymbols", function (text) {
-    //return PopoutEditor.renderDiceImages(text);
-    CONFIG.logger.warn("This function is no longer needed and should not be called. Please notify the devs if you see this message.");
-    return text;
-  });
-
   Handlebars.registerHelper("object", function ({ hash }) {
     return hash;
   });
