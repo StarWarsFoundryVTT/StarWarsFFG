@@ -26,6 +26,7 @@
   * The character sheet sizes its body to the header it actually has, so the skill list on the Characteristics tab no longer ends below the bottom of the window ([#1737](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1737))
   * Talent cards now include short and long descriptions when sent to chat ([#2231](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2231))
   * Dropping a talent onto a specialization no longer edits the talent that was dragged in, and dropping the same talent again replaces the node instead of stacking another copy of its modifiers onto it ([#2263](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2263))
+  * Drops onto species, specialization, and career sheets now land on the sheet they were dropped on, instead of doing nothing (or landing on another sheet) when more than one sheet of that type is open ([#1708](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1708))
 
 `2.0.3`
 * Enhancements:
@@ -81,7 +82,7 @@
   * The OggDude _Character_ Importer has been retired ([#1988](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1988))
     * The _Data_ importer is still supported and is still recommended to import things like species, specializations, and items
 * Fixes:
-  * Fix armor adjusted values was not considering all modifiers for soak, defence and encumbrance ([#1991](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1991)
+  * Fix armor adjusted values was not considering all modifiers for soak, defence, and encumbrance ([#1991](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1991)
   * Fix species talents/abilities being added/removed by each player online leading to duplicates if GM is online. ([#1832](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1832))
   * Fix for defence not applied during combat checks as setback dice ([#2009](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2009)()
   * Fix for defence mods to distinguish between melee and ranged ([#1985](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1985))

@@ -744,7 +744,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           callbacks: { drop: this._onDropTalentToSpecialization.bind(this) },
         });
 
-        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
+        // bind to this sheet; a global selector always finds the first open specialization sheet
+        dragDrop.bind(html[0]);
       } catch (err) {
         CONFIG.logger.debug(err);
       }
@@ -757,7 +758,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           callbacks: { drop: this._onDragItemCareer.bind(this) },
         });
 
-        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
+        // bind to this sheet; a global selector always finds the first open career sheet
+        dragDrop.bind(html[0]);
       } catch (err) {
         CONFIG.logger.debug(err);
       }
@@ -803,7 +805,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           callbacks: { drop: this.onDropItemToSpecies.bind(this) },
         });
 
-        dragDrop.bind($(`form.editable.item-sheet-${this.object.type}`)[0]);
+        // bind to this sheet; a global selector always finds the first open species sheet
+        dragDrop.bind(html[0]);
 
         // handle click events for talents on species
         html.find(".item-delete").on("click", async (event) => {
