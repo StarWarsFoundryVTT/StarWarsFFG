@@ -63,7 +63,7 @@ test('a Modification on an attachment on a ship weapon reaches the vehicle', asy
   expect(await consumers.stat(ctx, 'Handling'), 'handling from inside the attachment').toBe(1 + 1);
 });
 
-test.fixme('a Modification shows in the item display', async ({ world, consumers }) => {
+test('#2293 a Modification shows in the item display', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
@@ -75,8 +75,21 @@ test.fixme('a Modification shows in the item display', async ({ world, consumers
     itemOverrides: { soak: { value: 0, adjusted: 0 } },
   });
 
-  // FIXME: this sets the correct total soak but does not show it in the gear portion!
   expect(await consumers.itemAdjusted(ctx, 'Soak'), 'the item totals the Modification').toBe(1);
+});
+
+test("#2293 a Modification shows in the weapon's damage", async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'weapon',
+    equipped: true,
+    attachment: {
+      name: 'mount',
+      modifications: [{ name: 'qa accurate', key: 'damage', modtype: 'Weapon Stat', value: 2, installed: true }],
+    },
+  });
+
+  expect(await consumers.itemAdjusted(ctx, 'Damage'), 'the weapon totals the Modification').toBe(6 + 2);
 });
 
 test('a Modification shows in the roll pool', async ({ world, consumers }) => {
