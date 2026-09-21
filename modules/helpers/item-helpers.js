@@ -275,8 +275,12 @@ export default class ItemHelpers {
         for (const attr of Object.keys(modifier.system.attributes)) {
           const matchingEffect = existingEffects.find(effect => effect.name === attr);
           if (matchingEffect) {
-            // the mod should be applied once per rank
-            const newValue = modifier.system.rank_current * modifier.system.attributes[attr].value;
+            // fall back to the stored rank rather than writing NaN
+            let ranks = modifier.system.rank_current ?? modifier.system.rank;
+            if (ranks === null || ranks === undefined) {
+              ranks = 1;
+            }
+            const newValue = ranks * modifier.system.attributes[attr].value;
             CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
             await matchingEffect.update({
               "changes": [{
