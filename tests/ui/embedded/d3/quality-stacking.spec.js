@@ -34,7 +34,7 @@ test.fixme('a rank 2 quality applied twice yields rank 4, not rank 3', async ({ 
   expect(await consumers.qualityRank(ctx, 'qa accurate'), 'two ranks from each of two sources').toBe(4);
 });
 
-test.fixme('two range-shifting attachments both move the range', async ({ world, consumers }) => {
+test('#2290 two range-shifting attachments both move the range', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character', item: 'weapon', equipped: true,
     attachment: { name: 'barrel', baseMods: [{ modtype: 'Weapon Stat', mod: 'range', value: 1 }] },
@@ -45,8 +45,27 @@ test.fixme('two range-shifting attachments both move the range', async ({ world,
   });
 
   // the fixture starts at Medium
-  // FIXME: this returns Long instead of Extreme (see #2290)
   expect(await consumers.itemAdjustedName(ctx, 'Range'), 'both shifts counted').toBe('Extreme');
+});
+
+test('#2290 a range modifier on the weapon itself moves the range', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character', item: 'weapon', equipped: true,
+    attributes: [{ modtype: 'Weapon Stat', mod: 'range', value: 1 }],
+  });
+
+  // the fixture starts at Medium
+  expect(await consumers.itemAdjustedName(ctx, 'Range'), 'the weapon\'s own modifier counts').toBe('Long');
+});
+
+test('#2290 a range modifier on the weapon adds to one from an attachment', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character', item: 'weapon', equipped: true,
+    attributes: [{ modtype: 'Weapon Stat', mod: 'range', value: 1 }],
+    attachment: { name: 'barrel', baseMods: [{ modtype: 'Weapon Stat', mod: 'range', value: 1 }] },
+  });
+
+  expect(await consumers.itemAdjustedName(ctx, 'Range'), 'both sources counted').toBe('Extreme');
 });
 
 test('a quality on the item and the same-named quality on an attachment stack', async ({ world, consumers }) => {
