@@ -34,13 +34,7 @@ test('#2292 D2: every reader sees a soak modifier in a quality on the item', asy
   expect({ before, after }).toBeCoherent(DELTA);
 });
 
-test.fixme('D3: every reader sees a soak modifier in a Modification inside an attachment', async ({ world, consumers }) => {
-  /*
-   * Also expected to fail on itemAdjusted, for a different reason: the attachment loop does ask
-   * for this key, but hands the Modifications to getCalculatedValueFromItems, which computes a
-   * total and then returns 0 unless `includeSource` is set (modifiers.js:173). The same symptom D2
-   * had, from a different cause - see d3/attachment-modifications.spec.js.
-   */
+test('#2293 D3: every reader sees a soak modifier in a Modification inside an attachment', async ({ world, consumers }) => {
   const before = await plain(world, consumers, 'd3');
   const after = await consumers.read(await world.build({
     ...BASE,
@@ -51,6 +45,5 @@ test.fixme('D3: every reader sees a soak modifier in a Modification inside an at
     },
   }), 'Soak');
 
-  // FIXME: this is currently not adjusted (#2293)
   expect({ before, after }).toBeCoherent(DELTA);
 });
