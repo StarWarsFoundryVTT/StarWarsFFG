@@ -6,7 +6,10 @@
     "`rules`, and a file under modules/ or templates/ that matches no rule runs the whole suite -",
     "a stale map must cost time, never coverage.",
     "",
-    "Paths are globs from the repo root. `*` stops at a slash, `**` does not."
+    "Paths are globs from the repo root. `*` stops at a slash, `**` does not.",
+    "",
+    "A stylesheet breaks only what a test measures on screen, so styles/ runs the specs that",
+    "hit-test geometry rather than the whole suite."
   ],
 
   "everything": [
@@ -23,7 +26,6 @@
   ],
 
   "ignored": [
-    "styles/**",
     "lang/**",
     "**/*.md",
     ".github/**",
@@ -114,6 +116,8 @@
     ],
     "templates/notifications/**": [],
     "templates/ffg-destiny-tracker.html": ["tests/ui/smoke/**"],
-    "templates/popout-editor.html": ["tests/ui/embedded/**", "tests/ui/sheets/**"]
+    "templates/popout-editor.html": ["tests/ui/embedded/**", "tests/ui/sheets/**"],
+
+    "styles/**": ["tests/ui/sheets/**", "tests/ui/advancement/buying.spec.js"]
   }
 }
