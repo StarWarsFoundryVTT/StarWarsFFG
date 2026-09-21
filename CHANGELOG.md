@@ -31,6 +31,7 @@
   * Item sheets opened from a compendium now stay closed, instead of reappearing a moment later once the save behind them finishes ([#1739](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1739))
   * A target's defense now adds setback dice on the alternate skill lists (Genesys, Android, Terrinoth, and Crucible), instead of only on the Star Wars one ([#1770](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1770))
   * Attachments and mods which grant hardpoints now raise the available hardpoints on the weapon or armor they are installed on, instead of being ignored ([#1970](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1970))
+  * Hidden tooltips no longer swallow clicks, so the edit button on a combined Force Power or Signature Ability box can be used without splitting the boxes first ([#2075](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2075))
 
 `2.0.3`
 * Enhancements:

@@ -3460,6 +3460,7 @@ img {
   transition: opacity 0.5s;
   z-index: -500;
   padding: 0 10px;
+  pointer-events: none;
 }
 
 .starwarsffg .hover .tooltip2 {
