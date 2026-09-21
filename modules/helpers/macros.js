@@ -7,6 +7,21 @@ const createMacroItem = async (macro) => {
   return false;
 };
 
+/**
+ * Whether the system makes the macro for a hotbar drop, rather than core.
+ */
+export function handlesHotbarDrop(data) {
+  if (["CreateMacro", "Transfer"].includes(data?.type)) return true;
+  if (data?.type !== "Item") return false;
+  try {
+    const item = fromUuidSync(data.uuid);
+    // an owned weapon rolls; anything else is core's to display
+    return item?.type === "weapon" && !!item?.isEmbedded;
+  } catch (err) {
+    return false;
+  }
+}
+
 // Simple function for handling the creation of rollable weapon macros on hotbarDrop event.
 export async function createFFGMacro(bar, data, slot) {
   let macro;
@@ -21,11 +36,11 @@ export async function createFFGMacro(bar, data, slot) {
         command = `await Hotbar.toggleDocumentSheet("${data.uuid}");`;
       } else {
         command = `
-      game.ffg.DiceHelpers.rollItem(\"${item._id}\", \"${entity.actorId}\");
+      game.ffg.DiceHelpers.rollItem(\"${entity.id}\", \"${entity.parent.id}\");
       `;
       }
       macro = await createMacroItem({
-        name: entity.name,
+        name: entity.isEmbedded ? `Attack with ${entity.name}` : entity.name,
         type: "script",
         img: entity.img,
         command: command,

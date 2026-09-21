@@ -38,7 +38,7 @@ import {register_crew} from "./helpers/crew.js";
 
 // Import Dice Types
 import { AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie } from "./dice-pool-ffg.js";
-import { createFFGMacro, updateMacro } from "./helpers/macros.js";
+import { createFFGMacro, handlesHotbarDrop, updateMacro } from "./helpers/macros.js";
 import EmbeddedItemHelpers from "./helpers/embeddeditem-helpers.js";
 import DataImporter from "./importer/data-importer.js";
 import CompendiumBrowser from "./compendium/compendium-browser.js";
@@ -1368,7 +1368,12 @@ Hooks.once("ready", async () => {
   }
 
   // Wait to register hotbar drop hook on ready so that modules could register earlier if they want to
-  Hooks.on("hotbarDrop", async (bar, data, slot) => await createFFGMacro(bar, data, slot));
+  Hooks.on("hotbarDrop", (bar, data, slot) => {
+    // the answer has to be synchronous, so the macro is built without being awaited here
+    if (!handlesHotbarDrop(data)) return true;
+    createFFGMacro(bar, data, slot);
+    return false;
+  });
   Hooks.on("createMacro", async function (...args) {
     args[0] = await updateMacro(args[0]);
     return args;
