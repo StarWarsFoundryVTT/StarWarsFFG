@@ -123,8 +123,9 @@ export default class DiceHelpers {
   static getDefenseDice(skill, itemData){
     let defenseDice = 0;
     if (game.settings.get("starwarsffg", "useDefense")) {
-      let isRanged = ["Ranged: Light", "Ranged: Heavy", "Gunnery"].includes(skill.value);
-      let isMelee = ["Melee", "Brawl", "Lightsaber"].includes(skill.value);
+      // covers the combat skill names used by every bundled skill theme (Star Wars, Genesys, Android, Terrinoth, Crucible)
+      let isRanged = ["Ranged: Light", "Ranged: Heavy", "Ranged-Light", "Ranged-Heavy", "Ranged", "Gunnery"].includes(skill.value);
+      let isMelee = ["Melee", "Melee-Light", "Melee-Heavy", "Brawl", "Lightsaber"].includes(skill.value);
       if (itemData?.type === "weapon" || itemData?.metaData?.tags?.includes("weapon")) {
         if (game.user.targets.size > 0) {
           for (const target of game.user.targets) {
