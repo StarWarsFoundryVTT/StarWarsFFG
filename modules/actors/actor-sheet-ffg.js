@@ -167,7 +167,18 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       }
 
       // Create the owned item
-      return this._onDropItemCreate(itemData);
+      const created = await this._onDropItemCreate(itemData);
+
+      // items dragged off another actor's sheet are moved, not copied - but only once the copy exists
+      if (data.ffgTransfer && created?.length) {
+        try {
+          await item.delete();
+        } catch (err) {
+          CONFIG.logger.error(`Error removing item from the actor it was transferred from.`, err);
+        }
+      }
+
+      return created;
     } else {
       return super._onDropItem(event, data);
     }
@@ -1359,7 +1370,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       dragSelector: ".items-list .item",
       dropSelector: ".sheet-body",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
-      callbacks: { dragstart: this._onTransferItemDragStart.bind(this), drop: this._onTransferItemDrop.bind(this) },
+      callbacks: { dragstart: this._onTransferItemDragStart.bind(this) },
     });
 
     dragDrop.bind(html[0]);
@@ -2031,16 +2042,13 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     const item = this.actor.items.get(li.dataset.itemId);
 
-    // limit transfer on personal weapons/armour/gear
-    if (["weapon", "armour", "gear"].includes(item.type)) {
+    // limit transfer on personal weapons/armour/gear and ship weapons
+    if (["weapon", "armour", "gear", "shipweapon"].includes(item.type)) {
       const dragData = {
-        type: "Transfer",
-        actorId: this.actor.id,
-        data: item,
-        // useful for other modules, e.g., item piles
-        nativeData: item.toDragData(),
+        ...item.toDragData(),
+        // flags the drop as a transfer, so the item is moved off this actor rather than copied
+        ffgTransfer: true,
       };
-      if (this.actor.isToken) dragData.tokenId = this.actor.token.id;
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
     } else {
       return false;
@@ -2053,46 +2061,6 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
   _canDragDrop(selector) {
     return true;
-  }
-
-  /**
-   * Drop Event function for transferring items between actors
-   *
-   * @param  {Object} event
-   */
-  async _onTransferItemDrop(event) {
-    // Try to extract the data
-    let data;
-    try {
-      data = JSON.parse(event.dataTransfer.getData("text/plain"));
-      if (data.type !== "Transfer") return;
-    } catch (err) {
-      return false;
-    }
-
-    if (data.data) {
-      let sameActor = data.actorId === this.actor.id;
-      if (!sameActor) {
-        try {
-          this.actor.createEmbeddedDocuments("Item", [foundry.utils.duplicate(data.data)]); // Create a new Item
-          let token;
-          if (game.scenes.current) {
-            token = game.scenes.current.tokens.get(data?.tokenId);
-            if (token) {
-              // Delete originating item from other _token_
-              token.actor.items.get(data.data._id)?.delete();
-              return;
-            }
-          }
-          const actor = game.actors.get(data.actorId);
-          await actor.items.get(data.data._id)?.delete(); // Delete originating item from other actor
-        } catch (err) {
-          CONFIG.logger.error(`Error transferring item between actors.`, err);
-        }
-      }
-    }
-
-    await this._suspendActiveEffects(await fromUuid(data.uuid));
   }
 
   /**
