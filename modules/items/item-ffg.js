@@ -324,6 +324,15 @@ export class ItemFFG extends ItemBaseFFG {
 
         const rangeSetting = (this.type === "shipweapon") ? CONFIG.FFG.vehicle_ranges : CONFIG.FFG.ranges;
 
+        // range is a rung on a ladder, not a number, so every source's steps are summed here and
+        // walked up the band once, below
+        let rangeSteps = 0;
+        for (const attr of Object.values(data.attributes ?? {})) {
+          if (attr?.modtype === "Weapon Stat" && attr?.mod === "range") {
+            rangeSteps += parseInt(attr.value, 10) || 0;
+          }
+        }
+
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
             if (modifier?.system) {
@@ -336,13 +345,7 @@ export class ItemFFG extends ItemBaseFFG {
             data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "price", "Weapon Stat");
             data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "rarity", "Weapon Stat");
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "hardpoints", "Weapon Stat");
-            const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "range", "Weapon Stat");
-            const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
-            let newRange = currentRangeIndex + range;
-            if (newRange < 0) newRange = 0;
-            if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
-
-            data.range.adjusted = Object.values(rangeSetting)[newRange].value;
+            rangeSteps += ModifierHelpers.getCalculatedValueFromCurrentAndArray(modifier, [], "range", "Weapon Stat");
           });
         }
 
@@ -356,13 +359,7 @@ export class ItemFFG extends ItemBaseFFG {
             data.price.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "price", "Weapon Stat");
             data.rarity.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "rarity", "Weapon Stat");
             data.hardpoints.adjusted += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "hardpoints", "Weapon Stat");
-            const range = ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
-            const currentRangeIndex = Object.values(rangeSetting).findIndex((r) => r.value === data.range.value);
-            let newRange = currentRangeIndex + range;
-            if (newRange < 0) newRange = 0;
-            if (newRange >= Object.values(rangeSetting).length) newRange = Object.values(rangeSetting).length - 1;
-
-            data.range.adjusted = Object.values(rangeSetting)[newRange].value;
+            rangeSteps += ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, activeModifiers, "range", "Weapon Stat");
 
             if (attachment?.system?.itemmodifier) {
               const activeMods = attachment.system.itemmodifier.filter((i) => i?.system?.active);
@@ -385,6 +382,16 @@ export class ItemFFG extends ItemBaseFFG {
               });
             }
           });
+        }
+
+        const rangeBands = Object.values(rangeSetting);
+        const currentRangeIndex = rangeBands.findIndex((r) => r.value === data.range.value);
+        if (rangeSteps && currentRangeIndex > -1) {
+          let newRange = currentRangeIndex + rangeSteps;
+          if (newRange < 0) newRange = 0;
+          if (newRange >= rangeBands.length) newRange = rangeBands.length - 1;
+
+          data.range.adjusted = rangeBands[newRange].value;
         }
 
         if (this.isEmbedded && this.actor) {
