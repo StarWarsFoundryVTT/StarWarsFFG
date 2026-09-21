@@ -528,7 +528,7 @@ export class ItemFFG extends ItemBaseFFG {
         });
       }
 
-      data.hardpoints.current = data.hardpoints.value - totalHPUsed;
+      data.hardpoints.current = data.hardpoints.adjusted - totalHPUsed;
     }
 
     if (this.type === "forcepower") {
