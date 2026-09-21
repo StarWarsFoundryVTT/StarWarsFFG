@@ -19,7 +19,7 @@ test('#1307 two attachments granting the same quality sum their ranks', async ({
   expect(await consumers.qualityRank(ctx, 'qa accurate'), 'one rank from each attachment').toBe(2);
 });
 
-test.fixme('a rank 2 quality applied twice yields rank 4, not rank 3', async ({ world, consumers }) => {
+test('#2291 a rank 2 quality applied twice yields rank 4, not rank 3', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character', item: 'weapon', equipped: true,
     attachment: {
@@ -30,7 +30,6 @@ test.fixme('a rank 2 quality applied twice yields rank 4, not rank 3', async ({ 
 
   await world.applyAgain(ctx); // a second source of the same named quality
 
-  // FIXME: this returns 2 instead of 4 (see #2291)
   expect(await consumers.qualityRank(ctx, 'qa accurate'), 'two ranks from each of two sources').toBe(4);
 });
 
