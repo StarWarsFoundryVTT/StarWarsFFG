@@ -203,7 +203,6 @@ export function build_crew_roll(vehicle, crew_id, crew_role) {
 export async function buildPilotRoll(vehicle_id, pilot_id, difficulty = 2) {
   const starting_pool = {'difficulty': difficulty};
   const vehicle = game.actors.get(vehicle_id);
-  const skillTheme = game.settings.get("starwarsffg", "skilltheme");
 
   // add modifiers from the vehicle handling
   const handling = vehicle?.system?.stats?.handling?.value;
@@ -216,24 +215,21 @@ export async function buildPilotRoll(vehicle_id, pilot_id, difficulty = 2) {
   // create the dice pool
   let pool = new DicePoolFFG(starting_pool);
 
-  // determine if the vehicle is land or space
-  let skill;
-  if (vehicle?.system?.spaceShip) {
-    if (skillTheme === "starwars") {
-      skill = "Piloting: Space";
-    } else {
-      skill = "Piloting";
-    }
-  } else {
-    if (skillTheme === "starwars") {
-      skill = "Piloting: Planetary";
-    } else {
-      skill = "Driving";
-    }
-  }
-
   // update the pool with actor information
-  return get_dice_pool(pilot_id, skill, pool);
+  return get_dice_pool(pilot_id, getPilotSkill(vehicle), pool);
+}
+
+/**
+ * Determine which piloting skill a vehicle uses, based on the skills in the active skill theme
+ * @param vehicle - the vehicle actor object
+ * @returns {string} - the name of the piloting skill
+ */
+function getPilotSkill(vehicle) {
+  const skills = CONFIG.FFG.skills;
+  if (vehicle?.system?.spaceShip) {
+    return skills?.["Piloting: Space"] ? "Piloting: Space" : "Piloting";
+  }
+  return skills?.["Piloting: Planetary"] ? "Piloting: Planetary" : "Driving";
 }
 
 /**
@@ -256,13 +252,7 @@ export async function handlePilotCheck(vehicle, pilot_id) {
     }
   };
 
-  // determine if the vehicle is land or space
-  let skill;
-  if (vehicle?.system?.spaceShip) {
-    skill = "Piloting: Space";
-  } else {
-    skill = "Piloting: Planetary";
-  }
+  const skill = getPilotSkill(vehicle);
 
   // open the roll dialog (skill name is already localized)
   await DiceHelpers.displayRollDialog(
