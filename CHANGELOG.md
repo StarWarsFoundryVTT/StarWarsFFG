@@ -9,6 +9,7 @@
   * Upgrade costs for Force Powers and Signature Abilities are now displayed under the header instead of over the description ([#1467](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1467))
 * Fixes:
   * Fixed some issues with the importer code, [@KamiliaBlow](https://github.com/KamiliaBlow))
+  * Imported careers and specializations now reliably get their career skills, instead of losing them when the import outran the Active Effect carrying them (most visible on hosted servers, where the career skill checkboxes stayed empty in the PC Wizard) ([#2164](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2164))
   * Fixed a formatting error during import that caused the description block for careers to be empty
   * Fixed an import issue that could corrupt the entire dataset import when modifying Skills.xml; this occurred if the ```<Name>``` element contained a translation into another language. ([#2170](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2170))
   * Fixed a bug in the Specializations import feature that did not account for the presence of tags has been fixed. Now, if a user wants to add tags to Specializations, the system will correctly read them from the Specializations file
