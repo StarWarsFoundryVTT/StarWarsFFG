@@ -38,6 +38,7 @@
   * Modifiers installed on armor or weapons now reach the character carrying them, instead of going inert the moment the item is equipped ([#2281](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2281))
   * The built-in Pilot crew role picks its piloting skill from the skills in the active skill theme, so it keeps working on custom themes instead of showing "(broken role)" ([#2282](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2282))
   * Every modifier that increases a weapon's range now counts ([#2290](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2290))
+  * Qualities granted by more than one attachment now add up their ranks ([#2291](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2291))
 
 `2.0.3`
 * Enhancements:
