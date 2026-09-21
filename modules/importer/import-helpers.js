@@ -2394,8 +2394,9 @@ export default class ImportHelpers {
       CONFIG.logger.debug(`New ${type} ${dataType} ${data.name} : ${JSON.stringify(compendiumItem)}`);
       const crt = await pack.importDocument(compendiumItem);
       if (type === "Item") {
-        // make sure Active Effects get created
-        await new Promise(r => setTimeout(r, 50));
+        // create the inherent effect first
+        await crt._onCreateAEs({});
+        // make sure others are also created
         await ImportHelpers.applyActiveEffectOnUpdate(crt, data);
         await ImportHelpers.applyTalentActiveEffects(crt);
       }
