@@ -35,6 +35,7 @@
   * Hidden tooltips no longer swallow clicks, so the edit button on a combined Force Power or Signature Ability box can be used without splitting the boxes first ([#2075](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2075))
   * The "Base Ability" label on the Signature Ability sheet header now ends before the buttons in that corner, instead of running underneath them ([#2137](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2137))
   * Ship weapons can be dragged from one vehicle to another, and weapons, armor, gear, and ship weapons dragged off an actor sheet can now be dropped onto folders and compendiums as well ([#2257](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2257))
+  * Modifiers installed on armor or weapons now reach the character carrying them, instead of going inert the moment the item is equipped ([#2281](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2281))
 
 `2.0.3`
 * Enhancements:
