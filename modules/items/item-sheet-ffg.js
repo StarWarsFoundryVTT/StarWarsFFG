@@ -1535,11 +1535,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   /* -------------------------------------------- */
 
   /** @override */
-  _updateObject(event, formData) {
+  async _updateObject(event, formData) {
     if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
 
     const itemUpdate = ItemHelpers.itemUpdate.bind(this);
-    itemUpdate(event, formData);
+    // closing the sheet submits the form, and an update still running once the window is
+    // gone re-renders it back onto the screen (#1739)
+    await itemUpdate(event, formData);
   }
 
   /**

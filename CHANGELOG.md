@@ -1,10 +1,4 @@
 `2.0.4`
-* Fixes:
-  * Fixed some issues with the importer code, [@KamiliaBlow](https://github.com/KamiliaBlow))
-  * Fixed a formatting error during import that caused the description block for careers to be empty
-  * Fixed an import issue that could corrupt the entire dataset import when modifying Skills.xml; this occurred if the ```<Name>``` element contained a translation into another language. ([#2170](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2170))
-  * Fixed a bug in the Specializations import feature that did not account for the presence of tags has been fixed. Now, if a user wants to add tags to Specializations, the system will correctly read them from the Specializations file
-  * The import of sources has been updated; these sources could be of the following types: ```<Source>User Data</Source>``` and ```<Source/> <Source/>```. ([#2268](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2268))
 * Features:
   * Added a compendium browser to search and filter items across all world compendiums! ([#2267](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/2267), [@KamiliaBlow](https://github.com/KamiliaBlow))
   * Accessible via a button in the compendiums directory for all users (not just GMs)
@@ -14,6 +8,11 @@
   * Scroll through paginated results, drag-and-drop items onto sheets/scenes, or click to open them
   * Upgrade costs for Force Powers and Signature Abilities are now displayed under the header instead of over the description ([#1467](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1467))
 * Fixes:
+  * Fixed some issues with the importer code, [@KamiliaBlow](https://github.com/KamiliaBlow))
+  * Fixed a formatting error during import that caused the description block for careers to be empty
+  * Fixed an import issue that could corrupt the entire dataset import when modifying Skills.xml; this occurred if the ```<Name>``` element contained a translation into another language. ([#2170](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2170))
+  * Fixed a bug in the Specializations import feature that did not account for the presence of tags has been fixed. Now, if a user wants to add tags to Specializations, the system will correctly read them from the Specializations file
+  * The import of sources has been updated; these sources could be of the following types: ```<Source>User Data</Source>``` and ```<Source/> <Source/>```. ([#2268](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2268))
   * Fixes an issue where knowledge skills are consumed but ranks are not added ([#2239](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2239))
   * Fixes issues where active players filter being disabled is ignored by group manager and invalid actor types being included in group manager actor list ([#2174](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2174))
   * Fixes calculation of talent costs for drag and drop talents for Genesys (Rysarian) ([#2175](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2175))
@@ -29,6 +28,7 @@
   * Drops onto species, specialization, and career sheets now land on the sheet they were dropped on, instead of doing nothing (or landing on another sheet) when more than one sheet of that type is open ([#1708](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1708))
   * Right-click menus on the actor sheet (skills, items, talents) are drawn over the sheet rather than inside the list they belong to, so the ones near the bottom are no longer cut off unless the sheet happens to sit at the bottom of the canvas ([#1738](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1738))
   * Buying a Signature Ability on a character with no career now explains that a career is required, instead of failing silently with a console error ([#1835](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1835))
+  * Item sheets opened from a compendium now stay closed, instead of reappearing a moment later once the save behind them finishes ([#1739](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1739))
 
 `2.0.3`
 * Enhancements:
