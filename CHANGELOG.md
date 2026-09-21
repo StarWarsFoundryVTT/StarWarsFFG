@@ -29,6 +29,7 @@
   * Right-click menus on the actor sheet (skills, items, talents) are drawn over the sheet rather than inside the list they belong to, so the ones near the bottom are no longer cut off unless the sheet happens to sit at the bottom of the canvas ([#1738](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1738))
   * Buying a Signature Ability on a character with no career now explains that a career is required, instead of failing silently with a console error ([#1835](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1835))
   * Item sheets opened from a compendium now stay closed, instead of reappearing a moment later once the save behind them finishes ([#1739](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1739))
+  * A target's defense now adds setback dice on the alternate skill lists (Genesys, Android, Terrinoth, and Crucible), instead of only on the Star Wars one ([#1770](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1770))
 
 `2.0.3`
 * Enhancements:
