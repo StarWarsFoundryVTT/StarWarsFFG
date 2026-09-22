@@ -470,15 +470,16 @@ export class CombatFFG extends Combat {
     const initiative = combatant.initiative;
     CONFIG.logger.debug(`Initial information: combatantId - ${combatantId}, combatantName - ${combatant.name}`);
 
-    const originalCombatantId = $('.combatant.actor[data-combatant-id="' + combatant.id + '"]').data('alt-id');
+    // the slot this combatant is sitting in, which may belong to someone else
+    const originalCombatantId = this.findSlotClaims(round, combatantId);
 
-    // find if the combatant has any slots claimed
-    const claimedSlot = this.getSlotClaims(round, originalCombatantId);
+    // find who (if anyone) claimed the slot of the combatant being removed
+    const claimedSlot = this.getSlotClaims(round, combatantId);
     // prevent constant re-rendering of the tracker
     this.debounceRender();
-    if (claimedSlot) {
-      // un-claim the slot
-      CONFIG.logger.debug("Someone claimed the actors slot, un-claiming it");
+    if (originalCombatantId) {
+      // release the slot the combatant had claimed
+      CONFIG.logger.debug("The actor claimed someone else's slot, un-claiming it");
       await this.unclaimSlot(round, originalCombatantId);
     }
     await this.unclaimSlot(round, combatantId);

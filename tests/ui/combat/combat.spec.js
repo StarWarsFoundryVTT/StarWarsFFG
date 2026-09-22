@@ -332,7 +332,7 @@ test('a slot added by hand can be claimed like any other', async ({ world, page 
   expect(claims[placeholder.id], 'by the combatant that took it').toBe(encounter.combatants[0]);
 });
 
-test.fixme('a claim survives the combatant it was made for being removed', async ({ world, page }) => {
+test('a claim survives the combatant it was made for being removed', async ({ world, page }) => {
   const encounter = await world.encounter({
     combatants: [
       { actor: 'character' },
@@ -351,7 +351,35 @@ test.fixme('a claim survives the combatant it was made for being removed', async
 
   await api.removeCombatant(page, encounter.combat, encounter.combatants[0]);
 
-  // FIXME: see #2300
+  await expect(tracker.claimedSlots(page), 'the claim is still there').toHaveCount(1);
+
+  const combatants = await api.readCombatants(page, encounter.combat);
+  const [placeholder] = combatants.filter((c) => c.generic);
+  const claims = await api.readSlotClaims(page, encounter.combat);
+
+  expect(claims[placeholder.id], 'moved onto the slot that replaced it').toBe(encounter.combatants[1]);
+});
+
+test('a claim survives its combatant being toggled out of combat from the canvas', async ({ world, page }) => {
+  const encounter = await world.encounter({
+    combatants: [
+      { actor: 'character' },
+      { actor: 'character' },
+    ],
+    roll: true,
+  });
+
+  await api.openCombatTracker(page);
+
+  const order = await api.readTurnOrder(page, encounter.combat);
+  await api.setTurn(page, encounter.combat, order.indexOf(encounter.combatants[0]));
+  await api.controlToken(page, encounter.scene, encounter.tokens[1]);
+  await tracker.claimControl(page).click();
+  await expect(tracker.claimedSlots(page), 'claimed before the removal').toHaveCount(1);
+
+  // the same removal as the tracker's, reached by the token's own HUD instead
+  await api.toggleTokenCombat(page, encounter.scene, encounter.tokens[0]);
+
   await expect(tracker.claimedSlots(page), 'the claim is still there').toHaveCount(1);
 
   const combatants = await api.readCombatants(page, encounter.combat);

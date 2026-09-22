@@ -43,6 +43,7 @@
   * A Modification installed in an attachment now counts toward the values the item itself shows ([#2293](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2293))
   * Opening a Modification held by one attachment now edits that attachment's copy ([#2294](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2294))
   * A talent dragged onto a species grants its modifiers once, instead of applying them a second time alongside the copy of the talent the species hands the character ([#2295](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2295))
+  * Fixed an issue where combat claims were silently dropped ([#2300](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2300))
 
 `2.0.3`
 * Enhancements:
