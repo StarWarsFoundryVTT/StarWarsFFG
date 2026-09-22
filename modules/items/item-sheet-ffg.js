@@ -2004,7 +2004,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     if (
       (droppedType === "itemattachment" && ["armour", "weapon", "shipweapon"].includes(myType)) ||
       (droppedType === "itemmodifier" && ["armour", "weapon", "shipweapon", "itemattachment"].includes(myType)) ||
-      (droppedType === "ability" && myType === "species") || (droppedType === "talent" && myType === "species") ||
+      (droppedType === "ability" && myType === "species") ||
       (droppedType === "talent" && myType === "specialization")
     ) {
       CONFIG.logger.debug(`Processing transferring AEs for drag-and-drop of ${droppedType} -> ${myType}`);
@@ -2076,6 +2076,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     if (!itemObject) return;
 
     if (itemObject.type === "talent") {
+      // no AE transfer here - the talent itself is granted to the actor, and brings its own AEs along
       await this.object.update({system: {talents: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
     } else if (itemObject.type === "ability") {
       await this.object.update({system: {abilities: {[itemObject.id]: {name: itemObject.name, system: {description: itemObject.system.description}}}}});
