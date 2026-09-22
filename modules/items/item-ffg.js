@@ -75,6 +75,12 @@ export class ItemFFG extends ItemBaseFFG {
       // items are "created" when they are pulled from Compendiums, so don't duplicate Active Effects
       const inherentEffect = existingEffects.find(i => i.name === `(inherent)`);
       if (!inherentEffect) {
+        // _onCreate is not awaited, so the importer's own call can land while this one is still
+        // running; join it instead of creating a second effect
+        if (this._inherentAECreation) {
+          await this._inherentAECreation;
+          return;
+        }
         CONFIG.logger.debug(`Creating inherent Active Effect for item ${this.name}`);
         const effects = {
           name: `(inherent)`,
@@ -178,7 +184,9 @@ export class ItemFFG extends ItemBaseFFG {
 
         CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
         CONFIG.logger.debug(effects);
-        await this.createEmbeddedDocuments("ActiveEffect", [effects]);
+        this._inherentAECreation = this.createEmbeddedDocuments("ActiveEffect", [effects]);
+        await this._inherentAECreation;
+        delete this._inherentAECreation;
       }
     }
   }

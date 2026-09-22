@@ -3230,6 +3230,24 @@ export default class ImportHelpers {
         }
       }
       await inherentEffect.update({changes: inherentEffect.changes});
+    } else if (inherentEffect && item.type === "shipattachment") {
+      const explodedMods = ModifierHelpers.explodeMod(
+        "Vehicle Stat",
+        "Vehicle.Hardpoints",
+      );
+
+      for (const curMod of explodedMods) {
+        let modPath = ModifierHelpers.getModKeyPath(
+          curMod['modType'],
+          curMod['mod'],
+        );
+        const inherentEffectChangeIndex = inherentEffect.changes.findIndex(c => c.key === modPath);
+        if (inherentEffectChangeIndex >= 0) {
+          // hardpoints are _spent_, not _gained_
+          inherentEffect.changes[inherentEffectChangeIndex].value = (formData.system?.hardpoints?.value ?? 0) * -1;
+        }
+      }
+      await inherentEffect.update({changes: inherentEffect.changes});
     }
 
     // iterate over formdata attributes to add/update them if they were added

@@ -14,18 +14,20 @@ test('imported armour carries the soak and defence from its XML', async ({ world
   expect(await api.read(page, armour, 'system.defence.value'), 'and its defence').toBe(Number(source.Defense));
 });
 
-test.fixme("imported armour's inherent effect holds those same values", async ({ world, page }) => {
+test("imported armour's inherent effect holds those same values", async ({ world, page }) => {
   const source = await oggdude.record(page, 'Armor.xml', 'ARMROBE');
-  const armour = await world.imported('armour');
 
-  const effects = await api.readItemEffects(page, armour);
-  const inherent = effects.find((effect) => effect.name === '(inherent)');
+  // the seeded copy was already there, so it is dropped to import it as a record nobody has yet
+  await api.deleteDoc(page, await world.imported('armour'));
+  await oggdude.reimport(page, 'Armor');
 
-  expect(inherent, 'the import built one').toBeTruthy();
+  const effects = await api.readItemEffects(page, await world.imported('armour'));
+  const inherent = effects.filter((effect) => effect.name === '(inherent)');
 
-  const changes = Object.fromEntries(inherent.changes.map((change) => [change.key, change.value]));
+  expect(inherent, 'the import built one, not a second one alongside it').toHaveLength(1);
 
-  // FIXME: #2312
+  const changes = Object.fromEntries(inherent[0].changes.map((change) => [change.key, change.value]));
+
   expect(Number(changes['system.stats.soak.value']), 'the soak it will grant').toBe(Number(source.Soak));
   expect(Number(changes['system.stats.defence.melee']), 'its defence in melee').toBe(Number(source.Defense));
   expect(Number(changes['system.stats.defence.ranged']), 'and at range').toBe(Number(source.Defense));
