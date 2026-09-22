@@ -40,6 +40,21 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   pools = new Map();
 
   /** @override */
+  async close(options) {
+    const closed = await super.close(options);
+    // edit mode does not survive the sheet (see the constructor), so restore the effects it suspended
+    if (this.actor?.suspendedEffects) {
+      await ActorHelpers.endEditMode(this.actor);
+      // a deleted actor closes its own sheet and has no flags left to clear
+      if (fromUuidSync(this.actor.uuid)) {
+        await this.actor.setFlag("starwarsffg", "config.enableEditMode", false);
+        await this.actor.setFlag("starwarsffg", "config.editModeActor", "");
+      }
+    }
+    return closed;
+  }
+
+  /** @override */
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor"],

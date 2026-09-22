@@ -269,7 +269,27 @@ test('reopening the sheet does not leave the actor half in edit mode', async ({ 
   expect(await consumers.stat(ctx, 'Soak'), 'with the armour working throughout').toBe(3 + 2);
 });
 
-test.fixme('entering edit mode twice does not lose what was enabled', async ({ world, page, consumers }) => {
+test('closing the sheet in edit mode hands the effects back', async ({ world, page, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'armour',
+    equipped: true,
+  });
+
+  await api.setEditMode(page, ctx.actor, true);
+
+  expect(await consumers.stat(ctx, 'Soak'), 'suspended while the mode is on').toBe(3);
+
+  await api.closeSheet(page, ctx.actor);
+
+  const effects = await api.readEffects(page, ctx.actor);
+
+  expect(effects.filter((effect) => effect.disabled), 'the sheet took the mode with it').toEqual([]);
+  expect(await api.readEditMode(page, ctx.actor), 'flag and all').toBe(false);
+  expect(await consumers.stat(ctx, 'Soak'), 'and the armour is doing its work again').toBe(3 + 2);
+});
+
+test('entering edit mode twice does not lose what was enabled', async ({ world, page, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
@@ -284,7 +304,6 @@ test.fixme('entering edit mode twice does not lose what was enabled', async ({ w
 
   const effects = await api.readEffects(page, ctx.actor);
 
-  // FIXME: #2307
   expect(effects.filter((effect) => effect.disabled), 'nothing is left switched off').toEqual([]);
   expect(await consumers.stat(ctx, 'Soak'), 'and the armour is doing its work again').toBe(3 + 2);
 });
