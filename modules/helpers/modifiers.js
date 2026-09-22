@@ -185,7 +185,8 @@ export default class ModifierHelpers {
       rank = 1;
     }
     if (item?.system) {
-      const filteredAttributes = Object.values(item.system.attributes).filter(a => a).filter((a) => a.modtype === modtype && a.mod === key);
+      // a modification with no mods of its own has no attributes at all, not an empty set of them
+      const filteredAttributes = Object.values(item.system.attributes ?? {}).filter(a => a).filter((a) => a.modtype === modtype && a.mod === key);
 
       filteredAttributes.forEach((attr) => {
         sources.push({ modtype, key, name: item.name, value: attr.value * rank, type: item.type });

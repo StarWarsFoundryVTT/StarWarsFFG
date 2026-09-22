@@ -1105,6 +1105,57 @@ export async function copyToWorld(page: Page, uuid: Uuid, name?: string): Promis
 }
 
 /**
+ * Press "Add Modification" in the attachment editor. The modification it makes carries no mods.
+ */
+export async function addModification(
+  page: Page, itemUuid: Uuid, attachmentIndex: number,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ itemUuid, attachmentIndex }) => {
+    const item = await fromUuid(itemUuid);
+    if (!item) return `No item at ${itemUuid}`;
+    const attachment = item.system?.itemattachment?.[attachmentIndex];
+    if (!attachment) return `no attachment at index ${attachmentIndex}`;
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const { itemEditor } = await load('items/item-editor.js');
+
+    // The same data the sheet's edit control passes (items/item-sheet-ffg.js:672).
+    const typeChoices: Record<string, string> = {};
+    for (const key of Object.keys(CONFIG.FFG.itemmodifier_types)) {
+      const entry = CONFIG.FFG.itemmodifier_types[key];
+      typeChoices[entry.value] = game.i18n.localize(entry.label);
+    }
+
+    const editor = new itemEditor({ sourceObject: item, clickedObject: attachment, typeChoices });
+    await editor.render(true);
+
+    let root: any = null;
+    for (let i = 0; i < 200 && !root; i++) {
+      const el = editor.element?.[0] ?? editor.element;
+      if (el?.id && document.getElementById(el.id)) root = el;
+      else await new Promise((r) => setTimeout(r, 25));
+    }
+    if (!root) return 'the attachment editor never appeared';
+
+    const before = attachment.system.itemmodifier.length;
+    const add = root.querySelector('.add-modification[data-action="create"]');
+    if (!add) return 'the editor rendered no Add Modification button';
+    add.click();
+
+    for (let i = 0; i < 200; i++) {
+      const now = (await fromUuid(itemUuid))
+        ?.system?.itemattachment?.[attachmentIndex]?.system?.itemmodifier?.length;
+      if (now > before) break;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    await editor.close();
+    return null;
+  }, { itemUuid, attachmentIndex });
+
+  if (problem) throw new Error(`Adding a Modification to ${itemUuid}: ${problem}`);
+}
+
+/**
  * Tick or untick a Modification's "Installed?" box in the attachment editor.
  */
 export async function setModificationInstalled(
