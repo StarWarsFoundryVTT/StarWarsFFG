@@ -535,6 +535,9 @@ export class CombatFFG extends Combat {
         4b - Delete the actor being removed; no further steps are needed
     */
 
+    // the turn the round is sitting on, so it can be pulled back in if the roster shrinks past it
+    const startingTurn = this.turn;
+
     // Step 1 - Gather information about the actor being removed
     const removedCombatant = this.combatants.get(combatantId);
     let removedCombatantId = removedCombatant.id;
@@ -614,11 +617,19 @@ export class CombatFFG extends Combat {
           await this.claimSlot(round, removedCombatantReplacementId, removedClaimantId);
         }
       } else if (lastClaimantId && !lastClaimantIsRemovedCombatant) {
-        await this.claimSlot(round, removedCombatantReplacementId, removedCombatantReplacementId);
+        // the last slot's claim moves to its replacement, keeping whoever made it
+        // (a self-claim follows the actor, who is now sitting in the replacement slot)
+        const claimantId = lastClaimantId === lastSlotCombatantId ? removedCombatantReplacementId : lastClaimantId;
+        await this.claimSlot(round, removedCombatantReplacementId, claimantId);
       }
     } else {
       // Step 4b - Delete the actor being removed; no further steps are needed
       await this.combatants.get(removedCombatantId).delete();
+    }
+    // a turn index past the end of the shorter roster makes setupTurns roll the round over,
+    // which would leave this round's claims behind
+    if (startingTurn >= this.combatants.size) {
+      await this.update({turn: this.combatants.size - 1});
     }
     // re-enable the hooks we disabled
     CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);

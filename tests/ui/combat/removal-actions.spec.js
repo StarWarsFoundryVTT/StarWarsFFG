@@ -31,7 +31,7 @@ test('removing a combatant takes the last slot of its side with it', async ({ wo
   ).not.toContain(encounter.combatants[1]);
 });
 
-test.fixme('the claim on a removed last slot moves to its replacement', async ({ world, page }) => {
+test('the claim on a removed last slot moves to its replacement', async ({ world, page }) => {
   await world.setSetting('removeCombatantAction', 'last_slot');
 
   const encounter = await world.encounter({
@@ -45,22 +45,28 @@ test.fixme('the claim on a removed last slot moves to its replacement', async ({
 
   await api.openCombatTracker(page);
 
+  // `last_slot` reaches for the side's lowest initiative, taking the first of a tie as the system does
+  const rows = await api.readCombatants(page, encounter.combat);
+  const lastSlot = rows.reduce((lowest, row) => (row.initiative < lowest.initiative ? row : lowest)).id;
+  // the claim has to come from a combatant the removal leaves alone, and so does the removal
+  const [claimant, removed] = encounter.combatants.filter((id) => id !== lastSlot);
+  const claimantToken = encounter.tokens[encounter.combatants.indexOf(claimant)];
+
   const order = await api.readTurnOrder(page, encounter.combat);
-  await api.setTurn(page, encounter.combat, order.length - 1);
-  await api.controlToken(page, encounter.scene, encounter.tokens[0]);
+  await api.setTurn(page, encounter.combat, order.indexOf(lastSlot));
+  await api.controlToken(page, encounter.scene, claimantToken);
   await tracker.claimControl(page).click();
   await expect(tracker.claimedSlots(page), 'the last slot is claimed').toHaveCount(1);
 
-  await api.removeCombatant(page, encounter.combat, encounter.combatants[1]);
+  await api.removeCombatant(page, encounter.combat, removed);
 
-  // FIXME: #2304
   const combatants = await api.readCombatants(page, encounter.combat);
   const claims = await api.readSlotClaims(page, encounter.combat);
 
   expect(
     Object.values(claims),
     'the claim still belongs to the combatant that made it'
-  ).toEqual([encounter.combatants[0]]);
+  ).toEqual([claimant]);
   expect(
     combatants.map((c) => c.id),
     'and points at a slot that is still in the encounter'
