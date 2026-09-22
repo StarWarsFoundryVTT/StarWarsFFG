@@ -170,6 +170,14 @@ export class CombatFFG extends Combat {
 
   /** @override */
   async rollInitiative(ids, { formula = null, updateTurn = true, messageOptions = {} } = {}) {
+    // Make sure we are dealing with an array of ids
+    ids = typeof ids === "string" ? [ids] : ids ?? [];
+    // rollAll and rollNPC hand over whoever is left to roll, which can be nobody at all
+    if (!ids.length) {
+      ui.notifications.info(game.i18n.localize("SWFFG.Notifications.Combat.Initiative.NothingToRoll"));
+      return this;
+    }
+
     let initiative = this;
 
     let promise = new Promise(async function (resolve, reject) {
@@ -185,8 +193,6 @@ export class CombatFFG extends Combat {
       if (Array.isArray(ids) && ids.length > 1) {
         whosInitiative = "Multiple Combatants";
       } else {
-        // Make sure we are dealing with an array of ids
-        ids = typeof ids === "string" ? [ids] : ids;
         const c = initiative.getCombatantByToken(
             initiative.combatants.map(combatant => combatant)
             .filter(combatantData => combatantData._id == ids[0])[0]
