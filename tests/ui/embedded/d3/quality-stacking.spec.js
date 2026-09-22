@@ -155,3 +155,60 @@ test('#2311 a quality granting Defence keeps both of its changes', async ({ worl
   expect(await consumers.stat(ctx, 'Defence-Melee'), 'the armour and the quality, in melee').toBe(2);
   expect(await consumers.stat(ctx, 'Defence-Ranged'), 'and the same at range').toBe(2);
 });
+
+test('#2340 a ranked quality on armour carries every rank, not just one', async ({ world, page, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'armour',
+    equipped: true,
+    modifier: {
+      name: 'qa reinforced',
+      key: 'Soak',
+      modtype: 'Stat',
+      value: 2,
+      rank: 2,
+      active: true,
+    },
+  });
+
+  // the quality's effect holds rank x value, so the character gets the whole quality at once
+  const granted = async () => {
+    const effects = await api.readItemEffects(page, ctx.item);
+    return effects
+      .filter((effect) => effect.name !== '(inherent)')
+      .flatMap((effect) => effect.changes)
+      .filter((change) => change.key === 'system.stats.soak.value')
+      .map((change) => Number(change.value));
+  };
+
+  expect(await granted(), 'two ranks of +2 soak').toEqual([4]);
+
+  await world.equip(ctx, false);
+  await world.equip(ctx, true);
+
+  expect(await granted(), 'and still both after being taken off and put back on').toEqual([4]);
+  expect(await consumers.stat(ctx, 'Soak'), 'brawn 3, the armour 2, the quality 4').toBe(9);
+});
+
+test('#2340 a ranked quality and its twin on an attachment each contribute their own ranks', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'armour',
+    equipped: true,
+    attachment: {
+      name: 'plate',
+      modifications: [
+        { name: 'qa reinforced', key: 'Soak', modtype: 'Stat', value: 1, rank: 1, installed: true },
+      ],
+    },
+  });
+
+  await world.addModifier(ctx, {
+    name: 'qa reinforced', key: 'Soak', modtype: 'Stat', value: 1, rank: 2, active: true,
+  });
+
+  // the sheet merges both sources into one rank count, but each keeps its own effect, so the
+  // item's own effect carries its own two ranks rather than all three
+  expect(await consumers.qualityRank(ctx, 'qa reinforced'), 'two ranks from the item, one from the attachment').toBe(3);
+  expect(await consumers.stat(ctx, 'Soak'), 'brawn 3, the armour 2, and one rank each of three').toBe(8);
+});

@@ -275,9 +275,10 @@ export default class ItemHelpers {
         for (const attr of Object.keys(modifier.system.attributes)) {
           const matchingEffect = existingEffects.find(effect => effect.name === attr);
           if (matchingEffect) {
-            // fall back to the stored rank rather than writing NaN
-            let ranks = modifier.system.rank_current ?? modifier.system.rank;
-            if (ranks === null || ranks === undefined) {
+            // the modifier's own rank: the derived rank_current also folds in ranks from
+            // attachments, which bring their own effects, and is not yet computed during _onUpdate
+            let ranks = parseInt(modifier.system.rank, 10);
+            if (isNaN(ranks) || ranks < 1) {
               ranks = 1;
             }
             const newValue = ranks * modifier.system.attributes[attr].value;
