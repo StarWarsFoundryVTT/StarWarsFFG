@@ -912,7 +912,7 @@ test('a vehicle rolls initiative on its pilot rather than on itself', async ({ w
   expect(await api.readLastChatFlavor(page), 'and that is what it rolled').toContain('Perception');
 });
 
-test.fixme('a vehicle with no crew cannot roll initiative', async ({ world, page, consoleGuard }) => {
+test('a vehicle with no crew cannot roll initiative', async ({ world, page, consoleGuard }) => {
   const encounter = await world.encounter({
     combatants: [
       { actor: 'vehicle' },
@@ -928,7 +928,6 @@ test.fixme('a vehicle with no crew cannot roll initiative', async ({ world, page
   const combatants = await api.readCombatants(page, encounter.combat);
 
   expect(combatants[0].initiative, 'nothing was recorded for it').toBeNull();
-  // FIXME: #2302
   expect(await consoleGuard.notifications(), 'and the GM is told why').toContainEqual(
     expect.stringContaining('pilot role'),
   );
