@@ -110,7 +110,7 @@ test('a write does not clobber the sibling beside it', async ({ world, page }) =
   expect(nested[1].system.active, 'the one that was not').toBe(true);
 });
 
-test.fixme("a write reaches the addressed attachment's Modification, not the last one's", async ({ world, page }) => {
+test("#2294 a write reaches the addressed attachment's Modification, not the last one's", async ({ world, page }) => {
   const ctx = await world.build({
     actor: 'character', item: 'armour', equipped: true,
     attachment: {
@@ -133,7 +133,34 @@ test.fixme("a write reaches the addressed attachment's Modification, not the las
   });
 
   const attachments = await api.read(page, ctx.item, 'system.itemattachment');
-  // FIXME: currently fails; the last one gets written
   expect(attachments[0].system.itemmodifier[0].system.active, 'the one that was addressed').toBe(false);
   expect(attachments[1].system.itemmodifier[0].system.active, 'the one that was not').toBe(true);
+});
+
+test("#2294 the second attachment's Modification can be reached as well", async ({ world, page }) => {
+  const ctx = await world.build({
+    actor: 'character', item: 'armour', equipped: true,
+    attachment: {
+      name: 'first',
+      modifications: [{ name: 'qa on first', key: 'Soak', value: 1, installed: true }],
+    },
+  });
+
+  await world.attach(ctx, {
+    name: 'second',
+    modifications: [{ name: 'qa on second', key: 'Defence-Melee', value: 1, installed: true }],
+  });
+
+  // the modifications of every attachment are numbered in order, so this one follows the first's
+  await api.writeThroughParentChain(page, {
+    actorUuid: ctx.actor,
+    itemUuid: ctx.item,
+    modifierType: 'itemmodifier',
+    modifierIndex: 1,
+    data: { system: { active: false } },
+  });
+
+  const attachments = await api.read(page, ctx.item, 'system.itemattachment');
+  expect(attachments[1].system.itemmodifier[0].system.active, 'the one that was addressed').toBe(false);
+  expect(attachments[0].system.itemmodifier[0].system.active, 'the one that was not').toBe(true);
 });

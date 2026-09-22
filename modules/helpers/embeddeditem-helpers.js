@@ -234,26 +234,34 @@ export default class EmbeddedItemHelpers {
     let rename_item;
 
     if (!item) {
-      // this is a modifier on an attachment
-      ownedItem.system.itemattachment.forEach((a, index) => {
-        if (!isNaN(modifierId)) {
-          modifierIndex = modifierId;
+      // this is a modifier on an attachment. a numeric id counts through the attachments' modifiers
+      // in order, so it has to be walked past the attachments it does not point at
+      let remaining = isNaN(modifierId) ? -1 : parseInt(modifierId, 10);
+      for (const [index, a] of ownedItem.system.itemattachment.entries()) {
+        if (remaining > -1) {
+          if (remaining >= a.system[modifierType].length) {
+            remaining -= a.system[modifierType].length;
+            continue;
+          }
+          modifierIndex = remaining;
         } else {
           modifierIndex = a.system[modifierType].findIndex((m) => m.id === parseInt(modifierId, 10));
+          if (modifierIndex < 0) {
+            continue;
+          }
         }
-        if (modifierIndex > -1) {
-          item = a.system[modifierType][modifierIndex];
-          rename_item = {
-            flags: {
-              starwarsffg: {
-                ffgTempItemType: "itemattachment",
-                ffgTempItemIndex: index,
-                ffgTempId: itemId,
-              }
+        item = a.system[modifierType][modifierIndex];
+        rename_item = {
+          flags: {
+            starwarsffg: {
+              ffgTempItemType: "itemattachment",
+              ffgTempItemIndex: index,
+              ffgTempId: itemId,
             }
-          };
-        }
-      });
+          }
+        };
+        break;
+      }
     }
 
     const temp = {
