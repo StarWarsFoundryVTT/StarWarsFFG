@@ -225,3 +225,21 @@ test.fixme('a Base Mod and a Modification granting the same key both apply', asy
 test.fixme("one attachment's Base Mods and another's Modifications both apply", async ({ world, consumers }) => {
 
 });
+
+test('#2313 a Modification with no mods of its own does not stop the weapon rolling', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'weapon',
+    equipped: true,
+    attachment: {
+      name: 'mount',
+      modifications: [{ name: 'qa boosted', key: 'Add Boost', modtype: 'Roll Modifiers', value: 1, installed: true }],
+    },
+  });
+
+  // the editor's own "Add Modification" button leaves one behind carrying no mods
+  await world.addModification(ctx, { installed: true });
+
+  const pool = await consumers.poolDice(ctx);
+  expect(pool.boost, 'the pool is still built around the empty Modification').toBe(1);
+});

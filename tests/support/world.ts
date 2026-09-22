@@ -761,6 +761,22 @@ export class World {
   }
 
   /**
+   * Add a Modification with the editor's own button. The one it makes carries no mods.
+   */
+  async addModification(
+    ctx: Ctx, { installed = false, attachmentIndex = ctx.attachmentIndex ?? 0 } = {},
+  ): Promise<number> {
+    if (!ctx?.item) throw new Error('addModification() needs a build that reached an item.');
+    await api.addModification(this.page, ctx.item, attachmentIndex);
+    const modifications = (await api.read(
+      this.page, ctx.item, `system.itemattachment.${attachmentIndex}.system.itemmodifier`,
+    )) as unknown[] | null;
+    const index = (modifications?.length ?? 0) - 1;
+    if (installed) await this.setModificationInstalled(ctx, index, true, attachmentIndex);
+    return index;
+  }
+
+  /**
    * Install one of an attachment's Modifications, or uninstall it.
    */
   async setModificationInstalled(

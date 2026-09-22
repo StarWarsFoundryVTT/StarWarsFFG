@@ -52,6 +52,7 @@
   * Closing the editor for a Modification held by an attachment now simply closes it ([#2308](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2308))
   * Weapon and armor qualities which grant more than one thing (such as Defence, which covers both melee and ranged) now keep all of them when the item is saved or equipped, instead of quietly losing everything but the first ([#2311](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2311))
   * Imported items now carry one inherent Active Effect holding the values the data gave them, instead of a second copy of it alongside with every change left at zero; an imported vehicle attachment also costs the hardpoints its data names, rather than none ([#2312](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2312))
+  * A weapon carrying an attachment with a Modification that has no mods on it can be rolled again, instead of the dice pool failing to open ([#2313](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2313))
 
 `2.0.3`
 * Enhancements:
