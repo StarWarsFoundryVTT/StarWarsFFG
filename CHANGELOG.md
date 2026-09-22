@@ -48,6 +48,7 @@
   * Rolling initiative for a vehicle with no pilot now explains that a crew member must hold the Pilot role ([#2302](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2302))
   * A side with a defeated combatant now has its spare initiative slot marked unused, so it can no longer be claimed ([#2303](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2303))
   * Removing a combatant with "Remove Last Slot" now carries a claim on that side's last slot onto the slot that replaces it, and leaves the encounter in the round it was in, instead of dropping the claim ([#2304](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2304))
+  * Closing an actor sheet while edit mode is on now turns the mode off instead of leaving it on until the world is reloaded ([#2307](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2307))
 
 `2.0.3`
 * Enhancements:

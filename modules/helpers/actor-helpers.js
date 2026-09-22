@@ -71,6 +71,7 @@ export default class ActorHelpers {
    * Records the state of all active effects on the actor and then suspends them.
    * This is used to enable manual editing without an infinite loop from the two being combined
    * Note that this returns a state, which is REQUIRED to restore the original AE state
+   * For the non-persisting case the state is also stashed on the actor, so it survives the sheet being closed
    * @param actor
    * @param persistChanges - defaults to False, and generally should be. For GM XP granting, this should be True
    * @returns {Promise<{directEffects: *[], itemEffects: {}}>}
@@ -118,10 +119,28 @@ export default class ActorHelpers {
     }
 
     CONFIG.logger.debug(`Final initial state: ${JSON.stringify(initialState)}`);
+    if (!persistChanges) {
+      // the suspension only lives in memory, so keep the state next to it instead of on the (disposable) sheet
+      actor.suspendedEffects = initialState;
+    }
     return initialState;
   }
 
+  /**
+   * Restores active effects suspended by beginEditMode.
+   * @param actor
+   * @param originalState - state returned by beginEditMode; when omitted, the state stashed on the actor is used
+   * @param persistChanges - must match the value passed to beginEditMode
+   * @returns {Promise<void>}
+   */
   static async endEditMode(actor, originalState, persistChanges=false) {
+    if (!originalState && !persistChanges) {
+      originalState = actor.suspendedEffects;
+    }
+    if (!originalState) {
+      CONFIG.logger.debug(`Not ending Edit mode for ${actor.name} - no suspended effects`);
+      return;
+    }
     CONFIG.logger.debug(`Ending Edit mode for ${actor.name} - original state: ${JSON.stringify(originalState)}`);
     // revert the state for direct effects
     for (const effect of actor.effects) {
@@ -159,6 +178,10 @@ export default class ActorHelpers {
       } else {
         CONFIG.logger.debug("> no item AEs in stored state, skipping further processing");
       }
+    }
+
+    if (!persistChanges) {
+      delete actor.suspendedEffects;
     }
   }
 }
