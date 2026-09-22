@@ -121,7 +121,7 @@ test('removing one of two stacked sources drops the rank back rather than to zer
   expect(await consumers.qualityRank(ctx, 'qa accurate'), 'one source left').toBe(1);
 });
 
-test.fixme('#2311 a quality granting Defence keeps both of its changes', async ({ world, page, consumers }) => {
+test('#2311 a quality granting Defence keeps both of its changes', async ({ world, page, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
@@ -135,8 +135,7 @@ test.fixme('#2311 a quality granting Defence keeps both of its changes', async (
     },
   });
 
-  // defense explodes into melee and ranged, so the quality's effect carries two changes and `syncAEStatus`
-  // rebuilds it from the first one alone
+  // defense explodes into melee and ranged, so the quality's effect carries two changes
   const granted = async () => {
     const effects = await api.readItemEffects(page, ctx.item);
     return effects
@@ -152,7 +151,6 @@ test.fixme('#2311 a quality granting Defence keeps both of its changes', async (
   await world.equip(ctx, false);
   await world.equip(ctx, true);
 
-  // FIXME: #2311
   expect(await granted(), 'and still does after being taken off and put back on').toEqual(both);
   expect(await consumers.stat(ctx, 'Defence-Melee'), 'the armour and the quality, in melee').toBe(2);
   expect(await consumers.stat(ctx, 'Defence-Ranged'), 'and the same at range').toBe(2);
