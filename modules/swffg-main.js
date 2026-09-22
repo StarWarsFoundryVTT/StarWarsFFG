@@ -836,7 +836,9 @@ Hooks.once("init", async function () {
       }
 
     } catch (e) {
-      ui.notifications.warn("Failed to load custom statuses, likely bad JSON");
+      // ui.notifications doesn't exist during init, so defer the warning until it does
+      CONFIG.logger.warn("Failed to load custom statuses, likely bad JSON", e);
+      Hooks.once("ready", () => ui.notifications.warn(game.i18n.localize("SWFFG.Settings.AdditionalStatuses.BadJson")));
     }
 
   // Register sheet application classes

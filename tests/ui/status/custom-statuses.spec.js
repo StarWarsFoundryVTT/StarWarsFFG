@@ -45,15 +45,12 @@ test('a status added through the setting applies its changes', async ({ world, p
   expect(await consumers.stat(ctx, 'Soak'), 'and two more while braced').toBe(3 + 2);
 });
 
-test.fixme('bad JSON in the setting leaves the built-in statuses alone', async ({ world, page, consoleGuard }) => {
-  consoleGuard.allow(/failed to render/);
-
+test('bad JSON in the setting leaves the built-in statuses alone', async ({ world, page, consoleGuard }) => {
   await world.setSetting('additionalStatuses', '[{ "id": "qa-broken", ');
 
   const ids = (await api.readStatusEffects(page)).map((status) => status.id);
   const thrown = consoleGuard.errors.join(' | ') || 'nothing';
 
-  // FIXME: #2309
   expect(thrown, 'the bad JSON is reported rather than thrown').toBe('nothing');
   expect(ids, 'the system\'s own are still offered').toContain('starwarsffg-defeated');
   expect(ids.filter((id) => !id.startsWith('starwarsffg-')), 'and nothing half-read got in').toEqual([]);
