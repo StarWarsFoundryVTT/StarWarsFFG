@@ -923,9 +923,12 @@ export class CombatFFG extends Combat {
       }
 
       // determine if we should mark the slot as unneeded
-      const aliveCount = this._getCombatantStateCount(disposition);
       let unused = false;
-      turnTracker[disposition]++;
+      if (!claimed) {
+        // claimed slots are already spoken for, so only the free ones are counted against who is left to act
+        turnTracker[disposition]++;
+        unused = turnTracker[disposition] > this._getCombatantStateCount(disposition);
+      }
 
       // we do not care about the defeated status since defeated units get their slot marked unused
       if (turn.css) {
@@ -995,18 +998,18 @@ export class CombatFFG extends Combat {
   }
 
     /**
-   * get the number of alive combatants on a given side, including any who have claimed a slot and died
-   * essentially, the claimed and dead ones need to be included to get an accurate count to determine unused slots
+   * get the number of combatants on a given side who are alive and have yet to claim a slot this round
+   * anyone already holding a claim (alive or not) keeps that slot, so they do not need one of the free ones
    * @param disposition
    * @returns {number}
    * @private
    */
   _getCombatantStateCount(disposition) {
     const total =  this.combatants.filter(i => i.disposition === disposition);
-    const defeated = this.combatants.filter(i => i.disposition === disposition && i.isDefeated);
+    const waiting = total.filter(i => !i.isDefeated && !this.hasClaims(i.id));
     CONFIG.logger.debug(`getting combatant state count for ${disposition}`)
-    CONFIG.logger.debug(`detected ${total.length} real slots, and ${defeated.length} defeated slots`);
-    return total.length - defeated.length;
+    CONFIG.logger.debug(`detected ${total.length} real slots, and ${waiting.length} combatants still to act`);
+    return waiting.length;
   }
 }
 

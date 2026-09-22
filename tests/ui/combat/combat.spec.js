@@ -971,7 +971,7 @@ test('#2020 a defeated combatant does not leave its side a slot short', async ({
   await expect(tracker.slots(page), 'its side keeps the slots it had').toHaveCount(2);
 });
 
-test.fixme("#2020 a defeated combatant's slot is marked unused", async ({ world, page }) => {
+test("#2020 a defeated combatant's slot is marked unused", async ({ world, page }) => {
   const encounter = await world.encounter({
     combatants: [
       { actor: 'character' },
@@ -983,7 +983,6 @@ test.fixme("#2020 a defeated combatant's slot is marked unused", async ({ world,
   await api.openCombatTracker(page);
   await api.setDefeated(page, encounter.combat, encounter.combatants[1]);
 
-  // FIXME: #2303
   await expect(tracker.unusedSlots(page), 'the slot nobody can take is marked').toHaveCount(1);
   await expect(tracker.slots(page), 'and it is still listed').toHaveCount(2);
 });
