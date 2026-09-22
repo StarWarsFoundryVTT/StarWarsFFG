@@ -50,6 +50,7 @@
   * Removing a combatant with "Remove Last Slot" now carries a claim on that side's last slot onto the slot that replaces it, and leaves the encounter in the round it was in, instead of dropping the claim ([#2304](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2304))
   * Closing an actor sheet while edit mode is on now turns the mode off instead of leaving it on until the world is reloaded ([#2307](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2307))
   * Closing the editor for a Modification held by an attachment now simply closes it ([#2308](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2308))
+  * Weapon and armor qualities which grant more than one thing (such as Defence, which covers both melee and ranged) now keep all of them when the item is saved or equipped, instead of quietly losing everything but the first ([#2311](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2311))
 
 `2.0.3`
 * Enhancements:

@@ -282,12 +282,9 @@ export default class ItemHelpers {
             }
             const newValue = ranks * modifier.system.attributes[attr].value;
             CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
+            // keep every change on the effect - some mods (e.g., Defence) explode into several
             await matchingEffect.update({
-              "changes": [{
-                key: matchingEffect.changes[0].key,
-                mode: matchingEffect.changes[0].mode,
-                value: newValue,
-              }],
+              "changes": matchingEffect.changes.map(change => ({...change, value: newValue})),
             });
           }
         }
