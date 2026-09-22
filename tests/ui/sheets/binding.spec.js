@@ -126,7 +126,7 @@ test('an owned item’s sheet writes to the owned copy, not the world item', asy
   ).toBe(6);
 });
 
-test.fixme('a nested modifier’s editor closes without writing to the temporary item', async ({ world, page }) => {
+test('a nested modifier’s editor closes without writing to the temporary item', async ({ world, page }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
@@ -146,7 +146,6 @@ test.fixme('a nested modifier’s editor closes without writing to the temporary
 
   const before = await api.read(page, ctx.item, 'system.itemattachment');
 
-  // FIXME: #2308
   await api.closeWindow(page, editor);
 
   expect(await api.isWindowOpen(page, editor), 'the editor closed').toBe(false);

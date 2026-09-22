@@ -1537,6 +1537,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   /** @override */
   async _updateObject(event, formData) {
     if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
+    // temporary items are not in any collection, so do not update
+    if (this.object.flags?.starwarsffg?.ffgIsTemp) return;
 
     const itemUpdate = ItemHelpers.itemUpdate.bind(this);
     // closing the sheet submits the form, and an update still running once the window is
