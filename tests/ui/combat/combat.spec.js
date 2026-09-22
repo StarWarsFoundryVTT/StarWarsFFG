@@ -867,7 +867,7 @@ test('rolling for every combatant at once asks which pool once', async ({ world,
   expect(combatants.filter((c) => c.initiative === null), 'and all three rolled').toHaveLength(0);
 });
 
-test.fixme('rolling for the NPCs leaves the other slots unrolled', async ({ world, page }) => {
+test('rolling for the NPCs leaves the other slots unrolled', async ({ world, page }) => {
   const encounter = await world.encounter({
     combatants: [
       { actor: 'character' },
@@ -883,7 +883,6 @@ test.fixme('rolling for the NPCs leaves the other slots unrolled', async ({ worl
   const adversaries = combatants.filter((c) => c.tokenId !== encounter.tokens[0]);
 
   expect(adversaries.filter((c) => c.initiative === null), 'the minions rolled').toHaveLength(0);
-  // FIXME: see #2301
   expect(character.initiative, 'and the character did not').toBeNull();
 });
 

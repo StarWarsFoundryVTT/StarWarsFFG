@@ -1362,6 +1362,22 @@ export default class CombatantFFG extends Combatant {
     }
   }
 
+  /**
+   * Foundry decides NPC-ness from ownership; we decide based on whether a combatant is
+   * a character or not
+   * @override
+   */
+  get isNPC() {
+    const type = this.actor?.type;
+    if (["minion", "rival", "nemesis"].includes(type)) {
+      return true;
+    } else if (type === "character") {
+      return false;
+    }
+    // vehicles (and slots with no actor) have no adversary type of their own, so fall back to ownership
+    return super.isNPC;
+  }
+
   /** @override  */
   async delete() {
     await this.removeCombatEffects();
