@@ -19,7 +19,7 @@ test('a species records a link to a talent dropped on it', async ({ world, page 
   expect(linked?.source, 'the link points at the talent document').toBe(talent);
 });
 
-test.fixme('a species grants its linked talents to the character', async ({ world, page, consumers }) => {
+test('a species grants its linked talents to the character', async ({ world, page, consumers }) => {
   // The contract a player expects. If this fails while the link above is recorded, it is #1957 -
   // species talents that sit there until they are removed and re-added.
   const species = await world.item({ item: 'species' });
@@ -33,7 +33,6 @@ test.fixme('a species grants its linked talents to the character', async ({ worl
 
   await api.settledOwnedItems(page, ctx.actor);
 
-  // FIXME: #2295
   expect(await consumers.stat(ctx, 'Wounds'), 'the linked talent applies').toBe(12 + 1);
 });
 
@@ -52,7 +51,7 @@ test('a species records a linked ability without a source', async ({ world, page
   expect(linked?.source, 'but with no way back to the document').toBeUndefined();
 });
 
-test.fixme('a species talent applies without being re-added', async ({ world, page, consumers }) => {
+test('a species talent applies without being re-added', async ({ world, page, consumers }) => {
   const species = await world.item({ item: 'species' });
   const talent = await world.item({
     item: 'talent',
@@ -62,11 +61,13 @@ test.fixme('a species talent applies without being re-added', async ({ world, pa
 
   const ctx = await world.place(species, { actor: 'character' });
 
-  // FIXME: currently fails - talent gets added twice (see #2295)
+  // the talent is granted by a hook after the species lands, so wait for the actor to stop growing
+  await api.settledOwnedItems(page, ctx.actor);
+
   expect(await consumers.stat(ctx, 'Strain'), 'applied on the first go').toBe(13 + 2);
 });
 
-test.fixme('removing a species removes the talents it granted', async ({ world, page, consumers }) => {
+test('removing a species removes the talents it granted', async ({ world, page, consumers }) => {
   const species = await world.item({ item: 'species' });
   const talent = await world.item({
     item: 'talent',
@@ -76,25 +77,12 @@ test.fixme('removing a species removes the talents it granted', async ({ world, 
 
   const ctx = await world.place(species, { actor: 'character' });
 
-  // TEMPORARY: where the extra wounds come from. Delete once settled.
-  console.log(JSON.stringify(await page.evaluate(async ({ actorUuid, speciesUuid }) => {
-    const actor = await fromUuid(actorUuid);
-    const owned = await fromUuid(speciesUuid);
-    return {
-      woundsMax: actor.system.stats.wounds.max,
-      itemsOnActor: actor.items.map((i) => `${i.type}:${i.name}`),
-      speciesEffects: (owned?.effects?.contents ?? []).map(
-        (e) => `${e.name} ${e.disabled ? '(off)' : ''} ${e.changes.map((c) => `${c.key}=${c.value}`).join(',')}`),
-      worldItems: game.items.contents.length,
-      worldActors: game.actors.contents.length,
-    };
-  }, { actorUuid: ctx.actor, speciesUuid: ctx.item }), null, 2));
+  await api.settledOwnedItems(page, ctx.actor);
 
   expect(await consumers.stat(ctx, 'Wounds'), 'granted while the species is there').toBe(12 + 1);
 
   await api.deleteDoc(page, ctx.item);
 
-  // FIXME: currently fails - talent gets added twice (see #2295)
   // polled to avoid catching mid-update
   await expect.poll(() => consumers.stat(ctx, 'Wounds'), {
     message: 'back to the actor’s own threshold',
