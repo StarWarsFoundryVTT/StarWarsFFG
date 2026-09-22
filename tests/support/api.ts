@@ -2625,6 +2625,52 @@ export async function rollInitiative(
   return { offered, checked };
 }
 
+/**
+ * Roll initiative for the encounter's NPCs, as the tracker's "roll NPC initiative" control does.
+ *
+ * Answers no dialog, unlike `rollInitiative` - it is for the calls that should raise none.
+ */
+export async function rollNPC(page: Page, combatUuid: Uuid): Promise<void> {
+  const problem = await page.evaluate(async (combatUuid) => {
+    const combat = await fromUuid(combatUuid);
+    if (!combat) return `No combat at ${combatUuid}`;
+    await combat.rollNPC();
+    return null;
+  }, combatUuid);
+
+  if (problem) throw new Error(`Rolling NPC initiative on ${combatUuid}: ${problem}`);
+}
+
+/**
+ * Answer the initiative pool dialog that is already open.
+ *
+ * For the rolls a test starts from the tracker itself rather than through `rollInitiative`, which
+ * raises the same dialog and answers it as part of the call.
+ */
+export async function answerInitiativePool(page: Page, skill = 'Vigilance'): Promise<void> {
+  await waitForDialog(page);
+  // The dialog exists before its pools are drawn, and one that has none reads the same as one
+  // whose radios have not landed yet.
+  await page.waitForSelector('input[name="skill"]', { timeout: 5000 }).catch(() => {});
+
+  const problem = await page.evaluate((skill) => {
+    const radios = [...document.querySelectorAll('input[name="skill"]')] as HTMLInputElement[];
+    const wanted = radios.find((radio) => radio.value === skill);
+    if (!wanted) {
+      return `no "${skill}" pool. It offers: ${radios.map((r) => r.value).join(', ') || 'none'}`;
+    }
+    wanted.checked = true;
+    return null;
+  }, skill);
+
+  if (problem) {
+    await closeDialogs(page);
+    throw new Error(`Answering the initiative pool: the dialog has ${problem}`);
+  }
+
+  await answerDialog(page, 'one');
+}
+
 /** Take back whatever the roll threw where nothing was listening, and stop listening. */
 async function collectRollErrors(page: Page): Promise<string[]> {
   return page.evaluate(() => {

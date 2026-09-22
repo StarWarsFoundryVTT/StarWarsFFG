@@ -49,6 +49,16 @@ export function control(
   return page.locator(`[data-action="${action}"]`);
 }
 
+/** A slot by the combatant it belongs to. */
+export function slotOf(page: Page, combatantId: string): Locator {
+  return page.locator(`${TRACKER} li.combatant[data-alt-id="${combatantId}"]`);
+}
+
+/** The "roll initiative" control a slot offers while it has no value yet. */
+export function rollControl(slot: Locator): Locator {
+  return slot.locator('a.combatant-control.roll');
+}
+
 /** The slot offering the claim link - the one whose turn it is. */
 export function claimableSlot(page: Page): Locator {
   return page.locator(`${TRACKER} li.combatant[data-slot-index]:has(a[data-claim-slot])`);

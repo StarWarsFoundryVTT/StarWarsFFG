@@ -181,6 +181,31 @@ test('an added combatant gets a slot without disturbing existing claims', async 
   ).toEqual([encounter.combatants[0]]);
 });
 
+test('a combatant added after the encounter began can roll initiative from its slot', async ({ world, page }) => {
+  const encounter = await world.encounter({
+    combatants: [
+      { actor: 'character' },
+      { actor: 'character' },
+    ],
+    roll: true,
+  });
+
+  await api.openCombatTracker(page);
+  const newcomer = await world.addCombatant(encounter, { actor: 'character' });
+
+  const slot = tracker.slotOf(page, newcomer);
+  await expect(tracker.rollControl(slot), 'the newcomer is offered the roll').toHaveCount(1);
+
+  await tracker.rollControl(slot).click();
+  await api.answerInitiativePool(page);
+
+  const combatants = await api.readCombatants(page, encounter.combat);
+  expect(
+    combatants.find((c) => c.id === newcomer).initiative,
+    'and taking it gives the newcomer a value'
+  ).not.toBeNull();
+});
+
 test('removing a combatant leaves a generic slot behind for its side', async ({ world, page }) => {
   const encounter = await world.encounter({
     combatants: [
@@ -1109,4 +1134,24 @@ test('slots and claims survive a reload mid-encounter', async ({ world, page }) 
   await expect(tracker.claimedSlots(page), 'one of them still claimed').toHaveCount(1);
   expect(await api.readSlotClaims(page, encounter.combat), 'by the same combatant').toEqual(claims);
   expect(await api.readTurnOrder(page, encounter.combat), 'and in the same order').toEqual(order);
+});
+
+test('rolling NPC initiative with nobody left to roll for says so', async ({ world, page, consoleGuard }) => {
+  const encounter = await world.encounter({
+    combatants: [
+      { actor: 'character' },
+    ],
+    roll: true,
+  });
+
+  await api.openCombatTracker(page);
+  // clear what building the encounter posted, so what is read back is what the roll said
+  await consoleGuard.notifications();
+
+  await api.rollNPC(page, encounter.combat);
+
+  expect(await consoleGuard.notifications(), 'the GM is told why nothing happened').toContainEqual(
+    expect.stringContaining('left to roll initiative for'),
+  );
+  expect(await api.openDialogs(page), 'and no pool dialog is raised').toEqual([]);
 });
