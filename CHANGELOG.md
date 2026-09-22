@@ -45,6 +45,7 @@
   * A talent dragged onto a species grants its modifiers once, instead of applying them a second time alongside the copy of the talent the species hands the character ([#2295](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2295))
   * Fixed an issue where combat claims were silently dropped ([#2300](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2300))
   * "Roll NPCs" in the combat tracker now picks its combatants by actor type (minion, rival, and nemesis), instead of by whether a player owns them ([#2301](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2301))
+  * Rolling initiative for a vehicle with no pilot now explains that a crew member must hold the Pilot role ([#2302](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2302))
 
 `2.0.3`
 * Enhancements:

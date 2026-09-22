@@ -193,6 +193,10 @@ export class CombatFFG extends Combat {
             .tokenId);
         //const data = c.actor.system;
         const data = _findActorForInitiative(c);
+        if (!data) {
+          // the combatant has no rollable data (e.g., a vehicle with no pilot); the user has been warned already
+          return resolve(initiative);
+        }
         whosInitiative = c.actor.name;
 
         vigilanceDicePool = _buildInitiativePool(data, "Vigilance");
@@ -265,6 +269,8 @@ export class CombatFFG extends Combat {
 
                   // Detemine Formula
                   const data = _findActorForInitiative(c);
+                  // skip combatants with no rollable data (e.g. a vehicle with no pilot); the user has been warned already
+                  if (!data) return [updates, messages];
                   let pool = _buildInitiativePool(data, baseFormulaType);
 
                   const addPool = DicePoolFFG.fromContainer(container.querySelector(`.addDicePool`));
@@ -315,7 +321,7 @@ export class CombatFFG extends Combat {
                 },
                 [[], []]
               );
-              if (!updates.length) return initiative;
+              if (!updates.length) return resolve(initiative);
 
               // Update multiple combatants
               await initiative.updateEmbeddedDocuments("Combatant", updates);
@@ -1017,23 +1023,20 @@ function _getInitiativeFormula(skill, ability) {
 
 function _findActorForInitiative(c) {
   let data = c.actor.system;
-  const initiativeRole = game.settings.get('starwarsffg', 'initiativeCrewRole');
   CONFIG.logger.debug("Attempting to find initiative data for actor in combat");
   if (c.actor.type === "vehicle") {
     CONFIG.logger.debug("Actor is a vehicle, looking for initiative crew role.");
-    const crew = c.actor.getFlag("starwarsffg", "crew");
-    if (crew !== undefined && crew !== []) {
-      const initiativeCrew = crew.find((c) => c.role === "Pilot");
-      if (initiativeCrew) {
-        CONFIG.logger.debug("Found initiative crew role, swapping data to crew member");
-        const realActor = game.actors.get(initiativeCrew.actor_id);
-        if (realActor?.system) {
-          data = realActor.system;
-        }
-      }
-    } else {
+    const crew = c.actor.getFlag("starwarsffg", "crew") ?? [];
+    const initiativeCrew = crew.find((member) => member.role === "Pilot");
+    const realActor = initiativeCrew ? game.actors.get(initiativeCrew.actor_id) : undefined;
+    if (!realActor?.system) {
+      // a vehicle has no skills of its own, so without a pilot there is nothing to roll
       CONFIG.logger.warn("You must set a crew member with the pilot role to roll initiative for a vehicle");
+      ui.notifications.warn(game.i18n.localize("SWFFG.Crew.Initiative.NoPilot"));
+      return null;
     }
+    CONFIG.logger.debug("Found initiative crew role, swapping data to crew member");
+    data = realActor.system;
   }
   CONFIG.logger.debug("Finished checking");
   return data;
