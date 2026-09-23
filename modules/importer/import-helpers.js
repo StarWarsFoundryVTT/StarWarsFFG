@@ -3028,6 +3028,10 @@ export default class ImportHelpers {
   }
 
   static async getTemplate(type) {
+    // subtypes with a Data Model describe themselves; template.json no longer carries their fields
+    const model = CONFIG.Item.dataModels?.[type] ?? CONFIG.Actor.dataModels?.[type];
+    if (model) return model.cleanData({});
+
     const response = await fetch("systems/starwarsffg/template.json");
     const template = await response.json();
 

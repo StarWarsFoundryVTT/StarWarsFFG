@@ -6,10 +6,11 @@ import { ITEMS } from '../fixtures/documents';
  * Tests fixture vs system-produced data to identify harness drift
  */
 
-const UNDECLARED = {
-  '*': ['rarity.isrestricted'],
-  itemmodifier: ['active', 'rank_current'],
-};
+/**
+ * Fields a fixture may carry that no schema declares. Empty since the Item subtypes moved to
+ * Data Models, which drop what they do not declare - an entry here now means data being lost.
+ */
+const UNDECLARED = {};
 const SPURIOUS = ['collection'];
 
 /** Keys whose contents are a test's business, not the fixture's shape. */
