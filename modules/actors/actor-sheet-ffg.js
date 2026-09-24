@@ -366,6 +366,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       .filter(s => !data.data.skills[s].custom && !CONFIG.FFG.skills[s])
       .forEach(s => delete data.data.skills[s]);
 
+      // not carried by Data Model, so read off the actor itself
+      data.data.skilltypes = this.actor.system.skilltypes;
       data.data.skilllist = this._createSkillColumns(data);
     }
 
@@ -382,8 +384,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     data.modifierTypes = CONFIG.FFG.allowableModifierTypes;
     data.modifierChoices = CONFIG.FFG.allowableModifierChoices;
 
-    // Include active effects
-    data.effects = actorData.system.effects.map(EffectHelpers.transformEffects);
+    // read off AEs the actor rather than the copy above: prepareDerivedData
+    // builds this list, and a Data Model's toObject() carries only the fields it declares
+    data.effects = this.actor.system.effects.map(EffectHelpers.transformEffects);
 
     return data;
   }

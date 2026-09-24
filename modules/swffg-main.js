@@ -53,6 +53,8 @@ import SWAImporter from "./importer/swa-importer.js";
 import {CharacterCreator} from "./helpers/character-creator.js";
 import {xpLogUndo} from "./helpers/actor-helpers.js";
 import {register_system_tours} from "./helpers/tours.js";
+import {ITEM_DATA_MODELS} from "./data/items/index.js";
+import {ACTOR_DATA_MODELS} from "./data/actors/index.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -104,6 +106,10 @@ Hooks.once("init", async function () {
   CONFIG.Actor.documentClass = ActorFFG;
   CONFIG.Item.documentClass = ItemFFG;
   CONFIG.ActiveEffect.documentClass = ActiveEffectFFG;
+
+  // Subtypes describe themselves with Data Models rather than template.json
+  Object.assign(CONFIG.Item.dataModels, ITEM_DATA_MODELS);
+  Object.assign(CONFIG.Actor.dataModels, ACTOR_DATA_MODELS);
 
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee
