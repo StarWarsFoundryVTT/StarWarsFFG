@@ -245,39 +245,43 @@ test('two sources of boost dice both count', async ({ world, consumers }) => {
   });
 });
 
-// open bugs at the time of writing
-test.fixme('#2198 a force power granting Force dice adds one, not two', async ({ world, consumers }) => {
-  const ctx = await world.build({
-    actor: 'character',
-    item: 'forcepower',
-    attributes: [{
-      modtype: 'Force Boost',
-      mod: 'Athletics',
-      value: 1,
-    }],
-  });
-
-  // FIXME: #2198
-  expect(await consumers.skillModifier(ctx, 'Athletics', 'Force'), 'one rank, one die').toBe(1);
-  expect((await consumers.skillPool(ctx, 'Athletics')).force, 'and one in the pool').toBe(1);
+const forceBoost = (rating) => ({
+  actor: 'character',
+  item: 'forcepower',
+  attributes: [
+    { modtype: 'Stat', mod: 'ForcePool', value: rating },
+    { modtype: 'Force Boost', mod: 'Athletics', value: 1 },
+  ],
 });
 
-test.fixme('#2198 every die in the pool names a source that can be found', async ({ world, consumers }) => {
+test('#2198 a force power grants as many Force dice as the character has Force rating',
+  async ({ world, consumers }) => {
+    const ctx = await world.build(forceBoost(2));
+
+    // two, not one and not four: the rating decides, and it is counted once
+    expect(await consumers.skillModifier(ctx, 'Athletics', 'Force'), 'a die per rank').toBe(2);
+    expect((await consumers.skillPool(ctx, 'Athletics')).force, 'and the same in the pool').toBe(2);
+  });
+
+test('#2198 a force power grants no Force dice without a rating', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'forcepower',
-    attributes: [{
-      modtype: 'Force Boost',
-      mod: 'Athletics',
-      value: 1,
-    }],
+    attributes: [{ modtype: 'Force Boost', mod: 'Athletics', value: 1 }],
   });
+
+  expect(await consumers.skillModifier(ctx, 'Athletics', 'Force'), 'no rating, no dice').toBe(0);
+});
+
+test('#2198 every die in the pool names a source that can be found', async ({ world, consumers }) => {
+  const ctx = await world.build(forceBoost(1));
 
   const dice = await consumers.skillModifier(ctx, 'Athletics', 'Force');
   const sources = await consumers.skillSources(ctx, 'Athletics', 'Force');
   const accounted = sources.reduce((total, source) => total + source.value, 0);
 
-  // FIXME: #2198
+  // asserted outright, so that nothing granting no dice can satisfy the two below
+  expect(dice, 'the power granted a die to account for').toBe(1);
   expect(accounted, 'every die is accounted for by something the sheet can show').toBe(dice);
   expect(sources.map((source) => source.type), 'and it is the power that granted it')
     .toEqual([ctx.itemName]);
