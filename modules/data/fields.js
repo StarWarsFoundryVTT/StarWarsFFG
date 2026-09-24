@@ -46,11 +46,31 @@ export function keyedMap(initial = () => ({})) {
 }
 
 /**
+ * A keyed map whose defaults are merged back underneath whatever is stored.
+ *
+ * template.json used to deep-merge its own block under every document, which is how a partially
+ * filled map - a specialization holding only the talents its data defined, a character imported
+ * with only some skills - ended up with the rest of its slots. A plain ObjectField takes the
+ * stored value as it stands, so that has to happen here instead.
+ */
+class DefaultedObjectField extends fields.ObjectField {
+  /** @override */
+  _cleanType(value, options) {
+    const cleaned = super._cleanType(value, options);
+    return foundry.utils.mergeObject(this.getInitialValue({}), cleaned);
+  }
+}
+
+export function defaultedMap(initial) {
+  return new DefaultedObjectField({ required: true, initial: initial });
+}
+
+/**
  * The numbered slots a specialization, force power or signature ability is built from. Seeded
  * rather than left empty because the sheets render the slots with `{{#each}}`.
  */
 export function slotMap(prefix, count, value = () => ({})) {
-  return keyedMap(() => Object.fromEntries(Array.from({ length: count }, (_, i) => [`${prefix}${i}`, value()])));
+  return defaultedMap(() => Object.fromEntries(Array.from({ length: count }, (_, i) => [`${prefix}${i}`, value()])));
 }
 
 /**
@@ -58,4 +78,14 @@ export function slotMap(prefix, count, value = () => ({})) {
  */
 export function embeddedItems() {
   return new fields.ArrayField(new fields.ObjectField(), { required: true, initial: [] });
+}
+
+/**
+ * Tags and source books. The `meta_only` block in template.json, shared by Actors and Items.
+ */
+export function metadata() {
+  return new fields.SchemaField({
+    tags: new fields.ArrayField(new fields.StringField(), { required: true, initial: [] }),
+    sources: new fields.ArrayField(new fields.StringField(), { required: true, initial: [] }),
+  });
 }

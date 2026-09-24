@@ -13,7 +13,6 @@
   ],
 
   "everything": [
-    "template.json",
     "system.json",
     "tests/support/**",
     "tests/fixtures/**",

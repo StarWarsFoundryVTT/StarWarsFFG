@@ -3028,25 +3028,9 @@ export default class ImportHelpers {
   }
 
   static async getTemplate(type) {
-    // subtypes with a Data Model describe themselves; template.json no longer carries their fields
+    // every subtype is described by a Data Model, so its defaults come from the schema
     const model = CONFIG.Item.dataModels?.[type] ?? CONFIG.Actor.dataModels?.[type];
-    if (model) return model.cleanData({});
-
-    const response = await fetch("systems/starwarsffg/template.json");
-    const template = await response.json();
-
-    const obj = Object.values(template).find((i) => i.types.includes(type));
-
-    let item = obj[type];
-
-    if (item.templates) {
-      item.templates.forEach((i) => {
-        item = foundry.utils.mergeObject(item, obj.templates[i]);
-      });
-      delete item.templates;
-    }
-
-    return item;
+    return model ? model.cleanData({}) : {};
   }
 
   static async createActiveEffects(item) {

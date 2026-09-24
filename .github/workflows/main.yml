@@ -119,8 +119,7 @@ jobs:
                     LICENSE.txt                          \
                     README.md                            \
                     package.json                         \
-                    system.json                          \
-                    template.json
+                    system.json
                   # Don't forget to add a backslash at the end of the line for any
                   # additional files or directories!
 

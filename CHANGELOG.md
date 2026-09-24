@@ -56,7 +56,7 @@
   * A quality with more than one rank on a weapon or armor now gives the character every rank of it ([#2340](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2340))
   * Invalid JSON in the Custom Status Effects setting now only skips those statuses and warns once the world is up ([#2309](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2309))
   * A combatant added to an encounter already under way can roll initiative from its slot again ([#2335](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2335))
-  * Items now describe themselves with Foundry's Data Models instead of `template.json`, so the fields their sheets have always edited - a weapon's status and damage characteristic, a ship weapon's skill, a quality's rank and whether it is installed, a homestead upgrade's description and price - are part of the item's data rather than keys the system merely happened not to discard ([#2053](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2053))
+  * The system has been moved to [Data Models](https://foundryvtt.com/article/system-data-models/) ([#2053](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2053))
 
 `2.0.3`
 * Enhancements:

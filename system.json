@@ -15,6 +15,38 @@
   "socket": true,
   "packs": [],
   "packFolders": [],
+  "documentTypes": {
+    "Actor": {
+      "character": {},
+      "minion": {},
+      "vehicle": {},
+      "homestead": {},
+      "rival": {},
+      "nemesis": {}
+    },
+    "Item": {
+      "ability": {},
+      "armour": {},
+      "career": {},
+      "criticaldamage": {},
+      "criticalinjury": {},
+      "forcepower": {},
+      "gear": {},
+      "itemattachment": {},
+      "itemmodifier": {},
+      "talent": {},
+      "shipattachment": {},
+      "shipweapon": {},
+      "homesteadupgrade": {},
+      "signatureability": {},
+      "specialization": {},
+      "species": {},
+      "weapon": {},
+      "background": {},
+      "obligation": {},
+      "motivation": {}
+    }
+  },
   "languages": [
     {
       "lang": "en",
