@@ -295,7 +295,7 @@ test('#2201 an imported species modifier appears in the pool with its source nam
   expect(sources[0].type, 'and that place is the species').toBe(ctx.itemName);
 });
 
-test.fixme('#2073 a force rating from a specialization matches one from a talent', async ({ world, consumers }) => {
+test('#2073 a force rating from a specialization matches one from a talent', async ({ world, consumers }) => {
   const rating = {
     modtype: 'Stat',
     mod: 'ForcePool',
@@ -313,7 +313,6 @@ test.fixme('#2073 a force rating from a specialization matches one from a talent
     attributes: [rating],
   });
 
-  // FIXME: #2073
   expect(await consumers.stat(fromTalent, 'ForcePool'), 'one rating from the talent').toBe(1);
   expect(
     await consumers.stat(fromSpecialization, 'ForcePool'),

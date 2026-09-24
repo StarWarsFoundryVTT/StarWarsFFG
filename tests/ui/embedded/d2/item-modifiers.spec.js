@@ -65,12 +65,11 @@ test('removing a modifier removes its contribution', async ({ world, consumers }
   expect(await consumers.stat(ctx, 'Wounds'), 'wounds are lowered when removed').toBe(12);
 });
 
-test.fixme('a modifier with a rank applies once per rank', async ({ world, consumers }) => {
+test('a modifier with a rank applies once per rank', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character', item: 'armour', equipped: true,
     modifier: { name: 'qa wounds', key: 'Wounds', value: 1, rank: 2, active: true },
   });
 
-  // FIXME: this does actually fail in the UI - at least after the item is equipped/unequipped
   expect(await consumers.stat(ctx, 'Wounds'), 'two modifiers update wounds').toBe(12 + 2);
 });

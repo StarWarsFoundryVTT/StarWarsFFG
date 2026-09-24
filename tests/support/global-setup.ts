@@ -46,7 +46,9 @@ async function globalSetup(config: FullConfig) {
     console.log('[setup] already joined, skipping the join form');
   }
 
-  await expect(page.getByRole('textbox', { name: 'Chat' })).toBeVisible();
+  // The world can take far longer than the default expect timeout to come up after joining,
+  // so this waits on the same budget as the destiny tracker below rather than 5 seconds.
+  await expect(page.getByRole('textbox', { name: 'Chat' })).toBeVisible({ timeout: 30_000 });
   // the destiny tracker only exists once the system itself has booted, so it doubles as a "world
   // is ready" signal. Assert on the element rather than its text, which changes with the pool.
   await expect(page.locator('#destinyDark')).toBeVisible({ timeout: 30_000 });
