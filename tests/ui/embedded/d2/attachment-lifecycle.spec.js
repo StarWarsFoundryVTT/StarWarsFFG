@@ -1,6 +1,6 @@
 import {expect, test} from '../../../support/fixtures';
 
-test.fixme('an attachment on an unequipped item contributes nothing', async ({ world, consumers }) => {
+test('an attachment on an unequipped item contributes nothing', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
@@ -10,7 +10,6 @@ test.fixme('an attachment on an unequipped item contributes nothing', async ({ w
     itemOverrides: { soak: { value: 0, adjusted: 0 }, defence: { value: 0, adjusted: 0 } },
   });
 
-  // FIXME: currently fails since equipped items contribute bonuses until equipped and unequipped
   expect(await consumers.stat(ctx, 'Defence-Melee'), 'defence untouched').toBe(0);
 });
 

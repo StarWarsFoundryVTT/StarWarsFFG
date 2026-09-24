@@ -220,7 +220,7 @@ test('choosing a species grants its talents once, not twice', async ({ world, pa
   await creator.close(page);
 });
 
-test.fixme('#2164 choosing a career marks its career skills', async ({ world, page }) => {
+test('#2164 choosing a career marks its career skills', async ({ world, page }) => {
   const career = await world.addCreatorChoice({
     item: 'career',
     itemOverrides: {
@@ -232,7 +232,6 @@ test.fixme('#2164 choosing a career marks its career skills', async ({ world, pa
   await creator.selectCareer(page, career);
   world.track(await creator.tempActor(page));
 
-  // FIXME: #2164
   expect(await creator.careerSkill(page, 'Gunnery'), 'the listed skill').toBe(true);
   expect(await creator.careerSkill(page, 'Piloting: Space'), 'an unlisted one').toBe(false);
 

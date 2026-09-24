@@ -159,18 +159,15 @@ export class ItemFFG extends ItemBaseFFG {
               value: 0,
             });
           }
-        } else if (this.type === "career") {
-          for (let i = 0; i < 8; i++) {
+        } else if (["career", "specialization"].includes(this.type)) {
+          // ItemHelpers.itemUpdate fills these in on a sheet submit, but an item created through
+          // the API - an import, or the PC wizard's compendium - never sees one, and was left with
+          // eight placeholder changes that marked nothing (#2164)
+          const slots = this.type === "career" ? 8 : 5;
+          for (let i = 0; i < slots; i++) {
+            const skill = this.system.careerSkills?.[`careerSkill${i}`];
             effects.changes.push({
-              key: "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-              value: true,
-            });
-          }
-        } else if (this.type === "specialization") {
-          for (let i = 0; i < 5; i++) {
-            effects.changes.push({
-              key: "(none)",
+              key: skill && skill !== "(none)" ? `system.skills.${skill}.careerskill` : "(none)",
               mode: CONST.ACTIVE_EFFECT_MODES.ADD,
               value: true,
             });
