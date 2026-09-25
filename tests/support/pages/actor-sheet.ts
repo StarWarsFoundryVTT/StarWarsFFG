@@ -86,3 +86,17 @@ export async function sheetStat(
   const value = await input.inputValue();
   return value === '' ? null : Number(value);
 }
+
+/**
+ * The lines of the sources popup on a gear list value, e.g. "Superior: +1".
+ */
+export async function gearSources(page: Page, itemId: string, value: string): Promise<string[]> {
+  const cell = page.locator(
+    `li.item[data-item-id="${itemId}"]`
+  ).last().locator(
+    `.adjusted-value.hover[data-value="${value}"]`
+  );
+  if (!(await cell.count())) return [];
+
+  return cell.locator('.tooltip2 > div').allTextContents();
+}

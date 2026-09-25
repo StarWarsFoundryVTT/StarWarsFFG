@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import * as api from './api';
 import { nodeKeyFor, type Ctx } from './world';
-import { sheetStat } from './pages/actor-sheet';
+import { gearSources, sheetStat } from './pages/actor-sheet';
 
 /**
  * Reads the four places a modifier is supposed to show up.
@@ -81,6 +81,8 @@ const SKILL_MOD_PATH: Record<string, string> = {
 
 const ITEM_PATH: Record<string, string> = {
   'Soak': 'system.soak.adjusted',
+  // an item has one defence, whichever of the actor's two it ends up raising
+  'Defence': 'system.defence.adjusted',
   'Defence-Ranged': 'system.defence.adjusted',
   'Defence-Melee': 'system.defence.adjusted',
   'Encumbrance': 'system.encumbrance.adjusted',
@@ -168,6 +170,21 @@ export class Consumers {
       value: Number(entry?.value ?? 0),
       modtype: String(entry?.modtype ?? ''),
     }));
+  }
+
+  /**
+   * What the gear list on the actor sheet shows as responsible for one of an item's values.
+   *
+   * Read from the sheet rather than the document, because being shown there is the whole point of
+   * these sources - a row that renders them into the wrong place is the failure worth catching.
+   */
+  async gearSources(ctx: Ctx, key: string): Promise<string[]> {
+    if (!ctx.item) throw new Error('gearSources() needs a build that reached an item.');
+    const value = ITEM_PATH[key]?.split('.')[1];
+    if (!value) throw new Error(`No item value mapped for "${key}". Known: ${Object.keys(ITEM_PATH).join(', ')}.`);
+
+    await api.openSheet(this.page, ctx.actor);
+    return gearSources(this.page, ctx.item.split('.').pop() ?? '', value);
   }
 
   /** A skill's rank, or one of the dice modifiers stacked onto it. */
