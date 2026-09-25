@@ -174,11 +174,6 @@ export class ItemFFG extends ItemBaseFFG {
           }
         }
 
-        if (["armour", "weapon", "gear"].includes(this.type) && effects.name !== "(inherent)") {
-          CONFIG.logger.debug("Detected equippable item creation, suspending Active Effects");
-          effects.disabled = true;
-        }
-
         CONFIG.logger.debug(`Creating Active Effect for ${this.name}/${this.type} on item creation`);
         CONFIG.logger.debug(effects);
         this._inherentAECreation = this.createEmbeddedDocuments("ActiveEffect", [effects]);
