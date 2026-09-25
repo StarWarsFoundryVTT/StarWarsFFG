@@ -1,0 +1,11 @@
+{{!-- a gear list value, with a popup listing what modified it --}}
+<div class="adjusted-value{{#if sources}} hover{{/if}}" data-value="{{key}}">
+  {{#if label}}{{localize label}}{{else}}{{value}} {{#if show}}({{adjusted}}){{/if}}{{/if}}
+  {{#if sources}}
+  <div class="tooltip2">
+    {{#each sources as |source|}}
+    <div>{{source.name}}: {{source.value}}</div>
+    {{/each}}
+  </div>
+  {{/if}}
+</div>

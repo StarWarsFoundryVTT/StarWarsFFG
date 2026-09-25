@@ -33,9 +33,9 @@
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="{{ localize "SWFFG.Unequipped" }}"><i class="fas fa-fist-raised"></i></a>
         {{/if}}
       </div>
-      <div>{{item.system.damage.value}} {{#if (and (ne item.system.damage.value item.system.damage.adjusted) (or (gt item.system.damage.adjusted.length 0) (gt item.system.damage.adjusted 0)))}}({{item.system.damage.adjusted}}){{/if}}</div>
-      <div>{{localize item.system.range.label}}</div>
-      <div>{{item.system.crit.value}} {{#if (and (ne item.system.crit.value item.system.crit.adjusted) (or (gt item.system.crit.adjusted.length 0) (gt item.system.crit.adjusted 0)))}}({{item.system.crit.adjusted}}){{/if}}</div>
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="damage" value=item.system.damage.value adjusted=item.system.damage.adjusted show=(and (ne item.system.damage.value item.system.damage.adjusted) (or (gt item.system.damage.adjusted.length 0) (gt item.system.damage.adjusted 0))) sources=item.system.damage.sources)}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="range" label=item.system.range.label sources=item.system.range.sources)}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="crit" value=item.system.crit.value adjusted=item.system.crit.adjusted show=(and (ne item.system.crit.value item.system.crit.adjusted) (or (gt item.system.crit.adjusted.length 0) (gt item.system.crit.adjusted 0))) sources=item.system.crit.sources)}}
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>
@@ -75,9 +75,9 @@
         <a class="toggle-equipped" data-item-id="{{item._id}}" title="Equipped"><i class="fas fa-shield-alt"></i></a>
         {{/if}}
       </div>
-      <div>{{item.system.defence.value}} {{#if (and (ne item.system.defence.value item.system.defence.adjusted) (or (gt item.system.defence.adjusted.length 0) (gt item.system.defence.adjusted 0)))}}({{item.system.defence.adjusted}}){{/if}}</div>
-      <div>{{item.system.soak.value}} {{#if (and (ne item.system.soak.value item.system.soak.adjusted) (or (gt item.system.soak.adjusted.length 0) (gt item.system.soak.adjusted 0)))}}({{item.system.soak.adjusted}}){{/if}}</div>
-      <div>{{item.system.hardpoints.value}} {{#if (and (ne item.system.hardpoints.adjusted item.system.hardpoints.current) (or (gt item.system.hardpoints.current.length 0) (gt item.system.hardpoints.current 0)))}}({{item.system.hardpoints.current}}){{/if}}</div>
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="defence" value=item.system.defence.value adjusted=item.system.defence.adjusted show=(and (ne item.system.defence.value item.system.defence.adjusted) (or (gt item.system.defence.adjusted.length 0) (gt item.system.defence.adjusted 0))) sources=item.system.defence.sources)}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="soak" value=item.system.soak.value adjusted=item.system.soak.adjusted show=(and (ne item.system.soak.value item.system.soak.adjusted) (or (gt item.system.soak.adjusted.length 0) (gt item.system.soak.adjusted 0))) sources=item.system.soak.sources)}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="hardpoints" value=item.system.hardpoints.value adjusted=item.system.hardpoints.current show=(and (ne item.system.hardpoints.adjusted item.system.hardpoints.current) (or (gt item.system.hardpoints.current.length 0) (gt item.system.hardpoints.current 0))) sources=item.system.hardpoints.sources)}}
       <!-- <div>{{item.system.encumbrance.value}}</div> -->
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
@@ -154,9 +154,9 @@
       <div class="skill-roll">
         <div class="roll-button"><div class="skill-label rollable">{{#with (lookup ../this.FFG.skills item.system.skill.value)}}{{localize this.abrev}}{{/with}}</div></div>
       </div>
-      <div>{{item.system.damage.value}} {{#if (and (ne item.system.damage.value item.system.damage.adjusted) (or (gt item.system.damage.adjusted.length 0) (gt item.system.damage.adjusted 0)))}}({{item.system.damage.adjusted}}){{/if}}</div>
-      <div>{{localize item.system.range.label}}</div>
-      <div>{{item.system.crit.value}} {{#if (and (ne item.system.crit.value item.system.crit.adjusted) (or (gt item.system.crit.adjusted.length 0) (gt item.system.crit.adjusted 0)))}}({{item.system.crit.adjusted}}){{/if}}</div>
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="damage" value=item.system.damage.value adjusted=item.system.damage.adjusted show=(and (ne item.system.damage.value item.system.damage.adjusted) (or (gt item.system.damage.adjusted.length 0) (gt item.system.damage.adjusted 0))) sources=item.system.damage.sources)}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="range" label=item.system.range.label sources=item.system.range.sources)}}
+      {{> "systems/starwarsffg/templates/parts/actor/ffg-adjusted-value.html" (object key="crit" value=item.system.crit.value adjusted=item.system.crit.adjusted show=(and (ne item.system.crit.value item.system.crit.adjusted) (or (gt item.system.crit.adjusted.length 0) (gt item.system.crit.adjusted 0))) sources=item.system.crit.sources)}}
       <div class="item-controls">
         <a class="item-control item-edit" title="Edit Item"><i class="fas fa-edit"></i></a>
         <a class="item-control item-delete" title="Delete Item"><i class="fas fa-trash"></i></a>

@@ -2467,6 +2467,16 @@ img {
   text-align: center;
 }
 
+/* a modified value in the gear lists anchors its own sources popup, which stays out of the way of clicks */
+.starwarsffg .adjusted-value {
+  position: relative;
+}
+
+.starwarsffg .adjusted-value .tooltip2 {
+  pointer-events: none;
+  text-align: left;
+}
+
 .starwarsffg .items .items-list .item:hover {
   background: rgba(25, 24, 19, 0.12);
 }
