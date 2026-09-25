@@ -4,7 +4,7 @@ import { test, expect } from '../../../support/fixtures';
  * Armour and weapons only contribute while equipped, and stop contributing when unequipped.
  */
 
-test.fixme('armour soak and defence apply only while equipped', async ({ world, consumers }) => {
+test('armour soak and defence apply only while equipped', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
@@ -16,7 +16,6 @@ test.fixme('armour soak and defence apply only while equipped', async ({ world, 
     },
   });
 
-  // FIXME: these two items currently fail since AEs apply when an item is added, regardless of equip state
   expect(await consumers.stat(ctx, 'Soak'), 'soak is unchanged when item is unequipped').toBe(3);
   expect(await consumers.stat(ctx, 'Defence-Ranged'), 'defense is unchanged when item is unequipped').toBe(0);
 

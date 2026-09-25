@@ -57,6 +57,7 @@
   * Invalid JSON in the Custom Status Effects setting now only skips those statuses and warns once the world is up ([#2309](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2309))
   * A combatant added to an encounter already under way can roll initiative from its slot again ([#2335](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2335))
   * The system has been moved to [Data Models](https://foundryvtt.com/article/system-data-models/) ([#2053](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2053))
+  * AEs from weapons and armor should now sync properly on first use ([#2363](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2363))
 
 `2.0.3`
 * Enhancements:
