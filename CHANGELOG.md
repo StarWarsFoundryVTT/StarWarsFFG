@@ -58,6 +58,7 @@
   * A combatant added to an encounter already under way can roll initiative from its slot again ([#2335](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2335))
   * The system has been moved to [Data Models](https://foundryvtt.com/article/system-data-models/) ([#2053](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2053))
   * AEs from weapons and armor should now sync properly on first use ([#2363](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2363))
+  * A modifier added directly to a weapon or armor now shows in the values on its own sheet ([#2360](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2360))
 
 `2.0.3`
 * Enhancements:

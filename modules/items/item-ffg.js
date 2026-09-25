@@ -304,6 +304,12 @@ export class ItemFFG extends ItemBaseFFG {
     const fromAttachment = (attachment, modifications, key, modtype) =>
       ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, modifications, key, modtype, true).total;
 
+    // a modifier set directly on the item counts regardless of if the item is on an actor
+    const fromSelf = (key, modtype) => parseInt(
+      ModifierHelpers.getCalculatedValueFromCurrentAndArray(this, [], key, modtype),
+      10
+    ) || 0;
+
     // perform localisation of dynamic values
     switch (this.type) {
       case "weapon":
@@ -330,12 +336,14 @@ export class ItemFFG extends ItemBaseFFG {
 
         // range is a rung on a ladder, not a number, so every source's steps are summed here and
         // walked up the band once, below
-        let rangeSteps = 0;
-        for (const attr of Object.values(data.attributes ?? {})) {
-          if (attr?.modtype === "Weapon Stat" && attr?.mod === "range") {
-            rangeSteps += parseInt(attr.value, 10) || 0;
-          }
-        }
+        let rangeSteps = fromSelf("range", "Weapon Stat");
+
+        data.damage.adjusted += fromSelf("damage", "Weapon Stat");
+        data.crit.adjusted += fromSelf("critical", "Weapon Stat");
+        data.encumbrance.adjusted += fromSelf("encumbrance", "Weapon Stat");
+        data.price.adjusted += fromSelf("price", "Weapon Stat");
+        data.rarity.adjusted += fromSelf("rarity", "Weapon Stat");
+        data.hardpoints.adjusted += fromSelf("hardpoints", "Weapon Stat");
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
@@ -399,22 +407,8 @@ export class ItemFFG extends ItemBaseFFG {
           data.range.adjusted = rangeBands[newRange].value;
         }
 
-        if (this.isEmbedded && this.actor) {
-          let damageAdd = 0;
-          for (let attr in data.attributes) {
-            if (data.attributes[attr].mod === "damage" && data.attributes[attr].modtype === "Weapon Stat") {
-              damageAdd += parseInt(data.attributes[attr].value, 10);
-            }
-          }
-          if (this.actor.type !== "vehicle") {
-            if (ModifierHelpers.shouldApplyCharacteristicToDamage(data)) {
-              const extraDamage = parseInt(actor.system.characteristics[data.characteristic.value].value, 10) + damageAdd;
-              data.damage.adjusted += extraDamage;
-            } else {
-              data.damage.value = parseInt(data.damage.value, 10);
-              data.damage.adjusted += damageAdd;
-            }
-          }
+        if (this.isEmbedded && this.actor && this.actor.type !== "vehicle" && ModifierHelpers.shouldApplyCharacteristicToDamage(data)) {
+          data.damage.adjusted += parseInt(actor.system.characteristics[data.characteristic.value].value, 10);
         }
 
         const rangeLabel = (this.type === "weapon" ? `SWFFG.WeaponRange` : `SWFFG.VehicleRange`) + this._capitalize(data.range.adjusted);
@@ -437,6 +431,13 @@ export class ItemFFG extends ItemBaseFFG {
         data.hardpoints.adjusted = parseInt(data.hardpoints.value, 10);
 
         data.adjusteditemmodifier = [];
+
+        data.soak.adjusted += fromSelf("soak", "Armor Stat") + fromSelf("Soak", "Stat");
+        data.defence.adjusted += fromSelf("defence", "Armor Stat");
+        data.encumbrance.adjusted += fromSelf("encumbrance", "Armor Stat") + fromSelf("Encumbrance", "Stat");
+        data.price.adjusted += fromSelf("price", "Armor Stat");
+        data.rarity.adjusted += fromSelf("rarity", "Armor Stat");
+        data.hardpoints.adjusted += fromSelf("hardpoints", "Armor Stat");
 
         if (data?.itemmodifier) {
           data.itemmodifier.forEach((modifier) => {
@@ -490,35 +491,6 @@ export class ItemFFG extends ItemBaseFFG {
           });
         }
 
-        if (this.isEmbedded && this.actor && this.actor.system) {
-          let soakAdd = 0, defenceAdd = 0, encumbranceAdd = 0;
-          for (let attr in data.attributes) {
-            let modtype = data.attributes[attr].modtype;
-            if (modtype === "Armor Stat" || modtype === "Stat" || modtype === "Stat All") {
-              switch (data.attributes[attr].mod.toLocaleLowerCase()) {
-                case "soak":
-                  soakAdd += parseInt(data.attributes[attr].value, 10);
-                  break;
-                case "defence":
-                  defenceAdd += parseInt(data.attributes[attr].value, 10);
-                  break;
-                case "encumbrance":
-                  encumbranceAdd += parseInt(data.attributes[attr].value, 10);
-                  break;
-                default:
-                  break;
-              }
-            }
-          }
-          if (this.actor.type !== "vehicle") {
-            data.soak.value = parseInt(data.soak.value, 10);
-            data.soak.adjusted += soakAdd;
-            data.defence.value = parseInt(data.defence.value, 10);
-            data.defence.adjusted += defenceAdd;
-            data.encumbrance.value = parseInt(data.encumbrance.value, 10);
-            data.encumbrance.adjusted += encumbranceAdd;
-          }
-        }
         break;
       case "talent":
         const cleanedActivationName = data.activation.value.replace(/[\W_]+/g, "");
