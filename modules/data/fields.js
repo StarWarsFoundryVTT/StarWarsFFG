@@ -57,6 +57,8 @@ class DefaultedObjectField extends fields.ObjectField {
   /** @override */
   _cleanType(value, options) {
     const cleaned = super._cleanType(value, options);
+    // an update diff holds only the changed keys; filling in defaults would overwrite the rest
+    if (options.partial) return cleaned;
     return foundry.utils.mergeObject(this.getInitialValue({}), cleaned);
   }
 }

@@ -100,3 +100,19 @@ export async function gearSources(page: Page, itemId: string, value: string): Pr
 
   return cell.locator('.tooltip2 > div').allTextContents();
 }
+
+/**
+ * Type a rank into a skill's row, as a player editing the sheet would.
+ */
+export async function setSkillRank(page: Page, windowId: string, skill: string, rank: number): Promise<void> {
+  const field = page.locator(`#${windowId} [name="data.skills.${skill}.rank"]`).first();
+  await field.fill(String(rank));
+  await field.blur();
+}
+
+/**
+ * Tick or clear a minion's group skill box.
+ */
+export async function setGroupSkill(page: Page, windowId: string, skill: string, checked: boolean): Promise<void> {
+  await page.locator(`#${windowId} [name="data.skills.${skill}.groupskill"]`).first().setChecked(checked);
+}
