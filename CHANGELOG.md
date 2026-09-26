@@ -38,7 +38,6 @@
   * Ship weapons can be dragged from one vehicle to another, and weapons, armor, gear, and ship weapons dragged off an actor sheet can now be dropped onto folders and compendiums as well ([#2257](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2257))
   * Modifiers installed on armor or weapons now reach the character carrying them, instead of going inert the moment the item is equipped ([#2281](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2281))
   * The built-in Pilot crew role picks its piloting skill from the skills in the active skill theme, so it keeps working on custom themes instead of showing "(broken role)" ([#2282](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2282))
-  * Editing one skill on an actor sheet no longer resets every other skill, and minion skill ranks hold after leaving edit mode, instead of reverting to their defaults ([#2373](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2373))
   * Every modifier that increases a weapon's range now counts ([#2290](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2290))
   * Qualities granted by more than one attachment now add up their ranks ([#2291](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2291))
   * A quality that raises armor's soak now shows up in the soak on the armor's own sheet, not just on the character ([#2292](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2292))
