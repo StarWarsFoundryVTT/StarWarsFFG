@@ -97,12 +97,12 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: true,
         });
       }
       if (itemEffect) {
-        await itemEffect.update({changes: changes});
+        await itemEffect.update({"system.changes": changes});
       }
     } else if (this.object.type === "specialization") {
       // apply career skills from Careers
@@ -119,12 +119,12 @@ export default class ItemHelpers {
         }
         changes.push({
           key: path,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: true,
         });
       }
       if (itemEffect) {
-        await itemEffect.update({changes: changes});
+        await itemEffect.update({"system.changes": changes});
       }
     }
   }
@@ -285,7 +285,7 @@ export default class ItemHelpers {
             CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
             // keep every change on the effect - some mods (e.g., Defence) explode into several
             await matchingEffect.update({
-              "changes": matchingEffect.changes.map(change => ({...change, value: newValue})),
+              "system.changes": matchingEffect.system.changes.map(change => ({...change, value: newValue})),
             });
           }
         }
@@ -315,13 +315,13 @@ export default class ItemHelpers {
         updatedEncumbrance = realEncumbrance;
       }
       CONFIG.logger.debug(`Original encumbrance: ${realEncumbrance}, new encumbrance: ${updatedEncumbrance}`);
-      for (const change of activeEffect.changes) {
+      for (const change of activeEffect.system.changes) {
         if (change.key === encumbranceModPath) {
           change.value = updatedEncumbrance;
           break;
         }
       }
-      await activeEffect.update({changes: activeEffect.changes});
+      await activeEffect.update({"system.changes": activeEffect.system.changes});
     }
   }
 

@@ -547,7 +547,7 @@ export class ActorFFG extends Actor {
     // handle direct active effects - which only come from statuses
     const actorActiveEffects = actorData.getEmbeddedCollection("ActiveEffect");
     for (const effect of actorActiveEffects) {
-      for (const change of effect.changes) {
+      for (const change of effect.system.changes) {
         if (change.key.includes("system.skills")) {
           const skillName = change.key.split('.')[2].capitalize();
           const skillMod = change.key.split('.')[3];
@@ -583,7 +583,7 @@ export class ActorFFG extends Actor {
       const itemActiveEffects = item.getEmbeddedCollection("ActiveEffect");
       for (const effect of itemActiveEffects) {
         if (!effect.disabled) {
-          for (const change of effect.changes) {
+          for (const change of effect.system.changes) {
             if (change.key.includes("system.skills")) {
               // system.skills.Astrogation.value
               const skillName = change.key.split('.')[2].capitalize();
@@ -722,24 +722,27 @@ export class ActorFFG extends Actor {
   }
 
   /** @override **/
-  applyActiveEffects() {
-    // collect force pool modifications since it appears the stat value is without AEs active
-    let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
-    for (const effect of this.allApplicableEffects()) {
-      for (const change of effect.changes) {
-        if (change.key === "system.stats.forcePool.max") {
-          maxForceRating += parseInt(change.value);
+  applyActiveEffects(phase) {
+    // the force adjustment only needs to happen once, before the first phase applies anything
+    if (phase === "initial") {
+      // collect force pool modifications since it appears the stat value is without AEs active
+      let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
+      for (const effect of this.allApplicableEffects()) {
+        for (const change of effect.system.changes) {
+          if (change.key === "system.stats.forcePool.max") {
+            maxForceRating += parseInt(change.value);
+          }
+        }
+      }
+      // apply the resulting value (minus any committed dice)
+      for (const effect of this.allApplicableEffects()) {
+        for (const change of effect.system.changes) {
+          if (change.key.includes("system.skills") && change.key.includes(".force")) {
+            change.value = Math.max(maxForceRating - parseInt(this.system?.stats?.forcePool?.value), 0);
+          }
         }
       }
     }
-    // apply the resulting value (minus any committed dice)
-    for (const effect of this.allApplicableEffects()) {
-      for (const change of effect.changes) {
-        if (change.key.includes("system.skills") && change.key.includes(".force")) {
-          change.value = Math.max(maxForceRating - parseInt(this.system?.stats?.forcePool?.value), 0);
-        }
-      }
-    }
-    return super.applyActiveEffects();
+    return super.applyActiveEffects(phase);
   }
 }

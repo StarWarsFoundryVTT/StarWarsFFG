@@ -43,15 +43,15 @@ export class ActiveEffectFFG extends ActiveEffect {
    * exception - carrying something is what makes it encumbering in the first place
    * @override
    */
-  apply(doc, change, ...args) {
+  shouldApplyChange(change, options) {
     const item = this.parent;
     if (
       equipGatedTypes.includes(item?.type) &&
       !item.system?.equippable?.equipped &&
       change.key !== ModifierHelpers.getModKeyPath("Stat", "Encumbrance")
     ) {
-      return {};
+      return false;
     }
-    return super.apply(doc, change, ...args);
+    return super.shouldApplyChange(change, options);
   }
 }

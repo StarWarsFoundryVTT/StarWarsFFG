@@ -160,7 +160,7 @@ export default class DestinyTracker extends FormApplication {
       }
 
       ChatMessage.create({
-        user: game.user.id,
+        author: game.user.id,
         content: messageText,
       });
     });
@@ -169,7 +169,8 @@ export default class DestinyTracker extends FormApplication {
     $(".ffg-destiny-roll").on("click", this.OnClickRollDestiny.bind(this));
 
     // setup chat hook for destiny roll
-    Hooks.on("renderChatMessage", (app, html, messageData) => {
+    Hooks.on("renderChatMessageHTML", (app, element, messageData) => {
+      const html = $(element);
       html.on("click", ".ffg-destiny-roll", this.OnClickRollDestiny.bind(this));
     });
 
@@ -307,7 +308,7 @@ export default class DestinyTracker extends FormApplication {
 
     const roll = new game.ffg.RollFFG(pool.renderDiceExpression());
     await roll.toMessage({
-      user: game.user.id,
+      author: game.user.id,
       flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize("SWFFG.DestinyPool")}...`,
     });
 

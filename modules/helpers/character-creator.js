@@ -1212,7 +1212,7 @@ export class CharacterCreator extends HandlebarsApplicationMixin(ApplicationV2) 
         name: nk,
         changes: [{
           key: `system.skills.${skillPurchase}.rank`,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: 1,
         }],
       };

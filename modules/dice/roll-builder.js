@@ -144,7 +144,7 @@ export default class RollBuilderFFG extends FormApplication {
                 };
               }
             }
-            setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
+            foundry.utils.setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
             entity.update(entityData);
           }
         }
@@ -215,7 +215,7 @@ export default class RollBuilderFFG extends FormApplication {
         </div>`;
 
         let chatOptions = {
-          user: game.user.id,
+          author: game.user.id,
           content: messageText,
           flags: {
             starwarsffg: {
@@ -241,7 +241,7 @@ export default class RollBuilderFFG extends FormApplication {
           await this.roll.item.update({"flags": {"starwarsffg": {"crew": this.roll.item.crew}}})
         }
         await roll.toMessage({
-          user: game.user.id,
+          author: game.user.id,
           speaker: {
             actor: game.actors.get(this.roll.data?.actor?._id),
             alias: this.roll.data?.token?.name,

@@ -501,23 +501,23 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     let contextMenuOptions = [
       {
-        name: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
+        label: game.i18n.localize("SWFFG.SkillChangeCharacteristicContextItem"),
         icon: '<i class="fas fa-wrench"></i>',
-        callback: (li) => {
+        onClick: (event, li) => {
           this._onChangeSkillCharacteristic(li);
         },
       },
       {
-        name: game.i18n.localize("SWFFG.SkillAddAsInitiative"),
+        label: game.i18n.localize("SWFFG.SkillAddAsInitiative"),
         icon: '<i class="fas fa-cog"></i>',
-        callback: (li) => {
+        onClick: (event, li) => {
           this._onInitiativeSkill(li);
         },
       },
       {
-        name: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
+        label: game.i18n.localize("SWFFG.SkillRemoveContextItem"),
         icon: '<i class="fas fa-times"></i>',
-        callback: async (li) => {
+        onClick: async (event, li) => {
           await this._onRemoveSkill(li);
         },
       },
@@ -526,9 +526,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     if (this.actor.type === "character") {
       contextMenuOptions.push(
         {
-          name: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
+          label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.SkillRank.ContextMenuText"),
           icon: '<i class="fa-regular fa-circle-up"></i>',
-          callback: (li) => {
+          onClick: (event, li) => {
             if(!this.actor.verifyEditModeIsNotEnabled()) return false;
             this._buySkillRank(li);
           },
@@ -566,9 +566,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     new foundry.applications.ux.ContextMenu(htmlElement, "div.skillsHeader", [
       {
-        name: game.i18n.localize("SWFFG.SkillAddContextItem"),
+        label: game.i18n.localize("SWFFG.SkillAddContextItem"),
         icon: '<i class="fas fa-plus-circle"></i>',
-        callback: (li) => {
+        onClick: (event, li) => {
           this._onCreateSkill(li);
         },
       },
@@ -590,18 +590,18 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     // Send Item Details to chat.
 
     const sendToChatContextItem = {
-      name: game.i18n.localize("SWFFG.SendToChat"),
+      label: game.i18n.localize("SWFFG.SendToChat"),
       icon: '<i class="far fa-comment"></i>',
-      callback: (el) => {
+      onClick: (event, el) => {
         let itemId = el.getAttribute("data-item-id");
         this._itemDetailsToChat(itemId);
       },
     };
 
     const rollForceToChatContextItem = {
-      name: game.i18n.localize("SWFFG.SendForceRollToChat"),
+      label: game.i18n.localize("SWFFG.SendForceRollToChat"),
       icon: '<i class="fas fa-dice-d20"></i>',
-      callback: async (el) => {
+      onClick: async (event, el) => {
         let itemId = el.getAttribute("data-item-id");
         let item = this.actor.items.get(itemId);
         if (!item) {
@@ -1492,7 +1492,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const a = event.currentTarget;
       const form = this.form;
 
-      const nk = randomID();
+      const nk = foundry.utils.randomID();
       let newKey = document.createElement("div");
       newKey.innerHTML = `<input type="text" name="data.dutylist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.dutylist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
       form.appendChild(newKey);
@@ -1671,8 +1671,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      author: game.user.id,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.actor.id,
@@ -1701,8 +1701,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     const html = await foundry.applications.handlebars.renderTemplate(template, { itemDetails, item });
 
     const messageData = {
-      user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      author: game.user.id,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.actor.id,
@@ -1743,7 +1743,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
               let updateData = {};
-              setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
+              foundry.utils.setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
 
               this.object.update(updateData);
             },
@@ -1877,12 +1877,12 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       changes: [
         {
           key: boughtPath,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: boughtValue,
         },
         {
           key: "system.experience.available",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: spentXP * -1,
         }
       ],
@@ -1892,7 +1892,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     if (boughtPath === "system.characteristics.Brawn.value") {
       effects.changes.push({
         key: "system.stats.soak.value",
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: 1,
       });
     }

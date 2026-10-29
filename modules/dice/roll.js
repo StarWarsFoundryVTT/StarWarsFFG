@@ -342,22 +342,21 @@ export class RollFFG extends Roll {
 
   /* -------------------------------------------- */
   /** @override */
-  async toMessage(messageData = {}, { rollMode = null, create = true } = {}) {
+  async toMessage(messageData = {}, { messageMode = null, rollMode = null, create = true } = {}) {
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated) await this.evaluate();
 
-    const rMode = rollMode || messageData.rollMode || game.settings.get("core", "rollMode");
-
-    if (["gmroll", "blindroll"].includes(rMode)) {
-      messageData.whisper = ChatMessage.getWhisperRecipients("GM");
-    }
-    if (rMode === "blindroll") messageData.blind = true;
-    if (rMode === "selfroll") messageData.whisper = [game.user.id];
+    // legacy rollMode values (e.g. "gmroll") still come from older callers and modules
+    const legacyMode = rollMode || messageData.rollMode;
+    if (!messageMode && legacyMode) messageMode = Roll._mapLegacyRollMode(legacyMode);
+    messageMode ||= messageData.messageMode || game.settings.get("core", "messageMode");
+    delete messageData.rollMode;
+    delete messageData.messageMode;
 
     // Prepare chat data
     messageData = foundry.utils.mergeObject(
       {
-        user: game.user.id,
+        author: game.user.id,
         content: this.total,
         sound: CONFIG.sounds.dice,
       },
@@ -370,7 +369,7 @@ export class RollFFG extends Roll {
     // Either create the message or just return the chat data
     const cls = getDocumentClass("ChatMessage");
     const msg = new cls(messageData);
-    if (rMode) msg.applyRollMode(rMode);
+    msg.applyMode(messageMode);
 
     // Either create or return the data
     return create ? await cls.create(msg) : msg;

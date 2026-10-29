@@ -14,7 +14,7 @@ export class AdversarySheetFFG extends ActorSheetFFG {
 
   /** @override */
   static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
+    return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["starwarsffg", "sheet", "actor", "adversary"],
       template: "systems/starwarsffg/templates/actors/ffg-adversary-sheet.html",
       width: 710,

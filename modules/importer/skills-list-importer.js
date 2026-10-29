@@ -73,7 +73,7 @@ export default class SkillListImporter extends FormApplication {
 
       // Trigger file save procedure
       const filename = `swffg-skilltheme-${skilltheme.replace(/\s/g, "_")}.json`;
-      saveDataToFile(JSON.stringify(data, null, 2), "text/json", filename);
+      foundry.utils.saveDataToFile(JSON.stringify(data, null, 2), "text/json", filename);
     });
 
     html.find(".dialog-button").on("click", async (event) => {
@@ -83,7 +83,7 @@ export default class SkillListImporter extends FormApplication {
 
         const form = html[0];
         if (!form.data.files.length) return ui.notifications.error("You did not upload a data file!");
-        const text = await readTextFromFile(form.data.files[0]);
+        const text = await foundry.utils.readTextFromFile(form.data.files[0]);
 
         let currentSkillList = await game.settings.get("starwarsffg", "arraySkillList");
 

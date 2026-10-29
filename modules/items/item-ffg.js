@@ -104,7 +104,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                type: "add",
                 value: this.system.attributes[attribute].value,
               });
             }
@@ -121,7 +121,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              type: "add",
               value: 0,
             });
           }
@@ -138,7 +138,7 @@ export class ItemFFG extends ItemBaseFFG {
               );
               effects.changes.push({
                 key: path,
-                mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+                type: "add",
                 value: 0,
               });
             }
@@ -155,7 +155,7 @@ export class ItemFFG extends ItemBaseFFG {
             );
             effects.changes.push({
               key: path,
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              type: "add",
               value: 0,
             });
           }
@@ -168,7 +168,7 @@ export class ItemFFG extends ItemBaseFFG {
             const skill = this.system.careerSkills?.[`careerSkill${i}`];
             effects.changes.push({
               key: skill && skill !== "(none)" ? `system.skills.${skill}.careerskill` : "(none)",
-              mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+              type: "add",
               value: true,
             });
           }
@@ -203,14 +203,14 @@ export class ItemFFG extends ItemBaseFFG {
       CONFIG.logger.debug("Unable to locate any inherent effect. This may be expected.");
     }
     if (itemEffect && Object.keys(changed).includes("system") && Object.keys(changed.system).includes("attributes")) {
-      const newChanges = foundry.utils.deepClone(itemEffect.changes);
+      const newChanges = foundry.utils.deepClone(itemEffect.system.changes);
       for (const updateKey of Object.keys(changed.system.attributes)) {
         const existingChange = newChanges.find(c => c.key.startsWith(`system.attributes.${updateKey}`));
         if (existingChange) {
           existingChange.value = parseInt(changed.system.attributes[updateKey].value);
         }
       }
-      await itemEffect.update({changes: newChanges});
+      await itemEffect.update({"system.changes": newChanges});
     }
 
     // iterate over the changed data to look for any changes to attributes
@@ -228,7 +228,7 @@ export class ItemFFG extends ItemBaseFFG {
         for (const curMod of explodedMods) {
           changes.push({
             key: ModifierHelpers.getModKeyPath(curMod['modType'], curMod['mod']),
-            mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+            type: "add",
             value: attr?.value,
           });
         }

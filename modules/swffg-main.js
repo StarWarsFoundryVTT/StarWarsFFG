@@ -111,10 +111,6 @@ Hooks.once("init", async function () {
   Object.assign(CONFIG.Item.dataModels, ITEM_DATA_MODELS);
   Object.assign(CONFIG.Actor.dataModels, ACTOR_DATA_MODELS);
 
-  // we do not want the legacy active effect transfer mode
-  // also, reeeeeeeeeeeeeeeee
-  CONFIG.ActiveEffect.legacyTransferral = false;
-
   // Define custom Roll class
   CONFIG.Dice.rolls.push(CONFIG.Dice.rolls[0]);
   CONFIG.Dice.rolls[0] = RollFFG;
@@ -695,22 +691,22 @@ Hooks.once("init", async function () {
     for (const skill of Object.keys(CONFIG.FFG.skills)) {
       allSkillChanges['boost'].push({
         key: `system.skills.${skill}.boost`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
       allSkillChanges['setback'].push({
         key: `system.skills.${skill}.setback`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
       allSkillChanges['upgrade'].push({
         key: `system.skills.${skill}.upgrades`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
       allSkillChanges['success'].push({
         key: `system.skills.${skill}.success`,
-        mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+        type: "add",
         value: "1",
       });
     }
@@ -768,12 +764,12 @@ Hooks.once("init", async function () {
       changes: [
         {
           key: "system.stats.defence.melee",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: "2",
         },
         {
           key: "system.stats.defence.ranged",
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          type: "add",
           value: "2",
         },
       ],
@@ -1091,7 +1087,8 @@ Hooks.on("renderCompendiumDirectory", (app, html, data) => {
 });
 
 // Update chat messages with dice images
-Hooks.on("renderChatMessage", async (app, html, messageData) => {
+Hooks.on("renderChatMessageHTML", async (app, element, messageData) => {
+  const html = $(element);
   const content = html.find(".message-content");
   content[0].innerHTML = await PopoutEditor.renderDiceImages(content[0].innerHTML);
 
@@ -1499,7 +1496,7 @@ Hooks.once("ready", async () => {
         CONFIG.FFG.DestinyGM = game.user.id;
 
         ChatMessage.create({
-          user: game.user.id,
+          author: game.user.id,
           content: messageText,
         });
       },
@@ -1555,11 +1552,11 @@ Hooks.once("ready", async () => {
     Hooks.on("updateActiveEffect", function(effect, changes) {
         const counterValue = foundry.utils.getProperty(changes, "flags.statuscounter.counter.value");
         if (counterValue) {
-          for (const change of effect.changes) {
+          for (const change of effect.system.changes) {
             change['value'] = counterValue;
           }
         }
-        effect.update({changes: effect.changes});
+        effect.update({"system.changes": effect.system.changes});
     });
   }
 

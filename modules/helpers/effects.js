@@ -1,37 +1,36 @@
 export default class EffectHelpers {
 
-  // Lookup mode name from int
-  static MODES = Object.fromEntries(
-    Object.entries(CONST.ACTIVE_EFFECT_MODES).map(
-      ([key, value]) => [value, key])
-    );
-
   // Map effects from EmbeddedCollection
   static transformEffects(originalEffect, _iterator, _effects) {
-    let effect = structuredClone(originalEffect);
-
-    // Copy properties we need from the prototype
-    effect.id = originalEffect.id;
-    effect.parentName = originalEffect.parent.name;
-    effect.active = originalEffect.active;
+    // v14 keeps changes under system.changes, which structuredClone does not reach through the document
+    const effect = {
+      id: originalEffect.id,
+      name: originalEffect.name,
+      parentName: originalEffect.parent.name,
+      active: originalEffect.active,
+      changes: foundry.utils.deepClone(originalEffect.system.changes ?? []),
+    };
 
     // Convert duration to string
-    if (effect.duration.combat) {
+    const duration = originalEffect.duration;
+    const durationUnitLabels = {
+      seconds: "SWFFG.Effect.Duration.Seconds",
+      rounds: "SWFFG.Effect.Duration.Rounds",
+      turns: "SWFFG.Effect.Duration.Turns",
+    };
+    if (originalEffect.start?.combat) {
       effect.duration = game.i18n.localize("SWFFG.Effect.Duration.CurrentCombat");
-    } else if (effect.duration.seconds) {
-      effect.duration = `${effect.duration.seconds} ${game.i18n.localize("SWFFG.Effect.Duration.Seconds")}`;
-    } else if (effect.duration.rounds) {
-      effect.duration = `${effect.duration.rounds} ${game.i18n.localize("SWFFG.Effect.Duration.Rounds")}`;
-    } else if (effect.duration.turns) {
-      effect.duration = `${effect.duration.turns} ${game.i18n.localize("SWFFG.Effect.Duration.Turns")}`;
+    } else if (typeof duration.value === "number" && duration.value > 0) {
+      const unitLabel = durationUnitLabels[duration.units] ? game.i18n.localize(durationUnitLabels[duration.units]) : duration.units;
+      effect.duration = `${duration.value} ${unitLabel}`;
     } else {
       effect.duration = game.i18n.localize("SWFFG.Effect.Duration.Permanent");
     }
 
     // Update each change from this effect
-    effect.changes.forEach((change, index) => {
-      // Convert mode to string
-      change.mode = EffectHelpers.MODES[change.mode];
+    effect.changes.forEach((change) => {
+      // Display the change type (e.g. "add") where the numeric mode used to be shown
+      change.mode = change.type?.toUpperCase();
 
       // LStrip 'system.' for shorter keys
       if (change.key.startsWith("system.")) {

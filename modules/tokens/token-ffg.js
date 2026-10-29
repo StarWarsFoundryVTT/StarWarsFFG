@@ -32,9 +32,10 @@ export class TokenFFG extends foundry.canvas.placeables.Token {
 
     // Adjust nameplate and tooltip positioning
     const {width, height} = this.document.getSize();
-
-    this.nameplate.position.set(width / 2, height + 2);
-    this.tooltip.position.set(width / 2, -2);
+    const offset = CONFIG.Canvas.objectBorderThickness * 0.75 * canvas.dimensions.uiScale;
+    this.nameplate.position.set(width / 2, height + offset);
+    this.tooltip.position.set(width / 2, -offset);
+    if (this.levelIndicator) this.levelIndicator.x = width / 2;
 
     // Adjust turn marker size (150% size by default);
     // fixes a bug where the default refreshSize does not check that this.turnMarker.mesh is defined

@@ -299,8 +299,10 @@ export class CombatFFG extends Combat {
                   updates.push({ _id: id, initiative: roll.total });
 
                   // Determine the roll mode
-                  let rollMode = messageOptions.rollMode || game.settings.get("core", "rollMode");
-                  if ((c.token.hidden || c.hidden) && rollMode === "roll") rollMode = "gmroll";
+                  let messageMode = messageOptions.messageMode
+                    || (messageOptions.rollMode && Roll._mapLegacyRollMode(messageOptions.rollMode))
+                    || game.settings.get("core", "messageMode");
+                  if ((c.token.hidden || c.hidden) && messageMode === "public") messageMode = "gm";
 
                   // Construct chat message data
                   let messageData = foundry.utils.mergeObject(
@@ -316,7 +318,7 @@ export class CombatFFG extends Combat {
                     },
                     messageOptions
                   );
-                  const chatData = await roll.toMessage(messageData, { create: false, rollMode });
+                  const chatData = await roll.toMessage(messageData, { create: false, messageMode });
 
                   // Play 1 sound for the whole rolled set
                   if (i > 0) chatData.sound = null;
@@ -862,8 +864,8 @@ export class CombatFFG extends Combat {
             defeated = true;
           }
           for (const effect of claimant.actor.temporaryEffects) {
-            if (effect?.icon) {
-              effects.add(effect.icon);
+            if (effect?.img) {
+              effects.add(effect.img);
             }
           }
         }
@@ -1210,27 +1212,25 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
   _getEntryContextOptions() {
     const baseEntries = super._getEntryContextOptions();
     // replace the default remove combatant entry with our custom one, which allows us to detect and remove extra slots
-    const updateCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantUpdate");
+    const updateCombatantEntry = baseEntries.find(i => i.label === "COMBATANT.ACTIONS.Update");
     if (updateCombatantEntry) {
-      updateCombatantEntry.name = "SWFFG.Notifications.Combat.Initiative.Update";
-      updateCombatantEntry.callback = async el => {
+      updateCombatantEntry.label = "SWFFG.Notifications.Combat.Initiative.Update";
+      updateCombatantEntry.onClick = async (event, el) => {
         await this.viewed.updateCombatant(el);
       };
-      baseEntries[0] = updateCombatantEntry;
     }
 
-    const removeCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantRemove");
+    const removeCombatantEntry = baseEntries.find(i => i.label === "COMBATANT.ACTIONS.Remove");
     if (removeCombatantEntry) {
-      removeCombatantEntry.callback = async el => {
+      removeCombatantEntry.onClick = async (event, el) => {
         await this.viewed.removeCombatant(el);
       };
-      baseEntries[4] = removeCombatantEntry;
     }
 
     const removeSlot = {
-      name: 'SWFFG.Notifications.Combat.Claim.RemoveSlot',
+      label: 'SWFFG.Notifications.Combat.Claim.RemoveSlot',
       icon: '<i class="fa-regular fa-trash-alt"></i>',
-      callback: async (el) => {
+      onClick: async (event, el) => {
         const index = +el.getAttribute("data-slot-index");
         if (!isNaN(index)) {
           await this._removeSlot(this.viewed.round, el);
@@ -1240,9 +1240,9 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
 
     // Allow GMs to revoke an initiative slot claim.
     const unClaimSlot = {
-      name: 'SWFFG.Notifications.Combat.Claim.UnClaim',
+      label: 'SWFFG.Notifications.Combat.Claim.UnClaim',
       icon: '<i class="fa-regular fa-xmark"></i>',
-      callback: async (el) => {
+      onClick: async (event, el) => {
         const li = $(el);
         const index = +li.data('slot-index');
         if (!isNaN(index)) {
@@ -1252,9 +1252,9 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
     };
 
     // remove reroll initiative
-    baseEntries.splice(2, 1);
+    const entries = baseEntries.filter(i => i.label !== "COMBATANT.ACTIONS.Reroll");
 
-    return [...baseEntries, removeSlot, unClaimSlot];
+    return [...entries, removeSlot, unClaimSlot];
   }
 
   async _removeSlot(tracker, el) {
