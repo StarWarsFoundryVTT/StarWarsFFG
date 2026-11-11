@@ -12,7 +12,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "^1.56.1",
+    "@playwright/test": "^1.62.1",
     "@types/node": "^24.0.0",
     "eslint": "^9.10.0",
     "eslint-plugin-import-x": "^4.2.1",
@@ -21,8 +21,5 @@
     "gulp-sass": "^5.1.0",
     "gulp-sourcemaps": "^3.0.0",
     "sass": "^1.49.0"
-  },
-  "dependencies": {
-    "playwright": "^1.62.1"
   }
 }
