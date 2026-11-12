@@ -212,6 +212,23 @@ export async function createInPack(page: Page, packId: string, spec: DocSpec): P
   }, { packId, s: spec });
 }
 
+/**
+ * Create a document from a full stored source
+ * Creation runs the same migration as loading it from a world would
+ */
+export async function createFromSource(
+  page: Page, documentName: 'Actor' | 'Item', source: Record<string, unknown>,
+  { name, pack }: { name: string; pack?: string },
+): Promise<Uuid> {
+  return page.evaluate(async ({ documentName, source, name, pack }) => {
+    const { _id, ...data } = source as any;
+    const cls = CONFIG[documentName].documentClass;
+    const doc = await cls.create({ ...data, name }, { pack, renderSheet: false });
+    if (!doc) throw new Error(`${documentName}.create returned nothing for "${name}"`);
+    return doc.uuid;
+  }, { documentName, source, name, pack });
+}
+
 /* -------------------------------------------- */
 /*  Reading and mutation                        */
 /* -------------------------------------------- */
