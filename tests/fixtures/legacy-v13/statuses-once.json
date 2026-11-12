@@ -1,0 +1,1539 @@
+{
+  "name": "statuses-once",
+  "captured": {
+    "foundry": "13.351",
+    "system": "2.0.4"
+  },
+  "documents": {
+    "actor": {
+      "name": "qa-actor-jhv0-f",
+      "type": "character",
+      "system": {
+        "characteristics": {
+          "Brawn": {
+            "value": 3,
+            "label": "Brawn",
+            "abrev": "Br"
+          },
+          "Agility": {
+            "value": 2,
+            "label": "Agility",
+            "abrev": "Ag"
+          },
+          "Intellect": {
+            "value": 4,
+            "label": "Intellect",
+            "abrev": "Int"
+          },
+          "Cunning": {
+            "value": 2,
+            "label": "Cunning",
+            "abrev": "Cun"
+          },
+          "Willpower": {
+            "value": 3,
+            "label": "Willpower",
+            "abrev": "Will"
+          },
+          "Presence": {
+            "value": 1,
+            "label": "Presence",
+            "abrev": "Pr"
+          }
+        },
+        "skills": {
+          "Brawl": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Gunnery": {
+            "rank": 1,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Lightsaber": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Melee": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Ranged: Light": {
+            "rank": 2,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": true,
+            "type": "Combat",
+            "max": 6
+          },
+          "Ranged: Heavy": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Astrogation": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Athletics": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Charm": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Coercion": {
+            "rank": 0,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Computers": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Cool": {
+            "rank": 1,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Coordination": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Deception": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Discipline": {
+            "rank": 0,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Leadership": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Mechanics": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Medicine": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Negotiation": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Perception": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Piloting: Planetary": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Piloting: Space": {
+            "rank": 1,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Resilience": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Skulduggery": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Stealth": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Streetwise": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Survival": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Vigilance": {
+            "rank": 2,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": true,
+            "type": "General",
+            "max": 6
+          },
+          "Knowledge: Core Worlds": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Education": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Lore": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Outer Rim": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Underworld": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Warfare": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Xenology": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          }
+        },
+        "stats": {
+          "credits": {
+            "value": 500,
+            "type": "Number",
+            "label": "Credits",
+            "adjusted": 0
+          },
+          "wounds": {
+            "value": 0,
+            "min": 0,
+            "max": 12,
+            "adjusted": 0
+          },
+          "strain": {
+            "value": 0,
+            "min": 0,
+            "max": 13,
+            "adjusted": 0
+          },
+          "soak": {
+            "value": 3,
+            "adjusted": 3
+          },
+          "defence": {
+            "ranged": 0,
+            "melee": 0,
+            "adjusted": 0
+          },
+          "encumbrance": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "forcePool": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "medical": {
+            "uses": 0
+          }
+        },
+        "experience": {
+          "available": 100,
+          "total": 250
+        },
+        "biography": "",
+        "species": {
+          "value": "",
+          "type": "String"
+        },
+        "career": {
+          "value": "",
+          "type": "String"
+        },
+        "specialisation": {
+          "value": "",
+          "type": "String",
+          "list": []
+        },
+        "attributes": {},
+        "general": {
+          "features": "<p></p>",
+          "notes": "",
+          "age": "",
+          "build": "",
+          "eyes": "",
+          "gender": "",
+          "hair": "",
+          "height": ""
+        },
+        "motivation": {
+          "desire": "",
+          "fear": "",
+          "flaw": "",
+          "strength": ""
+        },
+        "metadata": {
+          "tags": [],
+          "sources": []
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "obligation": {
+          "value": 0,
+          "type": "Number",
+          "label": "Obligation"
+        },
+        "duty": {
+          "value": 0,
+          "type": "Number",
+          "label": "Duty"
+        },
+        "morality": {
+          "value": 0,
+          "type": "Number",
+          "label": "Morality"
+        },
+        "conflict": {
+          "value": 0,
+          "type": "Number",
+          "label": "Conflict"
+        },
+        "obligationlist": {},
+        "dutylist": {}
+      },
+      "_id": "zzdgTlMsdawwEZqd",
+      "img": "systems/starwarsffg/images/defaults/actors/character.png",
+      "prototypeToken": {
+        "name": "qa-actor-jhv0-f",
+        "displayName": 0,
+        "actorLink": false,
+        "width": 1,
+        "height": 1,
+        "texture": {
+          "src": "systems/starwarsffg/images/defaults/actors/character.png",
+          "anchorX": 0.5,
+          "anchorY": 0.5,
+          "offsetX": 0,
+          "offsetY": 0,
+          "fit": "contain",
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "tint": "#ffffff",
+          "alphaThreshold": 0.75
+        },
+        "lockRotation": false,
+        "rotation": 0,
+        "alpha": 1,
+        "disposition": -1,
+        "displayBars": 0,
+        "bar1": {
+          "attribute": "wounds"
+        },
+        "bar2": {
+          "attribute": "strain"
+        },
+        "light": {
+          "negative": false,
+          "priority": 0,
+          "alpha": 0.5,
+          "angle": 360,
+          "bright": 0,
+          "color": null,
+          "coloration": 1,
+          "dim": 0,
+          "attenuation": 0.5,
+          "luminosity": 0.5,
+          "saturation": 0,
+          "contrast": 0,
+          "shadows": 0,
+          "animation": {
+            "type": null,
+            "speed": 5,
+            "intensity": 5,
+            "reverse": false
+          },
+          "darkness": {
+            "min": 0,
+            "max": 1
+          }
+        },
+        "sight": {
+          "enabled": false,
+          "range": 0,
+          "angle": 360,
+          "visionMode": "basic",
+          "color": null,
+          "attenuation": 0.1,
+          "brightness": 0,
+          "saturation": 0,
+          "contrast": 0
+        },
+        "detectionModes": [],
+        "occludable": {
+          "radius": 0
+        },
+        "ring": {
+          "enabled": false,
+          "colors": {
+            "ring": null,
+            "background": null
+          },
+          "effects": 1,
+          "subject": {
+            "scale": 1,
+            "texture": null
+          }
+        },
+        "turnMarker": {
+          "mode": 1,
+          "animation": null,
+          "src": null,
+          "disposition": false
+        },
+        "movementAction": null,
+        "flags": {},
+        "randomImg": false,
+        "appendNumber": false,
+        "prependAdjective": false
+      },
+      "items": [
+        {
+          "name": "qa-weapon-jhv0-g",
+          "type": "weapon",
+          "system": {
+            "description": "<p>QA fixture: weapon. Not for play.</p>",
+            "attributes": {},
+            "itemmodifier": [],
+            "itemattachment": [],
+            "adjusteditemmodifer": [],
+            "metadata": {
+              "tags": [
+                "weapon"
+              ],
+              "sources": [
+                "QA"
+              ]
+            },
+            "equippable": {
+              "value": true,
+              "equipped": true,
+              "type": "Boolean"
+            },
+            "status": "",
+            "characteristic": {
+              "value": ""
+            },
+            "skill": {
+              "value": "Ranged: Light",
+              "type": "String",
+              "label": "Skill",
+              "useBrawn": false
+            },
+            "damage": {
+              "value": 6,
+              "adjusted": 6,
+              "type": "Number",
+              "label": "Damage",
+              "abrev": "Dam"
+            },
+            "crit": {
+              "value": 3,
+              "adjusted": 3,
+              "type": "Number",
+              "label": "Critical Rating",
+              "abrev": "Crit"
+            },
+            "range": {
+              "value": "Medium",
+              "adjusted": "Medium",
+              "type": "String",
+              "label": "Range"
+            },
+            "encumbrance": {
+              "value": 1,
+              "adjusted": 1,
+              "type": "Number",
+              "label": "Encumbrance",
+              "abrev": "Encum"
+            },
+            "hardpoints": {
+              "value": 3,
+              "adjusted": 3,
+              "type": "Number",
+              "label": "Hard Points",
+              "abrev": "HP"
+            },
+            "price": {
+              "value": 400,
+              "adjusted": 400,
+              "type": "Number",
+              "label": "Price"
+            },
+            "rarity": {
+              "value": 4,
+              "isrestricted": false,
+              "type": "Number",
+              "label": "Rarity",
+              "adjusted": 0
+            },
+            "special": {
+              "value": "",
+              "type": "String",
+              "label": "Special"
+            },
+            "ammo": {
+              "value": 10,
+              "max": 10
+            },
+            "quantity": {
+              "value": 1,
+              "type": "Number",
+              "label": "Quantity",
+              "abrev": "Qty"
+            }
+          },
+          "_id": "RvM3AzffFb7SNRwo",
+          "img": "systems/starwarsffg/images/defaults/items/weapon.png",
+          "effects": [
+            {
+              "name": "(inherent)",
+              "img": "systems/starwarsffg/images/defaults/items/weapon.png",
+              "changes": [
+                {
+                  "key": "system.stats.encumbrance.value",
+                  "value": "1",
+                  "mode": 2
+                }
+              ],
+              "_id": "wxNxGnDGZeoBEWVO",
+              "type": "base",
+              "system": {},
+              "disabled": false,
+              "duration": {
+                "startTime": null,
+                "combat": null
+              },
+              "description": "",
+              "origin": null,
+              "tint": "#ffffff",
+              "transfer": true,
+              "statuses": [],
+              "sort": 0,
+              "flags": {},
+              "_stats": {
+                "compendiumSource": null,
+                "duplicateSource": null,
+                "exportSource": null,
+                "coreVersion": "13.351",
+                "systemId": "starwarsffg",
+                "systemVersion": "2.0.4",
+                "lastModifiedBy": null
+              }
+            }
+          ],
+          "folder": null,
+          "sort": 0,
+          "ownership": {
+            "default": 0,
+            "cAT3xCXyBOeFfPZs": 3
+          },
+          "flags": {
+            "starwarsffg": {
+              "isCompendium": false,
+              "ffgUuid": null,
+              "ffgIsOwned": false,
+              "loaded": false
+            }
+          },
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.351",
+            "systemId": "starwarsffg",
+            "systemVersion": "2.0.4",
+            "createdTime": 1794507378341,
+            "modifiedTime": 1794507378358,
+            "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+          }
+        }
+      ],
+      "effects": [
+        {
+          "img": "systems/starwarsffg/images/dice/starwars/blue.png",
+          "name": "Boost Next Check",
+          "changes": [
+            {
+              "key": "system.skills.Astrogation.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Athletics.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Brawl.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Charm.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Coercion.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Computers.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Cool.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Coordination.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Deception.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Discipline.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Gunnery.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Core Worlds.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Education.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Lore.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Outer Rim.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Underworld.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Warfare.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Xenology.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Leadership.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Lightsaber.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Mechanics.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Medicine.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Melee.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Negotiation.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Perception.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Piloting: Planetary.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Piloting: Space.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Ranged: Heavy.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Ranged: Light.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Resilience.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Skulduggery.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Stealth.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Streetwise.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Survival.boost",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Vigilance.boost",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "system": {
+            "duration": "once"
+          },
+          "statuses": [
+            "starwarsffg-boost-once"
+          ],
+          "_id": "pODykG4PvAHgqz5H",
+          "type": "base",
+          "disabled": false,
+          "duration": {
+            "startTime": 0,
+            "combat": null
+          },
+          "description": "",
+          "origin": null,
+          "tint": "#ffffff",
+          "transfer": false,
+          "sort": 0,
+          "flags": {},
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.351",
+            "systemId": "starwarsffg",
+            "systemVersion": "2.0.4",
+            "createdTime": 1794507378368,
+            "modifiedTime": 1794507378368,
+            "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+          }
+        },
+        {
+          "img": "systems/starwarsffg/images/dice/starwars/black.png",
+          "name": "Setback Next Check",
+          "changes": [
+            {
+              "key": "system.skills.Astrogation.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Athletics.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Brawl.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Charm.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Coercion.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Computers.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Cool.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Coordination.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Deception.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Discipline.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Gunnery.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Core Worlds.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Education.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Lore.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Outer Rim.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Underworld.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Warfare.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Knowledge: Xenology.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Leadership.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Lightsaber.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Mechanics.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Medicine.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Melee.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Negotiation.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Perception.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Piloting: Planetary.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Piloting: Space.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Ranged: Heavy.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Ranged: Light.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Resilience.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Skulduggery.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Stealth.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Streetwise.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Survival.setback",
+              "mode": 2,
+              "value": "1"
+            },
+            {
+              "key": "system.skills.Vigilance.setback",
+              "mode": 2,
+              "value": "1"
+            }
+          ],
+          "system": {
+            "duration": "once"
+          },
+          "statuses": [
+            "starwarsffg-setback-once"
+          ],
+          "_id": "GER4l5FjWDeySliP",
+          "type": "base",
+          "disabled": false,
+          "duration": {
+            "startTime": 0,
+            "combat": null
+          },
+          "description": "",
+          "origin": null,
+          "tint": "#ffffff",
+          "transfer": false,
+          "sort": 0,
+          "flags": {},
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.351",
+            "systemId": "starwarsffg",
+            "systemVersion": "2.0.4",
+            "createdTime": 1794507378377,
+            "modifiedTime": 1794507378377,
+            "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+          }
+        }
+      ],
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.351",
+        "systemId": "starwarsffg",
+        "systemVersion": "2.0.4",
+        "createdTime": 1794507378252,
+        "modifiedTime": 1794507378252,
+        "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+      }
+    }
+  },
+  "expected": {
+    "pools": {
+      "Ranged: Light": {
+        "ability": 0,
+        "proficiency": 2,
+        "boost": 1,
+        "setback": 1,
+        "remsetback": 0,
+        "difficulty": 0,
+        "challenge": 0,
+        "force": 0
+      }
+    },
+    "effects": [
+      {
+        "on": "actor",
+        "name": "Boost Next Check",
+        "disabled": false,
+        "statuses": [
+          "starwarsffg-boost-once"
+        ],
+        "system": {
+          "duration": "once"
+        },
+        "changes": [
+          {
+            "key": "system.skills.Astrogation.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Athletics.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Brawl.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Charm.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Coercion.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Computers.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Cool.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Coordination.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Deception.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Discipline.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Gunnery.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Core Worlds.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Education.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Lore.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Outer Rim.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Underworld.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Warfare.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Xenology.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Leadership.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Lightsaber.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Mechanics.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Medicine.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Melee.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Negotiation.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Perception.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Piloting: Planetary.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Piloting: Space.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Ranged: Heavy.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Ranged: Light.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Resilience.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Skulduggery.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Stealth.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Streetwise.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Survival.boost",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Vigilance.boost",
+            "mode": 2,
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "on": "actor",
+        "name": "Setback Next Check",
+        "disabled": false,
+        "statuses": [
+          "starwarsffg-setback-once"
+        ],
+        "system": {
+          "duration": "once"
+        },
+        "changes": [
+          {
+            "key": "system.skills.Astrogation.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Athletics.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Brawl.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Charm.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Coercion.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Computers.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Cool.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Coordination.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Deception.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Discipline.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Gunnery.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Core Worlds.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Education.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Lore.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Outer Rim.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Underworld.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Warfare.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Knowledge: Xenology.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Leadership.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Lightsaber.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Mechanics.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Medicine.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Melee.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Negotiation.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Perception.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Piloting: Planetary.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Piloting: Space.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Ranged: Heavy.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Ranged: Light.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Resilience.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Skulduggery.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Stealth.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Streetwise.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Survival.setback",
+            "mode": 2,
+            "value": "1"
+          },
+          {
+            "key": "system.skills.Vigilance.setback",
+            "mode": 2,
+            "value": "1"
+          }
+        ]
+      },
+      {
+        "on": "qa-weapon-jhv0-g",
+        "name": "(inherent)",
+        "disabled": false,
+        "statuses": [],
+        "system": {},
+        "changes": [
+          {
+            "key": "system.stats.encumbrance.value",
+            "value": "1",
+            "mode": 2
+          }
+        ]
+      }
+    ]
+  }
+}

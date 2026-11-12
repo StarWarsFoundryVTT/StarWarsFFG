@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import * as api from './api';
 import type { Uuid } from './api';
 import { recordNotifications } from './console-guard';
+import { readLegacy, type LegacyExpected } from './legacy';
 import { ITEMS, ACTORS, attributeMap, talentMap, nodeKey,
          type ModifierSpec, type AttributeSpec, type TalentSpec,
          type ItemFixture } from '../fixtures/documents';
@@ -611,6 +612,36 @@ export class World {
       await api.setEquipped(this.page, ctx.item!, true);
     }
     return (this.last = ctx);
+  }
+
+  /**
+   * Recreate a document saved by an older Foundry, from tests/fixtures/legacy-v13.
+   * `ctx.item` is the actor's first item; `ctx.source` the fixture's compendium copy
+   */
+  async legacy(name: string): Promise<{ ctx: Ctx; expected: LegacyExpected }> {
+    const fixture = readLegacy(name);
+    const { actor: actorSource, compendiumItem } = fixture.documents;
+
+    const actorName = unique(`legacy-${name}`);
+    const actor = this.track(await api.createFromSource(this.page, 'Actor', actorSource, { name: actorName }));
+
+    const ctx: Ctx = {
+      actor,
+      actorName,
+      spec: { actor: actorSource.type },
+    };
+    const first = actorSource.items?.[0];
+    if (first) {
+      ctx.item = `${actor}.Item.${first._id}`;
+      ctx.itemName = first.name;
+    }
+    if (compendiumItem) {
+      const { pack, created } = await api.ensurePack(this.page, 'qa-fixtures');
+      if (created && !this.packs.includes(pack)) this.packs.push(pack);
+      ctx.source = this.track(await api.createFromSource(
+        this.page, 'Item', compendiumItem, { name: unique(`legacy-${name}-source`), pack }));
+    }
+    return { ctx: (this.last = ctx), expected: fixture.expected };
   }
 
   /** Equip or unequip the built item. */

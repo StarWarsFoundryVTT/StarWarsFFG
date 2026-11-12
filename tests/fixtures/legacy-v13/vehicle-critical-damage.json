@@ -1,0 +1,341 @@
+{
+  "name": "vehicle-critical-damage",
+  "captured": {
+    "foundry": "13.351",
+    "system": "2.0.4"
+  },
+  "documents": {
+    "actor": {
+      "name": "qa-actor-jhv0-o",
+      "type": "vehicle",
+      "system": {
+        "stats": {
+          "silhouette": {
+            "value": 3,
+            "type": "Number",
+            "label": "Silhouette"
+          },
+          "speed": {
+            "value": 4,
+            "max": 4,
+            "type": "Number",
+            "label": "Speed"
+          },
+          "handling": {
+            "value": 1,
+            "type": "Number",
+            "label": "Handling"
+          },
+          "armour": {
+            "value": 0,
+            "adjusted": 0,
+            "type": "Number",
+            "label": "Armour"
+          },
+          "hullTrauma": {
+            "value": 0,
+            "min": 0,
+            "max": 15,
+            "label": "Hull Trauma"
+          },
+          "systemStrain": {
+            "value": 0,
+            "min": 0,
+            "max": 12,
+            "label": "System Strain"
+          },
+          "shields": {
+            "fore": 1,
+            "port": 0,
+            "starboard": 0,
+            "aft": 1,
+            "label": "Shields"
+          },
+          "customizationHardPoints": {
+            "value": 5,
+            "type": "Number",
+            "label": "Hard Points",
+            "adjusted": 0
+          },
+          "encumbrance": {
+            "value": 0,
+            "min": 0,
+            "max": 20,
+            "adjusted": 20
+          },
+          "sensorRange": {
+            "value": "Medium",
+            "type": "String"
+          },
+          "crew": {},
+          "passengerCapacity": {
+            "value": 0,
+            "type": "Number",
+            "label": "Passenger Capacity"
+          },
+          "cost": {
+            "value": 0,
+            "type": "Number",
+            "label": "Cost",
+            "adjusted": 0
+          },
+          "rarity": {
+            "value": 0,
+            "isrestricted": false,
+            "type": "Number",
+            "label": "Rarity",
+            "adjusted": 0
+          },
+          "hyperdrive": {
+            "value": 1,
+            "type": "Number",
+            "label": "SWFFG.Hyperdrive",
+            "backup": 0
+          },
+          "consumables": {
+            "value": 1,
+            "duration": "months",
+            "type": "Number",
+            "label": "SWFFG.Consumables"
+          },
+          "navicomputer": {
+            "value": false,
+            "type": "Boolean",
+            "label": "SWFFG.VehicleNavicomputer"
+          }
+        },
+        "biography": "",
+        "attributes": {},
+        "metadata": {
+          "tags": [],
+          "sources": []
+        },
+        "itemmodifier": [],
+        "itemattachment": [],
+        "spaceShip": false,
+        "silhouetteImage": "systems/starwarsffg/images/shipdefence.png"
+      },
+      "_id": "dggAxHGjl4EGaY1M",
+      "img": "systems/starwarsffg/images/defaults/actors/vehicle.png",
+      "prototypeToken": {
+        "name": "qa-actor-jhv0-o",
+        "displayName": 0,
+        "actorLink": false,
+        "width": 1,
+        "height": 1,
+        "texture": {
+          "src": "systems/starwarsffg/images/defaults/actors/vehicle.png",
+          "anchorX": 0.5,
+          "anchorY": 0.5,
+          "offsetX": 0,
+          "offsetY": 0,
+          "fit": "contain",
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "tint": "#ffffff",
+          "alphaThreshold": 0.75
+        },
+        "lockRotation": false,
+        "rotation": 0,
+        "alpha": 1,
+        "disposition": -1,
+        "displayBars": 0,
+        "bar1": {
+          "attribute": "wounds"
+        },
+        "bar2": {
+          "attribute": "strain"
+        },
+        "light": {
+          "negative": false,
+          "priority": 0,
+          "alpha": 0.5,
+          "angle": 360,
+          "bright": 0,
+          "color": null,
+          "coloration": 1,
+          "dim": 0,
+          "attenuation": 0.5,
+          "luminosity": 0.5,
+          "saturation": 0,
+          "contrast": 0,
+          "shadows": 0,
+          "animation": {
+            "type": null,
+            "speed": 5,
+            "intensity": 5,
+            "reverse": false
+          },
+          "darkness": {
+            "min": 0,
+            "max": 1
+          }
+        },
+        "sight": {
+          "enabled": false,
+          "range": 0,
+          "angle": 360,
+          "visionMode": "basic",
+          "color": null,
+          "attenuation": 0.1,
+          "brightness": 0,
+          "saturation": 0,
+          "contrast": 0
+        },
+        "detectionModes": [],
+        "occludable": {
+          "radius": 0
+        },
+        "ring": {
+          "enabled": false,
+          "colors": {
+            "ring": null,
+            "background": null
+          },
+          "effects": 1,
+          "subject": {
+            "scale": 1,
+            "texture": null
+          }
+        },
+        "turnMarker": {
+          "mode": 1,
+          "animation": null,
+          "src": null,
+          "disposition": false
+        },
+        "movementAction": null,
+        "flags": {},
+        "randomImg": false,
+        "appendNumber": false,
+        "prependAdjective": false
+      },
+      "items": [
+        {
+          "name": "qa-criticaldamage-jhv0-p",
+          "type": "criticaldamage",
+          "system": {
+            "description": "<p>QA fixture: critical damage. Not for play.</p>",
+            "attributes": {
+              "attr1": {
+                "modtype": "Vehicle Stat",
+                "mod": "Armour",
+                "value": 1
+              }
+            },
+            "metadata": {
+              "tags": [
+                "criticaldamage"
+              ],
+              "sources": [
+                "QA"
+              ]
+            },
+            "min": 1,
+            "max": 20,
+            "severity": 1
+          },
+          "_id": "Muw2kYkThxzwvfWp",
+          "img": "icons/svg/item-bag.svg",
+          "effects": [
+            {
+              "name": "attr1",
+              "changes": [
+                {
+                  "key": "system.stats.armour.value",
+                  "mode": 2,
+                  "value": "1"
+                }
+              ],
+              "_id": "gwIh7bVBW4wf2UFu",
+              "img": null,
+              "type": "base",
+              "system": {},
+              "disabled": false,
+              "duration": {
+                "startTime": null,
+                "combat": null
+              },
+              "description": "",
+              "origin": null,
+              "tint": "#ffffff",
+              "transfer": true,
+              "statuses": [],
+              "sort": 0,
+              "flags": {},
+              "_stats": {
+                "compendiumSource": null,
+                "duplicateSource": null,
+                "exportSource": null,
+                "coreVersion": "13.351",
+                "systemId": "starwarsffg",
+                "systemVersion": "2.0.4",
+                "lastModifiedBy": null
+              }
+            }
+          ],
+          "folder": null,
+          "sort": 0,
+          "ownership": {
+            "default": 0,
+            "cAT3xCXyBOeFfPZs": 3
+          },
+          "flags": {
+            "starwarsffg": {
+              "isCompendium": false,
+              "ffgUuid": null,
+              "ffgIsOwned": false,
+              "loaded": false
+            }
+          },
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.351",
+            "systemId": "starwarsffg",
+            "systemVersion": "2.0.4",
+            "createdTime": 1794507378814,
+            "modifiedTime": 1794507378814,
+            "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+          }
+        }
+      ],
+      "effects": [],
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.351",
+        "systemId": "starwarsffg",
+        "systemVersion": "2.0.4",
+        "createdTime": 1794507378802,
+        "modifiedTime": 1794507378802,
+        "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+      }
+    }
+  },
+  "expected": {
+    "stats": {
+      "Armour": 1
+    },
+    "effects": [
+      {
+        "on": "qa-criticaldamage-jhv0-p",
+        "name": "attr1",
+        "disabled": false,
+        "statuses": [],
+        "system": {},
+        "changes": [
+          {
+            "key": "system.stats.armour.value",
+            "mode": 2,
+            "value": "1"
+          }
+        ]
+      }
+    ]
+  }
+}

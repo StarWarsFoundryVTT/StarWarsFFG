@@ -1,0 +1,982 @@
+{
+  "name": "species-imported",
+  "captured": {
+    "foundry": "13.351",
+    "system": "2.0.4"
+  },
+  "documents": {
+    "actor": {
+      "name": "qa-actor-jhv0-n",
+      "type": "character",
+      "system": {
+        "characteristics": {
+          "Brawn": {
+            "value": 3,
+            "label": "Brawn",
+            "abrev": "Br"
+          },
+          "Agility": {
+            "value": 2,
+            "label": "Agility",
+            "abrev": "Ag"
+          },
+          "Intellect": {
+            "value": 4,
+            "label": "Intellect",
+            "abrev": "Int"
+          },
+          "Cunning": {
+            "value": 2,
+            "label": "Cunning",
+            "abrev": "Cun"
+          },
+          "Willpower": {
+            "value": 3,
+            "label": "Willpower",
+            "abrev": "Will"
+          },
+          "Presence": {
+            "value": 1,
+            "label": "Presence",
+            "abrev": "Pr"
+          }
+        },
+        "skills": {
+          "Brawl": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Gunnery": {
+            "rank": 1,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Lightsaber": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Melee": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Ranged: Light": {
+            "rank": 2,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": true,
+            "type": "Combat",
+            "max": 6
+          },
+          "Ranged: Heavy": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Combat",
+            "max": 6
+          },
+          "Astrogation": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Athletics": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Charm": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Coercion": {
+            "rank": 0,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Computers": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Cool": {
+            "rank": 1,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Coordination": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Deception": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Discipline": {
+            "rank": 0,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Leadership": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Mechanics": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Medicine": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Negotiation": {
+            "rank": 0,
+            "characteristic": "Presence",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Social",
+            "max": 6
+          },
+          "Perception": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Piloting: Planetary": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Piloting: Space": {
+            "rank": 1,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Resilience": {
+            "rank": 0,
+            "characteristic": "Brawn",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Skulduggery": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Stealth": {
+            "rank": 0,
+            "characteristic": "Agility",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Streetwise": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Survival": {
+            "rank": 0,
+            "characteristic": "Cunning",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "General",
+            "max": 6
+          },
+          "Vigilance": {
+            "rank": 2,
+            "characteristic": "Willpower",
+            "groupskill": false,
+            "careerskill": true,
+            "type": "General",
+            "max": 6
+          },
+          "Knowledge: Core Worlds": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Education": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Lore": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Outer Rim": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Underworld": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Warfare": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          },
+          "Knowledge: Xenology": {
+            "rank": 0,
+            "characteristic": "Intellect",
+            "groupskill": false,
+            "careerskill": false,
+            "type": "Knowledge",
+            "max": 6
+          }
+        },
+        "stats": {
+          "credits": {
+            "value": 500,
+            "type": "Number",
+            "label": "Credits",
+            "adjusted": 0
+          },
+          "wounds": {
+            "value": 0,
+            "min": 0,
+            "max": 12,
+            "adjusted": 0
+          },
+          "strain": {
+            "value": 0,
+            "min": 0,
+            "max": 13,
+            "adjusted": 0
+          },
+          "soak": {
+            "value": 3,
+            "adjusted": 3
+          },
+          "defence": {
+            "ranged": 0,
+            "melee": 0,
+            "adjusted": 0
+          },
+          "encumbrance": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "forcePool": {
+            "value": 0,
+            "max": 0,
+            "adjusted": 0
+          },
+          "medical": {
+            "uses": 0
+          }
+        },
+        "experience": {
+          "available": 100,
+          "total": 250
+        },
+        "biography": "",
+        "species": {
+          "value": "",
+          "type": "String"
+        },
+        "career": {
+          "value": "",
+          "type": "String"
+        },
+        "specialisation": {
+          "value": "",
+          "type": "String",
+          "list": []
+        },
+        "attributes": {},
+        "general": {
+          "features": "<p></p>",
+          "notes": "",
+          "age": "",
+          "build": "",
+          "eyes": "",
+          "gender": "",
+          "hair": "",
+          "height": ""
+        },
+        "motivation": {
+          "desire": "",
+          "fear": "",
+          "flaw": "",
+          "strength": ""
+        },
+        "metadata": {
+          "tags": [],
+          "sources": []
+        },
+        "encumbrance": {
+          "value": 0,
+          "type": "Number",
+          "label": "Encumbrance",
+          "abrev": "Encum",
+          "adjusted": 0
+        },
+        "obligation": {
+          "value": 0,
+          "type": "Number",
+          "label": "Obligation"
+        },
+        "duty": {
+          "value": 0,
+          "type": "Number",
+          "label": "Duty"
+        },
+        "morality": {
+          "value": 0,
+          "type": "Number",
+          "label": "Morality"
+        },
+        "conflict": {
+          "value": 0,
+          "type": "Number",
+          "label": "Conflict"
+        },
+        "obligationlist": {},
+        "dutylist": {}
+      },
+      "_id": "lzfyoJyzJjJLqoqs",
+      "img": "systems/starwarsffg/images/defaults/actors/character.png",
+      "prototypeToken": {
+        "name": "qa-actor-jhv0-n",
+        "displayName": 0,
+        "actorLink": false,
+        "width": 1,
+        "height": 1,
+        "texture": {
+          "src": "systems/starwarsffg/images/defaults/actors/character.png",
+          "anchorX": 0.5,
+          "anchorY": 0.5,
+          "offsetX": 0,
+          "offsetY": 0,
+          "fit": "contain",
+          "scaleX": 1,
+          "scaleY": 1,
+          "rotation": 0,
+          "tint": "#ffffff",
+          "alphaThreshold": 0.75
+        },
+        "lockRotation": false,
+        "rotation": 0,
+        "alpha": 1,
+        "disposition": -1,
+        "displayBars": 0,
+        "bar1": {
+          "attribute": "wounds"
+        },
+        "bar2": {
+          "attribute": "strain"
+        },
+        "light": {
+          "negative": false,
+          "priority": 0,
+          "alpha": 0.5,
+          "angle": 360,
+          "bright": 0,
+          "color": null,
+          "coloration": 1,
+          "dim": 0,
+          "attenuation": 0.5,
+          "luminosity": 0.5,
+          "saturation": 0,
+          "contrast": 0,
+          "shadows": 0,
+          "animation": {
+            "type": null,
+            "speed": 5,
+            "intensity": 5,
+            "reverse": false
+          },
+          "darkness": {
+            "min": 0,
+            "max": 1
+          }
+        },
+        "sight": {
+          "enabled": false,
+          "range": 0,
+          "angle": 360,
+          "visionMode": "basic",
+          "color": null,
+          "attenuation": 0.1,
+          "brightness": 0,
+          "saturation": 0,
+          "contrast": 0
+        },
+        "detectionModes": [],
+        "occludable": {
+          "radius": 0
+        },
+        "ring": {
+          "enabled": false,
+          "colors": {
+            "ring": null,
+            "background": null
+          },
+          "effects": 1,
+          "subject": {
+            "scale": 1,
+            "texture": null
+          }
+        },
+        "turnMarker": {
+          "mode": 1,
+          "animation": null,
+          "src": null,
+          "disposition": false
+        },
+        "movementAction": null,
+        "flags": {},
+        "randomImg": false,
+        "appendNumber": false,
+        "prependAdjective": false
+      },
+      "items": [
+        {
+          "name": "Chadra-Fan",
+          "type": "species",
+          "flags": {
+            "starwarsffg": {
+              "ffgimportid": "CHADRA"
+            }
+          },
+          "system": {
+            "description": "Chadra-Fan are short, rodent-like humanoids, usually no more than one meter<br>    tall, with bat-like faces. They hail from the watery planet Chad.<br>    <b>Physiology:</b><br>    Chadra-Fan have seven different senses—sight, touch, taste, sound, smell, infrared<br>    sight, and chemoreceptive smell—all of which were much more acute than Human senses.<br>    They are usually no more than a meter tall, some depicted with plantigrade two-toed<br>    feet, while others seemed to have four-toed digitigrade feet. The metabolism<br>    of Chadra-Fan is amazingly fast, allowing them to work almost constantly. They only<br>    sleep in two hour naps during the day. Because of their metabolism, the average Chadra-Fan<br>    matures by age fifteen and rarely lives more than eighty years.<br>    Chadra-Fan are covered from head to foot in fur. Their species evolved from small,<br>    arboreal rodents. The two different sexes of Chadra-Fan are indistinguishable to other<br>    species, though the Chadra-Fan can readily tell the difference using their powerful<br>    sense of smell. If a male and a female Chadra-Fan are interested in one another they<br>    released special pheromones that relay their feelings. Chadra-Fan also have involuntary<br>    pheromones that conveyed information about their family line and create an aura of<br>    attractiveness. Other voluntary pheromones often convey a Chadra-Fan's state of emotion - anger,<br>    fear, or joy. Chadra-Fan even create more complex messages using their pheromones, though<br>    the pheromones when mixed sometimes cause confusion. They are unique in the fact that<br>    they have clear blood.<br>    <b>Society:</b><br>    The society of Chadra-Fan is divided into a clan structure in which every member is<br>    responsible for parenting the clan's children and a fact of life is that every household<br>    is open at any time. Leadership within the clan is a temporary role that is passed<br>    from one individual to another as the situation calls for a particular expertise. Children<br>    are the centerpiece of a Chadra-Fan community, and only left when wed.  However, the new Chadra-Fan<br>    couple remain with the smaller clan so it is possible that a Chadra-Fan never<br>    leaves his or her home.<br>    Chadra-Fan, if left alone, suffer from strong depression that will kill them in a<br>    matter of weeks. Thus, Chadra-Fan are not very picky when it comes to friends and prefer<br>    complete strangers to loneliness. Many Chadra-Fan are taken offworld as slaves, but they<br>    take this positively by thinking of it as a big adventure. They are also a jovial race, who<br>    almost always get on well with others. Only the most evil acts against them will make them<br>    think otherwise. Chadra-Fan are generally excellent team members and are extremely<br>    forgiving or so ignorant that they forget any failings within a group. Chadra-Fan, thus,<br>    can be found with various criminals because they are so unobservant or accommodating.<br>    A deity called the Big Green Fish figures in Chadra-Fan religion.<br>    <b>Homeworld:</b><br>    The planet Chad (also known as Chadra, or Chad III) is the homeworld of of the Chadra-Fan race.<br>    It is in the Outer Rim Territories, more specifically in the Slice.<br>    Chad is a watery planet, with extensive marshes and bayous. Chadra has nine moons, and has a<br>    very elliptical orbit, giving rise to a complex tidal cycle. Due to its unusual orbit, it is<br>    at different times either the third or fourth planet in the orbit of the blue-white star Chad.<br>    It has no axial tilt, however, making the climate relatively stable.<br>    The native Chadra-Fan, an arboreal race, dwell in simple dwellings in the tops of the bayous'<br>    cyperill trees. They do not bother to make elaborate homes, as they know their dwellings could<br>    be destroyed at any time by the hurricanes and tsunamis which their planet os prone to.<br>    Chad is also home to a Human population. The Human colonists lived in oceanic ranches aboard large arks.<br>    <b>Language:</b><br>    Chadra-Fan is the official language of the planet Chad, spoken mainly by the native Chadra-Fan species.<br>    The Chadra-Fan language sounds quite different from Basic. This is noticed because Chadra-Fans who <br>    learned to speak Basic sound very nasal and squeaky.",
+            "attributes": {
+              "Brawn": {
+                "mod": "Brawn",
+                "modtype": "Characteristic",
+                "value": 1,
+                "exclude": true
+              },
+              "Agility": {
+                "mod": "Agility",
+                "modtype": "Characteristic",
+                "value": 3,
+                "exclude": true
+              },
+              "Intellect": {
+                "mod": "Intellect",
+                "modtype": "Characteristic",
+                "value": 3,
+                "exclude": true
+              },
+              "Cunning": {
+                "mod": "Cunning",
+                "modtype": "Characteristic",
+                "value": 2,
+                "exclude": true
+              },
+              "Willpower": {
+                "mod": "Willpower",
+                "modtype": "Characteristic",
+                "value": 1,
+                "exclude": true
+              },
+              "Presence": {
+                "mod": "Presence",
+                "modtype": "Characteristic",
+                "value": 2,
+                "exclude": true
+              },
+              "Wounds": {
+                "mod": "Wounds",
+                "modtype": "Stat",
+                "value": 9,
+                "exclude": true
+              },
+              "Strain": {
+                "mod": "Strain",
+                "modtype": "Stat",
+                "value": 11,
+                "exclude": true
+              },
+              "Mechanics": {
+                "mod": "Mechanics",
+                "modtype": "Skill Rank",
+                "value": 1,
+                "exclude": false
+              },
+              "attr1794507360824": {
+                "mod": "Perception",
+                "modtype": "Skill Remove Setback",
+                "value": 2
+              }
+            },
+            "metadata": {
+              "tags": [
+                "species"
+              ],
+              "sources": [
+                "Stay on Target pg.20"
+              ]
+            },
+            "talents": {},
+            "abilities": {
+              "jL0jYZCsK6b9jorV": {
+                "name": "Acute Senses",
+                "type": "ability",
+                "system": {
+                  "description": "Chandra-Fan remove up to [REMSETBACK][REMSETBACK] from Perception checks due to superior senses."
+                }
+              },
+              "t9DbxIYLb2ghsSna": {
+                "name": "Reduced Silouette",
+                "type": "ability",
+                "system": {
+                  "description": "Chadra-Fan have a Silhouette of 0."
+                }
+              }
+            },
+            "species": {},
+            "startingXP": 90
+          },
+          "img": "icons/svg/item-bag.svg",
+          "effects": [
+            {
+              "name": "(inherent)",
+              "img": "icons/svg/item-bag.svg",
+              "changes": [
+                {
+                  "key": "system.characteristics.Brawn.value",
+                  "value": "1",
+                  "mode": 2
+                },
+                {
+                  "key": "system.stats.encumbrance.max",
+                  "value": "6",
+                  "mode": 2
+                },
+                {
+                  "key": "system.stats.soak.value",
+                  "value": "1",
+                  "mode": 2
+                },
+                {
+                  "key": "system.characteristics.Agility.value",
+                  "value": "3",
+                  "mode": 2
+                },
+                {
+                  "key": "system.characteristics.Intellect.value",
+                  "value": "3",
+                  "mode": 2
+                },
+                {
+                  "key": "system.characteristics.Cunning.value",
+                  "value": "2",
+                  "mode": 2
+                },
+                {
+                  "key": "system.characteristics.Willpower.value",
+                  "value": "1",
+                  "mode": 2
+                },
+                {
+                  "key": "system.characteristics.Presence.value",
+                  "value": "2",
+                  "mode": 2
+                },
+                {
+                  "key": "system.stats.wounds.max",
+                  "value": "10",
+                  "mode": 2
+                },
+                {
+                  "key": "system.stats.strain.max",
+                  "value": "12",
+                  "mode": 2
+                },
+                {
+                  "key": "system.skills.Mechanics.rank",
+                  "value": "1",
+                  "mode": 2
+                }
+              ],
+              "_id": "qq8d4dvtpFj6Rort",
+              "type": "base",
+              "system": {},
+              "disabled": false,
+              "duration": {
+                "startTime": null,
+                "combat": null
+              },
+              "description": "",
+              "origin": null,
+              "tint": "#ffffff",
+              "transfer": true,
+              "statuses": [],
+              "sort": 0,
+              "flags": {},
+              "_stats": {
+                "compendiumSource": null,
+                "duplicateSource": null,
+                "exportSource": null,
+                "coreVersion": "13.351",
+                "systemId": "starwarsffg",
+                "systemVersion": "2.0.4",
+                "lastModifiedBy": null
+              }
+            },
+            {
+              "name": "attr1794507360824",
+              "changes": [
+                {
+                  "key": "system.skills.Perception.remsetback",
+                  "mode": 2,
+                  "value": "2"
+                }
+              ],
+              "img": "icons/svg/item-bag.svg",
+              "_id": "QTTKDNoQwVr675Bb",
+              "type": "base",
+              "system": {},
+              "disabled": false,
+              "duration": {
+                "startTime": null,
+                "combat": null
+              },
+              "description": "",
+              "origin": null,
+              "tint": "#ffffff",
+              "transfer": true,
+              "statuses": [],
+              "sort": 0,
+              "flags": {},
+              "_stats": {
+                "compendiumSource": null,
+                "duplicateSource": null,
+                "exportSource": null,
+                "coreVersion": "13.351",
+                "systemId": "starwarsffg",
+                "systemVersion": "2.0.4",
+                "lastModifiedBy": null
+              }
+            }
+          ],
+          "folder": null,
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.351",
+            "systemId": "starwarsffg",
+            "systemVersion": "2.0.4",
+            "createdTime": 1794507378774,
+            "modifiedTime": 1794507378774,
+            "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+          },
+          "ownership": {
+            "default": 0,
+            "cAT3xCXyBOeFfPZs": 3
+          },
+          "_id": "7GaW2vyI0gvYczNW",
+          "sort": 0
+        },
+        {
+          "name": "Acute Senses",
+          "type": "ability",
+          "system": {
+            "description": "Chandra-Fan remove up to [REMSETBACK][REMSETBACK] from Perception checks due to superior senses.",
+            "fromSpecies": "7GaW2vyI0gvYczNW",
+            "attributes": {},
+            "metadata": {
+              "tags": [],
+              "sources": []
+            }
+          },
+          "_id": "X1RFryc4hCsryain",
+          "img": "icons/svg/item-bag.svg",
+          "effects": [],
+          "folder": null,
+          "sort": 0,
+          "ownership": {
+            "default": 0,
+            "cAT3xCXyBOeFfPZs": 3
+          },
+          "flags": {
+            "starwarsffg": {
+              "isCompendium": false,
+              "ffgUuid": null,
+              "ffgIsOwned": true,
+              "loaded": false
+            }
+          },
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.351",
+            "systemId": "starwarsffg",
+            "systemVersion": "2.0.4",
+            "createdTime": 1794507378780,
+            "modifiedTime": 1794507378780,
+            "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+          }
+        },
+        {
+          "name": "Reduced Silouette",
+          "type": "ability",
+          "system": {
+            "description": "Chadra-Fan have a Silhouette of 0.",
+            "fromSpecies": "7GaW2vyI0gvYczNW",
+            "attributes": {},
+            "metadata": {
+              "tags": [],
+              "sources": []
+            }
+          },
+          "_id": "Zke5MBz356koaGYh",
+          "img": "icons/svg/item-bag.svg",
+          "effects": [],
+          "folder": null,
+          "sort": 0,
+          "ownership": {
+            "default": 0,
+            "cAT3xCXyBOeFfPZs": 3
+          },
+          "flags": {
+            "starwarsffg": {
+              "isCompendium": false,
+              "ffgUuid": null,
+              "ffgIsOwned": true,
+              "loaded": false
+            }
+          },
+          "_stats": {
+            "compendiumSource": null,
+            "duplicateSource": null,
+            "exportSource": null,
+            "coreVersion": "13.351",
+            "systemId": "starwarsffg",
+            "systemVersion": "2.0.4",
+            "createdTime": 1794507378780,
+            "modifiedTime": 1794507378780,
+            "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+          }
+        }
+      ],
+      "effects": [],
+      "flags": {},
+      "_stats": {
+        "compendiumSource": null,
+        "duplicateSource": null,
+        "exportSource": null,
+        "coreVersion": "13.351",
+        "systemId": "starwarsffg",
+        "systemVersion": "2.0.4",
+        "createdTime": 1794507378762,
+        "modifiedTime": 1794507378762,
+        "lastModifiedBy": "cAT3xCXyBOeFfPZs"
+      }
+    }
+  },
+  "expected": {
+    "stats": {
+      "Brawn": 4,
+      "Agility": 5,
+      "Intellect": 7,
+      "Cunning": 4,
+      "Willpower": 4,
+      "Presence": 3,
+      "Wounds": 22,
+      "Strain": 25
+    },
+    "skills": {
+      "Perception": {
+        "Remove Setback": 2
+      }
+    },
+    "sources": {
+      "Perception": {
+        "Remove Setback": [
+          {
+            "name": "species",
+            "type": "Chadra-Fan",
+            "value": 2,
+            "modtype": "Skill Remove Setback"
+          }
+        ]
+      }
+    },
+    "effects": [
+      {
+        "on": "Chadra-Fan",
+        "name": "(inherent)",
+        "disabled": false,
+        "statuses": [],
+        "system": {},
+        "changes": [
+          {
+            "key": "system.characteristics.Brawn.value",
+            "value": "1",
+            "mode": 2
+          },
+          {
+            "key": "system.stats.encumbrance.max",
+            "value": "6",
+            "mode": 2
+          },
+          {
+            "key": "system.stats.soak.value",
+            "value": "1",
+            "mode": 2
+          },
+          {
+            "key": "system.characteristics.Agility.value",
+            "value": "3",
+            "mode": 2
+          },
+          {
+            "key": "system.characteristics.Intellect.value",
+            "value": "3",
+            "mode": 2
+          },
+          {
+            "key": "system.characteristics.Cunning.value",
+            "value": "2",
+            "mode": 2
+          },
+          {
+            "key": "system.characteristics.Willpower.value",
+            "value": "1",
+            "mode": 2
+          },
+          {
+            "key": "system.characteristics.Presence.value",
+            "value": "2",
+            "mode": 2
+          },
+          {
+            "key": "system.stats.wounds.max",
+            "value": "10",
+            "mode": 2
+          },
+          {
+            "key": "system.stats.strain.max",
+            "value": "12",
+            "mode": 2
+          },
+          {
+            "key": "system.skills.Mechanics.rank",
+            "value": "1",
+            "mode": 2
+          }
+        ]
+      },
+      {
+        "on": "Chadra-Fan",
+        "name": "attr1794507360824",
+        "disabled": false,
+        "statuses": [],
+        "system": {},
+        "changes": [
+          {
+            "key": "system.skills.Perception.remsetback",
+            "mode": 2,
+            "value": "2"
+          }
+        ]
+      }
+    ]
+  }
+}
