@@ -1952,9 +1952,14 @@ export async function readLastChatFlavor(page: Page): Promise<string> {
  */
 export async function rollWeapon(
   page: Page, actorUuid: Uuid, itemUuid: Uuid,
-  { faces = {} as Record<string, number>, add = {} as Record<string, number> } = {},
+  {
+    faces = {} as Record<string, number>,
+    add = {} as Record<string, number>,
+    sound = undefined as string | undefined,
+    from = 'macro' as 'macro' | 'sheet',
+  } = {},
 ): Promise<void> {
-  const problem = await page.evaluate(async ({ actorUuid, itemUuid, faces, add, sides }) => {
+  const problem = await page.evaluate(async ({ actorUuid, itemUuid, faces, add, sound, from, sides }) => {
     const actor = await fromUuid(actorUuid);
     const item = await fromUuid(itemUuid);
     if (!actor || !item) return 'the actor or the weapon is gone';
@@ -1972,9 +1977,29 @@ export async function rollWeapon(
       Die.prototype.mapRandomFace = () => face;
     }
 
+    // A roll dialog outlives its roll for a moment, and the search below must not find an old one.
+    const openBuilders = () => (Object.values(ui.windows ?? {}) as any[])
+      .filter((app) => app?.constructor?.name === 'RollBuilderFFG');
+    for (const app of openBuilders()) app.close();
+    for (let i = 0; i < 200 && openBuilders().length; i++) await new Promise((r) => setTimeout(r, 25));
+    if (openBuilders().length) return 'an earlier roll dialog never closed';
+
     try {
-      // not awaited: it resolves once the dialog is up, and the roll happens when it is answered
-      game.ffg.DiceHelpers.rollItem(item.id, actor.id);
+      if (from === 'sheet') {
+        // The weapon's icon on the sheet, which rolls through DiceHelpers.rollSkill.
+        await actor.sheet.render(true);
+        let button: HTMLElement | null = null;
+        for (let i = 0; i < 200 && !button; i++) {
+          const root = actor.sheet.element?.[0] ?? actor.sheet.element;
+          button = root?.querySelector?.(`li.item[data-item-id="${item.id}"] .item-rollable`) ?? null;
+          if (!button) await new Promise((r) => setTimeout(r, 25));
+        }
+        if (!button) return 'the sheet rendered no roll button for the weapon';
+        button.click();
+      } else {
+        // As a hotbar macro does. Not awaited: it resolves once the dialog is up.
+        game.ffg.DiceHelpers.rollItem(item.id, actor.id);
+      }
 
       const dialog = await (async () => {
         for (let i = 0; i < 200; i++) {
@@ -2003,6 +2028,13 @@ export async function rollWeapon(
         for (let i = 0; i < (times as number); i++) block.click();
       }
 
+      if (sound) {
+        const select = dialog.querySelector('.sound-selection') as HTMLSelectElement | null;
+        if (!select) return 'the dialog offers no sound to pick';
+        select.value = sound;
+        if (select.value !== sound) return `the dialog offers no sound at ${sound}`;
+      }
+
       dialog.querySelector('.btn').click();
 
       for (let i = 0; i < 200; i++) {
@@ -2013,9 +2045,45 @@ export async function rollWeapon(
     } finally {
       for (const [Die, original] of patched) Die.prototype.mapRandomFace = original;
     }
-  }, { actorUuid, itemUuid, faces, add, sides: DICE });
+  }, { actorUuid, itemUuid, faces, add, sound, from, sides: DICE });
 
   if (problem) throw new Error(`Rolling ${itemUuid}: ${problem}`);
+}
+
+/**
+ * A playlist holding one sound, which the roll dialog then offers to a GM.
+ */
+export async function createPlaylist(
+  page: Page, { name, sound }: { name: string; sound: { name: string; path: string } },
+): Promise<Uuid> {
+  return page.evaluate(async ({ name, sound }) => {
+    const playlist = await CONFIG.Playlist.documentClass.create({ name, sounds: [sound] });
+    if (!playlist) throw new Error(`Playlist.create returned nothing for "${name}"`);
+    return playlist.uuid;
+  }, { name, sound });
+}
+
+/**
+ * Run `action` with the sound player swapped for a recorder, and return what it was asked to play.
+ * Nothing is actually played or broadcast.
+ */
+export async function soundsPlayedDuring(page: Page, action: () => Promise<unknown>): Promise<string[]> {
+  await page.evaluate(() => {
+    const helper = foundry.audio.AudioHelper as any;
+    (window as any).qaSounds = { original: helper.play, played: [] as string[] };
+    helper.play = async (data: { src: string }) => {
+      (window as any).qaSounds.played.push(data.src);
+    };
+  });
+  try {
+    await action();
+    return await page.evaluate(() => (window as any).qaSounds.played);
+  } finally {
+    await page.evaluate(() => {
+      (foundry.audio.AudioHelper as any).play = (window as any).qaSounds.original;
+      delete (window as any).qaSounds;
+    });
+  }
 }
 
 /**

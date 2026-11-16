@@ -116,3 +116,17 @@ export async function setSkillRank(page: Page, windowId: string, skill: string, 
 export async function setGroupSkill(page: Page, windowId: string, skill: string, checked: boolean): Promise<void> {
   await page.locator(`#${windowId} [name="data.skills.${skill}.groupskill"]`).first().setChecked(checked);
 }
+
+/**
+ * Point a skill at another characteristic, through the skill row's right-click menu and the dialog it opens
+ */
+export async function changeSkillCharacteristic(
+  page: Page, windowId: string, skill: string, characteristic: string,
+): Promise<void> {
+  await page.locator(`#${windowId} .skillsGrid .skill[data-ability="${skill}"]`).first().click({ button: 'right' });
+  await page.locator('#context-menu, dialog#menu').getByText('Change Characteristic').click();
+
+  const dialog = page.locator('.dialog', { has: page.locator('.skill-characteristic-select-dialog') }).last();
+  await dialog.locator(`input[type="radio"][value="${characteristic}"]`).check();
+  await dialog.locator('[data-button="one"]').click();
+}
