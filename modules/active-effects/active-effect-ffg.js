@@ -43,8 +43,8 @@ export class ActiveEffectFFG extends ActiveEffect {
    * exception - carrying something is what makes it encumbering in the first place
    * @override
    */
-  apply(doc, change, ...args) {
-    const item = this.parent;
+  static applyChange(targetDoc, change, options) {
+    const item = change.effect?.parent;
     if (
       equipGatedTypes.includes(item?.type) &&
       !item.system?.equippable?.equipped &&
@@ -52,6 +52,6 @@ export class ActiveEffectFFG extends ActiveEffect {
     ) {
       return {};
     }
-    return super.apply(doc, change, ...args);
+    return super.applyChange(targetDoc, change, options);
   }
 }
