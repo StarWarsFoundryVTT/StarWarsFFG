@@ -311,28 +311,34 @@ export default class EmbeddedItemHelpers {
   }
 
   // totally not ripped from phind telling me how to do this
-  static removeKeyFromObject(obj, keyToRemove) {
+  static removeKeyFromObject(obj, keyToRemove, seen = new WeakSet()) {
+    // sheet data holds documents, which refer back to each other; visit each object once
+    if (!obj || seen.has(obj)) return;
+    seen.add(obj);
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         if (key === keyToRemove) {
           delete obj[key];
         } else if (typeof obj[key] === 'object') {
-          EmbeddedItemHelpers.removeKeyFromObject(obj[key], keyToRemove);
+          EmbeddedItemHelpers.removeKeyFromObject(obj[key], keyToRemove, seen);
         }
       }
     }
   }
 
   // totally not ripped from phind telling me how to do this
-  static findKeysIncludingStringRecursively(obj, str) {
+  static findKeysIncludingStringRecursively(obj, str, seen = new WeakSet()) {
     let keys = [];
+    // sheet data holds documents, which refer back to each other; visit each object once
+    if (!obj || seen.has(obj)) return keys;
+    seen.add(obj);
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         if (key.includes(str)) {
           keys.push(key);
         }
         if (typeof obj[key] === 'object') {
-          keys = keys.concat(EmbeddedItemHelpers.findKeysIncludingStringRecursively(obj[key], str));
+          keys = keys.concat(EmbeddedItemHelpers.findKeysIncludingStringRecursively(obj[key], str, seen));
         }
       }
     }
