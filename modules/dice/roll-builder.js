@@ -144,7 +144,7 @@ export default class RollBuilderFFG extends FormApplication {
                 };
               }
             }
-            setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
+            foundry.utils.setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
             entity.update(entityData);
           }
         }
@@ -250,7 +250,7 @@ export default class RollBuilderFFG extends FormApplication {
           flavor: `${game.i18n.localize("SWFFG.Rolling")} ${game.i18n.localize(this.roll.skillName)}...`,
         });
         if (this.roll?.sound) {
-          AudioHelper.play({ src: this.roll.sound }, true);
+          foundry.audio.AudioHelper.play({ src: this.roll.sound }, true);
         }
 
         return roll;
