@@ -82,6 +82,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const item = await Item.implementation.fromDropData(data);
       // do not Draw values from the underlying data source rather than transformed values - we want to use adjusted values
       const itemData = item.toObject(false);
+      // prepared effects carry derived durations (Infinity) that fail validation, so they come from the source
+      itemData.effects = item.toObject().effects;
 
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
