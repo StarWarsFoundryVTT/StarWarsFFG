@@ -2473,7 +2473,8 @@ export default class ImportHelpers {
             // don't re-import items for existing vehicles, in order to avoid duplicating them
             updateData.items = [];
           }
-          await pack.get(updateData._id).update(updateData);
+          // its effects are rebuilt below, so the item's own effect sync would only race the delete
+          await pack.get(updateData._id).update(updateData, { ffgRebuildingEffects: type === "Item" });
           // update here does not return the UUID, so retrieve the item from the pack to get it
           const updatedItem = await pack.get(updateData._id);
           upd.uuid = updatedItem.uuid;
