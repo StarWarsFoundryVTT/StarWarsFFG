@@ -840,6 +840,11 @@ Hooks.once("init", async function () {
     try {
       const addedStatuses = $.parseJSON(game.settings.get("starwarsffg", "additionalStatuses"));
       for (const status of addedStatuses) {
+        // statuses are looked up by id, so a reused id would replace the one already there
+        if (status.id in CONFIG.statusEffects) {
+          CONFIG.logger.warn(`Skipping custom status "${status.name}": the id "${status.id}" is already taken`);
+          continue;
+        }
         CONFIG.statusEffects.push(status);
       }
 
