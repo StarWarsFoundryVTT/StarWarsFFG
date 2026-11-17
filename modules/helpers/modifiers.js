@@ -764,8 +764,8 @@ export default class ModifierHelpers {
       const newBrawn = newChanges.find(ae => ae.key === "system.characteristics.Brawn.value").value;
       const newWillpower = newChanges.find(ae => ae.key === "system.characteristics.Willpower.value").value;
       // read the values from the form, if available, otherwise from the object
-      const wounds = formData?.data?.attributes?.Wounds?.value || item.system.attributes.Wounds.value;
-      const strain = formData?.data?.attributes?.Strain?.value || item.system.attributes.Strain.value;
+      const wounds = formData?.data?.attributes?.Wounds?.value ?? item.system.attributes?.Wounds?.value ?? 0;
+      const strain = formData?.data?.attributes?.Strain?.value ?? item.system.attributes?.Strain?.value ?? 0;
 
       for (const change of newChanges) {
         if (change.key === "system.stats.wounds.max") {
