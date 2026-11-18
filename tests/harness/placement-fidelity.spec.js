@@ -7,6 +7,16 @@ import * as api from '../support/api';
 
 const PROBE = { name: 'qa fidelity probe', key: 'Soak', value: 1, active: true };
 
+/**
+ * Drops the fields prepareData recomputes. The drop handler saves prepared values, and prepareData is async,
+ * so what lands there depends on whether the item had finished preparing.
+ */
+function withoutPrepared(data) {
+  const copy = JSON.parse(JSON.stringify(data, (key, value) => (key === 'adjusted' ? undefined : value)));
+  if (copy.system?.range) delete copy.system.range.label;
+  return copy;
+}
+
 const CARRIERS = [
   { item: 'armour', nested: true },
   { item: 'weapon', nested: true },
@@ -27,7 +37,8 @@ for (const { item, nested } of CARRIERS) {
 
     const dropped = await api.dropOnActorSheet(page, ctx.actor, ctx.source);
 
-    expect(await api.comparable(page, dropped), 'the shortcut and the drop handler agree')
-      .toEqual(await api.comparable(page, ctx.item));
+    expect(
+      withoutPrepared(await api.comparable(page, dropped)), 'the shortcut and the drop handler agree'
+    ).toEqual(withoutPrepared(await api.comparable(page, ctx.item)));
   });
 }
