@@ -676,7 +676,8 @@ Hooks.once("init", async function () {
     // slot bookkeeping only applies to generic slots; named slots are handled by the core tracker
     if (game.settings.get("starwarsffg", "useGenericSlots")) {
       Hooks.on("preCreateCombatant", async (combatant, context, options, combatantId) => {
-        await game.combat.handleCombatantAddition(combatant, context, options, combatantId);
+        // the combat being added to; game.combat can be null here on 14.370
+        await combatant.parent.handleCombatantAddition(combatant, context, options, combatantId);
       });
       CONFIG.FFG.preCombatDelete = Hooks.on("preDeleteCombatant", registerHandleCombatantRemoval);
     }

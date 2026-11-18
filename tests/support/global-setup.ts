@@ -38,9 +38,9 @@ async function globalSetup(config: FullConfig) {
 
   // An already-authenticated session is sent straight to /game and never sees the join form
   if (new URL(page.url()).pathname.startsWith('/join')) {
-    // v13 renders the join screen as an ApplicationV2 into #join-game-form. The user <select>
-    // holds user IDs as option values, so the user has to be picked by its visible label.
-    await page.locator('#join-game-form select[name="userid"]').selectOption({ label: 'Gamemaster' });
+    // The user <select> holds user IDs as option values, so the user has to be picked by its visible label.
+    // By id: 14.370 renamed it from `userid` to `userId`.
+    await page.locator('#join-game-form #join-username').selectOption({ label: 'Gamemaster' });
     await page.locator('#join-game-form button[name="join"]').click();
   } else {
     console.log('[setup] already joined, skipping the join form');
