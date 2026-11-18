@@ -191,6 +191,8 @@ export class ItemFFG extends ItemBaseFFG {
       // only run onCreate for the user actually performing the update
       return;
     }
+    // the importer deletes and rebuilds the effects itself
+    if (options.ffgRebuildingEffects) return;
 
     const existingEffects = this.getEmbeddedCollection("ActiveEffect");
     CONFIG.logger.debug(`On item ${this.name} update, found the following active effects:`);

@@ -82,6 +82,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const item = await Item.implementation.fromDropData(data);
       // do not Draw values from the underlying data source rather than transformed values - we want to use adjusted values
       const itemData = item.toObject(false);
+      // prepared effects carry derived durations (Infinity) that fail validation, so they come from the source
+      itemData.effects = item.toObject().effects;
 
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
@@ -1492,7 +1494,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const a = event.currentTarget;
       const form = this.form;
 
-      const nk = randomID();
+      const nk = foundry.utils.randomID();
       let newKey = document.createElement("div");
       newKey.innerHTML = `<input type="text" name="data.dutylist.${nk}.type" value="" style="display:none;"/><input class="attribute-value" type="text" name="data.dutylist.${nk}.magnitude" value="0" data-dtype="Number" placeholder="0"/>`;
       form.appendChild(newKey);
@@ -1672,7 +1674,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     const messageData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_STYLES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.actor.id,
@@ -1702,7 +1704,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
 
     const messageData = {
       user: game.user.id,
-      type: CONST.CHAT_MESSAGE_TYPES.OTHER,
+      style: CONST.CHAT_MESSAGE_STYLES.OTHER,
       content: html,
       speaker: {
         actor: this.actor.id,
@@ -1743,7 +1745,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
               CONFIG.logger.debug(`Updating ${ability} Characteristic from ${characteristic} to ${newCharacteristic}`);
 
               let updateData = {};
-              setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
+              foundry.utils.setProperty(updateData, `system.skills.${ability}.characteristic`, newCharacteristic);
 
               this.object.update(updateData);
             },

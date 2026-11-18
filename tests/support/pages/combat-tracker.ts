@@ -121,7 +121,7 @@ export async function addSlot(
 export const SLOT_MENU = {
   updateInitiative: 'Update Initiative',
   clearInitiative: 'Clear Initiative',
-  removeCombatant: 'Remove Participant',
+  removeCombatant: 'Remove Combatant',
   removeSlot: 'Remove Initiative Slot',
   unclaim: 'Un-claim Initiative Slot',
 } as const;

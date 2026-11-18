@@ -78,7 +78,7 @@ test('a custom status taking a built-in id does not replace it', async ({ world,
 
   const effects = (await api.readEffects(page, ctx.actor)).map((effect) => effect.name);
 
-  expect(claiming, 'the world offers two statuses under the one id').toHaveLength(2);
+  expect(claiming, 'only the built-in is offered under the id').toHaveLength(1);
   expect(effects, 'the impostor is not what landed').not.toContain('QA Impostor');
   expect(await consumers.stat(ctx, 'Soak'), 'and its changes went nowhere').toBe(3);
 });

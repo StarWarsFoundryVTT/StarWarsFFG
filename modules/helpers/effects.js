@@ -1,44 +1,38 @@
 export default class EffectHelpers {
 
-  // Lookup mode name from int
-  static MODES = Object.fromEntries(
-    Object.entries(CONST.ACTIVE_EFFECT_MODES).map(
-      ([key, value]) => [value, key])
-    );
+  static DURATION_UNITS = {
+    seconds: "SWFFG.Effect.Duration.Seconds",
+    rounds: "SWFFG.Effect.Duration.Rounds",
+    turns: "SWFFG.Effect.Duration.Turns",
+  };
 
-  // Map effects from EmbeddedCollection
-  static transformEffects(originalEffect, _iterator, _effects) {
-    let effect = structuredClone(originalEffect);
-
-    // Copy properties we need from the prototype
-    effect.id = originalEffect.id;
-    effect.parentName = originalEffect.parent.name;
-    effect.active = originalEffect.active;
-
-    // Convert duration to string
-    if (effect.duration.combat) {
-      effect.duration = game.i18n.localize("SWFFG.Effect.Duration.CurrentCombat");
-    } else if (effect.duration.seconds) {
-      effect.duration = `${effect.duration.seconds} ${game.i18n.localize("SWFFG.Effect.Duration.Seconds")}`;
-    } else if (effect.duration.rounds) {
-      effect.duration = `${effect.duration.rounds} ${game.i18n.localize("SWFFG.Effect.Duration.Rounds")}`;
-    } else if (effect.duration.turns) {
-      effect.duration = `${effect.duration.turns} ${game.i18n.localize("SWFFG.Effect.Duration.Turns")}`;
+  // Map an ActiveEffect to what the effects tab displays
+  static transformEffects(effect) {
+    let duration;
+    const { value, units } = effect.duration;
+    if (effect.start?.combat) {
+      duration = game.i18n.localize("SWFFG.Effect.Duration.CurrentCombat");
+    } else if (value) {
+      const unitKey = EffectHelpers.DURATION_UNITS[units];
+      duration = `${value} ${unitKey ? game.i18n.localize(unitKey) : units}`;
     } else {
-      effect.duration = game.i18n.localize("SWFFG.Effect.Duration.Permanent");
+      duration = game.i18n.localize("SWFFG.Effect.Duration.Permanent");
     }
 
-    // Update each change from this effect
-    effect.changes.forEach((change, index) => {
-      // Convert mode to string
-      change.mode = EffectHelpers.MODES[change.mode];
-
+    const changes = effect.system.changes.map((change) => ({
       // LStrip 'system.' for shorter keys
-      if (change.key.startsWith("system.")) {
-        change.key = change.key.substring(7);
-      }
-    });
+      key: change.key.startsWith("system.") ? change.key.substring(7) : change.key,
+      type: game.i18n.localize(ActiveEffect.implementation.CHANGE_TYPES[change.type]?.label ?? change.type),
+      value: change.value,
+    }));
 
-    return effect;
+    return {
+      id: effect.id,
+      name: effect.name,
+      parentName: effect.parent.name,
+      active: effect.active,
+      duration,
+      changes,
+    };
   }
 }

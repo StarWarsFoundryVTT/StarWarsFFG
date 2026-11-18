@@ -847,24 +847,14 @@ export class CombatFFG extends Combat {
         // the slot is claimed
         CONFIG.logger.debug(`slot ${index} has been claimed by ${claimant.name}`);
         const hidden = this._getTokenHidden(claimant.tokenId);
-        let defeated = claimant.isDefeated;
+        const defeated = claimant.isDefeated;
 
+        // the same icons core's tracker shows for a combatant
         const effects = new Set();
-        if (claimant.token) {
-          claimant.token.effects.forEach((e) => effects.add(e))
-          if (claimant.token.overlayEffect) {
-            effects.add(claimant.token.overlayEffect);
-          }
-        }
-
-        if (claimant.actor) {
-          if (claimant.isDefeated) {
-            defeated = true;
-          }
-          for (const effect of claimant.actor.temporaryEffects) {
-            if (effect?.icon) {
-              effects.add(effect.icon);
-            }
+        const SHOW_ICON = CONST.ACTIVE_EFFECT_SHOW_ICON;
+        for (const effect of claimant.actor?.appliedEffects ?? []) {
+          if (effect.showIcon === SHOW_ICON.ALWAYS || (effect.showIcon === SHOW_ICON.CONDITIONAL && effect.isTemporary)) {
+            effects.add(effect.img);
           }
         }
 
@@ -1209,28 +1199,26 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
   /** @override */
   _getEntryContextOptions() {
     const baseEntries = super._getEntryContextOptions();
-    // replace the default remove combatant entry with our custom one, which allows us to detect and remove extra slots
-    const updateCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantUpdate");
+    // update and remove go through the combat, which keeps slots and claims in step
+    const updateCombatantEntry = baseEntries.find(i => i.label === "COMBATANT.ACTIONS.Update");
     if (updateCombatantEntry) {
-      updateCombatantEntry.name = "SWFFG.Notifications.Combat.Initiative.Update";
-      updateCombatantEntry.callback = async el => {
+      updateCombatantEntry.label = "SWFFG.Notifications.Combat.Initiative.Update";
+      updateCombatantEntry.onClick = async (event, el) => {
         await this.viewed.updateCombatant(el);
       };
-      baseEntries[0] = updateCombatantEntry;
     }
 
-    const removeCombatantEntry = baseEntries.find(i => i.name === "COMBAT.CombatantRemove");
+    const removeCombatantEntry = baseEntries.find(i => i.label === "COMBATANT.ACTIONS.Remove");
     if (removeCombatantEntry) {
-      removeCombatantEntry.callback = async el => {
+      removeCombatantEntry.onClick = async (event, el) => {
         await this.viewed.removeCombatant(el);
       };
-      baseEntries[4] = removeCombatantEntry;
     }
 
     const removeSlot = {
-      name: 'SWFFG.Notifications.Combat.Claim.RemoveSlot',
+      label: 'SWFFG.Notifications.Combat.Claim.RemoveSlot',
       icon: '<i class="fa-regular fa-trash-alt"></i>',
-      callback: async (el) => {
+      onClick: async (event, el) => {
         const index = +el.getAttribute("data-slot-index");
         if (!isNaN(index)) {
           await this._removeSlot(this.viewed.round, el);
@@ -1240,9 +1228,9 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
 
     // Allow GMs to revoke an initiative slot claim.
     const unClaimSlot = {
-      name: 'SWFFG.Notifications.Combat.Claim.UnClaim',
+      label: 'SWFFG.Notifications.Combat.Claim.UnClaim',
       icon: '<i class="fa-regular fa-xmark"></i>',
-      callback: async (el) => {
+      onClick: async (event, el) => {
         const li = $(el);
         const index = +li.data('slot-index');
         if (!isNaN(index)) {
@@ -1251,10 +1239,10 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       },
     };
 
-    // remove reroll initiative
-    baseEntries.splice(2, 1);
+    // initiative belongs to the slot, so there is no rerolling it
+    const entries = baseEntries.filter(i => i.label !== "COMBATANT.ACTIONS.Reroll");
 
-    return [...baseEntries, removeSlot, unClaimSlot];
+    return [...entries, removeSlot, unClaimSlot];
   }
 
   async _removeSlot(tracker, el) {

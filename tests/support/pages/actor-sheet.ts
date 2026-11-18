@@ -106,8 +106,14 @@ export async function gearSources(page: Page, itemId: string, value: string): Pr
  */
 export async function setSkillRank(page: Page, windowId: string, skill: string, rank: number): Promise<void> {
   const field = page.locator(`#${windowId} [name="data.skills.${skill}.rank"]`).first();
+  // marked so the redraw that follows the update can be told apart from the field typed into
+  await field.evaluate((el) => el.setAttribute('data-qa-edited', ''));
   await field.fill(String(rank));
   await field.blur();
+  // the next edit would otherwise land in this field just before the redraw throws it away
+  await page.locator(
+    `#${windowId} [name="data.skills.${skill}.rank"]:not([data-qa-edited])`
+  ).first().waitFor({ state: 'attached' });
 }
 
 /**

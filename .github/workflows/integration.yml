@@ -22,7 +22,7 @@ concurrency:
 
 env:
   # Built and pushed by hand, one tag per Foundry version
-  FOUNDRY_IMAGE: ghcr.io/starwarsfoundryvtt/foundry-ci:13.351@sha256:0a4d43a805c16eaba2df6ecce32ef4ad0fd4ee3657d99c6f3d2fd508e80227eb
+  FOUNDRY_IMAGE: ghcr.io/starwarsfoundryvtt/foundry-ci:14.370@sha256:7bbaf1dae743283a3c52dc1941aff482bb25578d6fd3713975777e8e870cb1b8
 
 jobs:
   # Decides whether the test job names an environment, which decides whether it waits for approval.

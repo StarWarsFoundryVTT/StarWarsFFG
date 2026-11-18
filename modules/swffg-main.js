@@ -15,6 +15,7 @@ import CombatantFFG, {
   updateCombatTracker
 } from "./combat-ffg.js";
 import { ActiveEffectFFG} from "./active-effects/active-effect-ffg.js";
+import { ActiveEffectData } from "./data/active-effect.js";
 import { ItemFFG } from "./items/item-ffg.js";
 import { ItemSheetFFG } from "./items/item-sheet-ffg.js";
 import { ItemSheetFFGV2 } from "./items/item-sheet-ffg-v2.js";
@@ -110,6 +111,7 @@ Hooks.once("init", async function () {
   // Subtypes describe themselves with Data Models rather than template.json
   Object.assign(CONFIG.Item.dataModels, ITEM_DATA_MODELS);
   Object.assign(CONFIG.Actor.dataModels, ACTOR_DATA_MODELS);
+  CONFIG.ActiveEffect.dataModels.base = ActiveEffectData;
 
   // we do not want the legacy active effect transfer mode
   // also, reeeeeeeeeeeeeeeee
@@ -838,6 +840,11 @@ Hooks.once("init", async function () {
     try {
       const addedStatuses = $.parseJSON(game.settings.get("starwarsffg", "additionalStatuses"));
       for (const status of addedStatuses) {
+        // statuses are looked up by id, so a reused id would replace the one already there
+        if (status.id in CONFIG.statusEffects) {
+          CONFIG.logger.warn(`Skipping custom status "${status.name}": the id "${status.id}" is already taken`);
+          continue;
+        }
         CONFIG.statusEffects.push(status);
       }
 
@@ -1014,8 +1021,9 @@ Hooks.on("renderChatInput", (app, html, data) => {
       rollButton.type = "button";
       rollButton.classList.add("ui-control", "icon", "fa-light", "fa-dice-d20");
 
-      const rollPrivacyElement = document.querySelector("#roll-privacy");
-      rollPrivacyElement.appendChild(rollButton);
+      const messageModesElement = document.querySelector("#message-modes");
+      if (!messageModesElement) return;
+      messageModesElement.appendChild(rollButton);
 
       rollButton.onclick = async function () {
         const dicePool = new DicePoolFFG();

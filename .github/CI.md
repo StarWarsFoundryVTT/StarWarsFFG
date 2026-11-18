@@ -95,7 +95,7 @@ docker run --rm --name foundry-seed --hostname foundry-ci \
   --publish 127.0.0.1:30000:30000 \
   --volume /tmp/foundry-seed:/data/Config \
   --env FOUNDRY_LICENSE_KEY='<your key>' \
-  ghcr.io/starwarsfoundryvtt/foundry-ci:13.351
+  ghcr.io/starwarsfoundryvtt/foundry-ci:14.370
 ```
 
 Open <http://127.0.0.1:30000>, enter the key if asked, and accept the license agreement. Foundry

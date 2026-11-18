@@ -5,8 +5,8 @@
 # release in once, here, means the runner needs neither.
 #
 # Building and pushing this is a manual step, documented in .github/CI.md.
-ARG FOUNDRY_VERSION=13.351
-FROM felddy/foundryvtt:${FOUNDRY_VERSION}
+ARG FOUNDRY_VERSION=14.370
+FROM docker.io/felddy/foundryvtt:${FOUNDRY_VERSION}
 
 ARG FOUNDRY_VERSION
 LABEL org.opencontainers.image.source=https://github.com/StarWarsFoundryVTT/StarWarsFFG

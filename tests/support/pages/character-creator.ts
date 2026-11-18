@@ -19,9 +19,25 @@ export async function open(page: Page): Promise<void> {
 }
 
 /**
+ * Search a paged wizard table for a document, as a player would, so its row is drawn.
+ */
+async function searchTable(page: Page, table: string, uuid: string): Promise<void> {
+  // set in the page: the table can be on a tab that is not showing
+  await page.evaluate(async ({ table, uuid }) => {
+    const name = (await fromUuid(uuid))?.name;
+    const search = document.querySelector(`#${table}_wrapper .dt-search input`) as HTMLInputElement | null;
+    if (!name || !search) return;
+    search.value = name;
+    search.dispatchEvent(new Event('input', { bubbles: true }));
+    search.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+  }, { table, uuid });
+}
+
+/**
  * Click a career in the wizard's own list and wait for the temp actor it rebuilds.
  */
 export async function selectCareer(page: Page, careerUuid: string, timeout = 10_000): Promise<void> {
+  await searchTable(page, 'careers', careerUuid);
   const problem = await page.evaluate(async ({ key, careerUuid, timeout }) => {
     const app = (window as any)[key];
     if (!app) return 'the wizard is not open';
@@ -119,7 +135,7 @@ export async function buyGear(page: Page, itemUuid: string, timeout = 10_000): P
      * and the box is the only way in.
      */
     const search = app.element?.querySelector(
-      '#buy_gear_filter input, .dt-search input, #buy_gear_wrapper input[type="search"]',
+      '#buy_gear_wrapper .dt-search input',
     ) as HTMLInputElement | null;
     if (!search) return `the shop stocks "${wanted.name}" but has no search box to find it with`;
 
@@ -257,6 +273,7 @@ async function awaitRebuild(page: Page, timeout = 10_000): Promise<void> {
  * Choose a species from the wizard's own list.
  */
 export async function selectSpecies(page: Page, speciesUuid: string, timeout = 10_000): Promise<void> {
+  await searchTable(page, 'species', speciesUuid);
   const problem = await page.evaluate(async ({ key, speciesUuid, timeout }) => {
     const app = (window as any)[key];
     if (!app) return 'the wizard is not open';
