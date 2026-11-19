@@ -172,9 +172,7 @@ test.fixme('an item whose XML names an unknown skill is skipped, and says so', a
     'Error importing record');
 });
 
-// Open bugs at the time of writing tests
-
-test.fixme("#1722 an unsupported species feature does not create a dummy modifier", async ({ world, page }) => {
+test("#1722 an unsupported species feature does not create a dummy modifier", async ({ world, page }) => {
   const xml = `<?xml version="1.0" encoding="utf-8"?>
 <Species>
   <Key>QABLIND</Key>
@@ -226,6 +224,65 @@ test.fixme("#1722 an unsupported species feature does not create a dummy modifie
   const beyondTheBasics = Object.values(attributes ?? {})
     .filter((attr) => !['Characteristic', 'Stat'].includes(attr.modtype));
 
-  // FIXME: #1722
   expect(beyondTheBasics, 'the modifier it could not read is left out').toEqual([]);
+});
+
+test('#1722 a species die modifier adding a triumph imports as one', async ({ world, page }) => {
+  const xml = `<?xml version="1.0" encoding="utf-8"?>
+<Species>
+  <Key>QATRIUMPH</Key>
+  <Name>QA Triumph</Name>
+  <Description>A species whose trait adds a triumph to Perception checks.</Description>
+  <StartingChars>
+    <Brawn>2</Brawn>
+    <Agility>2</Agility>
+    <Intellect>2</Intellect>
+    <Cunning>2</Cunning>
+    <Willpower>2</Willpower>
+    <Presence>2</Presence>
+  </StartingChars>
+  <StartingAttrs>
+    <WoundThreshold>10</WoundThreshold>
+    <StrainThreshold>10</StrainThreshold>
+    <Experience>100</Experience>
+  </StartingAttrs>
+  <OptionChoices>
+    <OptionChoice>
+      <Key>QATRIUMPHOC1</Key>
+      <Name>Keen</Name>
+      <Options>
+        <Option>
+          <Key>QATRIUMPHOC1OP1</Key>
+          <Name>Keen</Name>
+          <Description>Add a triumph to Perception checks.</Description>
+          <DieModifiers>
+            <DieModifier>
+              <SkillKey>PERC</SkillKey>
+              <TriumphCount>1</TriumphCount>
+            </DieModifier>
+          </DieModifiers>
+        </Option>
+      </Options>
+    </OptionChoice>
+  </OptionChoices>
+</Species>`;
+
+  await oggdude.runImport(page, 'Species', xml, { file: 'Species/QATriumph.xml', dir: true });
+
+  const species = await api.findImported(page, 'oggdude.Species', 'QATRIUMPH');
+
+  expect(species, 'the species imported').toBeTruthy();
+
+  world.track(species);
+
+  const attributes = await api.read(page, species, 'system.attributes');
+  const added = Object.values(attributes ?? {}).filter((attr) => !['Characteristic', 'Stat'].includes(attr.modtype));
+  const carried = added.map((attr) => ({ mod: attr.mod, modtype: attr.modtype, value: Number(attr.value) }));
+  const expected = {
+    mod: 'Perception',
+    modtype: 'Skill Add Triumph',
+    value: 1,
+  };
+
+  expect(carried, 'one triumph on Perception, not a skill rank').toEqual([expected]);
 });
