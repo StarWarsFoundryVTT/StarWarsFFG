@@ -646,6 +646,9 @@ export default class SWAImporter extends FormApplication {
                     if (weaponData) {
                       const templatedData = weaponData;
                       templatedData.system = foundry.utils.mergeObject(data, weaponData.system);
+                      // as the OggDude importer does: Brawn-based weapons add Brawn to damage
+                      const useBrawn = templatedData.system.skill.useBrawn;
+                      templatedData.system.characteristic = { value: useBrawn ? "Brawn" : "" };
 
                       if (templatedData.system.special?.value?.length > 0) {
                         templatedData.system.special.value.split(",").forEach((w) => {
