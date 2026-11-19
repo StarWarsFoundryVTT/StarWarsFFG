@@ -7,6 +7,7 @@
   * Expanding a talent on an actor sheet shows both its short and long description ([#2265](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2265))
   * Skill Force Boosts count only active Force Rating effects, so unpurchased Force Rating talents no longer add extra Force dice ([#2305](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2305))
   * Several Force Boosts to the same skill grant Force Rating in Force dice once, instead of once per boost ([#2306](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2306))
+  * Attachments are checked against an item's remaining hard points instead of its total, and one that doesn't fit is still attached with a warning instead of being rejected ([#2310](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2310))
 
 `2.0.4`
 * Features:
