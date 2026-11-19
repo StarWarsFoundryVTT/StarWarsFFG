@@ -16,10 +16,6 @@ export class HomesteadData extends foundry.abstract.TypeDataModel {
       ...biography(),
       ...attributes(),
       ...metaOnly(),
-      // template.json declares these at the top level, but the sheet reads and writes them under
-      // `stats`. Both are kept so no existing homestead loses anything; the mismatch is its own bug.
-      cost: numberStat({ label: "Cost" }),
-      consumables: consumables(),
       stats: new fields.SchemaField({
         cost: numberStat({ label: "Cost" }),
         consumables: consumables(),
