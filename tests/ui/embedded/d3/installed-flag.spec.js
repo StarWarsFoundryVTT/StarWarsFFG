@@ -2,7 +2,7 @@ import { test, expect } from '../../../support/fixtures';
 import * as api from '../../../support/api';
 import { ITEMS } from '../../../fixtures/documents';
 
-test.fixme('an uninstalled Modification contributes nothing', async ({ world, consumers }) => {
+test('an uninstalled Modification contributes nothing', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character', item: 'armour', equipped: true,
     attachment: {
@@ -12,8 +12,22 @@ test.fixme('an uninstalled Modification contributes nothing', async ({ world, co
     itemOverrides: { soak: { value: 0, adjusted: 0 } },
   });
 
-  // FIXME: this currently applies despite not being installed
   expect(await consumers.stat(ctx, 'Soak')).toBe(3);  // Brawn only - the Modification is inert
+});
+
+test('#2125 a quality on a dropped attachment applies once it is installed', async ({ world, consumers }) => {
+  const ctx = await world.build({ actor: 'character', item: 'weapon', equipped: true });
+
+  await world.attach(ctx, {
+    name: 'gem',
+    modifications: [{ name: 'qa accurate', key: 'Damage', value: 2 }],
+  });
+
+  expect(await consumers.qualityRank(ctx, 'qa accurate'), 'the drop leaves it uninstalled').toBeNull();
+
+  await world.setModificationInstalled(ctx, 0, true);
+
+  expect(await consumers.qualityRank(ctx, 'qa accurate'), 'ticking Installed? applies it').toBe(1);
 });
 
 test('an imported Modification arrives with its Installed? flag set', async ({ page }) => {
