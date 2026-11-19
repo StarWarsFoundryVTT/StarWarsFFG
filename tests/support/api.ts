@@ -1178,7 +1178,23 @@ export async function addModification(
 export async function setModificationInstalled(
   page: Page, itemUuid: Uuid, attachmentIndex: number, modifierIndex: number, installed: boolean,
 ): Promise<void> {
-  const problem = await page.evaluate(async ({ itemUuid, attachmentIndex, modifierIndex, installed }) => {
+  await setModificationField(page, itemUuid, attachmentIndex, modifierIndex, 'active', installed);
+}
+
+/**
+ * Set a Modification's Ranks through the attachment editor, as a user typing into it would.
+ */
+export async function setModificationRank(
+  page: Page, itemUuid: Uuid, attachmentIndex: number, modifierIndex: number, rank: number,
+): Promise<void> {
+  await setModificationField(page, itemUuid, attachmentIndex, modifierIndex, 'rank', rank);
+}
+
+async function setModificationField(
+  page: Page, itemUuid: Uuid, attachmentIndex: number, modifierIndex: number,
+  field: 'active' | 'rank', value: boolean | number,
+): Promise<void> {
+  const problem = await page.evaluate(async ({ itemUuid, attachmentIndex, modifierIndex, field, value }) => {
     const item = await fromUuid(itemUuid);
     if (!item) return `No item at ${itemUuid}`;
     const attachment = item.system?.itemattachment?.[attachmentIndex];
@@ -1208,17 +1224,18 @@ export async function setModificationInstalled(
     }
     if (!root) return 'the attachment editor never appeared';
 
-    const box = root.querySelector(
-      `input[name="system.itemmodifier[${modifierIndex}].system.active"]`);
-    if (!box) return `the editor rendered no Installed checkbox for modifier ${modifierIndex}`;
-    box.checked = installed;
+    const input = root.querySelector(
+      `input[name="system.itemmodifier[${modifierIndex}].system.${field}"]`);
+    if (!input) return `the editor rendered no ${field} input for modifier ${modifierIndex}`;
+    if (field === 'active') input.checked = value;
+    else input.value = String(value);
 
     await editor.submit();
     await editor.close();
     return null;
-  }, { itemUuid, attachmentIndex, modifierIndex, installed });
+  }, { itemUuid, attachmentIndex, modifierIndex, field, value });
 
-  if (problem) throw new Error(`Setting Installed? on ${itemUuid}: ${problem}`);
+  if (problem) throw new Error(`Setting ${field} on a Modification of ${itemUuid}: ${problem}`);
 }
 
 /** Suspend or restore every Active Effect on a document. */
