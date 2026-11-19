@@ -697,7 +697,11 @@ export class ItemFFG extends ItemBaseFFG {
     }
 
     if (["talent"].includes(this.type) && data.longDesc) {
-      data.description = data.longDesc;
+      const shortLabel = game.i18n.localize("SWFFG.ShortDescription");
+      const longLabel = game.i18n.localize("SWFFG.LongDescription");
+      data.description = data.description
+        ? `<p><b>${shortLabel}</b></p>${data.description}<p><b>${longLabel}</b></p>${data.longDesc}`
+        : data.longDesc;
     }
 
     if (this.type === "weapon") {
