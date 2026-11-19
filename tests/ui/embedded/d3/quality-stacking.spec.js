@@ -212,3 +212,55 @@ test('#2340 a ranked quality and its twin on an attachment each contribute their
   expect(await consumers.qualityRank(ctx, 'qa reinforced'), 'two ranks from the item, one from the attachment').toBe(3);
   expect(await consumers.stat(ctx, 'Soak'), 'brawn 3, the armour 2, and one rank each of three').toBe(8);
 });
+
+test("#2377 raising a Modification's rank on an attachment multiplies its value", async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'weapon',
+    equipped: true,
+    attachment: {
+      name: 'mount',
+      modifications: [
+        { name: 'qa accurate', key: 'damage', modtype: 'Weapon Stat', value: 1, rank: 1, installed: true },
+      ],
+    },
+  });
+
+  await world.setModificationRank(ctx, 0, 3);
+
+  expect(await consumers.itemAdjusted(ctx, 'Damage'), 'three ranks of +1 damage').toBe(6 + 3);
+});
+
+test("#2377 raising a Modification's rank on an armour attachment reaches the actor", async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'armour',
+    equipped: true,
+    attachment: {
+      name: 'plate',
+      modifications: [{ name: 'qa reinforced', key: 'Soak', value: 1, rank: 1, installed: true }],
+    },
+    itemOverrides: { soak: { value: 0, adjusted: 0 } },
+  });
+
+  await world.setModificationRank(ctx, 0, 3);
+
+  expect(await consumers.itemAdjusted(ctx, 'Soak'), 'the armour totals all three ranks').toBe(3);
+  expect(await consumers.stat(ctx, 'Soak'), 'brawn 3 and three ranks of +1').toBe(3 + 3);
+});
+
+test('#2377 an attachment carrying a ranked Modification brings every rank', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'armour',
+    equipped: true,
+    attachment: {
+      name: 'plate',
+      modifications: [{ name: 'qa reinforced', key: 'Soak', value: 1, rank: 2, installed: true }],
+    },
+    itemOverrides: { soak: { value: 0, adjusted: 0 } },
+  });
+
+  expect(await consumers.itemAdjusted(ctx, 'Soak'), 'the armour totals both ranks').toBe(2);
+  expect(await consumers.stat(ctx, 'Soak'), 'brawn 3 and two ranks of +1').toBe(3 + 2);
+});

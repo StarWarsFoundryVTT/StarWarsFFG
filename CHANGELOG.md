@@ -14,6 +14,7 @@
   * Removed duplicate Homestead Cost and Consumables inputs ([#2366](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2366))
   * Melee weapons imported via SWA adversaries set Brawn characteristic ([#2368](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2368))
   * Attaching to a weapon with a crit rating of 0 no longer raises it to 1 ([#2376](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2376))
+  * A Modification on an attachment applies its mods once per rank ([#2377](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2377))
 
 `2.0.4`
 * Features:

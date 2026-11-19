@@ -389,6 +389,8 @@ export class itemEditor extends FormApplication  {
           CONFIG.logger.debug(">> checking modifications...");
           if (Object.keys(formData.system).includes("itemmodifier")) {
             for (const modifier of Object.values(formData.system.itemmodifier)) {
+              // the form carries no type, and the rank totals rely on it (#2377)
+              modifier.type = "itemmodifier";
               if (!Object.keys(modifier.system).includes("attributes")) {
                 // skip anything that doesn't have attributes
                 CONFIG.logger.debug(`>>> modification ${modifier.name} has no mods, skipping further processing`);
@@ -459,6 +461,8 @@ export class itemEditor extends FormApplication  {
         }
       }
       await this.data.sourceObject.update({system: {itemattachment: updateData}});
+      // the effects above hold one rank's worth; scale them to each Modification's rank
+      await ItemHelpers.syncAEStatus(this.data.sourceObject, existingActiveEffects);
     }
 
     // if it's a mod, locate the mod to update

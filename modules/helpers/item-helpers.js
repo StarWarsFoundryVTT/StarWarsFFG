@@ -271,8 +271,10 @@ export default class ItemHelpers {
       CONFIG.logger.debug("armor and weapon, checking modifiers to sync value to rank");
       // sync AEs to the rank value - that is, if we have a mod which adds 1 to max wounds with 4 ranks, the AE should have a value of 4, not 1
       const existingEffects = item.getEmbeddedCollection("ActiveEffect");
-      for (const modifier of item.system.itemmodifier) {
-        for (const attr of Object.keys(modifier.system.attributes)) {
+      // mods inside attachments are ranked the same way as those on the item itself (#2377)
+      const attachmentModifiers = (item.system.itemattachment ?? []).flatMap(a => a.system.itemmodifier ?? []);
+      for (const modifier of [...item.system.itemmodifier, ...attachmentModifiers]) {
+        for (const attr of Object.keys(modifier.system.attributes ?? {})) {
           const matchingEffect = existingEffects.find(effect => effect.name === attr);
           if (matchingEffect) {
             // the modifier's own rank: the derived rank_current also folds in ranks from

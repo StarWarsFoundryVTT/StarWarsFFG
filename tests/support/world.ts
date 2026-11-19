@@ -819,6 +819,17 @@ export class World {
       this.page, ctx.item, attachmentIndex, modificationIndex, installed);
   }
 
+  /**
+   * Set one of an attachment's Modifications to a number of ranks, through the editor.
+   */
+  async setModificationRank(
+    ctx: Ctx, modificationIndex: number, rank: number,
+    attachmentIndex = ctx.attachmentIndex ?? 0,
+  ): Promise<void> {
+    if (!ctx?.item) throw new Error('setModificationRank() needs a build that reached an item.');
+    await api.setModificationRank(this.page, ctx.item, attachmentIndex, modificationIndex, rank);
+  }
+
   /** Take a quality off the item. Only qualities added to the item itself can be removed. */
   async removeModifier(ctx: Ctx = this.last!, index = 0): Promise<void> {
     if (!ctx?.item) throw new Error('removeModifier() needs a build that reached an item.');
