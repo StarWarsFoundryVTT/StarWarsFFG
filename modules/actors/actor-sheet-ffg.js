@@ -359,6 +359,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             }
           }
         }
+        break;
+      case "homestead":
+        data.data.enrichedBio = await foundry.applications.ux.TextEditor.enrichHTML(this.actor.system.biography);
+        break;
       default:
     }
 
