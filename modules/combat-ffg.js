@@ -1109,7 +1109,8 @@ export class CombatTrackerFFG extends foundry.applications.sidebar.tabs.CombatTr
       return;
     }
     const token = ownedTokenCount === 1 ? canvas.tokens.ownedTokens[0] : canvas.tokens.controlled[0];
-    const combatant = this.viewed.combatants.find(i => i.actorId === token.actor.id);
+    // match the token - unlinked tokens of one actor are separate combatants
+    const combatant = this.viewed.combatants.find(i => i.tokenId === token.id && i.sceneId === token.scene.id);
     if (!combatant) {
       ui.notifications.warn(game.i18n.localize("SWFFG.Notifications.Combat.Claim.Combatant"));
       return;

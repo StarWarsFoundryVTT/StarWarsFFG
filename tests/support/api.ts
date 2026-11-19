@@ -1695,9 +1695,10 @@ export async function createScene(page: Page, name: string, timeout = 30_000): P
  */
 export async function addToken(
   page: Page, sceneUuid: Uuid, actorUuid: Uuid,
-  { disposition = 1, hidden = false }: { disposition?: number; hidden?: boolean } = {},
+  { disposition = 1, hidden = false, actorLink = true }:
+    { disposition?: number; hidden?: boolean; actorLink?: boolean } = {},
 ): Promise<string> {
-  const id = await page.evaluate(async ({ sceneUuid, actorUuid, disposition, hidden }) => {
+  const id = await page.evaluate(async ({ sceneUuid, actorUuid, disposition, hidden, actorLink }) => {
     const scene = await fromUuid(sceneUuid);
     const actor = await fromUuid(actorUuid);
     if (!scene || !actor) return null;
@@ -1708,14 +1709,14 @@ export async function addToken(
     const [token] = await scene.createEmbeddedDocuments('Token', [{
       name: actor.name,
       actorId: actor.id,
-      actorLink: true,
+      actorLink,
       disposition,
       hidden,
       x: 100 + (placed % 4) * 200,
       y: 100 + Math.floor(placed / 4) * 200,
     }]);
     return token?.id ?? null;
-  }, { sceneUuid, actorUuid, disposition, hidden });
+  }, { sceneUuid, actorUuid, disposition, hidden, actorLink });
 
   if (!id) throw new Error(`Could not put a token for ${actorUuid} on ${sceneUuid}`);
   return id;

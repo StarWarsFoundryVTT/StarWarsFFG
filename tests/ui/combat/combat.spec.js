@@ -84,6 +84,27 @@ test('a combatant claiming a slot removes it from the pool of unclaimed ones', a
   ).toEqual([encounter.combatants[0]]);
 });
 
+test('a claim is credited to the token that made it, not another token of the same actor', async ({ world, page }) => {
+  const encounter = await world.encounter({
+    combatants: [
+      { actor: 'character', disposition: 1 },
+    ],
+  });
+  const token = await api.addToken(page, encounter.scene, encounter.actors[0], { actorLink: false });
+  const combatant = await api.addCombatant(page, encounter.combat, token);
+  await api.rollInitiative(page, encounter.combat);
+
+  await api.controlToken(page, encounter.scene, token);
+  await api.openCombatTracker(page);
+  await tracker.claimControl(page).click();
+
+  await expect(tracker.claimedSlots(page), 'the slot is taken').toHaveCount(1);
+  expect(
+    Object.values(await api.readSlotClaims(page, encounter.combat)),
+    'by the selected token, not the first one of that actor'
+  ).toEqual([combatant]);
+});
+
 test('unclaiming a slot returns it to the pool', async ({ world, page }) => {
   const encounter = await world.encounter({
     combatants: [
