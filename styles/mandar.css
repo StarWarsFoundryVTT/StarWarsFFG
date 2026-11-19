@@ -789,6 +789,10 @@ img {
 .starwarsffg.sheet.v2 .sheet-body.talent {
   height: calc(100% - 22rem);
 }
+/* the long description fits its text, so the sources list below it stays in view */
+.starwarsffg .tab.sources .editor:not(.prosemirror) {
+  height: auto;
+}
 
 .starwarsffg.sheet .sheet-body.species {
   height: calc(100% - 24rem);
