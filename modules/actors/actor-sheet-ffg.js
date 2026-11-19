@@ -436,8 +436,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     html.find(".popout-editor .popout-editor-button").on("click", this._onPopoutEditor.bind(this));
 
     // Setup dice pool image and hide filtered skills
+    // build the sheet data once rather than per skill; it grows with every purchase effect
+    const sheetData = this.getData({});
     html.find(".skill").each(async (_, elem) => {
-      await DiceHelpers.addSkillDicePool(await this.getData({}), elem);
+      await DiceHelpers.addSkillDicePool(await sheetData, elem);
       const filters = this._filters.skills;
     });
 
