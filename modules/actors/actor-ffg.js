@@ -738,6 +738,8 @@ export class ActorFFG extends Actor {
       for (const change of effect.changes) {
         if (change.key.includes("system.skills") && change.key.includes(".force")) {
           change.value = Math.max(maxForceRating - parseInt(this.system?.stats?.forcePool?.value), 0);
+          // override, so several boosts to one skill grant the rating once rather than summing
+          change.type = "override";
         }
       }
     }
