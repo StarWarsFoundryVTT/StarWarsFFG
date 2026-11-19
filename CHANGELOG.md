@@ -9,6 +9,7 @@
   * Several Force Boosts to the same skill grant Force Rating in Force dice once, instead of once per boost ([#2306](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2306))
   * Attachments are checked against an item's remaining hard points instead of its total, and one that doesn't fit is still attached with a warning instead of being rejected ([#2310](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2310))
   * Homestead descriptions show dice symbols and links instead of raw tags like `[AB]` ([#2358](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2358))
+  * Dropping an attachment onto an item keeps each Modification's Installed state instead of installing all of them ([#2364](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2364))
 
 `2.0.4`
 * Features:

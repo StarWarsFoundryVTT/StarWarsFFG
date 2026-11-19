@@ -1965,10 +1965,6 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           if (hpLeft - itemObject.system.hardpoints.value < 0) {
             ui.notifications.warn(`Item does not have enough available hardpoints (${hpLeft} left)`);
           }
-          for (const mod of itemObject.system.itemmodifier) {
-            // mark the mods as active so they transfer to the parent item
-            mod.system.active = true;
-          }
           itemObject = await ItemHelpers.uniqueAttrs(itemObject, this.object);
           items.push(itemObject);
           break;
