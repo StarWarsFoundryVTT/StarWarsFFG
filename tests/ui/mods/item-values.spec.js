@@ -35,6 +35,8 @@ const CASES = [
   { item: 'armour', modtype: 'Armor Stat', mod: 'soak',        path: 'soak',        base: 2,    value: 1 },
   { item: 'armour', modtype: 'Stat',       mod: 'Soak',        path: 'soak',        base: 2,    value: 1 },
   { item: 'armour', modtype: 'Armor Stat', mod: 'defence',     path: 'defence',     base: 1,    value: 1 },
+  { item: 'armour', modtype: 'Stat',       mod: 'Defence-Melee',  path: 'defence',  base: 1,    value: 1 },
+  { item: 'armour', modtype: 'Stat',       mod: 'Defence-Ranged', path: 'defence',  base: 1,    value: 1 },
   { item: 'armour', modtype: 'Armor Stat', mod: 'encumbrance', path: 'encumbrance', base: 5,    value: 2 },
   { item: 'armour', modtype: 'Armor Stat', mod: 'hardpoints',  path: 'hardpoints',  base: 2,    value: 1 },
   { item: 'armour', modtype: 'Armor Stat', mod: 'price',       path: 'price',       base: 4500, value: 100 },
