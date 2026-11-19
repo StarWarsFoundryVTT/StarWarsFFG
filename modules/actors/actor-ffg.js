@@ -726,6 +726,7 @@ export class ActorFFG extends Actor {
     // collect force pool modifications since it appears the stat value is without AEs active
     let maxForceRating = parseInt(this.system?.stats?.forcePool?.max);
     for (const effect of this.allApplicableEffects()) {
+      if (!effect.active) continue;
       for (const change of effect.changes) {
         if (change.key === "system.stats.forcePool.max") {
           maxForceRating += parseInt(change.value);

@@ -5,6 +5,7 @@
   * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
   * Character sheets build their data once per render instead of once per skill, so they stay responsive after a lot of XP has been spent ([#2251](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2251))
   * Expanding a talent on an actor sheet shows both its short and long description ([#2265](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2265))
+  * Skill Force Boosts count only active Force Rating effects, so unpurchased Force Rating talents no longer add extra Force dice ([#2305](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2305))
 
 `2.0.4`
 * Features:

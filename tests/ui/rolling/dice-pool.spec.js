@@ -323,3 +323,26 @@ test('#2073 a force rating from a specialization matches one from a talent', asy
     'and the same from the specialization'
   ).toBe(1);
 });
+
+test('#2305 an unlearned force rating talent adds no Force dice', async ({ world, consumers }) => {
+  const ctx = await world.build(forceBoost(1));
+  const specialization = await world.addItem(ctx, {
+    item: 'specialization',
+    talents: [
+      {
+        name: 'qa force rating',
+        islearned: false,
+        attributes: [{
+          modtype: 'Stat',
+          mod: 'ForcePool',
+          value: 1,
+        }],
+      },
+    ],
+  });
+
+  expect(await consumers.skillModifier(ctx, 'Athletics', 'Force'), 'only the rating from the power').toBe(1);
+
+  await world.learn(specialization, 0);
+  await expect.poll(() => consumers.skillModifier(ctx, 'Athletics', 'Force'), 'learning it adds a die').toBe(2);
+});
