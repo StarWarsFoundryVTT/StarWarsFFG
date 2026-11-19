@@ -1,3 +1,9 @@
+`2.1.0`
+* Features:
+  * Foundry v14 support added, v13 dropped
+* Fixes:
+  * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
+
 `2.0.4`
 * Features:
   * Added a compendium browser to search and filter items across all world compendiums! ([#2267](https://github.com/StarWarsFoundryVTT/StarWarsFFG/pull/2267), [@KamiliaBlow](https://github.com/KamiliaBlow))

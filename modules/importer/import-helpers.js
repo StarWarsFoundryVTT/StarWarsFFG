@@ -2678,7 +2678,8 @@ export default class ImportHelpers {
     } else {
       if (mod.SkillIsCareer) {
         modtype = "Career Skill";
-      } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount || mod.AdvantageCount || mod.ThreatCount || mod.SuccessCount || mod.FailureCount) {
+      } else if (mod.BoostCount || mod.SetbackCount || mod.AddSetbackCount || mod.ForceCount || mod.AdvantageCount ||
+        mod.ThreatCount || mod.SuccessCount || mod.FailureCount || mod.TriumphCount || mod.DespairCount) {
         modtype = "Skill Boost";
 
         if (mod.AddSetbackCount) {
@@ -2711,6 +2712,14 @@ export default class ImportHelpers {
         if (mod.FailureCount) {
           modtype = "Skill Add Failure";
           value = parseInt(mod.FailureCount, 10);
+        }
+        if (mod.TriumphCount) {
+          modtype = "Skill Add Triumph";
+          value = parseInt(mod.TriumphCount, 10);
+        }
+        if (mod.DespairCount) {
+          modtype = "Skill Add Despair";
+          value = parseInt(mod.DespairCount, 10);
         }
       } else {
         modtype = "Skill Rank";
@@ -2747,7 +2756,15 @@ export default class ImportHelpers {
       const key = `attr${new Date().getTime()}`;
       // ensure further keys have a new entry
       await new Promise(r => setTimeout(r, 1));
+      const supported = [
+        "SkillIsCareer", "BoostCount", "SetbackCount", "AddSetbackCount", "ForceCount", "AdvantageCount",
+        "ThreatCount", "SuccessCount", "FailureCount", "TriumphCount", "DespairCount",
+      ];
       if (!dieMod) {
+        return;
+      } else if (!Object.keys(dieMod).some((k) => supported.includes(k))) {
+        // e.g. UpgradeDifficultyCount has no modifier type, so skip it rather than import it as a skill rank
+        CONFIG.logger.warn(`Skipping unsupported die modifier: ${JSON.stringify(dieMod)}`);
         return;
       } else if (dieMod.SkillKey) {
         // this is a skill modifier
