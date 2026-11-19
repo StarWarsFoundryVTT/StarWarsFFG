@@ -386,7 +386,8 @@ export class ItemFFG extends ItemBaseFFG {
             const activeModifiers = attachment.system?.itemmodifier?.filter((i) => i?.system?.active) || [];
             apply(data.damage, attachment.name, fromAttachment(attachment, activeModifiers, "damage", "Weapon Stat"));
             apply(data.crit, attachment.name, fromAttachment(attachment, activeModifiers, "critical", "Weapon Stat"));
-            if (data.crit.adjusted < 1) data.crit.adjusted = 1;
+            // a weapon with no crit rating (0) keeps none; any other can't be pushed below 1
+            if (data.crit.adjusted < 1) data.crit.adjusted = data.crit.value > 0 ? 1 : 0;
             data.encumbrance.adjusted += fromAttachment(attachment, activeModifiers, "encumbrance", "Weapon Stat");
             data.price.adjusted += fromAttachment(attachment, activeModifiers, "price", "Weapon Stat");
             data.rarity.adjusted += fromAttachment(attachment, activeModifiers, "rarity", "Weapon Stat");

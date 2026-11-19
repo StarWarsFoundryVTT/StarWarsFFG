@@ -243,3 +243,33 @@ test('#2313 a Modification with no mods of its own does not stop the weapon roll
   const pool = await consumers.poolDice(ctx);
   expect(pool.boost, 'the pool is still built around the empty Modification').toBe(1);
 });
+
+test('#2376 attaching to a weapon with no crit rating leaves it at 0', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'weapon',
+    equipped: true,
+    itemOverrides: { crit: { value: 0, adjusted: 0 } },
+  });
+
+  await world.attach(ctx, {
+    modifications: [{ name: 'qa keen', key: 'critical', modtype: 'Weapon Stat', value: -1, installed: true }],
+  });
+
+  expect(await consumers.itemAdjusted(ctx, 'Crit'), 'no crit rating to improve').toBe(0);
+});
+
+test('attaching still cannot push a crit rating below 1', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'weapon',
+    equipped: true,
+    itemOverrides: { crit: { value: 2, adjusted: 2 } },
+  });
+
+  await world.attach(ctx, {
+    modifications: [{ name: 'qa keen', key: 'critical', modtype: 'Weapon Stat', value: -3, installed: true }],
+  });
+
+  expect(await consumers.itemAdjusted(ctx, 'Crit'), 'floored at 1').toBe(1);
+});
