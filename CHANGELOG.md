@@ -12,6 +12,7 @@
   * Dropping an attachment onto an item keeps each Modification's Installed state instead of installing all of them ([#2364](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2364))
   * Armor Defense includes its Defense-Melee and Defense-Ranged mods, not just Armor Stat / Defense ones ([#2365](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2365))
   * Removed duplicate Homestead Cost and Consumables inputs ([#2366](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2366))
+  * Melee weapons imported via SWA adversaries set Brawn characteristic ([#2368](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2368))
 
 `2.0.4`
 * Features:
