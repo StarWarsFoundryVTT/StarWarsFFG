@@ -1,13 +1,20 @@
 import {expect, test} from '../../../support/fixtures';
 
-test('an attachment is refused when the item has no free hardpoints', async ({ world, consumers }) => {
+test('an attachment past the free hardpoints is still accepted, and spends them', async ({ world, consumers }) => {
   const ctx = await world.build({
     actor: 'character',
     item: 'armour',
-    itemOverrides: { soak: { value: 0, adjusted: 0 }, defence: { value: 0, adjusted: 0 }, hardpoints: { value: 2, adjusted: 2, current: 0 } },
+    itemOverrides: { soak: { value: 0, adjusted: 0 }, defence: { value: 0, adjusted: 0 }, hardpoints: { value: 2, adjusted: 2, current: 2 } },
   });
 
-  expect(await world.tryAttach(ctx, { hardpoints: 5 }), 'Attachment is refused with no hardpoints').not.toBeNull();
+  await world.attach(ctx, { hardpoints: 2 });
+  expect(
+    await world.tryAttach(ctx, { hardpoints: 1 }),
+    'Attachment is accepted with no hardpoints left',
+  ).toBeNull();
+  const hp = await consumers.hardpoints(ctx);
+
+  expect(hp.current, 'Both attachments count against the remaining hardpoints').toBe(2 - 2 - 1);
 });
 
 test('an attachment consumes hardpoints from the item budget', async ({ world, consumers }) => {
