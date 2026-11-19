@@ -346,3 +346,30 @@ test('#2305 an unlearned force rating talent adds no Force dice', async ({ world
   await world.learn(specialization, 0);
   await expect.poll(() => consumers.skillModifier(ctx, 'Athletics', 'Force'), 'learning it adds a die').toBe(2);
 });
+
+test('#2306 two force boosts to one skill grant the rating once', async ({ world, consumers }) => {
+  const ctx = await world.build(forceBoost(2));
+  await world.addItem(ctx, {
+    item: 'specialization',
+    talents: [
+      {
+        name: 'qa second boost',
+        islearned: true,
+        attributes: [{
+          modtype: 'Force Boost',
+          mod: 'Athletics',
+          value: 1,
+        }],
+      },
+    ],
+  });
+
+  await expect.poll(
+    () => consumers.skillModifier(ctx, 'Athletics', 'Force'),
+    'two, not four',
+  ).toBe(2);
+  expect(
+    (await consumers.skillPool(ctx, 'Athletics')).force,
+    'and the same in the pool',
+  ).toBe(2);
+});
