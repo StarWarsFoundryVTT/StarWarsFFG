@@ -456,7 +456,9 @@ export class ItemFFG extends ItemBaseFFG {
         data.adjusteditemmodifier = [];
 
         apply(data.soak, this.name, fromSelf("soak", "Armor Stat") + fromSelf("Soak", "Stat"));
-        apply(data.defence, this.name, fromSelf("defence", "Armor Stat"));
+        // armor shows one defence, so a character-stat melee/ranged mod counts once, at the larger of the two
+        const statDefence = Math.max(fromSelf("Defence-Melee", "Stat"), fromSelf("Defence-Ranged", "Stat"));
+        apply(data.defence, this.name, fromSelf("defence", "Armor Stat") + statDefence);
         data.encumbrance.adjusted += fromSelf("encumbrance", "Armor Stat") + fromSelf("Encumbrance", "Stat");
         data.price.adjusted += fromSelf("price", "Armor Stat");
         data.rarity.adjusted += fromSelf("rarity", "Armor Stat");
