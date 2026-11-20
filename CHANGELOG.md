@@ -17,6 +17,7 @@
   * A Modification on an attachment applies its mods once per rank ([#2377](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2377))
   * Claiming an initiative slot credits the selected token properly ([#2383](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2383))
   * A talent's Sources list shows under its long description instead of being pushed out of view ([#2384](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2384))
+  * A ranked talent applies its mods once per rank instead of only once ([#2385](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2385))
 
 `2.0.4`
 * Features:

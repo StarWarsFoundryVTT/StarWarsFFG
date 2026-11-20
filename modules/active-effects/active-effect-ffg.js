@@ -52,6 +52,12 @@ export class ActiveEffectFFG extends ActiveEffect {
     ) {
       return {};
     }
+    // a ranked talent grants its mods once per rank (#2385)
+    const rankedTalent = item?.type === "talent" && item.system?.ranks?.ranked;
+    if (rankedTalent && change.type === "add" && /^-?\d+$/.test(change.value)) {
+      const ranks = parseInt(item.system.ranks.current, 10) || 1;
+      change = {...change, value: String(change.value * ranks)};
+    }
     return super.applyChange(targetDoc, change, options);
   }
 }

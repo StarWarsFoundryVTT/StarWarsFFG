@@ -1,4 +1,5 @@
 import { test, expect } from '../../support/fixtures';
+import * as api from '../../support/api';
 
 /**
  * A modifier on an item reaches the actor's skills once the item is on the actor.
@@ -30,4 +31,28 @@ test('a talent modifier reaches an actor stat', async ({ world, consumers }) => 
   });
 
   expect(await consumers.stat(ctx, 'Strain')).toBe(13 + 3);
+});
+
+test('#2385 a ranked talent grants its skill boost once per rank', async ({ world, consumers, page }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'talent',
+    itemOverrides: {
+      ranks: {
+        ranked: true,
+        current: 1,
+      },
+    },
+    attributes: [{
+      modtype: 'Skill Boost',
+      mod: 'Charm',
+      value: 1,
+    }],
+  });
+
+  expect(await consumers.skillModifier(ctx, 'Charm', 'Boost'), 'one rank grants one boost').toBe(1);
+
+  await api.update(page, ctx.item, { 'system.ranks.current': 3 });
+
+  expect(await consumers.skillModifier(ctx, 'Charm', 'Boost'), 'three ranks grant three boosts').toBe(3);
 });

@@ -1,4 +1,5 @@
 import { test, expect } from '../../support/fixtures';
+import * as api from '../../support/api';
 
 /**
  * The pool a roll is built from, before any dice are thrown.
@@ -345,6 +346,38 @@ test('#2305 an unlearned force rating talent adds no Force dice', async ({ world
 
   await world.learn(specialization, 0);
   await expect.poll(() => consumers.skillModifier(ctx, 'Athletics', 'Force'), 'learning it adds a die').toBe(2);
+});
+
+test('#2385 a ranked force rating talent grants a Force die per rank', async ({ world, consumers, page }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'forcepower',
+    attributes: [{
+      modtype: 'Force Boost',
+      mod: 'Athletics',
+      value: 1,
+    }],
+  });
+  await world.addItem(ctx, {
+    item: 'talent',
+    itemOverrides: {
+      ranks: {
+        ranked: true,
+        current: 2,
+      },
+    },
+    attributes: [{
+      modtype: 'Stat',
+      mod: 'ForcePool',
+      value: 1,
+    }],
+  });
+
+  expect(await consumers.stat(ctx, 'ForcePool'), 'a rating per rank').toBe(2);
+  await expect.poll(() => consumers.skillModifier(ctx, 'Athletics', 'Force'), 'a die per rank').toBe(2);
+
+  await api.update(page, ctx.actor, { 'system.stats.forcePool.value': 1 });
+  await expect.poll(() => consumers.skillModifier(ctx, 'Athletics', 'Force'), 'less the committed die').toBe(1);
 });
 
 test('#2306 two force boosts to one skill grant the rating once', async ({ world, consumers }) => {

@@ -729,7 +729,10 @@ export class ActorFFG extends Actor {
       if (!effect.active) continue;
       for (const change of effect.changes) {
         if (change.key === "system.stats.forcePool.max") {
-          maxForceRating += parseInt(change.value);
+          // a ranked talent grants its force rating once per rank, as ActiveEffectFFG.applyChange does (#2385)
+          const talent = effect.parent?.type === "talent" && effect.parent.system?.ranks?.ranked;
+          const ranks = talent ? (parseInt(effect.parent.system.ranks.current, 10) || 1) : 1;
+          maxForceRating += parseInt(change.value) * ranks;
         }
       }
     }
