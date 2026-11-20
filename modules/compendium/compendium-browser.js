@@ -22,6 +22,42 @@ const SEARCH_DEBOUNCE_MS = 200;
 
 const IGNORED_TAG_HINTS = new Set(["weapon", "shipweapon", "armour", "armor", "gear", "talent"]);
 
+// stats each tab can be filtered by; every tab also gets a source book filter
+const stat = (path, label) => ({ key: path, path, label });
+const RARITY = stat("system.rarity.value", "SWFFG.ItemsRarity");
+const TAB_STAT_FILTERS = {
+  weapons: [
+    stat("system.skill.value", "SWFFG.ItemsSkill"), stat("system.range.value", "SWFFG.ItemsRange"),
+    stat("system.damage.value", "SWFFG.ItemsDamage"), stat("system.crit.value", "SWFFG.ItemsCrit"), RARITY,
+  ],
+  armour: [stat("system.defence.value", "SWFFG.ItemsDefense"), stat("system.soak.value", "SWFFG.Soak"), RARITY],
+  gear: [stat("system.encumbrance.value", "SWFFG.Encumbrance"), RARITY],
+  attachments: [stat("system.hardpoints.value", "SWFFG.Labels.HardPoints"), RARITY],
+  talents: [
+    stat("system.activation.value", "SWFFG.TalentsActivation"), stat("system.ranks.ranked", "SWFFG.Ranked"),
+    stat("system.isForceTalent", "SWFFG.ForceTalent"),
+  ],
+  forcepowers: [stat("system.required_force_rating", "SWFFG.ForcePowerRequiredFR")],
+  vehicles: [
+    stat("system.stats.silhouette.value", "SWFFG.VehicleSilhouette"),
+    stat("system.stats.speed.max", "SWFFG.VehicleSpeed"),
+    stat("system.stats.handling.value", "SWFFG.VehicleHandling"),
+    stat("system.stats.armour.value", "SWFFG.VehicleArmor"),
+    stat("system.stats.rarity.value", "SWFFG.ItemsRarity"),
+  ],
+  adversaries: [
+    ...["Brawn", "Agility", "Intellect", "Cunning", "Willpower", "Presence"].map(
+      (c) => stat(`system.characteristics.${c}.value`, `SWFFG.Characteristic${c}`)),
+    stat("system.stats.soak.value", "SWFFG.Soak"), stat("system.stats.wounds.max", "SWFFG.Thresholds.Wound"),
+  ],
+};
+const SOURCE_FILTER = { key: "source", label: "SWFFG.Source" };
+// how a numeric stat is compared to the chosen value; anything else is matched exactly
+const STAT_OPERATORS = { "=": "=", ">": ">", ">=": "≥", "<": "<", "<=": "≤" };
+const STAT_COMPARISONS = {
+  ">": (a, b) => a > b, ">=": (a, b) => a >= b, "<": (a, b) => a < b, "<=": (a, b) => a <= b,
+};
+
 export default class CompendiumBrowser extends HandlebarsApplicationMixin(ApplicationV2) {
   static DEFAULT_OPTIONS = {
     id: "swffg-compendium-browser",
@@ -57,6 +93,9 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     this._search = "";
     this._selectedTags = new Set();
     this._availableTags = [];
+    this._statFilters = new Map();
+    this._statOps = new Map();
+    this._statOptions = [];
     this._fullIndex = [];
     this._filtered = [];
     this._renderedCount = 0;
@@ -82,6 +121,11 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
       availableTags: this._availableTags.map((tag) => ({ tag, selected: this._selectedTags.has(tag) })),
       selectedCount: this._selectedTags.size,
       hasTagsFilter: this._availableTags.length > 0,
+      statFilters: this._statOptions.map((s) => ({
+        ...s, selected: this._statFilters.get(s.key) ?? "", op: this._statOps.get(s.key) ?? "=",
+      })),
+      statOperators: STAT_OPERATORS,
+      activeFilterCount: this._selectedTags.size + this._statFilters.size,
       results: shown,
       totalCount: this._filtered.length,
       renderedCount: shown.length,
@@ -109,6 +153,12 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
           this._searchDebounce = setTimeout(() => this._onSearchInput(event.target.value), SEARCH_DEBOUNCE_MS);
         });
       }
+      htmlElement.querySelectorAll("select[data-stat]").forEach((select) => {
+        select.addEventListener("change", (event) => this._onStatChange(event.target));
+      });
+      htmlElement.querySelectorAll("select[data-stat-op]").forEach((select) => {
+        select.addEventListener("change", (event) => this._onStatOpChange(event.target));
+      });
     } else if (partId === "results") {
       htmlElement.addEventListener("scroll", (event) => this._onScrollResults(event));
       htmlElement.querySelectorAll('[data-action="openEntry"]').forEach((el) => {
@@ -121,6 +171,7 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     try {
       this._fullIndex = await CompendiumBrowser._fetchIndex(this.currentTabDef);
       this._collectAvailableTags();
+      this._collectStatOptions();
       this._applyFilters();
     } catch (err) {
       CONFIG.logger.error(`CompendiumBrowser: failed to load index`, err);
@@ -128,6 +179,7 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
       this._fullIndex = [];
       this._filtered = [];
       this._availableTags = [];
+      this._statOptions = [];
     } finally {
       this._loading = false;
     }
@@ -143,8 +195,10 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     const el = this.element?.querySelector(".cb-count");
     if (!el) return;
     const count = game.i18n.format("SWFFG.CompendiumBrowser.ResultsCount", { count: this._filtered.length });
-    const note = this._selectedTags.size
-      ? `<span class="cb-filtered-note">(${this._selectedTags.size} ${game.i18n.localize("SWFFG.CompendiumBrowser.TagsSelected")})</span>`
+    const active = this._selectedTags.size + this._statFilters.size;
+    const selected = game.i18n.localize("SWFFG.CompendiumBrowser.TagsSelected");
+    const note = active
+      ? `<span class="cb-filtered-note">(${active} ${selected})</span>`
       : "";
     el.innerHTML = `<span>${count}</span>${note}`;
   }
@@ -153,7 +207,10 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     const types = new Set(tabDef.types);
     const typeName = tabDef.documentClass === "Item" ? "Item" : "Actor";
     const packs = game.packs.filter((p) => p.metadata.type === typeName && p.visible);
-    const indexFields = ["img", "type", "system.metadata.tags", "system.metadata.sources"];
+    const statDefs = TAB_STAT_FILTERS[tabDef.id] ?? [];
+    const indexFields = [
+      "img", "type", "system.metadata.tags", "system.metadata.sources", ...statDefs.map((s) => s.path),
+    ];
     const results = [];
     for (const pack of packs) {
       let matched = 0;
@@ -168,6 +225,10 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
           if (!Array.isArray(tags)) tags = [];
           const sources = foundry.utils.getProperty(entry, "system.metadata.sources") || [];
           if (tags.length) withTags++;
+          const stats = Object.fromEntries(statDefs.map((s) => [s.key, CompendiumBrowser._statValue(entry, s.path)]));
+          // "Book pg.12" files under "Book"
+          const books = (Array.isArray(sources) ? sources : []).map((s) => String(s).replace(/\s*pg\.\s*\S+$/i, ""));
+          stats[SOURCE_FILTER.key] = books;
           results.push({
             uuid: entry.uuid,
             name: entry.name,
@@ -175,6 +236,7 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
             img: entry.img,
             tags,
             sources: Array.isArray(sources) ? sources : [],
+            stats,
             packLabel: pack.metadata.label,
           });
         }
@@ -200,12 +262,49 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     CONFIG.logger.debug(`CompendiumBrowser [${this._activeTab}]: ${this._fullIndex.length} items, ${set.size} unique tags before filtering -> ${this._availableTags.length} shown`, this._availableTags.slice(0, 15));
   }
 
+  /** A stat as a filterable string, or null when the entry doesn't have one. */
+  static _statValue(entry, path) {
+    const value = foundry.utils.getProperty(entry, path);
+    return value === undefined || value === null || value === "" ? null : String(value);
+  }
+
+  _collectStatOptions() {
+    this._statOptions = [];
+    for (const def of [...(TAB_STAT_FILTERS[this._activeTab] ?? []), SOURCE_FILTER]) {
+      const values = new Set();
+      for (const r of this._fullIndex) {
+        for (const v of [r.stats[def.key]].flat()) if (v) values.add(v);
+      }
+      // a stat every entry shares filters nothing
+      if (values.size < 2) continue;
+      const numeric = [...values].every((v) => v.trim() !== "" && !isNaN(Number(v)));
+      const sorted = [...values].sort(
+        (a, b) => (numeric ? Number(a) - Number(b) : a.localeCompare(b, game.i18n.lang)));
+      const options = sorted.map((value) => ({ value, label: CompendiumBrowser._statLabel(value) }));
+      this._statOptions.push({ key: def.key, label: game.i18n.localize(def.label), options, numeric });
+    }
+  }
+
+  static _statLabel(value) {
+    if (value === "true") return game.i18n.localize("SWFFG.OptionValueYes");
+    if (value === "false") return game.i18n.localize("SWFFG.OptionValueNo");
+    return game.i18n.localize(value);
+  }
+
   _applyFilters() {
     const term = this._search.trim().toLowerCase();
     const selected = this._selectedTags;
     let filtered = this._fullIndex;
     if (selected.size > 0) {
       filtered = filtered.filter((r) => r.tags.some((t) => selected.has(t)));
+    }
+    for (const [key, want] of this._statFilters) {
+      const compare = STAT_COMPARISONS[this._statOps.get(key)];
+      if (compare) {
+        filtered = filtered.filter((r) => r.stats[key] !== null && compare(Number(r.stats[key]), Number(want)));
+      } else {
+        filtered = filtered.filter((r) => [r.stats[key]].flat().includes(want));
+      }
     }
     if (term.length > 0) {
       filtered = filtered.filter(
@@ -239,6 +338,9 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     this._search = "";
     this._selectedTags = new Set();
     this._availableTags = [];
+    this._statFilters = new Map();
+    this._statOps = new Map();
+    this._statOptions = [];
     this._fullIndex = [];
     this._filtered = [];
     this._renderedCount = 0;
@@ -257,6 +359,17 @@ export default class CompendiumBrowser extends HandlebarsApplicationMixin(Applic
     if (!tag) return;
     if (this._selectedTags.has(tag)) this._selectedTags.delete(tag);
     else this._selectedTags.add(tag);
+    await this._refresh();
+  }
+
+  async _onStatChange(select) {
+    if (select.value) this._statFilters.set(select.dataset.stat, select.value);
+    else this._statFilters.delete(select.dataset.stat);
+    await this._refresh();
+  }
+
+  async _onStatOpChange(select) {
+    this._statOps.set(select.dataset.statOp, select.value);
     await this._refresh();
   }
 
