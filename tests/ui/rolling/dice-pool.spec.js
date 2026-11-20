@@ -406,3 +406,51 @@ test('#2306 two force boosts to one skill grant the rating once', async ({ world
     'and the same in the pool',
   ).toBe(2);
 });
+
+const weaponFor = (skill) => ({
+  actor: 'character',
+  item: 'weapon',
+  equipped: true,
+  itemOverrides: {
+    skill: { value: skill },
+  },
+});
+
+test('#2372 Skill Add Downgrade turns a proficiency die back into ability', async ({ world, page }) => {
+  const ctx = await world.build(weaponFor('Gunnery'));
+  await world.addItem(ctx, {
+    item: 'gear',
+    attributes: [{
+      modtype: 'Skill Add Downgrade',
+      mod: 'Gunnery',
+      value: 1,
+    }],
+  });
+
+  await api.rollWeapon(page, ctx.actor, ctx.item);
+
+  const dice = await api.readLastRollDice(page);
+  expect(
+    [dice.ability, dice.proficiency],
+    'Agility 2 and one rank, downgraded once',
+  ).toEqual([2, 0]);
+});
+
+test('#2372 a characteristic modifier does nothing while characteristicDiceMods is off',
+  async ({ world, consumers, page }) => {
+    const ctx = await world.build(weaponFor('Melee'));
+    await world.addItem(ctx, {
+      item: 'gear',
+      attributes: [{
+        modtype: 'Characteristic Setback',
+        mod: 'Brawn',
+        value: 1,
+      }],
+    });
+
+    expect(await consumers.skillModifier(ctx, 'Athletics', 'Setback'), 'no Brawn skill gets it').toBeNull();
+
+    await api.rollWeapon(page, ctx.actor, ctx.item);
+
+    expect((await api.readLastRollDice(page)).setback, 'nor does the roll').toBe(0);
+  });

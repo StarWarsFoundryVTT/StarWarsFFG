@@ -1,5 +1,6 @@
 import PopoutEditor from "../popout-editor.js";
 import ModifierHelpers from "../helpers/modifiers.js";
+import {characteristicDiceFields} from "../config/ffg-modifiers.js";
 
 /**
  * Extend the base Actor entity.
@@ -597,6 +598,22 @@ export class ActorFFG extends Actor {
                 // this is an active effect modifying a skill, add the source
                 actorData.system.skills[skillName][`${skillMod}source`].push({
                   modtype: modType,
+                  key: "purchased",
+                  name: effect.parent.type,
+                  value: change.value,
+                  type: effect.parent.name,
+                });
+              }
+            }
+            // a characteristic dice mod is a source on every skill using that characteristic (#2372)
+            const [, group, characteristic, skillMod] = change.key.split(".");
+            const enabled = game.settings.get("starwarsffg", "characteristicDiceMods");
+            if (enabled && group === "characteristics" && Object.values(characteristicDiceFields).includes(skillMod)) {
+              for (const skill of Object.values(actorData.system.skills)) {
+                if (skill.characteristic !== characteristic) continue;
+                skill[`${skillMod}source`] ??= [];
+                skill[`${skillMod}source`].push({
+                  modtype: ModifierHelpers.getModTypeByModPath(change.key),
                   key: "purchased",
                   name: effect.parent.type,
                   value: change.value,

@@ -84,6 +84,10 @@ export class DicePoolFFG {
           return `${modtype} from ${rank.name} (${rank.type}): ${rank.value}`;
         });
     }
+    if (obj?.source?.downgrades?.length) {
+      const downgrades = obj.source.downgrades.filter((item) => parseInt(item.value, 10) > 0);
+      this.source.downgrades = downgrades.map((rank) => `${rank.name} (${rank.type}): ${rank.value} downgrade(s)`);
+    }
     if (obj?.source?.success?.length) {
       this.source.success = obj.source.success
         .filter((item) => parseInt(item.value, 10) > 0)
@@ -365,7 +369,11 @@ export class DicePoolFFG {
   }
 
   _addSourceToolTip(container) {
-    const createToolTip = this.source?.skill?.length || this.source?.boost?.length || this.source?.remsetback?.length || this.source?.setback?.length || this.source?.upgrades?.length || this.source?.success?.length || this.source?.advantage?.length || this.source?.light?.length || this.source?.failure?.length || this.source?.threat?.length || this.source?.dark?.length || this.source?.triumph?.length || this.source?.despair?.length;
+    const createToolTip = this.source?.skill?.length || this.source?.boost?.length ||
+      this.source?.remsetback?.length || this.source?.setback?.length || this.source?.upgrades?.length ||
+      this.source?.downgrades?.length || this.source?.success?.length || this.source?.advantage?.length ||
+      this.source?.light?.length || this.source?.failure?.length || this.source?.threat?.length ||
+      this.source?.dark?.length || this.source?.triumph?.length || this.source?.despair?.length;
 
     if (createToolTip) {
       const mapDataToString = (values) => {
@@ -390,6 +398,9 @@ export class DicePoolFFG {
       }
       if (this.source?.upgrades?.length) {
         mapDataToString(this.source.upgrades);
+      }
+      if (this.source?.downgrades?.length) {
+        mapDataToString(this.source.downgrades);
       }
       if (this.source?.success?.length) {
         mapDataToString(this.source.success);

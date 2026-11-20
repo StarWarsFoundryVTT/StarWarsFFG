@@ -131,6 +131,17 @@ export default class SettingsHelpers {
       onChange: this.debouncedReload,
     });
 
+    // Characteristic dice and result modifiers (#2372)
+    game.settings.register("starwarsffg", "characteristicDiceMods", {
+      name: game.i18n.localize("SWFFG.Settings.CharacteristicDiceMods.Name"),
+      hint: game.i18n.localize("SWFFG.Settings.CharacteristicDiceMods.Hint"),
+      scope: "world",
+      config: false,
+      default: false,
+      type: Boolean,
+      onChange: this.debouncedReload,
+    });
+
     // Enable auto Soak calculation
     game.settings.register("starwarsffg", "privateTriggers", {
       name: game.i18n.localize("SWFFG.EnablePrivateTriggers"),

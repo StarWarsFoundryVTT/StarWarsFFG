@@ -105,6 +105,32 @@ export const itemmodifier_resultmodifiers = {
 
 
 /**
+ * Modifier types adding dice or results to every skill of a characteristic, and the skill field each feeds
+ */
+export const characteristicDiceFields = {
+  "Characteristic Boost": "boost",
+  "Characteristic Setback": "setback",
+  "Characteristic Remove Setback": "remsetback",
+  "Characteristic Add Upgrade": "upgrades",
+  "Characteristic Add Downgrade": "downgrades",
+  "Characteristic Add Advantage": "advantage",
+  "Characteristic Add Dark": "dark",
+  "Characteristic Add Despair": "despair",
+  "Characteristic Add Failure": "failure",
+  "Characteristic Add Light": "light",
+  "Characteristic Add Success": "success",
+  "Characteristic Add Threat": "threat",
+  "Characteristic Add Triumph": "triumph",
+};
+
+function characteristicDiceTypes() {
+  return Object.fromEntries(Object.keys(characteristicDiceFields).map((t) => [t, {
+    "value": t,
+    "label": `SWFFG.ModType${t.replaceAll(" ", "")}`,
+  }]));
+}
+
+/**
  * Used for the "modifier type" selector for modifiers
  */
 export const allModifiersTypes = {
@@ -172,6 +198,10 @@ export const allModifiersTypes = {
     "value": "Skill Add Upgrade",
     "label": "SWFFG.ModTypeSkillAddUpgrade",
   },
+  "Skill Add Downgrade": {
+    "value": "Skill Add Downgrade",
+    "label": "SWFFG.ModTypeSkillAddDowngrade",
+  },
   "Skill Boost": {
     "value": "Skill Boost",
     "label": "SWFFG.ModTypeSkillBoost",
@@ -188,6 +218,7 @@ export const allModifiersTypes = {
     "value": "Skill Setback",
     "label": "SWFFG.ModTypeSkillSetback",
   },
+  ...characteristicDiceTypes(),
   "Weapon Stat": {
     "value": "Weapon Stat",
     "label": "SWFFG.ModTypeStatWeapon",
@@ -225,16 +256,19 @@ export const allModifiersMap = {
   "Skill Add Threat": foundry.utils.duplicate(skills),
   "Skill Add Triumph": foundry.utils.duplicate(skills),
   "Skill Add Upgrade": foundry.utils.duplicate(skills),
+  "Skill Add Downgrade": foundry.utils.duplicate(skills),
   "Skill Boost": foundry.utils.duplicate(skills),
   "Skill Rank": foundry.utils.duplicate(skills),
   "Skill Remove Setback": foundry.utils.duplicate(skills),
   "Skill Setback": foundry.utils.duplicate(skills),
+  ...Object.fromEntries(
+    Object.keys(characteristicDiceFields).map((t) => [t, foundry.utils.duplicate(character_characteristics)])),
 }
 
 // list of modifier types which use skills. see above for usages of it
 export const skillModifierTypes = [
   "Career Skill", "Force Boost", "Skill Add Advantage", "Skill Add Dark",
   "Skill Add Despair", "Skill Add Failure", "Skill Add Light", "Skill Add Success",
-  "Skill Add Threat", "Skill Add Triumph", "Skill Add Upgrade", "Skill Boost",
+  "Skill Add Threat", "Skill Add Triumph", "Skill Add Upgrade", "Skill Add Downgrade", "Skill Boost",
   "Skill Rank", "Skill Remove Setback", "Skill Setback",
 ];

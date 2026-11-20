@@ -33,7 +33,7 @@ import TemplateHelpers from "./helpers/partial-templates.js";
 import SkillListImporter from "./importer/skills-list-importer.js";
 import DestinyTracker from "./ffg-destiny-tracker.js";
 import { defaultSkillList } from "./config/ffg-skillslist.js";
-import { skillModifierTypes } from "./config/ffg-modifiers.js";
+import { characteristicDiceFields, skillModifierTypes } from "./config/ffg-modifiers.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
 import {register_crew} from "./helpers/crew.js";
 
@@ -264,6 +264,9 @@ Hooks.once("init", async function () {
   await foundry.applications.handlebars.loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
 
   SettingsHelpers.initLevelSettings();
+  if (!game.settings.get("starwarsffg", "characteristicDiceMods")) {
+    Object.keys(characteristicDiceFields).forEach((t) => delete CONFIG.FFG.allowableModifierTypes[t]);
+  }
 
   const uitheme = game.settings.get("starwarsffg", "ui-uitheme");
 
