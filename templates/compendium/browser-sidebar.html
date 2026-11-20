@@ -19,9 +19,32 @@
       <span><i class="fas fa-spinner fa-spin-pulse"></i> {{localize 'SWFFG.CompendiumBrowser.Loading'}}</span>
     {{else}}
       <span>{{localize 'SWFFG.CompendiumBrowser.ResultsCount' count=totalCount}}</span>
-      {{#if selectedCount}}<span class="cb-filtered-note">({{selectedCount}} {{localize 'SWFFG.CompendiumBrowser.TagsSelected'}})</span>{{/if}}
+      {{#if activeFilterCount}}
+      <span class="cb-filtered-note">({{activeFilterCount}} {{localize 'SWFFG.CompendiumBrowser.TagsSelected'}})</span>
+      {{/if}}
     {{/if}}
   </div>
+
+  {{#if statFilters.length}}
+  <div class="cb-filters cb-stat-filters">
+    <div class="cb-filters-header">
+      <span>{{localize 'SWFFG.CompendiumBrowser.FilterByStat'}}</span>
+    </div>
+    {{#each statFilters}}
+    <label class="cb-stat-filter">
+      <span>{{label}}</span>
+      {{#if numeric}}
+      <select class="cb-stat-op" data-stat-op="{{key}}">
+        {{selectOptions ../statOperators selected=op}}
+      </select>
+      {{/if}}
+      <select data-stat="{{key}}">
+        {{selectOptions options selected=selected blank=(localize 'SWFFG.CompendiumBrowser.AnyValue')}}
+      </select>
+    </label>
+    {{/each}}
+  </div>
+  {{/if}}
 
   {{#if hasTagsFilter}}
   <div class="cb-filters">

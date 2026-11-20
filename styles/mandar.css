@@ -5596,6 +5596,30 @@ img {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.starwarsffg.compendium-browser .cb-sidebar .cb-stat-filters .cb-stat-filter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 12px;
+}
+.starwarsffg.compendium-browser .cb-sidebar .cb-stat-filters .cb-stat-filter > span {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.starwarsffg.compendium-browser .cb-sidebar .cb-stat-filters .cb-stat-filter select {
+  flex: 0 0 60%;
+  min-width: 0;
+}
+.starwarsffg.compendium-browser .cb-sidebar .cb-stat-filters .cb-stat-filter select.cb-stat-op {
+  flex: 0 0 3.5em;
+}
+.starwarsffg.compendium-browser .cb-sidebar .cb-stat-filters .cb-stat-filter .cb-stat-op + select {
+  flex-basis: 40%;
+}
 .starwarsffg.compendium-browser .cb-results {
   display: flex;
   flex-direction: column;
