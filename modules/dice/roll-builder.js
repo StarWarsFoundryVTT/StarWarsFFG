@@ -126,26 +126,10 @@ export default class RollBuilderFFG extends FormApplication {
         const sound = html.find(".sound-selection")?.[0]?.value;
         if (sound) {
           this.roll.sound = sound;
-          if (this?.roll?.item) {
-            let entity;
-            let entityData;
-            if (!this?.roll?.item?.flags?.starwarsffg?.uuid) {
-              entity = game.actors.get(this.roll.data.actor._id);
-              entityData = {
-                _id: this.roll.item.id,
-              };
-            } else {
-              const parts = this.roll.item.flags.starwarsffg?.uuid.split(".");
-              const [sceneName, sceneId, entityName, entityId, embeddedName, embeddedId] = parts;
-              entity = game.actors.tokens[entityId].items.get(embeddedId);
-              if (parts.length === 6) {
-                entityData = {
-                  _id: entity.id,
-                };
-              }
-            }
-            foundry.utils.setProperty(entityData, "flags.starwarsffg.ffgsound", sound);
-            entity.update(entityData);
+          const itemUuid = this.roll.item?.flags?.starwarsffg?.uuid ?? this.roll.item?.uuid;
+          if (itemUuid) {
+            const item = await fromUuid(itemUuid);
+            item.setFlag("starwarsffg", "ffgsound", sound);
           }
         }
       }
