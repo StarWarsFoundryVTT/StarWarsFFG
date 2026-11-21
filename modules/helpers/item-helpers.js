@@ -279,10 +279,7 @@ export default class ItemHelpers {
           if (matchingEffect) {
             // the modifier's own rank: the derived rank_current also folds in ranks from
             // attachments, which bring their own effects, and is not yet computed during _onUpdate
-            let ranks = parseInt(modifier.system.rank, 10);
-            if (isNaN(ranks) || ranks < 1) {
-              ranks = 1;
-            }
+            const ranks = ModifierHelpers.modApplications(modifier);
             const newValue = ranks * modifier.system.attributes[attr].value;
             CONFIG.logger.debug(`Located ${attr}, updating with new value of ${newValue}`);
             // keep every change on the effect - some mods (e.g., Defence) explode into several

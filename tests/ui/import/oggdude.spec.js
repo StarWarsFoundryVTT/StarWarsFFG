@@ -59,6 +59,21 @@ test('an imported attachment carries its AddedMods as Modifications', async ({ w
   expect(Number(modifications[0].system.rank), 'ranked by its count').toBe(Number(source.AddedMods.Mod[0].Count));
 });
 
+test('#2103 an added mod that installs more than once arrives with one slot per install', async ({ page }) => {
+  const source = await oggdude.record(page, 'ItemAttachments.xml', 'AUGSPIN');
+  const added = source.AddedMods.Mod.find((mod) => mod.Key === 'DAMADD');
+
+  // the seeded copy may predate slots
+  await oggdude.reimport(page, 'ItemAttachments');
+  const attachment = await api.findImported(page, 'oggdude.WeaponAttachments', 'AUGSPIN');
+  const modifications = await api.read(page, attachment, 'system.itemmodifier');
+  const damage = modifications.find((mod) => mod.flags?.starwarsffg?.ffgimportid === 'DAMADD');
+  const unmodified = Array(Number(added.Count)).fill('unmodified');
+
+  expect(damage.system.slots, 'an uninstalled slot per count').toEqual(unmodified);
+  expect(Number(damage.system.rank), 'each worth one rank').toBe(1);
+});
+
 test('a modifier referenced by Key resolves to the descriptor it names', async ({ world, page }) => {
   const source = await oggdude.record(page, 'Weapons.xml', 'BRASS');
   const quality = source.Qualities.Quality.find((entry) => entry.Key === 'PIERCE');

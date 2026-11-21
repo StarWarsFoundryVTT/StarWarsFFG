@@ -5700,3 +5700,48 @@ img {
 }
 
 
+.starwarsffg.flat_editor .modification_header .mod-slots {
+  flex-wrap: wrap;
+  gap: 3px;
+}
+.starwarsffg.flat_editor .modification_header .mod-slots .mod-slot {
+  flex: 1 0 auto;
+  width: auto;
+}
+.starwarsffg.flat_editor .modification_header .mod-slots .mod-slot.unmodified {
+  background-color: #f3e6a3;
+}
+.starwarsffg.flat_editor .modification_header .mod-slots .mod-slot.modified {
+  background-color: #b9dcb0;
+}
+.starwarsffg.flat_editor .modification_header .mod-slots .mod-slot.failed {
+  background-color: #e8aaa6;
+}
+.starwarsffg.flat_editor .modifications .next-mod {
+  font-weight: bold;
+}
+/* the modification list shrinks to fit the window instead of running past its bottom edge */
+.starwarsffg.flat_editor form.attachment-editor {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.starwarsffg.flat_editor form.attachment-editor > .content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.starwarsffg.flat_editor form.attachment-editor .tab.flat_editor.modifications.active {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  max-height: none;
+  overflow: hidden;
+}
+.starwarsffg.flat_editor form.attachment-editor .modification_container {
+  flex: 1;
+  min-height: 0;
+  max-height: 340px;
+  overflow-y: auto;
+}

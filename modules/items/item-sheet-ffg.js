@@ -484,7 +484,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
               continue;
             }
             const modName = mod.name;
-            const rank = mod.system.rank;
+            // an unranked quality stays unranked however many slots are installed
+            const rank = mod.system.rank ? ModifierHelpers.modApplications(mod) : mod.system.rank;
             const description = mod.system.description;
             let modIndex = data.data.doNotSubmit.qualities.findIndex(i => i.name === modName);
             if (modIndex < 0) {

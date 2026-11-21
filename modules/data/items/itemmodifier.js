@@ -12,6 +12,8 @@ export class ItemModifierData extends foundry.abstract.TypeDataModel {
       // ranks contributed by every source of this quality, summed while preparing the parent item
       rank_current: new fields.NumberField({ required: true, nullable: true, initial: 0 }),
       active: new fields.BooleanField({ required: true, initial: false }),
+      // on an attachment, the install state of each attempt; absent elsewhere, and on attachments from before it
+      slots: new fields.ArrayField(new fields.StringField(), { required: false, initial: undefined }),
     };
   }
 }

@@ -38,6 +38,12 @@ FFG.configureVehicleRange = configureVehicleRange;
 FFG.vehicle_stats = vehicle_stats;
 FFG.weapon_stats = weapon_stats;
 FFG.itemmodifier_types = modifier_types;
+// the install state of each slot on an attachment's Modification
+FFG.mod_slot_states = {
+  unmodified: "SWFFG.Items.Popout.Slot.Unmodified",
+  modified: "SWFFG.Items.Popout.Slot.Modified",
+  failed: "SWFFG.Items.Popout.Slot.Failed",
+};
 FFG.armor_stats = armor_stats;
 FFG.allowableModifierTypes = allModifiersTypes;
 FFG.allowableModifierChoices = allModifiersMap;
