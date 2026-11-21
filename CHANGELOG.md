@@ -8,6 +8,7 @@
   * The currency name can be changed in the settings ([#2245](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2245))
   * Modifications can now have a "failed" state ([#2103](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2103))
   * Ship attachments now have long description/sources ([#2103](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2103))
+  * Adjusting XP can change available XP, total XP, or both ([#2176](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2176))
 * Fixes:
   * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
   * Character sheets build their data once per render instead of once per skill, so they stay responsive after a lot of XP has been spent ([#2251](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2251))

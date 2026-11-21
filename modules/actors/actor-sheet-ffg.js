@@ -2632,6 +2632,12 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     <input type="number" id="adjustAmount" name="adjustAmount" value="0" />
     <label for="adjustReason">${game.i18n.localize("SWFFG.XP.Adjust.Window.Reason")}</label>
     <input type="text" id="adjustReason" name="adjustReason" value="${game.i18n.localize("SWFFG.XP.Adjust.Window.Default")}" />
+    <label for="adjustTarget">${game.i18n.localize("SWFFG.XP.Adjust.Window.ApplyTo")}</label>
+    <select id="adjustTarget" name="adjustTarget">
+      <option value="both">${game.i18n.localize("SWFFG.XP.Adjust.Window.ApplyBoth")}</option>
+      <option value="available">${game.i18n.localize("SWFFG.XP.Adjust.Window.ApplyAvailable")}</option>
+      <option value="total">${game.i18n.localize("SWFFG.XP.Adjust.Window.ApplyTotal")}</option>
+    </select>
     `;
 
     let d = new Dialog({
@@ -2645,16 +2651,19 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             const availableXPToLog = foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
             const adjustAmount = parseInt($("#adjustAmount").val());
             const adjustReason = foundry.utils.deepClone($("#adjustReason").val());
+            const adjustTarget = $("#adjustTarget").val();
+            const availableChange = adjustTarget === "total" ? 0 : adjustAmount;
+            const totalChange = adjustTarget === "available" ? 0 : adjustAmount;
             const AEState = await ActorHelpers.beginEditMode(this.actor, true);
             const startingAvailableXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.available));
             const totalXP =  foundry.utils.deepClone(parseInt(this.actor.system.experience.total));
-            const updatedAvailableXP = startingAvailableXP + adjustAmount;
-            const updatedTotalXP = totalXP + adjustAmount;
+            const updatedAvailableXP = startingAvailableXP + availableChange;
+            const updatedTotalXP = totalXP + totalChange;
             await this.actor.update({ 'system.experience.available': updatedAvailableXP, 'system.experience.total': updatedTotalXP });
             await xpLogEarn(
               this.object,
               adjustAmount,
-              availableXPToLog + adjustAmount,
+              availableXPToLog + availableChange,
               updatedTotalXP,
               adjustReason,
               "Self"

@@ -1,4 +1,5 @@
 import { test, expect } from '../../support/fixtures';
+import * as api from '../../support/api';
 
 /**
  * The ledger of what was earned and spent.
@@ -97,4 +98,29 @@ test('a refused purchase logs nothing', async ({ world, consumers }) => {
 
   const log = await consumers.xpLog(ctx);
   expect(log, 'nothing bought, nothing recorded').toHaveLength(0);
+});
+
+test('#2176 adjusting only available XP leaves total XP alone', async ({ world, page, consumers }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    actorOverrides: { experience: { available: 100, total: 250 } },
+  });
+  const sheet = page.locator(`#${await api.openSheet(page, ctx.actor)}`);
+
+  await sheet.getByTitle('XP log').click();
+  await sheet.locator('.xp-adjustment').click();
+  const dialog = page.locator('.window-app.dialog').last();
+  await dialog.locator('#adjustAmount').fill('-20');
+  await dialog.locator('#adjustTarget').selectOption('available');
+  await api.answerDialog(page, 'one');
+
+  const xp = await consumers.xp(ctx);
+  expect(xp?.available, 'available XP drops by the adjustment').toBe(100 - 20);
+  expect(xp?.total, 'total XP is unchanged').toBe(250);
+  const log = await consumers.xpLog(ctx);
+  expect(log, 'one adjustment, one entry').toHaveLength(1);
+  expect(log[0].action, 'logged as an adjustment').toBe('adjusted');
+  expect(log[0].cost, 'the amount adjusted').toBe(-20);
+  expect(log[0].available, 'the balance it left behind').toBe(100 - 20);
+  expect(log[0].total, 'the unchanged total').toBe(250);
 });
