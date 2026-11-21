@@ -5,6 +5,7 @@
   * The compendium browser can filter by stats such as rarity, damage, speed or characteristics (exactly or with >, ≥, <, ≤), and by source book, without needing them added as tags ([#2379](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2379))
   * Added Skill Downgrade mods and Characteristic mods (defaults to off) ([#2372](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2372))
   * Vehicle weapons can track ammo ([#2337](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2337))
+  * The currency name can be changed in the settings ([#2245](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2245))
 * Fixes:
   * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
   * Character sheets build their data once per render instead of once per skill, so they stay responsive after a lot of XP has been spent ([#2251](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2251))

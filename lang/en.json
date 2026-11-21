@@ -663,6 +663,8 @@
   "SWFFG.SettingsDestinyLightHint": "Change the text on the Destiny Pool for Light Side",
   "SWFFG.SettingsDestinyDark": "Destiny Dark Side",
   "SWFFG.SettingsDestinyDarkHint": "Change the text on the Destiny Pool for Dark Side",
+  "SWFFG.SettingsCurrencyName": "Currency Name",
+  "SWFFG.SettingsCurrencyNameHint": "Change the name of the currency shown on actor sheets (e.g. Credits)",
   "SWFFG.SettingsEnableForceDie" : "Enable Force Die in Roller",
   "SWFFG.SettingsEnableForceDieHint" : "Enables/Disables White Force Die in Roller (NOTE: If Dice theme is Star Wars Force Die will automatically be enabled)",
   "SWFFG.SettingsPausedImage": "Paused Icon",

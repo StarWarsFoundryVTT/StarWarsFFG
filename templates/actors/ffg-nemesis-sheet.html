@@ -143,7 +143,7 @@
           }}
         {{!-- Credits Box --}}
           {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
-            (object blocktype="double" title="SWFFG.DescriptionCredits" type="String" name="data.stats.credits.value" value=data.stats.credits.value)
+            (object blocktype="double" title=this.settings.currencyName type="String" name="data.stats.credits.value" value=data.stats.credits.value)
           }}
       </div>
 

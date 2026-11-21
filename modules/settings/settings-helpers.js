@@ -340,6 +340,21 @@ export default class SettingsHelpers {
       },
     });
 
+    game.settings.register("starwarsffg", "currency-name", {
+      name: game.i18n.localize("SWFFG.SettingsCurrencyName"),
+      hint: game.i18n.localize("SWFFG.SettingsCurrencyNameHint"),
+      scope: "world",
+      config: false,
+      default: "SWFFG.DescriptionCredits",
+      type: String,
+      onChange: (rule) => {
+        if (rule === "") {
+          game.settings.set("starwarsffg", "currency-name", "SWFFG.DescriptionCredits");
+        }
+        return this.debouncedReload();
+      },
+    });
+
     game.settings.register("starwarsffg", "enableForceDie", {
       name: game.i18n.localize("SWFFG.SettingsEnableForceDie"),
       hint: game.i18n.localize("SWFFG.SettingsEnableForceDieHint"),

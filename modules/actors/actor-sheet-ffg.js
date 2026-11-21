@@ -276,6 +276,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     data.settings = {
       enableSoakCalculation: autoSoakCalculation,
       enableCriticalInjuries: this.actor.flags?.starwarsffg?.config?.enableCriticalInjuries,
+      currencyName: game.settings.get("starwarsffg", "currency-name"),
     };
 
     // Establish sheet width and height using either saved persistent values or default values defined in swffg-config.js
