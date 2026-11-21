@@ -55,9 +55,15 @@ export class itemEditor extends FormApplication  {
       modifierChoices = updatedChoices;
     }
 
+    const next = ModifierHelpers.nextModAttempt(data.clickedObject);
+    const dice = await foundry.applications.ux.TextEditor.enrichHTML("[DI]".repeat(next.difficulty));
+    const nextMod = game.i18n.format("SWFFG.Items.Popout.Label.NextMod", {dice, cost: next.cost});
+
     return {
       modifierTypes: CONFIG.FFG.allowableModifierTypes,
       modifierChoices: modifierChoices,
+      slotStates: CONFIG.FFG.mod_slot_states,
+      nextMod: nextMod,
       data: data,
     };
   }
@@ -71,6 +77,13 @@ export class itemEditor extends FormApplication  {
     let enriched = this.data;
     enriched.clickedObject.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(this.data.clickedObject.system.description);
     for (let modification of enriched.clickedObject.system.itemmodifier) {
+      if (!Array.isArray(modification.system.slots)) {
+        // a Modification from before slots: its rank was the slot count, so each slot is one rank
+        modification.system.slots = ModifierHelpers.modSlots(modification);
+        if (modification.system.rank) {
+          modification.system.rank = 1;
+        }
+      }
       modification.system.enrichedDescription = await foundry.applications.ux.TextEditor.enrichHTML(modification.system.description);
     }
     return enriched;
@@ -210,11 +223,13 @@ export class itemEditor extends FormApplication  {
           modTypeChoices: modTypeChoices,
           modChoices: modChoices,
           direct: true,
+          slotStates: CONFIG.FFG.mod_slot_states,
           mod: {
             name: "New Modification",
             system: {
               description: "Placeholder description",
               active: false,
+              slots: ["unmodified"],
               rank: 0,
               attribute: {},
             },
@@ -391,6 +406,12 @@ export class itemEditor extends FormApplication  {
             for (const modifier of Object.values(formData.system.itemmodifier)) {
               // the form carries no type, and the rank totals rely on it (#2377)
               modifier.type = "itemmodifier";
+              // one slot per attempt allowed, new ones unmodified; installed while any slot is
+              const attempts = Math.max(parseInt(modifier.system.attempts, 10) || 1, 1);
+              const slots = Object.values(modifier.system.slots ?? {});
+              modifier.system.slots = Array.from({length: attempts}, (_, i) => slots[i] ?? "unmodified");
+              modifier.system.active = modifier.system.slots.includes("modified");
+              delete modifier.system.attempts;
               if (!Object.keys(modifier.system).includes("attributes")) {
                 // skip anything that doesn't have attributes
                 CONFIG.logger.debug(`>>> modification ${modifier.name} has no mods, skipping further processing`);

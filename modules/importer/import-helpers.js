@@ -2810,7 +2810,11 @@ export default class ImportHelpers {
     return output;
   }
 
-  static async processModsData(modifiersData) {
+  /**
+   * @param modifiersData - the BaseMods, AddedMods, or Qualities block
+   * @param added - AddedMods, whose Count is how many times the option can be installed (FaD p.192)
+   */
+  static async processModsData(modifiersData, added = false) {
     let output = {
       attributes: {},
       description: "",
@@ -2848,11 +2852,16 @@ export default class ImportHelpers {
               if (compendiumEntry?.type === "itemmodifier") {
                 const descriptor = foundry.utils.duplicate(compendiumEntry);
                 descriptor.id = foundry.utils.randomID();
-                descriptor.system.rank = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
+                const count = modifier?.Count ? parseInt(modifier.Count, 10) : 1;
+                if (added) {
+                  descriptor.system.slots = Array(count).fill("unmodified");
+                } else {
+                  descriptor.system.rank = count;
+                }
                 output.itemmodifier.push(descriptor);
                 let rank = "";
-                if (descriptor.system.rank > 1) {
-                  rank = `${game.i18n.localize("SWFFG.Count")} ${descriptor.system.rank}`;
+                if (count > 1) {
+                  rank = `${game.i18n.localize("SWFFG.Count")} ${count}`;
                 }
                 output.description += `<div>${descriptor.name} - ${descriptor.system.description} ${rank}</div>`;
               }
@@ -2872,6 +2881,7 @@ export default class ImportHelpers {
           output.attributes = foundry.utils.mergeObject(output.attributes, dieModifiers.attributes);
         } else {
           unique_mods++;
+          const count = modifier?.Count ? parseInt(modifier.Count, 10) : null;
           // this is just a text modifier
           const unique = {
             name: `Unique Mod ${unique_mods}`,
@@ -2880,13 +2890,16 @@ export default class ImportHelpers {
               description: modifier.MiscDesc,
               attributes: {},
               type: "all",
-              rank: modifier?.Count ? parseInt(modifier.Count, 10) : null,
+              rank: added ? null : count,
             },
           };
+          if (added) {
+            unique.system.slots = Array(count ?? 1).fill("unmodified");
+          }
           const descriptor = await new Item(unique, { temporary: true });
           let rank = "";
-          if (unique.system.rank > 1) {
-            rank = `${game.i18n.localize("SWFFG.Count")} ${unique.system.rank}`;
+          if (count > 1) {
+            rank = `${game.i18n.localize("SWFFG.Count")} ${count}`;
           }
 
           output.description += `<div>${unique.system.description} ${rank}</div>`;
@@ -2905,7 +2918,7 @@ export default class ImportHelpers {
     }
 
     if (obj?.AddedMods?.Mod) {
-      output.addedMods = await ImportHelpers.processModsData(obj.AddedMods);
+      output.addedMods = await ImportHelpers.processModsData(obj.AddedMods, true);
     }
 
     if (obj?.Qualities?.Quality) {

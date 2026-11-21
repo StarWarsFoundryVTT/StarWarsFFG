@@ -10,8 +10,18 @@
       <input name="system.itemmodifier[{{number}}].system.description" type="text" value="{{ mod.system.description }}">
     </div>
     <div class="form-group">
-      <label for="system.itemmodifier[{{number}}].system.active">{{ localize "SWFFG.Items.Popout.Label.Installed" }}</label>
-      <input name="system.itemmodifier[{{number}}].system.active" type="checkbox" {{ checked mod.system.active }}>
+      <label for="system.itemmodifier[{{number}}].system.attempts">{{ localize "SWFFG.Items.Popout.Label.Attempts" }}</label>
+      <input name="system.itemmodifier[{{number}}].system.attempts" type="number" min="1" value="{{ mod.system.slots.length }}">
+    </div>
+    <div class="form-group">
+      <label>{{ localize "SWFFG.Items.Popout.Label.Slots" }}</label>
+      <div class="form-fields mod-slots">
+        {{#each mod.system.slots as |slot|}}
+          <select class="mod-slot {{ slot }}" name="system.itemmodifier[{{ ../number }}].system.slots.{{ @index }}">
+            {{ selectOptions ../slotStates selected=slot localize=true }}
+          </select>
+        {{/each }}
+      </div>
     </div>
     <div class="form-group">
       <label for="system.itemmodifier[{{number}}].system.rank">{{ localize "SWFFG.Items.Popout.Label.Ranks" }}</label>

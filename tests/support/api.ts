@@ -1173,12 +1173,84 @@ export async function addModification(
 }
 
 /**
- * Tick or untick a Modification's "Installed?" box in the attachment editor.
+ * Install a one-attempt Modification, or uninstall it, through the attachment editor.
  */
 export async function setModificationInstalled(
   page: Page, itemUuid: Uuid, attachmentIndex: number, modifierIndex: number, installed: boolean,
 ): Promise<void> {
-  await setModificationField(page, itemUuid, attachmentIndex, modifierIndex, 'active', installed);
+  const state = installed ? 'modified' : 'unmodified';
+  await setModificationSlots(page, itemUuid, attachmentIndex, modifierIndex, [state]);
+}
+
+/**
+ * Set a Modification's attempts and each one's state through the attachment editor: the attempt
+ * count first, then each slot's dropdown once the editor has re-rendered with that many.
+ */
+export async function setModificationSlots(
+  page: Page, itemUuid: Uuid, attachmentIndex: number, modifierIndex: number, states: string[],
+): Promise<void> {
+  const problem = await page.evaluate(async ({ itemUuid, attachmentIndex, modifierIndex, states }) => {
+    const item = await fromUuid(itemUuid);
+    if (!item) return `No item at ${itemUuid}`;
+    const attachment = item.system?.itemattachment?.[attachmentIndex];
+    if (!attachment) return `no attachment at index ${attachmentIndex}`;
+    if (!attachment.system?.itemmodifier?.[modifierIndex]) {
+      return `no modifier at index ${modifierIndex} inside that attachment`;
+    }
+
+    const load = (p: string) => import(/* @vite-ignore */ `/systems/starwarsffg/modules/${p}`);
+    const { itemEditor } = await load('items/item-editor.js');
+
+    // The same data the sheet's edit control passes (items/item-sheet-ffg.js:672).
+    const typeChoices: Record<string, string> = {};
+    for (const key of Object.keys(CONFIG.FFG.itemmodifier_types)) {
+      const entry = CONFIG.FFG.itemmodifier_types[key];
+      typeChoices[entry.value] = game.i18n.localize(entry.label);
+    }
+
+    const editor = new itemEditor({ sourceObject: item, clickedObject: attachment, typeChoices });
+    await editor.render(true);
+
+    const prefix = `system.itemmodifier[${modifierIndex}].system`;
+    // the re-render swaps in a new form; reading the old one would set slots that are thrown away
+    const slotsShown = () => {
+      const el = editor.element?.[0] ?? editor.element;
+      const form = el?.querySelector('form');
+      if (!form || form.dataset.stale) return null;
+      return form.querySelectorAll(`select[name^="${prefix}.slots."]`);
+    };
+
+    let root: any = null;
+    for (let i = 0; i < 200 && !root; i++) {
+      const el = editor.element?.[0] ?? editor.element;
+      if (el?.id && document.getElementById(el.id)) root = el;
+      else await new Promise((r) => setTimeout(r, 25));
+    }
+    if (!root) return 'the attachment editor never appeared';
+
+    const attempts = root.querySelector(`input[name="${prefix}.attempts"]`);
+    if (!attempts) return `the editor rendered no attempts input for modifier ${modifierIndex}`;
+    attempts.value = String(states.length);
+    root.querySelector('form').dataset.stale = '1';
+    await editor.submit();
+
+    let selects: any = null;
+    for (let i = 0; i < 200; i++) {
+      selects = slotsShown();
+      if (selects?.length === states.length) break;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    if (selects?.length !== states.length) {
+      return `the editor showed ${selects?.length} slots, not ${states.length}`;
+    }
+    states.forEach((state: string, i: number) => { selects[i].value = state; });
+
+    await editor.submit();
+    await editor.close();
+    return null;
+  }, { itemUuid, attachmentIndex, modifierIndex, states });
+
+  if (problem) throw new Error(`Setting the slots of a Modification of ${itemUuid}: ${problem}`);
 }
 
 /**
@@ -1192,7 +1264,7 @@ export async function setModificationRank(
 
 async function setModificationField(
   page: Page, itemUuid: Uuid, attachmentIndex: number, modifierIndex: number,
-  field: 'active' | 'rank', value: boolean | number,
+  field: 'rank', value: number,
 ): Promise<void> {
   const problem = await page.evaluate(async ({ itemUuid, attachmentIndex, modifierIndex, field, value }) => {
     const item = await fromUuid(itemUuid);
@@ -1227,8 +1299,7 @@ async function setModificationField(
     const input = root.querySelector(
       `input[name="system.itemmodifier[${modifierIndex}].system.${field}"]`);
     if (!input) return `the editor rendered no ${field} input for modifier ${modifierIndex}`;
-    if (field === 'active') input.checked = value;
-    else input.value = String(value);
+    input.value = String(value);
 
     await editor.submit();
     await editor.close();

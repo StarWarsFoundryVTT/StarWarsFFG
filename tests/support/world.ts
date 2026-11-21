@@ -47,7 +47,7 @@ export interface BuildSpec {
  * A Modification: the same itemmodifier document as a quality on an item, seen from an attachment.
  */
 export interface ModificationSpec extends Omit<ModifierSpec, 'active'> {
-  /** The editor's "Installed?" box. Stored as `system.active`. Defaults to the fixture's false. */
+  /** `system.active`, as a Modification from before slots stores it. Defaults to the fixture's false. */
   installed?: boolean;
 }
 
@@ -817,6 +817,17 @@ export class World {
     if (!ctx?.item) throw new Error('setModificationInstalled() needs a build that reached an item.');
     await api.setModificationInstalled(
       this.page, ctx.item, attachmentIndex, modificationIndex, installed);
+  }
+
+  /**
+   * Set how many attempts one of an attachment's Modifications allows, and each one's state.
+   */
+  async setModificationSlots(
+    ctx: Ctx, modificationIndex: number, states: string[],
+    attachmentIndex = ctx.attachmentIndex ?? 0,
+  ): Promise<void> {
+    if (!ctx?.item) throw new Error('setModificationSlots() needs a build that reached an item.');
+    await api.setModificationSlots(this.page, ctx.item, attachmentIndex, modificationIndex, states);
   }
 
   /**
