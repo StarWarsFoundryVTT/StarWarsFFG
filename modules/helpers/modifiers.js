@@ -65,6 +65,9 @@ export default class ModifierHelpers {
           // there is a mod or something, and it's not active - don't process it
           return;
         }
+        if (item.system?.stowed) {
+          return;
+        }
         if (item.system?.attributes) {
           const attrsToApply = Object.keys(item.system.attributes)
             .filter((id) => (item.system.attributes[id].mod === key || item.system.attributes[id].mod === "*") && item.system.attributes[id].modtype === modtype)

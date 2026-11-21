@@ -333,6 +333,8 @@
   "SWFFG.RollingDefaultTitle": "Finalize your roll",
   "SWFFG.Equipped": "Equipped",
   "SWFFG.Unequipped": "Unequipped",
+  "SWFFG.Stowed": "Stowed (not carried)",
+  "SWFFG.Carried": "Carried (not stowed)",
   "SWFFG.SettingsPCListMode": "Group Manager - Player Character List Mode",
   "SWFFG.SettingsPCListModeHint": "'Active Only' will list only characters the active players have chosen to represent via their player configuration. 'All Owned Characters' will list all characters for which the connected players have owner permission.",
   "SWFFG.SettingsPCListModeActive": "Active Only",

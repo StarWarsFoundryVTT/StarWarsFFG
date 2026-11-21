@@ -634,6 +634,7 @@ export class ActorFFG extends Actor {
     // Loop through all items
     items.forEach(function(item) {
       try {
+        if (item.system?.stowed) return;
         // Calculate encumbrance, only if encumbrance value exists
         if (item.system?.encumbrance?.adjusted !== undefined || item.system?.encumbrance?.value !== undefined) {
           if (item.type === "armour" && item?.system?.equippable?.equipped) {

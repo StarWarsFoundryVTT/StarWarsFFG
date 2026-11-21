@@ -69,6 +69,13 @@ export function equippable() {
   };
 }
 
+/** Whether the item is stowed away (not carried), so it grants nothing and has no encumbrance. */
+export function stowable() {
+  return {
+    stowed: new fields.BooleanField({ required: true, initial: false }),
+  };
+}
+
 /** Attachments installed on the item. */
 export function itemattachments() {
   return {

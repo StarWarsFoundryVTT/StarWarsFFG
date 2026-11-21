@@ -837,7 +837,24 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       const li = $(ev.currentTarget);
       const item = this.actor.items.get(li.data("itemId"));
       if (item) {
-        item.update({ ["system.equippable.equipped"]: !item.system.equippable.equipped });
+        const equipped = !item.system.equippable.equipped;
+        // equipping a stowed item takes it back out
+        item.update({ "system.equippable.equipped": equipped, ...(equipped && { "system.stowed": false }) });
+      }
+    });
+
+    // Toggle item stowed; stowing also unequips it
+    html.find(".items .item a.toggle-stowed").click((ev) => {
+      if(!this.actor.verifyEditModeIsNotEnabled()) {
+        return;
+      }
+
+      const item = this.actor.items.get($(ev.currentTarget).data("itemId"));
+      if (item) {
+        const stowed = !item.system.stowed;
+        const update = { "system.stowed": stowed };
+        if (stowed && item.system.equippable?.equipped) update["system.equippable.equipped"] = false;
+        item.update(update);
       }
     });
 
