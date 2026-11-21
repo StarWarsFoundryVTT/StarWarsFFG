@@ -210,6 +210,7 @@ export class localizationSettings extends ffgSettings {
       "starwarsffg.skillSorting",
       "starwarsffg.destiny-pool-light",
       "starwarsffg.destiny-pool-dark",
+      "starwarsffg.currency-name",
     ];
     return super.getData(includeSettingsNames);
   }
