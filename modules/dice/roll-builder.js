@@ -174,7 +174,7 @@ export default class RollBuilderFFG extends FormApplication {
       }
 
       try {
-        if (this?.roll?.item && this.roll.item.type === "weapon") {
+        if (this?.roll?.item && ["weapon", "shipweapon"].includes(this.roll.item.type)) {
           const item = await foundry.utils.fromUuid(this.roll.item.uuid);
           if (item) {
             const ammoEnabled = item.getFlag("starwarsffg", "config.enableAmmo");

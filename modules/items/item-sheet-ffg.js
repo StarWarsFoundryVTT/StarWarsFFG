@@ -562,7 +562,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           },
         });
       }
-      if (this.object.type === "weapon") {
+      if (["weapon", "shipweapon"].includes(this.object.type)) {
         this.sheetoptions.register("enableAmmo", {
           name: game.i18n.localize("SWFFG.SheetOptions2.enableAmmo.Name"),
           hint: game.i18n.localize("SWFFG.SheetOptions2.enableAmmo.Hint"),
