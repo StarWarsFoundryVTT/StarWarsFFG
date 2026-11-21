@@ -1,4 +1,5 @@
 import PopoutModifiers from "../popout-modifiers.js";
+import {characteristicDiceFields} from "../config/ffg-modifiers.js";
 
 export default class ModifierHelpers {
   /**
@@ -402,6 +403,8 @@ export default class ModifierHelpers {
       return "Skill Add Triumph";
     } else if (skillPath.endsWith("upgrades")) {
       return "Skill Add Upgrade";
+    } else if (skillPath.endsWith("downgrades")) {
+      return "Skill Add Downgrade";
     } else if (skillPath.endsWith("boost")) {
       return "Skill Boost";
     } else if (skillPath.endsWith("rank")) {
@@ -469,7 +472,7 @@ export default class ModifierHelpers {
           mod: "Shields.Starboard",
         },
       ];
-    } else if (["Brawn"].includes(mod)) {
+    } else if (["Brawn"].includes(mod) && !characteristicDiceFields[modType]) {
       return [
         {
           modType: modType,
@@ -511,6 +514,8 @@ export default class ModifierHelpers {
     }
     if (modType === "Characteristic") {
       return `system.characteristics.${mod}.value`;
+    } else if (characteristicDiceFields[modType]) {
+      return `system.characteristics.${mod}.${characteristicDiceFields[modType]}`;
     } else if (modType === "Stat All" || modType === "Stat") {
       if (mod === "ForcePool") {
         return `system.stats.forcePool.max`;
@@ -552,6 +557,8 @@ export default class ModifierHelpers {
       return `system.skills.${mod}.triumph`;
     } else if (modType === "Skill Add Upgrade") {
       return `system.skills.${mod}.upgrades`;
+    } else if (modType === "Skill Add Downgrade") {
+      return `system.skills.${mod}.downgrades`;
     } else if (modType === "Skill Boost") {
       return `system.skills.${mod}.boost`;
     } else if (modType === "Skill Rank") {

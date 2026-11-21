@@ -33,7 +33,7 @@ import TemplateHelpers from "./helpers/partial-templates.js";
 import SkillListImporter from "./importer/skills-list-importer.js";
 import DestinyTracker from "./ffg-destiny-tracker.js";
 import { defaultSkillList } from "./config/ffg-skillslist.js";
-import { skillModifierTypes } from "./config/ffg-modifiers.js";
+import { characteristicDiceFields, skillModifierTypes } from "./config/ffg-modifiers.js";
 import SettingsHelpers from "./settings/settings-helpers.js";
 import {register_crew} from "./helpers/crew.js";
 
@@ -880,6 +880,13 @@ Hooks.once("init", async function () {
 
   // Register Handlebars utilities
   Handlebars.registerHelper("json", JSON.stringify);
+
+  // characteristic dice mods are only offered with the setting on, but a mod already using one keeps it (#2372)
+  Handlebars.registerHelper("offeredModifierTypes", function (types, selected) {
+    if (game.settings.get("starwarsffg", "characteristicDiceMods")) return types;
+    return Object.fromEntries(
+      Object.entries(types).filter(([t]) => !characteristicDiceFields[t] || t === selected));
+  });
 
   // Allows {if X = Y} type syntax in html using handlebars
   Handlebars.registerHelper("iff", function (a, operator, b, opts) {

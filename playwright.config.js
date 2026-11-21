@@ -45,6 +45,7 @@ const NON_DEFAULT_SETTINGS = [
   '**/combat/removal-actions.spec.js',
   '**/combat/turn-marker.spec.js',
   '**/combat/initiative-rule.spec.js',
+  '**/mods/characteristic-modifiers-setting.spec.js',
   '**/rolling/remove-setback.spec.js',
   '**/status/custom-statuses.spec.js',
   '**/vehicles/pilot-theme.spec.js',

@@ -1,5 +1,6 @@
 ﻿
 import ModifierHelpers from "../helpers/modifiers.js";
+import {characteristicDiceFields} from "../config/ffg-modifiers.js";
 
 /**
  * Item types that only grant what they carry while they are equipped. Ship weapons and ship
@@ -57,6 +58,18 @@ export class ActiveEffectFFG extends ActiveEffect {
     if (rankedTalent && change.type === "add" && /^-?\d+$/.test(change.value)) {
       const ranks = parseInt(item.system.ranks.current, 10) || 1;
       change = {...change, value: String(change.value * ranks)};
+    }
+    // a downgrade is a negative upgrade, so both net out on one field (#2372)
+    if (change.key.endsWith(".downgrades") && /^-?\d+$/.test(change.value)) {
+      change = {...change, key: change.key.replace(".downgrades", ".upgrades"), value: String(-change.value)};
+    }
+    // a characteristic dice mod lands on every skill using that characteristic (#2372)
+    const [, group, characteristic, field] = change.key.split(".");
+    if (group === "characteristics" && Object.values(characteristicDiceFields).includes(field)) {
+      const skills = Object.entries(targetDoc.system?.skills ?? {});
+      const matching = skills.filter(([, skill]) => skill.characteristic === characteristic);
+      return Object.assign({}, ...matching.map(([name]) =>
+        super.applyChange(targetDoc, {...change, key: `system.skills.${name}.${field}`}, options)));
     }
     return super.applyChange(targetDoc, change, options);
   }

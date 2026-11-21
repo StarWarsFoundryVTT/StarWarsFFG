@@ -145,6 +145,7 @@ export class actorSettings extends ffgSettings {
   getData(options) {
     const includeSettingsNames = [
       "starwarsffg.enableSoakCalc",
+      "starwarsffg.characteristicDiceMods",
       "starwarsffg.talentSorting",
       "starwarsffg.showMinionCount",
       "starwarsffg.showAdversaryCount",

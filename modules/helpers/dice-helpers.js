@@ -180,6 +180,7 @@ export default class DiceHelpers {
           triumph: skill?.triumphsource?.length ? skill.triumphsource : [],
           despair: skill?.despairsource?.length ? skill.despairsource : [],
           upgrades: skill?.upgradessource?.length ? skill.upgradessource : [],
+          downgrades: skill?.downgradessource?.length ? skill.downgradessource : [],
         },
       });
       dicePool.upgrade(Math.min(characteristic.value, skill.rank) + dicePool.upgrades);
