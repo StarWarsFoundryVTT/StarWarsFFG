@@ -46,6 +46,10 @@ export class ActiveEffectFFG extends ActiveEffect {
    */
   static applyChange(targetDoc, change, options) {
     const item = change.effect?.parent;
+    // a stowed item isn't carried, so it grants nothing - encumbrance included (#1960)
+    if (item?.system?.stowed) {
+      return {};
+    }
     if (
       equipGatedTypes.includes(item?.type) &&
       !item.system?.equippable?.equipped &&

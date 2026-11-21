@@ -2503,6 +2503,26 @@ img {
   color: #191813;
 }
 
+.starwarsffg .items .items-list .item .toggle-stowed {
+  color: #888;
+}
+
+.starwarsffg .items .items-list .item .toggle-stowed.active {
+  color: #191813;
+}
+
+.starwarsffg .items .items-list .item.stowed .item-name {
+  opacity: 0.5;
+}
+
+.starwarsffg .items .items-list .item-controls:has(.toggle-stowed) {
+  white-space: nowrap;
+}
+
+.starwarsffg .items .items-list .item-controls:has(.toggle-stowed) .item-control {
+  padding: 5px 3px;
+}
+
 .starwarsffg .items .items-list .force-power {
   line-height: 24px;
   padding: 3px 0;

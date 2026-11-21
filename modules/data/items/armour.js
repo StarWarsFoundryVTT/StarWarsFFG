@@ -1,4 +1,4 @@
-import { basic, core, equippable, hardpoints, itemattachments, qualities } from "./_templates.js";
+import { basic, core, equippable, hardpoints, itemattachments, qualities, stowable } from "./_templates.js";
 import { numberStat } from "../fields.js";
 
 export class ArmourData extends foundry.abstract.TypeDataModel {
@@ -8,6 +8,7 @@ export class ArmourData extends foundry.abstract.TypeDataModel {
       ...basic(),
       ...hardpoints(),
       ...equippable(),
+      ...stowable(),
       ...itemattachments(),
       ...qualities(),
       defence: numberStat({ label: "Defence", abrev: "Def" }),
