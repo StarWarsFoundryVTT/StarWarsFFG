@@ -19,8 +19,15 @@ async function crewedWeapon(world, page, ammo) {
   const [gunner] = await api.readCrewRoles(page);
 
   await api.setCrewRoles(page, ship.actor, crew.actor, [gunner.name]);
+  // nested, not dotted: ItemBaseFFG.update adds `flags: {}`, which wipes a dotted flags path
   await api.update(page, ship.item, {
-    'flags.starwarsffg.config.enableAmmo': true,
+    flags: {
+      starwarsffg: {
+        config: {
+          enableAmmo: true,
+        },
+      },
+    },
   });
   return ship;
 }
