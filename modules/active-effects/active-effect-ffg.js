@@ -66,7 +66,6 @@ export class ActiveEffectFFG extends ActiveEffect {
     // a characteristic dice mod lands on every skill using that characteristic (#2372)
     const [, group, characteristic, field] = change.key.split(".");
     if (group === "characteristics" && Object.values(characteristicDiceFields).includes(field)) {
-      if (!game.settings.get("starwarsffg", "characteristicDiceMods")) return {};
       const skills = Object.entries(targetDoc.system?.skills ?? {});
       const matching = skills.filter(([, skill]) => skill.characteristic === characteristic);
       return Object.assign({}, ...matching.map(([name]) =>

@@ -435,22 +435,3 @@ test('#2372 Skill Add Downgrade turns a proficiency die back into ability', asyn
     'Agility 2 and one rank, downgraded once',
   ).toEqual([2, 0]);
 });
-
-test('#2372 a characteristic modifier does nothing while characteristicDiceMods is off',
-  async ({ world, consumers, page }) => {
-    const ctx = await world.build(weaponFor('Melee'));
-    await world.addItem(ctx, {
-      item: 'gear',
-      attributes: [{
-        modtype: 'Characteristic Setback',
-        mod: 'Brawn',
-        value: 1,
-      }],
-    });
-
-    expect(await consumers.skillModifier(ctx, 'Athletics', 'Setback'), 'no Brawn skill gets it').toBeNull();
-
-    await api.rollWeapon(page, ctx.actor, ctx.item);
-
-    expect((await api.readLastRollDice(page)).setback, 'nor does the roll').toBe(0);
-  });

@@ -2462,6 +2462,32 @@ export async function readItemEffects(page: Page, uuid: Uuid): Promise<{
 }
 
 /**
+ * Put an Active Effect straight onto an actor, as a macro or another module would.
+ */
+export async function createActorEffect(
+  page: Page, actorUuid: Uuid, name: string, changes: { key: string; value: string }[],
+): Promise<void> {
+  await page.evaluate(async ({ actorUuid, name, changes }) => {
+    const actor = await fromUuid(actorUuid);
+    if (!actor) throw new Error(`No actor at ${actorUuid}`);
+    const added = changes.map((change) => ({ ...change, mode: CONST.ACTIVE_EFFECT_MODES.ADD }));
+    await actor.createEmbeddedDocuments('ActiveEffect', [{ name, changes: added }]);
+  }, { actorUuid, name, changes });
+}
+
+/**
+ * The modifier types the sheet's first modifier row offers to pick from.
+ */
+export async function readModifierTypeOptions(page: Page, uuid: Uuid): Promise<string[]> {
+  const windowId = await openSheet(page, uuid);
+  return page.evaluate((windowId) => {
+    const select = document.getElementById(windowId)?.querySelector('select[data-type="modtype"]');
+    if (!select) throw new Error('the sheet shows no modifier type dropdown');
+    return [...(select as HTMLSelectElement).options].map((option) => option.value);
+  }, windowId);
+}
+
+/**
  * Every Active Effect on an actor and on its items, with whether it is switched off.
  */
 export async function readEffects(page: Page, actorUuid: Uuid): Promise<{

@@ -372,7 +372,7 @@
   "SWFFG.EnableSoakCalc": "Enable Soak Auto-Calculation",
   "SWFFG.EnableSoakCalcHint": "Enable soak auto-calculation and unload field for manual entry",
   "SWFFG.Settings.CharacteristicDiceMods.Name": "Characteristic Dice Modifiers",
-  "SWFFG.Settings.CharacteristicDiceMods.Hint": "Offer modifiers that add dice or results to every skill of a characteristic",
+  "SWFFG.Settings.CharacteristicDiceMods.Hint": "Offer modifier types that add dice or results to every skill of a characteristic",
   "SWFFG.SheetOptions2.EnablePrice.Name":  "Enable Price",
   "SWFFG.SheetOptions2.EnablePrice.Hint":  "Shows price on item sheets",
   "SWFFG.SheetOptions2.enableRarity.Name":  "Enable Rarity",

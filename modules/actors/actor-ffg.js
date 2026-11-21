@@ -607,8 +607,7 @@ export class ActorFFG extends Actor {
             }
             // a characteristic dice mod is a source on every skill using that characteristic (#2372)
             const [, group, characteristic, skillMod] = change.key.split(".");
-            const enabled = game.settings.get("starwarsffg", "characteristicDiceMods");
-            if (enabled && group === "characteristics" && Object.values(characteristicDiceFields).includes(skillMod)) {
+            if (group === "characteristics" && Object.values(characteristicDiceFields).includes(skillMod)) {
               for (const skill of Object.values(actorData.system.skills)) {
                 if (skill.characteristic !== characteristic) continue;
                 skill[`${skillMod}source`] ??= [];

@@ -139,7 +139,6 @@ export default class SettingsHelpers {
       config: false,
       default: false,
       type: Boolean,
-      onChange: this.debouncedReload,
     });
 
     // Enable auto Soak calculation

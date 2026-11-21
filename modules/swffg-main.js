@@ -264,9 +264,6 @@ Hooks.once("init", async function () {
   await foundry.applications.handlebars.loadTemplates(["systems/starwarsffg/templates/actors/ffg-character-sheet.html", "systems/starwarsffg/templates/actors/ffg-minion-sheet.html"]);
 
   SettingsHelpers.initLevelSettings();
-  if (!game.settings.get("starwarsffg", "characteristicDiceMods")) {
-    Object.keys(characteristicDiceFields).forEach((t) => delete CONFIG.FFG.allowableModifierTypes[t]);
-  }
 
   const uitheme = game.settings.get("starwarsffg", "ui-uitheme");
 
@@ -883,6 +880,13 @@ Hooks.once("init", async function () {
 
   // Register Handlebars utilities
   Handlebars.registerHelper("json", JSON.stringify);
+
+  // characteristic dice mods are only offered with the setting on, but a mod already using one keeps it (#2372)
+  Handlebars.registerHelper("offeredModifierTypes", function (types, selected) {
+    if (game.settings.get("starwarsffg", "characteristicDiceMods")) return types;
+    return Object.fromEntries(
+      Object.entries(types).filter(([t]) => !characteristicDiceFields[t] || t === selected));
+  });
 
   // Allows {if X = Y} type syntax in html using handlebars
   Handlebars.registerHelper("iff", function (a, operator, b, opts) {
