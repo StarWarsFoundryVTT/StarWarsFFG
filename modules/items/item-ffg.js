@@ -707,7 +707,7 @@ export class ItemFFG extends ItemBaseFFG {
         : data.longDesc;
     }
 
-    if (this.type === "weapon") {
+    if (["weapon", "shipweapon"].includes(this.type)) {
       const ammoEnabled = this.getFlag("starwarsffg", "config.enableAmmo");
       if (ammoEnabled) {
         props.push(`Ammo: ${data.ammo.value}/${data.ammo.max}`);

@@ -77,7 +77,7 @@ export default class DiceHelpers {
       }
     }
 
-    if (item && item.type === "weapon") {
+    if (item && ["weapon", "shipweapon"].includes(item.type)) {
       const ammoEnabled = item.getFlag("starwarsffg", "config.enableAmmo");
       if (ammoEnabled && item.system.ammo.value <= 0) {
         return ui.notifications.warn("Not enough ammo!");

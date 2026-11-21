@@ -1284,6 +1284,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             icon: `<img src="${raw_weapons[i].img}" style="max-width: 24px; max-height: 24px">`,
             label: raw_weapons[i].name,
             callback: async (html) => {
+              const ammoEnabled = raw_weapons[i].getFlag("starwarsffg", "config.enableAmmo");
+              if (ammoEnabled && raw_weapons[i].system.ammo.value <= 0) {
+                return ui.notifications.warn("Not enough ammo!");
+              }
               const skill = raw_weapons[i].system.skill.value;
               let pool = new DicePoolFFG({'difficulty': 2});
               pool = get_dice_pool(crew_id, skill, pool);
@@ -1548,6 +1552,9 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
    * @returns {Promise<void>}
    */
   async vehicleCrewGunneryRoll(weapon, weaponSkill, selectedGunner) {
+    if (weapon.getFlag("starwarsffg", "config.enableAmmo") && weapon.system.ammo.value <= 0) {
+      return ui.notifications.warn("Not enough ammo!");
+    }
     const starting_pool = {'difficulty': 2};
     const ship = this.actor;
     const crewSheet = game.actors.get(selectedGunner.actor_id)?.sheet;

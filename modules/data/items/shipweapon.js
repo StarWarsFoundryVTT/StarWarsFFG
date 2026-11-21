@@ -32,6 +32,10 @@ export class ShipWeaponData extends foundry.abstract.TypeDataModel {
       crit: numberStat({ label: "Critical Rating", abrev: "Crit" }),
       range: stringStat({ initial: "Short", label: "Range", adjusted: true }),
       special: stringStat({ label: "Special" }),
+      ammo: new fields.SchemaField({
+        max: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
+        value: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
+      }),
     };
   }
 }
