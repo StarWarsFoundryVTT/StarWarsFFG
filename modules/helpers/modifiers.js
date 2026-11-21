@@ -3,6 +3,48 @@ import {characteristicDiceFields} from "../config/ffg-modifiers.js";
 
 export default class ModifierHelpers {
   /**
+   * The install state of each slot on an attachment's Modification. One predating slots has one
+   * slot per rank, all installed or none, which is how its rank used to apply.
+   * @param mod - the Modification
+   * @returns {string[]} - "unmodified", "modified", or "failed" per slot
+   */
+  static modSlots(mod) {
+    if (Array.isArray(mod?.system?.slots)) {
+      return mod.system.slots;
+    }
+    const count = Math.max(parseInt(mod?.system?.rank, 10) || 1, 1);
+    return Array(count).fill(mod?.system?.active ? "modified" : "unmodified");
+  }
+
+  /**
+   * How many times a Modification's values apply: its rank, times its installed slots if it has slots
+   * @param mod - the Modification
+   * @returns {number}
+   */
+  static modApplications(mod) {
+    let ranks = parseInt(mod?.system?.rank, 10);
+    if (isNaN(ranks) || ranks < 1) {
+      ranks = 1;
+    }
+    if (!Array.isArray(mod?.system?.slots)) {
+      return ranks;
+    }
+    return ranks * mod.system.slots.filter((s) => s === "modified").length;
+  }
+
+  /**
+   * The difficulty and cost of the next mod on an attachment: Hard and 100 credits, plus one step and
+   * 100 credits per mod already installed (FaD p.192)
+   * @param attachment - the attachment
+   * @returns {{difficulty: number, cost: number}} - difficulty in purple dice
+   */
+  static nextModAttempt(attachment) {
+    const slots = (attachment?.system?.itemmodifier ?? []).flatMap((m) => ModifierHelpers.modSlots(m));
+    const installed = slots.filter((s) => s === "modified").length;
+    return { difficulty: 3 + installed, cost: 100 * (1 + installed) };
+  }
+
+  /**
    * Calculate total value from embedded items
    * @param  {array} items
    * @param  {string} key
@@ -147,10 +189,7 @@ export default class ModifierHelpers {
                     total += parseInt(attr.value, 10) * multiplier;
                   } else if (item.type === "itemmodifier") {
                     // a Modification on an attachment applies once per rank
-                    let ranks = parseInt(item.system.rank, 10);
-                    if (isNaN(ranks) || ranks < 1) {
-                      ranks = 1;
-                    }
+                    const ranks = ModifierHelpers.modApplications(item);
                     sources.push({ modtype, key, name: item.name, value: attr.value * ranks, type: item.type });
                     total += parseInt(attr.value, 10) * ranks;
                   } else {
@@ -192,6 +231,9 @@ export default class ModifierHelpers {
     let rank = item?.system?.rank;
     if(rank === null || rank === undefined) {
       rank = 1;
+    }
+    if (Array.isArray(item?.system?.slots)) {
+      rank = ModifierHelpers.modApplications(item);
     }
     if (item?.system) {
       // a modification with no mods of its own has no attributes at all, not an empty set of them

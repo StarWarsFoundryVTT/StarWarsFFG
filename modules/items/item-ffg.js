@@ -403,11 +403,12 @@ export class ItemFFG extends ItemBaseFFG {
                 if (foundItem) {
                   if (foundItem.system?.rank) {
                     // each source brings all of its own ranks, not a single one
-                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + (parseInt(am.system?.rank, 10) || 1);
+                    const added = ModifierHelpers.modApplications(am);
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + added;
                   }
                 } else {
                   if (am.system?.rank) {
-                    am.system.rank_current = parseInt(am.system.rank, 10);
+                    am.system.rank_current = ModifierHelpers.modApplications(am);
                   } else {
                     am.system.rank_current = null;
                   }
@@ -502,11 +503,12 @@ export class ItemFFG extends ItemBaseFFG {
                 if (foundItem) {
                   if (foundItem.system?.rank) {
                     // each source brings all of its own ranks, not a single one
-                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + (parseInt(am.system?.rank, 10) || 1);
+                    const added = ModifierHelpers.modApplications(am);
+                    foundItem.system.rank_current = parseInt(foundItem.system.rank_current, 10) + added;
                   }
                 } else {
                   if (am.system?.rank) {
-                    am.system.rank_current = parseInt(am.system.rank, 10);
+                    am.system.rank_current = ModifierHelpers.modApplications(am);
                   } else {
                     am.system.rank_current = null;
                   }
