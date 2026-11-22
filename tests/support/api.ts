@@ -1254,6 +1254,87 @@ export async function setModificationSlots(
 }
 
 /**
+ * Open the Modifications editor of an attachment which is its own item, through its sheet's button.
+ */
+export async function openModificationsEditor(page: Page, attachmentUuid: Uuid): Promise<void> {
+  const problem = await page.evaluate(async (uuid) => {
+    const attachment = await fromUuid(uuid);
+    if (!attachment) return `No item at ${uuid}`;
+    await attachment.sheet.render(true);
+    const isEditor = (app: any) => app.constructor.name === 'attachmentModificationsEditor' &&
+      app.data?.sourceObject?.uuid === uuid;
+    for (let i = 0; i < 200; i++) {
+      const el = attachment.sheet.element?.[0] ?? attachment.sheet.element;
+      const button = el?.querySelector?.('.edit-modifications');
+      if (button) {
+        button.click();
+        break;
+      }
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    for (let i = 0; i < 200; i++) {
+      const editor: any = Object.values(ui.windows).find(isEditor);
+      const el = editor?.element?.[0] ?? editor?.element;
+      if (el?.id && document.getElementById(el.id)) return null;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    return 'the Modifications editor never appeared';
+  }, attachmentUuid);
+  if (problem) throw new Error(`Opening the Modifications editor of ${attachmentUuid}: ${problem}`);
+}
+
+/**
+ * Set a Modification's attempts and slot states in the open Modifications editor of an attachment item.
+ */
+export async function setStandaloneModificationSlots(
+  page: Page, attachmentUuid: Uuid, modifierIndex: number, states: string[],
+): Promise<void> {
+  const problem = await page.evaluate(async ({ uuid, modifierIndex, states }) => {
+    const editor: any = Object.values(ui.windows).find((app: any) =>
+      app.constructor.name === 'attachmentModificationsEditor' && app.data?.sourceObject?.uuid === uuid);
+    if (!editor) return 'no Modifications editor is open';
+    const root = () => {
+      const el = editor.element?.[0] ?? editor.element;
+      const form = el?.querySelector('form');
+      return form && !form.dataset.stale ? form : null;
+    };
+    const prefix = `system.itemmodifier[${modifierIndex}].system`;
+
+    const attempts = root()?.querySelector(`input[name="${prefix}.attempts"]`);
+    if (!attempts) return `the editor rendered no attempts input for modifier ${modifierIndex}`;
+    attempts.value = String(states.length);
+    root().dataset.stale = '1';
+    await editor.submit();
+
+    // the update re-renders the editor; the old form's selects would be thrown away
+    let selects: any = null;
+    for (let i = 0; i < 200; i++) {
+      selects = root()?.querySelectorAll(`select[name^="${prefix}.slots."]`);
+      if (selects?.length === states.length) break;
+      await new Promise((r) => setTimeout(r, 25));
+    }
+    if (selects?.length !== states.length) {
+      return `the editor showed ${selects?.length} slots, not ${states.length}`;
+    }
+    states.forEach((state: string, i: number) => { selects[i].value = state; });
+    await editor.submit();
+    return null;
+  }, { uuid: attachmentUuid, modifierIndex, states });
+  if (problem) throw new Error(`Setting the slots of a Modification of ${attachmentUuid}: ${problem}`);
+}
+
+/**
+ * Close every Modifications editor open on an attachment item.
+ */
+export async function closeModificationsEditor(page: Page, attachmentUuid: Uuid): Promise<void> {
+  await page.evaluate(async (uuid) => {
+    const editors = Object.values(ui.windows).filter((app: any) =>
+      app.constructor.name === 'attachmentModificationsEditor' && app.data?.sourceObject?.uuid === uuid);
+    for (const editor of editors as any[]) await editor.close();
+  }, attachmentUuid);
+}
+
+/**
  * Set a Modification's Ranks through the attachment editor, as a user typing into it would.
  */
 export async function setModificationRank(

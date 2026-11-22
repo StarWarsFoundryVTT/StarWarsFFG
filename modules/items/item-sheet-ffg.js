@@ -8,7 +8,7 @@ import item from "../helpers/embeddeditem-helpers.js";
 import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import ActorHelpers, {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemOptions from "./item-ffg-options.js";
-import {forcePowerEditor, itemEditor, talentEditor} from "./item-editor.js";
+import {attachmentModificationsEditor, forcePowerEditor, itemEditor, talentEditor} from "./item-editor.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -131,7 +131,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         break;
       case "itemattachment":
         this.position.width = 500;
-        this.position.height = 450;
+        this.position.height = 490;
         data.modTypeSelected = this.object.system.type;
         break;
       case "itemmodifier":
@@ -653,6 +653,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           if (!$(ev.target).hasClass("fa-trash")) {
             // edit the item
             CONFIG.logger.debug("Caught mod or attachment edit request");
+            if (this.object.type === "itemattachment") {
+              if (this.isEditable) new attachmentModificationsEditor(this.object).render(true);
+              return;
+            }
             // pull the item which the edit is on
             const li = $(ev.currentTarget);
             const clickedId = li.data('item-id');
@@ -708,6 +712,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
     // Add or Remove Attribute
     html.find(".attributes").on("click", ".attribute-control", ModifierHelpers.onClickAttributeControl.bind(this));
+
+    html.find(".edit-modifications").on("click", () => new attachmentModificationsEditor(this.object).render(true));
 
     // Swap value input between checkbox and number when modtype changes
     html.find(".attributes").on("change", ".flat_editor.dropdown.modtype", (event) => {

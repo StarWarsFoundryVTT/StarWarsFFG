@@ -989,3 +989,103 @@ export class forcePowerEditor extends itemEditor {
     });
   }
 }
+
+/**
+ * Edits the Modifications of an attachment which is its own document (as opposed to one embedded in an item)
+ */
+export class attachmentModificationsEditor extends itemEditor {
+  constructor(attachment) {
+    super({sourceObject: attachment, clickedObject: attachment.toObject()});
+    // pick up mods dropped onto the sheet while this is open, so a submit does not drop them again
+    this._updateHook = Hooks.on("updateItem", (item) => {
+      if (item.uuid === attachment.uuid) this.render(false);
+    });
+  }
+
+  /** @override */
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      tabs: [{navSelector: ".tabs", contentSelector: ".content", initial: "modifications"}],
+    });
+  }
+
+  /** @override */
+  get template() {
+    return "systems/starwarsffg/templates/items/dialogs/ffg-attachment-modifications.html";
+  }
+
+  /** @override */
+  async getData(options) {
+    this.data.clickedObject = this.data.sourceObject.toObject();
+    const data = await super.getData(options);
+    this.options.title = game.i18n.format("SWFFG.Items.Popout.ModificationsTitle", {item: this.data.sourceObject.name});
+    return data;
+  }
+
+  /** @override */
+  async onDropMod(event) {
+    // the sheet already knows how to take a dropped mod
+    return this.data.sourceObject.sheet._onDropItem(event);
+  }
+
+  /** @override */
+  async _updateObject(event, formData) {
+    const attachment = this.data.sourceObject;
+    if (!attachment.sheet.isEditable) return;
+    if (attachment.actor && !attachment.actor.verifyEditModeIsNotEnabled()) return;
+
+    const previous = attachment.toObject().system.itemmodifier;
+    const expanded = foundry.utils.expandObject(formData);
+    const modifications = [];
+    for (const [key, form] of Object.entries(expanded.system ?? {})) {
+      // a Modification added since the last render has no index yet
+      const index = key.match(/^itemmodifier\[(\d*)\]$/)?.[1];
+      if (index === undefined) continue;
+      const {attempts, slots, attributes, ...fields} = form.system ?? {};
+      const modification = foundry.utils.mergeObject(
+        previous[parseInt(index, 10)] ?? {}, {...form, system: fields}, {inplace: false});
+      modification.type = "itemmodifier";
+      modification.system.attributes = attributes ?? {};
+      // one slot per attempt allowed, new ones unmodified; installed while any slot is
+      const count = Math.max(parseInt(attempts, 10) || 1, 1);
+      const states = Object.values(slots ?? {});
+      modification.system.slots = Array.from({length: count}, (_, i) => states[i] ?? "unmodified");
+      modification.system.active = modification.system.slots.includes("modified");
+      modifications.push(modification);
+    }
+
+    // each Modification's mods are effects on the attachment, live only while it is installed
+    const effects = attachment.getEmbeddedCollection("ActiveEffect");
+    const kept = new Set(Object.keys(attachment.system.attributes ?? {}));
+    for (const modification of modifications) {
+      for (const [modKey, attr] of Object.entries(modification.system.attributes)) {
+        kept.add(modKey);
+        const changes = ModifierHelpers.explodeMod(attr.modtype, attr.mod).map((curMod) => ({
+          key: ModifierHelpers.getModKeyPath(curMod.modType, curMod.mod),
+          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
+          value: attr.value,
+        }));
+        const disabled = !modification.system.active;
+        const match = effects.find((i) => i.name === modKey);
+        if (match) {
+          await match.update({changes, disabled});
+        } else {
+          await attachment.createEmbeddedDocuments("ActiveEffect", [{name: modKey, changes, disabled}]);
+        }
+      }
+    }
+    const removed = previous.flatMap((m) => Object.keys(m.system?.attributes ?? {})).filter((k) => !kept.has(k));
+    const stale = effects.filter((i) => removed.includes(i.name)).map((i) => i.id);
+    if (stale.length) {
+      await attachment.deleteEmbeddedDocuments("ActiveEffect", stale);
+    }
+
+    await attachment.update({system: {itemmodifier: modifications}});
+  }
+
+  /** @override */
+  async close(options) {
+    await super.close(options);
+    Hooks.off("updateItem", this._updateHook);
+  }
+}

@@ -1,0 +1,16 @@
+<form class="attachment-editor">
+  <section class="content">
+    <div class="tab flat_editor modifications active" data-tab="modifications" data-group="myGroup">
+      <p class="next-mod">
+        {{{ nextMod }}}
+        <i class="fa-regular fa-circle-question" data-tooltip="{{ localize "SWFFG.Items.Popout.Label.NextModHint" }}"></i>
+      </p>
+      <div class="modification_container">
+      {{#each data.clickedObject.system.itemmodifier as |mod id|}}
+        {{> "systems/starwarsffg/templates/items/dialogs/ffg-modification.html" (object mod=mod id=id number=@index modifierTypes=../modifierTypes modifierChoices=../modifierChoices direct=false attachmentType=../data.clickedObject.system.type slotStates=../slotStates) }}
+      {{/each }}
+      </div>
+      <button type="button" class="flat_editor add-modification" data-action="create">{{ localize "SWFFG.Items.Popout.Buttons.Modification.Add" }}</button>
+    </div>
+  </section>
+</form>
