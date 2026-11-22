@@ -5765,3 +5765,8 @@ img {
   max-height: 340px;
   overflow-y: auto;
 }
+
+/* a dragged row's hidden popups would otherwise stretch the drag image over the rows below it */
+.starwarsffg .items .items-list .item.dragging .tooltip2 {
+  display: none;
+}
