@@ -67,6 +67,11 @@
       <div class="attachments items">
         {{> "systems/starwarsffg/templates/parts/ffg-mods.html"}}
       </div>
+      {{#if editable}}
+        <button type="button" class="edit-modifications">
+          {{ localize "SWFFG.Items.Popout.Buttons.Modification.Edit" }}
+        </button>
+      {{/if}}
       {{> "systems/starwarsffg/templates/parts/shared/ffg-modifiers.html"}}
     </div>
 

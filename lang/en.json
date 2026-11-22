@@ -851,6 +851,8 @@
   "SWFFG.Items.Popout.Label.NotRanked": "Not Ranked",
   "SWFFG.Items.Popout.Info.DragDrop": "(drag-and-drop mods or qualities to add them)",
   "SWFFG.Items.Popout.Buttons.Modification.Add": "Add Modification",
+  "SWFFG.Items.Popout.Buttons.Modification.Edit": "Edit Modifications",
+  "SWFFG.Items.Popout.ModificationsTitle": "Modifications on {item}",
   "SWFFG.Items.Popout.Type.Warning": "Changing this will immediately CHANGE all base and modification mods",
   "SWFFG.Items.Sheets.Qualities.FromAttachment": "(from attachment)",
   "SWFFG.Items.Sheets.Qualities.Ranks": "ranks from",

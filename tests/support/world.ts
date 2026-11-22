@@ -711,6 +711,22 @@ export class World {
   }
 
   /**
+   * An attachment that is its own world item (not on an actor)
+   */
+  async attachment(spec: AttachmentSpec = {}): Promise<Uuid> {
+    return this.createAttachment(spec);
+  }
+
+  /**
+   * Create a named modifier as its own world item, for dropping by hand.
+   */
+  async modifier(spec: ModifierSpec): Promise<Uuid> {
+    return this.createNested('itemmodifier', spec.name,
+      [{ modtype: spec.modtype ?? 'Stat', mod: spec.key, value: spec.value }],
+      World.modifierSystem(spec));
+  }
+
+  /**
    * Create a named modifier and drop it onto the item itself - a quality on the carrier, D2.
    */
   async addModifier(ctx: Ctx, spec: ModifierSpec): Promise<void> {
