@@ -183,8 +183,14 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         }
       }
 
+      // a new item dropped onto a row of its own kind takes that row's place in the list
+      const row = event.target?.closest(".items-list > [data-item-id]");
+      const target = this.actor.items.get(row?.dataset.itemId);
+      const place = target?.type === itemData.type;
+
       // Create the owned item
       const created = await this._onDropItemCreate(itemData);
+      if (place && created?.length) await this._sortItemInto(row, created[0], true);
 
       // items dragged off another actor's sheet are moved, not copied - but only once the copy exists
       if (data.ffgTransfer && created?.length) {
@@ -253,7 +259,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     data.rollData = this.actor.getRollData.bind(this.actor);
 
     data.token = this.token;
-    data.items = this.actor.items;
+    data.items = this.actor.items.contents.sort((a, b) => (a.sort || 0) - (b.sort || 0));
 
     if (options?.action === "update" && this.object.compendium) {
       data.item = foundry.utils.mergeObject(data.actor, options.data);
@@ -407,6 +413,32 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     return items.sort(function(a, b) {
        return a.name.localeCompare(b.name);
     });
+  }
+
+  /** @override */
+  _onSortItem(event, itemData) {
+    const row = event.target?.closest(".items-list > [data-item-id]");
+    const rows = Array.from(row?.parentElement.children ?? []);
+    const own = rows.find((el) => el.dataset.itemId === itemData._id);
+    // only within its own list, so a weapon can't be sorted in among the armour
+    if (!own || own === row) return;
+    // core judges direction by sort values, which are all 0 until a list is first sorted, so use the rows instead
+    return this._sortItemInto(row, this.actor.items.get(itemData._id), rows.indexOf(own) > rows.indexOf(row));
+  }
+
+  /**
+   * Core's sort of an item into the list holding the given row, before or after that row
+   * @param {HTMLElement} row - the item row dropped onto
+   * @param {Item} source - the item being placed
+   * @param {boolean} sortBefore
+   */
+  async _sortItemInto(row, source, sortBefore) {
+    const items = this.actor.items;
+    const listed = Array.from(row.parentElement.children, (el) => items.get(el.dataset.itemId));
+    const siblings = listed.filter((item) => item && item !== source);
+    const target = items.get(row.dataset.itemId);
+    const sorted = foundry.utils.performIntegerSort(source, {target, siblings, sortBefore});
+    return this.actor.updateEmbeddedDocuments("Item", sorted.map((u) => ({...u.update, _id: u.target.id})));
   }
 
   /* -------------------------------------------- */
@@ -1418,7 +1450,10 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       dragSelector: ".items-list .item",
       dropSelector: ".sheet-body",
       permissions: { dragstart: this._canDragStart.bind(this), drop: this._canDragDrop.bind(this) },
-      callbacks: { dragstart: this._onTransferItemDragStart.bind(this) },
+      callbacks: {
+        dragstart: this._onTransferItemDragStart.bind(this),
+        dragend: (event) => event.currentTarget.classList.remove("dragging"),
+      },
     });
 
     dragDrop.bind(html[0]);
@@ -2101,6 +2136,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         ffgTransfer: true,
       };
       event.dataTransfer.setData("text/plain", JSON.stringify(dragData));
+      // hides the row's unseen value popups, which would otherwise stretch the browser's drag image over other rows
+      li.classList.add("dragging");
     } else {
       return false;
     }
