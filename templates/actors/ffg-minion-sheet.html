@@ -52,6 +52,22 @@
                 }}
             </div>
           </div>
+          {{#if actor.flags.starwarsffg.config.enableMount}}
+          <div class="container">
+            <div class="grid grid-3col minion-stats">
+              {{!-- Mount Speed and Handling --}}
+                {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+                  (object blocktype="split" title="SWFFG.VehicleSpeed" fields=(array
+                    (object name="data.stats.speed.max" value=data.stats.speed.max type="Number" label="SWFFG.Threshold" disabled=true)
+                    (object name="data.stats.speed.value" value=data.stats.speed.value type="Number" label="SWFFG.Current")
+                  ))
+                }}
+                {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+                  (object blocktype="single" title="SWFFG.VehicleHandling" type="Number" name="data.stats.handling" value=data.stats.handling disabled=true)
+                }}
+            </div>
+          </div>
+          {{/if}}
           {{/if}}
         </div>
 
@@ -117,12 +133,14 @@
         {{editor data.biography target="system.biography" button=true owner=owner editable=editable engine="prosemirror"}}
         {{!-- Footer info --}}
       </div>
-      {{#if this.settings.enableCriticalInjuries}}
       <div class="container flex-group-center biography-values">
-        {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
-        {{!-- Experience Box --}}
+        {{#if this.settings.enableCriticalInjuries}}
+          {{> "systems/starwarsffg/templates/parts/actor/ffg-criticalinjury.html" type="criticalinjury"}}
+        {{/if}}
+        <div class="grid bio-grid">
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleSilhouette" type="Number" name="data.stats.silhouette.value" value=data.stats.silhouette.value)}}
+        </div>
       </div>
-      {{/if}}
     </div>
 
     {{!-- Modifiers Tab --}}

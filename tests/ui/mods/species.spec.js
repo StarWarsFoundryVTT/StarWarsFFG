@@ -1,4 +1,5 @@
 import { test, expect } from '../../support/fixtures';
+import * as api from '../../support/api';
 
 /**
  * A species sets characteristics and derived thresholds on the character.
@@ -50,4 +51,18 @@ test.fixme('soak picks up brawn from a species', async ({ world, consumers }) =>
     attributes: [{ modtype: 'Characteristic', mod: 'Brawn', value: 1, key: 'Brawn' }],
   });
   expect(await consumers.stat(ctx, 'Soak')).toBe(0 + 1);
+});
+
+test('#1321 a character takes its silhouette from its species', async ({ world, page }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'species',
+    itemOverrides: {
+      silhouette: 0,
+    },
+  });
+
+  const silhouette = () => api.read(page, ctx.actor, 'system.stats.silhouette.value');
+
+  await expect.poll(silhouette, { message: 'a silhouette 0 species makes a silhouette 0 character' }).toBe(0);
 });

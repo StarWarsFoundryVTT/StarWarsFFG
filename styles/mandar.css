@@ -489,6 +489,11 @@ img {
   min-height: 4.6875rem;
 }
 
+/* a single value under Other (silhouette) is sized like the blocks beside it, not the text boxes above */
+.starwarsffg.sheet.actor .character .sheet-body .general .block-editor .resource.single {
+  min-height: 0;
+}
+
 .starwarsffg.sheet.actor .character .sheet-body .general .block-editor .resource .attribute, .starwarsffg.sheet.actor .character .sheet-body .obligation .block-editor .resource .attribute {
   height: 100%;
 }

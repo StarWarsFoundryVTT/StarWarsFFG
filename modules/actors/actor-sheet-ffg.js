@@ -400,6 +400,11 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
     // read off AEs the actor rather than the copy above: prepareDerivedData
     // builds this list, and a Data Model's toObject() carries only the fields it declares
     data.effects = this.actor.system.effects.map(EffectHelpers.transformEffects);
+    // a mount's speed and handling are derived too, so they are missing from that copy as well
+    if (["character", "nemesis", "rival", "minion"].includes(this.actor.type)) {
+      data.data.stats.speed = this.actor.system.stats.speed;
+      data.data.stats.handling = this.actor.system.stats.handling;
+    }
 
     return data;
   }
@@ -682,6 +687,12 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
         type: "Boolean",
         default: true,
       });
+      this.sheetoptions.register("enableMount", {
+        name: game.i18n.localize("SWFFG.EnableMount"),
+        hint: game.i18n.localize("SWFFG.EnableMountHint"),
+        type: "Boolean",
+        default: false,
+      });
     }
     if (this.actor.type === "character") {
       this.sheetoptions = new ActorOptions(this, html);
@@ -729,6 +740,12 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       this.sheetoptions.register("enableCriticalInjuries", {
         name: game.i18n.localize("SWFFG.EnableCriticalInjuries"),
         hint: game.i18n.localize("SWFFG.EnableCriticalInjuriesHint"),
+        type: "Boolean",
+        default: false,
+      });
+      this.sheetoptions.register("enableMount", {
+        name: game.i18n.localize("SWFFG.EnableMount"),
+        hint: game.i18n.localize("SWFFG.EnableMountHint"),
         type: "Boolean",
         default: false,
       });
