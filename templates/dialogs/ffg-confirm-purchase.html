@@ -1,3 +1,6 @@
+{{#if (eq itemCategory "talent") }}
+<input type="search" id="ffgPurchaseSearch" placeholder="{{localize 'SWFFG.Actors.Sheets.Purchase.Search'}}">
+{{/if}}
 <select name="purchase" id="ffgPurchase">
   <option>{{localize "SWFFG.Actors.Sheets.Purchase.Dropdown" itemType=itemType}}</option>
   {{#each groups as |group| }}
