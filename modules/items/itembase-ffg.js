@@ -2,6 +2,9 @@ import ItemHelpers from "../helpers/item-helpers.js";
 
 export default class ItemBaseFFG extends Item {
   async update(data, options = {}) {
+    // expand dotted keys first
+    data = foundry.utils.expandObject(data);
+    // THEN check for flags in keys
     if (!Object.keys(data).includes("flags")) {
       data.flags = {};
     }
