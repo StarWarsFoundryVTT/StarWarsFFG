@@ -9,6 +9,7 @@ import EmbeddedItemHelpers from "../helpers/embeddeditem-helpers.js";
 import ActorHelpers, {xpLogSpend} from "../helpers/actor-helpers.js";
 import ItemOptions from "./item-ffg-options.js";
 import {attachmentModificationsEditor, forcePowerEditor, itemEditor, talentEditor} from "./item-editor.js";
+import {STARTING_ITEM_TYPES, prepareStartingItems, startingItemEntry} from "../helpers/starting-items.js";
 
 /**
  * Extend the basic ItemSheet with some very simple modifications
@@ -295,11 +296,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         } else {
           data.data.attributes.Strain.exclude = true;
         }
+        data.startingItems = prepareStartingItems(this.object.system.startingItems);
 
         break;
       case "career":
         this.position.width = 500;
         this.position.height = 600;
+        data.startingItems = prepareStartingItems(this.object.system.startingItems);
         if (Object.keys(this.object.system.specializations).length === 0) {
           // handlebars sucks
           data.data.specializations = false;
@@ -588,6 +591,11 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       const itemType = li.data("itemType");
       let item;
       let itemDetails;
+      if (itemType === "startingitem") {
+        const linked = await fromUuid(this.item.system.startingItems[itemId]?.source);
+        linked?.sheet.render(true);
+        return;
+      }
       if (itemType === "ability") {
         item = this.item.system.abilities[itemId];
         itemDetails = {
@@ -688,7 +696,11 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       const li = $(ev.currentTarget);
       let itemId = li.data("itemId");
       const itemType = li.data("itemType");
-      if (itemType === "ability") {
+      if (itemType === "startingitem") {
+        // the attachment/mod delete handler bound below would otherwise also take this click
+        ev.stopImmediatePropagation();
+        await this.item.update({system: {startingItems: {[`-=${itemId}`]: null}}});
+      } else if (itemType === "ability") {
         const item = this.item.system.abilities[itemId];
         await this._deleteAbility(item, event);
       } else if (itemType === "talent") {
@@ -2054,7 +2066,9 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
     if (!itemObject) return;
 
-    if (itemObject.type === "specialization") {
+    if (STARTING_ITEM_TYPES.includes(itemObject.type)) {
+      await this._addStartingItem(itemObject);
+    } else if (itemObject.type === "specialization") {
       await this.object.update({system: {specializations: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
     } else if (itemObject.type === "signatureability") {
       await this.object.update({system: {signatureabilities: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
@@ -2081,6 +2095,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
     if (!itemObject) return;
 
+    if (STARTING_ITEM_TYPES.includes(itemObject.type)) {
+      await this._addStartingItem(itemObject);
+      return;
+    }
     if (itemObject.type === "talent") {
       // no AE transfer here - the talent itself is granted to the actor, and brings its own AEs along
       await this.object.update({system: {talents: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
@@ -2091,6 +2109,13 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   }
 
   async _onDragItemStart(event) {}
+
+  /**
+   * Link a weapon, armour or gear item as starting gear on this species or career.
+   */
+  async _addStartingItem(itemObject) {
+    await this.object.update({system: {startingItems: {[itemObject.id]: startingItemEntry(itemObject)}}});
+  }
 
   /**
    * Remove an talent from a species item

@@ -1,0 +1,23 @@
+{{!-- Starting gear on a species or career; each entry links to the dropped item by uuid --}}
+<div class="starting-items items">
+  <ul class="items-list">
+    <li class="items-header flexrow">
+      <div class="header-name">{{localize "SWFFG.StartingItems.Header"}}</div>
+    </li>
+    {{#each startingItems as |entry id|}}
+      <li class="item specialization-talent-item flexrow {{#if entry.broken}}link-broken{{/if}}"
+          data-item-type="startingitem" data-item-id="{{id}}"
+          {{#if entry.broken}}data-tooltip="{{localize "SWFFG.StartingItems.Broken"}}"{{/if}}>
+        <div class="item-name">
+          {{#if entry.broken}}<i class="fas fa-link-slash"></i>{{/if}} {{entry.name}}
+        </div>
+        <div class="item-controls">
+          <a class="item-control item-delete" data-item-type="startingitem" data-item-id="{{id}}"
+             title="{{localize "SWFFG.StartingItems.Remove"}}"><i class="fas fa-trash"></i></a>
+        </div>
+      </li>
+    {{else}}
+
+    {{/each}}
+  </ul>
+</div>
