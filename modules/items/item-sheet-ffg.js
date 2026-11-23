@@ -701,6 +701,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         ev.stopImmediatePropagation();
         await this.item.update({system: {startingItems: {[`-=${itemId}`]: null}}});
       } else if (itemType === "ability") {
+        ev.stopImmediatePropagation();
         const item = this.item.system.abilities[itemId];
         await this._deleteAbility(item, event);
       } else if (itemType === "talent") {
@@ -2103,7 +2104,12 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       // no AE transfer here - the talent itself is granted to the actor, and brings its own AEs along
       await this.object.update({system: {talents: {[itemObject.id]: {name: itemObject.name, source: itemObject.uuid, id: itemObject.id}}}});
     } else if (itemObject.type === "ability") {
-      await this.object.update({system: {abilities: {[itemObject.id]: {name: itemObject.name, system: {description: itemObject.system.description}}}}});
+      // replace the old copy and the effects that came with it
+      if (this.object.system.abilities[itemObject.id]) {
+        await this._removeSpeciesAbility(itemObject.id, itemObject.effects.map(e => e.name));
+      }
+      const system = {description: itemObject.system.description, attributes: itemObject.system.attributes};
+      await this.object.update({system: {abilities: {[itemObject.id]: {name: itemObject.name, system: system}}}});
     }
     await this._transferActiveEffects(itemObject);
   }
@@ -2152,15 +2158,26 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     event.stopPropagation();
     const li = $(event.currentTarget);
     const deleteId = li.data("item-id");
+    await this._removeSpeciesAbility(deleteId);
     delete this.item.system.abilities[deleteId];
-    await this.item.update({
-      system: {
-        abilities: {
-          [`-=${deleteId}`]: null
-        },
-      },
-    });
     await this.render();
+  }
+
+  /**
+   * Remove an ability from a species item, along with the active effects it brought onto the species
+   * @param abilityId - key of the ability on the species
+   * @param effectNames - names of further effects to remove (those of the ability being dropped)
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _removeSpeciesAbility(abilityId, effectNames = []) {
+    const stored = this.item.system.abilities[abilityId];
+    const names = new Set([...Object.keys(stored?.system?.attributes ?? {}), ...effectNames]);
+    const effectIds = this.item.effects.filter(e => names.has(e.name)).map(e => e.id);
+    if (effectIds.length) {
+      await this.item.deleteEmbeddedDocuments("ActiveEffect", effectIds);
+    }
+    await this.item.update({system: {abilities: {[`-=${abilityId}`]: null}}});
   }
 
    /**

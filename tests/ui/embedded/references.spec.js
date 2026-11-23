@@ -51,6 +51,104 @@ test('a species records a linked ability without a source', async ({ world, page
   expect(linked?.source, 'but with no way back to the document').toBeUndefined();
 });
 
+/** Set an ability's Wounds modifier from its sheet's Modifiers tab, adding the row first if needed. */
+async function setWoundsOnSheet(page, ability, value) {
+  await api.openSheet(page, ability);
+  const problem = await page.evaluate(async ({ uuid, value }) => {
+    const wait = async (check, what) => {
+      const deadline = Date.now() + 5000;
+      while (!(await check())) {
+        if (Date.now() > deadline) throw new Error(what);
+        await new Promise((r) => setTimeout(r, 50));
+      }
+    };
+    const item = await fromUuid(uuid);
+    const root = () => item.sheet.element?.[0] ?? item.sheet.element;
+    try {
+      if (!root().querySelector('.tab.attributes .modvalue')) {
+        const create = root().querySelector('.tab.attributes .attribute-control[data-action="create"]');
+        if (!create) return 'the ability sheet has no Modifiers tab to add a row from';
+        create.click();
+        await wait(() => root().querySelector('.tab.attributes .modvalue'), 'no modifier row appeared');
+      }
+      const input = root().querySelector('.tab.attributes .modvalue');
+      input.value = String(value);
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+      const applied = () => item.effects.some((e) => e.changes.some((c) => Number(c.value) === value));
+      await wait(applied, `no effect carrying ${value} was built from the sheet`);
+    } catch (err) {
+      return err.message;
+    }
+    return null;
+  }, { uuid: ability, value });
+  await api.closeSheet(page, ability);
+  if (problem) throw new Error(problem);
+}
+
+/** Drop an ability on a species' rendered sheet, as a user drags it. */
+async function dropAbility(page, species, ability) {
+  await api.openSheet(page, species);
+  await api.dropOnSheetElement(page, species, ability);
+  await api.closeSheet(page, species);
+}
+
+test('#1539 a modifier set on an ability sheet reaches the character through its species',
+  async ({ world, page, consumers }) => {
+    const species = await world.item({ item: 'species' });
+    const ability = await world.item({ item: 'ability' });
+    await setWoundsOnSheet(page, ability, 1);
+    await dropAbility(page, species, ability);
+
+    const ctx = await world.place(species, { actor: 'character' });
+    await api.settledOwnedItems(page, ctx.actor);
+
+    expect(await consumers.stat(ctx, 'Wounds'), 'the ability applies through the species').toBe(12 + 1);
+  });
+
+test('#1539 removing an ability from a species removes its modifier', async ({ world, page, consumers }) => {
+  const species = await world.item({ item: 'species' });
+  const ability = await world.item({ item: 'ability' });
+  await setWoundsOnSheet(page, ability, 1);
+  await dropAbility(page, species, ability);
+
+  await api.openSheet(page, species);
+  const problem = await page.evaluate(async (uuid) => {
+    const item = await fromUuid(uuid);
+    const root = item.sheet.element?.[0] ?? item.sheet.element;
+    const control = root?.querySelector('.item-delete[data-item-type="ability"]');
+    if (!control) return 'the species sheet rendered no ability delete control';
+    control.click();
+    const deadline = Date.now() + 5000;
+    while (Object.keys((await fromUuid(uuid)).system.abilities).length) {
+      if (Date.now() > deadline) return 'the ability was never removed';
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    return null;
+  }, species);
+  await api.closeSheet(page, species);
+  expect(problem, 'the ability was removed through the sheet').toBeNull();
+
+  const ctx = await world.place(species, { actor: 'character' });
+  await api.settledOwnedItems(page, ctx.actor);
+
+  expect(await consumers.stat(ctx, 'Wounds'), 'the removed ability no longer applies').toBe(12);
+});
+
+test('#1539 dropping an edited ability on a species replaces the old one', async ({ world, page, consumers }) => {
+  const species = await world.item({ item: 'species' });
+  const ability = await world.item({ item: 'ability' });
+  await setWoundsOnSheet(page, ability, 1);
+  await dropAbility(page, species, ability);
+
+  await setWoundsOnSheet(page, ability, 2);
+  await dropAbility(page, species, ability);
+
+  const ctx = await world.place(species, { actor: 'character' });
+  await api.settledOwnedItems(page, ctx.actor);
+
+  expect(await consumers.stat(ctx, 'Wounds'), 'only the edited modifier applies').toBe(12 + 2);
+});
+
 test('a species talent applies without being re-added', async ({ world, page, consumers }) => {
   const species = await world.item({ item: 'species' });
   const talent = await world.item({
