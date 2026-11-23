@@ -7,6 +7,8 @@ export class CareerData extends foundry.abstract.TypeDataModel {
       ...core(),
       specializations: keyedMap(),
       signatureabilities: keyedMap(),
+      // copies of gear granted to a character when the career is added
+      startingItems: keyedMap(),
       careerSkills: slotMap("careerSkill", 8, () => "(none)"),
     };
   }

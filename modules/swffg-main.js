@@ -56,6 +56,7 @@ import {xpLogUndo} from "./helpers/actor-helpers.js";
 import {register_system_tours} from "./helpers/tours.js";
 import {ITEM_DATA_MODELS} from "./data/items/index.js";
 import {ACTOR_DATA_MODELS} from "./data/actors/index.js";
+import {grantStartingItems, offerStartingItemRemoval} from "./helpers/starting-items.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -1412,6 +1413,9 @@ Hooks.once("ready", async () => {
     // add talents from species to character
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
+      if (["species", "career"].includes(item.type) && actor.type === "character") {
+        await grantStartingItems(item);
+      }
       if (item.type === "species" && actor.type === "character") {
         await actor.update({"system.stats.silhouette.value": item.system.silhouette});
         const toAdd = [];
@@ -1457,6 +1461,9 @@ Hooks.once("ready", async () => {
     // remove talents, abilities added by species
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
+      if (["species", "career"].includes(item.type) && actor.type === "character") {
+        await offerStartingItemRemoval(item);
+      }
       if (item.type === "species" && actor.type === "character") {
         const grantedXp = item.system.startingXP;
         const currentAvailable = actor.system.experience.available;
