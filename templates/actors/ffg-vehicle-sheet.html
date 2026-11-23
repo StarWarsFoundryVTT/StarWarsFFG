@@ -143,6 +143,12 @@
         {{!-- Vehicle type box --}}
         {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="Space Vehicle" type="Boolean" name="data.spaceShip" value=data.spaceShip)}}
       </div>
+      <div class="container flex-group-center biography-values">
+        {{!-- Price, Rarity and Restricted Boxes --}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemsPrice" type="Number" name="data.stats.cost.value" value=data.stats.cost.value)}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.ItemsRarity" type="Number" name="data.stats.rarity.value" value=data.stats.rarity.value)}}
+        {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.IsRestricted" type="Boolean" name="data.stats.rarity.isrestricted" value=data.stats.rarity.isrestricted)}}
+      </div>
 
       {{!-- Crew List --}}
       {{> "systems/starwarsffg/templates/parts/actor/ffg-vehicle-crew.html"}}
