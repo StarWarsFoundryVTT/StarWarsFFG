@@ -12,6 +12,8 @@
   * Weapons, armor and gear can be stowed from the actor sheet ([#1960](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1960))
   * You can now re-order items in inventory sheets ([#1764](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1764))
   * An attachment's Modifications can be edited and installed from its own sheet ([#2235](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2235))
+  * Species have a Silhouette ([#1321](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1321))
+  * A new sheet option, "Mount", is added ([#1321](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1321))
 * Fixes:
   * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
   * Character sheets build their data once per render instead of once per skill, so they stay responsive after a lot of XP has been spent ([#2251](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2251))

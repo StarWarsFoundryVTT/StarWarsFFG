@@ -675,6 +675,8 @@
   "SWFFG.Despair" : "Despair",
   "SWFFG.EnableCriticalInjuries" : "Enable Critical Injuries",
   "SWFFG.EnableCriticalInjuriesHint" : "Enable the Critical Injuries section",
+  "SWFFG.EnableMount": "Mount",
+  "SWFFG.EnableMountHint": "Shows the Speed and Handling this creature has",
   "SWFFG.ModTypeSkillAddTriumph" : "Skill Add Triumph",
   "SWFFG.ModTypeSkillAddUpgrade" : "Skill Add Upgrade",
   "SWFFG.ModTypeSkillAddDowngrade" : "Skill Add Downgrade",

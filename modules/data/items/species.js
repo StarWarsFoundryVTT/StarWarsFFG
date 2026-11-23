@@ -11,6 +11,7 @@ export class SpeciesData extends foundry.abstract.TypeDataModel {
       abilities: keyedMap(),
       species: keyedMap(),
       startingXP: new fields.NumberField({ required: true, nullable: false, initial: 0 }),
+      silhouette: new fields.NumberField({ required: true, nullable: false, initial: 1 }),
     };
   }
 }

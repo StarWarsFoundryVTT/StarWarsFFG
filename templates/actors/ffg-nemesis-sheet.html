@@ -85,6 +85,18 @@
                 (object name="data.stats.defence.ranged" value=data.stats.defence.ranged type="Number" label="SWFFG.DefenseRanged" disabled=disabled)
               )
             )}}
+          {{#if actor.flags.starwarsffg.config.enableMount}}
+          {{!-- Mount Speed and Handling --}}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="split" title="SWFFG.VehicleSpeed" fields=(array
+                (object name="data.stats.speed.max" value=data.stats.speed.max type="Number" label="SWFFG.Threshold" disabled=true)
+                (object name="data.stats.speed.value" value=data.stats.speed.value type="Number" label="SWFFG.Current")
+              ))
+            }}
+            {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html"
+              (object blocktype="single" title="SWFFG.VehicleHandling" type="Number" name="data.stats.handling" value=data.stats.handling disabled=true)
+            }}
+          {{/if}}
         </div>
       </div>
     </div>
@@ -192,6 +204,7 @@
         </div>
         <div class="block-editor">
           {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.NotableFeature" type="PopoutEditor" name="data.general.features" value=data.general.features)}} {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="double" title="SWFFG.Notes" type="PopoutEditor" name="data.general.notes" value=data.general.notes)}}
+          {{> "systems/starwarsffg/templates/parts/shared/ffg-block.html" (object blocktype="single" title="SWFFG.VehicleSilhouette" type="Number" name="data.stats.silhouette.value" value=data.stats.silhouette.value)}}
         </div>
       </div>
       <div>

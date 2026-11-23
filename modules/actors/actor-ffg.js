@@ -254,6 +254,14 @@ export class ActorFFG extends Actor {
       this._prepareCharacterData(actor);
       this._prepareSources(actor);
     }
+
+    // a mount's speed and handling (Savage Spirits p.71), shown when the Mount sheet option is on
+    if (data.stats?.silhouette && data.characteristics) {
+      const agility = data.characteristics.Agility.value;
+      data.stats.speed.max = Math.ceil(agility / 2);
+      data.stats.speed.value = Math.min(data.stats.speed.value, data.stats.speed.max);
+      data.stats.handling = agility - data.stats.silhouette.value - data.characteristics.Willpower.value;
+    }
   }
 
   _prepareSharedData(actorData) {

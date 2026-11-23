@@ -43,6 +43,7 @@ export default class Species {
               talents: {},
               abilities: {},
               startingXP: item.StartingAttrs.Experience ? parseInt(item.StartingAttrs.Experience, 10) : 0,
+              silhouette: 1,
               metadata: {
                 tags: [
                   "species",
@@ -140,6 +141,13 @@ export default class Species {
                       description: curOption.Description,
                     },
                   };
+                }
+
+                // OggDude only states size in ability text, e.g. "Jawas have a Silhouette of 0."
+                const sizeText = option.length === 1 ? String(option[0].Description ?? "").toLowerCase() : "";
+                const phrase = ["have a silhouette of ", "count as silhouette "].find((p) => sizeText.includes(p));
+                if (phrase) {
+                  data.data.silhouette = parseInt(sizeText.slice(sizeText.indexOf(phrase) + phrase.length), 10);
                 }
 
                 if (option[0].DieModifiers) {

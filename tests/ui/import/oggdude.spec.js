@@ -119,6 +119,16 @@ test('an imported species carries its characteristics and thresholds', async ({ 
   expect(startingXP, 'with the XP it starts on').toBe(Number(thresholds.Experience));
 });
 
+test('#1321 an imported species reads its silhouette from its size ability', async ({ world, page }) => {
+  await oggdude.reimport(page, 'Species');
+
+  const small = await world.imported('species', 'CHADRA');
+  const average = await world.imported('species');
+
+  expect(await api.read(page, small, 'system.silhouette'), '"Chadra-Fan have a Silhouette of 0."').toBe(0);
+  expect(await api.read(page, average, 'system.silhouette'), 'a species that never says stays at 1').toBe(1);
+});
+
 test('importing the same data twice does not duplicate the documents', async ({ page }) => {
   const before = await api.readPack(page, 'oggdude.Armor');
 

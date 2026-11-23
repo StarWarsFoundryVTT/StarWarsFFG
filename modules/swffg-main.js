@@ -1413,6 +1413,7 @@ Hooks.once("ready", async () => {
     if (item.isEmbedded && item.parent.documentName === "Actor") {
       const actor = item.actor
       if (item.type === "species" && actor.type === "character") {
+        await actor.update({"system.stats.silhouette.value": item.system.silhouette});
         const toAdd = [];
         // talents
         for(const talentId of Object.keys(item.system.talents)) {

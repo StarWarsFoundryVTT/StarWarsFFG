@@ -811,6 +811,10 @@ export default class SWAImporter extends FormApplication {
                         },
                       });
                     } else {
+                      // a creature's size comes as an ability named e.g. "Silhouette 3"
+                      if (ability.startsWith("Silhouette ")) {
+                        adversary.system.stats.silhouette = { value: parseInt(ability.slice(11), 10) };
+                      }
                       const swaAbilityKey = Object.keys(CONFIG.temporary.swa.abilities).find((t) => ability.includes(t));
                       if (swaAbilityKey) {
                         const swaAbility = CONFIG.temporary.swa.abilities[swaAbilityKey];

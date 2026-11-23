@@ -156,6 +156,9 @@ export function characterStats({ strain = true, medical = true } = {}) {
     encumbrance: new fields.SchemaField({ value: num(), max: num(), adjusted: num() }),
     forcePool: new fields.SchemaField({ value: num(), max: num(), adjusted: num() }),
     credits: numberStat({ label: "Credits" }),
+    silhouette: numberStat({ initial: 1, label: "Silhouette", adjusted: false }),
+    // mount current speed
+    speed: new fields.SchemaField({ value: num() }),
   };
   if (strain) schema.strain = threshold();
   if (medical) schema.medical = new fields.SchemaField({ uses: num() });
