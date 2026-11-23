@@ -2623,6 +2623,20 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
             label: game.i18n.localize("SWFFG.Actors.Sheets.Purchase.CancelPurchase"),
           },
         },
+        render: (html) => {
+          // hide options (and emptied groups) that don't match the search text
+          $("#ffgPurchaseSearch", html).on("input", (event) => {
+            const search = event.target.value.toLowerCase();
+            const select = $("#ffgPurchase", html)[0];
+            $("optgroup option", select).each((i, option) => {
+              option.hidden = !option.text.toLowerCase().includes(search);
+            });
+            $("optgroup", select).each((i, group) => {
+              group.hidden = !$("option:not([hidden])", group).length;
+            });
+            if (select.selectedOptions[0]?.hidden) select.selectedIndex = 0;
+          });
+        },
       },
       {
         classes: ["dialog", "starwarsffg"],
