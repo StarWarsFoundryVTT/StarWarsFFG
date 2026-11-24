@@ -113,7 +113,7 @@ for (const type of PARENTS) {
     await page.locator(`#${sheetId} .sheet-tabs [data-tab="${TAB[type]}"]`).click();
     await expect(row, 'a deleted link is marked broken').toHaveClass(/link-broken/);
 
-    await row.locator('.item-delete').click();
+    await row.locator('.item-delete').click({ modifiers: ['Shift'] });
     await expect(row).toHaveCount(0);
     expect(await api.read(page, parent, 'system.startingItems')).toEqual({});
     await api.closeSheet(page, parent);

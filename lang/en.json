@@ -415,6 +415,8 @@
   "SWFFG.Talent": "Talent",
   "SWFFG.Source": "Source",
   "SWFFG.Delete": "Delete",
+  "SWFFG.DeleteConfirm.Title": "Confirm Delete",
+  "SWFFG.DeleteConfirm.Body": "Are you sure you want to delete this? Hold Shift while clicking delete to skip this prompt.",
   "SWFFG.SheetOptions": "Sheet Options",
   "SWFFG.CharacterSheet": "Character Sheet",
   "SWFFG.ItemSheet": "Item Sheet",

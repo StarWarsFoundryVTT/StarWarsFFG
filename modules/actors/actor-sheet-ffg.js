@@ -3,6 +3,7 @@
  * @extends {ActorSheet}
  */
 import PopoutEditor from "../popout-editor.js";
+import {confirmDeletes} from "../helpers/delete-confirmation.js";
 import DiceHelpers from "../helpers/dice-helpers.js";
 import ActorOptions from "./actor-ffg-options.js";
 import ImportHelpers from "../importer/import-helpers.js";
@@ -451,6 +452,7 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    confirmDeletes(html[0]);
     // convert jquery element to HTMLElement for usage with Foundry calls
     const htmlElement = html.get(0);
 
