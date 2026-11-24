@@ -19,6 +19,7 @@
   * Abilities have a Modifiers tab ([#1539](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1539))
   * Ship attachments take Modifications ([#1875](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1875))
   * Gear can be equipped and unequipped ([#1580](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1580))
+  * Roll results in chat show the uncancelled symbols instead of a text summary ([#1804](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1804))
 * Fixes:
   * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
   * Character sheets build their data once per render instead of once per skill, so they stay responsive after a lot of XP has been spent ([#2251](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2251))

@@ -49,7 +49,9 @@
         {{/if}}
         {{#each ffg as | result key|}}
           {{#if this}}
-          <li>{{localize (lookup ../this.diceresults [key])}}: {{this}}</li>
+          <li data-tooltip="{{localize (lookup ../this.diceresults [key])}}: {{this}}">
+            {{{lookup ../this.resultSymbols key}}}
+          </li>
           {{/if}}
         {{/each}}
       </ul>

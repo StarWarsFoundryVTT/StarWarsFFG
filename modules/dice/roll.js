@@ -281,6 +281,16 @@ export class RollFFG extends Roll {
       };
     }
 
+    const symbolCodes = {
+      success: "SU", failure: "FA", advantage: "AD", threat: "TH",
+      triumph: "TR", despair: "DE", light: "LI", dark: "DA",
+    };
+    const resultSymbols = {};
+    for (const [key, code] of Object.entries(symbolCodes)) {
+      const symbol = await foundry.applications.ux.TextEditor.enrichHTML(`[${code}]`);
+      resultSymbols[key] = symbol.repeat(Math.max(this.ffg?.[key] || 0, 0));
+    }
+
     const chatData = {
       formula: isPrivate ? "???" : this._formula,
       flavor: isPrivate ? null : chatOptions.flavor,
@@ -305,6 +315,7 @@ export class RollFFG extends Roll {
       hasStandard: this.hasStandard,
       hasSuccess: this.dice.filter((i) => i.constructor !== ForceDie).length > 0,
       diceresults: CONFIG.FFG.diceresults,
+      resultSymbols: isPrivate ? {} : resultSymbols,
       data: this.data,
       addedResults: this.addedResults,
       publicRoll: !chatOptions.isPrivate,
