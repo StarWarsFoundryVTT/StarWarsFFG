@@ -300,8 +300,6 @@ export class ItemFFG extends ItemBaseFFG {
       }
     }
 
-    data.renderedDesc = await PopoutEditor.renderDiceImages(data.description, actor);
-
     // an attachment's Modifications only come back with a total when sources are asked for
     const fromAttachment = (attachment, modifications, key, modtype) =>
       ModifierHelpers.getCalculatedValueFromCurrentAndArray(attachment, modifications, key, modtype, true).total;
@@ -560,6 +558,9 @@ export class ItemFFG extends ItemBaseFFG {
     if (this.type === "signatureability") {
       this._prepareSignatureAbilities();
     }
+
+    // last, so a slow enrich can't leave the sheet rendering before the derived stats exist
+    data.renderedDesc = await PopoutEditor.renderDiceImages(data.description, actor);
   }
   /**
    * Capitalize string

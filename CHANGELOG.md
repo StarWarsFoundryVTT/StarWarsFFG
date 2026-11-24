@@ -42,6 +42,7 @@
   * Picking a sound in the roll dialog no longer stops the roll ([#2391](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2391))
   * Module flags (such as Automated Animations) are no longer blown away ([#2241](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2241))
   * Personal items in a vehicle's cargo no longer modify the vehicle, so gear raising encumbrance capacity no longer raises the vehicle's ([#2186](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2186))
+  * Hopefully fixed sheets sometimes rendering incorrectly ([#2418](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2418))
 
 `2.0.4`
 * Features:
