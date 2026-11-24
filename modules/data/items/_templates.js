@@ -59,12 +59,12 @@ export function hardpoints() {
 }
 
 /** Whether the item can be worn or carried, and whether it currently is. */
-export function equippable() {
+export function equippable({ equipped = false } = {}) {
   return {
     equippable: new fields.SchemaField({
       value: new fields.BooleanField({ required: true, initial: true }),
       type: new fields.StringField({ required: true, initial: "Boolean" }),
-      equipped: new fields.BooleanField({ required: true, initial: false }),
+      equipped: new fields.BooleanField({ required: true, initial: equipped }),
     }),
   };
 }

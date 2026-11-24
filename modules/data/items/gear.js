@@ -1,4 +1,4 @@
-import { basic, core, itemattachments, qualities, stowable } from "./_templates.js";
+import { basic, core, equippable, itemattachments, qualities, stowable } from "./_templates.js";
 
 export class GearData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
@@ -6,6 +6,8 @@ export class GearData extends foundry.abstract.TypeDataModel {
       ...core(),
       ...basic(),
       ...stowable(),
+      // gear was always treated as equipped, so it starts that way
+      ...equippable({ equipped: true }),
       ...itemattachments(),
       ...qualities(),
     };
