@@ -94,6 +94,7 @@
 <ul class="items">
   <li class="items-header flexrow">
     <div class="header-name">{{localize "SWFFG.ItemsGear"}}</div>
+    <div>{{localize "SWFFG.Equipped"}}</div>
     <!-- <div>{{localize "SWFFG.ItemsPrice"}}</div>
     <div>{{localize "SWFFG.ItemsRarity"}}</div> -->
     <div>{{localize "SWFFG.ItemsQuantity"}}</div>
@@ -118,6 +119,9 @@
           <div class="tooltip2">This is a Restricted item</div>
           {{/if}}
         </div>
+      </div>
+      <div>
+        <a class="toggle-equipped {{#if item.system.equippable.equipped}}active{{/if}}" data-item-id="{{item._id}}" title="{{#if item.system.equippable.equipped}}{{localize "SWFFG.Equipped"}}{{else}}{{localize "SWFFG.Unequipped"}}{{/if}}"><i class="fas fa-hand-holding"></i></a>
       </div>
       <!-- <div>{{item.system.price.value}}</div>
       <div>{{item.system.rarity.value}}</div> -->

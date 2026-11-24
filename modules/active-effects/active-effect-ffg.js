@@ -6,7 +6,7 @@ import {characteristicDiceFields} from "../config/ffg-modifiers.js";
  * Item types that only grant what they carry while they are equipped. Ship weapons and ship
  * attachments have an equipped state as well, but no way to set it, so they are left out.
  */
-const equipGatedTypes = ["armour", "weapon"];
+const equipGatedTypes = ["armour", "weapon", "gear"];
 
 function disablePushOnItem(options){
   // don't show push/animation if that's an effect from item
@@ -40,7 +40,7 @@ export class ActiveEffectFFG extends ActiveEffect {
   }
 
   /**
-   * Weapons and armor only grant what they carry while they are equipped. Encumbrance is the
+   * Weapons, armor, and gear only grant what they carry while they are equipped. Encumbrance is the
    * exception - carrying something is what makes it encumbering in the first place
    * @override
    */

@@ -1,8 +1,17 @@
 import { test, expect } from '../../../support/fixtures';
+import * as api from '../../../support/api';
 
 /**
- * Armour and weapons only contribute while equipped, and stop contributing when unequipped.
+ * Armour, weapons, and gear only contribute while equipped and stop contributing when unequipped.
  */
+
+async function toggleEquipped(page, ctx) {
+  const windowId = await api.openSheet(page, ctx.actor);
+  const sheet = page.locator(`#${windowId}`);
+  await sheet.locator('.sheet-tabs [data-tab="items"]').first().click();
+  const itemId = ctx.item.split('.').pop();
+  await sheet.locator(`li.item[data-item-id="${itemId}"] .toggle-equipped`).click();
+}
 
 test('armour soak and defence apply only while equipped', async ({ world, consumers }) => {
   const ctx = await world.build({
@@ -39,4 +48,32 @@ test('carried weapons count toward encumbrance', async ({ world, consumers }) =>
   });
 
   expect(await consumers.stat(ctx, 'Encumbrance'), 'encumbrance is increased with item added').toBe(5);
+});
+
+test('#1580 gear grants its mods only while equipped', async ({ world, consumers, page }) => {
+  const ctx = await world.build({
+    actor: 'character',
+    item: 'gear',
+    attributes: [
+      {
+        modtype: 'Stat',
+        mod: 'Soak',
+        value: 1,
+      },
+    ],
+    itemOverrides: {
+      encumbrance: {
+        value: 4,
+        adjusted: 4,
+      },
+    },
+  });
+  const equipped = await consumers.stat(ctx, 'Soak');
+
+  await toggleEquipped(page, ctx);
+  await expect.poll(() => consumers.stat(ctx, 'Soak'), { message: 'unequipped gear adds no soak' }).toBe(equipped - 1);
+  expect(await consumers.stat(ctx, 'Encumbrance'), 'but is still encumbering').toBe(4);
+
+  await toggleEquipped(page, ctx);
+  await expect.poll(() => consumers.stat(ctx, 'Soak'), { message: 'and again once equipped' }).toBe(equipped);
 });
