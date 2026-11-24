@@ -117,7 +117,7 @@ test('#1539 removing an ability from a species removes its modifier', async ({ w
     const root = item.sheet.element?.[0] ?? item.sheet.element;
     const control = root?.querySelector('.item-delete[data-item-type="ability"]');
     if (!control) return 'the species sheet rendered no ability delete control';
-    control.click();
+    control.dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true }));
     const deadline = Date.now() + 5000;
     while (Object.keys((await fromUuid(uuid)).system.abilities).length) {
       if (Date.now() > deadline) return 'the ability was never removed';

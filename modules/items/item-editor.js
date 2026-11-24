@@ -1,5 +1,6 @@
 import ItemHelpers from "../helpers/item-helpers.js";
 import ModifierHelpers from "../helpers/modifiers.js";
+import {confirmDeletes} from "../helpers/delete-confirmation.js";
 
 export class itemEditor extends FormApplication  {
   /*
@@ -92,6 +93,7 @@ export class itemEditor extends FormApplication  {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    confirmDeletes(html[0]);
     html.find('[name="system.type"]').on("change", this._updateType.bind(this));
     html.find(".flat_editor.dropdown").on("change", this._updateDropdown.bind(this));
     html.find(".flat_editor.add-mod").on("click", this._modControl.bind(this));

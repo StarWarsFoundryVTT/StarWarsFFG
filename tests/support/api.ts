@@ -520,7 +520,7 @@ export async function removeEmbedded(
     const control = row.querySelector('.item-delete');
     if (!control) return `the ${kind} row at index ${index} has no delete control`;
 
-    control.click();
+    control.dispatchEvent(new MouseEvent('click', { bubbles: true, shiftKey: true }));
 
     const deadline = Date.now() + 5000;
     for (;;) {

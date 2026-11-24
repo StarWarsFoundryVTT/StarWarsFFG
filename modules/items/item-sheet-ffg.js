@@ -1,4 +1,5 @@
 import PopoutEditor from "../popout-editor.js";
+import {confirmDeletes} from "../helpers/delete-confirmation.js";
 import Helpers from "../helpers/common.js";
 import ModifierHelpers from "../helpers/modifiers.js";
 import ItemHelpers from "../helpers/item-helpers.js";
@@ -527,6 +528,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
   /** @override */
   activateListeners(html) {
     super.activateListeners(html);
+    confirmDeletes(html[0]);
     html.find(".ffg-purchase").click(async (ev) => {
       if(this.actor && !this.actor?.verifyEditModeIsNotEnabled()) return;
       await this._handleItemBuy(ev)
