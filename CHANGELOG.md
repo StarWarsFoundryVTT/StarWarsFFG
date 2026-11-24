@@ -17,6 +17,7 @@
   * Added a search box for Talent purchases ([#1440](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1440))
   * Restored Price, Rarity, and Restricted fields on Vehicle sheets ([#1569](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1569))
   * Abilities have a Modifiers tab ([#1539](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1539))
+  * Ship attachments take Modifications ([#1875](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1875))
 * Fixes:
   * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
   * Character sheets build their data once per render instead of once per skill, so they stay responsive after a lot of XP has been spent ([#2251](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2251))

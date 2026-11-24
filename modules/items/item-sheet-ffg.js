@@ -450,6 +450,9 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
 
     if (Object.keys(data.data).includes("itemmodifier")) {
       for (const mod of data.data.itemmodifier) {
+        // on an attachment these are Modifications, which only count once installed
+        const isAttachment = ["itemattachment", "shipattachment"].includes(this.object.type);
+        if (isAttachment && !mod.system.active) continue;
         const modName = mod.name;
         const rank = mod.system.rank;
         const description = mod.system.description;
@@ -661,7 +664,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
           if (!$(ev.target).hasClass("fa-trash")) {
             // edit the item
             CONFIG.logger.debug("Caught mod or attachment edit request");
-            if (this.object.type === "itemattachment") {
+            if (["itemattachment", "shipattachment"].includes(this.object.type)) {
               if (this.isEditable) new attachmentModificationsEditor(this.object).render(true);
               return;
             }
@@ -877,7 +880,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
       }
     });
 
-    if (["weapon", "armour", "itemattachment", "shipweapon"].includes(this.object.type)) {
+    if (["weapon", "armour", "itemattachment", "shipweapon", "shipattachment"].includes(this.object.type)) {
       const itemToItemAssociation = new foundry.applications.ux.DragDrop({
         dragSelector: ".item",
         dropSelector: null,
@@ -1955,7 +1958,10 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     // for a rank-only update, we simply update the rank of an existing attr, not transfer AEs
     let rankOnlyUpdate = false;
 
-    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") && ((obj.type === "shipweapon" && itemObject.system.type === "weapon") || obj.type === itemObject.system.type || itemObject.system.type === "all" || obj.type === "itemattachment")) {
+    if ((itemObject.type === "itemattachment" || itemObject.type === "itemmodifier") &&
+      ((obj.type === "shipweapon" && itemObject.system.type === "weapon") || obj.type === itemObject.system.type ||
+      itemObject.system.type === "all" || obj.type === "itemattachment" ||
+      (obj.type === "shipattachment" && itemObject.type === "itemmodifier"))) {
       let items = obj?.system[itemObject.type];
       if (!items) {
         items = [];
@@ -1971,7 +1977,7 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
             itemObject.system.rank = 1;
           }
 
-          if (foundItem && this.object.type !== "itemattachment") {
+          if (foundItem && !["itemattachment", "shipattachment"].includes(this.object.type)) {
             rankOnlyUpdate = true;
             foundItem.system.rank = (parseInt(foundItem.system.rank) + parseInt(itemObject.system.rank)).toString();
           } else {
@@ -2022,7 +2028,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
     // note that abilities currently don't have a UI to add activeeffects, but we'll try to transfer them anyway
     if (
       (droppedType === "itemattachment" && ["armour", "weapon", "shipweapon"].includes(myType)) ||
-      (droppedType === "itemmodifier" && ["armour", "weapon", "shipweapon", "itemattachment"].includes(myType)) ||
+      (droppedType === "itemmodifier" &&
+        ["armour", "weapon", "shipweapon", "itemattachment", "shipattachment"].includes(myType)) ||
       (droppedType === "ability" && myType === "species") ||
       (droppedType === "talent" && myType === "specialization")
     ) {
@@ -2035,6 +2042,8 @@ export class ItemSheetFFG extends foundry.appv1.sheets.ItemSheet {
         } catch {
           CONFIG.logger.debug("No source data found for AE (this is sometimes expected)");
         }
+        // a ship attachment's effects reach the vehicle directly, so hold them until the mod is installed
+        if (myType === "shipattachment") activeEffect.disabled = !droppedItem.system.active;
         toCreate.push(activeEffect);
       }
       CONFIG.logger.debug(toCreate);

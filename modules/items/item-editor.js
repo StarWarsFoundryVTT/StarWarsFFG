@@ -98,7 +98,7 @@ export class itemEditor extends FormApplication  {
     html.find(".flat_editor.add-modification").on("click", this._modificationControl.bind(this));
 
     // allow drag-and-dropping mods if this is an attachment
-    if (this.data.clickedObject.type === "itemattachment") {
+    if (["itemattachment", "shipattachment"].includes(this.data.clickedObject.type)) {
       const dragDrop = new foundry.applications.ux.DragDrop({
         dragSelector: ".item",
         dropSelector: ".starwarsffg.flat_editor",
@@ -156,7 +156,7 @@ export class itemEditor extends FormApplication  {
       const modifierTypes = CONFIG.FFG.allowableModifierTypes;
       const modifierChoices = CONFIG.FFG.allowableModifierChoices;
       const modificationId = $(event.currentTarget).data("modification-id");
-      let direct = this.data.clickedObject.type !== "itemattachment";
+      let direct = !["itemattachment", "shipattachment"].includes(this.data.clickedObject.type);
       if (modificationId === undefined) {
         // we aren't adding it to a modification, so this is true
         direct = true;
