@@ -43,3 +43,20 @@ test('a ship attachment consumes hardpoints and adds encumbrance', async ({ worl
   // the original asserted -3: hardpoints used are subtracted from the vehicle's free customization
   expect(await consumers.stat(ctx, 'CustomizationHardPoints'), 'hardpoints remaining').toBe(2);
 });
+
+test('#2186 gear in a vehicle\'s cargo does not raise its encumbrance capacity', async ({ world, consumers }) => {
+  const ctx = await world.build({
+    actor: 'vehicle',
+    item: 'gear',
+    attributes: [
+      {
+        modtype: 'Stat',
+        mod: 'EncumbranceMax',
+        value: 3,
+      },
+    ],
+    actorOverrides: { stats: { encumbrance: { max: 10 } } },
+  });
+
+  expect(await consumers.stat(ctx, 'EncumbranceMax')).toBe(10);
+});

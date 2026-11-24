@@ -6,7 +6,10 @@ import {characteristicDiceFields} from "../config/ffg-modifiers.js";
  * Item types that only grant what they carry while they are equipped. Ship weapons and ship
  * attachments have an equipped state as well, but no way to set it, so they are left out.
  */
-const equipGatedTypes = ["armour", "weapon", "gear"];
+const equipGatedTypes = ["armour", "weapon", "gear", "itemattachment"];
+
+/** Personal-scale items, which are only cargo on a vehicle (#2186). */
+const personalTypes = ["armour", "weapon", "gear", "itemattachment", "itemmodifier"];
 
 function disablePushOnItem(options){
   // don't show push/animation if that's an effect from item
@@ -48,6 +51,10 @@ export class ActiveEffectFFG extends ActiveEffect {
     const item = change.effect?.parent;
     // a stowed item isn't carried, so it grants nothing - encumbrance included (#1960)
     if (item?.system?.stowed) {
+      return {};
+    }
+    // cargo grants nothing to the vehicle carrying it
+    if (targetDoc.type === "vehicle" && personalTypes.includes(item?.type)) {
       return {};
     }
     if (

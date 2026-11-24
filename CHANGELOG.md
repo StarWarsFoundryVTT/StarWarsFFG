@@ -21,6 +21,7 @@
   * Gear can be equipped and unequipped ([#1580](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1580))
   * Roll results in chat show the uncancelled symbols instead of a text summary ([#1804](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1804))
   * Deleting from a sheet or modifier editor asks for confirmation first; hold Shift while clicking delete to skip it ([#1277](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1277))
+  * Attachments can be carried loose in a character's inventory; their mods apply only once attached to an item ([#1897](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1897))
 * Fixes:
   * Importing a species with unsupported modifiers no longer leaves a dummy mod ([#1722](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1722))
   * Character sheets build their data once per render instead of once per skill, so they stay responsive after a lot of XP has been spent ([#2251](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2251))
@@ -40,6 +41,7 @@
   * A ranked talent applies its mods once per rank instead of only once ([#2385](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2385))
   * Picking a sound in the roll dialog no longer stops the roll ([#2391](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2391))
   * Module flags (such as Automated Animations) are no longer blown away ([#2241](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2241))
+  * Personal items in a vehicle's cargo no longer modify the vehicle, so gear raising encumbrance capacity no longer raises the vehicle's ([#2186](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2186))
 
 `2.0.4`
 * Features:

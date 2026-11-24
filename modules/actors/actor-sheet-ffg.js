@@ -89,8 +89,8 @@ export class ActorSheetFFG extends foundry.appv1.sheets.ActorSheet {
       // Handle item sorting within the same Actor
       if ( this.actor.uuid === item.parent?.uuid ) return this._onSortItem(event, itemData);
 
-      if (["character", "minion", "rival"].includes(this.actor.type) && ["itemmodifier", "itemattachment"].includes(itemData.type)) {
-        ui.notifications.warn("You cannot add Item Modifiers or Attachments directly to actors.");
+      if (["character", "minion", "rival"].includes(this.actor.type) && itemData.type === "itemmodifier") {
+        ui.notifications.warn("You cannot add Item Modifiers directly to actors.");
         return false;
       }
 
