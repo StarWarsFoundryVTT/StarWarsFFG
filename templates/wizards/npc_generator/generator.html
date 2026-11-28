@@ -19,13 +19,22 @@
 </header>
 {{/inline}}
 
+{{!-- a question mark that shows a hint on hover, so the hint doesn't cover the field it explains --}}
+{{#*inline "hint"}}
+<i class="fa-regular fa-circle-question npc-generator-hint" tabindex="0"
+   {{#if html}}data-tooltip-html="{{html}}" data-tooltip-direction="RIGHT"
+   {{else}}data-tooltip="{{text}}" aria-label="{{text}}"{{/if}}></i>
+{{/inline}}
+
 {{#*inline "tagLimits"}}
 <div class="npc-generator-filter" data-filter="{{key}}">
   {{#if heading}}<h4>{{localize label}}</h4>{{/if}}
   <div class="form-group">
-    <label for="npc-generator-{{key}}-allow">{{localize "SWFFG.NpcGenerator.App.AllowTags"}}</label>
-    <multi-select id="npc-generator-{{key}}-allow" name="filters.{{key}}.allow"
-                  data-tooltip="{{localize 'SWFFG.NpcGenerator.App.AllowTagsHint'}}">
+    <label for="npc-generator-{{key}}-allow">
+      {{localize "SWFFG.NpcGenerator.App.AllowTags"}}
+      {{> hint text=(localize "SWFFG.NpcGenerator.App.AllowTagsHint")}}
+    </label>
+    <multi-select id="npc-generator-{{key}}-allow" name="filters.{{key}}.allow">
       {{#each allow}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/each}}
     </multi-select>
   </div>
@@ -63,14 +72,18 @@
     </div>
 
     <fieldset class="npc-generator-modifiers">
-      <legend data-tooltip="{{localize 'SWFFG.NpcGenerator.App.ModifiersHint'}}">
+      <legend>
         {{localize "SWFFG.NpcGenerator.App.Modifiers"}}
+        {{> hint text=(localize "SWFFG.NpcGenerator.App.ModifiersHint")}}
       </legend>
       {{#each modifiers}}
-      <label class="checkbox" data-tooltip-html="{{tip}}" data-tooltip-direction="RIGHT">
-        <input type="checkbox" data-modifier="{{id}}" {{#if checked}}checked{{/if}}>
-        {{label}}{{#if order}} <span class="npc-generator-order">{{order}}</span>{{/if}}
-      </label>
+      <div class="npc-generator-modifier">
+        <label class="checkbox">
+          <input type="checkbox" data-modifier="{{id}}" {{#if checked}}checked{{/if}}>
+          {{label}}{{#if order}} <span class="npc-generator-order">{{order}}</span>{{/if}}
+        </label>
+        {{> hint html=tip}}
+      </div>
       {{/each}}
     </fieldset>
 
@@ -204,11 +217,13 @@
                    aria-label="{{localize 'SWFFG.NpcGenerator.App.RarityMax'}}">
           </div>
         </div>
-        <label class="checkbox npc-generator-restricted"
-               data-tooltip="{{localize 'SWFFG.NpcGenerator.App.AllowRestrictedHint'}}">
-          <input type="checkbox" name="allowRestricted" {{#if allowRestricted}}checked{{/if}}>
-          {{localize "SWFFG.NpcGenerator.App.AllowRestricted"}}
-        </label>
+        <div class="npc-generator-restricted">
+          <label class="checkbox">
+            <input type="checkbox" name="allowRestricted" {{#if allowRestricted}}checked{{/if}}>
+            {{localize "SWFFG.NpcGenerator.App.AllowRestricted"}}
+          </label>
+          {{> hint text=(localize "SWFFG.NpcGenerator.App.AllowRestrictedHint")}}
+        </div>
       </div>
       {{/if}}
       <ul class="npc-generator-gear">
@@ -217,14 +232,8 @@
           <details data-key="{{key}}" {{#if open}}open{{/if}}>
             <summary>
               <img class="npc-generator-item-img" src="{{img}}" alt="">
-              {{#if restricted}}
-              <span class="npc-generator-item-name hover restricted">
-                {{name}}
-                <span class="tooltip2">{{localize "SWFFG.NpcGenerator.App.RestrictedItem"}}</span>
-              </span>
-              {{else}}
-              <span class="npc-generator-item-name">{{name}}</span>
-              {{/if}}
+              <span class="npc-generator-item-name {{#if restricted}}restricted{{/if}}">{{name}}</span>
+              {{#if restricted}}{{> hint text=(localize "SWFFG.NpcGenerator.App.RestrictedItem")}}{{/if}}
               <span class="npc-generator-slot">{{slot}}</span>
               {{#if relaxed}}
               <i class="fa-solid fa-triangle-exclamation" data-tooltip="{{localize 'SWFFG.NpcGenerator.App.Relaxed'}}"

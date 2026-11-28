@@ -5864,6 +5864,11 @@ img {
   margin-bottom: 0.2rem;
   padding: 0;
 }
+.starwarsffg.npc-generator .npc-generator-modifier {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
 .starwarsffg.npc-generator .npc-generator-modifiers label.checkbox {
   display: flex;
   align-items: center;
@@ -6364,10 +6369,22 @@ img {
   font-weight: bold;
   color: #191813;
 }
-.starwarsffg.npc-generator .npc-generator-restricted {
+.starwarsffg.npc-generator .npc-generator-restricted,
+.starwarsffg.npc-generator .npc-generator-restricted label.checkbox {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  margin: 0;
   font-size: 0.8rem;
   color: #191813;
+}
+/* the question marks that hold the hints, so hovering a field doesn't cover it */
+.starwarsffg.npc-generator .npc-generator-hint {
+  font-size: 0.7rem;
+  color: #535d60;
+  cursor: help;
+}
+.starwarsffg.npc-generator .npc-generator-hint:hover,
+.starwarsffg.npc-generator .npc-generator-hint:focus-visible {
+  color: #490c0b;
 }
