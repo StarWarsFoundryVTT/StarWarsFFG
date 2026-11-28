@@ -16,6 +16,7 @@ import { armor_stats } from "./config/ffg-armor.js";
 import { talent_activations } from "./config/ffg-talents.js";
 import { difficulty } from "./config/ffg-difficulty.js";
 import {characterCreator} from "./config/ffg-character-creator.js";
+import { npcGenerator } from "./config/ffg-npc-generator.js";
 
 export const FFG = {};
 
@@ -49,3 +50,4 @@ FFG.allowableModifierTypes = allModifiersTypes;
 FFG.allowableModifierChoices = allModifiersMap;
 FFG.configureDice = configureDice;
 FFG.characterCreator = characterCreator;
+FFG.npcGenerator = npcGenerator;

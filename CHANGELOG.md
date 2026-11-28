@@ -1,6 +1,7 @@
 `2.1.0`
 * Features:
   * Foundry v14 support added, v13 dropped
+  * An NPC generator has been added! ([#1975](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/1975))
 * Enhancements:
   * The compendium browser can filter by stats such as rarity, damage, speed, or characteristics (exactly or with >, ≥, <, ≤), and by source book, without needing them added as tags ([#2379](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2379))
   * Added Skill Downgrade mods and Characteristic mods (defaults to off) ([#2372](https://github.com/StarWarsFoundryVTT/StarWarsFFG/issues/2372))

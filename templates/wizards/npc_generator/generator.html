@@ -1,0 +1,283 @@
+{{#*inline "sectionHead"}}
+<header class="npc-generator-section-head flexrow">
+  <h3>{{localize label}}</h3>
+  {{#if sectionLimits}}
+  <button type="button" class="icon fa-solid fa-filter npc-generator-limits-toggle" data-action="toggleLimits"
+          data-limits="{{step}}" aria-expanded="{{#if sectionLimits.open}}true{{else}}false{{/if}}"
+          data-tooltip="{{localize 'SWFFG.NpcGenerator.App.Limits'}}"
+          aria-label="{{localize 'SWFFG.NpcGenerator.App.Limits'}}">
+    {{#if sectionLimits.count}}<span class="npc-generator-limits-count">{{sectionLimits.count}}</span>{{/if}}
+  </button>
+  {{/if}}
+  <button type="button" class="icon fa-solid {{#if locked}}fa-lock{{else}}fa-lock-open{{/if}}" data-action="lock"
+          data-step="{{step}}" aria-pressed="{{#if locked}}true{{else}}false{{/if}}"
+          data-tooltip="{{localize 'SWFFG.NpcGenerator.App.Lock'}}"
+          aria-label="{{localize 'SWFFG.NpcGenerator.App.Lock'}}"></button>
+  <button type="button" class="icon fa-solid fa-dice" data-action="reroll" data-step="{{step}}"
+          data-tooltip="{{localize 'SWFFG.NpcGenerator.App.Reroll'}}"
+          aria-label="{{localize 'SWFFG.NpcGenerator.App.Reroll'}}" {{#if locked}}disabled{{/if}}></button>
+</header>
+{{/inline}}
+
+{{#*inline "tagLimits"}}
+<div class="npc-generator-filter" data-filter="{{key}}">
+  {{#if heading}}<h4>{{localize label}}</h4>{{/if}}
+  <div class="form-group">
+    <label for="npc-generator-{{key}}-allow">{{localize "SWFFG.NpcGenerator.App.AllowTags"}}</label>
+    <multi-select id="npc-generator-{{key}}-allow" name="filters.{{key}}.allow"
+                  data-tooltip="{{localize 'SWFFG.NpcGenerator.App.AllowTagsHint'}}">
+      {{#each allow}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/each}}
+    </multi-select>
+  </div>
+  <div class="form-group">
+    <label for="npc-generator-{{key}}-exclude">{{localize "SWFFG.NpcGenerator.App.ExcludeTags"}}</label>
+    <multi-select id="npc-generator-{{key}}-exclude" name="filters.{{key}}.exclude">
+      {{#each exclude}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{value}}</option>{{/each}}
+    </multi-select>
+  </div>
+</div>
+{{/inline}}
+
+<div class="npc-generator-layout">
+<div class="npc-generator-body flexrow">
+  <section class="npc-generator-options">
+    <div class="form-group">
+      <label for="npc-generator-type">{{localize "SWFFG.NpcGenerator.App.Type"}}</label>
+      <select id="npc-generator-type" name="type">
+        {{#each types}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </div>
+    {{#if minion}}
+    <div class="form-group">
+      <label for="npc-generator-size">{{localize "SWFFG.NpcGenerator.App.Size"}}</label>
+      <input id="npc-generator-size" type="number" name="size" min="1" max="20" step="1" value="{{size}}">
+    </div>
+    {{/if}}
+    <div class="form-group stacked">
+      <label for="npc-generator-archetype">{{localize "SWFFG.NpcGenerator.App.Archetype"}}</label>
+      <div class="form-fields">
+        <select id="npc-generator-archetype" name="archetype">
+          {{#each archetypes}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+        </select>
+      </div>
+    </div>
+
+    <fieldset class="npc-generator-modifiers">
+      <legend data-tooltip="{{localize 'SWFFG.NpcGenerator.App.ModifiersHint'}}">
+        {{localize "SWFFG.NpcGenerator.App.Modifiers"}}
+      </legend>
+      {{#each modifiers}}
+      <label class="checkbox" data-tooltip-html="{{tip}}" data-tooltip-direction="RIGHT">
+        <input type="checkbox" data-modifier="{{id}}" {{#if checked}}checked{{/if}}>
+        {{label}}{{#if order}} <span class="npc-generator-order">{{order}}</span>{{/if}}
+      </label>
+      {{/each}}
+    </fieldset>
+
+    <div class="form-group">
+      <label for="npc-generator-tier">{{localize "SWFFG.NpcGenerator.App.Tier"}}</label>
+      <select id="npc-generator-tier" name="tier" data-dtype="Number">
+        {{#each tiers}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="npc-generator-species">{{localize "SWFFG.NpcGenerator.App.Species"}}</label>
+      <div class="npc-generator-species-picker">
+        <button type="button" id="npc-generator-species" class="npc-generator-species-current"
+                data-action="toggleSpecies" aria-expanded="{{#if speciesOpen}}true{{else}}false{{/if}}">
+          {{#if speciesChoice.img}}<img src="{{speciesChoice.img}}" alt="">
+          {{else}}<i class="{{speciesChoice.icon}}"></i>{{/if}}
+          <span>{{speciesChoice.label}}</span>
+          <i class="fa-solid {{#if speciesOpen}}fa-caret-up{{else}}fa-caret-down{{/if}}"></i>
+        </button>
+        {{#if speciesOpen}}
+        <input type="search" class="npc-generator-species-search"
+               placeholder="{{localize 'SWFFG.NpcGenerator.App.SearchSpecies'}}"
+               aria-label="{{localize 'SWFFG.NpcGenerator.App.SearchSpecies'}}">
+        <ul class="npc-generator-species-list" role="listbox">
+          {{#each species}}
+          <li role="option" aria-selected="{{#if selected}}true{{else}}false{{/if}}">
+            <button type="button" data-action="pickSpecies" data-value="{{value}}"
+                    class="{{#if selected}}selected{{/if}}">
+              {{#if img}}<img src="{{img}}" alt="">{{else}}<i class="{{icon}}"></i>{{/if}}
+              <span>{{label}}</span>
+            </button>
+          </li>
+          {{/each}}
+        </ul>
+        {{/if}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="npc-generator-name">{{localize "SWFFG.NpcGenerator.App.Name"}}</label>
+      <input id="npc-generator-name" type="text" name="name" value="{{name}}" placeholder="{{preview.name}}">
+    </div>
+    <div class="form-group">
+      <label for="npc-generator-folder">{{localize "SWFFG.NpcGenerator.App.Folder"}}</label>
+      <select id="npc-generator-folder" name="folder">
+        {{#each folders}}<option value="{{value}}" {{#if selected}}selected{{/if}}>{{label}}</option>{{/each}}
+      </select>
+    </div>
+
+  </section>
+
+  <section class="npc-generator-preview">
+    {{#if noItems}}<p class="notification warning">{{localize "SWFFG.NpcGenerator.App.NoItems"}}</p>{{/if}}
+    <header class="npc-generator-title">
+      <h2>{{preview.name}}</h2>
+      <span>{{preview.type}}</span>
+    </header>
+
+    <section class="npc-generator-section" data-section="species">
+      {{> sectionHead step="species" label="SWFFG.NpcGenerator.App.Section.species" locked=preview.locks.species
+          sectionLimits=limits.species}}
+      {{#if limits.species.open}}
+      <div class="npc-generator-limits">
+        {{#each limits.species.tags}}{{> tagLimits}}{{/each}}
+      </div>
+      {{/if}}
+      {{#if preview.species}}
+      <a class="npc-generator-species-chosen" data-action="openDocument" data-uuid="{{preview.species.uuid}}">
+        {{#if preview.species.img}}<img src="{{preview.species.img}}" alt="">{{/if}}
+        <span>{{preview.species.name}}</span>
+      </a>
+      {{else}}<span class="npc-generator-none">{{localize "SWFFG.NpcGenerator.App.NoSpecies"}}</span>{{/if}}
+    </section>
+
+    <section class="npc-generator-section" data-section="characteristics">
+      {{> sectionHead step="characteristics" label="SWFFG.NpcGenerator.App.Section.characteristics"
+          locked=preview.locks.characteristics}}
+      <ol class="npc-generator-characteristics flexrow">
+        {{#each preview.characteristics}}
+        <li><span class="value">{{value}}</span><span class="label">{{label}}</span></li>
+        {{/each}}
+      </ol>
+    </section>
+
+    <section class="npc-generator-section" data-section="stats">
+      {{> sectionHead step="stats" label="SWFFG.NpcGenerator.App.Section.stats" locked=preview.locks.stats}}
+      <dl class="npc-generator-stats">
+        {{#each preview.stats}}<dt>{{label}}</dt><dd>{{value}}</dd>{{/each}}
+      </dl>
+    </section>
+
+    <section class="npc-generator-section" data-section="skills">
+      {{> sectionHead step="skills" label="SWFFG.NpcGenerator.App.Section.skills" locked=preview.locks.skills}}
+      <ul class="npc-generator-skills">
+        {{#each preview.skills}}
+        <li data-skill="{{key}}">
+          <span class="npc-generator-skill">{{label}}</span>
+          <span class="npc-generator-pool" data-tooltip="{{tooltip}}" aria-label="{{tooltip}}">{{{pool}}}</span>
+        </li>
+        {{/each}}
+      </ul>
+    </section>
+
+    {{#if preview.hasTalents}}
+    <section class="npc-generator-section" data-section="talents">
+      {{> sectionHead step="talents" label="SWFFG.NpcGenerator.App.Section.talents" locked=preview.locks.talents}}
+      <ul class="npc-generator-list">
+        {{#each preview.talents}}
+        <li><a data-action="openDocument" data-uuid="{{uuid}}">{{name}}</a>{{#if ranked}} {{rank}}{{/if}}</li>
+        {{else}}
+        <li class="npc-generator-none">{{localize "SWFFG.NpcGenerator.App.NoTalents"}}</li>
+        {{/each}}
+      </ul>
+    </section>
+    {{/if}}
+
+    <section class="npc-generator-section" data-section="gear">
+      {{> sectionHead step="gear" label="SWFFG.NpcGenerator.App.Section.gear" locked=preview.locks.gear
+          sectionLimits=limits.gear}}
+      {{#if limits.gear.open}}
+      <div class="npc-generator-limits">
+        {{#each limits.gear.tags}}{{> tagLimits heading=true}}{{/each}}
+        <div class="form-group">
+          <label for="npc-generator-rarity-min">{{localize "SWFFG.NpcGenerator.App.Rarity"}}</label>
+          <div class="form-fields npc-generator-rarity">
+            <input id="npc-generator-rarity-min" type="number" name="rarityMin" min="0" max="10" step="1"
+                   value="{{rarityMin}}" placeholder="{{localize 'SWFFG.NpcGenerator.App.Min'}}"
+                   aria-label="{{localize 'SWFFG.NpcGenerator.App.RarityMin'}}">
+            <span>–</span>
+            <input type="number" name="rarityMax" min="0" max="10" step="1" value="{{rarityMax}}"
+                   placeholder="{{localize 'SWFFG.NpcGenerator.App.Max'}}"
+                   aria-label="{{localize 'SWFFG.NpcGenerator.App.RarityMax'}}">
+          </div>
+        </div>
+        <label class="checkbox npc-generator-restricted"
+               data-tooltip="{{localize 'SWFFG.NpcGenerator.App.AllowRestrictedHint'}}">
+          <input type="checkbox" name="allowRestricted" {{#if allowRestricted}}checked{{/if}}>
+          {{localize "SWFFG.NpcGenerator.App.AllowRestricted"}}
+        </label>
+      </div>
+      {{/if}}
+      <ul class="npc-generator-gear">
+        {{#each preview.gear}}
+        <li>
+          <details data-key="{{key}}" {{#if open}}open{{/if}}>
+            <summary>
+              <img class="npc-generator-item-img" src="{{img}}" alt="">
+              {{#if restricted}}
+              <span class="npc-generator-item-name hover restricted">
+                {{name}}
+                <span class="tooltip2">{{localize "SWFFG.NpcGenerator.App.RestrictedItem"}}</span>
+              </span>
+              {{else}}
+              <span class="npc-generator-item-name">{{name}}</span>
+              {{/if}}
+              <span class="npc-generator-slot">{{slot}}</span>
+              {{#if relaxed}}
+              <i class="fa-solid fa-triangle-exclamation" data-tooltip="{{localize 'SWFFG.NpcGenerator.App.Relaxed'}}"
+                 aria-label="{{localize 'SWFFG.NpcGenerator.App.Relaxed'}}"></i>
+              {{/if}}
+              <span class="npc-generator-item-summary">
+                {{#each summary}}<span><span class="label">{{label}}</span> {{value}}</span>{{/each}}
+              </span>
+            </summary>
+            <div class="npc-generator-item-details">
+              <dl>
+                {{#each stats}}
+                <dt>{{label}}</dt>
+                <dd>
+                  {{value}}
+                  {{#if pool}}
+                  <span class="npc-generator-pool" data-tooltip="{{tooltip}}" aria-label="{{tooltip}}">{{{pool}}}</span>
+                  {{/if}}
+                </dd>
+                {{/each}}
+                {{#if qualities.length}}
+                <dt>{{localize "SWFFG.ItemQualities"}}</dt>
+                <dd class="npc-generator-qualities">
+                  {{#each qualities}}
+                  <span class="hover npc-generator-quality" tabindex="0">
+                    {{label}}<span class="tooltip2">{{{tooltip}}}</span>
+                  </span>
+                  {{/each}}
+                </dd>
+                {{/if}}
+              </dl>
+              {{#if description}}<div class="npc-generator-item-description">{{{description}}}</div>{{/if}}
+              <a data-action="openDocument" data-uuid="{{uuid}}">
+                <i class="fa-solid fa-up-right-from-square"></i> {{localize "SWFFG.NpcGenerator.App.OpenItem"}}
+              </a>
+            </div>
+          </details>
+        </li>
+        {{else}}
+        <li class="npc-generator-none">{{localize "SWFFG.NpcGenerator.App.NoGear"}}</li>
+        {{/each}}
+      </ul>
+    </section>
+
+  </section>
+</div>
+
+<footer class="form-footer">
+  <button type="button" data-action="rerollAll">
+    <i class="fa-solid fa-dice"></i> {{localize "SWFFG.NpcGenerator.App.RerollAll"}}
+  </button>
+  <button type="button" data-action="create">
+    <i class="fa-solid fa-user-plus"></i> {{localize "SWFFG.NpcGenerator.App.Create"}}
+  </button>
+</footer>
+</div>

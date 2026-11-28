@@ -5775,3 +5775,599 @@ img {
 .starwarsffg .items .items-list .item.dragging .tooltip2 {
   display: none;
 }
+
+/* NPC generator window, in the character creator's colours: choices on the left, the NPC on the right */
+.starwarsffg.npc-generator .window-content {
+  overflow: hidden;
+  padding: 0.5rem;
+  font-family: "Roboto", sans-serif;
+  color: #191813;
+  background: #d8cbc0 url(../images/bgWindow.jpg);
+  background-size: cover;
+}
+.starwarsffg.npc-generator .npc-generator-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 0.5rem;
+}
+.starwarsffg.npc-generator .npc-generator-body {
+  flex: 1;
+  min-height: 0;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: 0.75rem;
+}
+
+/* choices */
+.starwarsffg.npc-generator .npc-generator-options {
+  --input-height: 1.75rem;
+  flex: 0 0 15rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.starwarsffg.npc-generator .npc-generator-options .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.2rem;
+  margin: 0;
+}
+/* a stacked group's children take 100% of its height otherwise */
+.starwarsffg.npc-generator .npc-generator-options .form-group > * {
+  flex: none;
+}
+.starwarsffg.npc-generator .npc-generator-options .form-group > label,
+.starwarsffg.npc-generator .npc-generator-modifiers legend {
+  font-weight: bold;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #415064;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+.starwarsffg.npc-generator .npc-generator-options .form-fields {
+  display: flex;
+  gap: 0.25rem;
+}
+.starwarsffg.npc-generator .npc-generator-options select,
+.starwarsffg.npc-generator .npc-generator-options input[type="text"],
+.starwarsffg.npc-generator .npc-generator-options input[type="number"] {
+  flex: 1;
+  height: 1.75rem;
+  color: #191813;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #bbb;
+  border-radius: 2px;
+}
+.starwarsffg.npc-generator .npc-generator-options input::placeholder {
+  color: #5a4f52;
+}
+.starwarsffg.npc-generator .npc-generator-options option,
+.starwarsffg.npc-generator .npc-generator-options optgroup {
+  color: #191813;
+  background: #d8cbc0;
+}
+.starwarsffg.npc-generator .npc-generator-modifiers {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.1rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.starwarsffg.npc-generator .npc-generator-modifiers legend {
+  width: 100%;
+  margin-bottom: 0.2rem;
+  padding: 0;
+}
+.starwarsffg.npc-generator .npc-generator-modifiers label.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #191813;
+}
+.starwarsffg.npc-generator .npc-generator-modifiers input[type="checkbox"] {
+  margin: 0;
+  --checkbox-checked-color: #490c0b;
+  accent-color: #490c0b;
+}
+.starwarsffg.npc-generator .npc-generator-order {
+  padding: 0 0.3rem;
+  font-size: 0.65rem;
+  color: white;
+  background-color: rgba(73, 12, 11, 0.85);
+  border-radius: 0.5rem;
+}
+
+/* a modifier's tooltip lists its effects. The tooltip itself lives outside the window */
+#tooltip:has(.npc-generator-tip) {
+  max-width: 24rem;
+  text-align: left;
+}
+
+#tooltip .npc-generator-tip {
+  margin: 0;
+  padding-left: 1rem;
+}
+
+#tooltip .npc-generator-tip li + li {
+  margin-top: 0.2rem;
+}
+
+/* preview */
+.starwarsffg.npc-generator .npc-generator-preview {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+.starwarsffg.npc-generator .npc-generator-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+.starwarsffg.npc-generator .npc-generator-title h2 {
+  margin: 0;
+  border: 0;
+  font-family: "Elektra", sans-serif;
+  font-size: 1.6rem;
+  color: #781428;
+}
+.starwarsffg.npc-generator .npc-generator-title span {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #415064;
+}
+.starwarsffg.npc-generator .npc-generator-section {
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid #bbb;
+}
+.starwarsffg.npc-generator .npc-generator-section > :not(header) {
+  margin: 0.3rem 0.5rem;
+}
+.starwarsffg.npc-generator .npc-generator-section-head {
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.25rem 0.15rem 0.5rem;
+  background-color: #415064;
+  color: white;
+}
+.starwarsffg.npc-generator .npc-generator-section-head h3 {
+  flex: 1;
+  margin: 0;
+  border: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.75rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: white;
+}
+.starwarsffg.npc-generator .npc-generator-section-head button {
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  min-height: 0;
+  padding: 0;
+  font-size: 0.7rem;
+  color: white;
+  background: transparent;
+  border: 0;
+}
+.starwarsffg.npc-generator .npc-generator-section-head button:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.starwarsffg.npc-generator .npc-generator-section-head button[aria-pressed="true"] {
+  background-color: rgba(73, 12, 11, 0.85);
+}
+.starwarsffg.npc-generator .npc-generator-section-head button:disabled {
+  opacity: 0.35;
+}
+.starwarsffg.npc-generator .npc-generator-section a {
+  color: #191813;
+}
+.starwarsffg.npc-generator .npc-generator-section a:hover {
+  color: #781428;
+  text-shadow: none;
+}
+.starwarsffg.npc-generator .npc-generator-characteristics {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.3rem;
+  list-style: none;
+  padding: 0;
+}
+.starwarsffg.npc-generator .npc-generator-characteristics li {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.3rem 0.2rem 0.2rem;
+  background-color: rgba(84, 106, 83, 0.85);
+  --notchSize: 0.4rem;
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%,
+    100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%,
+    var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+.starwarsffg.npc-generator .npc-generator-characteristics .value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1.5rem;
+  color: #191813;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+}
+.starwarsffg.npc-generator .npc-generator-characteristics .label {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-size: 0.65rem;
+  line-height: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+  background-color: rgba(73, 12, 11, 0.85);
+  --notchSize: 0.25rem;
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%,
+    100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%,
+    var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+.starwarsffg.npc-generator .npc-generator-list {
+  padding-left: 1.25rem;
+}
+.starwarsffg.npc-generator .npc-generator-skills {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.1rem 1rem;
+  padding: 0;
+  list-style: none;
+}
+.starwarsffg.npc-generator .npc-generator-skills li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.starwarsffg.npc-generator .npc-generator-pool {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 1px;
+}
+.starwarsffg.npc-generator .npc-generator-pool img {
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 0;
+}
+.starwarsffg.npc-generator .npc-generator-gear {
+  padding: 0;
+  list-style: none;
+}
+.starwarsffg.npc-generator .npc-generator-gear li {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.starwarsffg.npc-generator .npc-generator-gear summary {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.1rem 0;
+  cursor: pointer;
+}
+.starwarsffg.npc-generator .npc-generator-gear summary::before {
+  content: "\f0da";
+  font-family: var(--font-awesome);
+  font-weight: 900;
+  width: 0.6rem;
+  color: #415064;
+}
+.starwarsffg.npc-generator .npc-generator-gear details[open] > summary::before {
+  content: "\f0d7";
+}
+.starwarsffg.npc-generator .npc-generator-item-summary {
+  display: flex;
+  gap: 0.6rem;
+  margin-left: auto;
+  white-space: nowrap;
+  font-weight: bold;
+}
+.starwarsffg.npc-generator .npc-generator-item-summary .label,
+.starwarsffg.npc-generator .npc-generator-item-details dt {
+  font-size: 0.7rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: #415064;
+}
+.starwarsffg.npc-generator .npc-generator-item-details {
+  margin: 0.2rem 0 0.4rem 1rem;
+  padding: 0.3rem 0.5rem;
+  background: rgba(255, 255, 255, 0.4);
+  border-left: 3px solid #415064;
+}
+.starwarsffg.npc-generator .npc-generator-item-details dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.1rem 0.75rem;
+  margin: 0 0 0.3rem;
+}
+.starwarsffg.npc-generator .npc-generator-item-details dt {
+  font-family: "Roboto", sans-serif;
+}
+.starwarsffg.npc-generator .npc-generator-item-details dd {
+  margin: 0;
+  color: #191813;
+}
+.starwarsffg.npc-generator .npc-generator-item-description {
+  margin-bottom: 0.3rem;
+  font-size: 0.8rem;
+}
+.starwarsffg.npc-generator .npc-generator-slot,
+.starwarsffg.npc-generator .npc-generator-none {
+  font-style: italic;
+  color: #5a4f52;
+}
+.starwarsffg.npc-generator .npc-generator-section .fa-triangle-exclamation {
+  color: #781428;
+}
+.starwarsffg.npc-generator .npc-generator-stats {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.2rem 1rem;
+}
+.starwarsffg.npc-generator .npc-generator-section .npc-generator-stats dt {
+  font-family: "Roboto", sans-serif;
+  font-size: 0.75rem;
+  font-weight: normal;
+  text-transform: uppercase;
+  color: #415064;
+}
+.starwarsffg.npc-generator .npc-generator-section .npc-generator-stats dd {
+  margin: 0;
+  font-weight: bold;
+  color: #191813;
+}
+.starwarsffg.npc-generator .notification.warning {
+  margin: 0 0 0.5rem;
+}
+
+/* notched buttons, as on the character creator */
+.starwarsffg.npc-generator .npc-generator-options .form-fields button,
+.starwarsffg.npc-generator .form-footer button {
+  color: rgba(255, 255, 255, 0.9);
+  background-color: #535d60;
+  border: 0;
+  text-transform: uppercase;
+  text-shadow: black 1px 2px 0;
+  --notchSize: 0.35rem;
+  clip-path: polygon(0% var(--notchSize), var(--notchSize) 0%, calc(100% - var(--notchSize)) 0%,
+    100% var(--notchSize), 100% calc(100% - var(--notchSize)), calc(100% - var(--notchSize)) 100%,
+    var(--notchSize) 100%, 0% calc(100% - var(--notchSize)));
+}
+.starwarsffg.npc-generator .npc-generator-options .form-fields button {
+  flex: 0 0 1.75rem;
+  height: 1.75rem;
+}
+.starwarsffg.npc-generator .form-footer button:hover,
+.starwarsffg.npc-generator .npc-generator-options .form-fields button:hover {
+  color: white;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+.starwarsffg.npc-generator .form-footer button[data-action="create"] {
+  background-color: rgba(73, 12, 11, 0.85);
+}
+.starwarsffg.npc-generator .form-footer button[data-action="create"]:hover {
+  background-color: #490c0b;
+}
+.starwarsffg.npc-generator .npc-generator-species-current {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.4rem;
+  color: #191813;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  text-transform: none;
+  text-shadow: none;
+}
+.starwarsffg.npc-generator .npc-generator-species-current span {
+  flex: 1;
+  text-align: left;
+}
+.starwarsffg.npc-generator .npc-generator-species-picker img {
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
+  border: 0;
+}
+.starwarsffg.npc-generator .npc-generator-species-picker i:first-child {
+  width: 1.5rem;
+  text-align: center;
+}
+.starwarsffg.npc-generator .npc-generator-species-search {
+  width: 100%;
+  margin-top: 0.2rem;
+}
+.starwarsffg.npc-generator .npc-generator-species-list {
+  max-height: 14rem;
+  margin: 0.2rem 0 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid #bbb;
+}
+.starwarsffg.npc-generator .npc-generator-species-list button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  width: 100%;
+  height: auto;
+  padding: 0.15rem 0.4rem;
+  color: #191813;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  text-transform: none;
+  text-shadow: none;
+}
+.starwarsffg.npc-generator .npc-generator-species-list button:hover {
+  background: rgba(125, 169, 194, 0.25);
+}
+.starwarsffg.npc-generator .npc-generator-species-list button.selected {
+  color: white;
+  background: rgba(73, 12, 11, 0.85);
+}
+.starwarsffg.npc-generator .npc-generator-limits-toggle {
+  position: relative;
+}
+.starwarsffg.npc-generator .npc-generator-limits-toggle[aria-expanded="true"] {
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.starwarsffg.npc-generator .npc-generator-limits-count {
+  position: absolute;
+  top: -0.2rem;
+  right: -0.2rem;
+  min-width: 0.9rem;
+  padding: 0 0.15rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.6rem;
+  line-height: 0.9rem;
+  color: white;
+  background: rgba(73, 12, 11, 0.95);
+  border-radius: 0.45rem;
+}
+.starwarsffg.npc-generator .npc-generator-limits {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: 0.4rem 0.75rem;
+  padding: 0.4rem 0.5rem;
+  background: rgba(65, 80, 100, 0.12);
+  border-bottom: 1px solid #bbb;
+}
+.starwarsffg.npc-generator .npc-generator-limits .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.15rem;
+  margin: 0 0 0.25rem;
+}
+.starwarsffg.npc-generator .npc-generator-limits .form-group > * {
+  flex: none;
+}
+.starwarsffg.npc-generator .npc-generator-limits .form-group > label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #415064;
+}
+.starwarsffg.npc-generator .npc-generator-limits multi-select,
+.starwarsffg.npc-generator .npc-generator-limits input {
+  color: #191813;
+}
+.starwarsffg.npc-generator .npc-generator-limits multi-select select,
+.starwarsffg.npc-generator .npc-generator-limits input[type="number"] {
+  width: 100%;
+  height: 1.75rem;
+  color: #191813;
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid #bbb;
+}
+.starwarsffg.npc-generator .npc-generator-limits option {
+  color: #191813;
+  background: #d8cbc0;
+}
+.starwarsffg.npc-generator .npc-generator-limits multi-select .tags .tag {
+  color: white;
+  background: #415064;
+}
+.starwarsffg.npc-generator .npc-generator-rarity {
+  align-items: center;
+}
+.starwarsffg.npc-generator .npc-generator-rarity input {
+  width: 0;
+}
+.starwarsffg.npc-generator .npc-generator-item-img {
+  flex: 0 0 1.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  align-self: center;
+  object-fit: contain;
+  border: 0;
+}
+.starwarsffg.npc-generator .npc-generator-item-details dd .npc-generator-pool {
+  display: inline-flex;
+  margin-left: 0.4rem;
+  vertical-align: middle;
+}
+.starwarsffg.npc-generator .npc-generator-qualities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.starwarsffg.npc-generator .npc-generator-quality {
+  position: relative;
+  padding: 0 0.35rem;
+  font-size: 0.75rem;
+  color: white;
+  background: #535d60;
+  border-radius: 2px;
+  cursor: help;
+}
+/* the sheets' hover tooltips, kept inside the window so their dice symbols are drawn */
+.starwarsffg.npc-generator .hover {
+  position: relative;
+}
+.starwarsffg.npc-generator .hover .tooltip2 {
+  top: 100%;
+  font-size: 0.8rem;
+  font-weight: normal;
+  text-transform: none;
+  white-space: normal;
+  pointer-events: none;
+}
+.starwarsffg.npc-generator .npc-generator-item-name.restricted {
+  color: #8b0000;
+}
+.starwarsffg.npc-generator .npc-generator-species-chosen {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.starwarsffg.npc-generator .npc-generator-species-chosen img {
+  width: 2.5rem;
+  height: 2.5rem;
+  object-fit: contain;
+  border: 0;
+}
+.starwarsffg.npc-generator .npc-generator-filter h4 {
+  margin: 0.2rem 0 0;
+  border: 0;
+  font-family: "Roboto", sans-serif;
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: #191813;
+}
+.starwarsffg.npc-generator .npc-generator-restricted {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.8rem;
+  color: #191813;
+}

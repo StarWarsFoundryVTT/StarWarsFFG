@@ -57,6 +57,9 @@ import {register_system_tours} from "./helpers/tours.js";
 import {ITEM_DATA_MODELS} from "./data/items/index.js";
 import {ACTOR_DATA_MODELS} from "./data/actors/index.js";
 import {grantStartingItems, offerStartingItemRemoval} from "./helpers/starting-items.js";
+import {NpcGenerator} from "./helpers/npc-generator.js";
+import {createActor, generate} from "./helpers/npc-generator-engine.js";
+import {listPresets, resolvePreset} from "./helpers/npc-generator-presets.js";
 
 /* -------------------------------------------- */
 /*  Foundry VTT Initialization                  */
@@ -97,6 +100,15 @@ Hooks.once("init", async function () {
     },
     diceterms: [AbilityDie, BoostDie, ChallengeDie, DifficultyDie, ForceDie, ProficiencyDie, SetbackDie],
     ActiveEffectFFG,
+    NpcGenerator,
+    // for macros
+    npcGenerator: {
+      open: () => new NpcGenerator().render(true),
+      generate,
+      createActor,
+      resolvePreset,
+      listPresets,
+    },
   };
 
   // Define custom log prefix and logger
@@ -1069,6 +1081,27 @@ Hooks.on("renderActorDirectory", (app, html) => {
         ui.notifications.info(game.i18n.localize("SWFFG.CharacterCreator.Entry.Loading"));
         const create = new CharacterCreator();
         create.render(true);
+      }
+    }
+    const generatorId = "ffgNpcGenerator";
+    if (game.user.isGM && !document.querySelector(`#${generatorId}`)) {
+      const generatorButtonIcon = document.createElement("i");
+      generatorButtonIcon.classList.add("fa-solid", "fa-users-gear");
+
+      const generatorButtonText = document.createElement("span");
+      generatorButtonText.textContent = game.i18n.localize("SWFFG.NpcGenerator.App.Open");
+
+      const generatorButton = document.createElement("button");
+      generatorButton.id = generatorId;
+      generatorButton.type = "button";
+      generatorButton.appendChild(generatorButtonIcon);
+      generatorButton.appendChild(generatorButtonText);
+
+      const folderElement = html.querySelector(".header-actions.action-buttons");
+      folderElement.appendChild(generatorButton);
+
+      generatorButton.onclick = async function () {
+        new NpcGenerator().render(true);
       }
     }
   }
